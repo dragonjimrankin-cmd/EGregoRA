@@ -15,6 +15,7 @@ export default {
     { url: "/infographics/", label: "Infographics", glyph: "metatron" },
     { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },
     { url: "/artwork/", label: "Artwork", glyph: "eye" },
+    { url: "/neurobiology/", label: "Neurobiology", glyph: "star" },
     { url: "/music/", label: "Music", glyph: "spiral" },
     { url: "/products/", label: "Products", glyph: "seed" },
     { url: "/research/", label: "Further Research", glyph: "tree" }
