@@ -61,3 +61,63 @@
   let t;
   addEventListener("resize", () => { clearTimeout(t); t = setTimeout(seed, 200); });
 })();
+
+/* ------------------------------------------------------------------ Oracle */
+(() => {
+  "use strict";
+  const form = document.getElementById("oracle-form");
+  if (!form) return;
+  const out = document.getElementById("oracle-answer");
+  const body = out.querySelector(".oracle-body");
+  const btn = document.getElementById("o-submit");
+
+  const show = (html, tone) => {
+    out.hidden = false;
+    body.className = "oracle-body" + (tone ? " " + tone : "");
+    body.innerHTML = html;
+    out.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+
+  const esc = (s) =>
+    s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  const paragraphs = (text) =>
+    esc(text)
+      .split(/\n{2,}/)
+      .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+      .join("");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const question = form.question.value.trim();
+    if (question.length < 8) return show("<p>Ask a fuller question — at least a sentence.</p>", "is-error");
+
+    btn.disabled = true;
+    const label = btn.textContent;
+    btn.textContent = "Consulting…";
+    show('<p class="muted">The order is considering your question…</p>', "is-waiting");
+
+    try {
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          question,
+          name: form.name.value.trim(),
+          limb: form.limb.value
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.answer) {
+        show(`<p>${esc(data.error || "The oracle is silent just now. The written form below still reaches Ed.")}</p>`, "is-error");
+      } else {
+        show(paragraphs(data.answer), "");
+      }
+    } catch {
+      show("<p>No answer could be fetched — this page may be running without its backend. The written form below still reaches Ed.</p>", "is-error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  });
+})();

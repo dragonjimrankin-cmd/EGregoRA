@@ -5,3 +5,9 @@ tagline     = "Life, Love, Magic — an order of enquiry founded by Edward Grego
 description = "An ornate house of enquiry founded by Edward Gregory, braiding cosmic physics, natural philosophy, astrology, nature, druidry, trees, sacred geometry, magic, wizards, reality, the contact question, neuroscience, biology, psychology, astronomy, God, the Law of One and hallucinogenic meditation into one living study of reality. Eight pages: Introduction, Podcast, Videos, Ask Ed a Question, Infographics, Music, Products and Further Research."
 category    = "Publishing"
 tags        = ["esoteric", "science", "podcast", "philosophy", "astronomy", "druidry"]
+
+# The Ask Ed oracle answers visitors with the owner's own model key (BYOK).
+# The gateway resolves it server-side; project code never sees the raw key.
+[ai]
+required = false
+providers = ["anthropic", "openai", "google"]

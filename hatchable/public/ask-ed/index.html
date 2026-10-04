@@ -108,9 +108,60 @@
   <p class="lede muted">No question is too large, too small or too strange. Several are too urgent — see the note below.</p>
 </section>
 
+<section class="wrap narrow reveal" id="oracle">
+  <div class="frame">
+    <p class="kicker">The Oracle</p>
+    <h2>Ask now, and get an answer from the order</h2>
+    <p class="muted small">This speaks in the order's voice, from the ten limbs and the house rules on evidence —
+    it is not Ed himself, and it will tell you so when a question only he can answer. Everything asked here lands
+    in his mailbag; the best questions get answered properly on the podcast.</p>
+
+    <form class="ornate" id="oracle-form">
+      <div>
+        <label for="o-question">Your question</label>
+        <textarea id="o-question" name="question" required maxlength="2000"
+          placeholder="Why 137.5 degrees and not 120? Is the Law of One testable? What does a drone do to attention?"></textarea>
+      </div>
+      <div class="grid two" style="gap:1rem">
+        <div>
+          <label for="o-name">Name (optional)</label>
+          <input id="o-name" name="name" type="text" maxlength="80" placeholder="Rowan of the North">
+        </div>
+        <div>
+          <label for="o-limb">Limb</label>
+          <select id="o-limb" name="limb">
+            <option value="">Let the order decide</option>
+            <option>Cosmic physics &amp; astronomy</option>
+            <option>Druidry, trees &amp; nature</option>
+            <option>Sacred geometry</option>
+            <option>Astrology</option>
+            <option>Neuroscience &amp; psychology</option>
+            <option>Biology &amp; life</option>
+            <option>God, the Law of One &amp; contact</option>
+            <option>Magic &amp; the wizard's craft</option>
+            <option>The Shadow Cabinet</option>
+            <option>Alchemy &amp; the elemental forces</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" type="submit" id="o-submit">Consult the Order</button>
+    </form>
+
+    <div id="oracle-answer" class="oracle-answer" hidden>
+      <div class="divider">✦</div>
+      <div class="oracle-body" aria-live="polite"></div>
+      <p class="muted xsmall oracle-foot">Test everything kindly. If this answer cannot survive your scepticism,
+      it does not deserve your belief — and the written form below reaches Ed himself.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
 <section class="wrap">
   <div class="grid two">
     <div class="frame reveal">
+      <h3 style="margin-bottom:1rem">Write to Ed directly</h3>
       <form class="ornate" action="https://formspree.io/f/your-form-id" method="POST">
         <div>
           <label for="name">Your name or chosen name</label>
