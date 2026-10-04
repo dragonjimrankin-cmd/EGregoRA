@@ -638,3 +638,78 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 }
 .rune-s { font-size: 0.82rem; color: var(--amethyst); letter-spacing: 0.06em; }
 .rune-m { font-size: 0.82rem; line-height: 1.5; color: var(--parchment-dim, #cdbb95); }
+
+/* ======================================================================
+   Hold-to-speak microphone
+   ====================================================================== */
+.ask-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+}
+.btn--mic {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  position: relative;
+  border-color: rgba(215, 176, 90, 0.5);
+  background: rgba(215, 176, 90, 0.04);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+.btn--mic .mic-icon { display: inline-flex; width: 1.1em; height: 1.1em; }
+.btn--mic .mic-icon svg { width: 100%; height: 100%; }
+.btn--mic:hover { border-color: rgba(243, 221, 156, 0.8); }
+
+.btn--mic .mic-waves {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 1em;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.btn--mic .mic-waves i {
+  display: block;
+  width: 2px;
+  height: 4px;
+  border-radius: 1px;
+  background: currentColor;
+}
+.btn--mic.is-listening {
+  border-color: var(--rose, #cf7f8d);
+  color: #ffe9ee;
+  background: rgba(207, 127, 141, 0.14);
+  box-shadow: 0 0 0 0 rgba(207, 127, 141, 0.5);
+  animation: mic-pulse 1.6s ease-out infinite;
+}
+.btn--mic.is-listening .mic-waves { opacity: 1; }
+.btn--mic.is-listening .mic-waves i { animation: mic-bar 0.9s ease-in-out infinite; }
+.btn--mic.is-listening .mic-waves i:nth-child(2) { animation-delay: 0.12s; }
+.btn--mic.is-listening .mic-waves i:nth-child(3) { animation-delay: 0.24s; }
+.btn--mic.is-listening .mic-waves i:nth-child(4) { animation-delay: 0.36s; }
+.btn--mic.is-listening .mic-waves i:nth-child(5) { animation-delay: 0.48s; }
+
+@keyframes mic-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(207, 127, 141, 0.45); }
+  70%  { box-shadow: 0 0 0 14px rgba(207, 127, 141, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(207, 127, 141, 0); }
+}
+@keyframes mic-bar {
+  0%, 100% { height: 4px; }
+  50%      { height: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn--mic.is-listening { animation: none; }
+  .btn--mic.is-listening .mic-waves i { animation: none; height: 9px; }
+}
+#o-mic-hint kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  padding: 0.05em 0.35em;
+  border: 1px solid rgba(215, 176, 90, 0.4);
+  border-radius: 3px;
+}

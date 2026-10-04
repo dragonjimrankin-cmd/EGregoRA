@@ -132,3 +132,149 @@
     }
   });
 })();
+
+/* ------------------------------------------------- Hold-to-speak microphone
+   Push-to-talk for the oracle, using the browser's own SpeechRecognition.
+   Hold the button (pointer or space bar), speak, release. The transcript is
+   written into the question box; if it looks like a complete question the
+   form is submitted for you. Nothing is uploaded by this code — recognition
+   is the browser's, and in Chrome it goes to Google's speech service exactly
+   as it does for any other site that uses the API. Say so plainly rather
+   than pretend otherwise. */
+(() => {
+  "use strict";
+  const btn = document.getElementById("o-mic");
+  const form = document.getElementById("oracle-form");
+  const box = document.getElementById("o-question");
+  const hint = document.getElementById("o-mic-hint");
+  if (!btn || !form || !box) return;
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    btn.hidden = true;
+    if (hint) {
+      hint.innerHTML = "This browser has no speech recognition, so the hold-to-speak " +
+        "button is hidden. Firefox and most in-app browsers are in this group. Type the question instead — " +
+        "the oracle answers identically either way.";
+    }
+    return;
+  }
+  btn.hidden = false;
+
+  const label = btn.querySelector(".mic-label");
+  const setLabel = (s) => { if (label) label.textContent = s; };
+
+  let rec = null;
+  let active = false;
+  let committed = "";   // finalised text from this hold
+  let before = "";      // whatever was already in the box
+  let gotSpeech = false;
+  let holdStart = 0;
+
+  const fox = () => (window.EGFox && typeof window.EGFox.listen === "function") ? window.EGFox : null;
+
+  const start = () => {
+    if (active) return;
+    active = true;
+    gotSpeech = false;
+    committed = "";
+    holdStart = Date.now();
+    before = box.value.trim();
+    btn.classList.add("is-listening");
+    setLabel("Listening…");
+    fox()?.listen(true);
+
+    rec = new SR();
+    rec.lang = document.documentElement.lang || "en-GB";
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.maxAlternatives = 1;
+
+    rec.onresult = (e) => {
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) committed += r[0].transcript + " ";
+        else interim += r[0].transcript;
+      }
+      gotSpeech = gotSpeech || !!(committed.trim() || interim.trim());
+      const joined = (before ? before + " " : "") + (committed + interim).replace(/\s+/g, " ").trim();
+      box.value = joined;
+      box.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+
+    rec.onerror = (e) => {
+      const why = {
+        "not-allowed": "Microphone permission was refused. Allow it in the padlock menu, or type instead.",
+        "service-not-allowed": "This browser will not run speech recognition on this page. Type instead.",
+        "no-speech": "Nothing was heard. Hold the button, speak, then release.",
+        "audio-capture": "No microphone was found on this device.",
+        "network": "Speech recognition needs a connection and could not reach its service."
+      }[e.error] || "Speech recognition stopped unexpectedly. Type the question instead.";
+      if (hint) hint.textContent = why;
+      finish(true);
+    };
+
+    rec.onend = () => { if (active) finish(false); };
+
+    try { rec.start(); }
+    catch { finish(true); }
+  };
+
+  const finish = (quiet) => {
+    if (!active) return;
+    active = false;
+    btn.classList.remove("is-listening");
+    setLabel("Hold to speak");
+    fox()?.listen(false);
+    try { rec && rec.stop(); } catch {}
+    rec = null;
+
+    const held = Date.now() - holdStart;
+    const text = box.value.trim();
+
+    if (!quiet && held < 350) {
+      if (hint) hint.textContent = "Hold the button down while you speak — a tap is too short to hear anything.";
+      return;
+    }
+    if (!gotSpeech) return;
+
+    // tidy the transcript: capitalise, and add a question mark if it asks something
+    let tidy = text.replace(/\s+/g, " ").trim();
+    if (tidy) {
+      tidy = tidy.charAt(0).toUpperCase() + tidy.slice(1);
+      if (!/[.?!]$/.test(tidy)) {
+        tidy += /^(who|what|when|where|why|how|is|are|was|were|do|does|did|can|could|should|would|will|if)\b/i
+          .test(tidy) ? "?" : ".";
+      }
+      box.value = tidy;
+    }
+
+    if (tidy.length >= 8) {
+      if (hint) hint.textContent = "Heard you. Consulting the order…";
+      form.requestSubmit
+        ? form.requestSubmit()
+        : form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    } else if (hint) {
+      hint.textContent = "That was too short to work with. Hold again and ask a fuller question.";
+    }
+  };
+
+  btn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    btn.setPointerCapture?.(e.pointerId);
+    start();
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((ev) =>
+    btn.addEventListener(ev, () => finish(false)));
+  btn.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  btn.addEventListener("keydown", (e) => {
+    if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); start(); }
+  });
+  btn.addEventListener("keyup", (e) => {
+    if (e.key === " " || e.key === "Enter") { e.preventDefault(); finish(false); }
+  });
+  btn.addEventListener("blur", () => finish(false));
+  document.addEventListener("visibilitychange", () => { if (document.hidden) finish(true); });
+})();

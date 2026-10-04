@@ -65,7 +65,26 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           </select>
         </div>
       </div>
-      <button class="btn" type="submit" id="o-submit">Consult the Order</button>
+      <div class="ask-actions">
+        <button class="btn" type="submit" id="o-submit">Consult the Order</button>
+        <button class="btn btn--mic" type="button" id="o-mic" hidden
+                aria-describedby="o-mic-hint">
+          <span class="mic-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="2" width="6" height="12" rx="3"/>
+              <path d="M5 11a7 7 0 0 0 14 0"/>
+              <path d="M12 18v4M8.5 22h7"/>
+            </svg>
+          </span>
+          <span class="mic-label">Hold to speak</span>
+          <span class="mic-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        </button>
+      </div>
+      <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
+      question out loud, then let go — the words are transcribed into the box above and sent to the order.
+      Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
+      thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
     </form>
 
     <div id="oracle-answer" class="oracle-answer" hidden>
