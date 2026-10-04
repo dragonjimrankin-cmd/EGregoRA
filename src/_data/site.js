@@ -13,6 +13,8 @@ export default {
     { url: "/videos/", label: "Videos", glyph: "eye" },
     { url: "/ask-ed/", label: "Ask Ed", glyph: "star" },
     { url: "/infographics/", label: "Infographics", glyph: "metatron" },
+    { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },
+    { url: "/artwork/", label: "Artwork", glyph: "eye" },
     { url: "/music/", label: "Music", glyph: "spiral" },
     { url: "/products/", label: "Products", glyph: "seed" },
     { url: "/research/", label: "Further Research", glyph: "tree" }
