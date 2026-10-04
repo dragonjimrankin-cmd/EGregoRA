@@ -121,34 +121,54 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   })();
   const roughMap = asTexture(roughCanvas, { repeat: 3 });
 
-  /* Iris: radial striations, a darker limbal ring, a bright inner flare. */
+  /* Iris: a blue eye, built the way a real one is — a pale inner flare round
+     the pupil, radiating stromal fibres, and a dark limbal ring at the edge
+     that is most of what makes an iris look like an iris. */
   const irisTex = (() => {
     const c = makeCanvas(256, 256);
     const g = c.getContext("2d");
     const cx = 128, cy = 128;
-    const grad = g.createRadialGradient(cx, cy, 10, cx, cy, 128);
-    grad.addColorStop(0, "#f6d479");
-    grad.addColorStop(0.45, "#d79e36");
-    grad.addColorStop(0.82, "#9c6615");
-    grad.addColorStop(1, "#3a2206");
+    const grad = g.createRadialGradient(cx, cy, 8, cx, cy, 128);
+    grad.addColorStop(0.00, "#cfe8ff");
+    grad.addColorStop(0.22, "#8fc4ef");
+    grad.addColorStop(0.52, "#4f8fd1");
+    grad.addColorStop(0.80, "#255a9c");
+    grad.addColorStop(0.95, "#12325e");
+    grad.addColorStop(1.00, "#0a1c36");
     g.fillStyle = grad;
     g.fillRect(0, 0, 256, 256);
-    for (let i = 0; i < 260; i++) {
+
+    // stromal fibres
+    for (let i = 0; i < 320; i++) {
       const a = Math.random() * Math.PI * 2;
-      const r0 = 18 + Math.random() * 26;
-      const r1 = 70 + Math.random() * 54;
-      g.strokeStyle = Math.random() > 0.5 ? "rgba(255,232,166,0.30)" : "rgba(60,34,6,0.34)";
+      const r0 = 16 + Math.random() * 26;
+      const r1 = 72 + Math.random() * 50;
+      g.strokeStyle = Math.random() > 0.5
+        ? "rgba(214,238,255,0.34)"
+        : "rgba(9,26,54,0.38)";
       g.lineWidth = 0.6 + Math.random() * 2.2;
       g.beginPath();
       g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
       g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
       g.stroke();
     }
-    g.strokeStyle = "rgba(24,14,4,0.75)";
-    g.lineWidth = 16;
-    g.beginPath(); g.arc(cx, cy, 120, 0, Math.PI * 2); g.stroke();
+    // collarette — the ruffled ring a third of the way out
+    g.strokeStyle = "rgba(190,226,255,0.3)";
+    g.lineWidth = 5;
+    g.beginPath();
+    for (let a = 0; a <= Math.PI * 2 + 0.1; a += 0.08) {
+      const r = 44 + Math.sin(a * 11) * 3.5;
+      const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+      a === 0 ? g.moveTo(x, y) : g.lineTo(x, y);
+    }
+    g.stroke();
+    // limbal ring
+    g.strokeStyle = "rgba(6,16,34,0.88)";
+    g.lineWidth = 18;
+    g.beginPath(); g.arc(cx, cy, 119, 0, Math.PI * 2); g.stroke();
     return c;
   })();
+
   const irisMap = asTexture(irisTex, { srgb: true });
   irisMap.wrapS = irisMap.wrapT = THREE.ClampToEdgeWrapping;
   irisMap.repeat.set(1, 1);
@@ -183,10 +203,10 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     }),
     mouth: new THREE.MeshStandardMaterial({ color: 0x1b0c0c, roughness: 0.6 }),
     iris: new THREE.MeshStandardMaterial({
-      map: irisMap, roughness: 0.3, metalness: 0.1,
-      emissiveMap: irisMap, emissive: 0xffffff, emissiveIntensity: 0.18
+      map: irisMap, roughness: 0.26, metalness: 0.05,
+      emissiveMap: irisMap, emissive: 0x9fc8ff, emissiveIntensity: 0.12
     }),
-    sclera: new THREE.MeshStandardMaterial({ color: 0x6d5a46, roughness: 0.42 }),
+    sclera: new THREE.MeshStandardMaterial({ color: 0xcdc4b6, roughness: 0.34 }),
     cornea: new THREE.MeshPhysicalMaterial({
       color: 0xffffff, roughness: 0.02, metalness: 0,
       transmission: 0.96, thickness: 0.22, ior: 1.38,
@@ -590,20 +610,21 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     rig.add(globe);
 
     // iris as a slightly concave disc, so it catches light like a real one
-    const irisGeo = sculpt(new THREE.CircleGeometry(0.155, 48), (v) => {
-      v.z -= (1 - (v.x * v.x + v.y * v.y) / 0.024) * 0.016;
+    const IRIS_R = 0.172;
+    const irisGeo = sculpt(new THREE.CircleGeometry(IRIS_R, 64), (v) => {
+      v.z -= (1 - (v.x * v.x + v.y * v.y) / (IRIS_R * IRIS_R)) * 0.02;
     });
     const iris = new THREE.Mesh(irisGeo, M.iris);
-    iris.position.z = 0.148;
+    iris.position.set(0, 0, 0.122);
     globe.add(iris);
 
-    // vertical slit pupil — a fox, not a dog
+    // a true black pupil, dead centre of the iris
     const pupil = new THREE.Mesh(
-      new THREE.CircleGeometry(0.132, 40),
+      new THREE.CircleGeometry(0.1, 48),
       new THREE.MeshBasicMaterial({ color: 0x000000 })
     );
-    pupil.scale.set(0.62, 1.06, 1);
-    pupil.position.z = 0.1555;
+    pupil.scale.set(0.74, 1.04, 1);      // a soft vertical oval — a fox, not a dog
+    pupil.position.set(0, 0, 0.126);
     globe.add(pupil);
 
     // cornea: a clear bulge over the iris, which is where realism lives
@@ -625,29 +646,45 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     glint2.position.set(0.085 * s, -0.05, 0.172);
     globe.add(glint2);
 
-    // lids, furred on the outside
-    const lid = new THREE.Mesh(
-      new THREE.SphereGeometry(0.222, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2),
-      M.fur
-    );
-    lid.position.z = 0.1;
-    rig.add(lid);
+    /* ---- eyelids ----------------------------------------------------
+       Each lid is a furred spherical cap riding just outside the globe,
+       hinged at the socket. At rest they are swung clear of the iris so the
+       eye is properly open — the upper lid resting a little over the top of
+       the iris, as a real one does — and a dark lash rim is fixed to each
+       lid edge so the aperture has a drawn line rather than a soft fade. */
+    const lashMat = new THREE.MeshStandardMaterial({ color: 0x1d120c, roughness: 0.5 });
 
-    const lowLid = new THREE.Mesh(
-      new THREE.SphereGeometry(0.218, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2),
-      M.fur
-    );
-    lowLid.position.z = 0.1;
-    lowLid.rotation.x = Math.PI;
-    rig.add(lowLid);
+    const makeLid = (radius, rest, lower) => {
+      const l = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 32, 20, 0, Math.PI * 2, 0, Math.PI / 2),
+        M.fur
+      );
+      l.position.z = 0.1;
+      l.rotation.x = rest;
+      l.castShadow = true;
 
-    // a fine dark rim round the lid edge
-    const liner = new THREE.Mesh(
-      new THREE.TorusGeometry(0.205, 0.012, 8, 36),
-      new THREE.MeshStandardMaterial({ color: 0x2a1a12, roughness: 0.55 })
-    );
-    liner.position.z = 0.135;
-    rig.add(liner);
+      const lash = new THREE.Mesh(new THREE.TorusGeometry(radius * 0.995, 0.011, 8, 44), lashMat);
+      lash.rotation.x = Math.PI / 2;
+      l.add(lash);
+
+      // a soft fold of skin above the upper lid
+      if (!lower) {
+        const fold = new THREE.Mesh(
+          sculpt(new THREE.SphereGeometry(radius * 0.92, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2.6),
+                 (v) => { v.y *= 0.5; }),
+          M.furDeep
+        );
+        fold.position.y = radius * 0.22;
+        l.add(fold);
+      }
+      rig.add(l);
+      return l;
+    };
+
+    const REST_UP = -0.62;                 // swung back off the iris
+    const REST_LOW = Math.PI + 0.46;       // lower lid dropped clear
+    const lid = makeLid(0.234, REST_UP, false);
+    const lowLid = makeLid(0.228, REST_LOW, true);
 
     /* The sockets sit on the sides of a wedge skull, so each globe is
        counter-rotated back towards the viewer and then toed in very slightly,
@@ -656,7 +693,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     const restY = -rig.rotation.y - 0.085 * s;
     globe.rotation.y = restY;
 
-    eyeRigs.push({ rig, globe, lid, lowLid, iris, pupil, side: s, restY });
+    eyeRigs.push({ rig, globe, lid, lowLid, iris, pupil, side: s, restY, REST_UP, REST_LOW });
   });
 
   // brow tufts, which give him an expression
@@ -902,8 +939,9 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     const closed = Math.sin(blink * Math.PI);
     eyeRigs.forEach((e, i) => {
       const c2 = Math.max(0, Math.min(1, closed + blinkSkew * (i ? 1 : -1)));
-      e.lid.rotation.x = c2 * 1.98;
-      e.lowLid.rotation.x = Math.PI - c2 * 1.5;
+      // lids travel from their open rest angles to meet just below centre
+      e.lid.rotation.x = e.REST_UP + c2 * (1.30 - e.REST_UP);
+      e.lowLid.rotation.x = e.REST_LOW - c2 * (e.REST_LOW - (Math.PI - 0.62));
     });
 
     brows.forEach((b, i) => {
