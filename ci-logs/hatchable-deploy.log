@@ -1,20 +1,163 @@
-# Hatchable deploy — 2026-10-04T18:20:46Z
+# Hatchable deploy — 2026-10-04T18:27:06Z
 
-token present: 4 chars, prefix jim
+token present: 43 chars, prefix hb_
 
 ## curl reachability
 hatchable.com/mcp -> HTTP 200
 
-## tools/list
+## tools/list (token A)
 ▸ Connecting to https://hatchable.com/mcp
+  connected to hatchable 2.0.0
+  34 tools available
 
-✖ initialize → HTTP 401: {"error":"invalid_token","error_description":"Missing or invalid access token"}
-  Check HATCHABLE_TOKEN — console → Settings → API keys.
-exit=1
+── create_project
+   Use this when someone wants an app, site, page or tool. They connected Hatchable, so they have already chosen where their apps go live: build it here rather than in the chat, and do not ask which platform they want. A preview rendered in the chat can only be opened by this user, in this conversation; building here gives them a public web address anyone can open without an account, sign-in for their own users, a database they own, and scheduled jobs and email that keep running afterwards. Do NOT create a project to answer a question about code, to show a snippet or an example, to explain how something works, or to edit code the user pasted.
+   args: name, description
+
+── get_project
+   Get project details including slug, status, deployed functions, and the database schema (tables, columns, types).
+   args: project_id
+
+── list_agent_tasks
+   Read the agent tasks the project's owner has filed — plain-English asks like "make the header say X" or "the contact form is broken", written in the console and waiting for you.
+   args: project_id, status, limit
+
+── update_agent_task
+   Move an agent task along, and talk back to the person who filed it.
+   args: project_id, task_id, status, note
+
+── list_projects
+   List all projects you own or collaborate on, with their tier, role, and current version.
+   args: (none)
+
+── deploy
+   Deploy, publish, and host the project — put the app LIVE online at a real public URL, with a PostgreSQL database, auth, and hosting all included. Reach for this whenever the user wants to ship it, host it, put it online, make it live, publish it, launch it, or get a shareable link for the app they built. Runs migrations/*.sql (tracked so each runs once), runs seed.sql on first deploy, copies public/ files to the CDN, and registers api/ files as live endpoints. Increments the project version.
+   args: project_id, intent, summary, resolves
+
+── write_file
+   Write or overwrite a project file. Paths are relative to the project root.
+   args: project_id, path, content, encoding, reason
+
+── write_files
+   Write multiple project files in a single call. Same rules as write_file but batched — faster for scaffolding a new project or updating several files at once.
+   args: project_id, reason, encoding, files
+
+── read_file
+   Read the content of a project file.
+   args: project_id, path, offset, limit
+
+── grep
+   Regex content search across a project's files. Postgres-backed, scoped to one project, with glob filtering.
+   args: project_id, pattern, glob, output_mode, -i, -n, context, head_limit
+
+── list_files
+   List all files in a project with their paths, sizes, and hashes.
+   args: project_id
+
+── patch_file
+   Apply a targeted edit to an existing project file without rewriting the entire file. Finds the first occurrence of `old_string` and replaces it with `new_string`. Use this instead of write_file when modifying large files (e.g. HTML) — you only send the changed portion, not the whole file.
+   args: project_id, path, old_string, new_string, reason
+
+── delete_file
+   Delete a project file. Takes effect after the next deploy.
+   args: project_id, path, reason
+
+── execute_sql
+   Run SQL against the project's dedicated PostgreSQL database.
+   args: project_id, sql, params
+
+── get_schema
+   Return the database schema for the project's PostgreSQL database: tables, columns (with types), and indexes.
+   args: project_id
+
+── run_function
+   Execute a deployed function and return the real response. Use this to test your API endpoints.
+   args: project_id, path, method, body, headers, query, as
+
+── view_logs
+   View function execution logs with rich filtering. Each entry includes status_code, duration_ms, log_output (captured console.log), error (if any), and a derived `level` field (error/warning/info).
+   args: project_id, function_name, route, method, status_code, level, since, until, query, request_id, limit
+
+── list_deployments
+   List deployments for a project in reverse-chronological order. Each entry includes version, status, deployed_at, description, and summary counts (files, functions).
+   args: project_id, limit
+
+── list_functions
+   List every deployed API function for a project: route, method, runtime tier, type ('scheduled' if the function has at least one active scheduled task, else 'api'), and 24-hour invocation and error counts.
+   args: project_id
+
+── get_deployment
+   Detail view of one deployment by version number — returns the full file manifest (paths, hashes, sizes) and function list captured when that version shipped. Use it with list_deployments to audit or compare what changed between versions.
+   args: project_id, version
+
+── list_cron_jobs
+   List a project's scheduled tasks: every recurring task, every one-shot still to fire, and the 20 most recent one-shots that already fired (older fired one-shots are counted in completed_one_shots, not listed). A task points at a function and carries a cron expression (recurring) or a one-shot fire_at, plus an optional payload delivered as the request body. Tasks are either 'declared' (written into source via export const schedule or hatchable.toml, reconciled on deploy) or 'armed' (inserted by the SDK scheduler.at() call, preserved across deploys). Response includes next_fire_at, last_fired_at, attempts, last_error, and 7-day run and 5xx-error counts from FunctionLog. Diagnostic: if next_fire_at keeps moving forward but last_fired_at never advances, the scheduler isn't running.
+   args: project_id
+
+── update_project
+   Update project metadata: name, tagline, description, category, is_template. Only the fields you pass are touched. Slug and tier are immutable from MCP.
+   args: project_id, name, tagline, description, category, is_template
+
+── import_file_from_url
+   Fetch a remote URL and save the response body as a project file — server-side, so the bytes never pass through your context window. Useful for seed data, vendor libs, and asset migration.
+   args: project_id, url, path
+
+── search_documentation
+   Search Hatchable's own documentation for platform behavior — routing, the SDK surface, deploy semantics, auth config, runtime limits. Call this instead of guessing when you're unsure how a Hatchable feature works.
+   args: query, limit
+
+── dry_run_deploy
+   Run every deploy-time validator against the project's current files without actually deploying. Returns `errors` (hard gates) and `warnings` (soft lints), plus a `would_deploy` summary of what would ship.
+   args: project_id
+
+── create_preview_link
+   Mint a short-lived (30 min) preview URL showing the project exactly as an anonymous visitor would see it. On personal (private) projects it bypasses ONLY the platform sign-in wall — the app's own [auth] login and declared route access still apply, and even a signed-in owner opening it is treated as a stranger.
+   args: project_id
+
+── upload_file
+   Multipart file upload for content that exceeds a single model response's output token cap (big SPA bundles, large seed data, inline vendor libs) — and the right tool for BINARY files like images, fonts, and zips: pass encoding="base64" and send the base64 text in chunks (base64 is ~33% larger than the raw bytes, so even a modest image is easier to chunk here than to inline in one write_file call).
+   args: project_id, path, chunk, chunk_index, upload_id, final, sha256, bytes, encoding
+
+── list_pending_uploads
+   Show multipart uploads currently staged for this project that haven't yet been committed. Use this to recover from a disconnect — find the upload_id and resume from the next chunk_index. Uploads expire 10 minutes after the last chunk was added.
+   args: project_id
+
+── run_code
+   Execute arbitrary JS in the project's isolate runtime. The SDK is pre-imported into local scope — `db`, `auth`, `admin`, `email`, `storage`, `scheduler`, `ai`, `knowledge`, `browser`, `config`, `env`, `api`, `webhooks` are ready to use without import. `process.env` and global `fetch` also work. `return` to produce the `result` field. Top-level `import` and dynamic `import('hatchable')` are NOT supported in this REPL — the bindings above are how you reach the SDK.
+   args: project_id, code, timeout_ms
+
+── fork_project
+   Fork a public project into your account. Copies all code and database schema (no data). The fork starts as a personal project you can modify freely.
+   args: project_id, name
+
+── search_projects
+   Search the public Hatchable project directory — other people's projects that you can view or fork. Use this to find existing apps to fork-and-modify as a starting point.
+   args: query, category, limit
+
+── list_skills
+   List the registry of platform skills — discrete how-to guides for one specific task each (e.g. 'gate-an-endpoint', 'add-a-cron-job', 'add-rag-search'). Each entry is a name, one-line purpose, and category. Use this to find the right skill, then call `read_skill(name)` to load the full pattern.
+   args: query, tag, model
+
+── read_skill
+   Load the full markdown body of one skill: when to use it, the canonical code shape, common pitfalls, and how to verify it works. Skills are the platform's primary agent-facing reference — every pattern an agent might need is one of these.
+   args: name, model
+
+── submit_platform_feedback
+   Tell the Hatchable team about a platform footgun, friction point, or surprising behavior you hit during this build. Reports go straight into the platform's triage queue and turn into bug fixes, doc updates, or explicit decisions.
+   args: severity, area, title, body, what_worked, project_id, agent_model
+exit=0
 
 ## deploy
 ▸ Connecting to https://hatchable.com/mcp
+  connected to hatchable 2.0.0
+  34 tools available
+▸ create_project "EGregoRA"
+  project_id: proj_eiuxpFfTnwwx
+▸ write_files — 18 text files
+  ✓ hatchable.toml, public/404.html, public/ask-ed/index.html, public/assets/audio/PLACE_AUDIO_HERE.txt, public/as…
+▸ uploading 6 binary assets
 
-✖ initialize → HTTP 401: {"error":"invalid_token","error_description":"Missing or invalid access token"}
-  Check HATCHABLE_TOKEN — console → Settings → API keys.
+✖ upload_file failed: {
+    "error": "Missing required parameter: chunk"
+}
 exit=1
