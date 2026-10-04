@@ -14,11 +14,11 @@ export default {
     { url: "/ask-ed/", label: "Ask Ed", glyph: "star" },
     { url: "/infographics/", label: "Infographics", glyph: "metatron" },
     { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },
+    { url: "/astrology/", label: "Astrology", glyph: "star" },
     { url: "/artwork/", label: "Artwork", glyph: "eye" },
     { url: "/neurobiology/", label: "Neurobiology", glyph: "star" },
     { url: "/extraterrestrials/", label: "Extraterrestrials", glyph: "eye" },
-    { url: "/music/", label: "Music", glyph: "spiral" },
-    { url: "/products/", label: "Products", glyph: "seed" },
-    { url: "/research/", label: "Further Research", glyph: "tree" }
+    { url: "/music/", label: "Sound & Music", glyph: "spiral" },
+    { url: "/products/", label: "Products", glyph: "seed" }
   ]
 };

@@ -54,6 +54,18 @@
         <line x1="100" y1="48" x2="145" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.45"/>
         <line x1="100" y1="48" x2="55" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.45"/>
         {% endfor %}
+      {% elif slug == "astrology" %}
+      {# zodiac wheel: twelve houses and an aspect web #}
+      <circle cx="100" cy="100" r="88"/>
+      <circle cx="100" cy="100" r="72"/>
+      <circle cx="100" cy="100" r="40"/>
+      <path d="M100 12 V28 M100 172 V188 M12 100 H28 M172 100 H188"/>
+      <g>
+        <path d="M100 28 L162 136 L38 136 Z"/>
+        <path d="M100 172 L38 64 L162 64 Z"/>
+        <path d="M28 100 L136 38 L136 162 Z"/>
+        <path d="M172 100 L64 162 L64 38 Z"/>
+      </g>
       {% elif slug == "artwork" or slug == "infographics" %}
         {# nested golden rectangles and a spiral #}
         <path d="M100 100 m0 0 a6 6 0 1 1 6 -6 a13 13 0 1 1 -19 13 a26 26 0 1 1 38 -26 a47 47 0 1 1 -66 47 a68 68 0 1 1 96 -68" stroke-width="0.6"/>
@@ -81,7 +93,7 @@
       <circle cx="140" cy="100" r="2.5"/><circle cx="36" cy="100" r="2"/>
       <circle cx="100" cy="100" r="30" stroke-dasharray="1 6"/>
       <circle cx="100" cy="100" r="50" stroke-dasharray="1 8"/>
-      {% elif slug == "research" or slug == "videos" %}
+      {% elif slug == "videos" %}
         {# vesica lattice #}
         {% for i in range(0, 5) %}
         <circle cx="{{ 60 + i * 20 }}" cy="100" r="34" opacity="0.6"/>
