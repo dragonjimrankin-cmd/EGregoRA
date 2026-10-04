@@ -55,11 +55,17 @@ jobs:
           sed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/hatchable-deploy.log
           tail -60 ci-logs/hatchable-deploy.log
 
-      - name: Publish the log back to the branch
+      - name: Publish the log via the contents API
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          git config user.name "hatchable-ci"
-          git config user.email "ci@users.noreply.github.com"
-          git add ci-logs/hatchable-deploy.log
-          git commit -m "ci: hatchable deploy log [skip]" || exit 0
-          git pull --rebase origin "${GITHUB_REF_NAME}" || true
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          set -x
+          B64=$(base64 -w0 ci-logs/hatchable-deploy.log)
+          SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/ci-logs/hatchable-deploy.log?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
+          if [ -n "$SHA" ]; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/ci-logs/hatchable-deploy.log" \
+              -f message="ci: hatchable deploy log" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA"
+          else
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/ci-logs/hatchable-deploy.log" \
+              -f message="ci: hatchable deploy log" -f content="$B64" -f branch="${GITHUB_REF_NAME}"
+          fi
