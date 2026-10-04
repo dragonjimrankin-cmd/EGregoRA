@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-04T18:28:49Z
+# Hatchable deploy — 2026-10-04T18:30:23Z
 
 token present: 43 chars, prefix hb_
 
@@ -21,7 +21,7 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/img/product-solids.jpg (153 KB) via url import
   ✓ public/assets/img/product-wheel.jpg (215 KB) via url import
 ▸ dry_run_deploy
-  {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":23,"api_functions":0,"pages":0,"migrations":0,"auth_enabled":false,"next_version":1}}
+  {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":23,"api_functions":0,"pages":0,"migrations":0,"auth_enabled":false,"next_version":2}}
 ▸ deploy
 
 ✔ Deployed.
@@ -31,18 +31,8 @@ hatchable.com/mcp -> HTTP 200
   "project_slug": "egregora",
   "version": 1,
   "url": "https://egregora.hatchable.site",
-  "status": "live",
   "is_draft": false,
-  "public_url": "https://egregora.hatchable.site",
-  "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": null,
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v1.png",
-  "console_url": "https://hatchable.com/console/projects/egregora",
-  "files_deployed": 24,
-  "functions_deployed": 0,
-  "warnings": [],
-  "visibility": "personal",
-  "preview_url": "https://egregora.hatchable.site/?_preview=eyJzbHVnIjoiZWdyZWdvcmEiLCJleHAiOjE3OTExNDAzMzMsInJvbGUiOiJwdWJsaWMifQ.76049b0cb0c36c83e2ea2582ccc54cb2d6d61e7c02d5f7d2f688a393f15298e2"
+  "deduplicated": true
 }
 
    https://egregora.hatchable.site
