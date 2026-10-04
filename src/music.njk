@@ -1,0 +1,58 @@
+---
+layout: layouts/base.njk
+title: Music
+permalink: /music/
+description: Drone, modal and seasonal music from EGregoRA for meditation, ritual and long thought.
+---
+
+<section class="page-head">
+  <p class="kicker">Tuned Air</p>
+  <h1>Music</h1>
+  <p class="lede muted">Drone, modal and seasonal work — made for meditation, ritual and long thought.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p>Music is the oldest technology for changing a state of mind without changing a substance in the body.
+    A sustained drone narrows attention; a slow modal line gives it somewhere to walk. These recordings are
+    built for that purpose rather than for the charts — long, patient, and occasionally quite dull if you are
+    not using them properly.</p>
+    <p class="muted">Where a tuning claim is made (432 Hz, 136.1 Hz, binaural beats) we flag it honestly:
+    these are traditions and experiments, not established physiology. Use what works for you and discard the rest.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="media-list">
+    {% for t in music %}
+    <article class="frame media reveal">
+      <div class="num">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</div>
+      <div>
+        <p class="meta">{{ t.key }} · {{ t.length }}</p>
+        <h3>{{ t.title }}</h3>
+        <p>{{ t.notes }}</p>
+        {% if t.audio %}
+          <audio class="player" controls preload="none" src="{{ t.audio }}"></audio>
+        {% else %}
+          <p class="muted pending">⟡ Recording pending upload.</p>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="wrap narrow">
+    <div class="upload-note">
+      <strong>For Ed — releasing a track.</strong> Put the file in <code>src/assets/audio/</code> and add it to
+      <code>src/_data/music.json</code> with an <code>audio</code> path. Bandcamp and SoundCloud players can be
+      pasted directly into this page instead if you would rather sell than stream.
+    </div>
+    <div class="frame caution mt-2">
+      <p><strong>Listening safely.</strong> Binaural and strobing audio can trigger seizures in people with
+      photosensitive or audiogenic epilepsy. Never use paced-breathing or trance tracks while driving, swimming
+      or operating machinery.</p>
+    </div>
+  </div>
+</section>

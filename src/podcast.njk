@@ -1,0 +1,58 @@
+---
+layout: layouts/base.njk
+title: The Podcast
+permalink: /podcast/
+description: Long-form conversation from EGregoRA — cosmology, druidry, neuroscience and the esoteric, argued at length.
+---
+
+<section class="page-head">
+  <p class="kicker">Voices in the Grove</p>
+  <h1>The Podcast</h1>
+  <p class="lede muted">Long-form conversation. No hurry, no hedging, no selling.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p>Each episode is one question followed as far as it will go — usually an hour, sometimes two. Edward hosts;
+    guests arrive from observatories, woodlands, laboratories, temples and occasionally the pub. Subscribe wherever
+    you keep your feeds, or play episodes directly below.</p>
+    <div class="btn-row">
+      <a class="btn" href="/feed.xml">RSS Feed</a>
+      <a class="btn btn--ghost" href="#episodes">Browse Episodes</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap" id="episodes">
+  <div class="media-list">
+    {% for ep in episodes | reverse %}
+    <article class="frame media reveal">
+      <div class="num">{{ ep.number }}</div>
+      <div>
+        <p class="meta">{{ ep.date }} · {{ ep.duration }} · {{ ep.tags | join(" · ") }}</p>
+        <h3>{{ ep.title }}</h3>
+        <p>{{ ep.summary }}</p>
+        {% if ep.audio %}
+          <audio class="player" controls preload="none" src="{{ ep.audio }}"></audio>
+        {% else %}
+          <p class="muted pending">⟡ Audio upload pending.</p>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="wrap narrow">
+    <div class="upload-note">
+      <strong>For Ed — how to publish a new episode.</strong>
+      Drop the MP3 into <code>src/assets/audio/</code>, then add an entry at the end of
+      <code>src/_data/episodes.json</code>:
+      <pre class="code-block">{ "number": "004", "title": "…", "date": "2026-10-17", "duration": "1h 04m",
+  "summary": "…", "audio": "/assets/audio/ep004.mp3", "tags": ["astronomy"] }</pre>
+      Commit and push — the site rebuilds with the episode and the RSS feed in place. External hosts (Acast,
+      Captivate, Spotify) work too: put their direct MP3 URL in <code>audio</code>.
+    </div>
+  </div>
+</section>

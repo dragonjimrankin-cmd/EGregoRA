@@ -1,0 +1,47 @@
+---
+layout: layouts/base.njk
+title: Videos
+permalink: /videos/
+description: Visual essays, grove walks and whiteboard cosmology from EGregoRA.
+---
+
+<section class="page-head">
+  <p class="kicker">The Moving Image</p>
+  <h1>Videos</h1>
+  <p class="lede muted">Visual essays, grove walks, star charts and whiteboard cosmology.</p>
+</section>
+
+<section class="wrap">
+  <div class="grid two">
+    {% for v in videos %}
+    <article class="frame card reveal">
+      <div class="embed">
+        {% if v.embed %}
+          <iframe src="{{ v.embed }}" title="{{ v.title }}" loading="lazy" allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"></iframe>
+        {% else %}
+          <div class="placeholder">
+            <div class="glyph">{% glyph "eye" %}</div>
+            <p class="meta meta--caps">Film pending upload</p>
+          </div>
+        {% endif %}
+      </div>
+      <p class="tag mt-1">{{ v.date }} · {{ v.length }}</p>
+      <h3>{{ v.title }}</h3>
+      <p>{{ v.summary }}</p>
+      <p class="muted xsmall">{{ v.tags | join(" · ") }}</p>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="wrap narrow">
+    <div class="upload-note">
+      <strong>For Ed — how to publish a new video.</strong>
+      Add an entry to <code>src/_data/videos.json</code> with an <code>embed</code> URL:
+      <pre class="code-block">{ "title": "…", "date": "2026-10-20", "length": "18m", "summary": "…",
+  "embed": "https://www.youtube-nocookie.com/embed/VIDEO_ID", "tags": ["astronomy"] }</pre>
+      YouTube, Vimeo (<code>https://player.vimeo.com/video/ID</code>) and PeerTube embeds all work. Leave
+      <code>embed</code> empty and the ornate placeholder holds the slot until the film is ready.
+    </div>
+  </div>
+</section>

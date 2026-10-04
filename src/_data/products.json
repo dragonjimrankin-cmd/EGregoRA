@@ -1,0 +1,8 @@
+[
+  { "name": "The EGregoRA Codex", "price": "£38", "kind": "Hardback, 288pp", "desc": "The founding text: the nine limbs, the charter, the geometry plates and the full annotated reading list.", "img": "/assets/img/product-codex.jpg" },
+  { "name": "The Wheel of the Year Chart", "price": "£24", "kind": "Giclée print, 50×70cm", "desc": "The eight stations, their trees, their stars and their astronomy, drawn as a single gold-leafed dial.", "img": "/assets/img/product-wheel.jpg" },
+  { "name": "Ogham Tree Deck", "price": "£29", "kind": "40 cards + booklet", "desc": "One card per tree: botany on one face, lore and ogham stave on the other. A field guide that happens to shuffle.", "img": "/assets/img/product-deck.jpg" },
+  { "name": "Grove Journal", "price": "£19", "kind": "Linen-bound, 160pp", "desc": "Dated for phenology: a page per week for recording bud-burst, bird return, weather, dream and mood.", "img": "/assets/img/product-journal.jpg" },
+  { "name": "Sacred Solids Set", "price": "£64", "kind": "Five turned beech forms", "desc": "The Platonic solids in English beech, for handling while thinking. Sold with the Euclidean proof of why there are only five.", "img": "/assets/img/product-solids.jpg" },
+  { "name": "Order Membership", "price": "£6 / month", "kind": "Digital", "desc": "Early episodes, the monthly letter, the members' seminar and voting rights on the next field of enquiry.", "img": "/assets/img/product-member.jpg" }
+]

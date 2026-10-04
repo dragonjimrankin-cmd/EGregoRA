@@ -1,0 +1,96 @@
+---
+layout: layouts/base.njk
+title: Ask Ed a Question
+permalink: /ask-ed/
+description: Put a question to Edward Gregory, founder of EGregoRA. Answered publicly on the podcast or privately by letter.
+---
+
+<section class="page-head">
+  <p class="kicker">The Open Door</p>
+  <h1>Ask Ed a Question</h1>
+  <p class="lede muted">No question is too large, too small or too strange. Several are too urgent — see the note below.</p>
+</section>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <form class="ornate" action="https://formspree.io/f/your-form-id" method="POST">
+        <div>
+          <label for="name">Your name or chosen name</label>
+          <input id="name" name="name" type="text" required placeholder="Rowan of the North">
+        </div>
+        <div>
+          <label for="email">Email (so Ed can reply)</label>
+          <input id="email" name="email" type="email" required placeholder="you@example.com">
+        </div>
+        <div>
+          <label for="topic">Which limb does this belong to?</label>
+          <select id="topic" name="topic">
+            <option>Cosmic physics &amp; astronomy</option>
+            <option>Druidry, trees &amp; nature</option>
+            <option>Sacred geometry</option>
+            <option>Astrology</option>
+            <option>Neuroscience &amp; psychology</option>
+            <option>Biology &amp; life</option>
+            <option>God, the Law of One &amp; contact</option>
+            <option>Magic &amp; the wizard's craft</option>
+            <option>History, propaganda &amp; the shadow</option>
+            <option>Something that fits nowhere</option>
+          </select>
+        </div>
+        <div>
+          <label for="question">Your question</label>
+          <textarea id="question" name="question" required placeholder="Ask plainly. Ed would rather have the real question than the polite one."></textarea>
+        </div>
+        <div>
+          <label for="public">May we answer this publicly?</label>
+          <select id="public" name="public">
+            <option>Yes — use my name</option>
+            <option>Yes — but keep me anonymous</option>
+            <option>No — private reply only</option>
+          </select>
+        </div>
+        <button class="btn" type="submit">Send the Question</button>
+        <p class="form-note">This form posts to Formspree. Replace <code>your-form-id</code> in
+        <code>src/ask-ed.njk</code> with your own endpoint (Formspree, Basin, Netlify Forms or Tally all work),
+        or simply email <a href="mailto:{{ site.email }}">{{ site.email }}</a>.</p>
+      </form>
+    </div>
+
+    <div class="reveal">
+      <div class="frame mb-2">
+        <h2>How Ed Answers</h2>
+        <ul class="biblio">
+          <li>Every question is read. Most are answered within a fortnight.</li>
+          <li>The best are answered at length in the <a href="/podcast/">podcast mailbag</a>.</li>
+          <li>Ed will tell you plainly when he does not know — that is the most common answer, and the most useful.</li>
+          <li>Where evidence exists, you get the evidence. Where only tradition exists, you get told it is tradition.</li>
+        </ul>
+      </div>
+
+      <div class="frame caution">
+        <p><strong>Please read.</strong> EGregoRA is a study order, not a clinic. Ed cannot give medical,
+        psychiatric, legal or financial advice, and will not advise on taking any controlled substance. If you
+        are in crisis, please contact your local emergency service or a crisis line
+        (UK: Samaritans, 116 123, free, 24 hours) rather than waiting for a reply here.</p>
+      </div>
+
+      <div class="frame mt-2">
+        <h3>Questions Already in the Pile</h3>
+        <details class="scroll"><summary>Is astrology real?</summary>
+          <p>Real as a symbolic system with four millennia of continuous use and enormous cultural weight — yes,
+          demonstrably. Real as a physical force by which Saturn's position alters your week — no; every
+          controlled test of that claim has failed. Both halves of that sentence matter.</p></details>
+        <details class="scroll"><summary>Did the Nazis really practise occultism?</summary>
+          <p>Partly, and it has been wildly exaggerated. Himmler's Ahnenerbe genuinely funded pseudo-archaeology
+          and runic mysticism; Hitler was mostly contemptuous of it. The important lesson is not that occultism
+          caused fascism — it is that fascism will loot any symbolic system it can reach, and that symbols have
+          no immune system of their own. We supply the immune system.</p></details>
+        <details class="scroll"><summary>Does the Law of One hold up?</summary>
+          <p>As cosmology, it is untestable. As philosophy, its core — that consciousness is unitary and that free
+          will is sacred — sits in good company with Advaita Vedanta, Plotinus and Whitehead. Read it as a text, not
+          a transcript, and it becomes much more interesting.</p></details>
+      </div>
+    </div>
+  </div>
+</section>

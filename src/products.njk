@@ -1,0 +1,42 @@
+---
+layout: layouts/base.njk
+title: Products
+permalink: /products/
+description: The printed and physical instruments of the EGregoRA order — codex, charts, decks, journals and membership.
+---
+
+<section class="page-head">
+  <p class="kicker">The Workshop</p>
+  <h1>Products</h1>
+  <p class="lede muted">Instruments of the order — printed, turned, bound and posted.</p>
+</section>
+
+<section class="wrap">
+  <div class="grid three">
+    {% for p in products %}
+    <article class="frame card product reveal">
+      <figure><img src="{{ p.img }}" alt="{{ p.name }}" loading="lazy" width="800" height="600"></figure>
+      <p class="tag">{{ p.kind }}</p>
+      <h3>{{ p.name }}</h3>
+      <p>{{ p.desc }}</p>
+      <p class="price">{{ p.price }}</p>
+      <p><a class="btn" href="mailto:{{ site.email }}?subject=Order:%20{{ p.name | urlencode }}">Enquire / Order</a></p>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="wrap narrow">
+    <div class="upload-note">
+      <strong>For Ed — the shop.</strong> Items live in <code>src/_data/products.json</code>. To take real
+      payments without running a server, swap the <em>Enquire</em> link for a Stripe Payment Link, a Gumroad
+      button or a Shopify Buy Button — all three are a single URL and work on a static site. Product photography
+      goes in <code>src/assets/img/</code>.
+    </div>
+    <div class="frame mt-2">
+      <h3>Shipping &amp; Ethics</h3>
+      <p class="muted">Printed on FSC stock with vegetable inks; wooden items turned from windfall and
+      coppice timber. Nothing in this shop promises to heal, cure or protect you. They are beautiful objects
+      for thinking with, sold as exactly that.</p>
+    </div>
+  </div>
+</section>

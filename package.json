@@ -1,0 +1,29 @@
+{
+  "name": "egregora",
+  "version": "1.0.0",
+  "description": "EGregoRA — Life, Love, Magic",
+  "main": "index.js",
+  "scripts": {
+    "build": "eleventy",
+    "dev": "eleventy --serve --port 8080",
+    "clean": "rm -rf _site",
+    "lint": "html-validate \"_site/**/*.html\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dragonjimrankin-cmd/EGregoRA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dragonjimrankin-cmd/EGregoRA/issues"
+  },
+  "homepage": "https://github.com/dragonjimrankin-cmd/EGregoRA#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6",
+    "html-validate": "^11.16.2",
+    "luxon": "^3.7.2"
+  },
+  "type": "module"
+}
