@@ -1,0 +1,42 @@
+name: Probe OmniRoute
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/01a10807-egregora"]
+    paths:
+      - "scripts/omniroute-probe.mjs"
+      - ".github/workflows/omniroute-probe.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      OMNIROUTE_KEY: ${{ secrets.OMNIROUTE_KEY || 'ci_live_0d960c81a1ef1f468dba1af925ede18d68608a0c0bef14ca' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - name: Probe
+        continue-on-error: true
+        run: |
+          mkdir -p ci-logs
+          node scripts/omniroute-probe.mjs > ci-logs/omniroute-probe.log 2>&1
+          sed -i -E 's/ci_live_[A-Za-z0-9]+/ci_live_***REDACTED***/g' ci-logs/omniroute-probe.log
+          cat ci-logs/omniroute-probe.log
+      - name: Publish the probe log
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          B64=$(base64 -w0 ci-logs/omniroute-probe.log)
+          SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/ci-logs/omniroute-probe.log?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
+          if [ -n "$SHA" ]; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/ci-logs/omniroute-probe.log" \
+              -f message="ci: omniroute probe" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA"
+          else
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/ci-logs/omniroute-probe.log" \
+              -f message="ci: omniroute probe" -f content="$B64" -f branch="${GITHUB_REF_NAME}"
+          fi
