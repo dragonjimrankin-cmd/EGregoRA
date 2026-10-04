@@ -9,28 +9,57 @@ on:
       - "scripts/hatchable-deploy.mjs"
       - ".github/workflows/hatchable-deploy.yml"
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      # Accepts whichever name the repository secret was saved under.
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || secrets.JIM || secrets.HATCHABLE || secrets.HATCHABLE_API_KEY || secrets.TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
 
-      - name: Check token is present
+      - name: Run deploy (never fails the job; output is captured)
+        id: run
+        continue-on-error: true
         run: |
-          if [ -z "$HATCHABLE_TOKEN" ]; then
-            echo "::error::No Hatchable token found. Checked secrets: HATCHABLE_TOKEN, JIM, HATCHABLE, HATCHABLE_API_KEY, TOKEN."
-            echo "Add one at Settings → Secrets and variables → Actions (name it HATCHABLE_TOKEN)."
-            exit 1
+          set +e
+          mkdir -p ci-logs
+          {
+            echo "# Hatchable deploy — $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo
+            if [ -z "$HATCHABLE_TOKEN" ]; then
+              echo "NO TOKEN FOUND in secrets HATCHABLE_TOKEN / JIM / HATCHABLE / HATCHABLE_API_KEY / TOKEN"
+            else
+              echo "token present: ${#HATCHABLE_TOKEN} chars, prefix ${HATCHABLE_TOKEN:0:3}"
+            fi
+            echo
+            echo "## curl reachability"
+            curl -sS -o /dev/null -w "hatchable.com/mcp -> HTTP %{http_code}\n" --max-time 20 https://hatchable.com/mcp 2>&1
+            echo
+            echo "## tools/list"
+            node scripts/hatchable-deploy.mjs --tools 2>&1
+            echo "exit=$?"
+            echo
+            echo "## deploy"
+            node scripts/hatchable-deploy.mjs --name "EGregoRA" --slug egregora 2>&1
+            echo "exit=$?"
+          } > ci-logs/hatchable-deploy.log 2>&1
+          # Redact the token in case any tool echoes it back.
+          if [ -n "$HATCHABLE_TOKEN" ]; then
+            sed -i "s/${HATCHABLE_TOKEN}/***REDACTED***/g" ci-logs/hatchable-deploy.log
           fi
-          echo "Token found (${#HATCHABLE_TOKEN} chars, starts ${HATCHABLE_TOKEN:0:3})."
+          sed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/hatchable-deploy.log
+          tail -60 ci-logs/hatchable-deploy.log
 
-      - name: Show Hatchable tool surface
-        run: node scripts/hatchable-deploy.mjs --tools
-
-      - name: Create project and deploy
-        run: node scripts/hatchable-deploy.mjs --name "EGregoRA" --slug egregora
+      - name: Publish the log back to the branch
+        run: |
+          git config user.name "hatchable-ci"
+          git config user.email "ci@users.noreply.github.com"
+          git add ci-logs/hatchable-deploy.log
+          git commit -m "ci: hatchable deploy log [skip]" || exit 0
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"
