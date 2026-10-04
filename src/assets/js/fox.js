@@ -631,13 +631,13 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     rig.add(globe);
 
     // the iris, lying on the curve of the eye itself
-    const iris = eyeCap(0.2015, 1.02, M.iris);
+    const iris = eyeCap(0.2015, 0.84, M.iris);   // a little smaller, so the sclera shows
     iris.renderOrder = 2;
     globe.add(iris);
 
     // the pupil: black, dead centre, and on the surface so nothing can bury it
     const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000, toneMapped: false });
-    const pupil = eyeCap(0.2035, 0.52, pupilMat);
+    const pupil = eyeCap(0.2035, 0.44, pupilMat);
     pupil.scale.set(0.78, 1.0, 1);        // a broad vertical oval
     pupil.renderOrder = 3;
     globe.add(pupil);
