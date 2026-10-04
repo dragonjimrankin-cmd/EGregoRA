@@ -713,3 +713,67 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   border: 1px solid rgba(215, 176, 90, 0.4);
   border-radius: 3px;
 }
+
+/* ======================================================================
+   Floating scroll arrows — shown only when there is travel left that way
+   ====================================================================== */
+.scroll-rail {
+  position: fixed;
+  right: clamp(0.6rem, 2vw, 1.4rem);
+  bottom: clamp(0.9rem, 4vh, 2.2rem);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.scroll-rail[hidden] { display: none; }
+
+.scroll-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  padding: 0;
+  cursor: pointer;
+  color: var(--gold-bright, #f3ddaa);
+  border: 1px solid rgba(215, 176, 90, 0.45);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(243, 221, 156, 0.12), rgba(10, 8, 16, 0.86) 70%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 0 18px rgba(215, 176, 90, 0.08);
+  transition: transform 0.25s ease, border-color 0.25s ease,
+              background 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  animation: scroll-arrow-in 0.35s ease both;
+}
+.scroll-arrow[hidden] { display: none; }
+.scroll-arrow svg { width: 1.2rem; height: 1.2rem; }
+.scroll-arrow:hover,
+.scroll-arrow:focus-visible {
+  border-color: rgba(243, 221, 156, 0.9);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(243, 221, 156, 0.2), rgba(18, 14, 26, 0.92) 70%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 0 3px rgba(215, 176, 90, 0.14);
+  transform: translateY(-2px);
+}
+.scroll-arrow:active { transform: translateY(0) scale(0.95); }
+.scroll-arrow--up:hover svg { animation: nudge-up 0.7s ease infinite; }
+.scroll-arrow--down:hover svg { animation: nudge-down 0.7s ease infinite; }
+
+@keyframes scroll-arrow-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.9); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes nudge-up   { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes nudge-down { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-arrow,
+  .scroll-arrow--up:hover svg,
+  .scroll-arrow--down:hover svg { animation: none; transition: none; }
+}
+@media (max-width: 560px) {
+  .scroll-arrow { width: 2.5rem; height: 2.5rem; }
+  .scroll-arrow svg { width: 1.05rem; height: 1.05rem; }
+}

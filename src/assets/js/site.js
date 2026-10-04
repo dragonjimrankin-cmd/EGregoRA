@@ -278,3 +278,56 @@
   btn.addEventListener("blur", () => finish(false));
   document.addEventListener("visibilitychange", () => { if (document.hidden) finish(true); });
 })();
+
+/* ------------------------------------------------- Floating scroll arrows
+   A small rail of two arrows, fixed to the right edge. Each one appears only
+   when there is actually somewhere to go in that direction, so on a short
+   page neither is drawn, and at the foot of a long one only the up arrow is.
+   Hidden entirely for anyone who has asked for reduced motion to stay put —
+   no, in fact they still work, they simply jump instead of gliding. */
+(() => {
+  "use strict";
+  const rail = document.getElementById("scroll-rail");
+  const up = document.getElementById("scroll-top");
+  const down = document.getElementById("scroll-bottom");
+  if (!rail || !up || !down) return;
+
+  const SLACK = 24;           // px of travel below which there is nothing to do
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const behavior = reduce ? "auto" : "smooth";
+
+  const scroller = document.scrollingElement || document.documentElement;
+
+  const update = () => {
+    const y = window.scrollY || scroller.scrollTop || 0;
+    const max = Math.max(0, scroller.scrollHeight - window.innerHeight);
+    const canUp = y > SLACK;
+    const canDown = max - y > SLACK;
+
+    up.hidden = !canUp;
+    down.hidden = !canDown;
+    rail.hidden = !(canUp || canDown);
+    rail.setAttribute("aria-hidden", rail.hidden ? "true" : "false");
+  };
+
+  const go = (to) => window.scrollTo({ top: to, behavior });
+  up.addEventListener("click", () => go(0));
+  down.addEventListener("click", () =>
+    go(Math.max(0, scroller.scrollHeight - window.innerHeight)));
+
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { update(); ticking = false; });
+  };
+
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  addEventListener("load", update);
+  // the page grows as reveal animations and the fox canvas settle in
+  if (window.ResizeObserver) {
+    new ResizeObserver(onScroll).observe(document.body);
+  }
+  update();
+})();
