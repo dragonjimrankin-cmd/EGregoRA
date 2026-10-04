@@ -204,13 +204,14 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     mouth: new THREE.MeshStandardMaterial({ color: 0x1b0c0c, roughness: 0.6 }),
     iris: new THREE.MeshStandardMaterial({
       map: irisMap, roughness: 0.26, metalness: 0.05,
-      emissiveMap: irisMap, emissive: 0x9fc8ff, emissiveIntensity: 0.12
+      emissiveMap: irisMap, emissive: 0x7fb0ea, emissiveIntensity: 0.05
     }),
     sclera: new THREE.MeshStandardMaterial({ color: 0xcdc4b6, roughness: 0.34 }),
     cornea: new THREE.MeshPhysicalMaterial({
-      color: 0xffffff, roughness: 0.02, metalness: 0,
-      transmission: 0.96, thickness: 0.22, ior: 1.38,
-      clearcoat: 1, clearcoatRoughness: 0.02, transparent: true
+      color: 0xffffff, roughness: 0.03, metalness: 0,
+      transparent: true, opacity: 0.12,
+      clearcoat: 1, clearcoatRoughness: 0.02,
+      depthWrite: false, ior: 1.38
     }),
     tooth: new THREE.MeshPhysicalMaterial({ color: 0xf6efe0, roughness: 0.3, clearcoat: 0.6 }),
     whisker: new THREE.MeshStandardMaterial({
@@ -289,8 +290,8 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   scene.fog = new THREE.Fog(0x0a0810, 7.5, 16);
 
   const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 100);
-  camera.position.set(0.1, 0.1, 7.0);
-  camera.lookAt(0, -0.08, 0);
+  camera.position.set(0.1, 0.22, 7.0);
+  camera.lookAt(0, 0.1, 0);
 
   let renderer;
   try {
@@ -365,7 +366,8 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
   /* ======================================================== the fox */
   const fox = new THREE.Group();
-  fox.position.y = -0.25;
+  const FOX_Y = 0.16;          // sits high enough that the jaw never leaves frame
+  fox.position.y = FOX_Y;
   scene.add(fox);
 
   /* ---------- body / chest bust -------------------------------------- */
@@ -468,8 +470,8 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
      top, with a brow ridge, zygomatic flare and an occipital taper. */
   const skullGeo = sculpt(new THREE.SphereGeometry(1.0, 64, 48), (v) => {
     const fwd = smoothstep(0.08, 1.0, v.z);
-    v.z += fwd * fwd * 1.18;
-    v.x *= 1 - 0.68 * fwd;
+    v.z += fwd * fwd * 1.24;
+    v.x *= 1 - 0.80 * fwd;
     v.y = v.y * (1 - 0.54 * fwd) - fwd * 0.2;
     // flatten the crown and dish the forehead slightly
     if (v.y > 0.55) v.y = 0.55 + (v.y - 0.55) * 0.52;
@@ -496,9 +498,9 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   // cream muzzle wrap and chin
   const snoutGeo = sculpt(new THREE.SphereGeometry(0.52, 36, 26), (v) => {
     const fwd = smoothstep(-0.2, 0.52, v.z);
-    v.z += fwd * 0.74;
-    v.x *= 1 - 0.52 * fwd;
-    v.y *= 1 - 0.44 * fwd;
+    v.z += fwd * 0.82;
+    v.x *= 1 - 0.70 * fwd;
+    v.y *= 1 - 0.56 * fwd;
     if (v.y < -0.1) v.y = -0.1 + (v.y + 0.1) * 0.58;
   });
   const snout = new THREE.Mesh(snoutGeo, M.cream);
@@ -512,12 +514,12 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     sculpt(new THREE.SphereGeometry(0.3, 24, 18), (v) => { v.z *= 2.5; v.y *= 0.4; v.x *= 0.7; }),
     M.furDeep
   );
-  bridge.position.set(0, 0.09, 1.14);
+  bridge.position.set(0, 0.09, 1.18);
   head.add(bridge);
 
   // nose leather, with a philtrum groove and nostril slits
-  const noseGeo = sculpt(new THREE.SphereGeometry(0.21, 36, 28), (v) => {
-    v.y *= 0.76; v.z *= 0.82;
+  const noseGeo = sculpt(new THREE.SphereGeometry(0.195, 36, 28), (v) => {
+    v.y *= 0.74; v.z *= 0.8; v.x *= 0.92;
     // flatten the front plane
     if (v.z > 0.08) v.z = 0.08 + (v.z - 0.08) * 0.55;
     // nostril dimples
@@ -527,7 +529,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     if (v.y < -0.04 && Math.abs(v.x) < 0.035) v.z -= 0.03;
   });
   const nose = new THREE.Mesh(noseGeo, M.nose);
-  nose.position.set(0, -0.2, 2.0);
+  nose.position.set(0, -0.2, 2.06);
   nose.castShadow = true;
   head.add(nose);
 
@@ -537,10 +539,10 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   head.add(jaw);
 
   const jawGeo = sculpt(new THREE.SphereGeometry(0.46, 36, 26), (v) => {
-    const fwd = smoothstep(-0.2, 0.46, v.z);
-    v.z += fwd * 1.02;
-    v.x *= 1 - 0.57 * fwd;
-    v.y *= 0.56 * (1 - 0.35 * fwd);
+    const fwd = smoothstep(-0.25, 0.46, v.z);
+    v.z += fwd * 1.14;
+    v.x *= 1 - 0.80 * fwd;            // the lower jaw tapers to a point
+    v.y *= 0.52 * (1 - 0.5 * fwd);
     if (v.y > 0.0) v.y *= 0.32;
   });
   const lowerJaw = new THREE.Mesh(jawGeo, M.cream);
@@ -620,16 +622,20 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
     // a true black pupil, dead centre of the iris
     const pupil = new THREE.Mesh(
-      new THREE.CircleGeometry(0.1, 48),
-      new THREE.MeshBasicMaterial({ color: 0x000000 })
+      new THREE.CircleGeometry(0.108, 48),
+      new THREE.MeshBasicMaterial({
+        color: 0x000000, toneMapped: false, depthWrite: false
+      })
     );
-    pupil.scale.set(0.74, 1.04, 1);      // a soft vertical oval — a fox, not a dog
-    pupil.position.set(0, 0, 0.126);
+    pupil.scale.set(0.92, 1.12, 1);      // a broad vertical oval, dead centre
+    pupil.position.set(0, 0, 0.1435);
+    pupil.renderOrder = 4;
     globe.add(pupil);
 
     // cornea: a clear bulge over the iris, which is where realism lives
-    const cornea = new THREE.Mesh(new THREE.SphereGeometry(0.202, 32, 24), M.cornea);
+    const cornea = new THREE.Mesh(new THREE.SphereGeometry(0.204, 32, 24), M.cornea);
     cornea.scale.set(1, 1, 1.08);
+    cornea.renderOrder = 6;
     globe.add(cornea);
 
     // two catchlights, one key, one rim
@@ -637,13 +643,15 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       new THREE.SphereGeometry(0.031, 10, 10),
       new THREE.MeshBasicMaterial({ color: 0xfffaf0 })
     );
-    glint.position.set(-0.07 * s, 0.075, 0.175);
+    glint.position.set(-0.088 * s, 0.085, 0.178);
+    glint.renderOrder = 5;
     globe.add(glint);
     const glint2 = new THREE.Mesh(
       new THREE.SphereGeometry(0.016, 8, 8),
       new THREE.MeshBasicMaterial({ color: 0xcfdcff, transparent: true, opacity: 0.8 })
     );
-    glint2.position.set(0.085 * s, -0.05, 0.172);
+    glint2.position.set(0.1 * s, -0.065, 0.172);
+    glint2.renderOrder = 5;
     globe.add(glint2);
 
     /* ---- eyelids ----------------------------------------------------
@@ -884,7 +892,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       const rate = speaking ? 1.7 : 1.05;
       const breath = Math.sin(t * rate);
       chest.scale.set(1 + breath * 0.02, 1 + breath * 0.013, 1 + breath * 0.024);
-      fox.position.y = -0.25 + Math.sin(t * 0.95) * 0.035;
+      fox.position.y = FOX_Y + Math.sin(t * 0.95) * 0.035;
       neck.rotation.z = Math.sin(t * 0.47) * 0.03;
 
       tail.rotation.z = 0.92 + Math.sin(t * 0.8) * 0.15;
@@ -925,7 +933,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       e.globe.rotation.y = e.restY - head.rotation.y * 0.55 - tx * 0.18;
       e.globe.rotation.x = -head.rotation.x * 0.45 + ty * 0.14;
       // the pupil widens when he is listening and in the lower light
-      const target = listening ? 0.84 : 0.62;
+      const target = listening ? 1.1 : 0.92;
       e.pupil.scale.x += (target - e.pupil.scale.x) * 0.05;
     });
 
