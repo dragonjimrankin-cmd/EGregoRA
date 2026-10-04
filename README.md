@@ -1,4 +1,4 @@
-# EGregoRA — Life, Love, Magic, War, Nature, Existence, Consciousness, ONE
+# EGregoRA — Life, Love, Magic
 
 An ornate static website for **EGregoRA**, the order of enquiry founded by **Edward Gregory**:
 cosmic physics, natural philosophy, astrology, nature, druids, trees, sacred geometry, magic,
@@ -80,4 +80,4 @@ Cloudflare Pages and Vercel work identically — build `npm run build`, publish 
 
 ---
 
-© EGregoRA · *Life, Love, Magic, War, Nature, Existence, Consciousness, ONE* · Founded by Edward Gregory, co-founded by Jim Rankin
+© EGregoRA · *Life, Love, Magic* · Founded by Edward Gregory

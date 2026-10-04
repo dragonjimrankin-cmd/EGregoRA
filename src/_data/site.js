@@ -1,6 +1,6 @@
 export default {
   name: "EGregoRA",
-  tagline: "Life, Love, Magic, War, Nature, Existence, Consciousness, ONE",
+  tagline: "Life, Love, Magic",
   motto: "An Order of Enquiry into Cosmos, Consciousness & the Living Earth",
   founder: "Edward Gregory",
   cofounder: "Jim Rankin",
