@@ -69,6 +69,18 @@
       <path d="M100 114 V160 M100 160 L82 182 M100 160 L118 182 M82 182 L70 196 M118 182 L132 196"/>
       <path d="M86 100 H34 M34 100 L14 86 M34 100 L14 116"/>
       <path d="M114 100 H166 M166 100 L186 86 M166 100 L186 116"/>
+      {% elif slug == "extraterrestrials" %}
+      {# orbital rings, a distant system, and a radiating signal #}
+      <circle cx="100" cy="100" r="6"/>
+      <ellipse cx="100" cy="100" rx="40" ry="14"/>
+      <ellipse cx="100" cy="100" rx="64" ry="23"/>
+      <ellipse cx="100" cy="100" rx="88" ry="32"/>
+      <ellipse cx="100" cy="100" rx="40" ry="14" transform="rotate(60 100 100)"/>
+      <ellipse cx="100" cy="100" rx="64" ry="23" transform="rotate(60 100 100)"/>
+      <ellipse cx="100" cy="100" rx="88" ry="32" transform="rotate(120 100 100)"/>
+      <circle cx="140" cy="100" r="2.5"/><circle cx="36" cy="100" r="2"/>
+      <circle cx="100" cy="100" r="30" stroke-dasharray="1 6"/>
+      <circle cx="100" cy="100" r="50" stroke-dasharray="1 8"/>
       {% elif slug == "research" or slug == "videos" %}
         {# vesica lattice #}
         {% for i in range(0, 5) %}

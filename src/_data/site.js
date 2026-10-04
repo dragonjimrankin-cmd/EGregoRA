@@ -16,6 +16,7 @@ export default {
     { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },
     { url: "/artwork/", label: "Artwork", glyph: "eye" },
     { url: "/neurobiology/", label: "Neurobiology", glyph: "star" },
+    { url: "/extraterrestrials/", label: "Extraterrestrials", glyph: "eye" },
     { url: "/music/", label: "Music", glyph: "spiral" },
     { url: "/products/", label: "Products", glyph: "seed" },
     { url: "/research/", label: "Further Research", glyph: "tree" }
