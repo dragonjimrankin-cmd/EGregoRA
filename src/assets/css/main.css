@@ -338,3 +338,5 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 .mb-2 { margin-bottom: 1.4rem; }
 .biblio .sci { color: var(--verdant); } .biblio .hist { color: var(--gold); }
 .biblio .spec { color: var(--amethyst); } .biblio .myth { color: var(--rose); }
+.caution .myth { color: var(--rose); }
+.caution p + p { margin-top: 1rem; }
