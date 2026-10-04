@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-04T21:16:56Z
+# Hatchable deploy — 2026-10-04T21:23:07Z
 
 token present: 43 chars, prefix hb_
 
@@ -21,7 +21,7 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/img/product-solids.jpg (153 KB) via url import
   ✓ public/assets/img/product-wheel.jpg (215 KB) via url import
 ▸ dry_run_deploy
-  {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":23,"api_functions":1,"pages":0,"migrations":1,"auth_enabled":false,"next_version":7}}
+  {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":23,"api_functions":1,"pages":0,"migrations":1,"auth_enabled":false,"next_version":8}}
 ▸ deploy
 
 ✔ Deployed.
@@ -29,20 +29,20 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 7,
+  "version": 8,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v6.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v7.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v7.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v8.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
   "files_deployed": 26,
   "functions_deployed": 1,
   "warnings": [],
   "visibility": "personal",
-  "preview_url": "https://egregora.hatchable.site/?_preview=eyJzbHVnIjoiZWdyZWdvcmEiLCJleHAiOjE3OTExNTA0MjAsInJvbGUiOiJwdWJsaWMifQ.9d37df18d87d09c93e47b9845f21d70918706d6054812751c90cf8579ad0a6e2"
+  "preview_url": "https://egregora.hatchable.site/?_preview=eyJzbHVnIjoiZWdyZWdvcmEiLCJleHAiOjE3OTExNTA3OTAsInJvbGUiOiJwdWJsaWMifQ.19073d1b7b6ef245cdea535fe977d8c58ceaaa144162a1ae7c9ea3d5497bfcf9"
 }
 
    https://egregora.hatchable.site
