@@ -54,6 +54,23 @@
         <line x1="100" y1="48" x2="145" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.45"/>
         <line x1="100" y1="48" x2="55" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.45"/>
         {% endfor %}
+      {% elif slug == "druids" %}
+      {# grove: a ring of trunks around a nemeton #}
+      <circle cx="100" cy="100" r="86" stroke-dasharray="3 7"/>
+      <circle cx="100" cy="100" r="54"/>
+      <path d="M100 150 V96 M100 112 L84 96 M100 112 L116 96 M100 102 L90 90 M100 102 L110 90"/>
+      <circle cx="100" cy="78" r="26" stroke-dasharray="2 5"/>
+      <path d="M30 140 V110 M30 122 L20 112 M30 122 L40 112"/>
+      <path d="M170 140 V110 M170 122 L160 112 M170 122 L180 112"/>
+      <path d="M58 60 V36 M142 60 V36"/>
+      {% elif slug == "consciousness" %}
+      {# a microtubule lattice unrolled, with a collapsing superposition #}
+      <path d="M62 10 V190 M86 10 V190 M114 10 V190 M138 10 V190"/>
+      <path d="M40 40 H160 M40 70 H160 M40 100 H160 M40 130 H160 M40 160 H160" opacity="0.6"/>
+      <path d="M40 40 L160 130 M40 70 L160 160 M40 100 L160 190 M40 10 L160 100" opacity="0.4"/>
+      <circle cx="100" cy="100" r="22"/>
+      <circle cx="100" cy="100" r="34" stroke-dasharray="1 5"/>
+      <circle cx="100" cy="100" r="7"/>
       {% elif slug == "astrology" %}
       {# zodiac wheel: twelve houses and an aspect web #}
       <circle cx="100" cy="100" r="88"/>

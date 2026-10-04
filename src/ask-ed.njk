@@ -14,6 +14,22 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
 <section class="wrap narrow reveal" id="oracle">
   <div class="frame">
     <p class="kicker">The Oracle</p>
+
+    <div class="fox-panel">
+      <div class="fox-stage" id="fox-stage" role="img"
+           aria-label="A three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
+      <div class="fox-side">
+        <h3 class="fox-name">The Familiar</h3>
+        <p class="muted small">A fox keeps the order's answers. Ask below and he will read the reply aloud in
+        his own voice; the words are the order's written ones, unchanged.</p>
+        <p class="fox-controls">
+          <button class="btn btn--ghost" type="button" id="fox-speak">Speak</button>
+          <button class="btn btn--ghost" type="button" id="fox-stop">Silence him</button>
+        </p>
+        <p class="muted xsmall" id="fox-status">Waking the familiar…</p>
+      </div>
+    </div>
+
     <h2>Ask now, and get an answer from the order</h2>
     <p class="muted small">The order keeps a body of written answers — composed for EGregoRA, graded by the
     house rules on evidence, and served exactly as written. Ask something they cover and you get one straight
@@ -147,3 +163,5 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
     </div>
   </div>
 </section>
+
+<script type="module" src="/assets/js/fox.js"></script>

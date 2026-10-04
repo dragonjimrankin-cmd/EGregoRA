@@ -121,6 +121,8 @@
               ? '<p class="oracle-src">Composed just now in the order\u2019s voice</p>'
               : "";
         show(paragraphs(data.answer) + note, "");
+        if (window.EGFox && window.EGFox.available) window.EGFox.speak(data.answer);
+        else window.__EG_PENDING_SPEECH__ = data.answer;
       }
     } catch {
       show("<p>No answer could be fetched — this page may be running without its backend. The written form below still reaches Ed.</p>", "is-error");

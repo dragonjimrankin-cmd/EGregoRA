@@ -13,10 +13,12 @@ export default {
     { url: "/videos/", label: "Videos", glyph: "eye" },
     { url: "/ask-ed/", label: "Ask Ed", glyph: "star" },
     { url: "/infographics/", label: "Infographics", glyph: "metatron" },
+    { url: "/druids/", label: "Druids", glyph: "tree" },
     { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },
     { url: "/astrology/", label: "Astrology", glyph: "star" },
     { url: "/artwork/", label: "Artwork", glyph: "eye" },
     { url: "/neurobiology/", label: "Neurobiology", glyph: "star" },
+    { url: "/consciousness/", label: "Consciousness", glyph: "metatron" },
     { url: "/extraterrestrials/", label: "Extraterrestrials", glyph: "eye" },
     { url: "/music/", label: "Sound & Music", glyph: "spiral" },
     { url: "/products/", label: "Products", glyph: "seed" }
