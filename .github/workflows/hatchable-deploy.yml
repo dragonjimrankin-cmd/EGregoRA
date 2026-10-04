@@ -12,26 +12,25 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      # Accepts whichever name the repository secret was saved under.
+      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || secrets.JIM || secrets.HATCHABLE || secrets.HATCHABLE_API_KEY || secrets.TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
+
       - name: Check token is present
-        env:
-          HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
         run: |
           if [ -z "$HATCHABLE_TOKEN" ]; then
-            echo "::error::Repository secret HATCHABLE_TOKEN is not set."
-            echo "Add it at Settings → Secrets and variables → Actions → New repository secret."
+            echo "::error::No Hatchable token found. Checked secrets: HATCHABLE_TOKEN, JIM, HATCHABLE, HATCHABLE_API_KEY, TOKEN."
+            echo "Add one at Settings → Secrets and variables → Actions (name it HATCHABLE_TOKEN)."
             exit 1
           fi
-          echo "Token present (${#HATCHABLE_TOKEN} chars)."
+          echo "Token found (${#HATCHABLE_TOKEN} chars, starts ${HATCHABLE_TOKEN:0:3})."
 
       - name: Show Hatchable tool surface
-        env:
-          HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
         run: node scripts/hatchable-deploy.mjs --tools
+
       - name: Create project and deploy
-        env:
-          HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
         run: node scripts/hatchable-deploy.mjs --name "EGregoRA" --slug egregora
