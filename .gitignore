@@ -4,3 +4,4 @@ _site/
 *.log
 egregora-site.zip
 egregora-hatchable.zip
+ci-logs/

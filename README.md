@@ -13,7 +13,7 @@ why it will still work in ten years.
 
 | Page | Path | Purpose |
 | --- | --- | --- |
-| Introduction | `/` | The charter, the nine limbs of enquiry, the founder |
+| Introduction | `/` | The charter, the ten limbs of enquiry, the founders |
 | Podcast | `/podcast/` | Episode list + RSS feed at `/feed.xml` |
 | Videos | `/videos/` | Embedded films with ornate placeholders |
 | Ask Ed a Question | `/ask-ed/` | Question form + the already-answered pile |
