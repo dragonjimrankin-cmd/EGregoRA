@@ -10,6 +10,8 @@
     toggle.addEventListener("click", () => {
       const open = nav.classList.toggle("open");
       toggle.setAttribute("aria-expanded", String(open));
+      const label = toggle.querySelector("em");
+      if (label) label.textContent = open ? "Close" : "Menu";
     });
   }
 
