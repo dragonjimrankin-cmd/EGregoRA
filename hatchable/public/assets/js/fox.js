@@ -599,11 +599,11 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
     // vertical slit pupil — a fox, not a dog
     const pupil = new THREE.Mesh(
-      new THREE.CircleGeometry(0.1, 32),
-      new THREE.MeshBasicMaterial({ color: 0x080506 })
+      new THREE.CircleGeometry(0.132, 40),
+      new THREE.MeshBasicMaterial({ color: 0x000000 })
     );
-    pupil.scale.set(0.3, 1.0, 1);
-    pupil.position.z = 0.155;
+    pupil.scale.set(0.62, 1.06, 1);
+    pupil.position.z = 0.1555;
     globe.add(pupil);
 
     // cornea: a clear bulge over the iris, which is where realism lives
@@ -649,7 +649,14 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     liner.position.z = 0.135;
     rig.add(liner);
 
-    eyeRigs.push({ rig, globe, lid, lowLid, iris, pupil, side: s });
+    /* The sockets sit on the sides of a wedge skull, so each globe is
+       counter-rotated back towards the viewer and then toed in very slightly,
+       which is what convergence on a near object actually looks like. He
+       therefore meets your eye rather than staring past your shoulder. */
+    const restY = -rig.rotation.y - 0.085 * s;
+    globe.rotation.y = restY;
+
+    eyeRigs.push({ rig, globe, lid, lowLid, iris, pupil, side: s, restY });
   });
 
   // brow tufts, which give him an expression
@@ -869,17 +876,19 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     headTilt += ((listening ? 0.16 : 0) - headTilt) * 0.04;
 
     // gaze: head, neck and eyes move on different lags, as real heads do
-    const tx = pointer.active ? pointer.x * 0.36 : Math.sin(t * 0.31) * 0.12;
-    const ty = pointer.active ? pointer.y * 0.22 : Math.cos(t * 0.24) * 0.07;
+    const tx = pointer.active ? pointer.x * 0.3 : Math.sin(t * 0.31) * 0.07;
+    const ty = pointer.active ? pointer.y * 0.2 : Math.cos(t * 0.24) * 0.045;
     head.rotation.y += (tx - head.rotation.y) * 0.055;
     head.rotation.x += (ty * 0.55 - head.rotation.x) * 0.055;
     head.rotation.z += (headTilt - head.rotation.z) * 0.06;
     neck.rotation.y += (tx * 0.35 - neck.rotation.y) * 0.03;
     eyeRigs.forEach((e) => {
-      e.globe.rotation.y = -tx * 0.4;
-      e.globe.rotation.x = ty * 0.3;
-      // the pupil narrows a little in the key light and widens when he listens
-      const target = listening ? 0.42 : 0.3;
+      /* The eyes counter-rotate against the head, so that wherever the skull
+         turns the gaze stays on the viewer — the trick portrait painters use. */
+      e.globe.rotation.y = e.restY - head.rotation.y * 0.55 - tx * 0.18;
+      e.globe.rotation.x = -head.rotation.x * 0.45 + ty * 0.14;
+      // the pupil widens when he is listening and in the lower light
+      const target = listening ? 0.84 : 0.62;
       e.pupil.scale.x += (target - e.pupil.scale.x) * 0.05;
     });
 
