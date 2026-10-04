@@ -33,3 +33,26 @@ npm run build          # Eleventy → _site/
 rm -rf hatchable/public && mkdir -p hatchable/public && cp -r _site/* hatchable/public/
 npm run zip:hatchable  # → egregora-hatchable.zip
 ```
+
+## Automated deploy (MCP)
+
+From the repository root, with network access to hatchable.com:
+
+```bash
+export HATCHABLE_TOKEN=hb_…            # console → Settings → API keys
+npm run deploy:hatchable               # rebuild bundle + create project + deploy
+```
+
+Useful flags:
+
+```bash
+node scripts/hatchable-deploy.mjs --tools              # print the live tool surface
+node scripts/hatchable-deploy.mjs --dry-run            # validate, ship nothing
+node scripts/hatchable-deploy.mjs --project proj_xxx   # redeploy an existing project
+node scripts/hatchable-deploy.mjs --name "EGregoRA" --slug egregora
+```
+
+The script speaks the Streamable HTTP MCP transport, probes each tool's own schema for its
+argument names, sends text files through `write_files` in batches of 20, pushes the six product
+JPEGs through `upload_file` as base64, runs `dry_run_deploy` and refuses to ship if the validator
+reports blockers. The token is read from the environment and never written to disk.

@@ -9,7 +9,8 @@
     "clean": "rm -rf _site",
     "lint": "html-validate \"_site/**/*.html\"",
     "build:hatchable": "npm run build && rm -rf hatchable/public && mkdir -p hatchable/public && cp -r _site/* hatchable/public/",
-    "zip:hatchable": "npm run build:hatchable && rm -f egregora-hatchable.zip && cd hatchable && zip -qr ../egregora-hatchable.zip . && cd .."
+    "zip:hatchable": "npm run build:hatchable && rm -f egregora-hatchable.zip && cd hatchable && zip -qr ../egregora-hatchable.zip . && cd ..",
+    "deploy:hatchable": "npm run build:hatchable && node scripts/hatchable-deploy.mjs"
   },
   "repository": {
     "type": "git",
