@@ -111,7 +111,14 @@
       if (!res.ok || !data.answer) {
         show(`<p>${esc(data.error || "The oracle is silent just now. The written form below still reaches Ed.")}</p>`, "is-error");
       } else {
-        show(paragraphs(data.answer), "");
+        const note =
+          data.source === "written"
+            ? '<p class="oracle-src">From the order\u2019s written answers' +
+              (data.matched ? " \u00b7 " + esc(data.matched) : "") + "</p>"
+            : data.source === "model"
+              ? '<p class="oracle-src">Composed just now in the order\u2019s voice</p>'
+              : "";
+        show(paragraphs(data.answer) + note, "");
       }
     } catch {
       show("<p>No answer could be fetched — this page may be running without its backend. The written form below still reaches Ed.</p>", "is-error");

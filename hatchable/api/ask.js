@@ -7,6 +7,7 @@
  * read the real mailbag and answer the best ones properly on the podcast.
  */
 import { ai, db } from 'hatchable';
+import { bestMatch, nearest } from '../lib/oracle-corpus.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -71,6 +72,15 @@ export default async function (req, res) {
     return res.status(400).json({ error: 'That question is longer than the oracle will read. Trim it to 2000 characters.' });
   }
 
+  // 1. The order's own written answers come first. These were composed for
+  //    EGregoRA, graded by the house rules, and need no model key to serve.
+  const match = bestMatch(question, limb);
+  if (match.entry && match.score >= 0.5) {
+    const answer = match.entry.a;
+    await log(name, limb, question, answer, 'written');
+    return res.json({ answer, source: 'written', matched: match.entry.q });
+  }
+
   let answer;
   try {
     const result = await ai.generateText({
@@ -90,10 +100,15 @@ export default async function (req, res) {
   } catch (err) {
     const setup = err && err.code === 'SetupRequired';
     console.error('ask: ai.generateText failed', err && err.message);
-    return res.status(503).json({
-      error: setup
-        ? 'The oracle has no model key yet. The owner needs to add one on the project Setup page.'
-        : 'The oracle is silent just now — the model could not be reached. Your question can still be sent to Ed directly using the form below.'
+    const suggestions = nearest(question, 3);
+    return res.status(200).json({
+      answer:
+        'The order has no written answer close enough to that question, and no model is configured to compose a fresh one.\n\n' +
+        'Questions it can answer today include:\n\n' +
+        suggestions.map((q) => '— ' + q).join('\n') +
+        '\n\nFor anything else, the written form below reaches Ed himself, and the best questions are answered at length in the podcast mailbag.',
+      source: 'fallback',
+      setup_required: Boolean(setup)
     });
   }
 
@@ -101,15 +116,18 @@ export default async function (req, res) {
     return res.status(503).json({ error: 'The oracle returned nothing. Try rephrasing the question.' });
   }
 
+  await log(name, limb, question, answer, 'model');
+  res.json({ answer, source: 'model' });
+}
+
+/** Logging must never cost the asker their answer. */
+async function log(name, limb, question, answer, source) {
   try {
     await db.query(
-      'INSERT INTO questions (asker_name, limb, question, answer) VALUES ($1, $2, $3, $4)',
-      [name || null, limb || null, question, answer]
+      'INSERT INTO questions (asker_name, limb, question, answer, source) VALUES ($1, $2, $3, $4, $5)',
+      [name || null, limb || null, question, answer, source]
     );
   } catch (err) {
-    // Logging must never cost the asker their answer.
     console.error('ask: could not log question', err && err.message);
   }
-
-  res.json({ answer });
 }
