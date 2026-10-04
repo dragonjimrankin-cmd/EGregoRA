@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wizardry &amp; Rituals · EGregoRA</title>
+<meta name="description" content="Limb IX — the wizard&#39;s craft and the anatomy of ritual. The circle and its quarters, the implements, the structure of a rite, what ritual demonstrably does to a nervous system and a group, and how to build one you would not be embarrassed to explain.">
+<meta property="og:title" content="Wizardry &amp; Rituals · EGregoRA">
+<meta property="og:description" content="Limb IX — the wizard&#39;s craft and the anatomy of ritual. The circle and its quarters, the implements, the structure of a rite, what ritual demonstrably does to a nervous system and a group, and how to build one you would not be embarrassed to explain.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/img/sigil.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body data-page="wizardry">
+<canvas id="starfield" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+
+
+
+<div class="geo" aria-hidden="true">
+
+  
+  <svg class="geo-layer geo-1" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.35">
+      <circle cx="100" cy="100" r="98"/>
+      <circle cx="100" cy="100" r="78"/>
+      <circle cx="100" cy="100" r="46"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(0 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(15 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(30 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(45 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(60 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(75 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(90 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(105 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(120 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(135 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(150 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(165 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(180 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(195 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(210 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(225 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(240 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(255 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(270 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(285 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(300 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(315 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(330 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(345 100 100)" opacity="0.5"/>
+      
+      <polygon points="100,12 176,56 176,144 100,188 24,144 24,56"/>
+      <polygon points="100,22 168,61 168,139 100,178 32,139 32,61" opacity="0.6"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-2" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.4">
+      <circle cx="100" cy="100" r="40"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(0 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(60 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(120 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(180 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(240 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(300 100 100)"/>
+      
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(0 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(30 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(60 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(90 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(120 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(150 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(180 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(210 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(240 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(270 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(300 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(330 100 100)" opacity="0.35"/>
+      
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-3" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.45">
+      
+        
+        <circle cx="100" cy="100" r="92"/>
+        <circle cx="100" cy="100" r="84" stroke-dasharray="2 6"/>
+        <circle cx="100" cy="100" r="22"/>
+        <polygon points="100,16 174,170 10,72 190,72 26,170" opacity="0.7"/>
+        <line x1="100" y1="8" x2="100" y2="192" opacity="0.4"/>
+        <line x1="8" y1="100" x2="192" y2="100" opacity="0.4"/>
+        
+        <circle cx="100" cy="14" r="7" transform="rotate(0 100 100)"/>
+        
+        <circle cx="100" cy="14" r="7" transform="rotate(90 100 100)"/>
+        
+        <circle cx="100" cy="14" r="7" transform="rotate(180 100 100)"/>
+        
+        <circle cx="100" cy="14" r="7" transform="rotate(270 100 100)"/>
+        
+      
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-4" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="20"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(0 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(0 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(60 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(60 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(120 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(120 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(180 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(180 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(240 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(240 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(300 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(300 100 100)" opacity="0.7"/>
+      
+      <path d="M100 20 L169 60 L169 140 L100 180 L31 140 L31 60 Z"/>
+      <path d="M100 20 L100 180 M31 60 L169 140 M169 60 L31 140 M31 60 L169 60 M31 140 L169 140"/>
+      <path d="M100 20 L31 140 M100 20 L169 140 M100 180 L31 60 M100 180 L169 60" opacity="0.55"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-5" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.55">
+      <circle cx="100" cy="100" r="92"/>
+      <circle cx="100" cy="100" r="74"/>
+      <polygon points="100,12 173,159 11,67 189,67 27,159"/>
+      <polygon points="100,26 170,77 143,159 57,159 30,77" opacity="0.45"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-6" viewBox="0 0 320 120">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      
+      <circle cx="20" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="56" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="92" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="128" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="164" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="200" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="236" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="272" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="308" cy="60" r="36" opacity="0.7"/>
+      
+      <line x1="0" y1="60" x2="320" y2="60" opacity="0.4"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-7" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <path d="M100 100 m0 0 a5 5 0 1 1 5 -5 a13 13 0 1 1 -18 13 a34 34 0 1 1 47 -34 a55 55 0 1 1 -76 55 a89 89 0 1 1 123 -89"/>
+      <rect x="11" y="11" width="178" height="110"/>
+      <rect x="79" y="11" width="110" height="110" opacity="0.6"/>
+      <rect x="79" y="11" width="68" height="68" opacity="0.45"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-8" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="88"/>
+      
+      <polygon points="100,20 180,150 20,150"/>
+      <polygon points="100,180 180,50 20,50" opacity="0.7"/>
+      
+      <polygon points="100,32 166,142 34,142"/>
+      <polygon points="100,168 166,58 34,58" opacity="0.7"/>
+      
+      <polygon points="100,44 152,134 48,134"/>
+      <polygon points="100,156 152,66 48,66" opacity="0.7"/>
+      
+      <polygon points="100,56 138,126 62,126"/>
+      <polygon points="100,144 138,74 62,74" opacity="0.7"/>
+      
+    </g>
+  </svg>
+
+</div>
+
+
+<a class="skip" href="#main">Skip to the work</a>
+
+<header class="site-head">
+  <div class="rule rule--top" aria-hidden="true"></div>
+  <div class="brand-row">
+    <a class="brand" href="/">
+      <span class="brand-sigil"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,29 M50,92 86,29"/></g></svg></span>
+      <span class="brand-text">
+        <span class="brand-name">EGregoRA</span>
+        <span class="brand-tag">Life, Love, Magic</span>
+      </span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+      <span></span><span></span><span></span>
+      <em>Menu</em>
+    </button>
+  </div>
+  <nav id="primary-nav" class="site-nav" aria-label="Primary">
+    <ul>
+      
+      <li>
+        <a href="/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></i>
+          <span>Introduction</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/podcast/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Podcasts</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/videos/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></i>
+          <span>Videos</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/ask-ed/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Ask Ed</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/infographics/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,29 M50,92 86,29"/></g></svg></i>
+          <span>Infographics</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/druids/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M50 95 V52"/><path d="M50 62 L32 46 M50 62 L68 46 M50 48 L38 34 M50 48 L62 34 M50 38 L44 28 M50 38 L56 28"/><circle cx="50" cy="30" r="26" stroke-dasharray="3 4"/><path d="M34 95 Q50 86 66 95" /></g></svg></i>
+          <span>Druids</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/sacred-geometry/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></i>
+          <span>Sacred Geometry</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/astrology/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Astrology</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/artwork/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></i>
+          <span>Artwork</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/neurobiology/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Neurobiology</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/consciousness/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,29 M50,92 86,29"/></g></svg></i>
+          <span>Consciousness</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/extraterrestrials/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></i>
+          <span>Extraterrestrials</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/music/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Sound &amp; Music</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/wizardry/" aria-current="page">
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Wizardry</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/runes/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M50 95 V52"/><path d="M50 62 L32 46 M50 62 L68 46 M50 48 L38 34 M50 48 L62 34 M50 38 L44 28 M50 38 L56 28"/><circle cx="50" cy="30" r="26" stroke-dasharray="3 4"/><path d="M34 95 Q50 86 66 95" /></g></svg></i>
+          <span>Runes &amp; Charms</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/elemental-alchemy/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Elemental Alchemy</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/products/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></i>
+          <span>Products</span>
+        </a>
+      </li>
+      
+    </ul>
+  </nav>
+  <div class="rule rule--bottom" aria-hidden="true"></div>
+</header>
+
+
+<main id="main">
+  
+<section class="page-head">
+  <p class="kicker">Limb IX</p>
+  <h1>Wizardry &amp; Rituals</h1>
+  <p class="lede muted">A wizard is not someone who breaks the laws of nature. A wizard is someone who has
+  studied long enough to act with precision where others act at random — and ritual is the technology by
+  which a decision is made to hold.</p>
+</section>
+
+<!-- ============================== THE PREMISE ============================= -->
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">Begin Here</p>
+    <h2>What a Wizard Actually Is</h2>
+    <p class="lede">The word carries two thousand years of borrowed glamour, and underneath it is something
+    plainer and more demanding.</p>
+
+    <p><em>Wizard</em> comes from Middle English <em>wysard</em> — simply "wise one", from <em>wys</em>, with
+    the same root as <em>wit</em>. ◆ Scholarship. It did not originally mean a worker of miracles. It meant
+    someone who had accumulated knowledge to the point where their judgement was worth seeking, and who was
+    therefore slightly outside the ordinary social order. The druid, the cunning man, the hedge-witch and the
+    village herbalist were all, functionally, this.</p>
+
+    <p>This order holds to that reading, which has three consequences. A wizard studies — the craft is a
+    curriculum, not a gift. A wizard works with the actual grain of things rather than against it. And a
+    wizard's power is entirely ordinary power: knowledge, attention, timing, reputation and the willingness
+    to act when others hesitate. ◆ We claim nothing beyond that, and we think nothing beyond that is needed
+    to justify the word.</p>
+
+    <p>Ritual is the other half. Not a way of petitioning the universe, but a way of operating on yourself and
+    on a group with far more reliability than intention alone has ever managed.</p>
+
+    <p class="muted small">Grading throughout: <span class="sci">◆ established science</span> ·
+    <span class="hist">◆ scholarship and history</span> · <span class="spec">◆ speculative and contested</span> ·
+    <span class="myth">◆ myth, tradition and primary esoteric text</span>.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ==================== PLATE I — THE CIRCLE ============================== -->
+<section class="wrap narrow reveal">
+  <figure class="plate plate--grand">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The Circle and Its Quarters
+      <span class="myth">◆</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 460 460" role="img" aria-label="A ritual circle diagram showing the four quarters, their elements, implements, times of day and seasons">
+        <defs>
+          <radialGradient id="wz-c" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#d7b05a" stop-opacity="0.12"/>
+            <stop offset="70%" stop-color="#d7b05a" stop-opacity="0.03"/>
+            <stop offset="100%" stop-color="#d7b05a" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="230" cy="230" r="215" fill="url(#wz-c)"/>
+
+        <g fill="none" stroke="#d7b05a" stroke-width="1">
+          <circle cx="230" cy="230" r="208"/>
+          <circle cx="230" cy="230" r="196" opacity="0.5"/>
+          <circle cx="230" cy="230" r="128" stroke-dasharray="4 6" opacity="0.6"/>
+          <circle cx="230" cy="230" r="46"/>
+          <path d="M230 22 V438 M22 230 H438" opacity="0.4"/>
+        </g>
+
+        <!-- pentagram inscribed -->
+        <polygon points="230,48 400,412 38,180 422,180 60,412"
+                 fill="none" stroke="#f3ddaa" stroke-width="0.9" opacity="0.45"/>
+
+        <!-- quarter markers -->
+        <g stroke-width="1.6" fill="none">
+          <circle cx="230" cy="58" r="16" stroke="#9b7ddb"/>
+          <circle cx="402" cy="230" r="16" stroke="#cf7f8d"/>
+          <circle cx="230" cy="402" r="16" stroke="#6fae7f"/>
+          <circle cx="58" cy="230" r="16" stroke="#7fb6d9"/>
+        </g>
+        <g stroke-width="1.5" fill="none">
+          <polygon points="230,50 238,64 222,64" stroke="#9b7ddb"/><line x1="224" y1="60" x2="236" y2="60" stroke="#9b7ddb"/>
+          <polygon points="402,222 410,236 394,236" stroke="#cf7f8d"/>
+          <polygon points="230,410 238,396 222,396" stroke="#6fae7f"/><line x1="224" y1="401" x2="236" y2="401" stroke="#6fae7f"/>
+          <polygon points="58,238 66,224 50,224" stroke="#7fb6d9"/>
+        </g>
+
+        <g font-family="Cinzel, serif" font-size="12" letter-spacing="2.5" text-anchor="middle">
+          <text x="230" y="24" fill="#9b7ddb">NORTH · AIR</text>
+          <text x="230" y="452" fill="#6fae7f">SOUTH · EARTH</text>
+        </g>
+        <g font-family="Cinzel, serif" font-size="12" letter-spacing="2.5">
+          <text x="424" y="234" fill="#cf7f8d" text-anchor="end" transform="rotate(90 424 234)">EAST · FIRE</text>
+          <text x="36" y="234" fill="#7fb6d9" text-anchor="start" transform="rotate(-90 36 234)">WEST · WATER</text>
+        </g>
+
+        <g font-family="EB Garamond, serif" font-size="11.5" fill="#cdbb95" text-anchor="middle">
+          <text x="230" y="96">sword · dawn · spring</text>
+          <text x="230" y="376">pentacle · midnight · winter</text>
+          <text x="330" y="206">wand · noon</text><text x="330" y="222">summer</text>
+          <text x="132" y="206">cup · dusk</text><text x="132" y="222">autumn</text>
+        </g>
+
+        <g font-family="EB Garamond, serif" font-size="11" fill="#cdbb95" text-anchor="middle">
+          <text x="230" y="150">thought · clarity · the word</text>
+          <text x="230" y="320">body · ground · the facts</text>
+        </g>
+
+        <g font-family="Cinzel, serif" font-size="11" letter-spacing="2" text-anchor="middle" fill="#f3ddaa">
+          <text x="230" y="226">THE</text>
+          <text x="230" y="242">WORK</text>
+        </g>
+        <text x="230" y="262" text-anchor="middle" font-family="EB Garamond, serif" font-size="10" fill="#cdbb95">altar · centre</text>
+      </svg>
+    </div>
+    <p class="plate-note">The quarter attributions vary between traditions and are <em>conventions, not
+    facts</em> — the Golden Dawn placed air in the east, many British traditions place it in the north, and
+    both work. What the figure actually provides is a memory palace with four stations, each holding a mode
+    of attention, so that nothing gets skipped: thought, will, feeling, ground. The circle itself does no
+    sealing. It marks a boundary in time and space that your nervous system can recognise, which is
+    considerable and is not supernatural.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ==================== PLATE II — ANATOMY OF A RITE ===================== -->
+<section class="wrap narrow reveal">
+  <figure class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate II</span> The Anatomy of a Rite
+      <span class="hist">◆</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 620 300" role="img" aria-label="A seven-stage diagram of ritual structure from purification to return">
+        <defs>
+          <linearGradient id="wz-arc" x1="0" x2="1">
+            <stop offset="0%" stop-color="#6fae7f" stop-opacity="0.5"/>
+            <stop offset="50%" stop-color="#d7b05a" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#9b7ddb" stop-opacity="0.5"/>
+          </linearGradient>
+        </defs>
+        <path d="M40 220 Q310 40 580 220" fill="none" stroke="url(#wz-arc)" stroke-width="2"/>
+        <g fill="#f3ddaa">
+          <circle cx="40" cy="220" r="5"/><circle cx="130" cy="160" r="5"/><circle cx="222" cy="120" r="5"/>
+          <circle cx="310" cy="104" r="7"/><circle cx="398" cy="120" r="5"/><circle cx="490" cy="160" r="5"/>
+          <circle cx="580" cy="220" r="5"/>
+        </g>
+        <g stroke="#d7b05a" stroke-width="0.6" opacity="0.5">
+          <path d="M40 220 V244 M130 160 V244 M222 120 V244 M310 104 V244 M398 120 V244 M490 160 V244 M580 220 V244"/>
+        </g>
+        <g font-family="Cinzel, serif" font-size="10" letter-spacing="1.4" fill="#f3ddaa" text-anchor="middle">
+          <text x="40" y="262">PREPARE</text>
+          <text x="130" y="262">OPEN</text>
+          <text x="222" y="262">INVOKE</text>
+          <text x="310" y="262">ACT</text>
+          <text x="398" y="262">WITNESS</text>
+          <text x="490" y="262">CLOSE</text>
+          <text x="580" y="262">RETURN</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="10.5" fill="#cdbb95" text-anchor="middle">
+          <text x="40" y="280">wash, fast,</text><text x="40" y="294">set the room</text>
+          <text x="130" y="280">mark the</text><text x="130" y="294">boundary</text>
+          <text x="222" y="280">name what</text><text x="222" y="294">this is for</text>
+          <text x="310" y="280">the irreversible</text><text x="310" y="294">physical act</text>
+          <text x="398" y="280">say it aloud</text><text x="398" y="294">to someone</text>
+          <text x="490" y="280">definite</text><text x="490" y="294">ending</text>
+          <text x="580" y="280">eat, speak,</text><text x="580" y="294">ordinary life</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="11" fill="#9b7ddb">
+          <text x="310" y="80" text-anchor="middle">the hinge — the one thing that cannot be undone</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="10.5" fill="#cdbb95">
+          <text x="40" y="34">ordinary time</text>
+          <text x="580" y="34" text-anchor="end">ordinary time</text>
+          <text x="186" y="52">↗ liminal</text>
+          <text x="434" y="52">liminal ↘</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">Van Gennep described this arc in 1909 and Victor Turner developed it: separation,
+    liminality, reincorporation. ◆ Scholarship, and it holds across weddings, funerals, initiations, degree
+    ceremonies and court procedure as well as anything esoteric. The two most commonly botched stages are the
+    fourth and the sixth. Without an irreversible physical act, the rite is a daydream. Without a definite
+    closing, the material bleeds into the week and people feel strange for days without knowing why.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ==================== PLATE III — THE IMPLEMENTS ======================= -->
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">The Craft</p>
+    <h2>The Implements, and What They Are Really For</h2>
+    <p class="lede muted">Four tools, four cognitive functions. The objects are mnemonics with handles.</p>
+  </div>
+
+  <div class="grid two">
+    <figure class="plate reveal">
+      <div class="plate-art plate-art--tall">
+        <svg viewBox="0 0 300 300" role="img" aria-label="The wand, a straight rod with a bound grip">
+          <g fill="none" stroke="#d7b05a" stroke-width="1.6">
+            <path d="M150 30 L150 270"/>
+            <path d="M150 30 q-10 14 0 28 q10 -14 0 -28" stroke="#cf7f8d"/>
+            <path d="M140 210 h20 M138 222 h24 M140 234 h20" stroke="#cf7f8d"/>
+            <circle cx="150" cy="268" r="6"/>
+            <path d="M150 60 q-22 20 -18 56 M150 60 q22 20 18 56" opacity="0.4"/>
+          </g>
+          <text x="150" y="294" text-anchor="middle" font-family="Cinzel, serif" font-size="12"
+                fill="#cf7f8d" letter-spacing="3">WAND · WILL</text>
+        </svg>
+      </div>
+      <p class="plate-note"><strong>The wand</strong> directs. Traditionally cut to the length of the
+      forearm, from a living tree asked first, and never used for anything else. Its function is singular:
+      it is the object you pick up when you have decided. ◆ What it actually does is make an intention
+      physical and exclusive, and exclusivity is most of the trick — a thing used for one purpose becomes a
+      reliable cue for that purpose.</p>
+    </figure>
+
+    <figure class="plate reveal">
+      <div class="plate-art plate-art--tall">
+        <svg viewBox="0 0 300 300" role="img" aria-label="The cup, a chalice on a stem">
+          <g fill="none" stroke="#7fb6d9" stroke-width="1.6">
+            <path d="M104 86 q46 78 46 78 q0 0 46 -78 Z"/>
+            <path d="M104 86 H196"/>
+            <path d="M150 164 V222"/>
+            <path d="M112 248 q38 -26 76 0 q-38 14 -76 0 Z"/>
+            <path d="M118 102 q32 16 64 0" opacity="0.6"/>
+          </g>
+          <path d="M106 90 q44 60 44 60 q0 0 44 -60 Z" fill="#7fb6d9" fill-opacity="0.12" stroke="none"/>
+          <text x="150" y="294" text-anchor="middle" font-family="Cinzel, serif" font-size="12"
+                fill="#7fb6d9" letter-spacing="3">CUP · FEELING</text>
+        </svg>
+      </div>
+      <p class="plate-note"><strong>The cup</strong> receives. It holds what is offered and what is shared,
+      and it is the only implement that passes from hand to hand — which is the point. ◆ The communal drink
+      is among the most widespread human ritual acts on record, and its function is social bonding through
+      synchronised, witnessed consumption. A rite with nothing shared is a performance with an audience.</p>
+    </figure>
+
+    <figure class="plate reveal">
+      <div class="plate-art plate-art--tall">
+        <svg viewBox="0 0 300 300" role="img" aria-label="The blade, a double-edged knife point downward">
+          <g fill="none" stroke="#9b7ddb" stroke-width="1.6">
+            <path d="M150 268 L132 150 L150 44 L168 150 Z"/>
+            <path d="M150 44 V268" opacity="0.5"/>
+            <path d="M112 150 H188"/>
+            <path d="M140 150 v-6 h20 v6" opacity="0.6"/>
+            <rect x="142" y="100" width="16" height="48" rx="3" transform="translate(0,0)" opacity="0"/>
+            <path d="M138 104 h24 M138 116 h24 M138 128 h24" opacity="0.5"/>
+          </g>
+          <text x="150" y="294" text-anchor="middle" font-family="Cinzel, serif" font-size="12"
+                fill="#9b7ddb" letter-spacing="3">BLADE · THOUGHT</text>
+        </svg>
+      </div>
+      <p class="plate-note"><strong>The blade</strong> divides. It is the instrument of discrimination —
+      this and not that, mine and not mine, true and merely comforting. Held point down, it marks the
+      boundary at the opening. ◆ Note the honest reading: the most dangerous implement in the set
+      corresponds to the faculty most capable of harm, and the tradition knew that when it assigned them.</p>
+    </figure>
+
+    <figure class="plate reveal">
+      <div class="plate-art plate-art--tall">
+        <svg viewBox="0 0 300 300" role="img" aria-label="The pentacle, a disc with a five pointed star">
+          <g fill="none" stroke="#6fae7f" stroke-width="1.6">
+            <circle cx="150" cy="150" r="98"/>
+            <circle cx="150" cy="150" r="86" opacity="0.5"/>
+            <polygon points="150,70 229,198 71,116 229,116 71,198"/>
+            <circle cx="150" cy="150" r="30" opacity="0.4"/>
+          </g>
+          <text x="150" y="294" text-anchor="middle" font-family="Cinzel, serif" font-size="12"
+                fill="#6fae7f" letter-spacing="3">PENTACLE · GROUND</text>
+        </svg>
+      </div>
+      <p class="plate-note"><strong>The pentacle</strong> grounds. A flat disc that things are placed
+      <em>upon</em> — the written intention, the object to be consecrated, the bread. ◆ Scholarship: the
+      five-pointed star is a Pythagorean figure, a Christian symbol of the five wounds, a Mesopotamian sign,
+      and only became shorthand for the occult in the nineteenth century via Éliphas Lévi. Point up is the
+      ordinary orientation. The inversion's modern meaning is about 170 years old.</p>
+    </figure>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ================= PLATE IV — WHAT RITUAL DOES, MEASURED =============== -->
+<section class="wrap narrow reveal">
+  <figure class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate IV</span> What Ritual Demonstrably Does
+      <span class="sci">◆</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 620 280" role="img" aria-label="Four measured effects of ritual: marking transitions, binding groups, shifting state and reducing anxiety">
+        <g fill="none" stroke="#d7b05a" stroke-width="1">
+          <rect x="20" y="40" width="135" height="200" rx="6"/>
+          <rect x="175" y="40" width="135" height="200" rx="6"/>
+          <rect x="330" y="40" width="135" height="200" rx="6"/>
+          <rect x="485" y="40" width="115" height="200" rx="6"/>
+        </g>
+        <g font-family="Cinzel, serif" font-size="10.5" letter-spacing="1.6" text-anchor="middle" fill="#f3ddaa">
+          <text x="87" y="30">MARKING</text>
+          <text x="242" y="30">BINDING</text>
+          <text x="397" y="30">SHIFTING</text>
+          <text x="542" y="30">STEADYING</text>
+        </g>
+
+        <!-- marking: a threshold -->
+        <g transform="translate(87,110)" stroke="#6fae7f" stroke-width="1.4" fill="none">
+          <path d="M-44 28 H-6 M6 28 H44"/>
+          <path d="M-6 -22 V40 M6 -22 V40" stroke-dasharray="3 4"/>
+          <circle cx="-26" cy="14" r="7"/><circle cx="26" cy="14" r="7"/>
+        </g>
+        <!-- binding: synchronised figures -->
+        <g transform="translate(242,112)" stroke="#cf7f8d" stroke-width="1.4" fill="none">
+          <circle cx="-34" cy="-6" r="8"/><path d="M-34 2 V22 M-44 10 H-24 M-34 22 l-8 14 M-34 22 l8 14"/>
+          <circle cx="0" cy="-6" r="8"/><path d="M0 2 V22 M-10 10 H10 M0 22 l-8 14 M0 22 l8 14"/>
+          <circle cx="34" cy="-6" r="8"/><path d="M34 2 V22 M24 10 H44 M34 22 l-8 14 M34 22 l8 14"/>
+          <path d="M-44 44 H44" opacity="0.5" stroke-dasharray="3 3"/>
+        </g>
+        <!-- shifting: a wave slowing -->
+        <g transform="translate(397,120)" stroke="#9b7ddb" stroke-width="1.4" fill="none">
+          <path d="M-52 0 q6 -20 12 0 t12 0 t12 0 t12 0"/>
+          <path d="M-4 0 q12 -26 24 0 t24 0"/>
+          <path d="M-52 22 H52" opacity="0.4"/>
+        </g>
+        <!-- steadying: a descending line -->
+        <g transform="translate(542,120)" stroke="#7fb6d9" stroke-width="1.4" fill="none">
+          <path d="M-40 -26 q10 10 16 -2 q8 24 14 4 q8 20 12 6 q6 12 10 8"/>
+          <path d="M-40 26 H40" opacity="0.4"/>
+          <path d="M-40 -34 V26" opacity="0.4"/>
+        </g>
+
+        <g font-family="EB Garamond, serif" font-size="11" fill="#cdbb95" text-anchor="middle">
+          <text x="87" y="186">Transitions handled</text><text x="87" y="202">without ceremony</text><text x="87" y="218">tend to stay</text><text x="87" y="234">unfinished.</text>
+          <text x="242" y="186">Synchronised action</text><text x="242" y="202">raises cooperation</text><text x="242" y="218">and cohesion in</text><text x="242" y="234">controlled studies.</text>
+          <text x="397" y="186">Rhythm, repetition</text><text x="397" y="202">and restricted input</text><text x="397" y="218">move the nervous</text><text x="397" y="234">system measurably.</text>
+          <text x="542" y="186">Ritualised action</text><text x="542" y="202">reduces anxiety</text><text x="542" y="218">under uncertainty —</text><text x="542" y="234">even arbitrary ones.</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">All four are supported by actual research rather than assertion. ◆ Synchrony
+    studies find that moving or chanting in time raises subsequent cooperation and perceived closeness,
+    and that <em>costly</em> or effortful rituals bind harder. ◆ Anxiety work finds that performing a
+    prescribed sequence before a stressful task lowers measured arousal and improves performance — and that
+    this holds even when the sequence is invented by the experimenter and has no cultural content
+    whatsoever. That last finding is the most important one on this page, because it tells you the power is
+    in the <em>form</em>, not in the correspondence tables.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ==================== PLATE V — BUILD YOUR OWN ========================= -->
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Practice</p>
+    <h2>Build One Yourself</h2>
+    <p class="lede">Borrowed ceremony usually feels hollow because it answers someone else's question. Yours
+    will be clumsier and will work better. Six components, and the order would say all six are necessary.</p>
+
+    <details class="scroll" open>
+      <summary>1 · One sentence of purpose</summary>
+      <p>Write what this rite is for in a single sentence, in plain language, with no symbolism in it at all.
+      If you cannot, you are not ready to perform it — you are still deciding. "I am ending my working
+      relationship with X and I want to stop rehearsing the argument." That is a purpose. "Transformation" is
+      not.</p>
+    </details>
+
+    <details class="scroll">
+      <summary>2 · A boundary in time and space</summary>
+      <p>A definite start and a definite end, in a place you then leave. This is the single component that
+      converts an activity into a ritual, and it is the one most often skipped. Light something at the
+      beginning and extinguish it at the end if you want the simplest possible version.</p>
+    </details>
+
+    <details class="scroll">
+      <summary>3 · Something irreversible and physical</summary>
+      <p>Burn, bury, cut, pour, plant, carve, throw into water. Not visualise — <em>do</em>. The nervous
+      system treats an unrecoverable act very differently from an imagined one, and this is the hinge the
+      whole structure turns on. If nothing in your rite could go wrong, nothing in it is real.</p>
+    </details>
+
+    <details class="scroll">
+      <summary>4 · A witness, where the matter concerns others</summary>
+      <p>Publicly witnessed commitment holds dramatically better than private resolution. This is why
+      weddings have guests and why anonymous promises evaporate. One person who will ask you about it in a
+      month is worth more than any amount of ceremony performed alone.</p>
+    </details>
+
+    <details class="scroll">
+      <summary>5 · Repetition, or a date</summary>
+      <p>Either the rite recurs — same hour, same place, seasonally — or it is pinned to a specific date and
+      kept. Solstices and new moons work not because of the sky but because they are unarguable coordinates
+      that you did not choose for convenience.</p>
+    </details>
+
+    <details class="scroll">
+      <summary>6 · A closing, and then food</summary>
+      <p>State plainly that it is finished, undo whatever you did to open, and then eat something with other
+      people if you can. Reincorporation is a real stage and skipping it is how people end up unmoored for
+      days. The meal afterwards is not an afterthought; in most traditions on record it is half the rite.</p>
+    </details>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- =========================== THE LEDGER ================================ -->
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <h2>What Holds Up</h2>
+      <ul class="biblio">
+        <li><span class="sci">◆</span> Ritualised sequences reduce anxiety before stressful performance, including invented ones with no tradition behind them.</li>
+        <li><span class="sci">◆</span> Behavioural synchrony — moving, singing or chanting in time — increases cooperation, trust and perceived similarity.</li>
+        <li><span class="sci">◆</span> Costly and effortful rites bind groups harder, which is a measured result and an uncomfortable one.</li>
+        <li><span class="sci">◆</span> Rhythm entrains neural oscillation; restricted sensory input shifts state reliably.</li>
+        <li><span class="sci">◆</span> Publicly witnessed commitment outperforms private intention by a wide margin.</li>
+        <li><span class="hist">◆</span> The separation–liminality–reincorporation structure recurs across unrelated cultures.</li>
+        <li><span class="sci">◆</span> Expectancy and setting shape outcome powerfully — the ritual surrounding a treatment is part of the treatment.</li>
+      </ul>
+    </div>
+    <div class="frame reveal">
+      <h2>What Does Not</h2>
+      <ul class="biblio">
+        <li><span class="myth">◆</span> <strong>That a circle keeps anything out.</strong> It marks; it does not seal. Treating it as armour builds dependence and, in some people, genuine fear.</li>
+        <li><span class="myth">◆</span> <strong>That correspondence tables are discovered rather than assigned.</strong> They differ between traditions, which is fatal to the claim.</li>
+        <li><span class="spec">◆</span> <strong>That group ritual produces effects at a distance.</strong> The large-scale meditation and prayer studies have not survived proper controls.</li>
+        <li><span class="myth">◆</span> <strong>That ancient wording is more potent.</strong> Barbarous names work by sounding strange, which is a real psychological effect and not a linguistic one.</li>
+        <li><span class="myth">◆</span> <strong>That ritual failure indicates spiritual interference.</strong> It usually indicates an unclear purpose, which is stage one.</li>
+        <li><span class="spec">◆</span> <strong>That any of this requires a lineage.</strong> The measured effects come from the form.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================== THE DANGERS ============================ -->
+<section class="wrap narrow reveal">
+  <div class="frame caution">
+    <p class="kicker">Not Romanticised</p>
+    <h2>The Actual Dangers of This Craft</h2>
+    <p>They are psychological and social, and this order takes them far more seriously than any question
+    about entities, because they are what damages people year after year.</p>
+    <ul class="biblio">
+      <li><strong>Grandiosity.</strong> The characteristic occupational hazard. Signs: a growing conviction of being chosen, irritation at being questioned, and an expanding sense that ordinary rules are for other people.</li>
+      <li><strong>Destabilisation.</strong> Intensive practice can precipitate genuine crisis, particularly with any psychiatric history. If sleep breaks down or the boundaries of ordinary reality do not re-establish, that is a clinician's matter, now.</li>
+      <li><strong>Compulsion.</strong> A ritual you cannot omit without dread has become an anxiety disorder wearing robes. Protection that increases fear is not protection.</li>
+      <li><strong>Avoidance.</strong> Working a spell on a problem you could simply address is the most common failure mode in modern practice, and the least discussed.</li>
+      <li><strong>Exploitation.</strong> Groups with secrecy, hierarchy and a charismatic teacher are structurally the same shape as the ones that go wrong. See the Shadow Cabinet.</li>
+    </ul>
+    <p class="muted small">The order's rule: any practice that makes you harder to be honest with has failed,
+    whatever it produced.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================== HISTORY ================================ -->
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <h2>Where the Modern Craft Comes From</h2>
+      <ul class="timeline">
+        <li><span class="when">c. 300 CE</span> The Greek Magical Papyri — the real working manuals of late antiquity, full of recipes, names and practical instruction.</li>
+        <li><span class="when">c. 1450</span> The Key of Solomon circulates; grimoire magic is a learned, literate, overwhelmingly Christian pursuit.</li>
+        <li><span class="when">1584</span> Reginald Scot's <em>Discoverie of Witchcraft</em> exposes conjuring tricks to argue that accused witches are innocent — the first sceptical classic, written to save lives.</li>
+        <li><span class="when">1801</span> Francis Barrett's <em>The Magus</em> revives ceremonial magic for a new century, largely by copying Agrippa.</li>
+        <li><span class="when">1855</span> Éliphas Lévi fixes the modern image — the pentagram, the correspondences, the tarot link — much of it his own synthesis.</li>
+        <li><span class="when">1888</span> The Golden Dawn is founded on a forged credential and produces the system nearly everything since descends from.</li>
+        <li><span class="when">1904–47</span> Crowley's Thelema; the Book of the Law, the grade structure, and a great deal of deliberate provocation.</li>
+        <li><span class="when">1920s</span> Austin Osman Spare develops sigils and the technique of deliberate forgetting.</li>
+        <li><span class="when">1954</span> Gardner publishes; Wicca enters the world as a religion seventy years old.</li>
+        <li><span class="when">1970s</span> Chaos magic strips the lineage and keeps the techniques, treating belief itself as a tool.</li>
+      </ul>
+    </div>
+    <div class="frame reveal">
+      <h2>Reading</h2>
+      <ul class="biblio">
+        <li><span class="hist">◆</span> <strong>Ronald Hutton</strong>, <em>The Triumph of the Moon</em> (1999) — the honest history of modern pagan witchcraft, by a historian who likes his subject.</li>
+        <li><span class="hist">◆</span> <strong>Owen Davies</strong>, <em>Grimoires: A History of Magic Books</em> (2009) — where the texts actually came from.</li>
+        <li><span class="hist">◆</span> <strong>Hans Dieter Betz (ed.)</strong>, <em>The Greek Magical Papyri in Translation</em> — the primary sources, startling and often very practical.</li>
+        <li><span class="sci">◆</span> <strong>Harvey Whitehouse</strong>, <em>Inheritance</em> (2024) and his modes-of-religiosity work — ritual, frequency and group cohesion, measured.</li>
+        <li><span class="sci">◆</span> <strong>Dimitris Xygalatas</strong>, <em>Ritual: How Seemingly Senseless Acts Make Life Worth Living</em> (2022) — the field science, including firewalking with heart monitors.</li>
+        <li><span class="hist">◆</span> <strong>Victor Turner</strong>, <em>The Ritual Process</em> (1969) — liminality and communitas, still the key text.</li>
+        <li><span class="myth">◆</span> <strong>Israel Regardie</strong>, <em>The Golden Dawn</em> — the system itself, in full, as primary material.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <div class="creed-glyph"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></div>
+    <p class="kicker" style="text-align:center">The Wizard's Rule</p>
+    <p class="creed-line">Know, Dare, Will, Keep Silent.</p>
+    <p class="muted small" style="text-align:center;max-width:56ch;margin:0 auto">
+      Lévi's four powers of the sphinx, and this order reads them without mystification. <em>Know</em>: study
+      first, always, and in the actual sources. <em>Dare</em>: act, rather than endlessly preparing to act.
+      <em>Will</em>: want one thing clearly enough to decline the others. <em>Keep silent</em>: not because
+      secrecy is sacred, but because announcing a resolution gives you the satisfaction of having kept it and
+      is the most reliable way to never do the thing at all. ◆ That last one, unexpectedly, has experimental
+      support.</p>
+    <p class="mt-2"><a class="btn" href="/runes/">Runes, Charms &amp; Natural Energies</a>
+    <a class="btn btn--ghost" href="/elemental-alchemy/">Elemental Alchemy</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="foot-glyph"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></div>
+  <p class="foot-motto">An Order of Enquiry into Cosmos, Consciousness &amp; the Living Earth</p>
+  <nav class="foot-nav" aria-label="Footer">
+    <a href="/">Introduction</a><a href="/podcast/">Podcasts</a><a href="/videos/">Videos</a><a href="/ask-ed/">Ask Ed</a><a href="/infographics/">Infographics</a><a href="/druids/">Druids</a><a href="/sacred-geometry/">Sacred Geometry</a><a href="/astrology/">Astrology</a><a href="/artwork/">Artwork</a><a href="/neurobiology/">Neurobiology</a><a href="/consciousness/">Consciousness</a><a href="/extraterrestrials/">Extraterrestrials</a><a href="/music/">Sound &amp; Music</a><a href="/wizardry/">Wizardry</a><a href="/runes/">Runes &amp; Charms</a><a href="/elemental-alchemy/">Elemental Alchemy</a><a href="/products/">Products</a>
+  </nav>
+  <p class="foot-fine">
+    EGregoRA was co-founded by <strong>Edward Gregory</strong> and <strong>Jim Rankin</strong>. All enquiry here is offered in the spirit of
+    free thought and free doubt — test everything, keep what is true.
+  </p>
+  <p class="foot-fine small">© 2026 EGregoRA · Life, Love, Magic · <a href="mailto:ask@egregora.org">ask@egregora.org</a></p>
+</footer>
+
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

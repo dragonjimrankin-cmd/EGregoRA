@@ -483,3 +483,158 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   .fox-panel { grid-template-columns: 1fr; }
   .fox-stage { max-width: 320px; margin: 0 auto; }
 }
+
+/* ---------- Additional wandering geometry layers -------------------------- */
+.geo-4 {
+  width: min(40vmin, 420px); aspect-ratio: 1; top: 8%; left: 4%;
+  color: rgba(215, 176, 90, 0.13);
+  animation: geo-spin 520s linear infinite, geo-wander-a 180s ease-in-out infinite;
+}
+.geo-5 {
+  width: min(34vmin, 360px); aspect-ratio: 1; top: 58%; right: 6%;
+  color: rgba(207, 127, 141, 0.12);
+  animation: geo-spin 380s linear infinite reverse, geo-wander-b 220s ease-in-out infinite;
+}
+.geo-6 {
+  width: min(96vmin, 1100px); aspect-ratio: 320 / 120; top: 34%; left: -30%;
+  color: rgba(111, 174, 127, 0.1);
+  animation: geo-travel 160s linear infinite;
+}
+.geo-7 {
+  width: min(44vmin, 480px); aspect-ratio: 1; top: 12%; right: 10%;
+  color: rgba(155, 125, 219, 0.12);
+  animation: geo-spin 600s linear infinite, geo-wander-c 200s ease-in-out infinite;
+}
+.geo-8 {
+  width: min(32vmin, 340px); aspect-ratio: 1; bottom: 10%; left: 32%;
+  color: rgba(215, 176, 90, 0.11);
+  animation: geo-orbit 140s linear infinite;
+}
+
+@keyframes geo-wander-a {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(28vw, 12vh, 0) rotate(90deg); }
+  50%  { transform: translate3d(46vw, 48vh, 0) rotate(180deg); }
+  75%  { transform: translate3d(12vw, 58vh, 0) rotate(270deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(360deg); }
+}
+@keyframes geo-wander-b {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  33%  { transform: translate3d(-38vw, -34vh, 0) scale(1.18); }
+  66%  { transform: translate3d(-14vw, -62vh, 0) scale(0.88); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes geo-wander-c {
+  0%   { transform: translate3d(0, 0, 0); }
+  30%  { transform: translate3d(-22vw, 36vh, 0); }
+  60%  { transform: translate3d(-48vw, 10vh, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+@keyframes geo-travel {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(62vw, -8vh, 0); }
+}
+@keyframes geo-orbit {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(18vw, -24vh, 0) rotate(-90deg); }
+  50%  { transform: translate3d(0, -48vh, 0) rotate(-180deg); }
+  75%  { transform: translate3d(-18vw, -24vh, 0) rotate(-270deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-360deg); }
+}
+@media (max-width: 720px) {
+  .geo-4, .geo-7, .geo-8 { display: none; }
+  .geo-5 { width: 56vmin; }
+  .geo-6 { opacity: 0.7; }
+}
+
+/* ======================================================================
+   Plates — the engraved diagram figures used by the Alchemy, Wizardry
+   and Runes limbs.
+   ====================================================================== */
+.plate {
+  margin: 0 0 2rem;
+  padding: 1.4rem clamp(1rem, 3vw, 2rem) 1.6rem;
+  border: 1px solid rgba(215, 176, 90, 0.28);
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(243, 221, 156, 0.035), rgba(0, 0, 0, 0.22));
+  box-shadow: inset 0 0 50px rgba(215, 176, 90, 0.05), 0 14px 40px rgba(0, 0, 0, 0.4);
+}
+.plate--grand { padding-block: 2rem 2.2rem; }
+.plate-cap {
+  font-family: var(--title);
+  font-size: 0.92rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.plate-num {
+  display: inline-block;
+  margin-right: 0.6rem;
+  padding: 0.12em 0.6em;
+  border: 1px solid rgba(215, 176, 90, 0.5);
+  border-radius: 2px;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+.plate-art {
+  margin: 0 auto;
+  max-width: 640px;
+}
+.plate-art svg { display: block; width: 100%; height: auto; overflow: visible; }
+.plate-art--tall { max-width: 260px; }
+.plate-note {
+  margin: 1.3rem auto 0;
+  max-width: 64ch;
+  font-size: 0.95rem;
+  color: var(--parchment-dim, #cdbb95);
+  line-height: 1.75;
+}
+.plate-note strong { color: var(--gold-bright); font-weight: 600; }
+.plate .sci { color: var(--verdant); } .plate .hist { color: var(--gold); }
+.plate .spec { color: var(--amethyst); } .plate .myth { color: var(--rose); }
+
+.page-head.tight { padding-block: clamp(1.6rem, 4vw, 2.6rem) 0.6rem; }
+.page-head.tight h1, .page-head.tight h2 { margin-bottom: 0.4rem; }
+
+/* ----------------------------- rune grid ---------------------------- */
+.rune-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.rune {
+  margin: 0;
+  padding: 1rem 0.7rem 0.9rem;
+  text-align: center;
+  border: 1px solid rgba(215, 176, 90, 0.22);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--gold-bright);
+  transition: border-color 0.4s ease, background 0.4s ease, transform 0.4s ease;
+}
+.rune:hover {
+  border-color: rgba(243, 221, 156, 0.55);
+  background: rgba(215, 176, 90, 0.06);
+  transform: translateY(-3px);
+}
+.rune svg { display: block; width: 44px; height: auto; margin: 0 auto 0.7rem; }
+.rune figcaption { display: grid; gap: 0.16rem; }
+.rune-n {
+  font-family: var(--title);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: rgba(215, 176, 90, 0.6);
+}
+.rune figcaption strong {
+  font-family: var(--title);
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  color: var(--gold-bright);
+  font-weight: 500;
+}
+.rune-s { font-size: 0.82rem; color: var(--amethyst); letter-spacing: 0.06em; }
+.rune-m { font-size: 0.82rem; line-height: 1.5; color: var(--parchment-dim, #cdbb95); }

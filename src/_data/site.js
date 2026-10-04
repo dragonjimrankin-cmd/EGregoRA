@@ -21,6 +21,9 @@ export default {
     { url: "/consciousness/", label: "Consciousness", glyph: "metatron" },
     { url: "/extraterrestrials/", label: "Extraterrestrials", glyph: "eye" },
     { url: "/music/", label: "Sound & Music", glyph: "spiral" },
+    { url: "/wizardry/", label: "Wizardry", glyph: "star" },
+    { url: "/runes/", label: "Runes & Charms", glyph: "tree" },
+    { url: "/elemental-alchemy/", label: "Elemental Alchemy", glyph: "spiral" },
     { url: "/products/", label: "Products", glyph: "seed" }
   ]
 };
