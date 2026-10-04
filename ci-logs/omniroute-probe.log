@@ -1,0 +1,26 @@
+OmniRoute probe — key ci_live_… (56 chars)
+
+404     496ms  https://omniroute.online/v1/models
+        <!DOCTYPE html><!--syBpV1JUEaXhTPkaVw00u--><html><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/c
+404      68ms  https://www.omniroute.online/v1/models
+        <!DOCTYPE html><!--syBpV1JUEaXhTPkaVw00u--><html><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/c
+404     112ms  https://api.omniroute.online/v1/models
+        {"error": {"code": "404", "message": "The deployment could not be found on Vercel."}}
+404      99ms  https://omniroute.online/api/v1/models
+        <!DOCTYPE html><!--syBpV1JUEaXhTPkaVw00u--><html><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/c
+404     124ms  https://gateway.omniroute.online/v1/models
+        {"error": {"code": "404", "message": "The deployment could not be found on Vercel."}}
+404     110ms  https://app.omniroute.online/v1/models
+        {"error": {"code": "404", "message": "The deployment could not be found on Vercel."}}
+ERR     150ms  https://omniroute.ai/v1/models
+        fetch failed
+ERR      87ms  https://api.omniroute.ai/v1/models
+        fetch failed
+ERR     143ms  https://api.omniroute.com/v1/models
+        fetch failed
+ERR       2ms  http://localhost:20128/v1/models
+        fetch failed
+ERR       1ms  http://localhost:11411/v1/models
+        fetch failed
+
+6 endpoint(s) answered.
