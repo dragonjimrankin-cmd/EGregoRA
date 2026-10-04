@@ -8,7 +8,9 @@
  * good enough match.
  */
 
-export const ANSWERS = [
+import { MORE } from './oracle-corpus-more.js';
+
+const BASE = [
   {
     id: 'egregore',
     limb: 'foundations',
@@ -282,6 +284,9 @@ The Further Research page grades every source so you always know whether you are
 ];
 
 /* ------------------------------------------------------------------------ */
+
+
+export const ANSWERS = [...BASE, ...MORE];
 
 const STOP = new Set(
   ('a an and are as at be but by do does did for from had has have how i if in into is it its me my no not of on or our so that the their them then there these they this to was we what when where which who why will with you your about can could would should'

@@ -9,7 +9,7 @@ export default {
   email: "ask@egregora.org",
   nav: [
     { url: "/", label: "Introduction", glyph: "seed" },
-    { url: "/podcast/", label: "Podcast", glyph: "spiral" },
+    { url: "/podcast/", label: "Podcasts", glyph: "spiral" },
     { url: "/videos/", label: "Videos", glyph: "eye" },
     { url: "/ask-ed/", label: "Ask Ed", glyph: "star" },
     { url: "/infographics/", label: "Infographics", glyph: "metatron" },
