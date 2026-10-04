@@ -1,0 +1,7 @@
+# Hatchable project manifest — EGregoRA
+# Reference: https://hatchable.com/docs/developers/config
+name        = "EGregoRA"
+tagline     = "Life, Love, Magic — an order of enquiry founded by Edward Gregory"
+description = "An ornate house of enquiry founded by Edward Gregory, braiding cosmic physics, natural philosophy, astrology, nature, druidry, trees, sacred geometry, magic, wizards, reality, the contact question, neuroscience, biology, psychology, astronomy, God, the Law of One and hallucinogenic meditation into one living study of reality. Eight pages: Introduction, Podcast, Videos, Ask Ed a Question, Infographics, Music, Products and Further Research."
+category    = "Publishing"
+tags        = ["esoteric", "science", "podcast", "philosophy", "astronomy", "druidry"]

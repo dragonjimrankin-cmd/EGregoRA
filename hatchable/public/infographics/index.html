@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Infographics · EGregoRA</title>
+<meta name="description" content="One idea, one page, drawn properly — EGregoRA&#39;s illustrated diagrams of the cosmos, the year and the mind.">
+<meta property="og:title" content="Infographics · EGregoRA">
+<meta property="og:description" content="One idea, one page, drawn properly — EGregoRA&#39;s illustrated diagrams of the cosmos, the year and the mind.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/img/sigil.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body data-page="infographics">
+<canvas id="starfield" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+
+<a class="skip" href="#main">Skip to the work</a>
+
+<header class="site-head">
+  <div class="rule rule--top" aria-hidden="true"></div>
+  <div class="brand-row">
+    <a class="brand" href="/">
+      <span class="brand-sigil"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,29 M50,92 86,29"/></g></svg></span>
+      <span class="brand-text">
+        <span class="brand-name">EGregoRA</span>
+        <span class="brand-tag">Life, Love, Magic</span>
+      </span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+      <span></span><span></span><span></span>
+      <em>Menu</em>
+    </button>
+  </div>
+  <nav id="primary-nav" class="site-nav" aria-label="Primary">
+    <ul>
+      
+      <li>
+        <a href="/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></i>
+          <span>Introduction</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/podcast/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Podcast</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/videos/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></i>
+          <span>Videos</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/ask-ed/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Ask Ed</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/infographics/" aria-current="page">
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,29 M50,92 86,29"/></g></svg></i>
+          <span>Infographics</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/music/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Music</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/products/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></i>
+          <span>Products</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/research/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M50 95 V52"/><path d="M50 62 L32 46 M50 62 L68 46 M50 48 L38 34 M50 48 L62 34 M50 38 L44 28 M50 38 L56 28"/><circle cx="50" cy="30" r="26" stroke-dasharray="3 4"/><path d="M34 95 Q50 86 66 95" /></g></svg></i>
+          <span>Further Research</span>
+        </a>
+      </li>
+      
+    </ul>
+  </nav>
+  <div class="rule rule--bottom" aria-hidden="true"></div>
+</header>
+
+
+<main id="main">
+  
+<section class="page-head">
+  <p class="kicker">Drawn Knowledge</p>
+  <h1>Infographics</h1>
+  <p class="lede muted">One idea, one page, drawn properly. Every plate below is live vector art — zoom as far as you like.</p>
+</section>
+
+<section class="wrap info-grid">
+  <div class="grid two">
+
+    <figure class="frame reveal">
+      <svg class="svg-info" viewBox="0 0 400 400" role="img" aria-label="The Wheel of the Year: eight festivals, solstices and equinoxes">
+        <defs><radialGradient id="wy"><stop offset="0%" stop-color="#d7b05a" stop-opacity=".25"/><stop offset="100%" stop-color="#d7b05a" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="200" cy="200" r="190" fill="url(#wy)"/>
+        <g fill="none" stroke="#d7b05a" stroke-width="1">
+          <circle cx="200" cy="200" r="150"/><circle cx="200" cy="200" r="120"/><circle cx="200" cy="200" r="40"/>
+        </g>
+        <g stroke="#d7b05a" stroke-width=".7" opacity=".6">
+          <line x1="200" y1="50" x2="200" y2="350"/><line x1="50" y1="200" x2="350" y2="200"/>
+          <line x1="94" y1="94" x2="306" y2="306"/><line x1="306" y1="94" x2="94" y2="306"/>
+        </g>
+        <g font-family="Cinzel, serif" font-size="12" fill="#f3dd9c" text-anchor="middle">
+          <text x="200" y="36">YULE · solstice</text>
+          <text x="330" y="80" font-size="10">IMBOLC</text>
+          <text x="372" y="204">OSTARA</text>
+          <text x="332" y="330" font-size="10">BELTANE</text>
+          <text x="200" y="378">LITHA · solstice</text>
+          <text x="70" y="330" font-size="10">LUGHNASADH</text>
+          <text x="30" y="204">MABON</text>
+          <text x="68" y="80" font-size="10">SAMHAIN</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="10" fill="#c9bda3" text-anchor="middle">
+          <text x="200" y="72">birch · longest night</text>
+          <text x="200" y="196">EARTH</text>
+          <text x="200" y="212" font-size="9">23.4° tilt</text>
+          <text x="200" y="340">oak · longest day</text>
+          <text x="347" y="220" font-size="9">equal day</text>
+          <text x="54" y="220" font-size="9">equal night</text>
+        </g>
+        <circle cx="200" cy="200" r="9" fill="#d7b05a"/>
+      </svg>
+      <figcaption><strong>Plate I — The Wheel of the Year.</strong> The eight stations as pure astronomy: two
+      solstices, two equinoxes and the four cross-quarter midpoints between them. The festivals are cultural;
+      the geometry is orbital.</figcaption>
+    </figure>
+
+    <figure class="frame reveal">
+      <svg class="svg-info" viewBox="0 0 400 400" role="img" aria-label="Powers of ten: from the Planck length to the observable universe">
+        <g font-family="Cinzel, serif" font-size="11" fill="#f3dd9c">
+          <text x="20" y="28">SCALES OF THE REAL</text>
+        </g>
+        <line x1="40" y1="50" x2="40" y2="370" stroke="#d7b05a" stroke-width="1"/>
+        <g font-family="EB Garamond, serif" font-size="11" fill="#efe3c8">
+          <g>
+            <circle cx="40" cy="70" r="4" fill="#9b7ddb"/><text x="56" y="74">10⁻³⁵ m · Planck length</text>
+            <circle cx="40" cy="108" r="4" fill="#9b7ddb"/><text x="56" y="112">10⁻¹⁵ m · proton</text>
+            <circle cx="40" cy="146" r="4" fill="#6fae7f"/><text x="56" y="150">10⁻⁹ m · DNA helix width</text>
+            <circle cx="40" cy="184" r="4" fill="#6fae7f"/><text x="56" y="188">10⁻⁵ m · a human cell</text>
+            <circle cx="40" cy="222" r="4" fill="#d7b05a"/><text x="56" y="226">10⁰ m · you, reading</text>
+            <circle cx="40" cy="260" r="4" fill="#6fae7f"/><text x="56" y="264">10⁷ m · Earth</text>
+            <circle cx="40" cy="298" r="4" fill="#d7b05a"/><text x="56" y="302">10²¹ m · the Milky Way</text>
+            <circle cx="40" cy="336" r="4" fill="#9b7ddb"/><text x="56" y="340">10²⁷ m · observable universe</text>
+          </g>
+        </g>
+        <text x="56" y="366" font-family="EB Garamond, serif" font-size="10" fill="#c9bda3" font-style="italic">
+          You sit almost exactly at the logarithmic midpoint.</text>
+      </svg>
+      <figcaption><strong>Plate II — Scales of the Real.</strong> Sixty-two orders of magnitude on one axis.
+      The human body lands near the middle — not cosmically significant, but geometrically charming.</figcaption>
+    </figure>
+
+    <figure class="frame reveal">
+      <svg class="svg-info" viewBox="0 0 400 300" role="img" aria-label="The Fibonacci spiral and phyllotaxis">
+        <g fill="none" stroke="#d7b05a" stroke-width="1">
+          <rect x="150" y="90" width="21" height="21"/><rect x="171" y="90" width="21" height="21"/>
+          <rect x="150" y="111" width="42" height="42"/><rect x="192" y="90" width="63" height="63"/>
+          <rect x="150" y="153" width="105" height="105"/><rect x="255" y="90" width="168" height="168" opacity=".35"/>
+        </g>
+        <path d="M171 90 a21 21 0 0 0 -21 21 a42 42 0 0 0 42 42 a63 63 0 0 0 63 -63 a105 105 0 0 0 -105 -105"
+              transform="translate(0,111)" fill="none" stroke="#f3dd9c" stroke-width="1.6"/>
+        <g font-family="Cinzel, serif" font-size="11" fill="#f3dd9c"><text x="20" y="30">φ = 1.6180339887…</text></g>
+        <g font-family="EB Garamond, serif" font-size="11" fill="#c9bda3">
+          <text x="20" y="54">1 · 1 · 2 · 3 · 5 · 8 · 13 · 21 · 34 · 55</text>
+          <text x="20" y="276">Sunflower florets pack at 137.5° — the angle that never repeats.</text>
+        </g>
+        <g stroke="#6fae7f" stroke-width=".8" fill="none" opacity=".8">
+          <circle cx="70" cy="170" r="52"/>
+          <path d="M70 170 L70 118 M70 170 L109 136 M70 170 L117 185 M70 170 L85 218 M70 170 L35 207 M70 170 L25 155"/>
+        </g>
+      </svg>
+      <figcaption><strong>Plate III — The Golden Angle.</strong> Why 137.5° and not 90° or 120°: an irrational
+      divergence angle is the only one that never lets a new leaf sit directly above an old one.</figcaption>
+    </figure>
+
+    <figure class="frame reveal">
+      <svg class="svg-info" viewBox="0 0 400 300" role="img" aria-label="The entropic brain: ordinary versus expanded states of consciousness">
+        <g font-family="Cinzel, serif" font-size="11" fill="#f3dd9c"><text x="20" y="28">THE ENTROPIC BRAIN</text></g>
+        <g font-family="EB Garamond, serif" font-size="10" fill="#c9bda3">
+          <text x="60" y="54">ordered · rigid</text><text x="255" y="54">critical · flexible</text>
+        </g>
+        <rect x="40" y="70" width="320" height="10" fill="none" stroke="#d7b05a"/>
+        <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#6fae7f"/><stop offset=".6" stop-color="#d7b05a"/><stop offset="1" stop-color="#9b7ddb"/></linearGradient>
+        <rect x="40" y="70" width="320" height="10" fill="url(#g1)" opacity=".5"/>
+        <g font-family="EB Garamond, serif" font-size="10.5" fill="#efe3c8">
+          <text x="44" y="104">depression ·</text><text x="44" y="120">rumination</text>
+          <text x="150" y="104">ordinary</text><text x="150" y="120">waking mind</text>
+          <text x="248" y="104">meditation ·</text><text x="248" y="120">flow · dream</text>
+          <text x="316" y="104" fill="#9b7ddb">psychedelic</text><text x="316" y="120" fill="#9b7ddb">state</text>
+        </g>
+        <g stroke="#d7b05a" stroke-width=".7"><path d="M60 80 v14 M180 80 v14 M280 80 v14 M340 80 v14"/></g>
+        <g font-family="EB Garamond, serif" font-size="10.5" fill="#c9bda3">
+          <text x="40" y="180">Default mode network coherence falls as entropy rises.</text>
+          <text x="40" y="200">The self-model loosens; priors lose their grip; novel</text>
+          <text x="40" y="220">connections become cheap — and so does false certainty.</text>
+          <text x="40" y="252" fill="#cf7f8d">Higher entropy is not automatically higher truth.</text>
+          <text x="40" y="270" fill="#cf7f8d">It is higher plasticity. What you do with it matters.</text>
+        </g>
+      </svg>
+      <figcaption><strong>Plate IV — The Entropic Brain.</strong> After Carhart-Harris &amp; Friston. A map of
+      states, not a recommendation — and a reminder that openness and accuracy are different virtues.</figcaption>
+    </figure>
+
+  </div>
+
+  <div class="wrap narrow">
+    <div class="upload-note">
+      <strong>For Ed — adding a plate.</strong> Drop an SVG or PNG into <code>src/assets/img/</code> and add a
+      <code>&lt;figure class="frame"&gt;</code> block to <code>src/infographics.njk</code>. SVG is strongly
+      preferred: it stays crisp at any zoom, weighs almost nothing, and the text inside it is searchable and
+      screen-readable.
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="foot-glyph"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></div>
+  <p class="foot-motto">An Order of Enquiry into Cosmos, Consciousness &amp; the Living Earth</p>
+  <nav class="foot-nav" aria-label="Footer">
+    <a href="/">Introduction</a><a href="/podcast/">Podcast</a><a href="/videos/">Videos</a><a href="/ask-ed/">Ask Ed</a><a href="/infographics/">Infographics</a><a href="/music/">Music</a><a href="/products/">Products</a><a href="/research/">Further Research</a>
+  </nav>
+  <p class="foot-fine">
+    EGregoRA was founded by <strong>Edward Gregory</strong>. All enquiry here is offered in the spirit of
+    free thought and free doubt — test everything, keep what is true.
+  </p>
+  <p class="foot-fine small">© 2026 EGregoRA · Life, Love, Magic · <a href="mailto:ask@egregora.org">ask@egregora.org</a></p>
+</footer>
+
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>
