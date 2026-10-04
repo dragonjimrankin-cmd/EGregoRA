@@ -2,10 +2,10 @@ export default {
   name: "EGregoRA",
   tagline: "Life, Love, Magic",
   motto: "An Order of Enquiry into Cosmos, Consciousness & the Living Earth",
-  founder: "Edward Gregory",
-  cofounder: "Jim Rankin",
+  cofounder: "Edward Gregory",
+  cofounder2: "Jim Rankin",
   description:
-    "EGregoRA — an ornate house of enquiry founded by Edward Gregory, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.",
+    "EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.",
   email: "ask@egregora.org",
   nav: [
     { url: "/", label: "Introduction", glyph: "seed" },

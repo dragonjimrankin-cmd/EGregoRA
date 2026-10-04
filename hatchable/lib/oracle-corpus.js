@@ -16,7 +16,7 @@ export const ANSWERS = [
     q: 'What is an egregore, and why that name?',
     a: `An egregore is the old name for a thought-form grown large: the thing that forms when enough minds attend to the same idea for long enough that it begins to attend back. A grove, a guild, a nation, a football club, a scientific paradigm — each behaves like an entity with appetites and a memory, though nothing in it is alive in the way you are. It is fed by attention and starves without it.
 
-EGregoRA is one built deliberately and in daylight, with its hands open. EG for Edward Gregory, RA for the old solar name that keeps surfacing wherever people go looking for a source.
+EGregoRA is one built deliberately and in daylight, with its hands open. EG for its co-founder Edward Gregory, RA for the old solar name that keeps surfacing wherever people go looking for a source.
 
 Where does that sit on the ledger? The sociology is solid — collective behaviour, institutional memory, norm cascades are measured things. The claim that an egregore is in any sense conscious is myth, and we file it there. The useful part needs no metaphysics at all: whatever you attend to together, you are building, whether or not you meant to.`
   },
@@ -245,7 +245,7 @@ This does not devalue it. A modern synthesis of real materials, kept faithfully 
 
 What he describes as the work of this life is an enforced integration: a compelled reckoning with the feelings, choices and paths of the beings he has been, those that healed and those that harmed alike, held in one awareness rather than sorted into a side worth keeping and a side to be buried. Nothing disowned, because what is disowned steers from underground.
 
-The order's filing is unchanged by its being the founder's: ◆ myth, tradition and primary esoteric experience. Recall is not a credential and confers no authority here. Read it as literal reincarnation, as the psyche giving shape to inherited shadow, or as myth doing myth's work — the ethical content is identical and is not negotiable. The atrocity was real. Nothing recovered in trance softens an hour of it.`
+The order's filing is unchanged by its being a co-founder's: ◆ myth, tradition and primary esoteric experience. Recall is not a credential and confers no authority here. Read it as literal reincarnation, as the psyche giving shape to inherited shadow, or as myth doing myth's work — the ethical content is identical and is not negotiable. The atrocity was real. Nothing recovered in trance softens an hour of it.`
   },
   {
     id: 'scepticism',

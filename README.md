@@ -1,6 +1,6 @@
 # EGregoRA — Life, Love, Magic
 
-An ornate static website for **EGregoRA**, the order of enquiry founded by **Edward Gregory**:
+An ornate static website for **EGregoRA**, the order of enquiry co-founded by **Edward Gregory** and **Jim Rankin**:
 cosmic physics, natural philosophy, astrology, nature, druids, trees, sacred geometry, magic,
 the historical study of fascist occultism, wizards, reality, the contact question, neuroscience,
 biology, psychology, astronomy, God, the Law of One and hallucinogenic meditation.
@@ -13,7 +13,7 @@ why it will still work in ten years.
 
 | Page | Path | Purpose |
 | --- | --- | --- |
-| Introduction | `/` | The charter, the ten limbs of enquiry, the founders |
+| Introduction | `/` | The charter, the ten limbs of enquiry, the co-founders |
 | Podcast | `/podcast/` | Episode list + RSS feed at `/feed.xml` |
 | Videos | `/videos/` | Embedded films with ornate placeholders |
 | Ask Ed a Question | `/ask-ed/` | Question form + the already-answered pile |
@@ -80,4 +80,4 @@ Cloudflare Pages and Vercel work identically — build `npm run build`, publish 
 
 ---
 
-© EGregoRA · *Life, Love, Magic* · Founded by Edward Gregory
+© EGregoRA · *Life, Love, Magic* · Co-founded by Edward Gregory and Jim Rankin
