@@ -749,7 +749,7 @@ Then the full list is on the Further Research page. Read primary sources whereve
 
 What makes a question answerable: be specific, say what you have already tried or read, and say what would change your mind. "Is astrology real" is a lecture. "I have found birth charts uncannily accurate about three friends and I want to know whether I am fooling myself" is a conversation.
 
-What this oracle is: eighty written answers composed in the order's voice, matched to your words. When nothing fits well, it says so rather than inventing — a machine confidently making things up is the exact opposite of what an order of enquiry is for.
+What this oracle is: 320 written answers composed in the order's voice, matched to your words. When nothing fits well, it says so rather than inventing — a machine confidently making things up is the exact opposite of what an order of enquiry is for.
 
 If you want to argue with something on this site, that is also welcome, and more useful to us than agreement.`
   },
@@ -828,7 +828,7 @@ The point is not the sun, which is indifferent. It is having one fixed annual co
     q: 'Am I talking to a real person or a machine?',
     a: `Neither, exactly, and you are owed a straight answer.
 
-What you are reading is one of eighty answers written in advance, in the order's voice and under its grading rules, and selected by matching the words of your question against them. No model is generating this sentence. When nothing in the corpus fits your question well, the oracle says so and offers the nearest things it does have, rather than improvising — an order of enquiry producing confident invention would be a contradiction in terms.
+What you are reading is one of 320 answers written in advance, in the order's voice and under its grading rules, and selected by matching the words of your question against them. No model is generating this sentence. When nothing in the corpus fits your question well, the oracle says so and offers the nearest things it does have, rather than improvising — an order of enquiry producing confident invention would be a contradiction in terms.
 
 Ed and Jim stand behind the content. The matching is a machine's work; the claims are theirs.
 
