@@ -1,0 +1,26 @@
+name: Deploy to Hatchable
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/01a10807-egregora"]
+    paths:
+      - "hatchable/**"
+      - "scripts/hatchable-deploy.mjs"
+      - ".github/workflows/hatchable-deploy.yml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Show Hatchable tool surface
+        env:
+          HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
+        run: node scripts/hatchable-deploy.mjs --tools
+      - name: Create project and deploy
+        env:
+          HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
+        run: node scripts/hatchable-deploy.mjs --name "EGregoRA" --slug egregora
