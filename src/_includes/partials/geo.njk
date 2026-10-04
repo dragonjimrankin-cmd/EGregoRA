@@ -1,0 +1,89 @@
+{#
+  Animated geometric backdrop. Three slow-moving layers of construction
+  geometry behind every page, varied per page so each room of the site feels
+  different. Pure SVG + CSS transforms; switched off by prefers-reduced-motion.
+#}
+{% set slug = page.fileSlug or "home" %}
+
+<div class="geo" aria-hidden="true">
+
+  {# ---- Layer 1 — a large slow wheel, upper right ---- #}
+  <svg class="geo-layer geo-1" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.35">
+      <circle cx="100" cy="100" r="98"/>
+      <circle cx="100" cy="100" r="78"/>
+      <circle cx="100" cy="100" r="46"/>
+      {% for i in range(0, 24) %}
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate({{ i * 15 }} 100 100)" opacity="0.5"/>
+      {% endfor %}
+      <polygon points="100,12 176,56 176,144 100,188 24,144 24,56"/>
+      <polygon points="100,22 168,61 168,139 100,178 32,139 32,61" opacity="0.6"/>
+    </g>
+  </svg>
+
+  {# ---- Layer 2 — seed-of-life rosette, lower left, counter-rotating ---- #}
+  <svg class="geo-layer geo-2" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.4">
+      <circle cx="100" cy="100" r="40"/>
+      {% for i in range(0, 6) %}
+      <circle cx="100" cy="60" r="40" transform="rotate({{ i * 60 }} 100 100)"/>
+      {% endfor %}
+      {% for i in range(0, 12) %}
+      <circle cx="100" cy="30" r="40" transform="rotate({{ i * 30 }} 100 100)" opacity="0.35"/>
+      {% endfor %}
+    </g>
+  </svg>
+
+  {# ---- Layer 3 — page-specific figure, centre, breathing ---- #}
+  <svg class="geo-layer geo-3" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.45">
+      {% if slug == "podcast" or slug == "music" %}
+        {# concentric waves #}
+        {% for i in range(1, 11) %}
+        <circle cx="100" cy="100" r="{{ i * 9 }}" opacity="{{ 1 - (i / 12) }}"/>
+        {% endfor %}
+        <path d="M10 100 Q 40 60 70 100 T 130 100 T 190 100"/>
+        <path d="M10 100 Q 40 140 70 100 T 130 100 T 190 100"/>
+      {% elif slug == "geometry" %}
+        {# metatron's cube: 13 circles with full chord lattice #}
+        <circle cx="100" cy="100" r="13"/>
+        {% for i in range(0, 6) %}
+        <circle cx="100" cy="74" r="13" transform="rotate({{ i * 60 }} 100 100)"/>
+        <circle cx="100" cy="48" r="13" transform="rotate({{ i * 60 }} 100 100)"/>
+        <line x1="100" y1="74" x2="100" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.6"/>
+        <line x1="100" y1="48" x2="145" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.45"/>
+        <line x1="100" y1="48" x2="55" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.45"/>
+        {% endfor %}
+      {% elif slug == "artwork" or slug == "infographics" %}
+        {# nested golden rectangles and a spiral #}
+        <path d="M100 100 m0 0 a6 6 0 1 1 6 -6 a13 13 0 1 1 -19 13 a26 26 0 1 1 38 -26 a47 47 0 1 1 -66 47 a68 68 0 1 1 96 -68" stroke-width="0.6"/>
+        <rect x="40" y="40" width="120" height="74"/>
+        <rect x="40" y="40" width="74" height="74" opacity="0.6"/>
+        <rect x="40" y="40" width="46" height="46" opacity="0.45"/>
+      {% elif slug == "research" or slug == "videos" %}
+        {# vesica lattice #}
+        {% for i in range(0, 5) %}
+        <circle cx="{{ 60 + i * 20 }}" cy="100" r="34" opacity="0.6"/>
+        <circle cx="{{ 60 + i * 20 }}" cy="66" r="34" opacity="0.35"/>
+        <circle cx="{{ 60 + i * 20 }}" cy="134" r="34" opacity="0.35"/>
+        {% endfor %}
+      {% elif slug == "ask-ed" or slug == "products" %}
+        {# octagram + enclosing circles #}
+        <circle cx="100" cy="100" r="88"/>
+        <polygon points="100,12 125,61 180,65 142,105 155,160 100,134 45,160 58,105 20,65 75,61"/>
+        <polygon points="100,20 162,45 180,100 162,155 100,180 38,155 20,100 38,45" opacity="0.5"/>
+      {% else %}
+        {# home: flower of life #}
+        <circle cx="100" cy="100" r="20"/>
+        {% for i in range(0, 6) %}
+        <circle cx="100" cy="80" r="20" transform="rotate({{ i * 60 }} 100 100)"/>
+        <circle cx="100" cy="60" r="20" transform="rotate({{ i * 60 }} 100 100)" opacity="0.7"/>
+        <circle cx="117" cy="70" r="20" transform="rotate({{ i * 60 }} 100 100)" opacity="0.5"/>
+        {% endfor %}
+        <circle cx="100" cy="100" r="62" stroke-width="0.6"/>
+        <circle cx="100" cy="100" r="66" stroke-width="0.3"/>
+      {% endif %}
+    </g>
+  </svg>
+
+</div>
