@@ -15,7 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with: { node-version: 24 }
+      - name: Check token is present
+        env:
+          HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
+        run: |
+          if [ -z "$HATCHABLE_TOKEN" ]; then
+            echo "::error::Repository secret HATCHABLE_TOKEN is not set."
+            echo "Add it at Settings → Secrets and variables → Actions → New repository secret."
+            exit 1
+          fi
+          echo "Token present (${#HATCHABLE_TOKEN} chars)."
+
       - name: Show Hatchable tool surface
         env:
           HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
