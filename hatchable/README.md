@@ -56,3 +56,23 @@ The script speaks the Streamable HTTP MCP transport, probes each tool's own sche
 argument names, sends text files through `write_files` in batches of 20, pushes the six product
 JPEGs through `upload_file` as base64, runs `dry_run_deploy` and refuses to ship if the validator
 reports blockers. The token is read from the environment and never written to disk.
+
+## Live deployment
+
+| | |
+| --- | --- |
+| URL | https://egregora.hatchable.site |
+| Console | https://hatchable.com/console/projects/egregora |
+| Project ID | `proj_eiuxpFfTnwwx` |
+| Version | 1 — 24 files, 0 warnings, validator clean |
+| Visibility | `personal` (sign-in gated) — flip to public in the console |
+
+Redeploys happen automatically: any push to `hatchable/**` or the deploy script runs
+`.github/workflows/hatchable-deploy.yml`, which reuses `proj_eiuxpFfTnwwx`, re-uploads the
+bundle and deploys. The runner writes a token-redacted transcript to
+`ci-logs/hatchable-deploy.log` on the branch.
+
+Binary assets (the six product JPEGs) are sent with `import_file_from_url` — Hatchable fetches
+them server-side from raw.githubusercontent.com at the deployed commit SHA. If that ever fails
+the script falls back to `upload_file`'s chunked multipart protocol (192 KB base64 chunks,
+committed with `final`, `sha256` and `bytes`).
