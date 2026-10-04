@@ -285,6 +285,24 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     return group;
   };
 
+
+  /** A spherical cap sitting on the surface of an eyeball of the given
+      radius, facing +Z, with flat radial UVs so a round texture (an iris)
+      maps on without smearing. This keeps the iris and pupil on the curved
+      front of the eye instead of floating as discs inside it. */
+  const eyeCap = (radius, halfAngle, mat) => {
+    const g = new THREE.SphereGeometry(radius, 56, 36, 0, Math.PI * 2, 0, halfAngle);
+    g.rotateX(Math.PI / 2);
+    const pos = g.attributes.position;
+    const uv = g.attributes.uv;
+    const span = radius * Math.sin(halfAngle) * 2;
+    for (let i = 0; i < pos.count; i++) {
+      uv.setXY(i, 0.5 + pos.getX(i) / span, 0.5 + pos.getY(i) / span);
+    }
+    uv.needsUpdate = true;
+    return new THREE.Mesh(g, mat);
+  };
+
   /* ----------------------------------------------------------- scene */
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x0a0810, 7.5, 16);
@@ -592,8 +610,8 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   const eyeRigs = [];
   [-1, 1].forEach((s) => {
     const rig = new THREE.Group();
-    rig.position.set(0.465 * s, 0.26, 0.62);
-    rig.rotation.y = 0.33 * s;
+    rig.position.set(0.525 * s, 0.28, 0.80);   // proud of the skull, not sunk in it
+    rig.rotation.y = 0.3 * s;
     head.add(rig);
 
     // dark eye-patch marking, almond shaped
@@ -604,37 +622,29 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       }),
       M.furShade
     );
-    patch.position.z = 0.015;
+    patch.position.z = 0.02;
+    patch.scale.set(1.05, 1, 1);
     rig.add(patch);
 
     const globe = new THREE.Mesh(new THREE.SphereGeometry(0.2, 40, 30), M.sclera);
     globe.position.z = 0.1;
     rig.add(globe);
 
-    // iris as a slightly concave disc, so it catches light like a real one
-    const IRIS_R = 0.172;
-    const irisGeo = sculpt(new THREE.CircleGeometry(IRIS_R, 64), (v) => {
-      v.z -= (1 - (v.x * v.x + v.y * v.y) / (IRIS_R * IRIS_R)) * 0.02;
-    });
-    const iris = new THREE.Mesh(irisGeo, M.iris);
-    iris.position.set(0, 0, 0.122);
+    // the iris, lying on the curve of the eye itself
+    const iris = eyeCap(0.2015, 1.02, M.iris);
+    iris.renderOrder = 2;
     globe.add(iris);
 
-    // a true black pupil, dead centre of the iris
-    const pupil = new THREE.Mesh(
-      new THREE.CircleGeometry(0.108, 48),
-      new THREE.MeshBasicMaterial({
-        color: 0x000000, toneMapped: false, depthWrite: false
-      })
-    );
-    pupil.scale.set(0.92, 1.12, 1);      // a broad vertical oval, dead centre
-    pupil.position.set(0, 0, 0.1435);
-    pupil.renderOrder = 4;
+    // the pupil: black, dead centre, and on the surface so nothing can bury it
+    const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000, toneMapped: false });
+    const pupil = eyeCap(0.2035, 0.52, pupilMat);
+    pupil.scale.set(0.78, 1.0, 1);        // a broad vertical oval
+    pupil.renderOrder = 3;
     globe.add(pupil);
 
     // cornea: a clear bulge over the iris, which is where realism lives
-    const cornea = new THREE.Mesh(new THREE.SphereGeometry(0.204, 32, 24), M.cornea);
-    cornea.scale.set(1, 1, 1.08);
+    const cornea = new THREE.Mesh(new THREE.SphereGeometry(0.208, 40, 28), M.cornea);
+    cornea.scale.set(1, 1, 1.05);
     cornea.renderOrder = 6;
     globe.add(cornea);
 
@@ -643,14 +653,14 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       new THREE.SphereGeometry(0.031, 10, 10),
       new THREE.MeshBasicMaterial({ color: 0xfffaf0 })
     );
-    glint.position.set(-0.088 * s, 0.085, 0.178);
+    glint.position.set(-0.092 * s, 0.09, 0.195);
     glint.renderOrder = 5;
     globe.add(glint);
     const glint2 = new THREE.Mesh(
       new THREE.SphereGeometry(0.016, 8, 8),
       new THREE.MeshBasicMaterial({ color: 0xcfdcff, transparent: true, opacity: 0.8 })
     );
-    glint2.position.set(0.1 * s, -0.065, 0.172);
+    glint2.position.set(0.105 * s, -0.07, 0.188);
     glint2.renderOrder = 5;
     globe.add(glint2);
 
@@ -691,8 +701,8 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
     const REST_UP = -0.62;                 // swung back off the iris
     const REST_LOW = Math.PI + 0.46;       // lower lid dropped clear
-    const lid = makeLid(0.234, REST_UP, false);
-    const lowLid = makeLid(0.228, REST_LOW, true);
+    const lid = makeLid(0.238, REST_UP, false);
+    const lowLid = makeLid(0.232, REST_LOW, true);
 
     /* The sockets sit on the sides of a wedge skull, so each globe is
        counter-rotated back towards the viewer and then toed in very slightly,
@@ -933,7 +943,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       e.globe.rotation.y = e.restY - head.rotation.y * 0.55 - tx * 0.18;
       e.globe.rotation.x = -head.rotation.x * 0.45 + ty * 0.14;
       // the pupil widens when he is listening and in the lower light
-      const target = listening ? 1.1 : 0.92;
+      const target = listening ? 0.95 : 0.78;
       e.pupil.scale.x += (target - e.pupil.scale.x) * 0.05;
     });
 
