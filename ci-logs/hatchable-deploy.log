@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-04T21:23:07Z
+# Hatchable deploy — 2026-10-04T21:35:03Z
 
 token present: 43 chars, prefix hb_
 
@@ -11,8 +11,8 @@ hatchable.com/mcp -> HTTP 200
   connected to hatchable 2.0.0
   34 tools available
 ▸ using existing project proj_eiuxpFfTnwwx
-▸ write_files — 18 text files
-  ✓ api/ask.js, hatchable.toml, migrations/0001_questions.sql, public/404.html, public/ask-ed/index.html, public/a…
+▸ write_files — 20 text files
+  ✓ api/ask.js, hatchable.toml, lib/oracle-corpus.js, migrations/0001_questions.sql, migrations/0002_question_sour…
 ▸ uploading 6 binary assets (server-side URL import)
   ✓ public/assets/img/product-codex.jpg (198 KB) via url import
   ✓ public/assets/img/product-deck.jpg (240 KB) via url import
@@ -21,7 +21,7 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/img/product-solids.jpg (153 KB) via url import
   ✓ public/assets/img/product-wheel.jpg (215 KB) via url import
 ▸ dry_run_deploy
-  {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":23,"api_functions":1,"pages":0,"migrations":1,"auth_enabled":false,"next_version":8}}
+  {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":23,"api_functions":1,"pages":0,"migrations":2,"auth_enabled":false,"next_version":10}}
 ▸ deploy
 
 ✔ Deployed.
@@ -29,20 +29,20 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 8,
+  "version": 10,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v7.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v8.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v9.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v10.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
-  "files_deployed": 26,
+  "files_deployed": 28,
   "functions_deployed": 1,
   "warnings": [],
   "visibility": "personal",
-  "preview_url": "https://egregora.hatchable.site/?_preview=eyJzbHVnIjoiZWdyZWdvcmEiLCJleHAiOjE3OTExNTA3OTAsInJvbGUiOiJwdWJsaWMifQ.19073d1b7b6ef245cdea535fe977d8c58ceaaa144162a1ae7c9ea3d5497bfcf9"
+  "preview_url": "https://egregora.hatchable.site/?_preview=eyJzbHVnIjoiZWdyZWdvcmEiLCJleHAiOjE3OTExNTE1MDgsInJvbGUiOiJwdWJsaWMifQ.06dc86582584db64fd704baa3494d0134b1899c361246e50d85ea2f951e13c67"
 }
 
    https://egregora.hatchable.site
