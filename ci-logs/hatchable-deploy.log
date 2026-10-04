@@ -1,0 +1,20 @@
+# Hatchable deploy — 2026-10-04T18:20:46Z
+
+token present: 4 chars, prefix jim
+
+## curl reachability
+hatchable.com/mcp -> HTTP 200
+
+## tools/list
+▸ Connecting to https://hatchable.com/mcp
+
+✖ initialize → HTTP 401: {"error":"invalid_token","error_description":"Missing or invalid access token"}
+  Check HATCHABLE_TOKEN — console → Settings → API keys.
+exit=1
+
+## deploy
+▸ Connecting to https://hatchable.com/mcp
+
+✖ initialize → HTTP 401: {"error":"invalid_token","error_description":"Missing or invalid access token"}
+  Check HATCHABLE_TOKEN — console → Settings → API keys.
+exit=1
