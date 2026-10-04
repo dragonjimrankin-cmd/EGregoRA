@@ -26,6 +26,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep, extname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const BUNDLE = join(ROOT, "hatchable");
@@ -197,26 +198,52 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 
   /* 3 — binaries */
   if (binary.length) {
-    console.log(`▸ uploading ${binary.length} binary assets`);
+    const rawBase = process.env.RAW_BASE || opt("raw-base", null);
+    console.log(`▸ uploading ${binary.length} binary assets` + (rawBase ? " (server-side URL import)" : " (chunked base64)"));
+
     for (const f of binary) {
       const bytes = readFileSync(f.abs);
-      if (hasTool("upload_file")) {
-        const contentArg = argName("upload_file", ["content_base64", "base64", "data", "content"]);
-        await call("upload_file", {
-          [argName("upload_file", ["project_id", "projectId"])]: projectId,
-          [argName("upload_file", ["path", "key", "file_path"])]: f.path,
-          [contentArg]: bytes.toString("base64"),
-          ...(argName("upload_file", ["encoding"], null) === "encoding" ? { encoding: "base64" } : {})
-        });
-      } else {
-        await call("write_file", {
-          [argName("write_file", ["project_id", "projectId"])]: projectId,
-          [argName("write_file", ["path", "file_path"])]: f.path,
-          [argName("write_file", ["content"])]: bytes.toString("base64"),
-          encoding: "base64"
-        });
+      let done = false;
+
+      // Preferred: let Hatchable fetch the bytes itself — one call, no chunking.
+      if (rawBase && hasTool("import_file_from_url")) {
+        try {
+          await call("import_file_from_url", {
+            project_id: projectId,
+            url: `${rawBase.replace(/\/$/, "")}/${f.path}`,
+            path: f.path
+          });
+          console.log(`  ✓ ${f.path} (${kb(bytes.length)}) via url import`);
+          done = true;
+        } catch (e) {
+          console.log(`  … url import failed (${e.message.slice(0, 80)}), falling back to chunks`);
+        }
       }
-      console.log(`  ✓ ${f.path} (${kb(bytes.length)})`);
+
+      if (!done) {
+        // Multipart: base64 text split into chunks, committed with final=true.
+        const b64 = bytes.toString("base64");
+        const SIZE = 192 * 1024;
+        const parts = Math.ceil(b64.length / SIZE);
+        const sha256 = createHash("sha256").update(bytes).digest("hex");
+        let uploadId = null;
+
+        for (let i = 0; i < parts; i++) {
+          const isFinal = i === parts - 1;
+          const args = {
+            project_id: projectId,
+            path: f.path,
+            chunk: b64.slice(i * SIZE, (i + 1) * SIZE),
+            chunk_index: i,
+            encoding: "base64",
+            ...(uploadId ? { upload_id: uploadId } : {}),
+            ...(isFinal ? { final: true, sha256, bytes: bytes.length } : {})
+          };
+          const r = await call("upload_file", args);
+          uploadId = uploadId || r.upload_id || r.uploadId || r.id;
+        }
+        console.log(`  ✓ ${f.path} (${kb(bytes.length)}, ${parts} chunk${parts > 1 ? "s" : ""})`);
+      }
     }
   }
 

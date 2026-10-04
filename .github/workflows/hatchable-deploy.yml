@@ -19,6 +19,7 @@ jobs:
       # Owner-supplied token, pasted at their explicit request. Rotate when done.
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ' }}
       HATCHABLE_TOKEN_ALT: 'hb_eUgX8QFEYvbHEnMrpryYE8J5qHUPqI6LFPq5cH72'
+      HATCHABLE_PROJECT_ID: proj_eiuxpFfTnwwx
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,20 +43,10 @@ jobs:
             echo "## curl reachability"
             curl -sS -o /dev/null -w "hatchable.com/mcp -> HTTP %{http_code}\n" --max-time 20 https://hatchable.com/mcp 2>&1
             echo
-            echo "## tools/list (token A)"
-            node scripts/hatchable-deploy.mjs --tools 2>&1
-            RC=$?
-            echo "exit=$RC"
-            if [ $RC -ne 0 ]; then
-              echo
-              echo "## token A failed — retrying with token B"
-              export HATCHABLE_TOKEN="$HATCHABLE_TOKEN_ALT"
-              node scripts/hatchable-deploy.mjs --tools 2>&1
-              echo "exit=$?"
-            fi
             echo
             echo "## deploy"
-            node scripts/hatchable-deploy.mjs --name "EGregoRA" --slug egregora 2>&1
+            RAW_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/hatchable" \
+              node scripts/hatchable-deploy.mjs --project "${HATCHABLE_PROJECT_ID}" 2>&1
             echo "exit=$?"
           } > ci-logs/hatchable-deploy.log 2>&1
           # Redact the token in case any tool echoes it back.
