@@ -1,0 +1,80 @@
+# Hatchable deploy — 2026-10-05T17:12:47Z
+
+token present: 43 chars, prefix hb_
+
+## curl reachability
+hatchable.com/mcp -> HTTP 200
+
+
+## deploy
+▸ Connecting to https://hatchable.com/mcp
+  connected to hatchable 2.0.0
+  34 tools available
+▸ using existing project proj_eiuxpFfTnwwx
+▸ write_files — 105 text files
+  ✓ api/account-face.js, api/account-identity.js, api/account-me.js, api/account-passkey.js, api/account-signout.j…
+  ✓ lib/colab.js, lib/continuity.js, lib/facecheck.js, lib/gink-mind.js, lib/gpu-scripts.js, lib/imagegen.js, lib/…
+  ✓ lib/oracle-corpus-xi.js, lib/oracle-corpus-xii.js, lib/oracle-corpus-xiii.js, lib/oracle-corpus-xiv.js, lib/or…
+  ✓ migrations/0004_videos.sql, migrations/0005_accounts.sql, migrations/0006_letters.sql, migrations/0007_identit…
+  ✓ public/assets/js/site.js, public/astrology/index.html, public/consciousness/index.html, public/cosmic-ether/in…
+  ✓ public/sacred-geometry/index.html, public/site.webmanifest, public/sitemap.xml, public/videos/index.html, publ…
+▸ uploading 23 binary assets (server-side URL import)
+  ✓ public/assets/img/apple-touch-icon.png (47 KB) via url import
+  ✓ public/assets/img/art-inner-cosmos.jpg (361 KB) via url import
+  ✓ public/assets/img/art-ouroboros-elements.jpg (471 KB) via url import
+  ✓ public/assets/img/art-solstice-circle.jpg (249 KB) via url import
+  ✓ public/assets/img/art-tree-of-stars.jpg (404 KB) via url import
+  ✓ public/assets/img/favicon-32.png (2 KB) via url import
+  ✓ public/assets/img/icon-192.png (53 KB) via url import
+  ✓ public/assets/img/icon-512.png (336 KB) via url import
+  ✓ public/assets/img/og-egregora.jpg (129 KB) via url import
+  ✓ public/assets/img/product-astrolabe.jpg (216 KB) via url import
+  ✓ public/assets/img/product-codex.jpg (198 KB) via url import
+  ✓ public/assets/img/product-cytoskeleton.jpg (68 KB) via url import
+  ✓ public/assets/img/product-deck.jpg (240 KB) via url import
+  ✓ public/assets/img/product-elements.jpg (153 KB) via url import
+  ✓ public/assets/img/product-glass.jpg (181 KB) via url import
+  ✓ public/assets/img/product-journal.jpg (293 KB) via url import
+  ✓ public/assets/img/product-member.jpg (168 KB) via url import
+  ✓ public/assets/img/product-orrery.jpg (135 KB) via url import
+  ✓ public/assets/img/product-runes.jpg (162 KB) via url import
+  ✓ public/assets/img/product-skull.jpg (151 KB) via url import
+  ✓ public/assets/img/product-solids.jpg (153 KB) via url import
+  ✓ public/assets/img/product-tribunal.jpg (160 KB) via url import
+  ✓ public/assets/img/product-wheel.jpg (215 KB) via url import
+▸ dry_run_deploy
+  {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."}],"would_deploy":{"public_files":59,"api
+▸ openai key probe: HTTP 429 — You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.
+▸ vision probe pollinations [openai]: HTTP 400 — ERR "400 Bad Request"
+▸ vision probe pollinations-ref [openai-fast]: HTTP 400 — ERR "400 Bad Request"
+▸ vision probe hf-router [Qwen/Qwen2.5-VL-7B-Instruct]: HTTP 401 — <!DOCTYPE html> <html class="" lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, ini
+▸ vision probe openai [gpt-4o-mini]: HTTP 429 — ERR {"message":"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billin
+▸ kaggle token: HTTP 200 — {"active":true,"username":"shakradragon","userId":36890995,"user_id":36890995,"scope":"resources.admin:*"}
+▸ deploy
+
+✔ Deployed.
+{
+  "project_name": "EGregoRA",
+  "project_public_id": "proj_eiuxpFfTnwwx",
+  "project_slug": "egregora",
+  "version": 99,
+  "url": "https://egregora.hatchable.site",
+  "status": "live",
+  "is_draft": false,
+  "public_url": "https://egregora.hatchable.site",
+  "draft_url": "https://egregora-draft.hatchable.site",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v98.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v99.png",
+  "console_url": "https://hatchable.com/console/projects/egregora",
+  "files_deployed": 131,
+  "functions_deployed": 17,
+  "warnings": [],
+  "visibility": "public",
+  "preview_url": null
+}
+
+   https://egregora.hatchable.site
+
+   Projects start PRIVATE. Flip visibility to public from the Hatchable console;
+   that is deliberately a dashboard-only action, not something MCP can do.
+exit=0
