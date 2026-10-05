@@ -1237,3 +1237,32 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   border-radius: 4px;
 }
 .scan-box.is-passed { display: none; }
+
+/* ------------------------------------------------- the gate-word */
+.captcha { margin: .6rem 0 .2rem; }
+.captcha-label {
+  font-family: 'Cinzel', serif; font-size: .7rem; letter-spacing: .22em;
+  text-transform: uppercase; color: #9f947a; margin: 0 0 .45rem;
+}
+.captcha-row { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.captcha-art {
+  line-height: 0; border-radius: 3px; overflow: hidden;
+  border: 1px solid rgba(215, 176, 90, .22); background: #0a090e;
+  min-width: 180px; min-height: 60px;
+  display: flex; align-items: center; justify-content: center;
+}
+.captcha-art svg { max-width: 100%; height: auto; }
+.captcha-wait {
+  font-family: 'EB Garamond', serif; font-size: .85rem; color: #9f947a;
+  padding: 1.2rem .8rem; line-height: 1.4; text-align: center;
+}
+.captcha-new {
+  background: none; border: 1px solid rgba(215, 176, 90, .35); border-radius: 3px;
+  color: #d7b05a; font-size: 1.2rem; line-height: 1; cursor: pointer;
+  width: 2.2rem; height: 2.2rem;
+}
+.captcha-new:hover { border-color: rgba(215, 176, 90, .8); color: #f3ddaa; }
+.captcha input[data-captcha-input] {
+  margin-top: .5rem; max-width: 14rem;
+  font-family: 'Cinzel', serif; letter-spacing: .3em; text-transform: uppercase;
+}

@@ -11,6 +11,7 @@
  */
 import { db, email } from 'hatchable';
 import { cleanEmail, randomToken } from '../lib/accounts.js';
+import { solveCaptcha } from '../lib/captcha.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -108,6 +109,9 @@ export default async function (req, res) {
   if (!name) return res.status(400).json({ error: 'A name, even a chosen one.' });
   if (!addr) return res.status(400).json({ error: 'A working email address, or Ed cannot reply.' });
   if (question.length < 12) return res.status(400).json({ error: 'Ask the real question — a line or two at least.' });
+
+  const gate = await solveCaptcha(body.captcha_token, body.captcha);
+  if (!gate.ok) return res.status(400).json({ error: gate.error, captcha: true });
 
   try {
     const { rows: recent } = await db.query(

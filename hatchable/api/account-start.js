@@ -1,6 +1,7 @@
 /** POST /api/account-start — begin joining or signing in: email a six-digit code. */
 import { cleanEmail, findOrCreate, issueCode, sendCode } from '../lib/accounts.js';
 import { db } from 'hatchable';
+import { solveCaptcha } from '../lib/captcha.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -10,6 +11,10 @@ export default async function (req, res) {
   const addr = cleanEmail(body.email);
   const name = String(body.name || '').trim().slice(0, 80) || null;
   if (!addr) return res.status(400).json({ error: 'That does not look like an email address.' });
+
+  /* The gate-word, before a single email is sent on anyone's behalf. */
+  const gate = await solveCaptcha(body.captcha_token, body.captcha);
+  if (!gate.ok) return res.status(400).json({ error: gate.error, captcha: true });
 
   try {
     // light rate limit: five codes per address per hour

@@ -920,10 +920,17 @@
     var addr = (emailIn.value || '').trim();
     if (!addr) { say(msg, 'An address first.', true); return; }
     if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Sending…'; }
-    post('/api/account-start', { email: addr, name: (nameIn && nameIn.value) || '' })
+    post('/api/account-start', Object.assign(
+      { email: addr, name: (nameIn && nameIn.value) || '' },
+      window.EGCaptcha ? window.EGCaptcha('join') : {}
+    ))
       .then(function (d) {
         if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Send my code'; }
-        if (!d._ok) { say(quiet ? codeMsg : msg, d.error || 'That did not work.', true); return; }
+        if (!d._ok) {
+          if (d.captcha && window.EGCaptchaRenew) window.EGCaptchaRenew('join');
+          say(quiet ? codeMsg : msg, d.error || 'That did not work.', true);
+          return;
+        }
         var note = document.getElementById('a-code-note');
         if (note) {
           note.textContent = (d.returning
@@ -931,6 +938,7 @@
             : 'A code is on its way to ' + addr + '. ') +
             'It lasts fifteen minutes and works once.';
         }
+        if (window.EGCaptchaRenew) window.EGCaptchaRenew('join');
         say(codeMsg, quiet ? 'Another code sent.' : '', false);
         show('code');
         var ci = document.getElementById('a-code');
@@ -1321,18 +1329,19 @@
     fetch('/api/letter', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify(Object.assign({
         name: field('name'),
         email: field('email'),
         topic: field('topic'),
         question: field('question'),
         public: field('public'),
         website: field('website')
-      })
+      }, window.EGCaptcha ? window.EGCaptcha('letter') : {}))
     })
       .then(function (r) { return r.json().then(function (d) { d._ok = r.ok; return d; }); })
       .then(function (d) {
         if (btn) { btn.disabled = false; btn.textContent = 'Send the Question'; }
+        if (window.EGCaptchaRenew) window.EGCaptchaRenew('letter');
         if (!d._ok) { say(d.error || 'The letter was refused.', true); return; }
         say(d.message || 'Your letter is in the pile.');
         var q = document.getElementById('question');
@@ -1699,4 +1708,65 @@
   if (window.EGStudio) window.EGStudio().then(function (me) {
     if (me && me.studio) { box.hidden = true; var or = document.querySelector('.scan-or'); if (or) or.hidden = true; }
   });
+})();
+
+/* ------------------------------------------------------------------ *
+ * The gate-word. Self-hosted, drawn as SVG on the server, no third
+ * party told who is knocking. window.EGCaptcha(name) hands back the
+ * token and the typed answer; .renew(name) draws a fresh one.
+ * ------------------------------------------------------------------ */
+(function () {
+  var boxes = {};
+
+  function fetchWord(box) {
+    var art = box.querySelector('[data-captcha-art]');
+    if (art) art.innerHTML = '<span class="captcha-wait">drawing\u2026</span>';
+    box.dataset.token = '';
+    return fetch('/api/captcha')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.svg) throw new Error('no word');
+        box.dataset.token = d.token;
+        if (art) art.innerHTML = d.svg;
+      })
+      .catch(function () {
+        if (art) art.innerHTML = '<span class="captcha-wait">The gate-word could not be drawn. ' +
+          'Press the arrow to try again.</span>';
+      });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-captcha]'), function (box) {
+    boxes[box.getAttribute('data-captcha')] = box;
+    fetchWord(box);
+    var again = box.querySelector('[data-captcha-new]');
+    if (again) again.addEventListener('click', function () {
+      var input = box.querySelector('[data-captcha-input]');
+      if (input) input.value = '';
+      fetchWord(box);
+    });
+    /* Typing it in upper case is kinder to read back. */
+    var input = box.querySelector('[data-captcha-input]');
+    if (input) input.addEventListener('input', function () {
+      var at = input.selectionStart;
+      input.value = input.value.toUpperCase();
+      try { input.setSelectionRange(at, at); } catch (e) {}
+    });
+  });
+
+  window.EGCaptcha = function (name) {
+    var box = boxes[name];
+    if (!box) return {};
+    var input = box.querySelector('[data-captcha-input]');
+    return {
+      captcha_token: box.dataset.token || '',
+      captcha: (input && input.value) || ''
+    };
+  };
+  window.EGCaptchaRenew = function (name) {
+    var box = boxes[name];
+    if (!box) return;
+    var input = box.querySelector('[data-captcha-input]');
+    if (input) input.value = '';
+    fetchWord(box);
+  };
 })();

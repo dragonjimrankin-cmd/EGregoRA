@@ -461,6 +461,17 @@
             <input id="a-name" type="text" name="name" maxlength="80" autocomplete="name"
                    placeholder="Rowan of the North">
           </div>
+          <div class="captcha" data-captcha="join">
+            <p class="captcha-label">Read the gate-word and type it back</p>
+            <div class="captcha-row">
+              <div class="captcha-art" data-captcha-art aria-live="polite"></div>
+              <button class="captcha-new" type="button" data-captcha-new
+                      title="Draw another word" aria-label="Draw another gate-word">&#8634;</button>
+            </div>
+            <input type="text" data-captcha-input autocomplete="off" autocapitalize="characters"
+                   spellcheck="false" maxlength="8" required
+                   aria-label="The gate-word" placeholder="The five letters above">
+          </div>
           <div class="ask-actions">
             <button class="btn" type="submit" id="a-send">Send my code</button>
             <button class="btn btn--ghost" type="button" id="a-bio" hidden>
