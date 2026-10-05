@@ -26,6 +26,7 @@ import { submitVideo, pollVideo, VIDEO_MODELS } from '../lib/videogen.js';
 import { generateImage } from '../lib/imagegen.js';
 import { liveWorkers } from '../lib/colab.js';
 import { bestMatch, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
+import { ginkSystem, PRELUDE, isReturnRequest, RETURN_REPLY } from '../lib/gink-mind.js';
 import { openChat, keylessChat } from '../lib/openchat.js';
 import { openaiChat } from '../lib/openai.js';
 
@@ -106,21 +107,26 @@ export default async function (req, res) {
         const grounding = retrieved
           .map((m, i) => (i + 1) + '. Q: ' + m.entry.q + '\n   A: ' + m.entry.a)
           .join('\n\n');
-        const system =
-          'You are the Oracle of EGregoRA, an order of enquiry co-founded by Edward Gregory and ' +
-          'Jim Rankin. Answer in British English, 45 to 120 words, plainly and without hedging. ' +
-          'Say in plain words how firm a claim is — measured, recorded, speculative, story — and ' +
-          'never use diamond marks. Anchor the reply in the order\u2019s own written answers below ' +
-          'rather than inventing. If they do not cover it, say so and answer honestly anyway.' +
-          (grounding ? '\n\nThe order has written:\n\n' + grounding : '');
-        const messages = (Array.isArray(body.history) ? body.history.slice(-12) : [])
-          .filter((m) => m && m.content)
-          .map((m) => ({ role: m.role === 'oracle' ? 'assistant' : 'user', content: String(m.content).slice(0, 4000) }));
+        if (isReturnRequest(question)) {
+          return res.json({ answer: RETURN_REPLY, source: 'default-state' });
+        }
+
+        const system = ginkSystem({ tier: 'open', adult: false, grounding, tools: false });
+        const messages = PRELUDE.map((m) => ({ role: m.role, content: m.content }))
+          .concat((Array.isArray(body.history) ? body.history.slice(-12) : [])
+            .filter((m) => m && m.content)
+            .map((m) => ({ role: m.role === 'oracle' ? 'assistant' : 'user',
+                           content: String(m.content).slice(0, 4000) })));
         messages.push({ role: 'user', content: question });
 
         let out = await openChat({ system, messages });
         if (!out || !out.text) out = await openaiChat({ system, messages });
-        if (!out || !out.text) out = await keylessChat({ system, messages });
+        if (!out || !out.text) {
+          out = await keylessChat({
+            system: ginkSystem({ tier: 'compact', grounding, tools: false }),
+            messages: messages.slice(PRELUDE.length)
+          });
+        }
         if (out && out.text) {
           return res.json({
             answer: out.text,
