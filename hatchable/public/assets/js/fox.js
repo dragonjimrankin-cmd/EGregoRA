@@ -568,7 +568,11 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
   const jawGeo = sculpt(new THREE.SphereGeometry(0.46, 36, 26), (v) => {
     const fwd = smoothstep(-0.25, 0.46, v.z);
-    v.z += fwd * 1.14;
+    /* This is what was poking through the nose. The lower jaw ran to z 2.40
+       in head space while the nose leather ends at 2.11, so the cream fur on
+       the jaw's tip stood out in front of the black. On a real fox the lower
+       jaw stops short of the nose, and now so does this one: 2.02. */
+    v.z += fwd * 0.76;
     v.x *= 1 - 0.80 * fwd;            // the lower jaw tapers to a point
     v.y *= 0.52 * (1 - 0.5 * fwd);
     if (v.y > 0.0) v.y *= 0.32;
@@ -577,14 +581,18 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   lowerJaw.position.set(0, -0.04, 0.52);
   lowerJaw.castShadow = true;
   jaw.add(lowerJaw);
-  furShells(lowerJaw, { depth: 0.035, map: creamMap, shells: 4, tipDark: 0.25 });
+  furShells(lowerJaw, {
+    depth: 0.035, map: creamMap, shells: 4, tipDark: 0.25,
+    /* and no hair at all on the last of it, under the leather */
+    fade: (x, y, z) => 1 - smoothstep(0.95, 1.25, z)
+  });
 
   // dark mouth cavity so an open mouth reads as depth, not a gap
   const cavity = new THREE.Mesh(
     sculpt(new THREE.SphereGeometry(0.36, 20, 14), (v) => { v.z *= 1.9; v.y *= 0.62; }),
     M.mouth
   );
-  cavity.position.set(0, 0.08, 0.72);
+  cavity.position.set(0, 0.08, 0.62);
   jaw.add(cavity);
 
   // tongue
@@ -595,7 +603,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     }),
     M.tongue
   );
-  tongue.position.set(0, 0.0, 0.86);
+  tongue.position.set(0, 0.0, 0.74);
   jaw.add(tongue);
 
   // teeth: upper canines and incisors on the skull, lowers on the jaw
