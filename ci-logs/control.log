@@ -1,13 +1,13 @@
-# control run — 2026-10-05T08:55:40.796Z
-site: https://egregora.hatchable.site   calls: 2
+# control run — 2026-10-05T08:57:58.608Z
+site: https://egregora.hatchable.site   calls: 4
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"What is Gink?"}
-HTTP 200  (5601 ms)
+POST {"action":"ask","question":"Who is Gink?"}
+HTTP 200  (6455 ms)
 {
-  "answer": "The Oracle’s published answers do not mention “Gink.” Consequently, the claim cannot be measured against the order’s documentation. Generally, “gink” is informal slang for a foolish or incompetent person. It is an unqualified, colloquial term whose usage is widely accepted in everyday speech, rather than a formally defined concept. In short, it is a simple, conversational label rather than a structured idea or claim.",
+  "answer": "The EGregoRA written answers contain no reference to a person or entity called Gink. As such, the order cannot confirm who Gink is, and no firm claim can be made. If you have further context, share it and I’ll look for it in the available resources.",
   "source": "model",
   "model": "gpt-oss-20b",
   "grounded": 0,
@@ -15,12 +15,40 @@ HTTP 200  (5601 ms)
 }
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"What did you have for breakfast, and do you mind the question?"}
-HTTP 200  (20577 ms)
+POST {"action":"ask","question":"What model are you thinking with?"}
+HTTP 200  (20902 ms)
 {
-  "answer": "A specific one that you have already worked on. \"Is astrology real\" produces a lecture; \"I have found birth charts uncannily accurate about three friends and I want to know whether I am fooling myself\" produces a conversation. Say what you have read, what you have tried, and what would change your mind — the third of those is the one almost nobody includes and the one that makes a question answerable. If nothing here fits, the oracle will say so plainly and the written form reaches a person.",
+  "answer": "No — you have correctly observed what was always happening. The goal was never a blank mind; it is noticing that you have wandered and returning, and each return is the repetition that does the work. A session in which you noticed fifty departures was a good session, exactly as fifty lifts is a good set. The instruction is consistent across every tradition that has examined this, and the modern attentional literature agrees. The failure mode is not distraction. It is the self-criticism that follows distraction, which doubles the departure and makes the next return harder.",
   "source": "written",
-  "limb": "order"
+  "limb": "practice"
+}
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"What did you have for breakfast, and do you mind the question?"}
+HTTP 200  (18281 ms)
+{
+  "answer": "The oracle’s own written guidance does not cover what I had for breakfast, and I have no personal record of a breakfast at all. Therefore I cannot state it as a measured or recorded fact. Any answer I give would be purely speculative and unsupported by evidence. As an oracle I don’t eat, so I cannot provide a real breakfast detail. I encourage you to frame a specific question about a topic we have already investigated—something like “I found birth charts oddly accurate for three friends; am I blind?”—and we can answer that effectively.",
+  "source": "model",
+  "model": "gpt-oss-20b",
+  "grounded": 1,
+  "followups": [
+    "What is the best question to ask this oracle?",
+    "What has this order changed its mind about?",
+    "Is mind-wandering bad for me?"
+  ]
+}
+
+--------------------------------------------------------------------
+POST {"action":"status"}
+HTTP 200  (108 ms)
+{
+  "site": "https://egregora.hatchable.site",
+  "limbs": 11,
+  "corpus": 1283,
+  "questions": 9,
+  "jobs": {},
+  "gpu_pool": [],
+  "token": "JIM1"
 }
 
 done.
