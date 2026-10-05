@@ -1315,3 +1315,23 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   .head-join { padding: .45rem .55rem; }
   .head-join-mark { font-size: 1.1rem; }
 }
+
+/* ------------------------------------------------------- the register */
+.head-join-addr { text-transform: none; letter-spacing: .06em; font-size: .72rem; max-width: 15rem;
+  overflow: hidden; text-overflow: ellipsis; }
+.acct-email { font-family: 'EB Garamond', serif; color: #d7b05a; margin: .1rem 0 1rem; word-break: break-all; }
+.acct-grid {
+  display: grid; grid-template-columns: auto 1fr; gap: .45rem 1.2rem;
+  margin: 0 0 1.2rem; font-family: 'EB Garamond', serif;
+}
+.acct-grid dt {
+  color: #9f947a; font-family: 'Cinzel', serif; font-size: .66rem;
+  letter-spacing: .18em; text-transform: uppercase; align-self: center;
+}
+.acct-grid dd { margin: 0; color: #cbbb93; }
+.acct-section { border-top: 1px solid rgba(215,176,90,.22); margin-top: 1.2rem; padding-top: .8rem; }
+.acct-section h3 { color: #f3ddaa; margin: 0 0 .5rem; }
+@media (max-width: 520px) {
+  .acct-grid { grid-template-columns: 1fr; gap: .1rem .6rem; }
+  .acct-grid dd { margin-bottom: .5rem; }
+}

@@ -1,0 +1,88 @@
+---
+layout: layouts/base.njk
+title: Your Account
+permalink: /account/
+description: "Your standing in the order: the address on file, how you get in, whether the studio is open to you, and what you have made."
+eleventyExcludeFromCollections: true
+---
+
+<section class="page-head">
+  <p class="kicker">The Register</p>
+  <h1>Your Account</h1>
+  <p class="lede muted">What the order knows about you, kept in one place and kept short. Nothing here is
+  shared, sold or shown to anyone else.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+
+    <div class="acct-wait" id="acct-wait">
+      <p class="muted">Looking you up…</p>
+    </div>
+
+    <div class="acct-out" id="acct-out" hidden>
+      <p class="kicker" id="acct-kicker">SIGNED IN</p>
+      <h2 id="acct-name">—</h2>
+      <p class="acct-email" id="acct-email"></p>
+
+      <dl class="acct-grid" id="acct-grid"></dl>
+
+      <div class="acct-section">
+        <h3>The studio</h3>
+        <p class="muted small" id="acct-studio"></p>
+      </div>
+
+      <div class="acct-section">
+        <h3>How you get in</h3>
+        <ul class="passkey-list" id="acct-keys"></ul>
+        <p class="muted xsmall">Passkeys are added and removed on the
+        <a href="/join/">Join page</a>, where your device can be asked properly.</p>
+      </div>
+
+      <div class="ask-actions">
+        <a class="btn btn--ghost" href="/join/">Manage sign-in &amp; checks</a>
+        <a class="btn btn--ghost" href="/ask-ed/">Ask the oracle</a>
+        <button class="btn btn--ghost" type="button" id="acct-out-btn">Sign out</button>
+      </div>
+      <p class="auth-msg" id="acct-msg" role="status"></p>
+    </div>
+
+    <div class="acct-none" id="acct-none" hidden>
+      <p class="kicker">NOT SIGNED IN</p>
+      <h2>No one is signed in on this device</h2>
+      <p class="muted small">An account is a convenience, never a gate on the teaching: every page and
+      every answer here stays open whether you hold one or not. It exists so the oracle knows your name,
+      keeps your thread, and can open the image and video studio to you once your age is checked.</p>
+      <p><a class="btn" href="/join/">Sign in or create an account</a></p>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <h3>What is held, exactly</h3>
+      <ul class="biblio">
+        <li>Your email address, and the name you chose to be called by.</li>
+        <li>A session token per device, good for thirty days, revocable here.</li>
+        <li>A public key for each passkey — never a fingerprint, never a face.</li>
+        <li>If you passed the document check: your declared legal name, date of birth and the photograph
+        you supplied, stored privately and never published.</li>
+        <li>If you passed by face scan: the estimated number, and one frame only where the reading was
+        taken in your browser and nothing else witnessed it.</li>
+      </ul>
+    </div>
+    <div class="frame reveal">
+      <h3>Leaving</h3>
+      <p>Signing out ends this device's session at once. If you want the account and everything attached
+      to it erased — address, documents, letters, the lot — write to
+      <a href="mailto:{{ site.email }}">{{ site.email }}</a> from the address on file and it will be done,
+      without an argument and without a retention offer.</p>
+      <p class="muted small">We would rather have ten people who want to be here than a thousand who
+      cannot find the door out.</p>
+    </div>
+  </div>
+</section>

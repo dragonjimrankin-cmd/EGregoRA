@@ -1864,11 +1864,117 @@
   if (!link || !window.EGStudio) return;
   window.EGStudio().then(function (me) {
     if (!me || !me.signed_in) return;
-    var who = me.member && (me.member.name || me.member.email) || 'Member';
-    var first = String(who).split(/[\s@]+/)[0];
+    var addr = (me.member && me.member.email) || '';
     link.classList.add('is-in');
-    link.setAttribute('title', 'Signed in as ' + who);
+    link.href = '/account/';
+    link.setAttribute('title', 'Signed in as ' + addr + ' — your account');
+    var mark = link.querySelector('.head-join-mark');
+    if (mark) mark.textContent = '\u2726';
     var text = link.querySelector('.head-join-text');
-    if (text) text.textContent = first.length > 14 ? 'My account' : first;
+    if (text) {
+      text.classList.add('head-join-addr');
+      text.textContent = addr;
+    }
   }).catch(function () {});
+})();
+
+/* ------------------------------------------------------------------ *
+ * The register — your own page.
+ * ------------------------------------------------------------------ */
+(function () {
+  var wait = document.getElementById('acct-wait');
+  if (!wait) return;
+  var out = document.getElementById('acct-out');
+  var none = document.getElementById('acct-none');
+
+  function when(value) {
+    if (!value) return '—';
+    var d = new Date(value);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function row(dl, term, detail) {
+    var dt = document.createElement('dt');
+    dt.textContent = term;
+    var dd = document.createElement('dd');
+    if (detail && detail.nodeType) dd.appendChild(detail); else dd.textContent = detail;
+    dl.appendChild(dt);
+    dl.appendChild(dd);
+  }
+
+  window.EGStudio().then(function (me) {
+    wait.hidden = true;
+    if (!me || !me.signed_in) { if (none) none.hidden = false; return; }
+    if (out) out.hidden = false;
+
+    var m = me.member || {};
+    var nameEl = document.getElementById('acct-name');
+    var mailEl = document.getElementById('acct-email');
+    if (nameEl) nameEl.textContent = m.name || m.legal_name || 'Member of the order';
+    if (mailEl) mailEl.textContent = m.email || '';
+
+    var dl = document.getElementById('acct-grid');
+    if (dl) {
+      dl.innerHTML = '';
+      row(dl, 'Joined', when(m.joined));
+      row(dl, 'Address', m.verified ? 'Confirmed' : 'Not confirmed yet');
+      row(dl, 'Signed in by', me.method === 'passkey' ? 'Passkey — face, finger or PIN' : 'Emailed code');
+      row(dl, 'This session ends', when(me.session && me.session.expires));
+      row(dl, 'Devices signed in', String((me.counts && me.counts.sessions) || 1));
+      row(dl, 'Letters to Ed', String((me.counts && me.counts.letters) || 0));
+      if (m.legal_name) row(dl, 'Checked as', m.legal_name);
+    }
+
+    var studio = document.getElementById('acct-studio');
+    if (studio) {
+      if (me.studio) {
+        var how = m.id_doc_type === 'face-scan' ? 'a face scan' : 'a document';
+        studio.innerHTML = '<strong class="gate-open">Open to you.</strong> Age confirmed by ' + how +
+          (m.checked ? ' on ' + when(m.checked) : '') +
+          '. Image and video generation are unlocked on the <a href="/ask-ed/">Ask Ed</a> page.';
+      } else if (!m.verified) {
+        studio.innerHTML = 'Shut. Confirm your address first — <a href="/join/">enter the code</a>.';
+      } else {
+        studio.innerHTML = 'Shut. The generators need an age check: a look at your face, or a document. ' +
+          '<a href="/join/">Pass the check</a> and it opens at once. Everything else here is already yours.';
+      }
+    }
+
+    var keys = document.getElementById('acct-keys');
+    if (keys) {
+      keys.innerHTML = '';
+      if (!me.passkeys || !me.passkeys.length) {
+        var li = document.createElement('li');
+        li.className = 'muted small';
+        li.textContent = 'No passkey enrolled — you sign in with an emailed code.';
+        keys.appendChild(li);
+      } else {
+        me.passkeys.forEach(function (k) {
+          var li2 = document.createElement('li');
+          var a = document.createElement('span');
+          a.textContent = k.label || 'A device';
+          var b = document.createElement('span');
+          b.className = 'muted xsmall';
+          b.textContent = k.last_used ? 'last used ' + when(k.last_used) : 'added ' + when(k.created_at);
+          li2.appendChild(a);
+          li2.appendChild(b);
+          keys.appendChild(li2);
+        });
+      }
+    }
+  }).catch(function () {
+    wait.hidden = true;
+    if (none) none.hidden = false;
+  });
+
+  var signOut = document.getElementById('acct-out-btn');
+  if (signOut) signOut.addEventListener('click', function () {
+    fetch('/api/account-signout', { method: 'POST', headers: window.EGAuthHeaders(), body: '{}' })
+      .catch(function () {})
+      .then(function () {
+        try { localStorage.removeItem('eg-session'); } catch (e) {}
+        window.__egTok = '';
+        window.location.href = '/join/';
+      });
+  });
 })();

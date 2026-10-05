@@ -137,7 +137,8 @@ export async function whoAmI(req) {
   if (!token) return null;
   const { rows } = await db.query(
     `SELECT m.id, m.email, m.name, m.verified, m.age_verified, m.id_status,
-            m.legal_name, m.dob, s.method, s.expires_at
+            m.legal_name, m.dob, m.id_doc_type, m.created_at, m.verified_at,
+            s.method, s.expires_at, s.created_at AS session_started
        FROM member_sessions s JOIN members m ON m.id = s.member_id
       WHERE s.token = $1 AND s.expires_at > NOW()`,
     [token]
