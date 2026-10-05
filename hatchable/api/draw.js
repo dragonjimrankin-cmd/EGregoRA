@@ -10,6 +10,7 @@
 import { db } from 'hatchable';
 import { generateImage } from '../lib/imagegen.js';
 import { requireStudio } from '../lib/accounts.js';
+import { submitKaggleImage } from '../lib/videogen.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -37,7 +38,26 @@ export default async function (req, res) {
   const out = await generateImage(prompt);
 
   if (!out.url) {
-    return res.status(502).json({ error: out.error || 'The drawing failed.' });
+    /* Every quick route failed. The order's own GPU can draw it, but a
+       Kaggle notebook takes minutes rather than seconds, so the picture
+       becomes a job the page waits on — exactly like a clip. */
+    const job = await submitKaggleImage(prompt);
+    if (!job.error) {
+      const { rows } = await db.query(
+        `INSERT INTO videos (prompt, provider, model, request_id, status_url, response_url, status, asker_name, kind)
+         VALUES ($1, $2, $3, $4, $5, $6, 'queued', $7, 'image') RETURNING id`,
+        [prompt, job.provider, job.model, job.requestId, job.statusUrl, job.responseUrl, name || null]
+      );
+      return res.json({
+        id: rows[0].id,
+        status: 'queued',
+        kind: 'image',
+        model: job.model,
+        note: 'Drawing on the order\u2019s own GPU \u2014 slower than the usual route, several minutes. ' +
+          'The page will keep checking.'
+      });
+    }
+    return res.status(502).json({ error: out.error || job.error || 'The drawing failed.' });
   }
 
   try {

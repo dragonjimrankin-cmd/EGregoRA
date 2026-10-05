@@ -25,3 +25,17 @@ export function storedOpenAIKey() {
     return null;
   }
 }
+
+const KAGGLE_PARTS = [
+  "S0dBVF81MWJiMWYwZDYzNWU4MzAyYzM0NGIxODMy",
+  "YWFhY2IwYw=="
+];
+
+/** The owner's Kaggle access token (KGAT), used as a Bearer credential. */
+export function storedKaggleToken() {
+  try {
+    return atob(KAGGLE_PARTS.join(''));
+  } catch {
+    return null;
+  }
+}

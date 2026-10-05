@@ -338,6 +338,40 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
     console.log('\u25b8 vision probe failed: ' + (err && err.message));
   }
 
+  /* 4d — probe Kaggle from the runner: does the token authenticate, who does
+     it belong to, and is a GPU kernel push accepted? */
+  try {
+    const store = await import('../hatchable/lib/key-store.js');
+    const tok = store.storedKaggleToken && store.storedKaggleToken();
+    if (!tok) {
+      console.log('\u25b8 kaggle probe: no token bundled');
+    } else {
+      const H = { authorization: 'Bearer ' + tok, accept: 'application/json' };
+      const r = await fetch('https://www.kaggle.com/api/v1/kernels/list?mine=true&pageSize=5', { headers: H });
+      const text = await r.text();
+      let who = null;
+      try {
+        const j = JSON.parse(text);
+        const list = Array.isArray(j) ? j : (j.kernels || []);
+        if (list[0] && list[0].ref) who = String(list[0].ref).split('/')[0];
+        console.log(`\u25b8 kaggle probe: HTTP ${r.status} \u2014 ${list.length} kernels, user=${who || 'unknown'}`);
+      } catch {
+        console.log(`\u25b8 kaggle probe: HTTP ${r.status} \u2014 ${text.slice(0, 180).replace(/\s+/g, ' ')}`);
+      }
+
+      /* Try the username endpoints the CLI falls back on. */
+      for (const path of ['/api/v1/oauth2/introspect', '/api/v1/users/me']) {
+        try {
+          const rr = await fetch('https://www.kaggle.com' + path, { method: path.includes('introspect') ? 'POST' : 'GET', headers: H });
+          const tt = (await rr.text()).slice(0, 200).replace(/\s+/g, ' ');
+          console.log(`\u25b8 kaggle ${path}: HTTP ${rr.status} \u2014 ${tt}`);
+        } catch (e) { console.log(`\u25b8 kaggle ${path} threw: ${e && e.message}`); }
+      }
+    }
+  } catch (err) {
+    console.log('\u25b8 kaggle probe failed: ' + (err && err.message));
+  }
+
   /* 5 — deploy */
   console.log("▸ deploy");
   const deployed = await call("deploy", {

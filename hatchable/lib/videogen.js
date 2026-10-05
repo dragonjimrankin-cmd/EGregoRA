@@ -18,6 +18,11 @@
  * plainly rather than pretending.
  */
 import { storage, config } from 'hatchable';
+import {
+  pushKernel, kernelStatus, kernelOutput, fetchOutput,
+  claimGpu, releaseGpu, gpuBusy, kaggleToken
+} from './kaggle.js';
+import { videoScript, imageScript } from './gpu-scripts.js';
 
 const FAL_MODEL = 'fal-ai/hunyuan-video-v1.5/text-to-video';
 const FAL_QUEUE = 'https://queue.fal.run/';
@@ -84,6 +89,34 @@ export async function submitVideo(prompt, opts = {}) {
     console.error('videogen: fal submit failed', r.status, String(r.text).slice(0, 300));
   }
 
+  /* Kaggle's free GPU. Slow — the model is downloaded on every run, so a
+     clip takes the better part of half an hour — but it needs no paid key.
+     Tried after the paid routes and before giving up. */
+  const tryKaggle = async () => {
+    if (!kaggleToken()) return null;
+    const slug = 'egregora-film-' + Date.now().toString(36);
+    const claim = await claimGpu('video', slug);
+    if (!claim.ok) {
+      return { error: 'The order\u2019s GPU is busy with another clip. Try again in a few minutes.' };
+    }
+    const out = await pushKernel({
+      slug,
+      code: videoScript({ prompt: text, aspect, frames })
+    });
+    if (out.error) {
+      await releaseGpu(slug, 'failed');
+      console.error('videogen: kaggle push failed', out.error);
+      return null;
+    }
+    return {
+      provider: 'kaggle',
+      model: 'HunyuanVideo 1.5 \u00b7 480p \u00b7 Kaggle T4',
+      requestId: out.slug,
+      statusUrl: out.slug,
+      responseUrl: out.url
+    };
+  };
+
   const repKey = await key('REPLICATE_API_TOKEN');
   if (repKey) {
     const r = await call('https://api.replicate.com/v1/models/' + REPLICATE_MODEL + '/predictions', {
@@ -105,11 +138,14 @@ export async function submitVideo(prompt, opts = {}) {
     console.error('videogen: replicate submit failed', r.status, String(r.text).slice(0, 300));
   }
 
+  const viaKaggle = await tryKaggle();
+  if (viaKaggle) return viaKaggle;
+
   return {
     error:
-      'No video generator is connected to this project yet. HunyuanVideo 1.5 is open-weights but it still ' +
-      'has to run on somebody\'s GPU: paste a FAL_KEY (or a REPLICATE_API_TOKEN) on the Hatchable setup ' +
-      'page and the fox can film.'
+      'No video generator is reachable just now. HunyuanVideo 1.5 is open-weights but it still has to run ' +
+      'on somebody\'s GPU: the order\'s Kaggle GPU did not accept the job, and no FAL_KEY or ' +
+      'REPLICATE_API_TOKEN is configured.'
   };
 }
 
@@ -134,6 +170,47 @@ function findVideoUrl(json) {
  */
 export async function pollVideo(row) {
   if (!row || !row.request_id) return { status: 'failed', error: 'No job to check.' };
+
+  /* Kaggle is not an inference API: we ask the notebook how it is getting on,
+     and when it finishes we pull the file it left in /kaggle/working. */
+  if (row.provider === 'kaggle') {
+    const slug = row.request_id;
+    const st = await kernelStatus(slug);
+    if (st.error) return { status: 'running' };
+
+    if (st.status === 'ERROR' || st.status.startsWith('CANCEL')) {
+      await releaseGpu(slug, 'failed');
+      return {
+        status: 'failed',
+        error: String(st.message || 'The notebook stopped with an error.').slice(0, 300)
+      };
+    }
+    if (st.status !== 'COMPLETE') return { status: 'running' };
+
+    const out = await kernelOutput(slug);
+    if (out.error) return { status: 'running' };
+    const wantImage = row.kind === 'image';
+    const pattern = wantImage ? /\.(png|jpe?g|webp)$/i : /\.mp4$/i;
+    const file = (out.files || []).find((f) => pattern.test(f.name)) || (out.files || [])[0];
+    if (!file) {
+      await releaseGpu(slug, 'failed');
+      return { status: 'failed', error: 'The notebook finished but left nothing behind.' };
+    }
+
+    const got = await fetchOutput(file.url);
+    if (got.error) return { status: 'running' };
+
+    await releaseGpu(slug, 'done');
+    try {
+      const key = (wantImage ? 'oracle-art/' : 'oracle-videos/') +
+        Date.now().toString(36) + (wantImage ? '.png' : '.mp4');
+      await storage.put(key, got.bytes, wantImage ? 'image/png' : 'video/mp4');
+      const signed = await storage.url(key, { ttl: 604800 });
+      return { status: 'ready', url: signed, key };
+    } catch (err) {
+      return { status: 'failed', error: 'The clip could not be stored: ' + (err && err.message) };
+    }
+  }
 
   const headers = {};
   if (row.provider === 'fal') {
@@ -183,4 +260,41 @@ export async function pollVideo(row) {
   }
 
   return { status: 'ready', url };
+}
+
+
+/**
+ * Queue a picture on Kaggle's GPU — used only when every quick image route
+ * has failed, and only when no clip is being filmed. Same job shape as a
+ * video so the browser can poll it with the same endpoint.
+ */
+export async function submitKaggleImage(prompt) {
+  const text = String(prompt || '').trim().slice(0, 1500);
+  if (!kaggleToken()) return { error: 'No Kaggle token configured.' };
+
+  const busy = await gpuBusy();
+  if (busy) {
+    return {
+      error: busy.kind === 'video'
+        ? 'The order\u2019s GPU is filming a clip just now, so it cannot draw as well. Try again shortly.'
+        : 'The order\u2019s GPU is already drawing something. Try again shortly.'
+    };
+  }
+
+  const slug = 'egregora-draw-' + Date.now().toString(36);
+  const claim = await claimGpu('image', slug);
+  if (!claim.ok) return { error: 'The order\u2019s GPU is busy. Try again shortly.' };
+
+  const out = await pushKernel({ slug, code: imageScript({ prompt: text }) });
+  if (out.error) {
+    await releaseGpu(slug, 'failed');
+    return { error: out.error };
+  }
+  return {
+    provider: 'kaggle',
+    model: 'FLUX.1-schnell \u00b7 Kaggle T4',
+    requestId: out.slug,
+    statusUrl: out.slug,
+    responseUrl: out.url
+  };
 }

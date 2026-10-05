@@ -27,13 +27,13 @@ export default async function (req, res) {
   if (req.method === 'GET' || (!body.prompt && id)) {
     if (!id) return res.status(400).json({ error: 'No clip id given.' });
     const { rows } = await db.query(
-      'SELECT id, prompt, provider, model, request_id, status_url, response_url, status, url, error FROM videos WHERE id = $1',
+      'SELECT id, prompt, provider, model, request_id, status_url, response_url, status, url, error, kind FROM videos WHERE id = $1',
       [id]
     );
     const row = rows[0];
     if (!row) return res.status(404).json({ error: 'No such clip.' });
     if (row.status === 'ready' || row.status === 'failed') {
-      return res.json({ id: row.id, status: row.status, url: row.url, error: row.error, model: row.model, prompt: row.prompt });
+      return res.json({ id: row.id, status: row.status, url: row.url, error: row.error, model: row.model, prompt: row.prompt, kind: row.kind || 'video' });
     }
 
     const out = await pollVideo(row);
@@ -46,7 +46,7 @@ export default async function (req, res) {
     } else if (row.status === 'queued') {
       await db.query("UPDATE videos SET status = 'running', updated_at = NOW() WHERE id = $1", [id]);
     }
-    return res.json({ id, status: out.status, url: out.url, error: out.error, model: row.model, prompt: row.prompt });
+    return res.json({ id, status: out.status, url: out.url, error: out.error, model: row.model, prompt: row.prompt, kind: row.kind || 'video' });
   }
 
   /* ---- submit ---- */

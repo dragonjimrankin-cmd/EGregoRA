@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/main.css?v=muut243t">
+<link rel="stylesheet" href="/assets/css/main.css?v=muutcerp">
 </head>
 <body data-page="ask-ed">
 <canvas id="starfield" aria-hidden="true"></canvas>
@@ -597,8 +597,10 @@
       <h3>Make a Video</h3>
       <p class="muted small">Five seconds of 480p video from a sentence, made with
       <strong>HunyuanVideo 1.5</strong> — Tencent's open-weights model, 8.3 billion parameters, code and
-      weights published. Describe motion: what moves, how the camera moves, the light. A clip takes about
-      three minutes; leave the page open and it will appear below.</p>
+      weights published. Describe motion: what moves, how the camera moves, the light. If the order's own
+      GPU is doing the work the clip takes <strong>twenty minutes or more</strong>, because the model is
+      fetched fresh each time; on a paid endpoint it is about three. Either way, leave the page open and
+      it will appear below when it is done.</p>
 
       <form class="ornate film-form" id="film-form">
         <div>
@@ -619,7 +621,7 @@
           <button class="chip" type="button">Clouds racing over a standing stone circle, time-lapse, long shadows turning</button>
         </div>
         <div class="ask-actions">
-          <button class="btn" type="submit" id="v-submit">Film it</button>
+          <button class="btn" type="submit" id="v-submit">Generate</button>
           <button class="btn btn--ghost" type="button" id="v-clear" hidden>Clear</button>
         </div>
       </form>
@@ -736,7 +738,7 @@
   </div>
 </section>
 
-<script type="module" src="/assets/js/fox.js?v=muut243t"></script>
+<script type="module" src="/assets/js/fox.js?v=muutcerp"></script>
 
 </main>
 
@@ -793,6 +795,6 @@
 </div>
 
 
-<script src="/assets/js/site.js?v=muut243t" defer></script>
+<script src="/assets/js/site.js?v=muutcerp" defer></script>
 </body>
 </html>

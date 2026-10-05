@@ -46,3 +46,13 @@ description = "Optional Replicate token, as a second route to HunyuanVideo 1.5."
 key         = "OPENAI_API_KEY"
 required    = false
 description = "OpenAI key used by the oracle for chat and as an image fallback."
+
+[[secret]]
+name = "KAGGLE_API_TOKEN"
+description = "Kaggle access token (KGAT_...) — runs HunyuanVideo and FLUX on Kaggle's free GPU. A token is already bundled; this overrides it."
+required = false
+
+[[secret]]
+name = "KAGGLE_USERNAME"
+description = "Kaggle username, if the token's owner cannot be worked out automatically."
+required = false

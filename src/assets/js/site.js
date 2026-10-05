@@ -662,6 +662,15 @@
         body: JSON.stringify({ prompt: p, name: (nameEl && nameEl.value || "").trim() })
       });
       const data = await res.json().catch(() => ({}));
+
+      /* The quick routes were unavailable and the picture is being drawn on
+         the order's own GPU: wait on it the way a clip is waited on. */
+      if (res.ok && data.id && data.status === "queued") {
+        const wait = card.querySelector(".draw-wait p");
+        if (wait) wait.textContent = data.note || "Drawing on the order\u2019s own GPU \u2014 several minutes.";
+        if (window.EGJobWatch) { window.EGJobWatch(card, data.id, p); return; }
+      }
+
       card.classList.remove("is-working");
 
       if (!res.ok || !data.url) {
@@ -739,10 +748,14 @@
 
   const ready = (card, data, prompt) => {
     card.classList.remove("is-working");
+    var isImage = data.kind === "image";
     card.innerHTML =
-      '<video controls playsinline preload="metadata" src="' + esc(data.url) + '"></video>' +
+      (isImage
+        ? '<a href="' + esc(data.url) + '" target="_blank" rel="noopener"><img src="' +
+          esc(data.url) + '" alt="' + esc(prompt) + '" loading="lazy"></a>'
+        : '<video controls playsinline preload="metadata" src="' + esc(data.url) + '"></video>') +
       "<figcaption>" + esc(prompt) +
-      '<span class="draw-meta">Generated, not filmed \u00b7 ' +
+      '<span class="draw-meta">Generated, not ' + (isImage ? "photographed" : "filmed") + ' \u00b7 ' +
       esc(data.model || "HunyuanVideo 1.5 \u00b7 480p") + "</span></figcaption>";
     if (window.EGArrived) window.EGArrived(card.dataset.origin === "oracle" ? "oracle-video" : "video", card);
   };
@@ -758,7 +771,7 @@
     let tries = 0;
     const tick = async () => {
       tries += 1;
-      if (tries > 120) return failed(card, "The clip is taking longer than twelve minutes \u2014 it may still arrive; reload later.", prompt);
+      if (tries > 400) return failed(card, "This has run for over forty minutes \u2014 it may still arrive; reload later.", prompt);
       try {
         const res = await fetch("/api/video?id=" + encodeURIComponent(id));
         const data = await res.json().catch(() => ({}));
@@ -778,7 +791,7 @@
     busy = true;
     btn.disabled = true;
     const label = btn.textContent;
-    btn.textContent = "Filming\u2026";
+    btn.textContent = "Generating\u2026";
     if (clear) clear.hidden = false;
 
     const card = document.createElement("figure");
@@ -824,6 +837,9 @@
     box.value = "";
     box.focus();
   });
+
+  /* A picture queued on the order's own GPU is watched exactly like a clip. */
+  window.EGJobWatch = (card, id, prompt) => watch(card, id, prompt);
 
   /* Clips the oracle starts for itself inside the conversation. */
   window.EGFilmWatch = (id, prompt) => {
