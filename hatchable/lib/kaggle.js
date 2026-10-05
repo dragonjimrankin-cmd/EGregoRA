@@ -128,16 +128,19 @@ export async function pushKernel({ slug, title, code, internet = true }) {
      verbatim or the push lands on a different kernel than the one polled. */
   const out = await call('/kernels/push', {
     method: 'POST',
+    /* The REST surface is generated from protobuf, so the field names are
+       camelCase here even though the CLI's metadata file is snake_case. */
     body: {
       slug: full,
-      new_title: slug,
+      newTitle: slug,
       text: code,
       language: 'python',
-      kernel_type: 'script',
-      is_private: true,
-      enable_internet: internet,
-      machine_shape: MACHINE,
-      enable_gpu: true
+      kernelType: 'script',
+      isPrivate: true,
+      enableInternet: internet,
+      enableGpu: true,
+      machineShape: MACHINE,
+      kernelExecutionType: 'SaveAndRunAll'
     },
     timeout: 90000
   });

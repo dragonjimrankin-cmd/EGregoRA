@@ -398,9 +398,10 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
         method: 'POST',
         headers: Object.assign({ 'content-type': 'application/json' }, H),
         body: JSON.stringify({
-          slug: `${user}/${slug}`, new_title: slug, text: code,
-          language: 'python', kernel_type: 'script', is_private: true,
-          enable_internet: true, enable_gpu: true, machine_shape: 'NvidiaTeslaT4'
+          slug: `${user}/${slug}`, newTitle: slug, text: code,
+          language: 'python', kernelType: 'script', isPrivate: true,
+          enableInternet: true, enableGpu: true, machineShape: 'NvidiaTeslaT4',
+          kernelExecutionType: 'SaveAndRunAll'
         })
       });
       const pushText = (await push.text()).slice(0, 300).replace(/\s+/g, ' ');
