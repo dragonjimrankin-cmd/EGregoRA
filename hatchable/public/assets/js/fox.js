@@ -547,19 +547,40 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   bridge.position.set(0, 0.09, 1.18);
   head.add(bridge);
 
-  // nose leather, with a philtrum groove and nostril slits
+  /* Nose leather, with a philtrum groove and nostril slits.
+
+     The nostrils used to be cut at y -0.02, on the lower half of the front
+     plane, which put them level with the bottom edge of the leather: from
+     any angle below the muzzle you could see orange fur immediately under
+     the openings. They now sit at y +0.045 — up on the tip, where a fox
+     carries them — and the leather's lower edge is drawn down and tucked
+     back over the muzzle as a skirt, so there is black below every nostril
+     and no fur reads through. */
   const noseGeo = sculpt(new THREE.SphereGeometry(0.215, 36, 28), (v) => {
-    v.y *= 0.74; v.z *= 0.8; v.x *= 0.92;
+    v.y *= 0.86; v.z *= 0.8; v.x *= 0.95;
     // flatten the front plane
     if (v.z > 0.08) v.z = 0.08 + (v.z - 0.08) * 0.55;
-    // nostril dimples
-    const nd = Math.exp(-(Math.pow((Math.abs(v.x) - 0.1) / 0.045, 2) + Math.pow((v.y + 0.02) / 0.05, 2)));
-    v.z -= nd * 0.085;
+
+    /* the underside skirt: below the nostril line the leather curls back
+       and under, wrapping the tip of the muzzle instead of ending on it */
+    if (v.y < -0.01) {
+      const under = smoothstep(-0.01, -0.13, v.y);
+      v.z -= under * 0.055;
+      v.y -= under * 0.045;
+      v.x *= 1 + under * 0.08;
+    }
+
+    // nostril slits — high on the tip, canted outward as a fox's are
+    const nx = (Math.abs(v.x) - 0.092) / 0.038;
+    const ny = (v.y - 0.045 - Math.abs(v.x) * 0.22) / 0.062;
+    const nd = Math.exp(-(nx * nx + ny * ny));
+    v.z -= nd * 0.092;
+
     // philtrum down the middle underneath
-    if (v.y < -0.04 && Math.abs(v.x) < 0.035) v.z -= 0.03;
+    if (v.y < -0.03 && Math.abs(v.x) < 0.035) v.z -= 0.03;
   });
   const nose = new THREE.Mesh(noseGeo, M.nose);
-  nose.position.set(0, -0.2, 1.98);
+  nose.position.set(0, -0.182, 1.98);
   nose.castShadow = true;
   head.add(nose);
 
