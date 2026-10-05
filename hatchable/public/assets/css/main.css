@@ -960,3 +960,41 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 .oracle-text a { color: var(--gold-bright); text-decoration: underline; text-underline-offset: 2px; }
 .oracle-text a:hover { color: var(--vellum); }
 .oracle-src a { color: var(--gold); text-decoration: underline; }
+
+/* --- astrological symbols (Limb IV) ----------------------------------- */
+.sym, .sym-inline, .sym-band, .wheel-sym {
+  font-family: "Noto Sans Symbols 2", "Noto Sans Symbols2", "Segoe UI Symbol",
+               "Apple Symbols", "DejaVu Sans", "Symbola", var(--body), serif;
+  font-variant-emoji: text;
+}
+.sym-band {
+  text-align: center; color: var(--gold); font-size: 1.15rem; line-height: 2;
+  letter-spacing: 0.22em; margin-top: 0.9rem; opacity: 0.9;
+  text-shadow: 0 0 10px rgba(215,176,90,0.35);
+}
+.sym-inline { color: var(--gold); font-size: 0.82em; letter-spacing: 0.16em; margin-left: 0.4rem; opacity: 0.9; }
+.sym-grid {
+  list-style: none; padding: 0; margin: 1rem 0 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.6rem;
+}
+.sym-grid--tight { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.sym-grid--wide { grid-template-columns: 1fr; }
+.sym-grid li {
+  display: grid; grid-template-columns: 54px 1fr; align-items: baseline;
+  grid-column-gap: 0.7rem; padding: 0.6rem 0.7rem;
+  border: 1px solid rgba(215,176,90,0.18); background: rgba(215,176,90,0.035);
+  transition: border-color 0.3s, background 0.3s;
+}
+.sym-grid li:hover { border-color: rgba(215,176,90,0.5); background: rgba(215,176,90,0.08); }
+.sym-grid .sym {
+  grid-row: 1 / span 3; align-self: center; text-align: center;
+  font-size: 1.9rem; line-height: 1; color: var(--gold-bright);
+  text-shadow: 0 0 9px rgba(215,176,90,0.4);
+}
+.sym-grid strong { font-family: var(--title); font-size: 0.86rem; letter-spacing: 0.1em; color: var(--vellum); }
+.sym-grid em { font-style: italic; color: var(--gold); font-size: 0.86rem; display: block; }
+.sym-grid .sym-meta { display: block; font-size: 0.82rem; color: var(--vellum-dim); line-height: 1.5; margin-top: 0.15rem; }
+@media (max-width: 560px) {
+  .sym-band { font-size: 0.95rem; letter-spacing: 0.14em; }
+  .sym-grid { grid-template-columns: 1fr; }
+}
