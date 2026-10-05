@@ -74,7 +74,7 @@ export default async function (req, res) {
         return res.json({
           site: 'https://egregora.hatchable.site',
           limbs: 11,
-          corpus: 1280,
+          corpus: 1283,
           questions: q[0] ? q[0].n : 0,
           jobs: v.reduce((o, r) => Object.assign(o, { [r.status]: r.n }), {}),
           gpu_pool: workers.map((w) => ({ label: w.label, gpu: w.gpu, jobs: w.jobs })),
@@ -93,7 +93,7 @@ export default async function (req, res) {
            import one another here, so the logic is kept deliberately plain
            — an agent gets the order's answers, not a second oracle. */
         const match = bestMatch(question, limb);
-        if (match && match.entry && match.score >= 0.82) {
+        if (match && match.entry && match.score >= 0.95) {
           return res.json({
             answer: match.entry.a,
             source: 'written',
