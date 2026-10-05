@@ -1379,3 +1379,10 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   .shot { flex-wrap: wrap; }
   .shot-thumb { width: 84px; height: 50px; }
 }
+
+/* the oracle's standing greeting, now the lede of the section */
+.oracle-greet--lede { margin: 0 0 1.4rem; }
+.oracle-waiting {
+  margin: auto; text-align: center; max-width: 32ch;
+  font-family: 'EB Garamond', serif; font-style: italic; color: #9f947a;
+}

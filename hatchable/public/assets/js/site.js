@@ -129,6 +129,8 @@
     el.innerHTML =
       '<p class="oracle-who">' + (role === "you" ? "You" : "The Oracle") + "</p>" +
       '<div class="oracle-text">' + html + "</div>";
+    const waiting = document.getElementById("oracle-waiting");
+    if (waiting) waiting.hidden = true;
     thread.appendChild(el);
     scrollThread();
     return el;
@@ -394,6 +396,8 @@
   if (reset) reset.addEventListener("click", () => {
     history = [];
     thread.querySelectorAll(".oracle-msg:not(.oracle-greet)").forEach((n) => n.remove());
+    const waiting = document.getElementById("oracle-waiting");
+    if (waiting) waiting.hidden = false;
     setChips([
       "Why 137.5 degrees and not 120?",
       "Is the Law of One testable?",

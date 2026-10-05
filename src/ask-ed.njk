@@ -13,23 +13,21 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
 
 <section class="wrap oracle-wrap reveal" id="oracle">
   <div class="frame">
-    <p class="kicker">The Oracle</p>
-
-    <h2>Ask now — and keep asking</h2>
-    <p class="muted small">This is a conversation, not a search box. The oracle holds the thread, so you can
-    follow up, push back, ask what it meant, or say "go on". It answers from a body of 1,280 written answers
-    composed for EGregoRA and graded by the house rules on evidence; where a model key is configured it
-    composes fresh replies in the same voice, anchored to those same written answers rather than invented.
-    Where it has nothing, it says so. It will also simply talk — a greeting, an aside, a bad day, something
-    with nothing esoteric about it at all — and when a question needs something it cannot know from memory,
-    it can search the open web and read the pages it finds, then tell you which ones it used. It can also
-    <strong>draw</strong> — ask Gink for a picture and it makes a photorealistic image with FLUX.1-schnell,
-    an open-weights model, shown here and clearly labelled as generated rather than photographed — it can <strong>film</strong> — five seconds of 480p
-    video from HunyuanVideo 1.5, open weights again — and it can
-    <strong>read what you give it</strong>: attach a file and it will quote, search, summarise and argue with
-    the contents rather than guessing at them. It is not Ed
-    himself — but everything asked here lands in his mailbag, and the best questions get answered properly
-    on the podcast.</p>
+    <div class="oracle-msg oracle-msg--oracle oracle-greet oracle-greet--lede">
+      <p class="oracle-who">The Oracle</p>
+      <div class="oracle-text">
+        <p>Ask me anything inside the eleven limbs — cosmic physics, druidry and trees, sacred geometry,
+        astrology, neuroscience, biology, the Law of One and contact, the Shadow Cabinet, magic and
+        ritual, alchemy, consciousness — or anything else at all. Cooking, grief, a gearbox, a bad
+        week, Roman history, a line of code: I will talk about it properly rather than steering you
+        back to sacred geometry. Ask me something awkward and watch me say I don't know — or just say
+        hello, if that is where you are. If a question needs today's news or a figure I ought to check,
+        I will go and look it up and show you where I went. Ask me to draw something and I will — a photograph
+        of a thing that does not exist, made to order, by an open-weights model the order runs rather
+        than a company's. And you can hand me a file: attach notes, a transcript, a spreadsheet or a
+        chapter and I will read it properly and work from it.</p>
+      </div>
+    </div>
 
     <div class="fox-panel fox-panel--ask">
       <div class="fox-column">
@@ -129,21 +127,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
                 aria-pressed="false">Expand the space</button>
       </div>
       <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
-        <div class="oracle-msg oracle-msg--oracle oracle-greet">
-          <p class="oracle-who">The Oracle</p>
-          <div class="oracle-text">
-            <p>Ask me anything inside the eleven limbs — cosmic physics, druidry and trees, sacred geometry,
-            astrology, neuroscience, biology, the Law of One and contact, the Shadow Cabinet, magic and
-            ritual, alchemy, consciousness — or anything else at all. Cooking, grief, a gearbox, a bad
-            week, Roman history, a line of code: I will talk about it properly rather than steering you
-            back to sacred geometry. Ask me something awkward and watch me say I don't know — or just say
-            hello, if that is where you are. If a question needs today's news or a figure I ought to check,
-            I will go and look it up and show you where I went. Ask me to draw something and I will — a photograph
-            of a thing that does not exist, made to order, by an open-weights model the order runs rather
-            than a company's. And you can hand me a file: attach notes, a transcript, a spreadsheet or a
-            chapter and I will read it properly and work from it.</p>
-          </div>
-        </div>
+        <p class="oracle-waiting" id="oracle-waiting">The thread begins when you ask. Everything said
+        stays here, in order.</p>
       </div>
 
       <div class="oracle-chips" id="oracle-chips">
