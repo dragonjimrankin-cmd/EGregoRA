@@ -4,6 +4,9 @@ export default function (eleventyConfig) {
   eleventyConfig.addWatchTarget("src/assets/");
 
   eleventyConfig.addFilter("year", () => new Date().getFullYear());
+  eleventyConfig.addFilter("isoDate", (d) => new Date(d || Date.now()).toISOString());
+  eleventyConfig.addFilter("split", (s, sep) => String(s || "").split(sep));
+  eleventyConfig.addFilter("absolute", (u, base) => new URL(u, base).toString());
 
   eleventyConfig.addShortcode("glyph", (name) => {
     const glyphs = {

@@ -7,6 +7,14 @@ export default {
   description:
     "EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.",
   email: "info@shakra.co.uk",
+  url: "https://egregora.hatchable.site",
+  locale: "en_GB",
+  lang: "en-GB",
+  themeColor: "#0d0b10",
+  ogImage: "/assets/img/og-egregora.jpg",
+  ogImageAlt: "The EGregoRA emblem — an all-seeing eye within Metatron's cube, a tree of stars above it, in gold on black.",
+  founded: "2026",
+  keywords: "cosmic physics, natural philosophy, sacred geometry, astrology, druidry, consciousness, quantum decoherence, microtubules, the Law of One, Hermetic Qabalah, alchemy, neuroscience, esotericism",
   nav: [
     { url: "/", label: "Introduction", glyph: "seed" },
     { url: "/podcast/", label: "Podcasts", glyph: "spiral" },
@@ -20,6 +28,7 @@ export default {
     { url: "/artwork/", label: "Artwork", glyph: "eye" },
     { url: "/neurobiology/", label: "Neurobiology", glyph: "star" },
     { url: "/consciousness/", label: "Consciousness", glyph: "metatron" },
+    { url: "/decoherence/", label: "Decoherence", glyph: "spiral" },
     { url: "/extraterrestrials/", label: "Extraterrestrials", glyph: "eye" },
     { url: "/music/", label: "Sound & Music", glyph: "spiral" },
     { url: "/wizardry/", label: "Wizardry", glyph: "star" },
