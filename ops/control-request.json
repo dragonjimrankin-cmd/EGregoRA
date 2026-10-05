@@ -1,8 +1,7 @@
 {
-  "note": "Does Gink think without any key at all?",
+  "note": "v73 live: does the keyless open-weights route answer?",
   "calls": [
-    { "action": "workers" },
     { "action": "ask", "question": "What is Gink?" },
-    { "action": "ask", "question": "In two sentences, what would you say to someone who thinks astrology is simply nonsense?" }
+    { "action": "ask", "question": "What did you have for breakfast, and do you mind the question?" }
   ]
 }
