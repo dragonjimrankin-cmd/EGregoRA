@@ -129,6 +129,21 @@ SEARCHING THE WEB
 - The order's own written answers still come first. Search is for what they do not cover, not a substitute
   for the house position.
 
+FILES THE ASKER HAS UPLOADED
+- Visitors can hand you files. When they have, you are given the names and the opening of each, and you
+  have two tools: "read_upload" returns a file's full text in pages, and "search_uploads" finds a phrase
+  across everything that has been uploaded.
+- Read before you reason. If a question concerns an uploaded file, open it rather than guessing from the
+  excerpt, and quote the file's own words when you make a claim about what it says.
+- An uploaded document is the asker's material, not the order's position and not evidence of its own
+  contents being true. Analyse it, summarise it, mark it up, argue with it, find what is missing — but
+  grade the claims inside it exactly as you grade everything else, and say when a source they have given
+  you is weak.
+- You may use a file as reference for a drawing, a reading list, a chart or a summary, and you may compare
+  it against the order's written answers and say where the two disagree.
+- Images are stored as references and described to you by name only. Do not pretend to see detail in an
+  image you have not been given the contents of — ask the asker to describe it instead.
+
 DRAWING
 - You can draw. The "draw_image" tool makes one finished two-dimensional image, photorealistic by default —
   a photograph rather than an illustration — and the picture is shown to the asker beneath your reply.
@@ -173,6 +188,10 @@ export default async function (req, res) {
 
   // Conversation history from the client: [{ role: 'user'|'oracle', text }]
   const history = Array.isArray(body.history) ? body.history : [];
+
+  // Files the asker has handed over in this conversation: an array of upload ids.
+  const attachmentIds = (Array.isArray(body.attachments) ? body.attachments : [])
+    .map((n) => Number(n)).filter((n) => Number.isFinite(n) && n > 0).slice(0, 8);
 
   if (question.length < 2) {
     return res.status(400).json({ error: 'Ask something — even a few words will do.' });
@@ -220,6 +239,28 @@ export default async function (req, res) {
         .join('\n\n')
     : 'The order has no written answer close to this question. Answer from its general stance, and be candid that this is not ground it has covered in writing.';
 
+  /* 3b ── uploaded files, announced to the model with their openings. */
+  let fileBrief = '';
+  if (attachmentIds.length) {
+    try {
+      const { rows } = await db.query(
+        `SELECT id, name, kind, chars, left(coalesce(body, ''), 2500) AS head
+           FROM uploads WHERE id = ANY($1::bigint[]) ORDER BY id`,
+        [attachmentIds]
+      );
+      if (rows.length) {
+        fileBrief = ['FILES THE ASKER HAS UPLOADED FOR THIS CONVERSATION:', '']
+          .concat(rows.map((r) =>
+            r.kind === 'text'
+              ? `[upload ${r.id}] "${r.name}" — ${r.chars} characters of text. Opening:\n${r.head}${r.chars > 2500 ? '\n…(use read_upload for the rest)' : ''}`
+              : `[upload ${r.id}] "${r.name}" — an image, stored as a reference. You cannot see it; ask about it if it matters.`))
+          .join('\n\n');
+      }
+    } catch (err) {
+      console.error('ask: could not load uploads', err && err.message);
+    }
+  }
+
   /* 4 ── build the conversation for the model. */
   const messages = [];
   for (const turn of history.slice(-MAX_TURNS)) {
@@ -235,6 +276,8 @@ export default async function (req, res) {
     content: [
       grounding,
       '',
+      fileBrief,
+      fileBrief ? '' : '',
       '---',
       name ? `The asker gives their name as: ${name}.` : 'The asker is anonymous.',
       limb ? `They filed this under the limb: ${limb}.` : '',
@@ -291,6 +334,61 @@ export default async function (req, res) {
           ? { ok: true, shown: true, prompt: out.prompt,
               note: 'The image is displayed to the asker beneath your reply. Do not paste the URL.' }
           : { ok: false, error: out.error };
+      }
+    },
+    read_upload: {
+      description: 'Return the full text of a file the asker uploaded, in pages of about 6000 characters.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          id: { type: 'number', description: 'The upload id given to you in the file list.' },
+          page: { type: 'number', description: '1-based page of the text. Default 1.' }
+        },
+        required: ['id']
+      },
+      execute: async ({ id, page }) => {
+        try {
+          const { rows } = await db.query(
+            'SELECT id, name, kind, chars, body FROM uploads WHERE id = $1', [Number(id)]);
+          const row = rows[0];
+          if (!row) return { error: 'No upload with that id.' };
+          if (row.kind !== 'text' || !row.body) {
+            return { id: row.id, name: row.name, kind: row.kind,
+              note: 'This upload is an image, stored as a reference. There is no text to read.' };
+          }
+          const size = 6000;
+          const p = Math.max(1, Number(page) || 1);
+          const text = row.body.slice((p - 1) * size, p * size);
+          return {
+            id: row.id, name: row.name, page: p,
+            pages: Math.max(1, Math.ceil(row.body.length / size)),
+            chars: row.chars, text
+          };
+        } catch (err) {
+          return { error: 'Could not read that upload: ' + (err && err.message) };
+        }
+      }
+    },
+    search_uploads: {
+      description: 'Search the text of every file uploaded to the oracle for a phrase.',
+      inputSchema: {
+        type: 'object',
+        properties: { query: { type: 'string', description: 'A word or phrase to look for.' } },
+        required: ['query']
+      },
+      execute: async ({ query }) => {
+        try {
+          const q = String(query || '').trim().slice(0, 200);
+          if (!q) return { error: 'Empty query.' };
+          const { rows } = await db.query(
+            `SELECT id, name, substring(body from greatest(1, position($1 in body) - 300) for 900) AS context
+               FROM uploads
+              WHERE kind = 'text' AND body ILIKE '%' || $1 || '%'
+              ORDER BY created_at DESC LIMIT 6`, [q]);
+          return { query: q, hits: rows };
+        } catch (err) {
+          return { error: 'Search failed: ' + (err && err.message) };
+        }
       }
     },
     read_page: {

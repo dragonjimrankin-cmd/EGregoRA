@@ -1007,3 +1007,25 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   margin-top: 0.45rem; font-family: var(--body); font-size: 0.78rem;
   color: var(--vellum-dim); letter-spacing: 0.02em; line-height: 1.5;
 }
+
+/* --- files handed to the oracle --------------------------------------- */
+.oracle-files { margin-top: 0.9rem; }
+.file-btn { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.file-btn input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.file-btn:focus-within { outline: 1px solid rgba(243,221,170,0.7); outline-offset: 3px; }
+.file-list { list-style: none; padding: 0; margin: 0.7rem 0 0.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.file-chip {
+  display: inline-flex; align-items: baseline; gap: 0.5rem;
+  border: 1px solid rgba(215,176,90,0.3); background: rgba(215,176,90,0.05);
+  padding: 0.35rem 0.6rem; font-size: 0.8rem;
+}
+.file-chip.is-pending { opacity: 0.6; }
+.file-chip.is-error { border-color: rgba(207,127,141,0.6); }
+.file-chip .file-name { font-family: var(--title); letter-spacing: 0.08em; color: var(--vellum); }
+.file-chip .file-meta { color: var(--vellum-dim); font-size: 0.76rem; }
+.file-chip.is-error .file-meta { color: var(--rose); }
+.file-x {
+  background: none; border: 0; color: var(--gold); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0 0.1rem;
+}
+.file-x:hover { color: var(--gold-bright); }
+.oracle-attached { margin-top: 0.4rem; font-size: 0.78rem; color: var(--gold); letter-spacing: 0.04em; }

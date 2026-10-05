@@ -38,8 +38,10 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
     Where it has nothing, it says so. It will also simply talk — a greeting, an aside, a bad day, something
     with nothing esoteric about it at all — and when a question needs something it cannot know from memory,
     it can search the open web and read the pages it finds, then tell you which ones it used. It can also
-    <strong>draw</strong>: ask the fox for a picture of something and it will make a photorealistic image
-    and show it to you here, clearly labelled as generated rather than photographed. It is not Ed
+    <strong>draw</strong> — ask the fox for a picture and it makes a photorealistic image with FLUX.1-schnell,
+    an open-weights model, shown here and clearly labelled as generated rather than photographed — and it can
+    <strong>read what you give it</strong>: attach a file and it will quote, search, summarise and argue with
+    the contents rather than guessing at them. It is not Ed
     himself — but everything asked here lands in his mailbag, and the best questions get answered properly
     on the podcast.</p>
 
@@ -53,7 +55,9 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             ritual, alchemy, consciousness. Ask me something awkward and watch me say I don't know — or just say
             hello, if that is where you are. If a question needs today's news or a figure I ought to check,
             I will go and look it up and show you where I went. Ask me to draw something and I will — a photograph
-            of a thing that does not exist, made to order.</p>
+            of a thing that does not exist, made to order, by an open-weights model the order runs rather
+            than a company's. And you can hand me a file: attach notes, a transcript, a spreadsheet or a
+            chapter and I will read it properly and work from it.</p>
           </div>
         </div>
       </div>
@@ -100,6 +104,19 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           </div>
         </div>
       </details>
+
+      <div class="oracle-files">
+        <label class="btn btn--ghost file-btn">
+          <span aria-hidden="true">⌁</span> Attach a file
+          <input id="o-files" type="file" multiple
+                 accept=".txt,.md,.markdown,.csv,.tsv,.json,.yaml,.yml,.xml,.html,.htm,.log,.srt,.vtt,.tex,.ini,.toml,.js,.py,.sql,.sh,.png,.jpg,.jpeg,.gif,.webp,text/*,image/*">
+        </label>
+        <ul class="file-list" id="o-file-list" aria-live="polite"></ul>
+        <p class="muted xsmall">Notes, transcripts, data, a chapter, a photograph — up to 4&nbsp;MB each.
+        Text is read and can be quoted, searched and argued with; images are kept as references. Export a
+        PDF to text first. Anything you attach becomes part of this conversation and is stored with it, so
+        do not send anything confidential.</p>
+      </div>
 
       <div class="ask-actions">
         <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>

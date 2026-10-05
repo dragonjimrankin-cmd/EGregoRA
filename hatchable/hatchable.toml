@@ -11,3 +11,11 @@ tags        = ["esoteric", "science", "podcast", "philosophy", "astronomy", "dru
 [ai]
 required = false
 providers = ["anthropic", "openai", "google"]
+
+# Optional second open-source image route. The oracle draws with FLUX.1-schnell
+# (open weights, keyless) by default; paste a Hugging Face token here to use
+# Stable Diffusion XL instead of the keyless endpoint.
+[[secret]]
+key         = "HUGGINGFACE_API_KEY"
+required    = false
+description = "Optional Hugging Face token, for Stable Diffusion XL image generation."

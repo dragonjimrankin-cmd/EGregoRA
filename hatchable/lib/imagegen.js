@@ -11,7 +11,19 @@
  * failure comes back as `{ error }` so the oracle can say so in plain words
  * instead of pretending it drew something.
  */
-import { ai, storage } from 'hatchable';
+import { ai, storage, config } from 'hatchable';
+
+/* The order's own generator: FLUX.1-schnell, Apache-2.0 open weights, reached
+   through the keyless Pollinations endpoint. It is tried first so the oracle
+   can draw on a project with no provider key at all; the proprietary models
+   below are only a fallback. */
+const OPEN_MODEL = 'flux';
+const OPEN_ENDPOINT = 'https://image.pollinations.ai/prompt/';
+const OPEN_TIMEOUT = 45000;
+
+/* Optional second open-source route: Stable Diffusion XL on Hugging Face's
+   inference API, used when the owner has pasted HUGGINGFACE_API_KEY. */
+const HF_MODEL = 'stabilityai/stable-diffusion-xl-base-1.0';
 
 /* House style. The fox draws photographs unless it is told otherwise:
    real optics, real light, no illustration, no text burned into the frame. */
@@ -33,6 +45,47 @@ function fullPrompt(subject) {
     return s + ' Single standalone 2D image. No text, no watermark, no lettering.';
   }
   return s + '\n\n' + PHOTO_STYLE;
+}
+
+/** FLUX.1-schnell (open weights) — no key required. */
+async function viaOpenSource(prompt) {
+  const url = OPEN_ENDPOINT + encodeURIComponent(prompt.slice(0, 1800)) +
+    '?width=1024&height=1024&nologo=true&safe=true&model=' + OPEN_MODEL +
+    '&seed=' + Math.floor(Math.random() * 1e9);
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), OPEN_TIMEOUT);
+  try {
+    const r = await fetch(url, { signal: ctrl.signal, headers: { accept: 'image/*' } });
+    if (!r || !r.ok) return null;
+    const type = (r.headers && r.headers.get && r.headers.get('content-type')) || 'image/jpeg';
+    if (!/^image\//i.test(type)) return null;
+    const buf = new Uint8Array(await r.arrayBuffer());
+    if (buf.length < 2048) return null;
+    return { bytes: buf, contentType: type, provider: 'flux-schnell (open weights)' };
+  } catch (err) {
+    console.error('imagegen: open-source route failed', err && err.message);
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Stable Diffusion XL via Hugging Face, when a token is configured. */
+async function viaHuggingFace(prompt) {
+  let token = null;
+  try { token = await config.get('HUGGINGFACE_API_KEY'); } catch { return null; }
+  if (!token) return null;
+  const r = await fetch('https://api-inference.huggingface.co/models/' + HF_MODEL, {
+    method: 'POST',
+    headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json', accept: 'image/png' },
+    body: JSON.stringify({ inputs: prompt.slice(0, 1800), options: { wait_for_model: true } })
+  });
+  if (!r || !r.ok) return null;
+  const type = (r.headers && r.headers.get && r.headers.get('content-type')) || 'image/png';
+  if (!/^image\//i.test(type)) return null;
+  const buf = new Uint8Array(await r.arrayBuffer());
+  if (buf.length < 2048) return null;
+  return { bytes: buf, contentType: type, provider: 'stable-diffusion-xl (open weights)' };
 }
 
 async function viaGoogle(prompt) {
@@ -83,7 +136,7 @@ export async function generateImage(subject) {
   if (subj.length < 3) return { prompt: subj, error: 'Nothing to draw — say what the picture should show.' };
 
   const prompt = fullPrompt(subj);
-  const attempts = [viaGoogle, viaOpenAI];
+  const attempts = [viaOpenSource, viaHuggingFace, viaGoogle, viaOpenAI];
   let lastErr = '';
 
   for (const attempt of attempts) {
@@ -92,7 +145,7 @@ export async function generateImage(subject) {
       if (!out) continue;
       const ext = out.contentType.includes('jpeg') ? 'jpg' : 'png';
       const key = `oracle-images/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
-      await storage.put(key, out.base64, out.contentType);
+      await storage.put(key, out.bytes || out.base64, out.contentType);
       const url = await storage.url(key, { ttl: 604800 });
       return { url, key, prompt: subj, provider: out.provider };
     } catch (err) {
@@ -109,5 +162,9 @@ export async function generateImage(subject) {
     }
   }
 
-  return { prompt: subj, error: 'The drawing failed' + (lastErr ? ': ' + lastErr : '.') };
+  return {
+    prompt: subj,
+    error: 'The drawing failed' + (lastErr ? ': ' + lastErr : ' — every generator refused.') +
+      ' Say so plainly rather than describing a picture that was never made.'
+  };
 }

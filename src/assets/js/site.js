@@ -83,10 +83,14 @@
   const limbEl = document.getElementById("o-limb");
   if (!thread || !box || !btn) return;
 
+  const fileInput = document.getElementById("o-files");
+  const fileList = document.getElementById("o-file-list");
+
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const MAX_KEPT = 16;                 // turns held in the client thread
   let history = [];                    // [{ role, text }]
   let busy = false;
+  let attachments = [];                // [{ id, name, kind, chars }]
 
   const esc = (s) =>
     String(s).replace(/[&<>"']/g, (c) =>
@@ -207,6 +211,73 @@
     el.appendChild(p);
   };
 
+  /* ---- files handed to the oracle ---- */
+  const renderFiles = () => {
+    if (!fileList) return;
+    fileList.innerHTML = "";
+    attachments.forEach((f) => {
+      const li = document.createElement("li");
+      li.className = "file-chip" + (f.pending ? " is-pending" : "") + (f.error ? " is-error" : "");
+      li.innerHTML =
+        '<span class="file-name">' + esc(f.name) + "</span>" +
+        '<span class="file-meta">' + esc(
+          f.pending ? "reading\u2026" :
+          f.error ? f.error :
+          f.kind === "image" ? "image \u00b7 held as reference" :
+          (f.chars || 0).toLocaleString() + " characters read") + "</span>";
+      if (!f.pending) {
+        const x = document.createElement("button");
+        x.type = "button";
+        x.className = "file-x";
+        x.setAttribute("aria-label", "Remove " + f.name);
+        x.textContent = "\u00d7";
+        x.addEventListener("click", () => {
+          attachments = attachments.filter((a) => a !== f);
+          renderFiles();
+        });
+        li.appendChild(x);
+      }
+      fileList.appendChild(li);
+    });
+  };
+
+  const readAsBase64 = (file) => new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(String(fr.result).split(",").pop());
+    fr.onerror = () => reject(new Error("unreadable"));
+    fr.readAsDataURL(file);
+  });
+
+  const sendFile = async (file) => {
+    const entry = { name: file.name, pending: true };
+    attachments.push(entry);
+    renderFiles();
+    try {
+      if (file.size > 4 * 1024 * 1024) throw new Error("larger than 4 MB");
+      const data = await readAsBase64(file);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: file.name, type: file.type, data,
+          asker: (nameEl && nameEl.value || "").trim()
+        })
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || !out.id) throw new Error(out.error || "could not be read");
+      Object.assign(entry, out, { pending: false });
+    } catch (err) {
+      entry.pending = false;
+      entry.error = (err && err.message) || "failed";
+    }
+    renderFiles();
+  };
+
+  if (fileInput) fileInput.addEventListener("change", () => {
+    Array.from(fileInput.files || []).slice(0, 6).forEach(sendFile);
+    fileInput.value = "";
+  });
+
   const ask = async (question) => {
     if (busy) return;
     const q = String(question || "").trim();
@@ -219,7 +290,11 @@
     if (reset) reset.hidden = false;
     setChips([]);
 
-    addMsg("you", paragraphs(q));
+    const ready = attachments.filter((f) => f.id);
+    addMsg("you", paragraphs(q) + (ready.length
+      ? '<p class="oracle-attached">Attached: ' +
+        ready.map((f) => esc(f.name)).join(", ") + "</p>"
+      : ""));
     history.push({ role: "user", text: q });
     box.value = "";
     box.style.height = "";
@@ -234,7 +309,8 @@
           question: q,
           name: (nameEl && nameEl.value || "").trim(),
           limb: (limbEl && limbEl.value) || "",
-          history: history.slice(0, -1).slice(-MAX_KEPT)
+          history: history.slice(0, -1).slice(-MAX_KEPT),
+          attachments: attachments.filter((f) => f.id).map((f) => f.id)
         })
       });
       const data = await res.json().catch(() => ({}));
