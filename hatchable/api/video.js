@@ -11,6 +11,7 @@
  */
 import { db } from 'hatchable';
 import { submitVideo, pollVideo } from '../lib/videogen.js';
+import { requireStudio } from '../lib/accounts.js';
 
 export const access = 'public';
 export const methods = ['GET', 'POST'];
@@ -49,6 +50,9 @@ export default async function (req, res) {
   }
 
   /* ---- submit ---- */
+  const door = await requireStudio(req);
+  if (!door.ok) return res.status(door.status).json({ error: door.error, gate: door.reason });
+
   const prompt = String(body.prompt || '').trim();
   const name = String(body.name || '').trim().slice(0, 80);
   const aspect = body.aspect === '9:16' ? '9:16' : '16:9';

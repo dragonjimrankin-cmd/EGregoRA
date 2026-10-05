@@ -136,7 +136,8 @@ export async function whoAmI(req) {
   const token = bearer(req);
   if (!token) return null;
   const { rows } = await db.query(
-    `SELECT m.id, m.email, m.name, m.verified, s.method, s.expires_at
+    `SELECT m.id, m.email, m.name, m.verified, m.age_verified, m.id_status,
+            m.legal_name, m.dob, s.method, s.expires_at
        FROM member_sessions s JOIN members m ON m.id = s.member_id
       WHERE s.token = $1 AND s.expires_at > NOW()`,
     [token]
@@ -230,4 +231,52 @@ export function parseClientData(clientDataJSON) {
   } catch {
     return null;
   }
+}
+
+
+/* ------------------------------------------------------- the studio door
+ *
+ * The image and video generators are not open to the street. A caller must
+ * be signed in, hold a verified address, and have passed the age and
+ * identity check. This returns either { ok: true, member } or a refusal
+ * ready to be handed back to the browser.
+ */
+export async function requireStudio(req) {
+  const me = await whoAmI(req);
+  if (!me) {
+    return {
+      ok: false, status: 401, reason: 'signin',
+      error: 'The studio is for members. Sign in or create an account at /join/, then come back.'
+    };
+  }
+  if (!me.verified) {
+    return {
+      ok: false, status: 403, reason: 'verify',
+      error: 'Your address is not confirmed yet. Enter the six-digit code we emailed you.'
+    };
+  }
+  if (!me.age_verified || me.id_status !== 'verified') {
+    return {
+      ok: false, status: 403, reason: 'identity',
+      error: 'Generating images and video needs an age and identity check first. It takes a minute, at /join/.'
+    };
+  }
+  return { ok: true, member: me };
+}
+
+/** Whole years between a date of birth and today, in UTC. */
+export function ageFrom(dob) {
+  const d = new Date(dob + 'T00:00:00Z');
+  if (isNaN(d.getTime())) return null;
+  const now = new Date();
+  let years = now.getUTCFullYear() - d.getUTCFullYear();
+  const m = now.getUTCMonth() - d.getUTCMonth();
+  if (m < 0 || (m === 0 && now.getUTCDate() < d.getUTCDate())) years -= 1;
+  return years;
+}
+
+export function callerIp(req) {
+  const h = (req && req.headers) || {};
+  const fwd = String(h['x-forwarded-for'] || h['cf-connecting-ip'] || '').split(',')[0].trim();
+  return fwd || null;
 }

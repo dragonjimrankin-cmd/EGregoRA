@@ -14,7 +14,13 @@ export default async function (req, res) {
   );
   res.json({
     signed_in: true,
-    member: { id: me.id, email: me.email, name: me.name, verified: me.verified },
+    member: {
+      id: me.id, email: me.email, name: me.name, verified: me.verified,
+      legal_name: me.legal_name || null,
+      age_verified: Boolean(me.age_verified),
+      id_status: me.id_status || 'none'
+    },
+    studio: Boolean(me.verified && me.age_verified && me.id_status === 'verified'),
     method: me.method,
     passkeys: rows
   });

@@ -9,6 +9,7 @@
  */
 import { db } from 'hatchable';
 import { generateImage } from '../lib/imagegen.js';
+import { requireStudio } from '../lib/accounts.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -16,6 +17,10 @@ export const methods = ['POST'];
 const MAX_PROMPT = 1200;
 
 export default async function (req, res) {
+  /* The studio is closed to the street: members only, age and identity checked. */
+  const door = await requireStudio(req);
+  if (!door.ok) return res.status(door.status).json({ error: door.error, gate: door.reason });
+
   const body = req.body || {};
   const prompt = String(body.prompt || '').trim();
   const name = String(body.name || '').trim().slice(0, 80);

@@ -72,6 +72,62 @@ description: "Create an EGregoRA account or sign in — a verified email address
         <h2 id="a-greeting">Welcome</h2>
         <p class="muted small" id="a-who"></p>
 
+        <div class="auth-id" id="a-id-block">
+          <h3>Age &amp; identity — the studio door</h3>
+          <p class="muted small" id="a-id-state">The image and video generators are the one part of this
+          site kept behind a check. Everything else is open to everyone, signed in or not.</p>
+
+          <form class="ornate" id="id-form">
+            <div>
+              <label for="i-legal">Full legal name, as printed on the document</label>
+              <input id="i-legal" name="legal_name" type="text" required maxlength="140"
+                     autocomplete="name" placeholder="Rowan Alexander Gregory">
+            </div>
+            <div>
+              <label for="i-dob">Date of birth</label>
+              <input id="i-dob" name="dob" type="date" required>
+            </div>
+            <div>
+              <label for="i-country">Country that issued the document</label>
+              <input id="i-country" name="country" type="text" required maxlength="60"
+                     autocomplete="country-name" placeholder="United Kingdom">
+            </div>
+            <div>
+              <label for="i-doc-type">Kind of document</label>
+              <select id="i-doc-type" name="doc_type">
+                <option value="passport">Passport</option>
+                <option value="driving-licence">Driving licence</option>
+                <option value="national-id">National identity card</option>
+                <option value="residence-permit">Residence permit</option>
+              </select>
+            </div>
+            <div>
+              <label for="i-doc">Photograph of the document</label>
+              <input id="i-doc" name="doc" type="file" accept="image/*" capture="environment" required>
+              <p class="muted xsmall">A flat, well-lit shot of the page carrying your photograph and your
+              date of birth. JPEG, PNG, WebP or HEIC, under 6&nbsp;MB. You may cover the document number
+              with your thumb — we do not need it.</p>
+              <p class="id-preview" id="i-preview" aria-live="polite"></p>
+            </div>
+            <div class="declare">
+              <input id="i-declare" name="declaration" type="checkbox" required>
+              <label for="i-declare">I declare that this document is mine, that the name and date of birth
+              above are true, and that I am eighteen or older. I understand a false declaration is recorded
+              against this account and ends my use of the generators.</label>
+            </div>
+            <div class="ask-actions">
+              <button class="btn" type="submit" id="i-send">Submit the check</button>
+            </div>
+          </form>
+          <p class="auth-msg" id="i-msg" role="status"></p>
+
+          <p class="muted xsmall">What we do with it: the photograph is stored privately in this project's
+          own storage, is never published, never shown on the site, and is never given a public link. It is
+          held so that a false declaration leaves evidence, and for no other purpose. The check is honest
+          about what it is — a signed declaration with a document attached, not a forensic examination —
+          and that is what stands behind every image and clip made here.</p>
+        </div>
+
         <div class="auth-bio">
           <h3>Biometric entry</h3>
           <p class="muted small">Add a passkey and your device will let you back in with

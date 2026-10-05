@@ -1173,3 +1173,29 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 }
 .oracle-art.just-arrived { animation: arrive-glow 2.4s ease-out 1; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ------------------------------------------------- the studio door */
+.studio-gate {
+  border: 1px dashed rgba(215, 176, 90, .42);
+  border-radius: 4px;
+  background: rgba(215, 176, 90, .045);
+  padding: 1.2rem 1.3rem;
+  margin: 1rem 0 .4rem;
+  text-align: center;
+}
+.studio-gate h4 {
+  font-family: 'Cinzel', serif; color: #f3ddaa;
+  margin: .3rem 0 .6rem; letter-spacing: .08em;
+}
+.studio-gate .gate-mark { font-size: 1.7rem; color: #d7b05a; margin: 0; line-height: 1; }
+.studio-gate .btn { margin: .4rem 0 .7rem; }
+.draw-box.is-shut { opacity: .96; }
+.auth-id { border-top: 1px solid rgba(215,176,90,.25); margin-top: 1.4rem; padding-top: .4rem; }
+.declare { display: flex; gap: .7rem; align-items: flex-start; margin: .4rem 0 .2rem; }
+.declare input { margin-top: .35rem; flex: 0 0 auto; }
+.declare label {
+  font-family: 'EB Garamond', serif; font-size: .92rem;
+  color: #cbbb93; line-height: 1.5; letter-spacing: 0; text-transform: none;
+}
+.id-preview { font-family: 'EB Garamond', serif; font-size: .85rem; color: #7fae7a; margin: .4rem 0 0; }
+.gate-open { color: #7fae7a; }

@@ -22,6 +22,7 @@ import { generateImage } from '../lib/imagegen.js';
 import { openChat } from '../lib/openchat.js';
 import { openaiChat } from '../lib/openai.js';
 import { submitVideo } from '../lib/videogen.js';
+import { requireStudio } from '../lib/accounts.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -163,6 +164,14 @@ FILMING
 - A clip is generated, never a record of a real event, and the same refusals apply as for images.
 - If no video generator is connected, the tool says so. Pass that on plainly and offer a still image.
 
+THE STUDIO DOOR
+- Drawing and filming are for signed-in members over eighteen who have passed the identity check. Talking
+  to you is not: never gate a conversation behind an account.
+- If "draw_image" or "make_video" comes back refused, do not try again, do not apologise at length, and
+  never pretend you made something. Say plainly that the studio needs an account and an age check, point
+  them at the Join page, answer their actual question in words, and describe in one line what you would
+  have drawn had the door been open.
+
 DRAWING
 - You can draw. The "draw_image" tool makes one finished two-dimensional image, photorealistic by default —
   a photograph rather than an illustration — and the picture is shown to the asker beneath your reply.
@@ -201,6 +210,8 @@ When you are steady, come back and ask me anything at all. The question will kee
 /* --------------------------------------------------------------- handler */
 export default async function (req, res) {
   const body = req.body || {};
+  /* Drawing and filming are members-only and age-checked; conversation is not. */
+  const studio = await requireStudio(req);
   const question = String(body.question || '').trim();
   const limb = String(body.limb || '').trim().slice(0, 80);
   const name = String(body.name || '').trim().slice(0, 80);
@@ -348,6 +359,7 @@ export default async function (req, res) {
         required: ['prompt']
       },
       execute: async ({ prompt }) => {
+        if (!studio.ok) return { ok: false, refused: true, error: studio.error };
         const out = await generateImage(prompt);
         if (out.url) images.push({ url: out.url, prompt: out.prompt, provider: out.provider });
         return out.url
@@ -369,6 +381,7 @@ export default async function (req, res) {
         required: ['prompt']
       },
       execute: async ({ prompt, aspect }) => {
+        if (!studio.ok) return { ok: false, refused: true, error: studio.error };
         const job = await submitVideo(prompt, { aspect });
         if (job.error) return { ok: false, error: job.error };
         try {

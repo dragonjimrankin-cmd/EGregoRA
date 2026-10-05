@@ -262,7 +262,7 @@
       const data = await readAsBase64(file);
       const res = await fetch("/api/upload", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
         body: JSON.stringify({
           name: file.name, type: file.type, data,
           asker: (nameEl && nameEl.value || "").trim()
@@ -309,7 +309,7 @@
     try {
       const res = await fetch("/api/ask", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
         body: JSON.stringify({
           question: q,
           name: (nameEl && nameEl.value || "").trim(),
@@ -658,7 +658,7 @@
     try {
       const res = await fetch("/api/draw", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
         body: JSON.stringify({ prompt: p, name: (nameEl && nameEl.value || "").trim() })
       });
       const data = await res.json().catch(() => ({}));
@@ -792,7 +792,7 @@
     try {
       const res = await fetch("/api/video", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
         body: JSON.stringify({
           prompt: p,
           aspect: (aspectEl && aspectEl.value) || "16:9",
@@ -854,6 +854,7 @@
   var held = '';
   function setToken(t) {
     held = t || '';
+    window.__egTok = held;
     /* If storage was declined, the session lives only as long as this tab. */
     var ok = !window.EGConsent || window.EGConsent.allowed();
     try {
@@ -1341,5 +1342,206 @@
         if (btn) { btn.disabled = false; btn.textContent = 'Send the Question'; }
         say('The post did not go through \u2014 email ask@egregora.org instead.', true);
       });
+  });
+})();
+
+/* ------------------------------------------------------------------ *
+ * One place that knows how to speak to a protected endpoint.
+ * ------------------------------------------------------------------ */
+(function () {
+  window.EGAuthToken = function () {
+    try { return localStorage.getItem('eg-session') || window.__egTok || ''; }
+    catch (e) { return window.__egTok || ''; }
+  };
+  window.EGAuthHeaders = function () {
+    var h = { 'content-type': 'application/json' };
+    var t = window.EGAuthToken();
+    if (t) h.Authorization = 'Bearer ' + t;
+    return h;
+  };
+  /* Members-only state, fetched once per page and shared. */
+  var cached = null;
+  window.EGStudio = function () {
+    if (cached) return cached;
+    cached = fetch('/api/account-me', { method: 'POST', headers: window.EGAuthHeaders(), body: '{}' })
+      .then(function (r) { return r.json(); })
+      .catch(function () { return { signed_in: false, studio: false }; });
+    return cached;
+  };
+})();
+
+/* ------------------------------------------------------------------ *
+ * The studio door, as the visitor meets it. The image and video panels
+ * stay shuttered until the account is signed in, the address confirmed
+ * and the age and identity check passed. The server enforces the same
+ * thing; this is only so nobody wastes a prompt finding out.
+ * ------------------------------------------------------------------ */
+(function () {
+  var panels = [
+    { el: document.getElementById('draw-box'), noun: 'Image generation' },
+    { el: document.getElementById('film-box'), noun: 'Video generation' }
+  ].filter(function (p) { return p.el; });
+  if (!panels.length) return;
+
+  var WORDS = {
+    signin: {
+      head: 'Members only',
+      body: 'The generators are open to signed-in members who are over eighteen and have passed the ' +
+            'identity check. Everything else here — the oracle, every page, every answer — stays open ' +
+            'to everyone, and always will.',
+      cta: 'Sign in or create an account'
+    },
+    verify: {
+      head: 'Confirm your address',
+      body: 'Your account exists but the address has not been confirmed yet. Enter the six-digit code we ' +
+            'emailed you and the studio opens.',
+      cta: 'Enter my code'
+    },
+    identity: {
+      head: 'Age and identity check needed',
+      body: 'Making images and video needs proof of age and identity: your legal name, your date of ' +
+            'birth, and a photograph of a government-issued document. It takes about a minute, it is ' +
+            'asked once, and the document is stored privately and never shown on the site.',
+      cta: 'Pass the check'
+    }
+  };
+
+  function shutter(panel, state) {
+    var w = WORDS[state] || WORDS.signin;
+    var form = panel.el.querySelector('form');
+    var out = panel.el.querySelector('.draw-out');
+    if (form) form.hidden = true;
+    if (out) out.hidden = true;
+    panel.el.classList.add('is-shut');
+
+    var gate = document.createElement('div');
+    gate.className = 'studio-gate';
+    gate.innerHTML =
+      '<p class="gate-mark" aria-hidden="true">&#9737;</p>' +
+      '<h4>' + w.head + '</h4>' +
+      '<p class="muted small">' + w.body + '</p>' +
+      '<p><a class="btn" href="/join/">' + w.cta + '</a></p>' +
+      '<p class="muted xsmall">' + panel.noun + ' is gated because a generator can be made to produce ' +
+      'things a person should be accountable for. The check puts a name behind every prompt. ' +
+      'Nothing is checked, and no account is needed, to talk to the oracle.</p>';
+    var anchor = form || out || panel.el.lastElementChild;
+    panel.el.insertBefore(gate, anchor);
+  }
+
+  function open(panel) {
+    panel.el.classList.remove('is-shut');
+    var g = panel.el.querySelector('.studio-gate');
+    if (g) g.remove();
+    var form = panel.el.querySelector('form');
+    var out = panel.el.querySelector('.draw-out');
+    if (form) form.hidden = false;
+    if (out) out.hidden = false;
+  }
+
+  /* Shut by default, so a slow reply never leaves the door ajar. */
+  panels.forEach(function (p) { shutter(p, 'signin'); });
+
+  window.EGStudio().then(function (me) {
+    var state = !me || !me.signed_in ? 'signin'
+      : (!me.member || !me.member.verified) ? 'verify'
+      : me.studio ? 'open' : 'identity';
+    panels.forEach(function (p) {
+      if (state === 'open') { open(p); return; }
+      var g = p.el.querySelector('.studio-gate');
+      if (g) g.remove();
+      shutter(p, state);
+    });
+  });
+})();
+
+/* ------------------------------------------------------------------ *
+ * The age and identity check on the Join page.
+ * ------------------------------------------------------------------ */
+(function () {
+  var form = document.getElementById('id-form');
+  if (!form) return;
+  var msg = document.getElementById('i-msg');
+  var state = document.getElementById('a-id-state');
+  var btn = document.getElementById('i-send');
+  var fileIn = document.getElementById('i-doc');
+  var preview = document.getElementById('i-preview');
+  var carried = null;
+
+  function say(text, bad) {
+    if (!msg) return;
+    msg.textContent = text || '';
+    msg.className = 'auth-msg' + (text ? (bad ? ' is-bad' : ' is-good') : '');
+  }
+
+  function passed(member) {
+    form.hidden = true;
+    if (state) {
+      state.innerHTML = '<strong class="gate-open">The studio is open to you.</strong> ' +
+        'Checked' + (member && member.legal_name ? ' as ' + member.legal_name : '') +
+        '. Image and video generation are unlocked on the <a href="/ask-ed/">Ask Ed</a> page.';
+    }
+  }
+
+  /* Read the document once, as a data URL, so the post is a single JSON body. */
+  if (fileIn) fileIn.addEventListener('change', function () {
+    var f = fileIn.files && fileIn.files[0];
+    carried = null;
+    if (!f) { if (preview) preview.textContent = ''; return; }
+    if (f.size > 6 * 1024 * 1024) {
+      say('That image is over 6 MB. A normal phone photo is plenty.', true);
+      fileIn.value = '';
+      return;
+    }
+    var r = new FileReader();
+    r.onload = function () {
+      carried = r.result;
+      if (preview) {
+        preview.textContent = f.name + ' \u00b7 ' + Math.round(f.size / 1024) + ' KB \u00b7 held in this ' +
+          'page only until you submit.';
+      }
+      say('');
+    };
+    r.onerror = function () { say('That file could not be read.', true); };
+    r.readAsDataURL(f);
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!carried) { say('Attach a photograph of the document.', true); return; }
+    var dec = document.getElementById('i-declare');
+    if (!dec || !dec.checked) { say('The declaration has to be ticked.', true); return; }
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Checking\u2026'; }
+    say('');
+    fetch('/api/account-identity', {
+      method: 'POST',
+      headers: window.EGAuthHeaders(),
+      body: JSON.stringify({
+        action: 'submit',
+        legal_name: document.getElementById('i-legal').value,
+        dob: document.getElementById('i-dob').value,
+        country: document.getElementById('i-country').value,
+        doc_type: document.getElementById('i-doc-type').value,
+        doc: carried,
+        declaration: true
+      })
+    })
+      .then(function (r) { return r.json().then(function (d) { d._ok = r.ok; return d; }); })
+      .then(function (d) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Submit the check'; }
+        if (!d._ok) { say(d.error || 'The check did not pass.', true); return; }
+        carried = null;
+        say(d.message || 'Checked.');
+        passed({ legal_name: document.getElementById('i-legal').value });
+      })
+      .catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = 'Submit the check'; }
+        say('The check could not be sent. Try again.', true);
+      });
+  });
+
+  /* Already checked? Do not ask again. */
+  if (window.EGStudio) window.EGStudio().then(function (me) {
+    if (me && me.studio) passed(me.member);
   });
 })();
