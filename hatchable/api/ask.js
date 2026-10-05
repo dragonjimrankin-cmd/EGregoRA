@@ -20,6 +20,7 @@ import { bestMatch, nearest, topMatches, relatedQuestions } from '../lib/oracle-
 import { webSearch, readPage } from '../lib/websearch.js';
 import { generateImage } from '../lib/imagegen.js';
 import { openChat } from '../lib/openchat.js';
+import { openaiChat } from '../lib/openai.js';
 import { submitVideo } from '../lib/videogen.js';
 
 export const access = 'public';
@@ -486,7 +487,28 @@ export default async function (req, res) {
     console.error('ask: open-weights route failed', err && err.message);
   }
 
-  /* 6b ── the project's own BYOK gateway, if the open route gave nothing. */
+  /* 6b ── OpenAI, on the order's own key, when the open-weights route is
+          unavailable or silent. Strong, reliable, and the one that always
+          answers. */
+  if (!answer) {
+    try {
+      const oa = await openaiChat({
+        system: SYSTEM,
+        messages,
+        tools,
+        temperature: 0.72,
+        maxTokens: 1200
+      });
+      if (oa && oa.text) {
+        answer = oa.text;
+        usedModel = oa.model + ' (OpenAI)';
+      }
+    } catch (err) {
+      console.error('ask: openai route failed', err && err.message);
+    }
+  }
+
+  /* 6c ── the project's own BYOK gateway, if both routes gave nothing. */
   for (const model of answer ? [] : MODELS) {
     for (const withTools of [true, false]) {
       try {

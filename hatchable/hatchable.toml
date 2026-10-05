@@ -39,3 +39,10 @@ description = "Optional fal.ai key, for HunyuanVideo 1.5 480p video generation."
 key         = "REPLICATE_API_TOKEN"
 required    = false
 description = "Optional Replicate token, as a second route to HunyuanVideo 1.5."
+
+# The oracle's OpenAI route. A value pasted here on the Setup page overrides
+# the key the owner supplied in lib/key-store.js.
+[[secret]]
+key         = "OPENAI_API_KEY"
+required    = false
+description = "OpenAI key used by the oracle for chat and as an image fallback."

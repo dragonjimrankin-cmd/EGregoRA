@@ -12,6 +12,7 @@
  * instead of pretending it drew something.
  */
 import { ai, storage, config } from 'hatchable';
+import { openaiImage } from './openai.js';
 
 /* The order's own generator: FLUX.1-schnell, Apache-2.0 open weights, reached
    through the keyless Pollinations endpoint. It is tried first so the oracle
@@ -136,7 +137,7 @@ export async function generateImage(subject) {
   if (subj.length < 3) return { prompt: subj, error: 'Nothing to draw — say what the picture should show.' };
 
   const prompt = fullPrompt(subj);
-  const attempts = [viaOpenSource, viaHuggingFace, viaGoogle, viaOpenAI];
+  const attempts = [viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI];
   let lastErr = '';
 
   for (const attempt of attempts) {

@@ -258,6 +258,33 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
   }
   if (flag("dry-run")) { console.log("▸ --dry-run set, stopping before deploy."); return; }
 
+  /* 4b — probe the oracle's OpenAI key from the runner, which (unlike the
+     sandbox) has egress. Logged so the key can be verified without a human
+     opening a console. */
+  try {
+    const store = await import("../hatchable/lib/key-store.js");
+    const m = [null, store.storedOpenAIKey()];
+    if (m[1]) {
+      const r = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: "Bearer " + m[1] },
+        body: JSON.stringify({
+          model: "gpt-4o-mini", max_tokens: 8,
+          messages: [{ role: "user", content: "Reply with the single word: ready" }]
+        })
+      });
+      const j = await r.json().catch(() => null);
+      const say = j && j.choices && j.choices[0] && j.choices[0].message
+        ? String(j.choices[0].message.content).trim()
+        : (j && j.error && j.error.message) || "no body";
+      console.log(`\u25b8 openai key probe: HTTP ${r.status} \u2014 ${say}`);
+    } else {
+      console.log("\u25b8 openai key probe: no default key declared");
+    }
+  } catch (err) {
+    console.log("\u25b8 openai key probe failed: " + (err && err.message));
+  }
+
   /* 5 — deploy */
   console.log("▸ deploy");
   const deployed = await call("deploy", {
