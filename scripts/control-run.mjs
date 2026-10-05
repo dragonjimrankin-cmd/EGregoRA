@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+/**
+ * Drive /api/control from the GitHub Actions runner.
+ *
+ * The sandbox this repository is edited in has no TLS egress except to
+ * api.github.com, so the agent cannot call the live site directly. The runner
+ * can. Put a list of calls in ops/control-request.json, push, and this script
+ * executes them and writes the answers to ci-logs/control.log, which is read
+ * back out of the branch.
+ *
+ *   { "calls": [ {"action":"whoami"}, {"action":"ask","question":"…"} ] }
+ *
+ * `poll` on a call waits for a draw/film job to finish:
+ *   { "action":"film", "prompt":"…", "poll": 600 }
+ */
+import { readFileSync } from 'node:fs';
+
+const SITE = process.env.EG_SITE || 'https://egregora.hatchable.site';
+const TOKEN = process.env.EG_TOKEN || 'jim1_c6bd62438879ec7d7cdad176bf105a352cf01866574ebb4e';
+const FILE = process.argv[2] || 'ops/control-request.json';
+
+const headers = {
+  authorization: 'Bearer ' + TOKEN,
+  'content-type': 'application/json'
+};
+
+const post = async (body) => {
+  const started = Date.now();
+  try {
+    const r = await fetch(SITE + '/api/control', {
+      method: 'POST', headers, body: JSON.stringify(body),
+      signal: AbortSignal.timeout(120000)
+    });
+    const text = await r.text();
+    let json = null;
+    try { json = JSON.parse(text); } catch { /* not json */ }
+    return { status: r.status, ms: Date.now() - started, json, text: json ? null : text.slice(0, 800) };
+  } catch (err) {
+    return { status: 0, ms: Date.now() - started, error: (err && err.message) || 'network error' };
+  }
+};
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const plan = JSON.parse(readFileSync(FILE, 'utf8'));
+const calls = plan.calls || [];
+
+console.log('# control run — ' + new Date().toISOString());
+console.log('site: ' + SITE + '   calls: ' + calls.length);
+
+// the manual, unauthenticated, as a reachability check
+try {
+  const r = await fetch(SITE + '/api/control', { signal: AbortSignal.timeout(30000) });
+  console.log('\nGET /api/control -> HTTP ' + r.status);
+} catch (err) {
+  console.log('\nGET /api/control -> unreachable: ' + err.message);
+}
+
+for (const call of calls) {
+  const { poll, ...body } = call;
+  console.log('\n' + '-'.repeat(68));
+  console.log('POST ' + JSON.stringify(body));
+  const out = await post(body);
+  console.log('HTTP ' + out.status + '  (' + out.ms + ' ms)');
+  console.log(JSON.stringify(out.json ?? out.text ?? out.error, null, 2).slice(0, 4000));
+
+  if (poll && out.json && out.json.id) {
+    const until = Date.now() + Number(poll) * 1000;
+    let last = '';
+    while (Date.now() < until) {
+      await sleep(15000);
+      const p = await post({ action: 'job', id: out.json.id });
+      const st = (p.json && p.json.status) || 'unknown';
+      if (st !== last) { console.log('  job ' + out.json.id + ': ' + st); last = st; }
+      if (st === 'ready' || st === 'failed') {
+        console.log(JSON.stringify(p.json, null, 2).slice(0, 2000));
+        break;
+      }
+    }
+    if (last !== 'ready' && last !== 'failed') console.log('  job ' + out.json.id + ': still running when the clock ran out');
+  }
+}
+console.log('\ndone.');

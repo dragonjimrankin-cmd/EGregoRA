@@ -1,0 +1,12 @@
+{
+  "note": "Edited by the agent, executed by CI against the live site. See scripts/control-run.mjs.",
+  "calls": [
+    { "action": "whoami" },
+    { "action": "status" },
+    { "action": "models" },
+    { "action": "workers" },
+    { "action": "ask", "question": "Why 137.5 degrees and not 120?" },
+    { "action": "ask", "question": "What is Gink?" },
+    { "action": "mailbag", "limit": 3 }
+  ]
+}

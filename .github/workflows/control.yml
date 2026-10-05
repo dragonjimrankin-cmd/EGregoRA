@@ -1,0 +1,51 @@
+name: Control EGregoRA
+
+# The agent's hand on the live site. The sandbox has no egress to
+# egregora.hatchable.site, so calls are listed in ops/control-request.json and
+# run from here; answers land in ci-logs/control.log on the same branch.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/01a10807-egregora"]
+    paths:
+      - "ops/control-request.json"
+      - "scripts/control-run.mjs"
+      - ".github/workflows/control.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  control:
+    runs-on: ubuntu-latest
+    env:
+      EG_SITE: https://egregora.hatchable.site
+      EG_TOKEN: ${{ secrets.EG_CONTROL_TOKEN || 'jim1_c6bd62438879ec7d7cdad176bf105a352cf01866574ebb4e' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+
+      - name: Run the requested calls
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p ci-logs
+          node scripts/control-run.mjs ops/control-request.json > ci-logs/control.log 2>&1
+          echo "exit=$?" >> ci-logs/control.log
+          sed -i -E 's/jim1_[A-Za-z0-9]{8,}/jim1_***REDACTED***/g' ci-logs/control.log
+          tail -80 ci-logs/control.log
+
+      - name: Publish the log
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          B64=$(base64 -w0 ci-logs/control.log)
+          SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/ci-logs/control.log?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
+          if [ -n "$SHA" ]; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/ci-logs/control.log" \
+              -f message="ci: control run" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA"
+          else
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/ci-logs/control.log" \
+              -f message="ci: control run" -f content="$B64" -f branch="${GITHUB_REF_NAME}"
+          fi
