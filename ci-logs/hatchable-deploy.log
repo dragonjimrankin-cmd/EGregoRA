@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-05T08:39:11Z
+# Hatchable deploy — 2026-10-05T08:51:05Z
 
 token present: 43 chars, prefix hb_
 
@@ -11,12 +11,12 @@ hatchable.com/mcp -> HTTP 200
   connected to hatchable 2.0.0
   34 tools available
 ▸ using existing project proj_eiuxpFfTnwwx
-▸ write_files — 92 text files
+▸ write_files — 93 text files
   ✓ api/account-face.js, api/account-identity.js, api/account-me.js, api/account-passkey.js, api/account-signout.j…
   ✓ lib/colab.js, lib/facecheck.js, lib/gpu-scripts.js, lib/imagegen.js, lib/kaggle.js, lib/key-store.js, lib/mail…
   ✓ lib/oracle-corpus-xiii.js, lib/oracle-corpus-xiv.js, lib/oracle-corpus-xix.js, lib/oracle-corpus-xv.js, lib/or…
-  ✓ migrations/0010_gpu.sql, migrations/0011_colab.sql, migrations/0012_tokens.sql, public/404.html, public/accoun…
-  ✓ public/infographics/index.html, public/join/index.html, public/music/index.html, public/neurobiology/index.htm…
+  ✓ migrations/0010_gpu.sql, migrations/0011_colab.sql, migrations/0012_tokens.sql, migrations/0013_colab_caps.sql…
+  ✓ public/index.html, public/infographics/index.html, public/join/index.html, public/music/index.html, public/neu…
 ▸ uploading 10 binary assets (server-side URL import)
   ✓ public/assets/img/art-inner-cosmos.jpg (361 KB) via url import
   ✓ public/assets/img/art-ouroboros-elements.jpg (471 KB) via url import
@@ -43,16 +43,16 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 72,
+  "version": 73,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v71.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v72.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v72.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v73.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
-  "files_deployed": 105,
+  "files_deployed": 106,
   "functions_deployed": 17,
   "warnings": [],
   "visibility": "public",
