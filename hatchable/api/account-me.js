@@ -32,7 +32,8 @@ export default async function (req, res) {
       id_status: me.id_status || 'none',
       id_doc_type: me.id_doc_type || null,
       joined: me.created_at || null,
-      checked: me.verified_at || null
+      checked: me.verified_at || null,
+      subscribed: me.subscribed !== false
     },
     studio: Boolean(me.verified && me.age_verified && me.id_status === 'verified'),
     method: me.method,

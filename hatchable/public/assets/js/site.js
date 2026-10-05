@@ -1940,6 +1940,49 @@
       }
     }
 
+    /* the mailing list */
+    var listNote = document.getElementById('acct-list');
+    var listBtn = document.getElementById('acct-list-btn');
+    var listMsg = document.getElementById('acct-list-msg');
+
+    function paintList(on) {
+      if (listNote) {
+        listNote.innerHTML = on
+          ? '<strong class="gate-open">You are on the list.</strong> New pages, the podcast, and the ' +
+            'occasional long letter. Every one of them carries the way out at its foot.'
+          : 'You are <strong>off the list</strong>. You will still get post you actually asked for — a ' +
+            'sign-in code, or a reply to a letter you sent Ed.';
+      }
+      if (listBtn) listBtn.textContent = on ? 'Leave the list' : 'Rejoin the list';
+    }
+    var on = m.subscribed !== false;
+    paintList(on);
+
+    if (listBtn) listBtn.addEventListener('click', function () {
+      listBtn.disabled = true;
+      fetch('/api/unsubscribe', {
+        method: 'POST',
+        headers: window.EGAuthHeaders(),
+        body: JSON.stringify({ on: !on })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          listBtn.disabled = false;
+          if (d && d.ok) {
+            on = Boolean(d.subscribed);
+            paintList(on);
+            if (listMsg) { listMsg.textContent = d.message || ''; listMsg.className = 'auth-msg is-good'; }
+          } else if (listMsg) {
+            listMsg.textContent = (d && d.error) || 'That did not take.';
+            listMsg.className = 'auth-msg is-bad';
+          }
+        })
+        .catch(function () {
+          listBtn.disabled = false;
+          if (listMsg) { listMsg.textContent = 'That did not take.'; listMsg.className = 'auth-msg is-bad'; }
+        });
+    });
+
     var keys = document.getElementById('acct-keys');
     if (keys) {
       keys.innerHTML = '';
