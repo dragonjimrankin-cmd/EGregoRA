@@ -25,6 +25,7 @@ export default {
     { url: "/wizardry/", label: "Wizardry", glyph: "star" },
     { url: "/runes/", label: "Runes & Charms", glyph: "tree" },
     { url: "/occult/", label: "The Occult", glyph: "eye" },
+    { url: "/qabalah/", label: "Hermetic Qabalah", glyph: "tree" },
     { url: "/elemental-alchemy/", label: "Elemental Alchemy", glyph: "spiral" },
     { url: "/products/", label: "Products", glyph: "seed" },
     { url: "/join/", label: "Join", glyph: "star" }

@@ -26,6 +26,7 @@ import { VOL16 } from './oracle-corpus-xvi.js';
 import { VOL17 } from './oracle-corpus-xvii.js';
 import { VOL19 } from './oracle-corpus-xix.js';
 import { VOL18 } from './oracle-corpus-xviii.js';
+import { VOL20 } from './oracle-corpus-xx.js';
 
 const BASE = [
  {
@@ -305,7 +306,7 @@ The Further Research page grades every source so you always know whether you are
 
 export const ANSWERS = [
  ...BASE, ...MORE, ...VOL3, ...VOL4, ...VOL5, ...VOL6, ...VOL7,
- ...VOL8, ...VOL9, ...VOL10, ...VOL11, ...VOL12, ...VOL13, ...VOL14, ...VOL15, ...VOL16, ...VOL17, ...VOL18, ...VOL19
+ ...VOL8, ...VOL9, ...VOL10, ...VOL11, ...VOL12, ...VOL13, ...VOL14, ...VOL15, ...VOL16, ...VOL17, ...VOL18, ...VOL19, ...VOL20
 ];
 
 const STOP = new Set(
