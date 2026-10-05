@@ -2059,17 +2059,31 @@
        account page, where you went to look for it. */
     var member = me.member || {};
     var name = String(member.name || '').trim();
-    var label = name ? name.split(/\s+/)[0] : 'Your account';
+    var label = name ? name.split(/\s+/)[0] : '';
+    if (!label) {
+      /* No name on the register yet — fall back to the address's local part,
+         which is a handle rather than a contactable address. */
+      var local = String(member.email || '').split('@')[0].replace(/[._-]+/g, ' ').trim();
+      label = local ? local.charAt(0).toUpperCase() + local.slice(1) : 'Member';
+    }
 
     link.classList.add('is-in');
     link.href = '/account/';
-    link.setAttribute('title', 'Your account');
+    link.setAttribute('title', name ? 'Logged in as ' + name : 'Your account');
     var mark = link.querySelector('.head-join-mark');
     if (mark) mark.textContent = '\u2726';
     var text = link.querySelector('.head-join-text');
     if (text) {
       text.classList.add('head-join-addr');
-      text.textContent = label;
+      text.textContent = '';
+      var lead = document.createElement('span');
+      lead.className = 'head-join-lead';
+      lead.textContent = 'Logged in as';
+      var who = document.createElement('span');
+      who.className = 'head-join-who';
+      who.textContent = label;
+      text.appendChild(lead);
+      text.appendChild(who);
     }
   }).catch(function () {});
 })();

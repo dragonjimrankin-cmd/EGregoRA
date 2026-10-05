@@ -272,6 +272,32 @@ export default async function (req, res) {
         });
       }
 
+      /* Set the display name on an account. The header chip and the
+         account page both read it; with no name the chip falls back to the
+         address's local part, which is nobody's idea of a greeting. */
+      case 'member-name': {
+        const email = String(body.email || '').trim().toLowerCase();
+        const name = String(body.name || '').trim().slice(0, 80);
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          return res.status(400).json({ error: 'Give a valid email.' });
+        }
+        if (!name) return res.status(400).json({ error: 'Give a name.' });
+        const { rows: found } = await db.query(
+          'SELECT id, email, name FROM members WHERE lower(email) = $1', [email]);
+        if (!found.length) return res.status(404).json({ error: 'No account uses ' + email + '.' });
+        await db.query('UPDATE members SET name = $2 WHERE id = $1', [found[0].id, name]);
+        return res.json({ ok: true, member: found[0].id, email, was: found[0].name || null, now: name });
+      }
+
+      /* Who is on the register. Addresses are included because this endpoint
+         is already token-gated and the whole point of it is administration. */
+      case 'members': {
+        const limit = Math.max(1, Math.min(100, Number(body.limit) || 25));
+        const { rows } = await db.query(
+          'SELECT id, email, name, created_at FROM members ORDER BY created_at DESC LIMIT $1', [limit]);
+        return res.json({ ok: true, count: rows.length, members: rows });
+      }
+
       case 'mailbag': {
         const limit = Math.max(1, Math.min(50, Number(body.limit) || 20));
         const { rows } = await db.query(

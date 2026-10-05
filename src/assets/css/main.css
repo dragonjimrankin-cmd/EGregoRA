@@ -1340,6 +1340,20 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 /* ------------------------------------------------------- the register */
 .head-join-addr { text-transform: none; letter-spacing: .06em; font-size: .72rem; max-width: 15rem;
   overflow: hidden; text-overflow: ellipsis; }
+/* Signed in: two rows — the quiet label above, the name beneath it. */
+.head-join.is-in .head-join-text {
+  display: inline-flex; flex-direction: column; align-items: flex-start;
+  line-height: 1.12; max-width: 12rem;
+}
+.head-join-lead {
+  font-size: .54rem; letter-spacing: .18em; text-transform: uppercase;
+  color: #9f947a; white-space: nowrap;
+}
+.head-join.is-in:hover .head-join-lead, .head-join.is-in:focus-visible .head-join-lead { color: #b9ad8d; }
+.head-join-who {
+  font-size: .82rem; letter-spacing: .04em; text-transform: none;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .acct-email { font-family: 'EB Garamond', serif; color: #d7b05a; margin: .1rem 0 1rem; word-break: break-all; }
 .acct-grid {
   display: grid; grid-template-columns: auto 1fr; gap: .45rem 1.2rem;
