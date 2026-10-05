@@ -735,6 +735,8 @@
 
   const box = document.getElementById("v-prompt");
   const aspectEl = document.getElementById("v-aspect");
+  const modelEl = document.getElementById("v-model");
+  const modelNote = document.getElementById("v-model-note");
   const btn = document.getElementById("v-submit");
   const clear = document.getElementById("v-clear");
   const out = document.getElementById("film-out");
@@ -809,6 +811,7 @@
         body: JSON.stringify({
           prompt: p,
           aspect: (aspectEl && aspectEl.value) || "16:9",
+          model: (modelEl && modelEl.value) || "hunyuan15",
           name: (nameEl && nameEl.value || "").trim()
         })
       });
@@ -837,6 +840,28 @@
     box.value = "";
     box.focus();
   });
+
+  /* What each model is, in the server's words rather than the page's. */
+  if (modelEl) {
+    fetch("/api/video?models=1")
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d || !d.models) return;
+        const notes = {};
+        modelEl.innerHTML = "";
+        d.models.forEach((m) => {
+          notes[m.key] = m.note + (m.own_gpu ? "" : " Needs a paid route \u2014 too large for the order\u2019s own GPU.");
+          const o = document.createElement("option");
+          o.value = m.key;
+          o.textContent = m.label;
+          modelEl.appendChild(o);
+        });
+        const paint = () => { if (modelNote) modelNote.textContent = notes[modelEl.value] || ""; };
+        modelEl.addEventListener("change", paint);
+        paint();
+      })
+      .catch(() => {});
+  }
 
   /* A picture queued on the order's own GPU is watched exactly like a clip. */
   window.EGJobWatch = (card, id, prompt) => watch(card, id, prompt);

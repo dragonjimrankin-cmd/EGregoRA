@@ -205,12 +205,26 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             placeholder="Mist moving through a stand of oaks at dawn, slow dolly forward, shafts of low sun between the trunks, leaves turning in the draught"></textarea>
         </div>
         <div class="film-row">
-          <label for="v-aspect">Shape</label>
-          <select id="v-aspect" name="aspect">
-            <option value="16:9">Landscape · 16:9</option>
-            <option value="9:16">Upright · 9:16</option>
-          </select>
+          <div>
+            <label for="v-model">Model</label>
+            <select id="v-model" name="model">
+              <option value="hunyuan15">HunyuanVideo 1.5 · 480p</option>
+              <option value="wan22">Wan 2.2 · 480p</option>
+              <option value="ltx">LTX-Video · fast</option>
+              <option value="cogvideox">CogVideoX-5B</option>
+              <option value="mochi">Mochi 1</option>
+            </select>
+          </div>
+          <div>
+            <label for="v-aspect">Shape</label>
+            <select id="v-aspect" name="aspect">
+              <option value="16:9">Landscape · 16:9</option>
+              <option value="9:16">Upright · 9:16</option>
+            </select>
+          </div>
         </div>
+        <p class="muted xsmall" id="v-model-note">Tencent, 8.3B. The house default: the best motion of
+        the bunch.</p>
         <div class="draw-examples" id="film-examples">
           <button class="chip" type="button">A single candle flame guttering in a draught, close, dark background</button>
           <button class="chip" type="button">Ink dropped into still water, slow motion, backlit, blooming into filaments</button>

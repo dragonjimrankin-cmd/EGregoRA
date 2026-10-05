@@ -49,6 +49,57 @@ async function call(url, opts) {
   }
 }
 
+
+/* ----------------------------------------------------------- the models
+ *
+ * Every one of these has published weights — no closed model is offered.
+ * Each carries the endpoint for both paid routes and, where the thing will
+ * actually fit on a 16 GB T4, what to load on the order's own GPU.
+ */
+export const VIDEO_MODELS = {
+  hunyuan15: {
+    label: 'HunyuanVideo 1.5 · 480p',
+    note: 'Tencent, 8.3B. The house default: the best motion of the bunch.',
+    fal: 'fal-ai/hunyuan-video-v1.5/text-to-video',
+    replicate: 'tencent/hunyuan-video-1.5',
+    kaggle: { repo: 'tencent/HunyuanVideo-1.5', cls: 'HunyuanVideo15Pipeline', w: 848, h: 480, frames: 121, steps: 28, fps: 24 }
+  },
+  wan22: {
+    label: 'Wan 2.2 · 480p',
+    note: 'Alibaba, Apache-2.0. Strong at people and faces.',
+    fal: 'fal-ai/wan/v2.2-a14b/text-to-video',
+    replicate: 'wan-video/wan-2.2-t2v-fast',
+    /* the 14B will not fit a T4, so the order's own GPU runs the 1.3B */
+    kaggle: { repo: 'Wan-AI/Wan2.1-T2V-1.3B-Diffusers', cls: 'WanPipeline', w: 832, h: 480, frames: 81, steps: 30, fps: 16 }
+  },
+  ltx: {
+    label: 'LTX-Video · fast',
+    note: 'Lightricks, open weights. The quickest here by a distance.',
+    fal: 'fal-ai/ltx-video-13b-distilled',
+    replicate: 'lightricks/ltx-video',
+    kaggle: { repo: 'Lightricks/LTX-Video-0.9.7-distilled', cls: 'LTXPipeline', w: 768, h: 512, frames: 97, steps: 8, fps: 24 }
+  },
+  cogvideox: {
+    label: 'CogVideoX-5B',
+    note: 'Tsinghua / Zhipu. Painterly, slower, good with light.',
+    fal: 'fal-ai/cogvideox-5b',
+    replicate: 'cuuupid/cogvideox-5b',
+    kaggle: { repo: 'THUDM/CogVideoX-5b', cls: 'CogVideoXPipeline', w: 720, h: 480, frames: 49, steps: 50, fps: 8 }
+  },
+  mochi: {
+    label: 'Mochi 1',
+    note: 'Genmo, Apache-2.0. Cinematic, needs a paid route.',
+    fal: 'fal-ai/mochi-v1',
+    replicate: 'genmoai/mochi-1',
+    kaggle: null
+  }
+};
+
+export function pickModel(name) {
+  const key = String(name || '').trim();
+  return VIDEO_MODELS[key] ? { key, ...VIDEO_MODELS[key] } : { key: 'hunyuan15', ...VIDEO_MODELS.hunyuan15 };
+}
+
 /* ------------------------------------------------------------- submitting */
 
 /**
@@ -60,11 +111,12 @@ export async function submitVideo(prompt, opts = {}) {
   if (text.length < 3) return { error: 'Say what the clip should show.' };
 
   const aspect = opts.aspect === '9:16' ? '9:16' : '16:9';
+  const model = pickModel(opts.model);
   const frames = Math.max(49, Math.min(121, Number(opts.frames) || 121));
 
   const falKey = await key('FAL_KEY');
   if (falKey) {
-    const r = await call(FAL_QUEUE + FAL_MODEL, {
+    const r = await call(FAL_QUEUE + model.fal, {
       method: 'POST',
       headers: { authorization: 'Key ' + falKey, 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -80,10 +132,10 @@ export async function submitVideo(prompt, opts = {}) {
       const id = r.json.request_id || r.json.requestId;
       return {
         provider: 'fal',
-        model: 'HunyuanVideo 1.5 · 480p',
+        model: model.label,
         requestId: id,
-        statusUrl: r.json.status_url || (FAL_QUEUE + FAL_MODEL + '/requests/' + id + '/status'),
-        responseUrl: r.json.response_url || (FAL_QUEUE + FAL_MODEL + '/requests/' + id)
+        statusUrl: r.json.status_url || (FAL_QUEUE + model.fal + '/requests/' + id + '/status'),
+        responseUrl: r.json.response_url || (FAL_QUEUE + model.fal + '/requests/' + id)
       };
     }
     console.error('videogen: fal submit failed', r.status, String(r.text).slice(0, 300));
@@ -94,6 +146,12 @@ export async function submitVideo(prompt, opts = {}) {
      Tried after the paid routes and before giving up. */
   const tryKaggle = async () => {
     if (!kaggleToken()) return null;
+    if (!model.kaggle) {
+      return {
+        error: model.label + ' is too large for the order\u2019s own GPU. Choose HunyuanVideo, Wan, ' +
+          'LTX-Video or CogVideoX, or connect a FAL_KEY for this one.'
+      };
+    }
     const slug = 'egregora-film-' + Date.now().toString(36);
     const claim = await claimGpu('video', slug);
     if (!claim.ok) {
@@ -101,7 +159,7 @@ export async function submitVideo(prompt, opts = {}) {
     }
     const out = await pushKernel({
       slug,
-      code: videoScript({ prompt: text, aspect, frames })
+      code: videoScript({ prompt: text, aspect, frames, model: model.kaggle })
     });
     if (out.error) {
       await releaseGpu(slug, 'failed');
@@ -110,7 +168,7 @@ export async function submitVideo(prompt, opts = {}) {
     }
     return {
       provider: 'kaggle',
-      model: 'HunyuanVideo 1.5 \u00b7 480p \u00b7 Kaggle T4',
+      model: model.label + ' \u00b7 Kaggle T4',
       requestId: out.slug,
       statusUrl: out.slug,
       responseUrl: out.url
@@ -119,7 +177,7 @@ export async function submitVideo(prompt, opts = {}) {
 
   const repKey = await key('REPLICATE_API_TOKEN');
   if (repKey) {
-    const r = await call('https://api.replicate.com/v1/models/' + REPLICATE_MODEL + '/predictions', {
+    const r = await call('https://api.replicate.com/v1/models/' + model.replicate + '/predictions', {
       method: 'POST',
       headers: { authorization: 'Bearer ' + repKey, 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -129,7 +187,7 @@ export async function submitVideo(prompt, opts = {}) {
     if (r.ok && r.json && r.json.id) {
       return {
         provider: 'replicate',
-        model: 'HunyuanVideo 1.5 · 480p',
+        model: model.label,
         requestId: r.json.id,
         statusUrl: (r.json.urls && r.json.urls.get) || ('https://api.replicate.com/v1/predictions/' + r.json.id),
         responseUrl: (r.json.urls && r.json.urls.get) || ('https://api.replicate.com/v1/predictions/' + r.json.id)

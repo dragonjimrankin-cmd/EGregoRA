@@ -10,7 +10,7 @@
  * project's own storage by lib/videogen.js.
  */
 import { db } from 'hatchable';
-import { submitVideo, pollVideo } from '../lib/videogen.js';
+import { submitVideo, pollVideo, VIDEO_MODELS } from '../lib/videogen.js';
 import { requireStudio } from '../lib/accounts.js';
 
 export const access = 'public';
@@ -22,6 +22,15 @@ export default async function (req, res) {
   const body = req.body || {};
   const query = req.query || {};
   const id = Number(query.id || body.id || 0);
+
+  /* ---- the models on offer ---- */
+  if (req.method === 'GET' && (query.models === '1' || query.models === 'true')) {
+    return res.json({
+      models: Object.entries(VIDEO_MODELS).map(([key, m]) => ({
+        key, label: m.label, note: m.note, own_gpu: Boolean(m.kaggle)
+      }))
+    });
+  }
 
   /* ---- status ---- */
   if (req.method === 'GET' || (!body.prompt && id)) {
@@ -62,7 +71,7 @@ export default async function (req, res) {
     return res.status(400).json({ error: `Trim the prompt to ${MAX_PROMPT} characters.` });
   }
 
-  const job = await submitVideo(prompt, { aspect });
+  const job = await submitVideo(prompt, { aspect, model: body.model });
   if (job.error) return res.status(503).json({ error: job.error });
 
   const { rows } = await db.query(

@@ -1335,3 +1335,5 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   .acct-grid { grid-template-columns: 1fr; gap: .1rem .6rem; }
   .acct-grid dd { margin-bottom: .5rem; }
 }
+.film-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+.film-row > div { flex: 1 1 12rem; min-width: 11rem; }
