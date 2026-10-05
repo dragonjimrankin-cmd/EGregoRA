@@ -1,5 +1,5 @@
 /* ===========================================================================
-   EGregoRA — the Oracle's familiar, second sculpt.
+   EGregoRA — Gink, the Oracle's familiar, second sculpt.
 
    A fox built entirely in code and shaded for realism rather than for charm:
 
@@ -17,7 +17,9 @@
 
    He breathes, blinks asymmetrically, flicks and swivels his ears, tracks
    the cursor with head, neck and eyes separately, swishes a seven-segment
-   tail, and lip-syncs to the browser's speech synthesiser.
+   tail, and lip-syncs to the browser's speech synthesiser word by word:
+   the visemes are read off the text actually being spoken, timed to the
+   boundary events the synthesiser reports, not improvised at random.
 
    Exposes window.EGFox = { speak(text), stop(), available, muted }.
    =========================================================================== */
@@ -318,7 +320,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   } catch (err) {
     mount.classList.add("fox-stage--failed");
-    setStatus("The familiar cannot be drawn here — this browser has no WebGL. The written answer stands on its own.");
+    setStatus("Gink cannot be drawn here — this browser has no WebGL. The written answer stands on its own.");
     return;
   }
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
@@ -890,10 +892,71 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   let speaking = false;
   let listening = false;
   let jawNow = 0, jawTarget = 0;
-  let viseme = 0.5, visemeT = 0;
+  let wideNow = 0, wideTarget = 0;
+
+  /* ---- visemes -------------------------------------------------------
+     The jaw is driven by the letters actually being spoken rather than by
+     noise. Each sound class gets a mouth shape: how far the jaw drops, and
+     how wide the muzzle spreads. Crude next to a real phoneme aligner, but
+     English orthography is regular enough that an open A reads as an open
+     mouth and an M reads as a closed one, which is all the eye checks. */
+  const SHAPES = {
+    a: [0.95, 0.55], A: [0.95, 0.55],
+    o: [0.80, 0.10], u: [0.55, 0.05], w: [0.40, 0.00],
+    e: [0.55, 0.85], i: [0.38, 0.90], y: [0.38, 0.80],
+    m: [0.02, 0.35], b: [0.05, 0.35], p: [0.05, 0.35],
+    f: [0.16, 0.65], v: [0.16, 0.65],
+    s: [0.14, 0.80], z: [0.14, 0.80], c: [0.18, 0.75], x: [0.20, 0.70],
+    t: [0.22, 0.60], d: [0.24, 0.55], n: [0.20, 0.55], l: [0.30, 0.60],
+    r: [0.34, 0.35], g: [0.30, 0.40], k: [0.30, 0.45], q: [0.35, 0.15],
+    h: [0.30, 0.45], j: [0.28, 0.65]
+  };
+  const VOWELS = "aeiouy";
+  let visQueue = [];          // [{ jaw, wide, dur }]
+  let visHold = 0;            // time left on the current shape
+  let visJaw = 0, visWide = 0;
+
+  /* Turn a word into a short run of mouth shapes and spread them over the
+     time the synthesiser will plausibly take to say it. Consonant clusters
+     collapse — the mouth does not articulate every letter of "strength". */
+  const mouthWord = (word, seconds) => {
+    const letters = String(word).toLowerCase().replace(/[^a-z']/g, "");
+    if (!letters) return;
+    const shapes = [];
+    let lastVowel = null;
+    for (let i = 0; i < letters.length; i++) {
+      const ch = letters[i];
+      const sh = SHAPES[ch];
+      if (!sh) continue;
+      const isVowel = VOWELS.indexOf(ch) > -1;
+      if (isVowel && lastVowel === ch) continue;           // "ee" is one shape
+      if (isVowel) lastVowel = ch; else lastVowel = null;
+      const prev = shapes[shapes.length - 1];
+      if (prev && !isVowel && !prev.v && Math.abs(prev.jaw - sh[0]) < 0.12) {
+        prev.weight += 0.6;                                 // collapse a cluster
+        continue;
+      }
+      shapes.push({ jaw: sh[0], wide: sh[1], v: isVowel, weight: isVowel ? 1.5 : 0.8 });
+    }
+    if (!shapes.length) shapes.push({ jaw: 0.4, wide: 0.5, weight: 1 });
+    const total = shapes.reduce((n, sh) => n + sh.weight, 0);
+    const span = Math.max(0.1, seconds);
+    visQueue = shapes.map((sh) => ({
+      jaw: sh.jaw,
+      wide: sh.wide,
+      dur: Math.max(0.035, (sh.weight / total) * span)
+    }));
+    // every word ends by closing a little, which is what separates words
+    visQueue.push({ jaw: 0.06, wide: 0.3, dur: 0.045 });
+    visHold = 0;
+  };
   let emphasis = 0;
   let blinkTimer = 1.5 + Math.random() * 3, blink = 0, blinkSkew = 0;
   let earPerk = 0;
+  const earFlick = [
+    { wait: 0.6 + Math.random() * 1.9, on: 0 },
+    { wait: 0.6 + Math.random() * 1.9, on: 0 }
+  ];
   let headTilt = 0;
   const pointer = { x: 0, y: 0, active: false };
 
@@ -935,9 +998,17 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
       // ears: idle drift, independent flicks, perked when speaking or listening
       earPerk += (((speaking || listening) ? 0.6 : 0) - earPerk) * 0.05;
+      /* Flicks used to fire off a sine threshold, roughly every 0.7s per ear,
+         which read as a nervous twitch. They are now scheduled, and scheduled
+         65% less often: the same flick, at a little under a third of the rate. */
+      earFlick.forEach((e, i) => {
+        e.wait -= dt;
+        if (e.wait <= 0) { e.on = 0.2; e.wait = 1.1 + Math.random() * 1.9; }
+        if (e.on > 0) e.on = Math.max(0, e.on - dt);
+      });
       ears.forEach((ear, i) => {
         const s = i === 0 ? -1 : 1;
-        const flick = (Math.sin(t * 9.1 + i * 3) > 0.993) ? 0.24 : 0;
+        const flick = Math.sin((earFlick[i].on / 0.2) * Math.PI) * 0.24;
         const swivel = listening ? Math.sin(t * 0.9 + i * 1.7) * 0.08 : 0;
         ear.rotation.z = (-0.3 + earPerk * 0.12) * s + (Math.sin(t * 1.21 + i * 2) * 0.025 + flick) * s;
         ear.rotation.x = -0.12 - earPerk * 0.12 + Math.sin(t * 0.9 + i) * 0.02;
@@ -986,25 +1057,40 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       b.position.y += (target - b.position.y) * 0.1;
     });
 
-    /* ---- lip sync ---- */
+    /* ---- lip sync -----------------------------------------------------
+       Shapes are consumed from the queue the words put there, and the jaw
+       chases them with a spring that opens faster than it closes — the
+       asymmetry is most of what makes a mouth look like it is speaking
+       rather than chattering. Smoothing is framerate-independent. */
     if (speaking) {
-      visemeT -= dt;
-      if (visemeT <= 0) {
-        viseme = 0.25 + Math.random() * 0.75;
-        visemeT = 0.075 + Math.random() * 0.1;
+      visHold -= dt;
+      while (visHold <= 0 && visQueue.length) {
+        const nextShape = visQueue.shift();
+        visJaw = nextShape.jaw; visWide = nextShape.wide;
+        visHold += nextShape.dur;
+      }
+      if (!visQueue.length && visHold <= 0) {
+        /* Between boundary events, or in a browser that reports none, he
+           keeps a low murmur going rather than freezing mid-word. */
+        visJaw = 0.26 + 0.22 * Math.abs(Math.sin(t * 5.4));
+        visWide = 0.45 + 0.15 * Math.sin(t * 3.1);
       }
       emphasis = Math.max(0, emphasis - dt * 3.2);
-      const env = 0.45 + 0.55 * Math.abs(Math.sin(t * 6.2));
-      jawTarget = 0.05 + 0.44 * viseme * env + emphasis * 0.12;
-      snout.scale.x = 1 + jawNow * 0.1;
+      jawTarget = 0.035 + 0.42 * visJaw + emphasis * 0.05;
+      wideTarget = visWide;
       tongue.position.y = -0.02 - jawNow * 0.08;
     } else {
       emphasis = 0;
+      visQueue.length = 0; visHold = 0; visJaw = 0; visWide = 0;
       jawTarget = 0.012 + Math.sin(t * 0.9) * 0.008;
-      snout.scale.x += (1 - snout.scale.x) * 0.1;
+      wideTarget = 0;
     }
-    jawNow += (jawTarget - jawNow) * 0.38;
+    const opening = jawTarget > jawNow;
+    const kJaw = 1 - Math.exp(-dt * (opening ? 34 : 19));
+    jawNow += (jawTarget - jawNow) * kJaw;
+    wideNow += (wideTarget - wideNow) * (1 - Math.exp(-dt * 22));
     jaw.rotation.x = jawNow;
+    snout.scale.x = 1 + jawNow * 0.06 + wideNow * 0.05;
     cavity.scale.y = 1 + jawNow * 1.9;
 
     renderer.render(scene, camera);
@@ -1038,8 +1124,8 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   };
 
   const readyLine = () => {
-    if (!canSpeak) return "No speech synthesiser here — the fox will mouth the words silently.";
-    if (!chosenVoice) return "Ready. Ask the oracle and the fox will read the answer aloud.";
+    if (!canSpeak) return "No speech synthesiser here — Gink will mouth the words silently.";
+    if (!chosenVoice) return "Ready. Ask the oracle and Gink will read the answer aloud.";
     return /^en[-_]GB/i.test(chosenVoice.lang)
       ? `Ready — speaking as ${chosenVoice.name}, British English.`
       : `Ready — no British voice is installed on this device, so ${chosenVoice.name} stands in.`;
@@ -1064,27 +1150,70 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   };
 
   let queue = [], muted = false, lastText = "", silentTimer = null;
+  let mimeTimer = null;
+  const RATE = 0.95;
+  const CPS = 13.5 * RATE;      // characters per second at this speaking rate
+
+  /* Mouth a text without a synthesiser: walk the words on a timer at the
+     same pace the voice would have used. Used on devices with no speech. */
+  const mimeText = (text, done) => {
+    const words = String(text).split(/\s+/).filter(Boolean);
+    let i = 0;
+    const tick = () => {
+      if (i >= words.length) { clearTimeout(mimeTimer); mimeTimer = null; done && done(); return; }
+      const w = words[i++];
+      const secs = Math.max(0.14, w.length / CPS);
+      mouthWord(w, secs);
+      const pause = /[.,;:!?…]$/.test(w) ? 220 : 40;
+      mimeTimer = setTimeout(tick, secs * 1000 + pause);
+    };
+    tick();
+  };
 
   const stop = () => {
     queue = []; speaking = false;
+    visQueue.length = 0; visHold = 0;
     clearTimeout(silentTimer);
+    clearTimeout(mimeTimer); mimeTimer = null;
     if (canSpeak) synth.cancel();
     if (btnStop) btnStop.disabled = true;
     setStatus(readyLine());
   };
 
   const sayNext = () => {
+    clearTimeout(mimeTimer); mimeTimer = null;
     if (!queue.length) {
       speaking = false;
+      visQueue.length = 0; visHold = 0;
       if (btnStop) btnStop.disabled = true;
       setStatus("Finished. Test everything kindly.");
       return;
     }
-    const u = new SpeechSynthesisUtterance(queue.shift());
+    const line = queue.shift();
+    const u = new SpeechSynthesisUtterance(line);
     if (chosenVoice) { u.voice = chosenVoice; u.lang = chosenVoice.lang; } else u.lang = "en-GB";
-    u.rate = 0.95; u.pitch = 0.86; u.volume = 1;
-    u.onstart = () => { speaking = true; };
-    u.onboundary = () => { emphasis = 1; };
+    u.rate = RATE; u.pitch = 0.86; u.volume = 1;
+    let sawBoundary = false;
+    u.onstart = () => {
+      speaking = true;
+      /* Chrome and Safari fire word boundaries; Firefox often does not. Give
+         it a moment, and if nothing arrives, mime the line on a timer so the
+         mouth still follows the words instead of inventing them. */
+      setTimeout(() => { if (speaking && !sawBoundary) mimeText(line); }, 320);
+    };
+    u.onboundary = (e) => {
+      /* A real boundary: take the word at this character index and give the
+         jaw exactly that word to shape, spread over how long it will take. */
+      sawBoundary = true;
+      clearTimeout(mimeTimer); mimeTimer = null;
+      const from = typeof e.charIndex === "number" ? e.charIndex : 0;
+      const len = e.charLength || (line.slice(from).match(/^\S+/) || [""])[0].length;
+      const word = line.substr(from, Math.max(1, len));
+      if (word.trim()) {
+        mouthWord(word, Math.max(0.12, word.trim().length / CPS));
+        emphasis = /[.!?]$/.test(word) ? 1 : 0.45;
+      }
+    };
     u.onend = sayNext;
     u.onerror = sayNext;
     synth.speak(u);
@@ -1100,6 +1229,8 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       speaking = true;
       setStatus("Mouthing the answer — this device has no speech synthesiser.");
       clearTimeout(silentTimer);
+      clearTimeout(mimeTimer); mimeTimer = null;
+      mimeText(text);
       silentTimer = setTimeout(() => { speaking = false; setStatus(readyLine()); },
         Math.min(45000, 55 * text.length));
       return;
@@ -1115,7 +1246,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
   btnSpeak?.addEventListener("click", () => {
     speak(lastText || (
-      "I am the order's familiar. Ask the oracle a question and I will read its answer aloud. " +
+      "I am Gink, the order's familiar. Ask the oracle a question and I will read its answer aloud. " +
       "Everything I say was written in advance by the order and graded by its rules on evidence. " +
       "Test everything kindly."
     ));

@@ -68,7 +68,7 @@
    A conversational client for /api/ask. Keeps the thread in memory, sends the
    last turns with each question so the oracle can follow a line of enquiry,
    renders a transcript, streams the answer in word by word, offers follow-up
-   chips, and hands the finished text to the fox to read aloud. */
+   chips, and hands the finished text to Gink to read aloud. */
 (() => {
   "use strict";
   const form = document.getElementById("oracle-form");
@@ -607,7 +607,7 @@
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", onScroll);
   addEventListener("load", update);
-  // the page grows as reveal animations and the fox canvas settle in
+  // the page grows as reveal animations and Gink's canvas settles in
   if (window.ResizeObserver) {
     new ResizeObserver(onScroll).observe(document.body);
   }
