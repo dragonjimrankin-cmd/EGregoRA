@@ -6,7 +6,7 @@ export default {
   cofounder2: "Jim Rankin",
   description:
     "EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.",
-  email: "ask@egregora.org",
+  email: "info@shakra.co.uk",
   nav: [
     { url: "/", label: "Introduction", glyph: "seed" },
     { url: "/podcast/", label: "Podcasts", glyph: "spiral" },

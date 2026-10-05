@@ -11,7 +11,7 @@ import { sendDispatch } from '../lib/mailing.js';
 export const access = 'public';
 export const methods = ['POST'];
 
-const KEEPERS = ['ask@egregora.org', 'ed@egregora.org', 'jim@egregora.org'];
+const KEEPERS = ['info@shakra.co.uk', 'ed@egregora.org', 'jim@egregora.org'];
 
 export default async function (req, res) {
   const me = await whoAmI(req);

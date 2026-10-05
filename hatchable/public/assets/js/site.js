@@ -195,16 +195,12 @@
     }
   };
 
+  /* Provenance — where the answer came from, which model wrote it, what it was
+     grounded in — is deliberately NOT shown. It belongs in the server log, not
+     in the conversation. Only things the reader can act on survive here: links
+     the oracle actually followed, and a note it wrote itself. */
   const footnote = (el, data) => {
     const bits = [];
-    if (data.source === "written") bits.push("From the order\u2019s written answers" +
-      (data.matched ? " \u00b7 " + esc(data.matched) : ""));
-    else if (data.source === "model") {
-      bits.push("Composed just now in the order\u2019s voice" +
-        (data.model ? " \u00b7 " + esc(String(data.model)) : ""));
-      if (data.grounded && data.grounded.length)
-        bits.push("grounded in: " + data.grounded.slice(0, 2).map(esc).join("; "));
-    } else if (data.source === "crisis") bits.push("Said before anything else");
     if (data.sources && data.sources.length) {
       bits.push("looked up on the web: " + data.sources.slice(0, 4).map((s) =>
         '<a href="' + esc(s.url) + '" target="_blank" rel="noopener nofollow">' +
@@ -618,6 +614,83 @@
   update();
 })();
 
+
+/* ------------------------------------------------------- Progress bars
+ * One bar, used by every generator on the page.
+ *
+ * Two kinds of number can arrive and the bar never pretends they are the
+ * same. A MEASURED percentage is the sampler's own step counter, reported by
+ * the GPU doing the work. An ESTIMATED one is this page reading the clock
+ * against how long the route usually takes — it eases towards 94% and stops
+ * there, because a bar that sits at 99% is a lie and one that hits 100%
+ * before the file exists is a worse one. The label says which you are
+ * looking at, and the line beneath says which machine is doing the work.
+ * ------------------------------------------------------------------ */
+(function () {
+  window.EGBar = function (card, opts) {
+    opts = opts || {};
+    var wrap = card.querySelector('.gen-wait');
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.className = 'gen-wait';
+      card.insertBefore(wrap, card.firstChild);
+    }
+    wrap.innerHTML =
+      '<div class="gen-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">' +
+      '<span></span></div>' +
+      '<p class="gen-line"><strong class="gen-pct">0%</strong>' +
+      '<span class="gen-kind">estimated from the clock</span></p>' +
+      '<p class="gen-note">' + (opts.note || 'Working\u2026') + '</p>' +
+      '<p class="gen-gpu">Looking for a machine\u2026</p>';
+
+    var box  = wrap.querySelector('.gen-bar');
+    var fill = wrap.querySelector('.gen-bar span');
+    var pct  = wrap.querySelector('.gen-pct');
+    var kind = wrap.querySelector('.gen-kind');
+    var note = wrap.querySelector('.gen-note');
+    var gpu  = wrap.querySelector('.gen-gpu');
+
+    var shown = 0;
+    var measured = false;
+    var expect = Number(opts.expect) || 30;
+    var t0 = Date.now();
+
+    function paint(v) {
+      var n = Math.min(100, Math.max(0, Math.round(v)));
+      if (n <= shown) return;
+      shown = n;
+      fill.style.width = n + '%';
+      pct.textContent = n + '%';
+      box.setAttribute('aria-valuenow', String(n));
+      if (n >= 100) box.classList.add('is-full');
+    }
+
+    function creep() {
+      if (measured) return;
+      var f = ((Date.now() - t0) / 1000) / expect;
+      paint(94 * (1 - Math.exp(-2.2 * f)));
+    }
+
+    var timer = setInterval(creep, 700);
+    creep();
+
+    return {
+      set: function (v, isMeasured, stage) {
+        if (isMeasured && !measured) {
+          measured = true;
+          kind.textContent = 'measured on the GPU';
+        }
+        if (typeof v === 'number' && v > 0) paint(v);
+        if (stage) note.textContent = stage;
+      },
+      gpu: function (text) { if (text) gpu.textContent = text; },
+      note: function (text) { if (text) note.textContent = text; },
+      done: function () { measured = true; clearInterval(timer); paint(100); },
+      stop: function () { clearInterval(timer); }
+    };
+  };
+})();
+
 /* ------------------------------------------------------------- Drawing box
    A direct line to /api/draw: a prompt in, one finished image out, with no
    model and no conversation in between. */
@@ -652,10 +725,8 @@
 
     const card = document.createElement("figure");
     card.className = "draw-card is-working";
-    card.innerHTML =
-      '<div class="draw-wait"><span class="draw-spin" aria-hidden="true"></span>' +
-      "<p>Drawing \u2014 this takes fifteen to forty seconds.</p></div>" +
-      '<figcaption>' + esc(p) + "</figcaption>";
+    card.innerHTML = '<figcaption>' + esc(p) + "</figcaption>";
+    const bar = window.EGBar(card, { note: "Drawing \u2014 fifteen to forty seconds.", expect: 28 });
     out.prepend(card);
     card.scrollIntoView({ block: "nearest", behavior: "smooth" });
 
@@ -670,11 +741,12 @@
       /* The quick routes were unavailable and the picture is being drawn on
          the order's own GPU: wait on it the way a clip is waited on. */
       if (res.ok && data.id && data.status === "queued") {
-        const wait = card.querySelector(".draw-wait p");
-        if (wait) wait.textContent = data.note || "Drawing on the order\u2019s own GPU \u2014 several minutes.";
-        if (window.EGJobWatch) { window.EGJobWatch(card, data.id, p); return; }
+        bar.stop();
+        if (window.EGJobWatch) { window.EGJobWatch(card, data.id, p, data); return; }
       }
 
+      bar.done();
+      bar.stop();
       card.classList.remove("is-working");
 
       if (!res.ok || !data.url) {
@@ -689,10 +761,13 @@
           "<figcaption>" + esc(p) +
           '<span class="draw-meta">Generated, not photographed' +
           (data.provider ? " \u00b7 " + esc(data.provider) : "") +
+          (data.hardware ? '<br>Drawn on ' + esc(data.hardware) : "") +
           " \u00b7 open in a new tab for the full size</span></figcaption>";
+        if (window.EGMontageAdd) window.EGMontageAdd(data.url, p, "image");
         if (window.EGArrived) window.EGArrived("image", card);
       }
     } catch {
+      bar.stop();
       card.classList.remove("is-working");
       card.classList.add("is-error");
       card.innerHTML =
@@ -762,8 +837,15 @@
         : '<video controls playsinline preload="metadata" src="' + esc(data.url) + '"></video>') +
       "<figcaption>" + esc(prompt) +
       '<span class="draw-meta">Generated, not ' + (isImage ? "photographed" : "filmed") + ' \u00b7 ' +
-      esc(data.model || "HunyuanVideo 1.5 \u00b7 480p") + "</span></figcaption>";
-    if (!isImage && window.EGMontageAdd) window.EGMontageAdd(data.url, prompt);
+      esc(data.model || "HunyuanVideo 1.5 \u00b7 480p") +
+      (data.hardware ? "<br>Rendered on " + esc(data.hardware) : "") +
+      (data.carried ? '<br>Carried over \u00b7 ' + esc(data.carried) : "") +
+      "</span></figcaption>";
+    if (window.EGMontageAdd) {
+      window.EGMontageAdd(data.url, prompt, isImage ? "image" : "video", {
+        id: data.id, sheet: data.sheet, seed: data.seed
+      });
+    }
     if (window.EGArrived) window.EGArrived(card.dataset.origin === "oracle" ? "oracle-video" : "video", card);
   };
 
@@ -773,24 +855,75 @@
     card.innerHTML = "<p>" + esc(msg) + "</p><figcaption>" + esc(prompt) + "</figcaption>";
   };
 
-  /* Poll every 6 seconds, for up to twelve minutes. */
-  const watch = (card, id, prompt) => {
+  /* Poll every 6 seconds, for up to forty minutes, moving the bar with
+     whatever the server knows: the sampler's own step count where the
+     machine reports it, the clock where it does not. */
+  const watch = (card, id, prompt, first) => {
     let tries = 0;
+    const bar = card.__bar || window.EGBar(card, {
+      note: "Waiting for a machine\u2026",
+      expect: (first && first.kind === "image") ? 90 : 300
+    });
+    card.__bar = bar;
+    if (first && first.hardware) bar.gpu(first.hardware);
+    if (first && first.note) bar.note(first.note);
+
     const tick = async () => {
       tries += 1;
-      if (tries > 400) return failed(card, "This has run for over forty minutes \u2014 it may still arrive; reload later.", prompt);
+      if (tries > 400) {
+        bar.stop();
+        return failed(card, "This has run for over forty minutes \u2014 it may still arrive; reload later.", prompt);
+      }
       try {
         const res = await fetch("/api/video?id=" + encodeURIComponent(id));
         const data = await res.json().catch(() => ({}));
-        if (data.status === "ready" && data.url) return ready(card, data, prompt);
-        if (data.status === "failed") return failed(card, data.error || "The generator gave up on that one.", prompt);
+        if (typeof data.progress === "number") bar.set(data.progress, data.measured, data.stage || null);
+        if (data.hardware) bar.gpu(data.hardware);
+        if (data.status === "ready" && data.url) { bar.done(); bar.stop(); return ready(card, data, prompt); }
+        if (data.status === "failed") { bar.stop(); return failed(card, data.error || "The generator gave up on that one.", prompt); }
       } catch { /* keep waiting */ }
       setTimeout(tick, 6000);
     };
-    setTimeout(tick, 8000);
+    setTimeout(tick, 5000);
   };
 
   let busy = false;
+
+  /* ---- continuation ----------------------------------------------------
+     Set by the montage when a shot is chosen to grow the next one out of.
+     It holds the parent's id and, where the browser could read the frame off
+     the canvas, the frame itself — already uploaded, so the model can be
+     handed a literal first frame rather than a description of one. */
+  let cont = null;
+  const contBox = document.getElementById("v-continues");
+
+  const paintCont = () => {
+    if (!contBox) return;
+    if (!cont) { contBox.hidden = true; contBox.innerHTML = ""; return; }
+    contBox.hidden = false;
+    contBox.innerHTML =
+      (cont.thumb ? '<img src="' + esc(cont.thumb) + '" alt="The frame this shot continues from">' : "") +
+      '<div><p class="cont-head">Continuing from shot ' + esc(String(cont.index || "?")) + "</p>" +
+      '<p class="muted xsmall">' +
+      (cont.frame
+        ? "The last frame goes to the model as this shot\u2019s first frame. "
+        : "The frame itself could not be read off this clip, so the words and the seed carry it. ") +
+      "Characters, setting, camera, light and film stock are carried over word for word \u2014 " +
+      "write only what happens next.</p>" +
+      (cont.carried ? '<p class="muted xsmall cont-sheet">' + esc(cont.carried) + "</p>" : "") +
+      '<button type="button" class="btn btn--ghost btn--small" id="v-cont-drop">Start fresh instead</button></div>';
+    const drop = document.getElementById("v-cont-drop");
+    if (drop) drop.addEventListener("click", () => { cont = null; paintCont(); });
+  };
+
+  /* Called by the montage. */
+  window.EGExtendFrom = (info) => {
+    cont = info || null;
+    paintCont();
+    const anchor = document.getElementById("film-box");
+    if (anchor) anchor.scrollIntoView({ block: "start", behavior: "smooth" });
+    if (box) { box.focus(); if (!box.value.trim()) box.placeholder = "What happens next in this shot?"; }
+  };
 
   const film = async (prompt) => {
     const p = String(prompt || "").trim();
@@ -803,10 +936,11 @@
 
     const card = document.createElement("figure");
     card.className = "draw-card is-working";
-    card.innerHTML =
-      '<div class="draw-wait"><span class="draw-spin" aria-hidden="true"></span>' +
-      "<p>Filming \u2014 about three minutes for five seconds of 480p. Leave the page open.</p></div>" +
-      "<figcaption>" + esc(p) + "</figcaption>";
+    card.innerHTML = "<figcaption>" + esc(p) + "</figcaption>";
+    card.__bar = window.EGBar(card, {
+      note: "Filming \u2014 about three minutes for five seconds of 480p. Leave the page open.",
+      expect: 300
+    });
     out.prepend(card);
 
     try {
@@ -817,13 +951,22 @@
           prompt: p,
           aspect: (aspectEl && aspectEl.value) || "16:9",
           model: (modelEl && modelEl.value) || "hunyuan15",
-          name: (nameEl && nameEl.value || "").trim()
+          name: (nameEl && nameEl.value || "").trim(),
+          from: cont ? cont.id : undefined,
+          frame: cont ? cont.frame : undefined,
+          sheet: cont ? cont.sheet : undefined,
+          seed: cont ? cont.seed : undefined
         })
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.id) failed(card, data.error || "The camera would not start.", p);
-      else watch(card, data.id, p);
+      if (!res.ok || !data.id) { card.__bar.stop(); failed(card, data.error || "The camera would not start.", p); }
+      else {
+        watch(card, data.id, p, data);
+        cont = null;
+        paintCont();
+      }
     } catch {
+      if (card.__bar) card.__bar.stop();
       failed(card, "No clip could be requested \u2014 this page may be running without its backend.", p);
     } finally {
       busy = false;
@@ -869,16 +1012,14 @@
   }
 
   /* A picture queued on the order's own GPU is watched exactly like a clip. */
-  window.EGJobWatch = (card, id, prompt) => watch(card, id, prompt);
+  window.EGJobWatch = (card, id, prompt, first) => watch(card, id, prompt, first);
 
   /* Clips the oracle starts for itself inside the conversation. */
   window.EGFilmWatch = (id, prompt) => {
     const card = document.createElement("figure");
     card.className = "draw-card is-working";
-    card.innerHTML =
-      '<div class="draw-wait"><span class="draw-spin" aria-hidden="true"></span>' +
-      "<p>The oracle is filming \u2014 about three minutes.</p></div>" +
-      "<figcaption>" + esc(prompt || "") + "</figcaption>";
+    card.innerHTML = "<figcaption>" + esc(prompt || "") + "</figcaption>";
+    card.__bar = window.EGBar(card, { note: "The oracle is filming \u2014 about three minutes.", expect: 300 });
     card.dataset.origin = "oracle";
     out.prepend(card);
     document.getElementById("film-box").scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -1395,7 +1536,7 @@
       })
       .catch(function () {
         if (btn) { btn.disabled = false; btn.textContent = 'Send the Question'; }
-        say('The post did not go through \u2014 email ask@egregora.org instead.', true);
+        say('The post did not go through \u2014 email info@shakra.co.uk instead.', true);
       });
   });
 })();
@@ -2099,15 +2240,41 @@
 
   /* ----------------------------------------------------------- shots */
 
-  window.EGMontageAdd = function (url, prompt) {
+  var STILL = 3;   // seconds a still picture holds in the cut
+
+  window.EGMontageAdd = function (url, prompt, kind, meta) {
     if (!url || shots.some(function (s) { return s.url === url; })) return;
+    meta = meta || {};
+
+    /* A still is a shot too. It holds for three seconds and takes the same
+       transitions, which is also what makes it a usable starting frame: a
+       picture you liked becomes the first frame of the clip that follows. */
+    if (kind === 'image') {
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = url;
+      var still = {
+        url: url, prompt: prompt || 'A picture', kind: 'image', image: img,
+        in: 0, out: STILL, duration: STILL, id: meta.id || null,
+        sheet: meta.sheet || null, seed: meta.seed || null
+      };
+      img.addEventListener('load', paint);
+      shots.push(still);
+      paint();
+      return;
+    }
+
     var v = document.createElement('video');
     v.src = url;
     v.crossOrigin = 'anonymous';
     v.preload = 'metadata';
     v.muted = true;
     v.playsInline = true;
-    var shot = { url: url, prompt: prompt || 'A clip', video: v, in: 0, out: null, duration: null };
+    var shot = {
+      url: url, prompt: prompt || 'A clip', kind: 'video', video: v,
+      in: 0, out: null, duration: null, id: meta.id || null,
+      sheet: meta.sheet || null, seed: meta.seed || null
+    };
     v.addEventListener('loadedmetadata', function () {
       shot.duration = v.duration;
       if (shot.out === null) shot.out = v.duration;
@@ -2116,6 +2283,88 @@
     shots.push(shot);
     paint();
   };
+
+  /* ------------------------------------------------- extending a shot
+   *
+   * Pick a shot and the next generation grows out of it. Three things
+   * travel across, strongest first:
+   *
+   *   1. the frame itself. For a clip it is read off a canvas at the out
+   *      point, for a still it is the picture; either way it is uploaded and
+   *      handed to the model as the literal first frame where the route
+   *      supports image-to-video.
+   *   2. the seed, so the noise does not change underneath the world.
+   *   3. the continuity sheet — the exact words that described the
+   *      characters, the setting, the camera, the light and the stock.
+   *
+   * If the browser cannot read the frame (a clip served without permissive
+   * CORS headers taints the canvas) the page says so rather than pretending,
+   * and the other two locks still apply.
+   */
+  function grabFrame(shot) {
+    return new Promise(function (resolve) {
+      try {
+        var W = 848, H = 480;
+        var canvas = document.createElement('canvas');
+        var src = shot.kind === 'image' ? shot.image : shot.video;
+
+        var paintIt = function () {
+          var sw = src.videoWidth || src.naturalWidth;
+          var sh = src.videoHeight || src.naturalHeight;
+          if (!sw || !sh) return resolve(null);
+          canvas.width = sw; canvas.height = sh;
+          canvas.getContext('2d').drawImage(src, 0, 0, sw, sh);
+          try { resolve(canvas.toDataURL('image/jpeg', 0.92)); }
+          catch (e) { resolve(null); }          // tainted canvas
+        };
+
+        if (shot.kind === 'image') {
+          if (src.complete) paintIt();
+          else { src.addEventListener('load', paintIt); src.addEventListener('error', function () { resolve(null); }); }
+          return;
+        }
+
+        var at = Math.max(0, (shot.out || shot.duration || 1) - 0.08);
+        var done = function () { src.removeEventListener('seeked', done); paintIt(); };
+        src.addEventListener('seeked', done);
+        try { src.currentTime = at; } catch (e) { resolve(null); }
+        setTimeout(function () { resolve(null); }, 4000);
+      } catch (e) { resolve(null); }
+    });
+  }
+
+  async function extendFrom(shot, index) {
+    if (!window.EGExtendFrom) return;
+    say('Reading the frame\u2026');
+    var dataUrl = await grabFrame(shot);
+    var hosted = null;
+
+    if (dataUrl) {
+      try {
+        var res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { 'content-type': 'application/json' },
+          body: JSON.stringify({ name: 'frame.jpg', type: 'image/jpeg', data: dataUrl })
+        });
+        var out = await res.json().catch(function () { return {}; });
+        if (res.ok && out.url) hosted = out.url;
+      } catch (e) { /* the words and the seed will have to carry it */ }
+    }
+
+    window.EGExtendFrom({
+      id: shot.id || null,
+      index: index + 1,
+      frame: hosted,
+      thumb: dataUrl || (shot.kind === 'image' ? shot.url : null),
+      sheet: shot.sheet || null,
+      seed: shot.seed || null,
+      carried: shot.prompt
+    });
+    say(hosted
+      ? 'Shot ' + (index + 1) + ' is the starting frame. Say what happens next.'
+      : 'That clip\u2019s frame could not be read in the browser, so the description and the seed will carry it. Say what happens next.',
+      !hosted);
+  }
 
   function total() {
     return shots.reduce(function (n, s) {
@@ -2128,7 +2377,8 @@
     if (!shots.length) {
       var li = document.createElement('li');
       li.className = 'shot-empty';
-      li.textContent = 'No clips yet. Make one above and it will appear here.';
+      li.textContent = 'No shots yet. Draw a picture or film a clip above and it lands here \u2014 ' +
+        'then any shot can be continued from, so the next one keeps the same characters.';
       list.appendChild(li);
       renderBtn.disabled = true;
       if (clearBtn) clearBtn.hidden = true;
@@ -2141,22 +2391,51 @@
       var li = document.createElement('li');
       li.className = 'shot';
 
-      var thumb = document.createElement('video');
-      thumb.src = s.url + '#t=0.5';
-      thumb.className = 'shot-thumb';
-      thumb.muted = true;
-      thumb.playsInline = true;
-      thumb.preload = 'metadata';
+      var thumb;
+      if (s.kind === 'image') {
+        thumb = document.createElement('img');
+        thumb.src = s.url;
+        thumb.alt = String(s.prompt).slice(0, 80);
+        thumb.className = 'shot-thumb';
+      } else {
+        thumb = document.createElement('video');
+        thumb.src = s.url + '#t=0.5';
+        thumb.className = 'shot-thumb';
+        thumb.muted = true;
+        thumb.playsInline = true;
+        thumb.preload = 'metadata';
+      }
 
       var body = document.createElement('div');
       body.className = 'shot-body';
 
       var head = document.createElement('p');
       head.className = 'shot-name';
-      head.textContent = (i + 1) + '. ' + String(s.prompt).slice(0, 90);
+      head.textContent = (i + 1) + '. ' + (s.kind === 'image' ? '\u25a3 ' : '\u25b6 ') +
+        String(s.prompt).slice(0, 90);
       body.appendChild(head);
 
-      if (s.duration) {
+      var ext = document.createElement('button');
+      ext.type = 'button';
+      ext.className = 'btn btn--ghost btn--small shot-extend';
+      ext.textContent = s.kind === 'image' ? 'Film on from this picture' : 'Continue from this shot';
+      ext.title = 'Carry the characters, the setting and the camera into the next generation';
+      ext.addEventListener('click', function () { extendFrom(s, i); });
+      body.appendChild(ext);
+
+      if (s.kind === 'image') {
+        var hold = document.createElement('div');
+        hold.className = 'shot-trim';
+        hold.innerHTML = '<label>Hold <input type="number" min="0.5" step="0.5" value="' +
+          s.out.toFixed(1) + '"></label><span class="muted xsmall">seconds on screen</span>';
+        var hi = hold.querySelector('input');
+        hi.addEventListener('change', function () {
+          s.out = Math.max(0.5, Number(hi.value) || STILL);
+          s.duration = s.out;
+          paint();
+        });
+        body.appendChild(hold);
+      } else if (s.duration) {
         var trim = document.createElement('div');
         trim.className = 'shot-trim';
         trim.innerHTML =
@@ -2222,7 +2501,8 @@
   /* ---------------------------------------------------------- render */
 
   function drawCover(ctx, video, W, H, alpha) {
-    var vw = video.videoWidth, vh = video.videoHeight;
+    var vw = video.videoWidth || video.naturalWidth;
+    var vh = video.videoHeight || video.naturalHeight;
     if (!vw || !vh) return;
     var scale = Math.max(W / vw, H / vh);
     var w = vw * scale, h = vh * scale;
@@ -2237,6 +2517,35 @@
       video.addEventListener('seeked', done);
       try { video.currentTime = t; } catch (e) { res(); }
       setTimeout(res, 1500);
+    });
+  }
+
+  /* A still is held for its hold time, with the same cross-fade into the
+     next shot that a clip gets. Real time, like everything else here,
+     because the recorder is capturing the canvas as it plays. */
+  function holdStill(ctx, W, H, shot, next, fade) {
+    return new Promise(function (resolve) {
+      var t0 = performance.now();
+      var span = Math.max(0.3, (shot.out || STILL) - (shot.in || 0)) * 1000;
+      var nextStarted = false;
+      var step = function () {
+        var t = performance.now() - t0;
+        if (t >= span) { resolve(nextStarted); return; }
+        drawCover(ctx, shot.image, W, H, 1);
+        if (next && fade > 0 && t > span - fade * 1000) {
+          var k = Math.min(1, (t - (span - fade * 1000)) / (fade * 1000));
+          if (!nextStarted) {
+            nextStarted = true;
+            if (next.kind !== 'image') {
+              next.video.currentTime = next.in;
+              next.video.play().catch(function () {});
+            }
+          }
+          drawCover(ctx, next.kind === 'image' ? next.image : next.video, W, H, k);
+        }
+        requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     });
   }
 
@@ -2314,7 +2623,9 @@
         var next = shots[i + 1] || null;
         if (shot.out === null && shot.duration) shot.out = shot.duration;
         say('Cutting shot ' + (i + 1) + ' of ' + shots.length + '…');
-        var preRolled = await playSegment(ctx, W, H, shot, next, fade);
+        var preRolled = shot.kind === 'image'
+          ? await holdStill(ctx, W, H, shot, next, fade)
+          : await playSegment(ctx, W, H, shot, next, fade);
         if (preRolled && next) next.in = Math.min((next.out || 0) - 0.2, next.in + fade);
       }
     } catch (err) {
@@ -2323,7 +2634,7 @@
 
     rec.stop();
     await finished;
-    shots.forEach(function (s) { try { s.video.pause(); } catch (e) {} });
+    shots.forEach(function (s) { try { if (s.video) s.video.pause(); } catch (e) {} });
 
     var blob = new Blob(chunks, { type: 'video/webm' });
     var url = URL.createObjectURL(blob);

@@ -62,6 +62,7 @@ export const VIDEO_MODELS = {
     label: 'HunyuanVideo 1.5 · 480p',
     note: 'Tencent, 8.3B. The house default: the best motion of the bunch.',
     fal: 'fal-ai/hunyuan-video-v1.5/text-to-video',
+    falI2V: 'fal-ai/hunyuan-video-v1.5/image-to-video',
     replicate: 'tencent/hunyuan-video-1.5',
     kaggle: { repo: 'tencent/HunyuanVideo-1.5', cls: 'HunyuanVideo15Pipeline', w: 848, h: 480, frames: 121, steps: 28, fps: 24 }
   },
@@ -69,6 +70,7 @@ export const VIDEO_MODELS = {
     label: 'Wan 2.2 · 480p',
     note: 'Alibaba, Apache-2.0. Strong at people and faces.',
     fal: 'fal-ai/wan/v2.2-a14b/text-to-video',
+    falI2V: 'fal-ai/wan/v2.2-a14b/image-to-video',
     replicate: 'wan-video/wan-2.2-t2v-fast',
     /* the 14B will not fit a T4, so the order's own GPU runs the 1.3B */
     kaggle: { repo: 'Wan-AI/Wan2.1-T2V-1.3B-Diffusers', cls: 'WanPipeline', w: 832, h: 480, frames: 81, steps: 30, fps: 16 }
@@ -77,6 +79,7 @@ export const VIDEO_MODELS = {
     label: 'LTX-Video · fast',
     note: 'Lightricks, open weights. The quickest here by a distance.',
     fal: 'fal-ai/ltx-video-13b-distilled',
+    falI2V: 'fal-ai/ltx-video-13b-distilled/image-to-video',
     replicate: 'lightricks/ltx-video',
     kaggle: { repo: 'Lightricks/LTX-Video-0.9.7-distilled', cls: 'LTXPipeline', w: 768, h: 512, frames: 97, steps: 8, fps: 24 }
   },
@@ -115,28 +118,42 @@ export async function submitVideo(prompt, opts = {}) {
   const model = pickModel(opts.model);
   const frames = Math.max(49, Math.min(121, Number(opts.frames) || 121));
 
+  /* Continuation. `initUrl` is the frame this shot grows out of; where a route
+     offers image-to-video it becomes the literal first frame, which is the
+     strongest continuity lock there is. `seed` is the second lock: the same
+     noise means the same world even when the route is text-only. */
+  const initUrl = typeof opts.initUrl === 'string' && /^https?:\/\//.test(opts.initUrl)
+    ? opts.initUrl : null;
+  const seed = Number.isFinite(Number(opts.seed)) && Number(opts.seed) > 0
+    ? Math.floor(Number(opts.seed)) : null;
+
   const falKey = await key('FAL_KEY');
   if (falKey) {
-    const r = await call(FAL_QUEUE + model.fal, {
+    const route = initUrl && model.falI2V ? model.falI2V : model.fal;
+    const payload = {
+      prompt: text,
+      resolution: '480p',
+      aspect_ratio: aspect,
+      num_frames: frames,
+      num_inference_steps: 28,
+      enable_prompt_expansion: !initUrl   // leave a carried prompt exactly as written
+    };
+    if (seed) payload.seed = seed;
+    if (initUrl && model.falI2V) payload.image_url = initUrl;
+    const r = await call(FAL_QUEUE + route, {
       method: 'POST',
       headers: { authorization: 'Key ' + falKey, 'content-type': 'application/json' },
-      body: JSON.stringify({
-        prompt: text,
-        resolution: '480p',
-        aspect_ratio: aspect,
-        num_frames: frames,
-        num_inference_steps: 28,
-        enable_prompt_expansion: true
-      })
+      body: JSON.stringify(payload)
     });
     if (r.ok && r.json && (r.json.request_id || r.json.requestId)) {
       const id = r.json.request_id || r.json.requestId;
       return {
         provider: 'fal',
-        model: model.label,
+        model: model.label + (initUrl && model.falI2V ? ' \u00b7 from frame' : ''),
+        hardware: 'fal.ai hosted accelerator \u2014 the provider does not say which card',
         requestId: id,
-        statusUrl: r.json.status_url || (FAL_QUEUE + model.fal + '/requests/' + id + '/status'),
-        responseUrl: r.json.response_url || (FAL_QUEUE + model.fal + '/requests/' + id)
+        statusUrl: r.json.status_url || (FAL_QUEUE + route + '/requests/' + id + '/status'),
+        responseUrl: r.json.response_url || (FAL_QUEUE + route + '/requests/' + id)
       };
     }
     console.error('videogen: fal submit failed', r.status, String(r.text).slice(0, 300));
@@ -148,11 +165,13 @@ export async function submitVideo(prompt, opts = {}) {
      between clips. Tried before the paid fallbacks. */
   if (model.kaggle) {
     const viaColab = await submitToColab({
-      prompt: text, aspect, frames, model: model.kaggle, kind: 'video'
+      prompt: text, aspect, frames, model: model.kaggle, kind: 'video',
+      seed: seed || undefined, init_image: initUrl || undefined
     });
     if (viaColab) {
       return {
         provider: 'colab',
+        hardware: (viaColab.worker.gpu || 'an unnamed GPU') + ' \u00b7 Google Colab, lent to the order',
         model: model.label + ' \u00b7 Colab ' + (viaColab.worker.gpu || 'GPU'),
         requestId: viaColab.jobId,
         statusUrl: viaColab.worker.endpoint,
@@ -188,6 +207,7 @@ export async function submitVideo(prompt, opts = {}) {
     }
     return {
       provider: 'kaggle',
+      hardware: 'Nvidia Tesla T4 16GB \u00b7 Kaggle, the order\u2019s own notebook',
       model: model.label + ' \u00b7 Kaggle T4',
       requestId: out.slug,
       statusUrl: out.slug,
@@ -201,12 +221,17 @@ export async function submitVideo(prompt, opts = {}) {
       method: 'POST',
       headers: { authorization: 'Bearer ' + repKey, 'content-type': 'application/json' },
       body: JSON.stringify({
-        input: { prompt: text, resolution: '480p', aspect_ratio: aspect, num_frames: frames }
+        input: Object.assign(
+          { prompt: text, resolution: '480p', aspect_ratio: aspect, num_frames: frames },
+          seed ? { seed } : {},
+          initUrl ? { image: initUrl, first_frame_image: initUrl } : {}
+        )
       })
     });
     if (r.ok && r.json && r.json.id) {
       return {
         provider: 'replicate',
+        hardware: 'Replicate hosted accelerator \u2014 A100 or H100 class, not named per job',
         model: model.label,
         requestId: r.json.id,
         statusUrl: (r.json.urls && r.json.urls.get) || ('https://api.replicate.com/v1/predictions/' + r.json.id),
@@ -226,6 +251,64 @@ export async function submitVideo(prompt, opts = {}) {
       'job, and no FAL_KEY or REPLICATE_API_TOKEN is configured. Opening colab/egregora-gpu.ipynb ' +
       'in any Google account and running it is enough to wake one.'
   };
+}
+
+
+/* --------------------------------------------------------------- progress
+ *
+ * Two kinds of progress exist here and they are not the same thing, so the
+ * page is told which it is getting.
+ *
+ *   MEASURED  — the worker counted its own diffusion steps, or the provider
+ *               reported a percentage in its logs. This is the truth.
+ *   ESTIMATED — nobody is reporting anything, so we read the clock against
+ *               how long this provider usually takes. Honest, but a guess,
+ *               and labelled as one on the page.
+ *
+ * An estimate never passes 94%: a bar that sits at 99% for four minutes is a
+ * lie, and a bar that reaches 100% before the file exists is a worse one.
+ */
+const EXPECTED = {            // seconds, roughly, by provider and kind
+  fal:       { video: 190, image: 25 },
+  replicate: { video: 240, image: 30 },
+  colab:     { video: 330, image: 70 },
+  kaggle:    { video: 1500, image: 900 }
+};
+
+function elapsedSeconds(row) {
+  const t = row && (row.created_at || row.createdAt);
+  if (!t) return 0;
+  const ms = Date.now() - new Date(t).getTime();
+  return Number.isFinite(ms) && ms > 0 ? ms / 1000 : 0;
+}
+
+export function estimateProgress(row) {
+  const kind = row && row.kind === 'image' ? 'image' : 'video';
+  const table = EXPECTED[row && row.provider] || EXPECTED.fal;
+  const expect = table[kind] || 200;
+  const frac = elapsedSeconds(row) / expect;
+  /* ease out: quick to half, slow to the ceiling, never arriving on its own */
+  const pct = 94 * (1 - Math.exp(-2.2 * frac));
+  return Math.max(2, Math.min(94, Math.round(pct)));
+}
+
+/** Pull a percentage out of whatever a provider calls its logs. */
+function progressFromLogs(text) {
+  const t = String(text || '');
+  let best = null;
+  const pct = /(\d{1,3})\s?%/g;
+  let m;
+  while ((m = pct.exec(t))) {
+    const n = Number(m[1]);
+    if (n >= 0 && n <= 100) best = n;      // last one wins: logs run forwards
+  }
+  if (best !== null) return best;
+  const steps = /(\d{1,4})\s*\/\s*(\d{1,4})/g;
+  while ((m = steps.exec(t))) {
+    const a = Number(m[1]); const b = Number(m[2]);
+    if (b > 1 && a <= b) best = Math.round((a / b) * 100);
+  }
+  return best;
 }
 
 /* --------------------------------------------------------------- polling */
@@ -254,8 +337,9 @@ export async function pollVideo(row) {
      and when it finishes we pull the file it left in /kaggle/working. */
   if (row.provider === 'kaggle') {
     const slug = row.request_id;
+    const pace = { progress: estimateProgress(row), measured: false };
     const st = await kernelStatus(slug);
-    if (st.error) return { status: 'running' };
+    if (st.error) return { status: 'running', ...pace };
 
     if (st.status === 'ERROR' || st.status.startsWith('CANCEL')) {
       await releaseGpu(slug, 'failed');
@@ -269,10 +353,10 @@ export async function pollVideo(row) {
           : (why || 'The notebook stopped with an error.').slice(0, 300)
       };
     }
-    if (st.status !== 'COMPLETE') return { status: 'running' };
+    if (st.status !== 'COMPLETE') return { status: 'running', ...pace };
 
     const out = await kernelOutput(slug);
-    if (out.error) return { status: 'running' };
+    if (out.error) return { status: 'running', progress: 96, measured: false };
     const wantImage = row.kind === 'image';
     const pattern = wantImage ? /\.(png|jpe?g|webp)$/i : /\.mp4$/i;
     const file = (out.files || []).find((f) => pattern.test(f.name)) || (out.files || [])[0];
@@ -282,7 +366,7 @@ export async function pollVideo(row) {
     }
 
     const got = await fetchOutput(file.url);
-    if (got.error) return { status: 'running' };
+    if (got.error) return { status: 'running', progress: 97, measured: false };
 
     await releaseGpu(slug, 'done');
     try {
@@ -302,13 +386,23 @@ export async function pollVideo(row) {
     const endpoint = row.status_url;
     const st = await colabStatus(endpoint, row.request_id);
     const state = String(st.status || 'running').toLowerCase();
+    /* The notebook counts its own diffusion steps and reports them, so this is
+       a measured figure rather than a clock-watching guess. */
+    const counted = Number(st.progress);
+    const measured = Number.isFinite(counted) && counted >= 0 && counted <= 100;
+    const pace = {
+      progress: measured ? Math.min(96, Math.round(counted)) : estimateProgress(row),
+      measured,
+      stage: st.stage ? String(st.stage).slice(0, 60) : undefined,
+      hardware: st.gpu ? String(st.gpu).slice(0, 80) : undefined
+    };
     if (state === 'failed' || state === 'error') {
       return { status: 'failed', error: String(st.error || 'The Colab worker gave up on that one.').slice(0, 300) };
     }
-    if (state !== 'ready' && state !== 'done' && state !== 'complete') return { status: 'running' };
+    if (state !== 'ready' && state !== 'done' && state !== 'complete') return { status: 'running', ...pace };
 
     const got = await colabFile(endpoint, row.request_id);
-    if (got.error) return { status: 'running' };
+    if (got.error) return { status: 'running', ...pace, progress: 97 };
     try {
       const wantImage = row.kind === 'image';
       const skey = (wantImage ? 'oracle-art/' : 'oracle-videos/') +
@@ -332,8 +426,25 @@ export async function pollVideo(row) {
     headers.authorization = 'Bearer ' + k;
   }
 
-  const s = await call(row.status_url, { headers });
-  if (!s.ok || !s.json) return { status: 'running' };
+  const sep = row.status_url.includes('?') ? '&' : '?';
+  const s = await call(row.status_url + sep + 'logs=1', { headers });
+  if (!s.ok || !s.json) return { status: 'running', progress: estimateProgress(row), measured: false };
+
+  /* fal and Replicate both stream the sampler's own step counter into their
+     logs when asked for them. If it is there, use it; the clock is only the
+     fallback. */
+  const logText = Array.isArray(s.json.logs)
+    ? s.json.logs.map((l) => (l && l.message) || l || '').join('\n')
+    : String(s.json.logs || '');
+  const counted = progressFromLogs(logText);
+  const queued = Number(s.json.queue_position);
+  const pace = counted !== null && counted !== undefined
+    ? { progress: Math.max(2, Math.min(96, counted)), measured: true }
+    : { progress: Number.isFinite(queued) && queued > 0
+          ? Math.max(2, Math.min(12, 12 - queued))
+          : estimateProgress(row),
+        measured: false,
+        stage: Number.isFinite(queued) && queued > 0 ? ('queued, ' + queued + ' ahead') : undefined };
 
   const state = String(s.json.status || '').toUpperCase();
   if (state === 'FAILED' || state === 'ERROR' || state === 'CANCELED' || state === 'CANCELLED') {
@@ -349,7 +460,7 @@ export async function pollVideo(row) {
     url = findVideoUrl(payload);
   }
 
-  if (!url) return { status: 'running' };
+  if (!url) return { status: 'running', ...pace };
 
   // copy it into our own storage so the clip outlives the provider's link
   try {
@@ -401,6 +512,7 @@ export async function submitKaggleImage(prompt) {
   }
   return {
     provider: 'kaggle',
+    hardware: 'Nvidia Tesla T4 16GB \u00b7 Kaggle, the order\u2019s own notebook',
     model: 'FLUX.1-schnell \u00b7 Kaggle T4',
     requestId: out.slug,
     statusUrl: out.slug,

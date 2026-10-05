@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/main.css?v=muv37i9b">
+<link rel="stylesheet" href="/assets/css/main.css?v=muv3p797">
 </head>
 <body data-page="ask-ed">
 <canvas id="starfield" aria-hidden="true"></canvas>
@@ -590,6 +590,8 @@
       fetched fresh each time; on a paid endpoint it is about three. Either way, leave the page open and
       it will appear below when it is done.</p>
 
+      <div class="cont-strip" id="v-continues" hidden></div>
+
       <form class="ornate film-form" id="film-form">
         <div>
           <label for="v-prompt">Your clip</label>
@@ -639,13 +641,14 @@
     <div class="draw-box montage-box reveal" id="montage-box">
       <p class="kicker">THE CUTTING ROOM</p>
       <h3>Make a Montage</h3>
-      <p class="muted small">Every clip you generate on this page is collected here. Put them in order,
-      trim the ends, choose a cut or a crossfade, and the page will edit them into one film — rendered in
+      <p class="muted small">Every clip <em>and every picture</em> you generate on this page is collected
+      here. Put them in order, trim the ends or set how long a still holds, choose a cut or a crossfade,
+      and the page will edit them into one film — rendered in
       your own browser, with no upload and no service in the middle. The result downloads as a single
       file. Clips made before you cleared the page are not kept; this is a cutting room, not an archive.</p>
 
       <ul class="shot-list" id="shot-list" aria-live="polite">
-        <li class="shot-empty">No clips yet. Make one above and it will appear here.</li>
+        <li class="shot-empty">No shots yet. Draw a picture or film a clip above and it lands here — then any shot can be continued from, so the next one keeps the same characters.</li>
       </ul>
 
       <div class="film-row">
@@ -747,7 +750,7 @@
         <p class="form-note">Your letter is stored, forwarded to Ed, and acknowledged by return of post —
         the acknowledgement arrives within a minute and carries a reference you can quote. If nothing
         appears, check the spam fold, or write to
-        <a href="mailto:ask@egregora.org">ask@egregora.org</a> directly.</p>
+        <a href="mailto:info@shakra.co.uk">info@shakra.co.uk</a> directly.</p>
       </form>
     </div>
 
@@ -784,7 +787,7 @@
   </div>
 </section>
 
-<script type="module" src="/assets/js/fox.js?v=muv37i9b"></script>
+<script type="module" src="/assets/js/fox.js?v=muv3p797"></script>
 
 </main>
 
@@ -798,7 +801,7 @@
     EGregoRA was co-founded by <strong>Edward Gregory</strong> and <strong>Jim Rankin</strong>. All enquiry here is offered in the spirit of
     free thought and free doubt — test everything, keep what is true.
   </p>
-  <p class="foot-fine small">© 2026 EGregoRA · Life, Love, Magic · <a href="mailto:ask@egregora.org">ask@egregora.org</a></p>
+  <p class="foot-fine small">© 2026 EGregoRA · Life, Love, Magic · <a href="mailto:info@shakra.co.uk">info@shakra.co.uk</a></p>
   <p class="foot-fine small"><button class="linkish" type="button" id="cookie-reopen">Storage &amp; cookie choice</button></p>
 </footer>
 
@@ -841,6 +844,6 @@
 </div>
 
 
-<script src="/assets/js/site.js?v=muv37i9b" defer></script>
+<script src="/assets/js/site.js?v=muv3p797" defer></script>
 </body>
 </html>

@@ -16,7 +16,7 @@ import { solveCaptcha } from '../lib/captcha.js';
 export const access = 'public';
 export const methods = ['POST'];
 
-const ED = 'ask@egregora.org';
+const ED = 'info@shakra.co.uk';
 const LIMB_NOTE = {
   'Cosmic physics & astronomy': 'the first limb',
   'Druidry, trees & nature': 'the second limb',
@@ -165,6 +165,6 @@ export default async function (req, res) {
     });
   } catch (err) {
     console.error('letter failed', err && err.message);
-    res.status(500).json({ error: 'The letter could not be stored. Try again, or email ask@egregora.org directly.' });
+    res.status(500).json({ error: 'The letter could not be stored. Try again, or email info@shakra.co.uk directly.' });
   }
 }

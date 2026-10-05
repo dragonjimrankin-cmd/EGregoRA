@@ -53,6 +53,8 @@ export default async function (req, res) {
         status: 'queued',
         kind: 'image',
         model: job.model,
+        hardware: job.hardware || null,
+        progress: 1,
         note: 'Drawing on the order\u2019s own GPU \u2014 slower than the usual route, several minutes. ' +
           'The page will keep checking.'
       });
@@ -69,5 +71,5 @@ export default async function (req, res) {
     console.error('draw: could not log prompt', err && err.message);
   }
 
-  res.json({ url: out.url, prompt: out.prompt, provider: out.provider });
+  res.json({ url: out.url, prompt: out.prompt, provider: out.provider, hardware: out.hardware || null });
 }

@@ -127,6 +127,21 @@ async function viaOpenAI(prompt) {
   return { base64: b64, contentType: 'image/png', provider: 'openai' };
 }
 
+
+/**
+ * Which machine actually drew it. The hosted services do not name the card
+ * they used, and inventing one would be worse than saying so — but the page
+ * should still be able to tell the visitor where the work happened.
+ */
+export function hardwareFor(provider) {
+  const p = String(provider || '').toLowerCase();
+  if (p.includes('flux')) return 'Pollinations hosted GPU \u00b7 FLUX.1-schnell, open weights \u2014 the card is not disclosed';
+  if (p.includes('stable-diffusion')) return 'Hugging Face Inference GPU \u00b7 SDXL, open weights \u2014 the card is not disclosed';
+  if (p.includes('google')) return 'Google hosted accelerator (TPU or GPU) \u2014 not disclosed';
+  if (p.includes('openai')) return 'OpenAI hosted accelerator \u2014 not disclosed';
+  return 'A hosted accelerator \u2014 the provider does not name it';
+}
+
 /**
  * Draw one image.
  * @param {string} subject what to draw, in plain words
@@ -148,7 +163,7 @@ export async function generateImage(subject) {
       const key = `oracle-images/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
       await storage.put(key, out.bytes || out.base64, out.contentType);
       const url = await storage.url(key, { ttl: 604800 });
-      return { url, key, prompt: subj, provider: out.provider };
+      return { url, key, prompt: subj, provider: out.provider, hardware: hardwareFor(out.provider) };
     } catch (err) {
       if (err && err.code === 'SetupRequired') {
         return {
