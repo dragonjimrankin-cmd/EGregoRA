@@ -1399,9 +1399,9 @@
     },
     identity: {
       head: 'Age and identity check needed',
-      body: 'Making images and video needs proof of age and identity: your legal name, your date of ' +
-            'birth, and a photograph of a government-issued document. It takes about a minute, it is ' +
-            'asked once, and the document is stored privately and never shown on the site.',
+      body: 'Making images and video needs proof of age. There are two ways through: let the camera ' +
+            'look at your face, which takes seconds and keeps nothing, or show a government-issued ' +
+            'document, which always works. Asked once, and never shown on the site.',
       cta: 'Pass the check'
     }
   };
@@ -1543,5 +1543,160 @@
   /* Already checked? Do not ask again. */
   if (window.EGStudio) window.EGStudio().then(function (me) {
     if (me && me.studio) passed(me.member);
+  });
+})();
+
+/* ------------------------------------------------------------------ *
+ * The face scan. Phone camera or webcam, three frames, no upload until
+ * the button is pressed, nothing kept afterwards.
+ * ------------------------------------------------------------------ */
+(function () {
+  var box = document.getElementById('scan-box');
+  if (!box) return;
+
+  var video = document.getElementById('scan-video');
+  var ring = document.getElementById('scan-ring');
+  var hint = document.getElementById('scan-hint');
+  var msg = document.getElementById('scan-msg');
+  var startBtn = document.getElementById('scan-start');
+  var shootBtn = document.getElementById('scan-shoot');
+  var stopBtn = document.getElementById('scan-stop');
+  var stream = null;
+
+  var canCamera = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  if (!canCamera) {
+    var un = document.getElementById('scan-unsupported');
+    if (un) un.hidden = false;
+    if (startBtn) startBtn.disabled = true;
+  }
+
+  function say(text, bad) {
+    if (!msg) return;
+    msg.textContent = text || '';
+    msg.className = 'auth-msg' + (text ? (bad ? ' is-bad' : ' is-good') : '');
+  }
+
+  function stop() {
+    if (stream) {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      stream = null;
+    }
+    if (video) { video.srcObject = null; video.hidden = true; }
+    if (ring) ring.hidden = true;
+    if (shootBtn) shootBtn.hidden = true;
+    if (stopBtn) stopBtn.hidden = true;
+    if (startBtn) { startBtn.hidden = false; startBtn.disabled = !canCamera; }
+  }
+
+  if (startBtn) startBtn.addEventListener('click', function () {
+    say('Asking for the camera\u2026');
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 960 }, height: { ideal: 960 } },
+      audio: false
+    }).then(function (s) {
+      stream = s;
+      video.srcObject = s;
+      video.hidden = false;
+      if (ring) ring.hidden = false;
+      startBtn.hidden = true;
+      shootBtn.hidden = false;
+      stopBtn.hidden = false;
+      say('');
+      if (hint) hint.textContent = 'Look straight at the lens, keep still, and press the button.';
+      return video.play().catch(function () {});
+    }).catch(function (err) {
+      var m = (err && err.name === 'NotAllowedError')
+        ? 'The camera was refused. Allow it in the address bar, or use the document check below.'
+        : 'No camera could be opened. The document check below always works.';
+      say(m, true);
+    });
+  });
+
+  if (stopBtn) stopBtn.addEventListener('click', function () { stop(); say('Camera off.'); });
+
+  /* One frame, square, downscaled to something a vision model will read. */
+  function frame() {
+    var w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return null;
+    var side = Math.min(w, h);
+    var size = 640;
+    var c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    var ctx = c.getContext('2d');
+    ctx.drawImage(video, (w - side) / 2, (h - side) / 2, side, side, 0, 0, size, size);
+    return c.toDataURL('image/jpeg', 0.86);
+  }
+
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  if (shootBtn) shootBtn.addEventListener('click', function () {
+    if (!stream) return;
+    shootBtn.disabled = true;
+    var shots = [];
+
+    say('Hold still\u2026');
+    if (ring) ring.classList.add('is-reading');
+
+    /* Three frames a third of a second apart: a still photograph held up to
+       the lens tends to give itself away across them. */
+    frame() && shots.push(frame());
+    wait(350)
+      .then(function () { var f = frame(); if (f) shots.push(f); return wait(350); })
+      .then(function () { var f = frame(); if (f) shots.push(f); })
+      .then(function () {
+        if (!shots.length) throw new Error('The camera gave no picture.');
+        say('Reading your age\u2026 this takes a few seconds.');
+        return fetch('/api/account-face', {
+          method: 'POST',
+          headers: window.EGAuthHeaders(),
+          body: JSON.stringify({ frames: shots.slice(0, 3) })
+        });
+      })
+      .then(function (r) { return r.json().then(function (d) { d._ok = r.ok; return d; }); })
+      .then(function (d) {
+        shots.length = 0;                       /* drop the frames on this side too */
+        shootBtn.disabled = false;
+        if (ring) ring.classList.remove('is-reading');
+
+        if (d.ok) {
+          stop();
+          say(d.message || 'Checked. The studio is open.');
+          box.classList.add('is-passed');
+          var form = document.getElementById('id-form');
+          var or = document.querySelector('.scan-or');
+          if (form) form.hidden = true;
+          if (or) or.hidden = true;
+          var state = document.getElementById('a-id-state');
+          if (state) {
+            state.innerHTML = '<strong class="gate-open">The studio is open to you.</strong> ' +
+              'Age confirmed by face scan' + (d.estimated ? ' \u00b7 read as about ' + d.estimated : '') +
+              '. Image and video generation are unlocked on the <a href="/ask-ed/">Ask Ed</a> page.';
+          }
+          return;
+        }
+
+        say(d.message || d.error || 'The scan did not settle it.', !d.inconclusive ? true : false);
+        if (d.fallback === 'document') {
+          stop();
+          var f2 = document.getElementById('id-form');
+          if (f2) {
+            f2.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            f2.classList.add('is-wanted');
+            setTimeout(function () { f2.classList.remove('is-wanted'); }, 3000);
+          }
+        }
+      })
+      .catch(function (err) {
+        shootBtn.disabled = false;
+        if (ring) ring.classList.remove('is-reading');
+        say((err && err.message) || 'The reading failed. Try again, or use the document check.', true);
+      });
+  });
+
+  window.addEventListener('pagehide', stop);
+
+  /* Already checked? Put the camera away before it is ever opened. */
+  if (window.EGStudio) window.EGStudio().then(function (me) {
+    if (me && me.studio) { box.hidden = true; var or = document.querySelector('.scan-or'); if (or) or.hidden = true; }
   });
 })();

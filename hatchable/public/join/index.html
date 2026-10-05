@@ -500,7 +500,36 @@
         <div class="auth-id" id="a-id-block">
           <h3>Age &amp; identity — the studio door</h3>
           <p class="muted small" id="a-id-state">The image and video generators are the one part of this
-          site kept behind a check. Everything else is open to everyone, signed in or not.</p>
+          site kept behind a check. Everything else is open to everyone, signed in or not. There are two
+          ways through: a look at your face, which takes seconds, or a document, which always works.</p>
+
+          <div class="scan-box" id="scan-box">
+            <p class="kicker">THE QUICK WAY · A LOOK AT YOUR FACE</p>
+            <p class="muted small">Let the camera see you for a moment and a vision model estimates your
+            age from the shape of your face. Nothing is uploaded until you press the button, the frames are
+            <strong>discarded the instant the reading is taken</strong>, and no face print, template or
+            biometric of any kind is stored. If the reading comes back anywhere near eighteen the studio
+            asks for a document instead — estimation is only good to a few years, so the line is drawn at
+            twenty-five.</p>
+
+            <div class="scan-stage" id="scan-stage">
+              <video id="scan-video" playsinline muted hidden></video>
+              <div class="scan-ring" id="scan-ring" hidden aria-hidden="true"></div>
+              <p class="scan-hint" id="scan-hint">Face a window if you can. Fill the oval with your head,
+              take off sunglasses, and look straight at the lens.</p>
+            </div>
+
+            <div class="ask-actions">
+              <button class="btn" type="button" id="scan-start">Scan my face</button>
+              <button class="btn btn--ghost" type="button" id="scan-shoot" hidden>Take the reading</button>
+              <button class="btn btn--ghost" type="button" id="scan-stop" hidden>Stop the camera</button>
+            </div>
+            <p class="auth-msg" id="scan-msg" role="status"></p>
+            <p class="muted xsmall" id="scan-unsupported" hidden>This browser will not give a page camera
+            access, so the document check below is your way through.</p>
+          </div>
+
+          <p class="scan-or"><span>or show a document</span></p>
 
           <form class="ornate" id="id-form">
             <div>
