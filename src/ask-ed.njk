@@ -13,17 +13,6 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
 
 <section class="wrap oracle-wrap reveal" id="oracle">
   <div class="frame">
-    <div class="oracle-msg oracle-msg--oracle oracle-greet oracle-greet--lede">
-      <p class="oracle-who">The Oracle</p>
-      <div class="oracle-text">
-        <p>Ask me anything inside the eleven limbs — or anything else at all. Cooking, grief, a
-        gearbox, a bad week, a line of code: I will talk about it properly rather than steering you
-        back to sacred geometry, and I will say I don't know when I don't. If a question needs
-        today's news I will go and look it up and show you where I went, I will draw you a picture
-        if you ask, and you can hand me a file to read and work from.</p>
-      </div>
-    </div>
-
     <div class="fox-panel fox-panel--ask">
       <div class="fox-column">
       <div class="fox-side">
@@ -43,8 +32,69 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
            aria-label="Gink, a three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
       </div>
 
-      <div class="fox-ask">
+      <div class="fox-greet">
+        <div class="oracle-msg oracle-msg--oracle oracle-greet oracle-greet--lede">
+          <p class="oracle-who">The Oracle</p>
+          <div class="oracle-text">
+            <p>Ask me anything inside the eleven limbs — or anything else at all. Cooking, grief, a
+            gearbox, a bad week, a line of code: I will talk about it properly rather than steering you
+            back to sacred geometry, and I will say I don't know when I don't. If a question needs
+            today's news I will go and look it up and show you where I went, I will draw you a picture
+            if you ask, and you can hand me a file to read and work from.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="oracle-chat">
+      <div class="oracle-bar">
+        <p class="oracle-bar-note">A room to talk in — the oracle holds the whole thread, and will talk
+        about anything, not only the limbs.</p>
+        <button class="btn btn--ghost btn--small" type="button" id="o-expand"
+                aria-pressed="false">Expand the space</button>
+      </div>
+      <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
+        <p class="oracle-waiting" id="oracle-waiting">The thread begins when you ask. Everything said
+        stays here, in order.</p>
+      </div>
+
+      <div class="oracle-chips" id="oracle-chips">
+        <button class="chip" type="button">Why 137.5 degrees and not 120?</button>
+        <button class="chip" type="button">Is the Law of One testable?</button>
+        <button class="chip" type="button">Did the druids really build Stonehenge?</button>
+        <button class="chip" type="button">What does a psychedelic actually do to a brain?</button>
+        <button class="chip" type="button">Is magic real, in one paragraph?</button>
+      </div>
+    </div>
+
+    <div class="fox-ask fox-ask--under">
     <form class="ornate oracle-form" id="oracle-form">
+          <div class="ask-box">
+            <label for="o-question">Your question</label>
+            <textarea id="o-question" name="question" required maxlength="2000" rows="3"
+              placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
+          </div>
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>
+            <button class="btn btn--mic" type="button" id="o-mic" hidden
+                    aria-describedby="o-mic-hint">
+              <span class="mic-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="2" width="6" height="12" rx="3"/>
+                  <path d="M5 11a7 7 0 0 0 14 0"/>
+                  <path d="M12 18v4M8.5 22h7"/>
+                </svg>
+              </span>
+              <span class="mic-label">Hold to speak</span>
+              <span class="mic-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            </button>
+            <button class="btn btn--ghost" type="button" id="o-reset" hidden>Begin again</button>
+          </div>
+          <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
+          question out loud, then let go — the words are transcribed into the box above and sent to the order.
+          Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
+          thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
           <details class="oracle-opts">
             <summary>Name and limb (optional)</summary>
             <div class="grid two" style="gap:1rem">
@@ -71,7 +121,6 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
               </div>
             </div>
           </details>
-
           <div class="oracle-files">
             <label class="btn btn--ghost file-btn">
               <span aria-hidden="true">⌁</span> Attach a file
@@ -84,58 +133,7 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             PDF to text first. Anything you attach becomes part of this conversation and is stored with it, so
             do not send anything confidential.</p>
           </div>
-
-          <div class="ask-actions">
-            <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>
-            <button class="btn btn--mic" type="button" id="o-mic" hidden
-                    aria-describedby="o-mic-hint">
-              <span class="mic-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                     stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="2" width="6" height="12" rx="3"/>
-                  <path d="M5 11a7 7 0 0 0 14 0"/>
-                  <path d="M12 18v4M8.5 22h7"/>
-                </svg>
-              </span>
-              <span class="mic-label">Hold to speak</span>
-              <span class="mic-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-            </button>
-            <button class="btn btn--ghost" type="button" id="o-reset" hidden>Begin again</button>
-          </div>
-          <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
-          question out loud, then let go — the words are transcribed into the box below and sent to the order.
-          Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
-          thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
-
-          <div class="ask-box">
-            <label for="o-question">Your question</label>
-            <textarea id="o-question" name="question" required maxlength="2000" rows="3"
-              placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
-          </div>
         </form>
-      </div>
-    </div>
-
-
-    <div class="oracle-chat">
-      <div class="oracle-bar">
-        <p class="oracle-bar-note">A room to talk in — the oracle holds the whole thread, and will talk
-        about anything, not only the limbs.</p>
-        <button class="btn btn--ghost btn--small" type="button" id="o-expand"
-                aria-pressed="false">Expand the space</button>
-      </div>
-      <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
-        <p class="oracle-waiting" id="oracle-waiting">The thread begins when you ask. Everything said
-        stays here, in order.</p>
-      </div>
-
-      <div class="oracle-chips" id="oracle-chips">
-        <button class="chip" type="button">Why 137.5 degrees and not 120?</button>
-        <button class="chip" type="button">Is the Law of One testable?</button>
-        <button class="chip" type="button">Did the druids really build Stonehenge?</button>
-        <button class="chip" type="button">What does a psychedelic actually do to a brain?</button>
-        <button class="chip" type="button">Is magic real, in one paragraph?</button>
-      </div>
     </div>
 
     <div class="draw-box reveal" id="draw-box">
