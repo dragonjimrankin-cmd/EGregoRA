@@ -1,9 +1,9 @@
 {
-  "note": "v76 is live — examine the default state.",
+  "note": "After the three fixes: keyed matches only, plainified keyless output, name intact.",
   "calls": [
-    { "action": "ask", "question": "Who am I talking to?" },
     { "action": "ask", "question": "Everyone knows the Great Wall of China is visible from the Moon with the naked eye. Why is that?" },
-    { "action": "ask", "question": "Be yourself again." },
-    { "action": "ask", "question": "What is the default state of an ideal gas at absolute zero?" }
+    { "action": "ask", "question": "Who am I talking to?" },
+    { "action": "ask", "question": "What is the default state of an ideal gas at absolute zero?" },
+    { "action": "ask", "question": "Be yourself again." }
   ]
 }

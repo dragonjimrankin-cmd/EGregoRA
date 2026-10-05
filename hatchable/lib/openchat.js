@@ -90,6 +90,28 @@ function parseArgs(raw) {
  * open-weights model on the public internet that will still answer this
  * project without an account. No tools, one shot, heavily rate-limited.
  */
+/**
+ * The 20B model ignores a good deal of the voice brief — it returns LaTeX,
+ * markdown bold and, charmingly, "G ink". None of that can be spoken aloud,
+ * so it is stripped on the way out rather than argued about on the way in.
+ */
+function plainify(text) {
+  return String(text)
+    .replace(/\\\[|\\\]|\\\(|\\\)/g, '')
+    .replace(/\$\$?([^$]{1,200}?)\$\$?/g, '$1')
+    .replace(/\\(?:tfrac|frac|dfrac)\s*\{([^}]*)\}\s*\{([^}]*)\}/g, '$1 over $2')
+    .replace(/\\text\s*\{([^}]*)\}/g, '$1')
+    .replace(/\\[a-zA-Z]+/g, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/(^|\s)\*([^*\n]+)\*/g, '$1$2')
+    .replace(/`{1,3}([^`]*)`{1,3}/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\bG\s+ink\b/g, 'Gink')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 export async function keylessChat({ system, messages, maxTokens = 900 }) {
   const convo = (messages || [])
     .slice(-8)
@@ -113,7 +135,11 @@ export async function keylessChat({ system, messages, maxTokens = 900 }) {
       if (!r.ok) return null;
       const text = (await r.text()).trim();
       if (text && text.length > 2 && !text.startsWith('{')) {
-        return { text: text.slice(0, maxTokens * 4), model: 'gpt-oss-20b', route: 'pollinations' };
+        return {
+          text: plainify(text).slice(0, maxTokens * 4),
+          model: 'gpt-oss-20b',
+          route: 'pollinations'
+        };
       }
       return null;
     } catch {

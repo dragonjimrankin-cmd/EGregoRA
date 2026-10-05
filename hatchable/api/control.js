@@ -94,7 +94,7 @@ export default async function (req, res) {
            import one another here, so the logic is kept deliberately plain
            — an agent gets the order's answers, not a second oracle. */
         const match = bestMatch(question, limb);
-        if (match && match.entry && match.score >= 0.95) {
+        if (match && match.entry && match.keyed && match.score >= 0.9) {
           return res.json({
             answer: match.entry.a,
             source: 'written',
@@ -136,7 +136,12 @@ export default async function (req, res) {
             followups: relatedQuestions(question, limb, 3)
           });
         }
-        if (match && match.entry) {
+        /* If every model is down, a written answer may stand in — but only
+           one the question actually asked for. An unkeyed or weak match is
+           grounding, never a reply: serving one is how an oracle ends up
+           answering a question about the Great Wall with a paragraph on the
+           speed of light. */
+        if (match && match.entry && match.keyed && match.score >= 0.55) {
           return res.json({ answer: match.entry.a, source: 'written', limb: match.entry.limb });
         }
         return res.json({

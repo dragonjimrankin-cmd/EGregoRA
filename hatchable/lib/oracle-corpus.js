@@ -333,24 +333,37 @@ export function bestMatch(question, limbHint = '') {
  let best = null;
  let bestScore = 0;
 
+ let bestKeyed = false;
+
  for (const entry of ANSWERS) {
  let score = 0;
+ let keyed = false;
 
  for (const key of entry.keys) {
- if (text.includes(key)) score += key.includes(' ') ? 6 : 4;
- else if (words.has(key)) score += 3;
+ if (text.includes(key)) { score += key.includes(' ') ? 6 : 4; keyed = true; }
+ else if (words.has(key)) { score += 3; keyed = true; }
  }
 
  for (const w of tokenize(entry.q)) if (words.has(w)) score += 1.2;
- for (const w of new Set(tokenize(entry.a))) if (words.has(w)) score += 0.18;
+
+ /* Loose overlap with the body of an answer is the weakest signal there is,
+    and it used to be unbounded: a long question collected a fifth of a point
+    from dozens of incidental words. Capped at two — enough to break a tie,
+    never enough to make a match. */
+ let bodyScore = 0;
+ for (const w of new Set(tokenize(entry.a))) if (words.has(w)) bodyScore += 0.18;
+ score += Math.min(2, bodyScore);
 
  if (limbHint && entry.limb && limbHint.toLowerCase().includes(entry.limb)) score += 1.5;
 
- if (score > bestScore) { bestScore = score; best = entry; }
+ if (score > bestScore) { bestScore = score; best = entry; bestKeyed = keyed; }
  }
 
- // ~9 points is a solid keyword hit or two; normalise against that.
- return { entry: best, score: Math.min(1, bestScore / 9) };
+ /* `keyed` says whether the winner was chosen because the question actually
+    contains one of its keywords, rather than merely sharing vocabulary with
+    its prose. Nothing is served to a visitor word-for-word unless it is
+    keyed; an unkeyed match is grounding material and nothing more. */
+ return { entry: best, score: Math.min(1, bestScore / 9), keyed: bestKeyed };
 }
 
 /** The next-best questions, for when nothing matches well enough to answer. */

@@ -129,7 +129,7 @@ export default async function (req, res) {
          this is the opening question. Mid-conversation, a canned paragraph
          reads as a non-sequitur, so the model gets it as grounding instead. */
   const match = bestMatch(question, limb);
-  if (!isFollowUp && !isSmallTalk && match.entry && match.score >= VERBATIM_AT) {
+  if (!isFollowUp && !isSmallTalk && match.entry && match.keyed && match.score >= VERBATIM_AT) {
     const answer = match.entry.a;
     await log(name, limb, question, answer, 'written');
     return res.json({
