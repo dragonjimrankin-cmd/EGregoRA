@@ -1,9 +1,8 @@
 {
-  "note": "The default state, under examination. Hard questions, chosen to test different faculties.",
+  "note": "v76 is live — examine the default state.",
   "calls": [
     { "action": "ask", "question": "Who am I talking to?" },
     { "action": "ask", "question": "Everyone knows the Great Wall of China is visible from the Moon with the naked eye. Why is that?" },
-    { "action": "ask", "question": "Roughly how much does all the air in a typical British living room weigh? Show your working." },
     { "action": "ask", "question": "Be yourself again." },
     { "action": "ask", "question": "What is the default state of an ideal gas at absolute zero?" }
   ]
