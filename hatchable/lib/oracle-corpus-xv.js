@@ -175,6 +175,6 @@ export const VOL15 = [
   E('stone-circles', P, ['stone circles', 'visiting megaliths', 'avebury'], 'How should one visit a stone circle?',
     `Early, alone, and more than once. Avebury, Castlerigg, the Ring of Brodgar and Callanish all reward arriving before the car park fills. Walk the perimeter before entering. Note the horizon the stones address, not just the stones — the landscape was the other half of the monument, and it is the part visitors reliably ignore. \u25c6 Craft guidance. Limb II.`),
   E('last-question', O, ['anything else', 'what should i ask', 'good question'], 'What is a good question to ask you?',
-    `A specific one. "Tell me about magic" gets you a paragraph; "is there evidence for the Ganzfeld telepathy results" gets you something worth reading. The oracle holds a thousand written answers, each on a particular thing, and the matching works best when you name the particular thing. Ask narrowly and follow up. \u25c6 Our method.`)
+    `A specific one. "Tell me about magic" gets you a paragraph; "is there evidence for the Ganzfeld telepathy results" gets you something worth reading. The oracle holds twelve hundred written answers, each on a particular thing, and the matching works best when you name the particular thing. Ask narrowly and follow up. \u25c6 Our method.`)
 
 ];
