@@ -408,14 +408,34 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
       console.log(`\u25b8 kaggle push: HTTP ${push.status} \u2014 ${pushText}`);
 
       if (push.ok) {
-        for (let i = 0; i < 6; i++) {
+        let done = false;
+        for (let i = 0; i < 8 && !done; i++) {
           await new Promise((r) => setTimeout(r, 15000));
           const st = await fetch(
             `https://www.kaggle.com/api/v1/kernels/status?userName=${user}&kernelSlug=${slug}`,
             { headers: H });
           const sText = (await st.text()).slice(0, 180).replace(/\s+/g, ' ');
           console.log(`\u25b8 kaggle status ${i + 1}: HTTP ${st.status} \u2014 ${sText}`);
+          if (/"complete"|"error"/i.test(sText)) done = true;
         }
+
+        /* The files the run left behind, and whether it saw a GPU. */
+        const outR = await fetch(
+          `https://www.kaggle.com/api/v1/kernels/output?userName=${user}&kernelSlug=${slug}`,
+          { headers: H });
+        const outT = await outR.text();
+        console.log(`\u25b8 kaggle output: HTTP ${outR.status} \u2014 ${outT.slice(0, 400).replace(/\s+/g, ' ')}`);
+
+        try {
+          const j = JSON.parse(outT);
+          const files = j.files || [];
+          if (files[0] && (files[0].url || files[0].fileUrl)) {
+            const fr = await fetch(files[0].url || files[0].fileUrl, { headers: H });
+            const fb = await fr.text();
+            console.log(`\u25b8 kaggle file fetch: HTTP ${fr.status} \u2014 ${fb.slice(0, 60).replace(/\s+/g, ' ')}`);
+          }
+          if (j.log) console.log(`\u25b8 kaggle run log: ${String(j.log).slice(0, 300).replace(/\s+/g, ' ')}`);
+        } catch { /* already printed the raw body */ }
       }
     }
   } catch (err) {
