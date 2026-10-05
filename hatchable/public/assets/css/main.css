@@ -1275,6 +1275,7 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   margin: 1.4rem 0 0.6rem;
 }
 .fox-panel--ask .fox-column { position: sticky; top: 1.2rem; }
+.fox-panel--ask + .oracle-chat { margin-top: 1.2rem; }
 .fox-panel--ask .fox-stage { aspect-ratio: 4 / 5; }
 .fox-panel--ask .fox-side { margin-top: 0.9rem; }
 .fox-panel--ask .fox-name { font-size: 1rem; }
