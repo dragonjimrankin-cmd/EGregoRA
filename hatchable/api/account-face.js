@@ -87,10 +87,37 @@ export default async function (req, res) {
     if (!best || (Number(out.confidence) || 0) > (Number(best.confidence) || 0)) best = out;
   }
 
+  /* No server-side vision route answered — which is the normal case on a
+     project with no model keys. The browser ran the estimate itself, with a
+     published face model and no network at all, and sent the reading here.
+     That cannot be trusted the way a server-side reading can, so when it is
+     the only evidence we keep the frame as well. */
+  let clientOnly = false;
   if (!best) {
-    await record('inconclusive', null, 'no vision model answered', false);
+    const c = body.client_estimate || {};
+    const cAge = Number(c.age);
+    if (c && c.face && Number.isFinite(cAge) && cAge > 0 && cAge < 120) {
+      clientOnly = true;
+      best = {
+        face: true,
+        faces: Number(c.faces || 1),
+        live: true,
+        age: Math.round(cAge),
+        low: Number(c.low) || null,
+        high: Number(c.high) || null,
+        confidence: Number(c.confidence) || 0.6,
+        note: 'read in the browser by ' + String(c.model || 'a face model').slice(0, 60) +
+          ' from ' + Number(c.samples || 1) + ' samples',
+        model: 'browser:' + String(c.model || 'face-api')
+      };
+    }
+  }
+
+  if (!best) {
+    await record('inconclusive', null, 'no model answered, server or browser', false);
     return res.status(503).json({
-      error: 'No age-estimation model would answer just now. Use the document check instead — it is working.',
+      error: 'No age-estimation model would answer just now \u2014 neither here nor in your browser. ' +
+        'The document check below is working and will settle it.',
       fallback: 'document'
     });
   }
@@ -148,7 +175,7 @@ export default async function (req, res) {
       WHERE id = $3`,
     [ip, name, me.id]
   );
-  await record('verified', age, 'face scan, estimated ' + age + ' (' + (best.model || 'vision model') + ')', false);
+  await record('verified', age, 'face scan, estimated ' + age + ' (' + (best.model || 'vision model') + ')', clientOnly);
 
   res.json({
     ok: true,
@@ -157,6 +184,8 @@ export default async function (req, res) {
     estimated: age,
     model: best.model,
     message: `The scan reads as comfortably over eighteen — about ${age}. The studio is open to you. ` +
-      'The picture has been discarded; only the reading was kept.'
+      (clientOnly
+        ? 'The reading was taken in your browser, so one frame is kept as the record of it.'
+        : 'The picture has been discarded; only the reading was kept.')
   });
 }

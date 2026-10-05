@@ -91,12 +91,15 @@ description: "Create an EGregoRA account or sign in — a verified email address
 
           <div class="scan-box" id="scan-box">
             <p class="kicker">THE QUICK WAY · A LOOK AT YOUR FACE</p>
-            <p class="muted small">Let the camera see you for a moment and a vision model estimates your
-            age from the shape of your face. Nothing is uploaded until you press the button, the frames are
-            <strong>discarded the instant the reading is taken</strong>, and no face print, template or
-            biometric of any kind is stored. If the reading comes back anywhere near eighteen the studio
-            asks for a document instead — estimation is only good to a few years, so the line is drawn at
-            twenty-five.</p>
+            <p class="muted small">Let the camera see you for a moment and a published face model
+            estimates your age. <strong>The estimate is computed inside this page</strong> — the model is
+            fetched once and run in your browser, so the frames are read where they are taken. Seven
+            readings are averaged, the median is used, and no face print, template or biometric of any
+            kind is kept. If the reading lands anywhere near eighteen the studio asks for a document
+            instead: estimation is only good to a few years, so the line is drawn at twenty-five.</p>
+            <p class="muted xsmall">The first scan downloads about a megabyte of model weights, so give it
+            a moment. If your browser blocks the download, or the camera, the document check below always
+            works.</p>
 
             <div class="scan-stage" id="scan-stage">
               <video id="scan-video" playsinline muted hidden></video>

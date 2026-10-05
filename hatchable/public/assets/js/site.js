@@ -1638,13 +1638,82 @@
 
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
+  /* ---------------------------------------------------------------- *
+   * The reader. A published face model, fetched from a CDN and run
+   * entirely in this page: the camera frames never leave the browser
+   * to produce the estimate. No key, no account with anyone, no call
+   * to a model company. If it will not load we fall back to asking the
+   * server, and failing that, to the document.
+   * ---------------------------------------------------------------- */
+  var FACE_LIB = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/dist/face-api.esm.js';
+  var FACE_MODELS = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model';
+  var api = null;
+  var loading = null;
+
+  function loadReader() {
+    if (api) return Promise.resolve(api);
+    if (loading) return loading;
+    loading = import(FACE_LIB)
+      .then(function (mod) {
+        var f = mod.default || mod;
+        return Promise.all([
+          f.nets.tinyFaceDetector.loadFromUri(FACE_MODELS),
+          f.nets.ageGenderNet.loadFromUri(FACE_MODELS)
+        ]).then(function () { api = f; return f; });
+      })
+      .catch(function (err) {
+        loading = null;
+        throw new Error('The face reader would not load: ' + ((err && err.message) || 'blocked'));
+      });
+    return loading;
+  }
+
+  /* Take several readings and use the median — a single frame is noisy. */
+  function readAge(samples) {
+    return loadReader().then(function (f) {
+      var opts = new f.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.4 });
+      var ages = [];
+      var faces = 0;
+      var chain = Promise.resolve();
+      for (var i = 0; i < samples; i++) {
+        chain = chain.then(function () {
+          return f.detectAllFaces(video, opts).withAgeAndGender().then(function (found) {
+            if (found && found.length) {
+              faces = Math.max(faces, found.length);
+              found.sort(function (a, b) { return b.detection.box.area - a.detection.box.area; });
+              ages.push(found[0].age);
+            }
+            return wait(260);
+          });
+        });
+      }
+      return chain.then(function () {
+        if (!ages.length) return { face: false, faces: 0, samples: samples };
+        ages.sort(function (a, b) { return a - b; });
+        var mid = ages[Math.floor(ages.length / 2)];
+        return {
+          face: true,
+          faces: faces,
+          age: Math.round(mid),
+          low: Math.round(ages[0]),
+          high: Math.round(ages[ages.length - 1]),
+          samples: ages.length,
+          /* tight spread across frames means a steady reading */
+          confidence: Math.max(0.35, Math.min(0.95, 1 - (ages[ages.length - 1] - ages[0]) / 24)),
+          model: 'face-api/age_gender'
+        };
+      });
+    });
+  }
+
   if (shootBtn) shootBtn.addEventListener('click', function () {
     if (!stream) return;
     shootBtn.disabled = true;
     var shots = [];
 
-    say('Hold still\u2026');
+    say('Hold still \u2014 reading your face in this browser\u2026');
     if (ring) ring.classList.add('is-reading');
+    var local = null;
 
     /* Three frames a third of a second apart: a still photograph held up to
        the lens tends to give itself away across them. */
@@ -1654,11 +1723,27 @@
       .then(function () { var f = frame(); if (f) shots.push(f); })
       .then(function () {
         if (!shots.length) throw new Error('The camera gave no picture.');
-        say('Reading your age\u2026 this takes a few seconds.');
+        /* The estimate happens here, in the page, before anything is sent. */
+        return readAge(7).catch(function (err) {
+          say((err && err.message) || 'The face reader would not load.', true);
+          return null;
+        });
+      })
+      .then(function (reading) {
+        local = reading;
+        if (reading && reading.face === false) {
+          throw new Error('No face found in the frame. Fill the oval with your head, ' +
+            'face a window, and try again.');
+        }
+        if (reading && reading.age) {
+          say('Read as about ' + reading.age + ' \u2014 confirming\u2026');
+        } else {
+          say('Sending the frames to be read\u2026');
+        }
         return fetch('/api/account-face', {
           method: 'POST',
           headers: window.EGAuthHeaders(),
-          body: JSON.stringify({ frames: shots.slice(0, 3) })
+          body: JSON.stringify({ frames: shots.slice(0, 3), client_estimate: local })
         });
       })
       .then(function (r) { return r.json().then(function (d) { d._ok = r.ok; return d; }); })
