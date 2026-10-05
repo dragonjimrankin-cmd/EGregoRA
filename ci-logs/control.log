@@ -1,28 +1,22 @@
-# control run — 2026-10-05T10:27:19.577Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-05T10:31:32.903Z
+site: https://egregora.hatchable.site   calls: 2
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"draw","prompt":"A red fox with a torn left ear standing in frosted bracken, ancient stone circle behind it, low winter sun, 35mm film grain, shallow depth of field"}
-HTTP 200  (3657 ms)
+POST {"action":"draw","prompt":"A red fox with a torn left ear asleep on a stone step, lamplight, 35mm film grain"}
+HTTP 200  (4056 ms)
 {
   "status": "ready",
-  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791196043512-rkdl9iyi.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T102723Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=66cd8277b24eb59dc7a7f77bc18081f27829b5cfdd969a3b4ba0b1c270e27605",
+  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791196297193-8kgx1rwv.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T103137Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=5fd3e840babd026ea14c7e4ef1a17cdebb5a95714da46879ce99b46f9a73b16a",
   "provider": "flux-schnell (open weights)",
-  "prompt": "A red fox with a torn left ear standing in frosted bracken, ancient stone circle behind it, low winter sun, 35mm film grain, shallow depth of field"
-}
-
---------------------------------------------------------------------
-POST {"action":"film","prompt":"the fox turns and walks towards the stones"}
-HTTP 503  (152 ms)
-{
-  "error": "No video generator is reachable just now. HunyuanVideo 1.5 is open-weights but it still has to run on somebody's GPU: no Colab worker is awake, the order's Kaggle GPU did not accept the job, and no FAL_KEY or REPLICATE_API_TOKEN is configured. Opening colab/egregora-gpu.ipynb in any Google account and running it is enough to wake one."
+  "hardware": "Pollinations hosted GPU · FLUX.1-schnell, open weights — the card is not disclosed",
+  "prompt": "A red fox with a torn left ear asleep on a stone step, lamplight, 35mm film grain"
 }
 
 --------------------------------------------------------------------
 POST {"action":"status"}
-HTTP 200  (75 ms)
+HTTP 200  (129 ms)
 {
   "site": "https://egregora.hatchable.site",
   "limbs": 11,
