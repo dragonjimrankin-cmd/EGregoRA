@@ -1,30 +1,18 @@
-# control run — 2026-10-05T08:37:22.516Z
-site: https://egregora.hatchable.site   calls: 7
+# control run — 2026-10-05T08:39:08.879Z
+site: https://egregora.hatchable.site   calls: 4
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"whoami"}
-HTTP 200  (168 ms)
+POST {"action":"mailbag","limit":3}
+HTTP 500  (133 ms)
 {
-  "token": "JIM1",
-  "scope": "control",
-  "actions": [
-    "status",
-    "ask",
-    "draw",
-    "film",
-    "job",
-    "mailbag",
-    "models",
-    "workers",
-    "whoami"
-  ]
+  "error": "gateway internal/db/query 400: SQLSTATE[42703]: Undefined column: 7 ERROR:  column \"name\" does not exist\nLINE 2: SELECT id, name, question, limb, created_at FROM questions O...\n                   ^ (Connection: app, Host: /var/run/pgbouncer, Port: 6432, Database: hatchable_apps_e, SQL: WITH __wrap AS (\nSELECT id, name, question, limb, created_at FROM questions ORDER BY created_at DESC LIMIT 3\n) SELECT COALESCE(json_agg(row_to_json(__wrap)), '[]'::json)::text AS rows_json, COUNT(*)::int AS row_count FROM __wrap)\n\nHINT: column `name` does not exist. Check the table's columns with get_project / information_schema.columns."
 }
 
 --------------------------------------------------------------------
 POST {"action":"status"}
-HTTP 200  (68 ms)
+HTTP 200  (56 ms)
 {
   "site": "https://egregora.hatchable.site",
   "limbs": 11,
@@ -36,77 +24,27 @@ HTTP 200  (68 ms)
 }
 
 --------------------------------------------------------------------
-POST {"action":"models"}
-HTTP 200  (60 ms)
+POST {"action":"draw","prompt":"a red fox asleep in frosted bracken at first light, photorealistic"}
+HTTP 200  (3654 ms)
 {
-  "models": [
-    {
-      "key": "hunyuan15",
-      "label": "HunyuanVideo 1.5 · 480p",
-      "note": "Tencent, 8.3B. The house default: the best motion of the bunch.",
-      "own_gpu": true
-    },
-    {
-      "key": "wan22",
-      "label": "Wan 2.2 · 480p",
-      "note": "Alibaba, Apache-2.0. Strong at people and faces.",
-      "own_gpu": true
-    },
-    {
-      "key": "ltx",
-      "label": "LTX-Video · fast",
-      "note": "Lightricks, open weights. The quickest here by a distance.",
-      "own_gpu": true
-    },
-    {
-      "key": "cogvideox",
-      "label": "CogVideoX-5B",
-      "note": "Tsinghua / Zhipu. Painterly, slower, good with light.",
-      "own_gpu": true
-    },
-    {
-      "key": "mochi",
-      "label": "Mochi 1",
-      "note": "Genmo, Apache-2.0. Cinematic, needs a paid route.",
-      "own_gpu": false
-    }
-  ]
+  "status": "ready",
+  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791189552820-32veqst6.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T083912Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=7e4cbd5511fabf5783d103a0e9b91c49a6611e4e4b7d408792a847a5513227c3",
+  "provider": "flux-schnell (open weights)",
+  "prompt": "a red fox asleep in frosted bracken at first light, photorealistic"
 }
 
 --------------------------------------------------------------------
-POST {"action":"workers"}
-HTTP 200  (45 ms)
+POST {"action":"ask","question":"Is the Law of One testable?"}
+HTTP 200  (78 ms)
 {
-  "workers": []
-}
-
---------------------------------------------------------------------
-POST {"action":"ask","question":"Why 137.5 degrees and not 120?"}
-HTTP 200  (70 ms)
-{
-  "answer": "Because 137.5° is the one angle that never lets a new leaf sit directly above an old one.\n\nPut each new primordium a fixed turn around the stem from the last. If that turn is a rational fraction of a circle — 120°, say, which is one third — then after three steps you are back where you started, and every fourth leaf shadows the first. Rational angles produce rays; rays produce shadow and waste.\n\nThe golden angle, 360°/φ² ≈ 137.507°, is the hardest number to approximate with a simple fraction, so the pattern never closes. Each new element falls into the largest remaining gap. The Fibonacci parastichies you count on a sunflower — 34 one way, 55 the other — are a consequence, not a cause.\n\nThis is established science: Douady and Couder got the same spirals from ferrofluid droplets repelling each other in a dish, no genetics involved. Beautiful, and entirely mundane. Which is the best kind of beautiful.",
+  "answer": "As cosmology, it is untestable, and we should say so plainly. Densities, harvests, the Confederation — none of it makes a prediction that could fail. That is not a small objection; it is the whole of the scientific objection.\n\nAs philosophy it is far more interesting than its reputation suggests. Strip the science-fiction furniture and the core is this: consciousness is unitary, separation is the condition that makes experience possible, and free will is so nearly sacred that it will not be overridden even to help. That intuition is in good company — Advaita Vedanta, Plotinus, Eckhart, Whitehead's process theology. The Ra material's distinctive move is making polarity, the chosen orientation of the will, the hinge of the whole thing.\n\nRead it as a text rather than a transcript and it rewards you. Read it as a report from somewhere and you have left the ledger we keep. Myth and primary esoteric text — which is a respectable shelf, not a dismissal.",
   "source": "written",
-  "limb": "geometry",
+  "limb": "law of one",
   "followups": [
-    "Why is the fine-structure constant 1/137?",
-    "Why 137?",
-    "What is initiation for?"
+    "Does the Law of One hold up?",
+    "How should I approach the Law of One?",
+    "Why does time only go one way?"
   ]
-}
-
---------------------------------------------------------------------
-POST {"action":"ask","question":"What is Gink?"}
-HTTP 200  (3611 ms)
-{
-  "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
-  "source": "none"
-}
-
---------------------------------------------------------------------
-POST {"action":"mailbag","limit":3}
-HTTP 500  (67 ms)
-{
-  "error": "gateway internal/db/query 400: SQLSTATE[42703]: Undefined column: 7 ERROR:  column \"name\" does not exist\nLINE 2: SELECT id, name, question, limb, created_at FROM questions O...\n                   ^ (Connection: app, Host: /var/run/pgbouncer, Port: 6432, Database: hatchable_apps_e, SQL: WITH __wrap AS (\nSELECT id, name, question, limb, created_at FROM questions ORDER BY created_at DESC LIMIT 3\n) SELECT COALESCE(json_agg(row_to_json(__wrap)), '[]'::json)::text AS rows_json, COUNT(*)::int AS row_count FROM __wrap)\n\nHINT: column `name` does not exist. Check the table's columns with get_project / information_schema.columns."
 }
 
 done.
