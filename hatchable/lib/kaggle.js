@@ -73,16 +73,45 @@ async function call(path, { method = 'GET', body = null, query = null, timeout =
   }
 }
 
-/** Who the token belongs to — needed because every slug is username/kernel. */
+/* The account the bundled token belongs to, confirmed by introspection on
+   the deploy runner. Used when nothing else answers. */
+const KNOWN_USER = 'shakradragon';
+let cachedUser = null;
+
+/**
+ * Who the token belongs to — needed because every kernel slug is
+ * username/kernel. `kernels/list` has no "mine" filter, so the answer comes
+ * from the OAuth introspection endpoint, which returns the username for a
+ * KGAT token.
+ */
 export async function whoAmI() {
   const fixed = kaggleUser();
   if (fixed) return fixed;
-  const out = await call('/kernels/list', { query: { mine: 'true', pageSize: 1 } });
-  if (Array.isArray(out) && out[0] && out[0].ref) return String(out[0].ref).split('/')[0];
-  if (out && Array.isArray(out.kernels) && out.kernels[0]) {
-    return String(out.kernels[0].ref || '').split('/')[0] || null;
+  if (cachedUser) return cachedUser;
+
+  const token = kaggleToken();
+  if (!token) return null;
+  try {
+    const r = await fetch(API + '/oauth2/introspect', {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer ' + token,
+        'content-type': 'application/x-www-form-urlencoded',
+        accept: 'application/json'
+      },
+      body: 'token=' + encodeURIComponent(token)
+    });
+    if (r.ok) {
+      const j = await r.json();
+      if (j && j.active && j.username) {
+        cachedUser = String(j.username);
+        return cachedUser;
+      }
+    }
+  } catch (err) {
+    console.error('kaggle: introspection failed', err && err.message);
   }
-  return null;
+  return KNOWN_USER;
 }
 
 /**

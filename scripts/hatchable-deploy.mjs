@@ -382,11 +382,40 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
       await show('kernels/list(plain)', 'https://www.kaggle.com/api/v1/kernels/list?page=1&pageSize=2', { headers: H });
       await show('kernels/list(mine)', 'https://www.kaggle.com/api/v1/kernels/list?page=1&pageSize=2&mine=true', { headers: H });
       await show('datasets/list(mine)', 'https://www.kaggle.com/api/v1/datasets/list?page=1&mine=true', { headers: H });
-      await show('mcp/whoami', 'https://www.kaggle.com/mcp', {
+      /* End to end: push a tiny GPU kernel and watch it start. This is the
+         only way to learn whether the token may create kernels and whether
+         a T4 is actually handed over. */
+      const user = 'shakradragon';
+      const slug = 'egregora-gpu-probe';
+      const code = [
+        'import torch, subprocess',
+        'print("cuda:", torch.cuda.is_available())',
+        'print("device:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "none")',
+        'open("/kaggle/working/probe.txt","w").write("ok")'
+      ].join('\n');
+
+      const push = await fetch('https://www.kaggle.com/api/v1/kernels/push', {
         method: 'POST',
-        headers: Object.assign({ 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, H),
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
+        headers: Object.assign({ 'content-type': 'application/json' }, H),
+        body: JSON.stringify({
+          slug: `${user}/${slug}`, new_title: slug, text: code,
+          language: 'python', kernel_type: 'script', is_private: true,
+          enable_internet: true, enable_gpu: true, machine_shape: 'NvidiaTeslaT4'
+        })
       });
+      const pushText = (await push.text()).slice(0, 300).replace(/\s+/g, ' ');
+      console.log(`\u25b8 kaggle push: HTTP ${push.status} \u2014 ${pushText}`);
+
+      if (push.ok) {
+        for (let i = 0; i < 6; i++) {
+          await new Promise((r) => setTimeout(r, 15000));
+          const st = await fetch(
+            `https://www.kaggle.com/api/v1/kernels/status?userName=${user}&kernelSlug=${slug}`,
+            { headers: H });
+          const sText = (await st.text()).slice(0, 180).replace(/\s+/g, ' ');
+          console.log(`\u25b8 kaggle status ${i + 1}: HTTP ${st.status} \u2014 ${sText}`);
+        }
+      }
     }
   } catch (err) {
     console.log('\u25b8 kaggle probe failed: ' + (err && err.message));
