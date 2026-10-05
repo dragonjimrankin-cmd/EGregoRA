@@ -1,8 +1,7 @@
 {
-  "note": "v84 — the Black Tribunal.",
+  "note": "List the register, then set the display name on the Shakra account so the header chip greets a person rather than an address.",
   "calls": [
-    { "action": "ask", "question": "Why is it called the Black Tribunal?" },
-    { "action": "ask", "question": "What is the Shadow Cabinet?" },
-    { "action": "status" }
+    { "action": "members", "limit": 10 },
+    { "action": "member-name", "email": "shakradragon@gmail.com", "name": "ShakRa" }
   ]
 }
