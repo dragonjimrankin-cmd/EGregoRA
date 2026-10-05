@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/main.css?v=muv0od07">
+<link rel="stylesheet" href="/assets/css/main.css?v=muv14moz">
 </head>
 <body data-page="ask-ed">
 <canvas id="starfield" aria-hidden="true"></canvas>
@@ -451,12 +451,6 @@
 
       <div class="fox-ask">
     <form class="ornate oracle-form" id="oracle-form">
-          <div>
-            <label for="o-question">Your question</label>
-            <textarea id="o-question" name="question" required maxlength="2000" rows="3"
-              placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
-          </div>
-
           <details class="oracle-opts">
             <summary>Name and limb (optional)</summary>
             <div class="grid two" style="gap:1rem">
@@ -515,9 +509,15 @@
             <button class="btn btn--ghost" type="button" id="o-reset" hidden>Begin again</button>
           </div>
           <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
-          question out loud, then let go — the words are transcribed into the box above and sent to the order.
+          question out loud, then let go — the words are transcribed into the box below and sent to the order.
           Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
           thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
+
+          <div class="ask-box">
+            <label for="o-question">Your question</label>
+            <textarea id="o-question" name="question" required maxlength="2000" rows="3"
+              placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
+          </div>
         </form>
       </div>
     </div>
@@ -781,7 +781,7 @@
   </div>
 </section>
 
-<script type="module" src="/assets/js/fox.js?v=muv0od07"></script>
+<script type="module" src="/assets/js/fox.js?v=muv14moz"></script>
 
 </main>
 
@@ -838,6 +838,6 @@
 </div>
 
 
-<script src="/assets/js/site.js?v=muv0od07" defer></script>
+<script src="/assets/js/site.js?v=muv14moz" defer></script>
 </body>
 </html>

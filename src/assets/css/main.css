@@ -1386,3 +1386,6 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   margin: auto; text-align: center; max-width: 32ch;
   font-family: 'EB Garamond', serif; font-style: italic; color: #9f947a;
 }
+
+/* the question box now sits under the microphone note */
+.ask-box { margin-top: 0.9rem; }
