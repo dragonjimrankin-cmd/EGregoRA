@@ -186,7 +186,11 @@
         (img.prompt ? " \u00b7 " + esc(String(img.prompt).slice(0, 160)) : "") + "</figcaption>";
       wrap.appendChild(fig);
     });
-    if (wrap.children.length) { el.appendChild(wrap); scrollThread(); }
+    if (wrap.children.length) {
+      el.appendChild(wrap);
+      scrollThread();
+      if (window.EGArrived) window.EGArrived("oracle-image", wrap);
+    }
   };
 
   const footnote = (el, data) => {
@@ -673,6 +677,7 @@
           '<span class="draw-meta">Generated, not photographed' +
           (data.provider ? " \u00b7 " + esc(data.provider) : "") +
           " \u00b7 open in a new tab for the full size</span></figcaption>";
+        if (window.EGArrived) window.EGArrived("image", card);
       }
     } catch {
       card.classList.remove("is-working");
@@ -739,6 +744,7 @@
       "<figcaption>" + esc(prompt) +
       '<span class="draw-meta">Generated, not filmed \u00b7 ' +
       esc(data.model || "HunyuanVideo 1.5 \u00b7 480p") + "</span></figcaption>";
+    if (window.EGArrived) window.EGArrived(card.dataset.origin === "oracle" ? "oracle-video" : "video", card);
   };
 
   const failed = (card, msg, prompt) => {
@@ -827,6 +833,7 @@
       '<div class="draw-wait"><span class="draw-spin" aria-hidden="true"></span>' +
       "<p>The oracle is filming \u2014 about three minutes.</p></div>" +
       "<figcaption>" + esc(prompt || "") + "</figcaption>";
+    card.dataset.origin = "oracle";
     out.prepend(card);
     document.getElementById("film-box").scrollIntoView({ block: "nearest", behavior: "smooth" });
     watch(card, id, prompt || "");
@@ -841,9 +848,17 @@
   var KEY = 'eg-session';
 
   /* token lives in localStorage and travels as a bearer header */
-  function token() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
+  function token() {
+    try { return localStorage.getItem(KEY) || held || ''; } catch (e) { return held || ''; }
+  }
+  var held = '';
   function setToken(t) {
-    try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) {}
+    held = t || '';
+    /* If storage was declined, the session lives only as long as this tab. */
+    var ok = !window.EGConsent || window.EGConsent.allowed();
+    try {
+      if (t && ok) localStorage.setItem(KEY, t); else localStorage.removeItem(KEY);
+    } catch (e) {}
   }
   window.EGToken = token;
 
@@ -1122,4 +1137,209 @@
       if (d && d.signed_in) enter(d.member); else setToken('');
     }).catch(function () {});
   }
+})();
+
+/* ------------------------------------------------------------------ *
+ * Consent. Nothing is written to the visitor's machine until they say
+ * yes. Declining is a real answer: the stores are emptied and the
+ * writing helpers refuse from then on.
+ * ------------------------------------------------------------------ */
+(function () {
+  var KEY = 'eg-consent';
+  var MINE = ['eg-session', 'eg-thread', 'eg-name', 'eg-draft'];
+
+  function readChoice() {
+    try { return localStorage.getItem(KEY) || ''; } catch (e) { return 'declined'; }
+  }
+  function wipe() {
+    try {
+      MINE.forEach(function (k) { localStorage.removeItem(k); sessionStorage.removeItem(k); });
+    } catch (e) {}
+  }
+
+  var consent = {
+    choice: function () { return readChoice(); },
+    allowed: function () { return readChoice() === 'accepted'; },
+    set: function (value) {
+      try { localStorage.setItem(KEY, value); } catch (e) {}
+      if (value !== 'accepted') wipe();
+      document.documentElement.setAttribute('data-consent', value);
+    }
+  };
+  window.EGConsent = consent;
+  document.documentElement.setAttribute('data-consent', readChoice() || 'unasked');
+
+  var gate = document.getElementById('cookie-gate');
+
+  function open() {
+    if (!gate) return;
+    gate.hidden = false;
+    requestAnimationFrame(function () { gate.classList.add('is-up'); });
+  }
+  function close() {
+    if (!gate) return;
+    gate.classList.remove('is-up');
+    setTimeout(function () { gate.hidden = true; }, 420);
+  }
+
+  if (gate && !readChoice()) setTimeout(open, 900);
+
+  var yes = document.getElementById('cookie-yes');
+  var no = document.getElementById('cookie-no');
+  if (yes) yes.addEventListener('click', function () { consent.set('accepted'); close(); });
+  if (no) no.addEventListener('click', function () { consent.set('declined'); close(); });
+
+  var reopen = document.getElementById('cookie-reopen');
+  if (reopen) reopen.addEventListener('click', function () {
+    open();
+    if (gate) gate.scrollIntoView({ block: 'nearest' });
+  });
+})();
+
+/* ------------------------------------------------------------------ *
+ * Arrivals. An image or a clip can take minutes, by which time the
+ * asker has usually looked away. Say so when one lands: a note in the
+ * corner, the tab title flashing, and a soft pair of notes.
+ * ------------------------------------------------------------------ */
+(function () {
+  var realTitle = document.title;
+  var flashing = null;
+  var tray = null;
+
+  function titleFlash(text) {
+    if (!document.hidden) return;
+    var on = false;
+    clearInterval(flashing);
+    flashing = setInterval(function () {
+      on = !on;
+      document.title = on ? text : realTitle;
+    }, 1100);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) { clearInterval(flashing); document.title = realTitle; }
+  });
+
+  /* Two soft notes, synthesised — no file to fetch, no autoplay of media. */
+  function chime() {
+    try {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      var ctx = new Ctx();
+      if (ctx.state === 'suspended' && ctx.resume) ctx.resume();
+      [[528, 0], [792, 0.17]].forEach(function (pair) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = pair[0];
+        var t = ctx.currentTime + pair[1];
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.09, t + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 1);
+      });
+      setTimeout(function () { if (ctx.close) ctx.close(); }, 2200);
+    } catch (e) { /* silence is an acceptable failure */ }
+  }
+
+  function note(text, node) {
+    if (!tray) {
+      tray = document.createElement('div');
+      tray.className = 'arrival-tray';
+      tray.setAttribute('aria-live', 'polite');
+      document.body.appendChild(tray);
+    }
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'arrival';
+    el.innerHTML = '<span class="arrival-mark" aria-hidden="true">✦</span><span>' +
+      String(text).replace(/[&<>]/g, '') + '</span>';
+    el.addEventListener('click', function () {
+      if (node && node.scrollIntoView) node.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      el.remove();
+    });
+    tray.appendChild(el);
+    requestAnimationFrame(function () { el.classList.add('is-up'); });
+    setTimeout(function () {
+      el.classList.remove('is-up');
+      setTimeout(function () { el.remove(); }, 500);
+    }, 9000);
+  }
+
+  /* kind: 'image' | 'video' | 'oracle-image'; node: the card that arrived */
+  window.EGArrived = function (kind, node, how) {
+    var words = {
+      image: 'Your image is ready.',
+      video: 'Your clip has finished filming.',
+      'oracle-image': 'The oracle drew something for you.',
+      'oracle-video': 'The oracle\u2019s clip has arrived.'
+    };
+    var text = words[kind] || 'Something new has arrived.';
+    if (how) text += ' ' + how;
+
+    if (node) {
+      node.classList.add('just-arrived');
+      setTimeout(function () { node.classList.remove('just-arrived'); }, 4000);
+      if (!document.hidden) {
+        var box = node.getBoundingClientRect();
+        var seen = box.top < window.innerHeight && box.bottom > 0;
+        if (!seen) node.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }
+    note(text, node);
+    titleFlash('\u2726 ' + text);
+    chime();
+  };
+})();
+
+/* ------------------------------------------------------------------ *
+ * The letter to Ed. Posts to /api/letter, which stores it, forwards it
+ * and sends the asker an acknowledgement by return of post.
+ * ------------------------------------------------------------------ */
+(function () {
+  var form = document.getElementById('letter-form');
+  if (!form) return;
+  var btn = document.getElementById('letter-send');
+  var msg = document.getElementById('letter-msg');
+
+  function say(text, bad) {
+    if (!msg) return;
+    msg.textContent = text || '';
+    msg.className = 'auth-msg' + (text ? (bad ? ' is-bad' : ' is-good') : '');
+  }
+  function field(id) {
+    var el = document.getElementById(id);
+    return el ? el.value : '';
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending\u2026'; }
+    say('');
+    fetch('/api/letter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: field('name'),
+        email: field('email'),
+        topic: field('topic'),
+        question: field('question'),
+        public: field('public'),
+        website: field('website')
+      })
+    })
+      .then(function (r) { return r.json().then(function (d) { d._ok = r.ok; return d; }); })
+      .then(function (d) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Send the Question'; }
+        if (!d._ok) { say(d.error || 'The letter was refused.', true); return; }
+        say(d.message || 'Your letter is in the pile.');
+        var q = document.getElementById('question');
+        if (q) q.value = '';
+      })
+      .catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = 'Send the Question'; }
+        say('The post did not go through \u2014 email ask@egregora.org instead.', true);
+      });
+  });
 })();

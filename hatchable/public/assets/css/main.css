@@ -1113,3 +1113,63 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 }
 .linkish:hover { color: #f3ddaa; }
 .xsmall { font-size: .8rem; }
+
+/* ------------------------------------------- consent, kept out of the way */
+.cookie-gate {
+  position: fixed; left: 1rem; right: 1rem; bottom: 1rem; z-index: 90;
+  max-width: 46rem; margin: 0 auto;
+  opacity: 0; transform: translateY(1.2rem);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.cookie-gate.is-up { opacity: 1; transform: none; }
+.cookie-inner {
+  background: rgba(10, 9, 14, .96);
+  border: 1px solid rgba(215, 176, 90, .38);
+  border-radius: 4px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .6), inset 0 0 40px rgba(215, 176, 90, .05);
+  padding: 1.1rem 1.3rem 1rem;
+  backdrop-filter: blur(6px);
+}
+.cookie-text {
+  font-family: 'EB Garamond', serif; margin: .3rem 0 .8rem;
+  color: #cbbb93; line-height: 1.55;
+}
+.cookie-actions { display: flex; gap: .7rem; flex-wrap: wrap; margin-bottom: .6rem; }
+@media (max-width: 620px) {
+  .cookie-gate { bottom: .6rem; left: .6rem; right: .6rem; }
+  .cookie-inner { padding: .9rem 1rem; max-height: 62vh; overflow-y: auto; }
+}
+
+/* --------------------------------------------- arrival notices (bottom-left) */
+.arrival-tray {
+  position: fixed; left: 1rem; bottom: 1rem; z-index: 85;
+  display: flex; flex-direction: column; gap: .5rem; max-width: 20rem;
+}
+.arrival {
+  display: flex; align-items: center; gap: .6rem; text-align: left;
+  font-family: 'EB Garamond', serif; font-size: .95rem; color: #f3ddaa;
+  background: rgba(12, 10, 16, .95);
+  border: 1px solid rgba(215, 176, 90, .4); border-radius: 3px;
+  padding: .6rem .85rem; cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .55);
+  opacity: 0; transform: translateX(-1rem);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.arrival.is-up { opacity: 1; transform: none; }
+.arrival:hover { border-color: rgba(215, 176, 90, .8); }
+.arrival-mark { color: #d7b05a; }
+.draw-card.just-arrived {
+  animation: arrive-glow 2.4s ease-out 1;
+  border-color: rgba(215, 176, 90, .75) !important;
+}
+@keyframes arrive-glow {
+  0% { box-shadow: 0 0 0 0 rgba(215, 176, 90, .55); }
+  60% { box-shadow: 0 0 34px 6px rgba(215, 176, 90, .28); }
+  100% { box-shadow: 0 0 0 0 rgba(215, 176, 90, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cookie-gate, .arrival { transition: none; }
+  .draw-card.just-arrived { animation: none; }
+}
+.oracle-art.just-arrived { animation: arrive-glow 2.4s ease-out 1; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }

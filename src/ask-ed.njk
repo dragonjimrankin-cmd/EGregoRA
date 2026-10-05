@@ -234,7 +234,7 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
   <div class="grid two">
     <div class="frame reveal">
       <h3 style="margin-bottom:1rem">Write to Ed directly</h3>
-      <form class="ornate" action="https://formspree.io/f/your-form-id" method="POST">
+      <form class="ornate" id="letter-form">
         <div>
           <label for="name">Your name or chosen name</label>
           <input id="name" name="name" type="text" required placeholder="Rowan of the North">
@@ -270,10 +270,16 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             <option>No — private reply only</option>
           </select>
         </div>
-        <button class="btn" type="submit">Send the Question</button>
-        <p class="form-note">This form posts to Formspree. Replace <code>your-form-id</code> in
-        <code>src/ask-ed.njk</code> with your own endpoint (Formspree, Basin, Netlify Forms or Tally all work),
-        or simply email <a href="mailto:{{ site.email }}">{{ site.email }}</a>.</p>
+        <div class="hp" aria-hidden="true">
+          <label for="website">Leave this empty</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button class="btn" type="submit" id="letter-send">Send the Question</button>
+        <p class="auth-msg" id="letter-msg" role="status"></p>
+        <p class="form-note">Your letter is stored, forwarded to Ed, and acknowledged by return of post —
+        the acknowledgement arrives within a minute and carries a reference you can quote. If nothing
+        appears, check the spam fold, or write to
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a> directly.</p>
       </form>
     </div>
 
