@@ -37,8 +37,8 @@ any paid key, and `pollVideo()` pulls the finished mp4 and files it in the
 order's own storage. The model stays resident between clips, so the second
 clip on a warm worker is minutes rather than half an hour.
 
-Close the tab and the worker stops heartbeating; six minutes later it is no
-longer in the pool. Run it in all five accounts and the pool has five GPUs,
+Close the tab and the worker stops heartbeating; fifteen minutes later it is
+no longer in the pool. Run it in all five accounts and the pool has five GPUs,
 and jobs spread across them by queue depth.
 
 **Your Google account is never shared with the site.** All it ever learns is a

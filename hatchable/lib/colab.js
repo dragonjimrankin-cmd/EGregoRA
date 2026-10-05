@@ -9,13 +9,13 @@
  * as if it were any other inference provider, and the account it belongs to
  * never has to be handed over.
  *
- * A worker is considered alive if it has been heard from in the last six
+ * A worker is considered alive if it has been heard from in the last fifteen
  * minutes — the notebook heartbeats every two. Jobs go to the live worker with
  * the fewest jobs behind it, so several accounts share the load.
  */
 import { db, config } from 'hatchable';
 
-const ALIVE_MINUTES = 6;
+const ALIVE_MINUTES = 15;
 const TIMEOUT = 25000;
 
 export async function colabSecret() {
