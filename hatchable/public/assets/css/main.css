@@ -1620,3 +1620,12 @@ img.shot-thumb { object-fit: cover; }
     box-shadow: 0 0 36px rgba(215,176,90,0.4);
   }
 }
+
+/* ----------------------------------------------------------------------
+   The homepage, between the hero and the charter
+   ----------------------------------------------------------------------
+   The charter and everything under it sat about three lines lower than it
+   wanted to, so the first rule under the hero is drawn tighter and the
+   charter starts nearer the top of the scroll.
+   ---------------------------------------------------------------------- */
+.hero + .divider { margin-top: 1rem; margin-bottom: 1.1rem; }

@@ -1,8 +1,100 @@
 [
-  { "name": "The EGregoRA Codex", "price": "£38", "kind": "Hardback, 288pp", "desc": "The founding text: the ten limbs, the charter, the geometry plates and the full annotated reading list.", "img": "/assets/img/product-codex.jpg" },
-  { "name": "The Wheel of the Year Chart", "price": "£24", "kind": "Giclée print, 50×70cm", "desc": "The eight stations, their trees, their stars and their astronomy, drawn as a single gold-leafed dial.", "img": "/assets/img/product-wheel.jpg" },
-  { "name": "Ogham Tree Deck", "price": "£29", "kind": "40 cards + booklet", "desc": "One card per tree: botany on one face, lore and ogham stave on the other. A field guide that happens to shuffle.", "img": "/assets/img/product-deck.jpg" },
-  { "name": "Grove Journal", "price": "£19", "kind": "Linen-bound, 160pp", "desc": "Dated for phenology: a page per week for recording bud-burst, bird return, weather, dream and mood.", "img": "/assets/img/product-journal.jpg" },
-  { "name": "Sacred Solids Set", "price": "£64", "kind": "Five turned beech forms", "desc": "The Platonic solids in English beech, for handling while thinking. Sold with the Euclidean proof of why there are only five.", "img": "/assets/img/product-solids.jpg" },
-  { "name": "Order Membership", "price": "£6 / month", "kind": "Digital", "desc": "Early episodes, the monthly letter, the members' seminar and voting rights on the next field of enquiry.", "img": "/assets/img/product-member.jpg" }
+  {
+    "name": "The EGregoRA Codex",
+    "price": "£38",
+    "kind": "Hardback, 288pp",
+    "desc": "The founding text: the ten limbs, the charter, the geometry plates and the full annotated reading list.",
+    "img": "/assets/img/product-codex.jpg"
+  },
+  {
+    "name": "The Wheel of the Year Chart",
+    "price": "£24",
+    "kind": "Giclée print, 50×70cm",
+    "desc": "The eight stations, their trees, their stars and their astronomy, drawn as a single gold-leafed dial.",
+    "img": "/assets/img/product-wheel.jpg"
+  },
+  {
+    "name": "Ogham Tree Deck",
+    "price": "£29",
+    "kind": "40 cards + booklet",
+    "desc": "One card per tree: botany on one face, lore and ogham stave on the other. A field guide that happens to shuffle.",
+    "img": "/assets/img/product-deck.jpg"
+  },
+  {
+    "name": "Grove Journal",
+    "price": "£19",
+    "kind": "Linen-bound, 160pp",
+    "desc": "Dated for phenology: a page per week for recording bud-burst, bird return, weather, dream and mood.",
+    "img": "/assets/img/product-journal.jpg"
+  },
+  {
+    "name": "Sacred Solids Set",
+    "price": "£64",
+    "kind": "Five turned beech forms",
+    "desc": "The Platonic solids in English beech, for handling while thinking. Sold with the Euclidean proof of why there are only five.",
+    "img": "/assets/img/product-solids.jpg"
+  },
+  {
+    "name": "Order Membership",
+    "price": "£6 / month",
+    "kind": "Digital",
+    "desc": "Early episodes, the monthly letter, the members' seminar and voting rights on the next field of enquiry.",
+    "img": "/assets/img/product-member.jpg"
+  },
+  {
+    "name": "The Orrery of the Inner Planets",
+    "price": "£180",
+    "kind": "Brass & walnut, turned by hand",
+    "desc": "Mercury to Mars on a geared brass train, built to the real orbital ratios rather than the pretty ones. Turn the handle and watch a retrograde happen in your own hands — the cheapest cure there is for thinking the sky moves backwards.",
+    "img": "/assets/img/product-orrery.jpg"
+  },
+  {
+    "name": "The Pocket Astrolabe",
+    "price": "£46",
+    "kind": "Engraved brass, 70mm, with cord",
+    "desc": "The oldest working computer, small enough to carry. Sight a star, read your latitude, find the hour without a clock. Supplied with a plate cut for 52°N and a sheet explaining what it genuinely measures — and what it does not.",
+    "img": "/assets/img/product-astrolabe.jpg"
+  },
+  {
+    "name": "Metatron's Cube Window Panel",
+    "price": "£120",
+    "kind": "Stained glass, 30×30cm, leaded",
+    "desc": "Thirteen circles, seventy-eight lines, amber and violet glass in blackened lead. Hang it east and the figure walks across the floor through the morning. The construction proof comes with it, because a pattern you can derive is worth more than one you are told to revere.",
+    "img": "/assets/img/product-glass.jpg"
+  },
+  {
+    "name": "Bog Oak Rune Set",
+    "price": "£54",
+    "kind": "24 staves, gold-leafed, linen bag",
+    "desc": "The Elder Futhark cut into oak lifted from peat, timber that stopped growing before the alphabet was carved. Each stave carries its name, its attested meaning, and — where the meaning is a Victorian invention — a note saying so.",
+    "img": "/assets/img/product-runes.jpg"
+  },
+  {
+    "name": "The Elemental Table",
+    "price": "£26",
+    "kind": "Letterpress print, 42×59cm",
+    "desc": "Earth, water, air and fire as the first classification of matter, set beside what each turned out to be. Two columns, honestly ruled: the symbol the alchemists used, and the chemistry that replaced it without making them fools for trying.",
+    "img": "/assets/img/product-elements.jpg"
+  },
+  {
+    "name": "The Cytoskeleton Model",
+    "price": "£78",
+    "kind": "Brass & smoked glass, 220mm, on marble",
+    "desc": "Thirteen protofilaments in a hollow tube, the lattice every cell in you is scaffolded by and the one Orch OR stakes its claim on. Desk-sized, accurate to the helix, and sold with the argument from both sides — see Limb XI·i.",
+    "img": "/assets/img/product-cytoskeleton.jpg"
+  },
+  {
+    "name": "The Black Tribunal — a Monograph",
+    "price": "£16",
+    "kind": "Paperback, 148pp, plain cover",
+    "desc": "How the occult was stolen, by whom, and what was done with it. The Ahnenerbe, the runes taken off the stones, and the industrial atrocity they were dressed over. Deliberately unornamented: nothing in this book is allowed to look glamorous.",
+    "img": "/assets/img/product-tribunal.jpg"
+  },
+  {
+    "name": "Gink — the Fox at the Desk",
+    "price": "£48",
+    "kind": "Cold-cast bronze, oak plinth, 130mm",
+    "desc": "A cast of the skull that sits on Ed's desk, taken from a museum reference rather than an animal. No bone is sold here. What it does is Ed's testimony and is filed as such; what it is, is a beautiful object to think beside.",
+    "img": "/assets/img/product-skull.jpg"
+  }
 ]
