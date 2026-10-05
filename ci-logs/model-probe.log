@@ -1,43 +1,24 @@
 
-### pollinations GET /openai-large  (335 ms)
-HTTP 404 :: {"error":"Model not found: openai-large. This is our legacy API - for the full model list and new features, visit https://enter.pollinations.ai","status":404,"deprecation_notice":"NOTE: The Pollinations legacy text API is being deprecated for authenticated users. Please migrate to https://enter.pollinations.ai for better performance and access to all the latest models. Anonymous requests to text.p
+### models (full)  HTTP 200  (609 ms)  286 chars
+[{"name":"openai-fast","description":"GPT-OSS 20B Reasoning LLM (OVH)","reasoning":true,"tier":"anonymous","community":false,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"aliases":["openai","gpt-oss","gpt-oss-20b","ovh-reasoning"],"vision":false,"audio":false}]
 
-### pollinations GET default  (474 ms)
-HTTP 200 :: The sky looks blue because molecules in the atmosphere scatter shorter‑wavelength (blue) light from the Sun more efficiently than longer wavelengths, so that blue light is redirected in every direction toward our eyes.
+### GET + system param  HTTP 200  (4838 ms)  328 chars
+The golden angle is the smaller of the two angles into which the circle is divided when a circle is partitioned according to the golden ratio, measuring approximately 137.5 degrees. It is obtained by subtracting the golden ratio fraction (about 61.5 %) from 360°, yielding a precise angle used in plant phyllotaxis and art. GINK
 
-### pollinations POST /openai  (662 ms)
-HTTP 402 :: {}
+### GET + json=true  HTTP 402  (378 ms)  2 chars
+{}
 
-### pollinations POST mistral  (662 ms)
-HTTP 402 :: {}
+### GET long prompt (~3500 chars)  HTTP 402  (432 ms)  2 chars
+{}
 
-### pollinations models list  (94 ms)
-HTTP 200 :: [{"name":"openai-fast","description":"GPT-OSS 20B Reasoning LLM (OVH)","reasoning":true,"tier":"anonymous","community":false,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"aliases":["openai","gpt-oss","gpt-oss-20b","ovh-reasoning"],"vision":false,"audio":false}]
+### GET conversation flattened  HTTP 402  (388 ms)  2 chars
+{}
 
-### HF router, no key  (65 ms)
-HTTP 401 :: <!DOCTYPE html>
-<html class="" lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
-    <meta
-            name="description"
-            content="We're on a journey to advance and democratize artificial intelligence through open source and open science."
-    />
-    <meta property="f
+### GET temperature + seed  HTTP 402  (448 ms)  2 chars
+{}
 
-### openrouter free, no key  (25 ms)
-HTTP 401 :: {"error":{"message":"No cookie auth credentials found","code":401}}
+### GET gpt-oss alias  HTTP 402  (381 ms)  2 chars
+{}
 
-### groq, no key  (58 ms)
-HTTP 401 :: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
-
-
-### cloudflare ai public  (50 ms)
-HTTP 404 :: {"result":null,"success":false,"errors":[{"code":7003,"message":"Could not route to /client/v4/accounts/x/ai/run/@cf/meta/llama-3.1-8b-instruct, perhaps your object identifier is invalid?"}],"messages":[]}
-
-### deepinfra openai-compat, no key  (205 ms)
-HTTP 401 :: {"error":{"message":"missing API key","type":"invalid_request_error","param":null,"code":"invalid_api_key"}}
+### POST /openai with referrer  HTTP 402  (1100 ms)  2 chars
+{}
