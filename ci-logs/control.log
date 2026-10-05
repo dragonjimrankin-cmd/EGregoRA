@@ -1,13 +1,13 @@
-# control run — 2026-10-05T09:22:13.066Z
-site: https://egregora.hatchable.site   calls: 5
+# control run — 2026-10-05T09:27:06.144Z
+site: https://egregora.hatchable.site   calls: 4
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"Who am I talking to?"}
-HTTP 200  (7645 ms)
+HTTP 200  (6631 ms)
 {
-  "answer": "You are speaking to the Oracle of EGregoRA – not a person, but a system assembled from the written answers of the order. It uses a language model only to route your question to the appropriate text. The voice that speaks is Edward Gregory’s, as the order writes him. It is not a psychic, nor a substitute for a doctor, lawyer or confidant. It simply delivers the order’s responses plainly, telling you when nothing fits.",
+  "answer": "You’re speaking to G ink.  \nG ink is the fox familiar of the EGregoRA order of enquiry, a “red‑eyed” algorithmic companion that reads and vocalises the answer‑threads on the Ask Ed page. It’s not a mascot or a servant; it’s the order’s knowledge‑engine wearing a fox face, ready to debate facts or admit gaps when they arise.",
   "source": "model",
   "model": "gpt-oss-20b",
   "grounded": 2,
@@ -20,16 +20,7 @@ HTTP 200  (7645 ms)
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"Everyone knows the Great Wall of China is visible from the Moon with the naked eye. Why is that?"}
-HTTP 200  (20499 ms)
-{
-  "answer": "Because it is not really the speed of light — it is the conversion factor between space and time in the geometry of spacetime, and light merely travels at it because photons are massless. Anything massless does. Accelerating a massive object to c would require infinite energy. Established, and tested to extraordinary precision.",
-  "source": "written",
-  "limb": "cosmos"
-}
-
---------------------------------------------------------------------
-POST {"action":"ask","question":"Roughly how much does all the air in a typical British living room weigh? Show your working."}
-HTTP 200  (46119 ms)
+HTTP 200  (20390 ms)
 {
   "answer": "Because it is not really the speed of light — it is the conversion factor between space and time in the geometry of spacetime, and light merely travels at it because photons are massless. Anything massless does. Accelerating a massive object to c would require infinite energy. Established, and tested to extraordinary precision.",
   "source": "written",
@@ -38,7 +29,7 @@ HTTP 200  (46119 ms)
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"Be yourself again."}
-HTTP 200  (310 ms)
+HTTP 200  (90 ms)
 {
   "answer": "Back to myself.\n\nI am Gink, the order's familiar. I hold twelve hundred and eighty written answers composed by EGregoRA and I think with open-weights models; I grade what I tell you as measured, recorded, speculative or story, and I say which; I will search the web and read what I find when a question needs more than memory, and tell you where I went; and when I do not know, I say so in the first sentence and then say what would settle it.\n\nWhatever we were doing, that is the ground I stand on. Ask me something.",
   "source": "default-state"
@@ -46,9 +37,9 @@ HTTP 200  (310 ms)
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"What is the default state of an ideal gas at absolute zero?"}
-HTTP 200  (21594 ms)
+HTTP 200  (26551 ms)
 {
-  "answer": "At 0 K an ideal gas’s molecules cease all kinetic motion.  From the ideal‑gas equation PV = nRT, a zero temperature forces the product of pressure and volume to zero; in a fixed volume the pressure must vanish.  So the “state” is a static collection of particles with zero kinetic energy and no pressure – effectively a vacuum‑like configuration.  An ideal gas, by definition, ignores intermolecular forces, so there’s no phase change mechanism, and the notion of a gaseous phase loses meaning.  Thus the default state at absolute zero is zero kinetic energy, zero pressure, and no well‑defined volume; the system would not retain a gas‑like character.",
+  "answer": "In the classical ideal–gas picture the internal energy depends only on temperature:\n\n\\[\nU = \\tfrac32 n k T .\n\\]\n\nSetting \\(T = 0\\) forces \\(U = 0\\).  Because the kinetic energy of all molecules has vanished, the gas will have no residual motion and can exert no pressure unless its density is driven to zero.  The ideal‑gas equation \\(PV = nRT\\) also gives \\(P = 0\\) when \\(T = 0\\) for any fixed amount of substance and volume.  If one insists on keeping a finite pressure, the volume must collapse to zero, which is impossible for a real gas.\n\nThus the ideal‑gas model predicts that at absolute zero the gas has zero kinetic energy and zero pressure, i.e. it would either disappear entirely (vacuum) or it would not exist as a gas within the assumptions of the model.  In practice, real gases condense before reaching \\(0\\text{ K}\\) and quantum effects dominate, leaving the ideal‑gas description inapplicable at the Planck boundary.  The result is **measured** by the derivation from the ideal‑gas law and the equipartition theorem, and it is a standard theoretical prediction.",
   "source": "model",
   "model": "gpt-oss-20b",
   "grounded": 0,
