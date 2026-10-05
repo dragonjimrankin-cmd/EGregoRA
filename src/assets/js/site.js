@@ -1855,3 +1855,20 @@
     fetchWord(box);
   };
 })();
+
+/* ------------------------------------------------------------------ *
+ * The head's sign-in link knows whether you are already inside.
+ * ------------------------------------------------------------------ */
+(function () {
+  var link = document.getElementById('head-join');
+  if (!link || !window.EGStudio) return;
+  window.EGStudio().then(function (me) {
+    if (!me || !me.signed_in) return;
+    var who = me.member && (me.member.name || me.member.email) || 'Member';
+    var first = String(who).split(/[\s@]+/)[0];
+    link.classList.add('is-in');
+    link.setAttribute('title', 'Signed in as ' + who);
+    var text = link.querySelector('.head-join-text');
+    if (text) text.textContent = first.length > 14 ? 'My account' : first;
+  }).catch(function () {});
+})();
