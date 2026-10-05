@@ -162,7 +162,21 @@ img { max-width: 100%; height: auto; display: block; }
 
 section { position: relative; }
 
-.page-head { text-align: center; padding: clamp(3rem, 7vw, 6rem) 1.25rem 1rem; }
+/* The head of every topic page.
+   It had no measure of its own, so on a wide monitor the lede ran the full
+   width of the glass — two enormous lines of 200-odd characters, which the eye
+   cannot track back from. It is now held to the same column as the rest of the
+   page and centred, and the lede is capped again on top of that, so a long
+   opening paragraph breaks into about four comfortable rows instead. */
+.page-head {
+  text-align: center;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: clamp(3rem, 7vw, 6rem) 1.25rem 1rem;
+}
+.page-head > * { margin-inline: auto; }
+.page-head .lede,
+.page-head > p { max-width: min(100%, 96ch); }
 @media (max-width: 420px) { .page-head { padding-left: 0.9rem; padding-right: 0.9rem; } }
 .page-head .kicker {
   font-family: var(--caps); letter-spacing: 0.42em; text-transform: uppercase;
@@ -182,7 +196,13 @@ h3 { font-size: 1.15rem; color: var(--gold-bright); margin: 0 0 0.4rem; letter-s
 .muted { color: var(--vellum-dim); }
 
 /* ---------- Hero ------------------------------------------------------ */
-.hero { padding: clamp(3rem, 9vw, 7rem) 1.25rem 2rem; text-align: center; position: relative; }
+.hero {
+  padding: clamp(3rem, 9vw, 7rem) 1.25rem 2rem;
+  text-align: center;
+  position: relative;
+  max-width: var(--maxw);
+  margin-inline: auto;
+}
 .hero-mandala {
   width: min(560px, 82vw); aspect-ratio: 1; margin: 0 auto -78%; color: rgba(215,176,90,0.22);
   position: relative; top: -2rem; animation: slow-spin 220s linear infinite reverse;
