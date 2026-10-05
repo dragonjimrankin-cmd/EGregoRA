@@ -2,8 +2,6 @@
   "note": "Edited by the agent, executed by CI against the live site. See scripts/control-run.mjs.",
   "calls": [
     { "action": "mailbag", "limit": 3 },
-    { "action": "status" },
-    { "action": "draw", "prompt": "a red fox asleep in frosted bracken at first light, photorealistic" },
-    { "action": "ask", "question": "Is the Law of One testable?" }
+    { "action": "workers" }
   ]
 }
