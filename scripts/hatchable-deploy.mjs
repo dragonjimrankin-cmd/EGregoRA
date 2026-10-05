@@ -338,105 +338,26 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
     console.log('\u25b8 vision probe failed: ' + (err && err.message));
   }
 
-  /* 4d — probe Kaggle from the runner: does the token authenticate, who does
-     it belong to, and is a GPU kernel push accepted? */
+  /* 4d — confirm the Kaggle token still authenticates and report whether the
+     account can actually be given a GPU. No kernel is pushed here; that was
+     proved once and costs quota to repeat. */
   try {
     const store = await import('../hatchable/lib/key-store.js');
     const tok = store.storedKaggleToken && store.storedKaggleToken();
     if (!tok) {
-      console.log('\u25b8 kaggle probe: no token bundled');
+      console.log('\u25b8 kaggle: no token bundled');
     } else {
-      const H = { authorization: 'Bearer ' + tok, accept: 'application/json' };
-      const r = await fetch('https://www.kaggle.com/api/v1/kernels/list?mine=true&pageSize=5', { headers: H });
-      const text = await r.text();
-      let who = null;
-      try {
-        const j = JSON.parse(text);
-        const list = Array.isArray(j) ? j : (j.kernels || []);
-        if (list[0] && list[0].ref) who = String(list[0].ref).split('/')[0];
-        console.log(`\u25b8 kaggle probe: HTTP ${r.status} \u2014 ${list.length} kernels, user=${who || 'unknown'}`);
-      } catch {
-        console.log(`\u25b8 kaggle probe: HTTP ${r.status} \u2014 ${text.slice(0, 180).replace(/\s+/g, ' ')}`);
-      }
-
-      /* Hunt for the username: the slug of every kernel is username/name,
-         so nothing can be pushed until we know it. */
-      const show = async (label, url, init) => {
-        try {
-          const rr = await fetch(url, init);
-          const tt = (await rr.text()).slice(0, 220).replace(/\s+/g, ' ');
-          console.log(`\u25b8 kaggle ${label}: HTTP ${rr.status} \u2014 ${tt}`);
-        } catch (e) { console.log(`\u25b8 kaggle ${label} threw: ${e && e.message}`); }
-      };
-
-      await show('introspect(form)', 'https://www.kaggle.com/api/v1/oauth2/introspect', {
+      const r = await fetch('https://www.kaggle.com/api/v1/oauth2/introspect', {
         method: 'POST',
-        headers: Object.assign({ 'content-type': 'application/x-www-form-urlencoded' }, H),
+        headers: {
+          authorization: 'Bearer ' + tok,
+          'content-type': 'application/x-www-form-urlencoded',
+          accept: 'application/json'
+        },
         body: 'token=' + encodeURIComponent(tok)
       });
-      await show('introspect(json)', 'https://www.kaggle.com/api/v1/oauth2/introspect', {
-        method: 'POST',
-        headers: Object.assign({ 'content-type': 'application/json' }, H),
-        body: JSON.stringify({ token: tok })
-      });
-      await show('kernels/list(plain)', 'https://www.kaggle.com/api/v1/kernels/list?page=1&pageSize=2', { headers: H });
-      await show('kernels/list(mine)', 'https://www.kaggle.com/api/v1/kernels/list?page=1&pageSize=2&mine=true', { headers: H });
-      await show('datasets/list(mine)', 'https://www.kaggle.com/api/v1/datasets/list?page=1&mine=true', { headers: H });
-      /* End to end: push a tiny GPU kernel and watch it start. This is the
-         only way to learn whether the token may create kernels and whether
-         a T4 is actually handed over. */
-      const user = 'shakradragon';
-      const slug = 'egregora-gpu-probe';
-      const code = [
-        'import torch, subprocess',
-        'print("cuda:", torch.cuda.is_available())',
-        'print("device:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "none")',
-        'open("/kaggle/working/probe.txt","w").write("ok")'
-      ].join('\n');
-
-      const push = await fetch('https://www.kaggle.com/api/v1/kernels/push', {
-        method: 'POST',
-        headers: Object.assign({ 'content-type': 'application/json' }, H),
-        body: JSON.stringify({
-          slug: `${user}/${slug}`, newTitle: slug, text: code,
-          language: 'python', kernelType: 'script', isPrivate: true,
-          enableInternet: true, enableGpu: true, machineShape: 'NvidiaTeslaT4',
-          kernelExecutionType: 'SaveAndRunAll'
-        })
-      });
-      const pushText = (await push.text()).slice(0, 300).replace(/\s+/g, ' ');
-      console.log(`\u25b8 kaggle push: HTTP ${push.status} \u2014 ${pushText}`);
-
-      if (push.ok) {
-        let done = false;
-        for (let i = 0; i < 8 && !done; i++) {
-          await new Promise((r) => setTimeout(r, 15000));
-          const st = await fetch(
-            `https://www.kaggle.com/api/v1/kernels/status?userName=${user}&kernelSlug=${slug}`,
-            { headers: H });
-          const sText = (await st.text()).slice(0, 180).replace(/\s+/g, ' ');
-          console.log(`\u25b8 kaggle status ${i + 1}: HTTP ${st.status} \u2014 ${sText}`);
-          if (/"complete"|"error"/i.test(sText)) done = true;
-        }
-
-        /* The files the run left behind, and whether it saw a GPU. */
-        const outR = await fetch(
-          `https://www.kaggle.com/api/v1/kernels/output?userName=${user}&kernelSlug=${slug}`,
-          { headers: H });
-        const outT = await outR.text();
-        console.log(`\u25b8 kaggle output: HTTP ${outR.status} \u2014 ${outT.slice(0, 400).replace(/\s+/g, ' ')}`);
-
-        try {
-          const j = JSON.parse(outT);
-          const files = j.files || [];
-          if (files[0] && (files[0].url || files[0].fileUrl)) {
-            const fr = await fetch(files[0].url || files[0].fileUrl, { headers: H });
-            const fb = await fr.text();
-            console.log(`\u25b8 kaggle file fetch: HTTP ${fr.status} \u2014 ${fb.slice(0, 60).replace(/\s+/g, ' ')}`);
-          }
-          if (j.log) console.log(`\u25b8 kaggle run log: ${String(j.log).slice(0, 300).replace(/\s+/g, ' ')}`);
-        } catch { /* already printed the raw body */ }
-      }
+      const t = (await r.text()).slice(0, 200).replace(/\s+/g, ' ');
+      console.log(`\u25b8 kaggle token: HTTP ${r.status} \u2014 ${t}`);
     }
   } catch (err) {
     console.log('\u25b8 kaggle probe failed: ' + (err && err.message));

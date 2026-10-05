@@ -180,9 +180,14 @@ export async function pollVideo(row) {
 
     if (st.status === 'ERROR' || st.status.startsWith('CANCEL')) {
       await releaseGpu(slug, 'failed');
+      const why = String(st.message || '');
       return {
         status: 'failed',
-        error: String(st.message || 'The notebook stopped with an error.').slice(0, 300)
+        error: /NO GPU/i.test(why)
+          ? 'The order\u2019s Kaggle account was handed a machine with no GPU. Kaggle only gives ' +
+            'accelerators to phone-verified accounts with weekly quota left \u2014 verify it at ' +
+            'kaggle.com/settings, or connect a FAL_KEY.'
+          : (why || 'The notebook stopped with an error.').slice(0, 300)
       };
     }
     if (st.status !== 'COMPLETE') return { status: 'running' };

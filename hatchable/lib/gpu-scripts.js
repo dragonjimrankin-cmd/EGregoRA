@@ -22,8 +22,12 @@ pip("--upgrade", "diffusers>=0.36.0", "transformers>=4.49", "accelerate", "safet
 
 import torch
 print("torch", torch.__version__, "cuda", torch.cuda.is_available(), flush=True)
-if torch.cuda.is_available():
-    print("device:", torch.cuda.get_device_name(0), flush=True)
+if not torch.cuda.is_available():
+    # 8.3B parameters on a CPU would still be running next week. Stop here so
+    # the order is told the truth instead of waiting twelve hours for nothing.
+    sys.exit("NO GPU: Kaggle gave this notebook a CPU-only machine. Accelerators "
+             "need a phone-verified Kaggle account and remaining weekly quota.")
+print("device:", torch.cuda.get_device_name(0), flush=True)
 
 PROMPT = ${py(prompt)}
 WIDTH, HEIGHT, FRAMES = ${w}, ${h}, ${frames}
@@ -80,6 +84,10 @@ def pip(*a):
 pip("--upgrade", "diffusers>=0.31.0", "transformers>=4.44", "accelerate", "safetensors", "sentencepiece", "protobuf")
 
 import torch
+if not torch.cuda.is_available():
+    sys.exit("NO GPU: Kaggle gave this notebook a CPU-only machine. Accelerators "
+             "need a phone-verified Kaggle account and remaining weekly quota.")
+print("device:", torch.cuda.get_device_name(0), flush=True)
 from diffusers import FluxPipeline
 
 PROMPT = ${py(prompt)}
