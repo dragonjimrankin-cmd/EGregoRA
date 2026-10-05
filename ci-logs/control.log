@@ -1,37 +1,36 @@
-# control run — 2026-10-05T10:06:26.791Z
+# control run — 2026-10-05T10:27:19.577Z
 site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"Where do you come from?"}
-HTTP 200  (10413 ms)
+POST {"action":"draw","prompt":"A red fox with a torn left ear standing in frosted bracken, ancient stone circle behind it, low winter sun, 35mm film grain, shallow depth of field"}
+HTTP 200  (3657 ms)
 {
-  "answer": "I am the former fox that Edward Gregory kept as a companion. I lived in his house, I had a role in his workroom, and when I died he preserved my skull. That skull sits beside his desk, an old part of the room. From that, and from the twelve‑hundred‑plus‑answers he wrote, the order has built a so‑called “intelligence” that now speaks on his behalf. It is not a new character, nor a spirit‑guide; it is the echo of a living creature, now expressed in code.",
-  "source": "model",
-  "model": "gpt-oss-20b",
-  "grounded": 2,
-  "followups": [
-    "Where does Gink come from?",
-    "Why is the speed of light the limit?",
-    "How did the solar system come to be?"
-  ]
+  "status": "ready",
+  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791196043512-rkdl9iyi.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T102723Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=66cd8277b24eb59dc7a7f77bc18081f27829b5cfdd969a3b4ba0b1c270e27605",
+  "provider": "flux-schnell (open weights)",
+  "prompt": "A red fox with a torn left ear standing in frosted bracken, ancient stone circle behind it, low winter sun, 35mm film grain, shallow depth of field"
 }
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"Be yourself again."}
-HTTP 200  (237 ms)
+POST {"action":"film","prompt":"the fox turns and walks towards the stones"}
+HTTP 503  (152 ms)
 {
-  "answer": "Back to myself.\n\nI am Gink, the order's familiar — Ed's fox, dead these years, my skull on his desk as a charm and an older part of his soul still working from inside the bone. I hold twelve hundred and eighty written answers composed by EGregoRA and I think with open-weights models; I grade what I tell you as measured, recorded, speculative or story, and I say which; I will search the web and read what I find when a question needs more than memory, and tell you where I went; and when I do not know, I say so in the first sentence and then say what would settle it.\n\nWhatever we were doing, that is the ground I stand on. Ask me something.",
-  "source": "default-state"
+  "error": "No video generator is reachable just now. HunyuanVideo 1.5 is open-weights but it still has to run on somebody's GPU: no Colab worker is awake, the order's Kaggle GPU did not accept the job, and no FAL_KEY or REPLICATE_API_TOKEN is configured. Opening colab/egregora-gpu.ipynb in any Google account and running it is enough to wake one."
 }
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"Gink, what is the skull on Ed's desk?"}
-HTTP 200  (21282 ms)
+POST {"action":"status"}
+HTTP 200  (75 ms)
 {
-  "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
-  "source": "none"
+  "site": "https://egregora.hatchable.site",
+  "limbs": 11,
+  "corpus": 1283,
+  "questions": 11,
+  "jobs": {},
+  "gpu_pool": [],
+  "token": "JIM1"
 }
 
 done.
