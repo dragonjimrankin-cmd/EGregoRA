@@ -1,0 +1,335 @@
+---
+layout: layouts/base.njk
+title: Ask Ed a Question
+permalink: /ask-ed/
+description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered publicly on the podcast or privately by letter.
+---
+
+<section class="page-head">
+  <p class="kicker">The Open Door</p>
+  <h1>Ask Ed a Question</h1>
+  <p class="lede muted">No question is too large, too small or too strange. Several are too urgent — see the note below.</p>
+</section>
+
+<section class="wrap oracle-wrap reveal" id="oracle">
+  <div class="frame">
+    <p class="kicker">The Oracle</p>
+
+    <h2>Ask now — and keep asking</h2>
+    <p class="muted small">This is a conversation, not a search box. The oracle holds the thread, so you can
+    follow up, push back, ask what it meant, or say "go on". It answers from a body of 1,280 written answers
+    composed for EGregoRA and graded by the house rules on evidence; where a model key is configured it
+    composes fresh replies in the same voice, anchored to those same written answers rather than invented.
+    Where it has nothing, it says so. It will also simply talk — a greeting, an aside, a bad day, something
+    with nothing esoteric about it at all — and when a question needs something it cannot know from memory,
+    it can search the open web and read the pages it finds, then tell you which ones it used. It can also
+    <strong>draw</strong> — ask the fox for a picture and it makes a photorealistic image with FLUX.1-schnell,
+    an open-weights model, shown here and clearly labelled as generated rather than photographed — it can <strong>film</strong> — five seconds of 480p
+    video from HunyuanVideo 1.5, open weights again — and it can
+    <strong>read what you give it</strong>: attach a file and it will quote, search, summarise and argue with
+    the contents rather than guessing at them. It is not Ed
+    himself — but everything asked here lands in his mailbag, and the best questions get answered properly
+    on the podcast.</p>
+
+    <div class="fox-panel fox-panel--ask">
+      <div class="fox-column">
+      <div class="fox-stage" id="fox-stage" role="img"
+           aria-label="A three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
+      <div class="fox-side">
+        <h3 class="fox-name">The Familiar</h3>
+        <p class="muted small">A fox keeps the order's answers. Ask him here and he will read the reply
+        aloud in his own voice; the words are the order's written ones, unchanged.</p>
+        <p class="fox-controls">
+          <button class="btn btn--ghost" type="button" id="fox-speak">Speak</button>
+          <button class="btn btn--ghost" type="button" id="fox-stop">Silence him</button>
+        </p>
+        <p class="muted xsmall" id="fox-status">Waking the familiar…</p>
+      </div>
+      </div>
+
+      <div class="fox-ask">
+    <form class="ornate oracle-form" id="oracle-form">
+          <div>
+            <label for="o-question">Your question</label>
+            <textarea id="o-question" name="question" required maxlength="2000" rows="3"
+              placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
+          </div>
+
+          <details class="oracle-opts">
+            <summary>Name and limb (optional)</summary>
+            <div class="grid two" style="gap:1rem">
+              <div>
+                <label for="o-name">Name</label>
+                <input id="o-name" name="name" type="text" maxlength="80" placeholder="Rowan of the North">
+              </div>
+              <div>
+                <label for="o-limb">Limb</label>
+                <select id="o-limb" name="limb">
+                  <option value="">Let the order decide</option>
+                  <option>Cosmic physics &amp; astronomy</option>
+                  <option>Druidry, trees &amp; nature</option>
+                  <option>Sacred geometry</option>
+                  <option>Astrology</option>
+                  <option>Neuroscience &amp; psychology</option>
+                  <option>Biology &amp; life</option>
+                  <option>God, the Law of One &amp; contact</option>
+                  <option>Magic &amp; the wizard's craft</option>
+                  <option>The Shadow Cabinet</option>
+                  <option>Alchemy &amp; the elemental forces</option>
+                  <option>Consciousness</option>
+                </select>
+              </div>
+            </div>
+          </details>
+
+          <div class="oracle-files">
+            <label class="btn btn--ghost file-btn">
+              <span aria-hidden="true">⌁</span> Attach a file
+              <input id="o-files" type="file" multiple
+                     accept=".txt,.md,.markdown,.csv,.tsv,.json,.yaml,.yml,.xml,.html,.htm,.log,.srt,.vtt,.tex,.ini,.toml,.js,.py,.sql,.sh,.png,.jpg,.jpeg,.gif,.webp,text/*,image/*">
+            </label>
+            <ul class="file-list" id="o-file-list" aria-live="polite"></ul>
+            <p class="muted xsmall">Notes, transcripts, data, a chapter, a photograph — up to 4&nbsp;MB each.
+            Text is read and can be quoted, searched and argued with; images are kept as references. Export a
+            PDF to text first. Anything you attach becomes part of this conversation and is stored with it, so
+            do not send anything confidential.</p>
+          </div>
+
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>
+            <button class="btn btn--mic" type="button" id="o-mic" hidden
+                    aria-describedby="o-mic-hint">
+              <span class="mic-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="2" width="6" height="12" rx="3"/>
+                  <path d="M5 11a7 7 0 0 0 14 0"/>
+                  <path d="M12 18v4M8.5 22h7"/>
+                </svg>
+              </span>
+              <span class="mic-label">Hold to speak</span>
+              <span class="mic-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            </button>
+            <button class="btn btn--ghost" type="button" id="o-reset" hidden>Begin again</button>
+          </div>
+          <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
+          question out loud, then let go — the words are transcribed into the box above and sent to the order.
+          Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
+          thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="oracle-chat">
+      <div class="oracle-bar">
+        <p class="oracle-bar-note">A room to talk in — the oracle holds the whole thread, and will talk
+        about anything, not only the limbs.</p>
+        <button class="btn btn--ghost btn--small" type="button" id="o-expand"
+                aria-pressed="false">Expand the space</button>
+      </div>
+      <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
+        <div class="oracle-msg oracle-msg--oracle oracle-greet">
+          <p class="oracle-who">The Oracle</p>
+          <div class="oracle-text">
+            <p>Ask me anything inside the eleven limbs — cosmic physics, druidry and trees, sacred geometry,
+            astrology, neuroscience, biology, the Law of One and contact, the Shadow Cabinet, magic and
+            ritual, alchemy, consciousness — or anything else at all. Cooking, grief, a gearbox, a bad
+            week, Roman history, a line of code: I will talk about it properly rather than steering you
+            back to sacred geometry. Ask me something awkward and watch me say I don't know — or just say
+            hello, if that is where you are. If a question needs today's news or a figure I ought to check,
+            I will go and look it up and show you where I went. Ask me to draw something and I will — a photograph
+            of a thing that does not exist, made to order, by an open-weights model the order runs rather
+            than a company's. And you can hand me a file: attach notes, a transcript, a spreadsheet or a
+            chapter and I will read it properly and work from it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="oracle-chips" id="oracle-chips">
+        <button class="chip" type="button">Why 137.5 degrees and not 120?</button>
+        <button class="chip" type="button">Is the Law of One testable?</button>
+        <button class="chip" type="button">Did the druids really build Stonehenge?</button>
+        <button class="chip" type="button">What does a psychedelic actually do to a brain?</button>
+        <button class="chip" type="button">Is magic real, in one paragraph?</button>
+      </div>
+    </div>
+
+    <div class="draw-box reveal" id="draw-box">
+      <p class="kicker">ASK THE FOX TO DRAW</p>
+      <h3>Make an Image</h3>
+      <p class="muted small">Type what you want to see and the fox will draw it — photorealistic unless you
+      ask for a painting, an engraving, a diagram or a cartoon. Made with FLUX.1-schnell, an open-weights
+      model, so no company's key is required. Be specific: subject, setting, light, weather, lens, mood. A
+      picture takes fifteen to forty seconds.</p>
+
+      <form class="ornate draw-form" id="draw-form">
+        <div>
+          <label for="d-prompt">Your image</label>
+          <textarea id="d-prompt" name="prompt" rows="3" maxlength="1200" required
+            placeholder="A red fox standing in frosted bracken at first light, low winter sun behind it, breath visible on the cold air, shallow depth of field"></textarea>
+        </div>
+        <div class="draw-examples" id="draw-examples">
+          <button class="chip" type="button">A dew-covered spider's web at dawn, each drop holding an inverted hedgerow</button>
+          <button class="chip" type="button">An oak in a Somerset field under a full moon, long exposure, stars wheeling</button>
+          <button class="chip" type="button">A brass orrery on a cluttered desk, candlelight, brass worn at the fingertips</button>
+          <button class="chip" type="button">A copperplate engraving of the twelve zodiac glyphs around a wheel</button>
+        </div>
+        <div class="ask-actions">
+          <button class="btn" type="submit" id="d-submit">Draw it</button>
+          <button class="btn btn--ghost" type="button" id="d-clear" hidden>Clear</button>
+        </div>
+      </form>
+
+      <div class="draw-out" id="draw-out" aria-live="polite"></div>
+
+      <p class="muted xsmall">Every image here is <strong>generated, not photographed</strong>. It is a
+      synthesis made to order and is never evidence of anything. The fox will not draw a real person in a
+      situation they were never in, and nothing made here should be passed off as a record.</p>
+    </div>
+
+    <div class="draw-box film-box reveal" id="film-box">
+      <p class="kicker">ASK THE FOX TO FILM</p>
+      <h3>Make a Video</h3>
+      <p class="muted small">Five seconds of 480p video from a sentence, made with
+      <strong>HunyuanVideo 1.5</strong> — Tencent's open-weights model, 8.3 billion parameters, code and
+      weights published. Describe motion: what moves, how the camera moves, the light. A clip takes about
+      three minutes; leave the page open and it will appear below.</p>
+
+      <form class="ornate film-form" id="film-form">
+        <div>
+          <label for="v-prompt">Your clip</label>
+          <textarea id="v-prompt" name="prompt" rows="3" maxlength="1200" required
+            placeholder="Mist moving through a stand of oaks at dawn, slow dolly forward, shafts of low sun between the trunks, leaves turning in the draught"></textarea>
+        </div>
+        <div class="film-row">
+          <label for="v-aspect">Shape</label>
+          <select id="v-aspect" name="aspect">
+            <option value="16:9">Landscape · 16:9</option>
+            <option value="9:16">Upright · 9:16</option>
+          </select>
+        </div>
+        <div class="draw-examples" id="film-examples">
+          <button class="chip" type="button">A single candle flame guttering in a draught, close, dark background</button>
+          <button class="chip" type="button">Ink dropped into still water, slow motion, backlit, blooming into filaments</button>
+          <button class="chip" type="button">Clouds racing over a standing stone circle, time-lapse, long shadows turning</button>
+        </div>
+        <div class="ask-actions">
+          <button class="btn" type="submit" id="v-submit">Film it</button>
+          <button class="btn btn--ghost" type="button" id="v-clear" hidden>Clear</button>
+        </div>
+      </form>
+
+      <div class="draw-out" id="film-out" aria-live="polite"></div>
+
+      <p class="muted xsmall">Every clip is <strong>generated, not filmed</strong>: nothing here records a
+      real event, and it should never be presented as though it did. Video needs a GPU somewhere even when
+      the model is open — if no video key is connected to this project, the fox will say so rather than
+      pretend.</p>
+    </div>
+
+    <p class="muted xsmall oracle-foot">Test everything kindly. If an answer cannot survive your scepticism,
+    it does not deserve your belief — and the written form below reaches Ed himself.</p>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <h3 style="margin-bottom:1rem">Write to Ed directly</h3>
+      <form class="ornate" id="letter-form">
+        <div>
+          <label for="name">Your name or chosen name</label>
+          <input id="name" name="name" type="text" required placeholder="Rowan of the North">
+        </div>
+        <div>
+          <label for="email">Email (so Ed can reply)</label>
+          <input id="email" name="email" type="email" required placeholder="you@example.com">
+        </div>
+        <div>
+          <label for="topic">Which limb does this belong to?</label>
+          <select id="topic" name="topic">
+            <option>Cosmic physics &amp; astronomy</option>
+            <option>Druidry, trees &amp; nature</option>
+            <option>Sacred geometry</option>
+            <option>Astrology</option>
+            <option>Neuroscience &amp; psychology</option>
+            <option>Biology &amp; life</option>
+            <option>God, the Law of One &amp; contact</option>
+            <option>Magic &amp; the wizard's craft</option>
+            <option>History, propaganda &amp; the shadow</option>
+            <option>Something that fits nowhere</option>
+          </select>
+        </div>
+        <div>
+          <label for="question">Your question</label>
+          <textarea id="question" name="question" required placeholder="Ask plainly. Ed would rather have the real question than the polite one."></textarea>
+        </div>
+        <div>
+          <label for="public">May we answer this publicly?</label>
+          <select id="public" name="public">
+            <option>Yes — use my name</option>
+            <option>Yes — but keep me anonymous</option>
+            <option>No — private reply only</option>
+          </select>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label for="website">Leave this empty</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="captcha" data-captcha="letter">
+          <p class="captcha-label">Read the gate-word and type it back</p>
+          <div class="captcha-row">
+            <div class="captcha-art" data-captcha-art aria-live="polite"></div>
+            <button class="captcha-new" type="button" data-captcha-new
+                    title="Draw another word" aria-label="Draw another gate-word">&#8634;</button>
+          </div>
+          <input type="text" data-captcha-input autocomplete="off" autocapitalize="characters"
+                 spellcheck="false" maxlength="8" required
+                 aria-label="The gate-word" placeholder="The five letters above">
+        </div>
+        <button class="btn" type="submit" id="letter-send">Send the Question</button>
+        <p class="auth-msg" id="letter-msg" role="status"></p>
+        <p class="form-note">Your letter is stored, forwarded to Ed, and acknowledged by return of post —
+        the acknowledgement arrives within a minute and carries a reference you can quote. If nothing
+        appears, check the spam fold, or write to
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a> directly.</p>
+      </form>
+    </div>
+
+    <div class="reveal">
+      <div class="frame mb-2">
+        <h2>How Ed Answers</h2>
+        <ul class="biblio">
+          <li>Every question is read. Most are answered within a fortnight.</li>
+          <li>The best are answered at length in the <a href="/podcast/">podcast mailbag</a>.</li>
+          <li>Ed will tell you plainly when he does not know — that is the most common answer, and the most useful.</li>
+          <li>Where evidence exists, you get the evidence. Where only tradition exists, you get told it is tradition.</li>
+        </ul>
+      </div>
+
+      <div class="frame caution">
+        <p><strong>Please read.</strong> EGregoRA is a study order, not a clinic. Ed cannot give medical,
+        psychiatric, legal or financial advice, and will not advise on taking any controlled substance. If you
+        are in crisis, please contact your local emergency service or a crisis line
+        (UK: Samaritans, 116 123, free, 24 hours) rather than waiting for a reply here.</p>
+      </div>
+
+      <div class="frame mt-2">
+        <h3>Questions Already in the Pile</h3>
+        <details class="scroll"><summary>Is astrology real?</summary>
+          <p>Real as a symbolic system with four millennia of continuous use and enormous cultural weight — yes,
+          demonstrably. Real as a physical force by which Saturn's position alters your week — no; every
+          controlled test of that claim has failed. Both halves of that sentence matter.</p></details>
+        <details class="scroll"><summary>Does the Law of One hold up?</summary>
+          <p>As cosmology, it is untestable. As philosophy, its core — that consciousness is unitary and that free
+          will is sacred — sits in good company with Advaita Vedanta, Plotinus and Whitehead. Read it as a text, not
+          a transcript, and it becomes much more interesting.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="module" src="/assets/js/fox.js"></script>
