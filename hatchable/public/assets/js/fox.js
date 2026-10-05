@@ -247,7 +247,8 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
      stack into a coat with depth and a soft, broken silhouette. */
   const SHELLS = 8;
   const furShells = (mesh, {
-    depth = 0.075, tint = 0xffffff, map = furMap, shells = SHELLS, tipDark = 0.55
+    depth = 0.075, tint = 0xffffff, map = furMap, shells = SHELLS, tipDark = 0.55,
+    fade = null
   } = {}) => {
     const base = mesh.geometry;
     const pos = base.attributes.position;
@@ -259,12 +260,13 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
       const geo = base.clone();
       const p = geo.attributes.position;
       for (let i = 0; i < p.count; i++) {
-        p.setXYZ(
-          i,
-          pos.getX(i) + nor.getX(i) * depth * f,
-          pos.getY(i) + nor.getY(i) * depth * f,
-          pos.getZ(i) + nor.getZ(i) * depth * f
-        );
+        const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+        /* `fade` lets a region grow no fur at all — used where a shell would
+           otherwise push through something solid sitting on top of it, such
+           as the muzzle hair emerging through the leather of the nose. */
+        const k = fade ? Math.max(0, Math.min(1, fade(x, y, z))) : 1;
+        const d = depth * f * k;
+        p.setXYZ(i, x + nor.getX(i) * d, y + nor.getY(i) * d, z + nor.getZ(i) * d);
       }
       p.needsUpdate = true;
 
@@ -516,7 +518,11 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   // cream muzzle wrap and chin
   const snoutGeo = sculpt(new THREE.SphereGeometry(0.52, 36, 26), (v) => {
     const fwd = smoothstep(-0.2, 0.52, v.z);
-    v.z += fwd * 0.82;
+    /* The muzzle stops short of the nose and is buried inside it. It used to
+       run to z 1.34, which put its tip — and five shells of cream fur — out
+       in front of the nose leather, so orange hair appeared to grow through
+       the black. It now ends at 1.08, well behind the leather's front face. */
+    v.z += fwd * 0.56;
     v.x *= 1 - 0.70 * fwd;
     v.y *= 1 - 0.56 * fwd;
     if (v.y < -0.1) v.y = -0.1 + (v.y + 0.1) * 0.58;
@@ -525,7 +531,11 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   snout.position.set(0, -0.3, 0.86);
   snout.castShadow = true;
   head.add(snout);
-  furShells(snout, { depth: 0.04, map: creamMap, shells: 5, tipDark: 0.28 });
+  furShells(snout, {
+    depth: 0.04, map: creamMap, shells: 5, tipDark: 0.28,
+    /* bare from z 0.72 forward: that is the part the nose sits over */
+    fade: (x, y, z) => 1 - smoothstep(0.72, 1.0, z)
+  });
 
   // dark bridge stripe along the top of the muzzle
   const bridge = new THREE.Mesh(
@@ -536,7 +546,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   head.add(bridge);
 
   // nose leather, with a philtrum groove and nostril slits
-  const noseGeo = sculpt(new THREE.SphereGeometry(0.195, 36, 28), (v) => {
+  const noseGeo = sculpt(new THREE.SphereGeometry(0.215, 36, 28), (v) => {
     v.y *= 0.74; v.z *= 0.8; v.x *= 0.92;
     // flatten the front plane
     if (v.z > 0.08) v.z = 0.08 + (v.z - 0.08) * 0.55;
@@ -547,7 +557,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     if (v.y < -0.04 && Math.abs(v.x) < 0.035) v.z -= 0.03;
   });
   const nose = new THREE.Mesh(noseGeo, M.nose);
-  nose.position.set(0, -0.2, 2.06);
+  nose.position.set(0, -0.2, 1.98);
   nose.castShadow = true;
   head.add(nose);
 
