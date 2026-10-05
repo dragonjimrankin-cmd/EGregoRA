@@ -759,6 +759,7 @@
       "<figcaption>" + esc(prompt) +
       '<span class="draw-meta">Generated, not ' + (isImage ? "photographed" : "filmed") + ' \u00b7 ' +
       esc(data.model || "HunyuanVideo 1.5 \u00b7 480p") + "</span></figcaption>";
+    if (!isImage && window.EGMontageAdd) window.EGMontageAdd(data.url, prompt);
     if (window.EGArrived) window.EGArrived(card.dataset.origin === "oracle" ? "oracle-video" : "video", card);
   };
 
@@ -2061,4 +2062,277 @@
         window.location.href = '/join/';
       });
   });
+})();
+
+/* ------------------------------------------------------------------ *
+ * The cutting room.
+ *
+ * Clips generated on this page collect here and are edited into one
+ * film entirely in the browser: each shot is drawn onto a canvas in
+ * real time while a MediaRecorder captures the canvas stream. No
+ * upload, no service, no ffmpeg — and no audio, because the models
+ * make none.
+ * ------------------------------------------------------------------ */
+(function () {
+  var box = document.getElementById('montage-box');
+  if (!box) return;
+
+  var list = document.getElementById('shot-list');
+  var renderBtn = document.getElementById('m-render');
+  var clearBtn = document.getElementById('m-clear');
+  var msg = document.getElementById('m-msg');
+  var out = document.getElementById('montage-out');
+  var transEl = document.getElementById('m-transition');
+  var shapeEl = document.getElementById('m-shape');
+
+  var shots = [];
+  var busy = false;
+
+  function say(text, bad) {
+    msg.textContent = text || '';
+    msg.className = 'auth-msg' + (text ? (bad ? ' is-bad' : ' is-good') : '');
+  }
+
+  /* ----------------------------------------------------------- shots */
+
+  window.EGMontageAdd = function (url, prompt) {
+    if (!url || shots.some(function (s) { return s.url === url; })) return;
+    var v = document.createElement('video');
+    v.src = url;
+    v.crossOrigin = 'anonymous';
+    v.preload = 'metadata';
+    v.muted = true;
+    v.playsInline = true;
+    var shot = { url: url, prompt: prompt || 'A clip', video: v, in: 0, out: null, duration: null };
+    v.addEventListener('loadedmetadata', function () {
+      shot.duration = v.duration;
+      if (shot.out === null) shot.out = v.duration;
+      paint();
+    });
+    shots.push(shot);
+    paint();
+  };
+
+  function total() {
+    return shots.reduce(function (n, s) {
+      return n + Math.max(0, (s.out || 0) - (s.in || 0));
+    }, 0);
+  }
+
+  function paint() {
+    list.innerHTML = '';
+    if (!shots.length) {
+      var li = document.createElement('li');
+      li.className = 'shot-empty';
+      li.textContent = 'No clips yet. Make one above and it will appear here.';
+      list.appendChild(li);
+      renderBtn.disabled = true;
+      if (clearBtn) clearBtn.hidden = true;
+      return;
+    }
+    if (clearBtn) clearBtn.hidden = false;
+    renderBtn.disabled = busy || shots.length < 1;
+
+    shots.forEach(function (s, i) {
+      var li = document.createElement('li');
+      li.className = 'shot';
+
+      var thumb = document.createElement('video');
+      thumb.src = s.url + '#t=0.5';
+      thumb.className = 'shot-thumb';
+      thumb.muted = true;
+      thumb.playsInline = true;
+      thumb.preload = 'metadata';
+
+      var body = document.createElement('div');
+      body.className = 'shot-body';
+
+      var head = document.createElement('p');
+      head.className = 'shot-name';
+      head.textContent = (i + 1) + '. ' + String(s.prompt).slice(0, 90);
+      body.appendChild(head);
+
+      if (s.duration) {
+        var trim = document.createElement('div');
+        trim.className = 'shot-trim';
+        trim.innerHTML =
+          '<label>In <input type="number" min="0" step="0.1" value="' + s.in.toFixed(1) + '"></label>' +
+          '<label>Out <input type="number" min="0.1" step="0.1" value="' + s.out.toFixed(1) + '"></label>' +
+          '<span class="muted xsmall">of ' + s.duration.toFixed(1) + 's</span>';
+        var ins = trim.querySelectorAll('input');
+        ins[0].addEventListener('change', function () {
+          s.in = Math.max(0, Math.min(Number(ins[0].value) || 0, (s.out || 0) - 0.2));
+          paint();
+        });
+        ins[1].addEventListener('change', function () {
+          s.out = Math.min(s.duration, Math.max(Number(ins[1].value) || 0, s.in + 0.2));
+          paint();
+        });
+        body.appendChild(trim);
+      }
+
+      var tools = document.createElement('div');
+      tools.className = 'shot-tools';
+      [['▲', 'Earlier', -1], ['▼', 'Later', 1]].forEach(function (b) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'shot-btn';
+        btn.textContent = b[0];
+        btn.title = b[1];
+        btn.addEventListener('click', function () {
+          var j = i + b[2];
+          if (j < 0 || j >= shots.length) return;
+          var tmp = shots[i]; shots[i] = shots[j]; shots[j] = tmp;
+          paint();
+        });
+        tools.appendChild(btn);
+      });
+      var drop = document.createElement('button');
+      drop.type = 'button';
+      drop.className = 'shot-btn';
+      drop.textContent = '✕';
+      drop.title = 'Take it out';
+      drop.addEventListener('click', function () { shots.splice(i, 1); paint(); });
+      tools.appendChild(drop);
+
+      li.appendChild(thumb);
+      li.appendChild(body);
+      li.appendChild(tools);
+      list.appendChild(li);
+    });
+
+    var foot = document.createElement('li');
+    foot.className = 'shot-total muted xsmall';
+    foot.textContent = shots.length + (shots.length === 1 ? ' shot · ' : ' shots · ') +
+      total().toFixed(1) + ' seconds in the cut';
+    list.appendChild(foot);
+  }
+
+  if (clearBtn) clearBtn.addEventListener('click', function () {
+    shots = [];
+    out.innerHTML = '';
+    say('');
+    paint();
+  });
+
+  /* ---------------------------------------------------------- render */
+
+  function drawCover(ctx, video, W, H, alpha) {
+    var vw = video.videoWidth, vh = video.videoHeight;
+    if (!vw || !vh) return;
+    var scale = Math.max(W / vw, H / vh);
+    var w = vw * scale, h = vh * scale;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(video, (W - w) / 2, (H - h) / 2, w, h);
+    ctx.globalAlpha = 1;
+  }
+
+  function seek(video, t) {
+    return new Promise(function (res) {
+      var done = function () { video.removeEventListener('seeked', done); res(); };
+      video.addEventListener('seeked', done);
+      try { video.currentTime = t; } catch (e) { res(); }
+      setTimeout(res, 1500);
+    });
+  }
+
+  function playSegment(ctx, W, H, shot, next, fade, onTick) {
+    return new Promise(function (resolve) {
+      var v = shot.video;
+      var started = false;
+      var nextStarted = false;
+
+      var step = function () {
+        if (v.paused && started) return;
+        var t = v.currentTime;
+        if (t >= shot.out - 0.02) {
+          v.pause();
+          resolve(nextStarted);
+          return;
+        }
+        drawCover(ctx, v, W, H, 1);
+
+        if (next && fade > 0 && t > shot.out - fade) {
+          var k = Math.min(1, (t - (shot.out - fade)) / fade);
+          if (!nextStarted) {
+            nextStarted = true;
+            next.video.currentTime = next.in;
+            next.video.play().catch(function () {});
+          }
+          drawCover(ctx, next.video, W, H, k);
+        }
+        if (onTick) onTick();
+        requestAnimationFrame(step);
+      };
+
+      seek(v, shot.in).then(function () {
+        started = true;
+        v.play().then(function () { requestAnimationFrame(step); })
+          .catch(function () { resolve(false); });
+      });
+    });
+  }
+
+  renderBtn.addEventListener('click', async function () {
+    if (busy || !shots.length) return;
+    if (!window.MediaRecorder || !document.createElement('canvas').captureStream) {
+      say('This browser cannot record a canvas, so the montage cannot be cut here.', true);
+      return;
+    }
+    busy = true;
+    renderBtn.disabled = true;
+    out.innerHTML = '';
+    say('Cutting — this plays through in real time, so give it ' + total().toFixed(0) + ' seconds.');
+
+    var size = (shapeEl.value || '854x480').split('x');
+    var W = Number(size[0]), H = Number(size[1]);
+    var fade = transEl.value === 'cut' ? 0 : Number(transEl.value);
+
+    var canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0a090e';
+    ctx.fillRect(0, 0, W, H);
+
+    var stream = canvas.captureStream(30);
+    var mime = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm']
+      .find(function (m) { return MediaRecorder.isTypeSupported(m); }) || '';
+    var rec = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 4000000 } : undefined);
+    var chunks = [];
+    rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+
+    var finished = new Promise(function (res) { rec.onstop = res; });
+    rec.start(200);
+
+    try {
+      for (var i = 0; i < shots.length; i++) {
+        var shot = shots[i];
+        var next = shots[i + 1] || null;
+        if (shot.out === null && shot.duration) shot.out = shot.duration;
+        say('Cutting shot ' + (i + 1) + ' of ' + shots.length + '…');
+        var preRolled = await playSegment(ctx, W, H, shot, next, fade);
+        if (preRolled && next) next.in = Math.min((next.out || 0) - 0.2, next.in + fade);
+      }
+    } catch (err) {
+      say('The cut broke partway: ' + ((err && err.message) || 'unknown'), true);
+    }
+
+    rec.stop();
+    await finished;
+    shots.forEach(function (s) { try { s.video.pause(); } catch (e) {} });
+
+    var blob = new Blob(chunks, { type: 'video/webm' });
+    var url = URL.createObjectURL(blob);
+    out.innerHTML =
+      '<figure class="draw-card"><video controls playsinline src="' + url + '"></video>' +
+      '<figcaption>Your montage · ' + shots.length + ' shots · ' + Math.round(blob.size / 1024) + ' KB' +
+      '<span class="draw-meta">Cut in your browser · generated, not filmed</span></figcaption></figure>' +
+      '<p><a class="btn" href="' + url + '" download="egregora-montage.webm">Download the film</a></p>';
+    say('Done. The film is below, and the download keeps it.');
+    busy = false;
+    renderBtn.disabled = false;
+    if (window.EGArrived) window.EGArrived('video', out.querySelector('.draw-card'), 'Your montage is cut.');
+  });
+
+  paint();
 })();

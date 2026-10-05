@@ -5,3 +5,6 @@ _site/
 egregora-site.zip
 egregora-hatchable.zip
 ci-logs/
+
+# OpenMontage is cloned locally, not vendored
+openmontage/vendor/
