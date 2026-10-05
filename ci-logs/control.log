@@ -1,31 +1,34 @@
-# control run — 2026-10-05T08:57:58.608Z
-site: https://egregora.hatchable.site   calls: 4
+# control run — 2026-10-05T09:02:47.422Z
+site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"Who is Gink?"}
-HTTP 200  (6455 ms)
+HTTP 200  (10838 ms)
 {
-  "answer": "The EGregoRA written answers contain no reference to a person or entity called Gink. As such, the order cannot confirm who Gink is, and no firm claim can be made. If you have further context, share it and I’ll look for it in the available resources.",
+  "answer": "**Answer:**  \nGink is the order’s familiar, a fox that gives voice to our written responses. He is a purely digital creation: a sculpted skull and muzzle, a shell‑fur texture, a layered eye that glows, a hinged jaw that lip‑syncs as we speak, ears that flick and swivel, and a gaze that follows your cursor. He is present on the Ask Ed page, not an authority but a living character that reads the order’s answers aloud and lets you watch him while you read.",
   "source": "model",
   "model": "gpt-oss-20b",
-  "grounded": 0,
-  "followups": []
+  "grounded": 1,
+  "followups": [
+    "Why is the familiar called Gink?",
+    "What is Gink thinking with?"
+  ]
 }
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"What model are you thinking with?"}
-HTTP 200  (20902 ms)
+HTTP 200  (20531 ms)
 {
-  "answer": "No — you have correctly observed what was always happening. The goal was never a blank mind; it is noticing that you have wandered and returning, and each return is the repetition that does the work. A session in which you noticed fifty departures was a good session, exactly as fifty lifts is a good set. The instruction is consistent across every tradition that has examined this, and the modern attentional literature agrees. The failure mode is not distraction. It is the self-criticism that follows distraction, which doubles the departure and makes the next return harder.",
+  "answer": "Open weights wherever possible, and the order means that literally. First choice is a model running on a GPU the order has borrowed rather than rented — Qwen2.5-7B-Instruct, Apache-2.0, served from a notebook with the tool loop intact. After that, open models through a key if one is configured. Last of all, GPT-OSS 20B on a keyless public route. A closed model is only ever a fallback, and the written answers come first regardless: twelve hundred and eighty of them, composed by the order and used as grounding so the model anchors to our work rather than inventing from nothing.",
   "source": "written",
-  "limb": "practice"
+  "limb": "order"
 }
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"What did you have for breakfast, and do you mind the question?"}
-HTTP 200  (18281 ms)
+HTTP 200  (646 ms)
 {
   "answer": "The oracle’s own written guidance does not cover what I had for breakfast, and I have no personal record of a breakfast at all. Therefore I cannot state it as a measured or recorded fact. Any answer I give would be purely speculative and unsupported by evidence. As an oracle I don’t eat, so I cannot provide a real breakfast detail. I encourage you to frame a specific question about a topic we have already investigated—something like “I found birth charts oddly accurate for three friends; am I blind?”—and we can answer that effectively.",
   "source": "model",
@@ -36,19 +39,6 @@ HTTP 200  (18281 ms)
     "What has this order changed its mind about?",
     "Is mind-wandering bad for me?"
   ]
-}
-
---------------------------------------------------------------------
-POST {"action":"status"}
-HTTP 200  (108 ms)
-{
-  "site": "https://egregora.hatchable.site",
-  "limbs": 11,
-  "corpus": 1283,
-  "questions": 9,
-  "jobs": {},
-  "gpu_pool": [],
-  "token": "JIM1"
 }
 
 done.
