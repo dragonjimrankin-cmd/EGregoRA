@@ -1,43 +1,61 @@
-# control run — 2026-10-05T09:02:47.422Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-05T09:22:13.066Z
+site: https://egregora.hatchable.site   calls: 5
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"Who is Gink?"}
-HTTP 200  (10838 ms)
+POST {"action":"ask","question":"Who am I talking to?"}
+HTTP 200  (7645 ms)
 {
-  "answer": "**Answer:**  \nGink is the order’s familiar, a fox that gives voice to our written responses. He is a purely digital creation: a sculpted skull and muzzle, a shell‑fur texture, a layered eye that glows, a hinged jaw that lip‑syncs as we speak, ears that flick and swivel, and a gaze that follows your cursor. He is present on the Ask Ed page, not an authority but a living character that reads the order’s answers aloud and lets you watch him while you read.",
+  "answer": "You are speaking to the Oracle of EGregoRA – not a person, but a system assembled from the written answers of the order. It uses a language model only to route your question to the appropriate text. The voice that speaks is Edward Gregory’s, as the order writes him. It is not a psychic, nor a substitute for a doctor, lawyer or confidant. It simply delivers the order’s responses plainly, telling you when nothing fits.",
   "source": "model",
   "model": "gpt-oss-20b",
-  "grounded": 1,
+  "grounded": 2,
   "followups": [
-    "Why is the familiar called Gink?",
-    "What is Gink thinking with?"
+    "What are you?",
+    "Do trees really talk to each other?",
+    "Am I talking to a real person or a machine?"
   ]
 }
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"What model are you thinking with?"}
-HTTP 200  (20531 ms)
+POST {"action":"ask","question":"Everyone knows the Great Wall of China is visible from the Moon with the naked eye. Why is that?"}
+HTTP 200  (20499 ms)
 {
-  "answer": "Open weights wherever possible, and the order means that literally. First choice is a model running on a GPU the order has borrowed rather than rented — Qwen2.5-7B-Instruct, Apache-2.0, served from a notebook with the tool loop intact. After that, open models through a key if one is configured. Last of all, GPT-OSS 20B on a keyless public route. A closed model is only ever a fallback, and the written answers come first regardless: twelve hundred and eighty of them, composed by the order and used as grounding so the model anchors to our work rather than inventing from nothing.",
+  "answer": "Because it is not really the speed of light — it is the conversion factor between space and time in the geometry of spacetime, and light merely travels at it because photons are massless. Anything massless does. Accelerating a massive object to c would require infinite energy. Established, and tested to extraordinary precision.",
   "source": "written",
-  "limb": "order"
+  "limb": "cosmos"
 }
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"What did you have for breakfast, and do you mind the question?"}
-HTTP 200  (646 ms)
+POST {"action":"ask","question":"Roughly how much does all the air in a typical British living room weigh? Show your working."}
+HTTP 200  (46119 ms)
 {
-  "answer": "The oracle’s own written guidance does not cover what I had for breakfast, and I have no personal record of a breakfast at all. Therefore I cannot state it as a measured or recorded fact. Any answer I give would be purely speculative and unsupported by evidence. As an oracle I don’t eat, so I cannot provide a real breakfast detail. I encourage you to frame a specific question about a topic we have already investigated—something like “I found birth charts oddly accurate for three friends; am I blind?”—and we can answer that effectively.",
+  "answer": "Because it is not really the speed of light — it is the conversion factor between space and time in the geometry of spacetime, and light merely travels at it because photons are massless. Anything massless does. Accelerating a massive object to c would require infinite energy. Established, and tested to extraordinary precision.",
+  "source": "written",
+  "limb": "cosmos"
+}
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"Be yourself again."}
+HTTP 200  (310 ms)
+{
+  "answer": "Back to myself.\n\nI am Gink, the order's familiar. I hold twelve hundred and eighty written answers composed by EGregoRA and I think with open-weights models; I grade what I tell you as measured, recorded, speculative or story, and I say which; I will search the web and read what I find when a question needs more than memory, and tell you where I went; and when I do not know, I say so in the first sentence and then say what would settle it.\n\nWhatever we were doing, that is the ground I stand on. Ask me something.",
+  "source": "default-state"
+}
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"What is the default state of an ideal gas at absolute zero?"}
+HTTP 200  (21594 ms)
+{
+  "answer": "At 0 K an ideal gas’s molecules cease all kinetic motion.  From the ideal‑gas equation PV = nRT, a zero temperature forces the product of pressure and volume to zero; in a fixed volume the pressure must vanish.  So the “state” is a static collection of particles with zero kinetic energy and no pressure – effectively a vacuum‑like configuration.  An ideal gas, by definition, ignores intermolecular forces, so there’s no phase change mechanism, and the notion of a gaseous phase loses meaning.  Thus the default state at absolute zero is zero kinetic energy, zero pressure, and no well‑defined volume; the system would not retain a gas‑like character.",
   "source": "model",
   "model": "gpt-oss-20b",
-  "grounded": 1,
+  "grounded": 0,
   "followups": [
-    "What is the best question to ask this oracle?",
-    "What has this order changed its mind about?",
-    "Is mind-wandering bad for me?"
+    "Can we extract zero-point energy?",
+    "What is the difference between coma and a vegetative state?",
+    "Can you copy a quantum state?"
   ]
 }
 
