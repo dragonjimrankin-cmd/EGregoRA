@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-05T05:48:10Z
+# Hatchable deploy — 2026-10-05T05:53:02Z
 
 token present: 43 chars, prefix hb_
 
@@ -35,18 +35,7 @@ hatchable.com/mcp -> HTTP 200
 ▸ vision probe pollinations-ref [openai-fast]: HTTP 400 — ERR "400 Bad Request"
 ▸ vision probe hf-router [Qwen/Qwen2.5-VL-7B-Instruct]: HTTP 401 — <!DOCTYPE html> <html class="" lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, ini
 ▸ vision probe openai [gpt-4o-mini]: HTTP 429 — ERR {"message":"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billin
-▸ kaggle probe: HTTP 400 — 0 kernels, user=unknown
-▸ kaggle introspect(form): HTTP 200 — {"active":true,"username":"shakradragon","userId":36890995,"user_id":36890995,"scope":"resources.admin:*"}
-▸ kaggle introspect(json): HTTP 200 — {"active":true,"username":"shakradragon","userId":36890995,"user_id":36890995,"scope":"resources.admin:*"}
-▸ kaggle kernels/list(plain): HTTP 200 — [{"id":0,"ref":"goodpjw2008/rsna-knee-stack-2-5d-convnext-mil-lb-0-944","title":"RSNA Knee | Stack + 2.5D ConvNeXt MIL | LB 0.944","author":"goodpjw2008","slug":"","lastRunTime":"2026-10-05T01:37:40.793Z","language":"","
-▸ kaggle kernels/list(mine): HTTP 400 — {"code":400,"message":"Invalid field \u0027mine\u0027"}
-▸ kaggle datasets/list(mine): HTTP 400 — {"code":400,"message":"Invalid field \u0027mine\u0027"}
-▸ kaggle push: HTTP 200 — {"versionNumberNullable":2,"ref":"/code/shakradragon/egregora-gpu-probe","url":"https://www.kaggle.com/code/shakradragon/egregora-gpu-probe","versionNumber":2,"hasVersionNumber":true,"error":"","hasError":false,"invalidTags":[],"invalidDatasetSources":[],"invalidCompetitionSources":[],"invalidKernel
-▸ kaggle status 1: HTTP 200 — {"status":"running","failureMessage":"","hasFailureMessage":false}
-▸ kaggle status 2: HTTP 200 — {"status":"complete","failureMessage":"","hasFailureMessage":false}
-▸ kaggle output: HTTP 200 — {"logNullable":"[{\u0022stream_name\u0022:\u0022stdout\u0022,\u0022time\u0022:6.256373327,\u0022data\u0022:\u0022cuda: False\\n\u0022}\n,{\u0022stream_name\u0022:\u0022stdout\u0022,\u0022time\u0022:6.256415807,\u0022data\u0022:\u0022device: none\\n\u0022}\n,{\u0022stream_name\u0022:\u0022stderr\u0022,\u0022time\u0022:9.041162579,\u0022data\u0022:\u0022/usr/local/lib/python3.13/dist-packages/mistun
-▸ kaggle file fetch: HTTP 200 — ok
-▸ kaggle run log: [{"stream_name":"stdout","time":6.256373327,"data":"cuda: False\n"} ,{"stream_name":"stdout","time":6.256415807,"data":"device: none\n"} ,{"stream_name":"stderr","time":9.041162579,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"} ,{"str
+▸ kaggle token: HTTP 200 — {"active":true,"username":"shakradragon","userId":36890995,"user_id":36890995,"scope":"resources.admin:*"}
 ▸ deploy
 
 ✔ Deployed.
@@ -54,10 +43,20 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 62,
+  "version": 63,
   "url": "https://egregora.hatchable.site",
+  "status": "live",
   "is_draft": false,
-  "deduplicated": true
+  "public_url": "https://egregora.hatchable.site",
+  "draft_url": "https://egregora-draft.hatchable.site",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v62.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v63.png",
+  "console_url": "https://hatchable.com/console/projects/egregora",
+  "files_deployed": 99,
+  "functions_deployed": 15,
+  "warnings": [],
+  "visibility": "public",
+  "preview_url": null
 }
 
    https://egregora.hatchable.site
