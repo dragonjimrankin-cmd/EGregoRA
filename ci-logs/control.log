@@ -1,0 +1,113 @@
+# control run — 2026-10-05T08:37:22.516Z
+site: https://egregora.hatchable.site   calls: 7
+
+GET /api/control -> HTTP 200
+
+--------------------------------------------------------------------
+POST {"action":"whoami"}
+HTTP 200  (168 ms)
+{
+  "token": "JIM1",
+  "scope": "control",
+  "actions": [
+    "status",
+    "ask",
+    "draw",
+    "film",
+    "job",
+    "mailbag",
+    "models",
+    "workers",
+    "whoami"
+  ]
+}
+
+--------------------------------------------------------------------
+POST {"action":"status"}
+HTTP 200  (68 ms)
+{
+  "site": "https://egregora.hatchable.site",
+  "limbs": 11,
+  "corpus": 1280,
+  "questions": 9,
+  "jobs": {},
+  "gpu_pool": [],
+  "token": "JIM1"
+}
+
+--------------------------------------------------------------------
+POST {"action":"models"}
+HTTP 200  (60 ms)
+{
+  "models": [
+    {
+      "key": "hunyuan15",
+      "label": "HunyuanVideo 1.5 · 480p",
+      "note": "Tencent, 8.3B. The house default: the best motion of the bunch.",
+      "own_gpu": true
+    },
+    {
+      "key": "wan22",
+      "label": "Wan 2.2 · 480p",
+      "note": "Alibaba, Apache-2.0. Strong at people and faces.",
+      "own_gpu": true
+    },
+    {
+      "key": "ltx",
+      "label": "LTX-Video · fast",
+      "note": "Lightricks, open weights. The quickest here by a distance.",
+      "own_gpu": true
+    },
+    {
+      "key": "cogvideox",
+      "label": "CogVideoX-5B",
+      "note": "Tsinghua / Zhipu. Painterly, slower, good with light.",
+      "own_gpu": true
+    },
+    {
+      "key": "mochi",
+      "label": "Mochi 1",
+      "note": "Genmo, Apache-2.0. Cinematic, needs a paid route.",
+      "own_gpu": false
+    }
+  ]
+}
+
+--------------------------------------------------------------------
+POST {"action":"workers"}
+HTTP 200  (45 ms)
+{
+  "workers": []
+}
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"Why 137.5 degrees and not 120?"}
+HTTP 200  (70 ms)
+{
+  "answer": "Because 137.5° is the one angle that never lets a new leaf sit directly above an old one.\n\nPut each new primordium a fixed turn around the stem from the last. If that turn is a rational fraction of a circle — 120°, say, which is one third — then after three steps you are back where you started, and every fourth leaf shadows the first. Rational angles produce rays; rays produce shadow and waste.\n\nThe golden angle, 360°/φ² ≈ 137.507°, is the hardest number to approximate with a simple fraction, so the pattern never closes. Each new element falls into the largest remaining gap. The Fibonacci parastichies you count on a sunflower — 34 one way, 55 the other — are a consequence, not a cause.\n\nThis is established science: Douady and Couder got the same spirals from ferrofluid droplets repelling each other in a dish, no genetics involved. Beautiful, and entirely mundane. Which is the best kind of beautiful.",
+  "source": "written",
+  "limb": "geometry",
+  "followups": [
+    "Why is the fine-structure constant 1/137?",
+    "Why 137?",
+    "What is initiation for?"
+  ]
+}
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"What is Gink?"}
+HTTP 200  (3611 ms)
+{
+  "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
+  "source": "none"
+}
+
+--------------------------------------------------------------------
+POST {"action":"mailbag","limit":3}
+HTTP 500  (67 ms)
+{
+  "error": "gateway internal/db/query 400: SQLSTATE[42703]: Undefined column: 7 ERROR:  column \"name\" does not exist\nLINE 2: SELECT id, name, question, limb, created_at FROM questions O...\n                   ^ (Connection: app, Host: /var/run/pgbouncer, Port: 6432, Database: hatchable_apps_e, SQL: WITH __wrap AS (\nSELECT id, name, question, limb, created_at FROM questions ORDER BY created_at DESC LIMIT 3\n) SELECT COALESCE(json_agg(row_to_json(__wrap)), '[]'::json)::text AS rows_json, COUNT(*)::int AS row_count FROM __wrap)\n\nHINT: column `name` does not exist. Check the table's columns with get_project / information_schema.columns."
+}
+
+done.
+exit=0
