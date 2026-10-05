@@ -1,48 +1,30 @@
-# control run — 2026-10-05T08:43:24.270Z
-site: https://egregora.hatchable.site   calls: 2
+# control run — 2026-10-05T08:51:06.526Z
+site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"mailbag","limit":3}
-HTTP 200  (213 ms)
+POST {"action":"workers"}
+HTTP 200  (296 ms)
 {
-  "questions": [
-    {
-      "id": 9,
-      "name": null,
-      "question": "a butterfly",
-      "limb": "image",
-      "source": "drawn",
-      "answer": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791187919204-kio9jdj7.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T081159Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=ed0c665e14b7e6ef8dff51c0f2aac205e45afccfaa",
-      "created_at": "2026-10-05T08:11:59.380837+00:00"
-    },
-    {
-      "id": 8,
-      "name": null,
-      "question": "A dew-covered spider's web at dawn, each drop holding an inverted hedgerow",
-      "limb": "image",
-      "source": "drawn",
-      "answer": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791187863266-41gqgv3t.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T081103Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=d94d1463e9c89871f7ae7dd5b51ae40f70775c4d4c",
-      "created_at": "2026-10-05T08:11:03.435653+00:00"
-    },
-    {
-      "id": 7,
-      "name": null,
-      "question": "who is edward gregory",
-      "limb": null,
-      "source": "written-fallback",
-      "answer": "Edward Gregory and Jim Rankin, as co-founders — never one of them alone, and that is not a courtesy. Ed is a natural philosopher in the old unembarrassed sense, who refuses to choose between the telescope and the tree. Jim is his understudy and, on the better days, his muse: where Ed presses a question until it yields, Jim asks why that question and not another. The pursuit and the provocation. An",
-      "created_at": "2026-10-05T08:01:38.897954+00:00"
-    }
-  ]
+  "workers": []
 }
 
 --------------------------------------------------------------------
-POST {"action":"workers"}
-HTTP 200  (60 ms)
+POST {"action":"ask","question":"What is Gink?"}
+HTTP 200  (2936 ms)
 {
-  "workers": []
+  "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
+  "source": "none"
+}
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"In two sentences, what would you say to someone who thinks astrology is simply nonsense?"}
+HTTP 200  (3162 ms)
+{
+  "answer": "Two answers, and both matter.\n\nAs a symbolic system with four millennia of continuous use — real, demonstrably, and enormously consequential. It gave us the calendar habits, the hours, much of the vocabulary we still use for character, and a library of images for time and temperament that nothing has replaced. Studying it is studying how humans mapped meaning onto the sky.\n\nAs a physical force by which Saturn's position alters your week — no. Every controlled test has failed. Shawn Carlson's double-blind study in Nature (1985) is the famous one; Geoffrey Dean's meta-analyses are the thorough ones. Astrologers could not match charts to personality profiles above chance.\n\nSo we study it as scholarship and use it, if at all, as a mirror — a set of prompts that make you say something true about yourself you would not otherwise have said. That is a real effect. It is just not an astronomical one.",
+  "source": "written",
+  "limb": "astrology"
 }
 
 done.
