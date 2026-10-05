@@ -998,3 +998,12 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   .sym-band { font-size: 0.95rem; letter-spacing: 0.14em; }
   .sym-grid { grid-template-columns: 1fr; }
 }
+
+/* --- images the oracle draws ------------------------------------------ */
+.oracle-art { margin-top: 0.9rem; display: grid; gap: 0.8rem; }
+.oracle-art figure { margin: 0; border: 1px solid rgba(215,176,90,0.3); padding: 0.5rem; background: rgba(215,176,90,0.04); }
+.oracle-art img { display: block; width: 100%; height: auto; border: 1px solid rgba(215,176,90,0.18); }
+.oracle-art figcaption {
+  margin-top: 0.45rem; font-family: var(--body); font-size: 0.78rem;
+  color: var(--vellum-dim); letter-spacing: 0.02em; line-height: 1.5;
+}

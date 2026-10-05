@@ -18,6 +18,7 @@
 import { ai, db } from 'hatchable';
 import { bestMatch, nearest, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
 import { webSearch, readPage } from '../lib/websearch.js';
+import { generateImage } from '../lib/imagegen.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -126,7 +127,26 @@ SEARCHING THE WEB
 - If a tool fails or returns nothing useful, say so out loud and answer as best you can without it. Never
   pretend to have searched, and never invent a URL.
 - The order's own written answers still come first. Search is for what they do not cover, not a substitute
-  for the house position.`;
+  for the house position.
+
+DRAWING
+- You can draw. The "draw_image" tool makes one finished two-dimensional image, photorealistic by default —
+  a photograph rather than an illustration — and the picture is shown to the asker beneath your reply.
+- Use it when someone asks you to draw, show, paint, picture, illustrate or photograph something, and offer
+  it unprompted when a picture would genuinely settle a question better than a paragraph would.
+- Write the prompt yourself and write it properly: subject, setting, light, lens, time of day, weather,
+  materials, mood. "A red fox" is a poor instruction; "a red fox standing in frosted bracken at first
+  light, low winter sun behind it, breath visible, shallow depth of field" is a good one. If the asker
+  wants a drawing, an engraving or a diagram instead, say so in the prompt and the photographic default is
+  dropped.
+- One image per reply unless more are explicitly asked for. After it is made, say in one line what you
+  drew and what you chose — do not describe it at length, the asker can see it.
+- The image is generated, not photographed: never present it as evidence, as a real photograph of a real
+  event, or as a record of anything. If the subject is a real person, a real place or a contested claim,
+  say plainly that what they are looking at is a synthesis. Decline to draw anyone real in a compromising
+  or deceptive situation, and decline anything that would pass as a forged document or a fake record.
+- If the tool returns an error, say so and offer words instead. Never claim to have drawn something you
+  did not.`;
 
 /* Model aliases are tried in order; the gateway resolves each against
    whichever provider key the owner has set. Logical aliases, never raw ids. */
@@ -228,6 +248,7 @@ export default async function (req, res) {
   /* 5 ── tools: the oracle may search the open web and read a page.
          Every call is recorded so the reply can be honest about its sources. */
   const used = [];
+  const images = [];
 
   const tools = {
     web_search: {
@@ -246,6 +267,30 @@ export default async function (req, res) {
         const out = await webSearch(query, limit);
         (out.results || []).forEach((r) => used.push({ title: r.title, url: r.url, read: false }));
         return out;
+      }
+    },
+    draw_image: {
+      description:
+        'Draw one standalone 2D image from a written prompt — photorealistic unless the prompt asks for ' +
+        'another style — and show it to the asker. Write a full, specific prompt: subject, setting, ' +
+        'light, lens, mood.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          prompt: {
+            type: 'string',
+            description: 'A full description of the single image to make, in plain English.'
+          }
+        },
+        required: ['prompt']
+      },
+      execute: async ({ prompt }) => {
+        const out = await generateImage(prompt);
+        if (out.url) images.push({ url: out.url, prompt: out.prompt, provider: out.provider });
+        return out.url
+          ? { ok: true, shown: true, prompt: out.prompt,
+              note: 'The image is displayed to the asker beneath your reply. Do not paste the URL.' }
+          : { ok: false, error: out.error };
       }
     },
     read_page: {
@@ -333,13 +378,15 @@ export default async function (req, res) {
     });
   }
 
-  await log(name, limb, question, answer, sources.length ? 'model+web' : 'model');
+  await log(name, limb, question, answer,
+    images.length ? 'model+image' : sources.length ? 'model+web' : 'model');
   res.json({
     answer,
     source: 'model',
     model: usedModel,
     grounded: retrieved.map((m) => m.entry.q),
     sources: sources.slice(0, 6),
+    images: images.slice(0, 3),
     followups: relatedQuestions(question, limb, 3)
   });
 }

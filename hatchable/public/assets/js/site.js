@@ -166,6 +166,25 @@
     });
   };
 
+  /* Pictures the oracle drew for this reply. */
+  const attachImages = (el, data) => {
+    if (!data.images || !data.images.length) return;
+    const wrap = document.createElement("div");
+    wrap.className = "oracle-art";
+    data.images.slice(0, 3).forEach((img) => {
+      if (!img || !img.url) return;
+      const fig = document.createElement("figure");
+      fig.innerHTML =
+        '<a href="' + esc(img.url) + '" target="_blank" rel="noopener">' +
+        '<img src="' + esc(img.url) + '" alt="' +
+        esc(img.prompt || "An image drawn by the oracle") + '" loading="lazy"></a>' +
+        '<figcaption>Drawn just now by the oracle \u00b7 generated, not photographed' +
+        (img.prompt ? " \u00b7 " + esc(String(img.prompt).slice(0, 160)) : "") + "</figcaption>";
+      wrap.appendChild(fig);
+    });
+    if (wrap.children.length) { el.appendChild(wrap); scrollThread(); }
+  };
+
   const footnote = (el, data) => {
     const bits = [];
     if (data.source === "written") bits.push("From the order\u2019s written answers" +
@@ -229,6 +248,7 @@
         history.pop();
       } else {
         reveal(pending, data.answer, () => {
+          attachImages(pending, data);
           footnote(pending, data);
           setChips(data.followups);
           scrollThread();
