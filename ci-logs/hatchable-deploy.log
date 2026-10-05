@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-05T05:39:23Z
+# Hatchable deploy — 2026-10-05T05:43:36Z
 
 token present: 43 chars, prefix hb_
 
@@ -41,7 +41,13 @@ hatchable.com/mcp -> HTTP 200
 ▸ kaggle kernels/list(plain): HTTP 200 — [{"id":0,"ref":"goodpjw2008/rsna-knee-stack-2-5d-convnext-mil-lb-0-944","title":"RSNA Knee | Stack + 2.5D ConvNeXt MIL | LB 0.944","author":"goodpjw2008","slug":"","lastRunTime":"2026-10-05T01:37:40.793Z","language":"","
 ▸ kaggle kernels/list(mine): HTTP 400 — {"code":400,"message":"Invalid field \u0027mine\u0027"}
 ▸ kaggle datasets/list(mine): HTTP 400 — {"code":400,"message":"Invalid field \u0027mine\u0027"}
-▸ kaggle push: HTTP 400 — {"code":400,"message":"Invalid kernel type \u0027\u0027. Must be \u0027script\u0027 or \u0027notebook\u0027."}
+▸ kaggle push: HTTP 200 — {"versionNumberNullable":1,"ref":"/code/shakradragon/egregora-gpu-probe","url":"https://www.kaggle.com/code/shakradragon/egregora-gpu-probe","versionNumber":1,"hasVersionNumber":true,"error":"","hasError":false,"invalidTags":[],"invalidDatasetSources":[],"invalidCompetitionSources":[],"invalidKernel
+▸ kaggle status 1: HTTP 200 — {"status":"running","failureMessage":"","hasFailureMessage":false}
+▸ kaggle status 2: HTTP 200 — {"status":"complete","failureMessage":"","hasFailureMessage":false}
+▸ kaggle status 3: HTTP 200 — {"status":"complete","failureMessage":"","hasFailureMessage":false}
+▸ kaggle status 4: HTTP 200 — {"status":"complete","failureMessage":"","hasFailureMessage":false}
+▸ kaggle status 5: HTTP 200 — {"status":"complete","failureMessage":"","hasFailureMessage":false}
+▸ kaggle status 6: HTTP 200 — {"status":"complete","failureMessage":"","hasFailureMessage":false}
 ▸ deploy
 
 ✔ Deployed.
@@ -49,14 +55,14 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 61,
+  "version": 62,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v60.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v61.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v61.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v62.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
   "files_deployed": 99,
   "functions_deployed": 15,
