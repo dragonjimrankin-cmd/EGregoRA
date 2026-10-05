@@ -750,6 +750,13 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
               background 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
   animation: scroll-arrow-in 0.35s ease both;
 }
+/* An arrow with nowhere to go vanishes but keeps its place in the rail, so
+   the other one stays exactly where it was. */
+.scroll-arrow.is-off {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
 .scroll-arrow[hidden] { display: none; }
 .scroll-arrow svg { width: 1.2rem; height: 1.2rem; }
 .scroll-arrow:hover,

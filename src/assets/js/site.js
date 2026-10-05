@@ -450,8 +450,17 @@
     const canUp = y > SLACK;
     const canDown = max - y > SLACK;
 
-    up.hidden = !canUp;
-    down.hidden = !canDown;
+    /* Each arrow keeps its slot in the rail whether or not it is shown, so
+       the surviving one does not jump when the other goes. The rail itself
+       only disappears when neither direction has anywhere to go. */
+    up.classList.toggle("is-off", !canUp);
+    down.classList.toggle("is-off", !canDown);
+    up.disabled = !canUp;
+    down.disabled = !canDown;
+    up.setAttribute("aria-hidden", canUp ? "false" : "true");
+    down.setAttribute("aria-hidden", canDown ? "false" : "true");
+    up.tabIndex = canUp ? 0 : -1;
+    down.tabIndex = canDown ? 0 : -1;
     rail.hidden = !(canUp || canDown);
     rail.setAttribute("aria-hidden", rail.hidden ? "true" : "false");
   };

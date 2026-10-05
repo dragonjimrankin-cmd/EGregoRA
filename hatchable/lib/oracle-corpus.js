@@ -14,6 +14,15 @@ import { VOL4 } from './oracle-corpus-iv.js';
 import { VOL5 } from './oracle-corpus-v.js';
 import { VOL6 } from './oracle-corpus-vi.js';
 import { VOL7 } from './oracle-corpus-vii.js';
+import { VOL8 } from './oracle-corpus-viii.js';
+import { VOL9 } from './oracle-corpus-ix.js';
+import { VOL10 } from './oracle-corpus-x.js';
+import { VOL11 } from './oracle-corpus-xi.js';
+import { VOL12 } from './oracle-corpus-xii.js';
+import { VOL13 } from './oracle-corpus-xiii.js';
+import { VOL14 } from './oracle-corpus-xiv.js';
+import { VOL15 } from './oracle-corpus-xv.js';
+import { VOL16 } from './oracle-corpus-xvi.js';
 
 const BASE = [
   {
@@ -291,7 +300,10 @@ The Further Research page grades every source so you always know whether you are
 /* ------------------------------------------------------------------------ */
 
 
-export const ANSWERS = [...BASE, ...MORE, ...VOL3, ...VOL4, ...VOL5, ...VOL6, ...VOL7];
+export const ANSWERS = [
+  ...BASE, ...MORE, ...VOL3, ...VOL4, ...VOL5, ...VOL6, ...VOL7,
+  ...VOL8, ...VOL9, ...VOL10, ...VOL11, ...VOL12, ...VOL13, ...VOL14, ...VOL15, ...VOL16
+];
 
 const STOP = new Set(
   ('a an and are as at be but by do does did for from had has have how i if in into is it its me my no not of on or our so that the their them then there these they this to was we what when where which who why will with you your about can could would should'
