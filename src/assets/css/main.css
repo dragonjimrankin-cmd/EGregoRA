@@ -1029,3 +1029,36 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 }
 .file-x:hover { color: var(--gold-bright); }
 .oracle-attached { margin-top: 0.4rem; font-size: 0.78rem; color: var(--gold); letter-spacing: 0.04em; }
+
+/* --- the drawing box --------------------------------------------------- */
+.draw-box {
+  margin-top: 1.6rem; border: 1px solid rgba(215,176,90,0.3);
+  background: radial-gradient(120% 140% at 50% 0%, rgba(215,176,90,0.07), transparent 70%);
+  padding: 1.4rem 1.3rem;
+}
+.draw-box h3 { margin-bottom: 0.4rem; }
+.draw-form { margin-top: 1rem; }
+.draw-examples { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.7rem 0 0.2rem; }
+.draw-out { display: grid; gap: 1rem; margin-top: 1.1rem; }
+.draw-card {
+  margin: 0; border: 1px solid rgba(215,176,90,0.3);
+  background: rgba(215,176,90,0.04); padding: 0.55rem;
+}
+.draw-card img { display: block; width: 100%; height: auto; border: 1px solid rgba(215,176,90,0.2); }
+.draw-card figcaption {
+  margin-top: 0.5rem; font-size: 0.82rem; color: var(--vellum-dim); line-height: 1.55;
+}
+.draw-card .draw-meta { display: block; font-size: 0.74rem; color: var(--gold); margin-top: 0.25rem; letter-spacing: 0.04em; }
+.draw-card.is-error { border-color: rgba(207,127,141,0.55); }
+.draw-card.is-error p { color: var(--rose); font-size: 0.88rem; }
+.draw-wait {
+  display: flex; align-items: center; gap: 0.7rem; justify-content: center;
+  min-height: 150px; color: var(--vellum-dim); font-size: 0.86rem; text-align: center;
+}
+.draw-wait p { margin: 0; }
+.draw-spin {
+  width: 22px; height: 22px; border: 1px solid rgba(215,176,90,0.3);
+  border-top-color: var(--gold-bright); border-radius: 50%;
+  animation: slow-spin 1.1s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .draw-spin { animation-duration: 3s; } }

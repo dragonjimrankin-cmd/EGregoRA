@@ -593,3 +593,104 @@
   }
   update();
 })();
+
+/* ------------------------------------------------------------- Drawing box
+   A direct line to /api/draw: a prompt in, one finished image out, with no
+   model and no conversation in between. */
+(() => {
+  "use strict";
+  const form = document.getElementById("draw-form");
+  if (!form) return;
+
+  const box = document.getElementById("d-prompt");
+  const btn = document.getElementById("d-submit");
+  const clear = document.getElementById("d-clear");
+  const out = document.getElementById("draw-out");
+  const examples = document.getElementById("draw-examples");
+  const nameEl = document.getElementById("o-name");
+  if (!box || !btn || !out) return;
+
+  let busy = false;
+
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  const draw = async (prompt) => {
+    const p = String(prompt || "").trim();
+    if (busy || p.length < 3) return;
+
+    busy = true;
+    btn.disabled = true;
+    const label = btn.textContent;
+    btn.textContent = "Drawing\u2026";
+    if (clear) clear.hidden = false;
+
+    const card = document.createElement("figure");
+    card.className = "draw-card is-working";
+    card.innerHTML =
+      '<div class="draw-wait"><span class="draw-spin" aria-hidden="true"></span>' +
+      "<p>Drawing \u2014 this takes fifteen to forty seconds.</p></div>" +
+      '<figcaption>' + esc(p) + "</figcaption>";
+    out.prepend(card);
+    card.scrollIntoView({ block: "nearest", behavior: "smooth" });
+
+    try {
+      const res = await fetch("/api/draw", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ prompt: p, name: (nameEl && nameEl.value || "").trim() })
+      });
+      const data = await res.json().catch(() => ({}));
+      card.classList.remove("is-working");
+
+      if (!res.ok || !data.url) {
+        card.classList.add("is-error");
+        card.innerHTML =
+          "<p>" + esc(data.error || "The drawing failed. Try again, or change the wording.") + "</p>" +
+          '<figcaption>' + esc(p) + "</figcaption>";
+      } else {
+        card.innerHTML =
+          '<a href="' + esc(data.url) + '" target="_blank" rel="noopener">' +
+          '<img src="' + esc(data.url) + '" alt="' + esc(p) + '" loading="lazy"></a>' +
+          "<figcaption>" + esc(p) +
+          '<span class="draw-meta">Generated, not photographed' +
+          (data.provider ? " \u00b7 " + esc(data.provider) : "") +
+          " \u00b7 open in a new tab for the full size</span></figcaption>";
+      }
+    } catch {
+      card.classList.remove("is-working");
+      card.classList.add("is-error");
+      card.innerHTML =
+        "<p>No image could be fetched \u2014 this page may be running without its backend.</p>" +
+        '<figcaption>' + esc(p) + "</figcaption>";
+    } finally {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  };
+
+  form.addEventListener("submit", (e) => { e.preventDefault(); draw(box.value); });
+
+  box.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      form.requestSubmit ? form.requestSubmit() : draw(box.value);
+    }
+  });
+
+  if (examples) examples.addEventListener("click", (e) => {
+    const b = e.target.closest(".chip");
+    if (!b) return;
+    box.value = b.textContent.trim();
+    box.focus();
+  });
+
+  if (clear) clear.addEventListener("click", () => {
+    out.innerHTML = "";
+    clear.hidden = true;
+    box.value = "";
+    box.focus();
+  });
+})();

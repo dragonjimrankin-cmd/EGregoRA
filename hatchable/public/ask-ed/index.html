@@ -534,6 +534,39 @@
       thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
     </form>
 
+    <div class="draw-box reveal" id="draw-box">
+      <p class="kicker">ASK THE FOX TO DRAW</p>
+      <h3>Make an Image</h3>
+      <p class="muted small">Type what you want to see and the fox will draw it — photorealistic unless you
+      ask for a painting, an engraving, a diagram or a cartoon. Made with FLUX.1-schnell, an open-weights
+      model, so no company's key is required. Be specific: subject, setting, light, weather, lens, mood. A
+      picture takes fifteen to forty seconds.</p>
+
+      <form class="ornate draw-form" id="draw-form">
+        <div>
+          <label for="d-prompt">Your image</label>
+          <textarea id="d-prompt" name="prompt" rows="3" maxlength="1200" required
+            placeholder="A red fox standing in frosted bracken at first light, low winter sun behind it, breath visible on the cold air, shallow depth of field"></textarea>
+        </div>
+        <div class="draw-examples" id="draw-examples">
+          <button class="chip" type="button">A dew-covered spider's web at dawn, each drop holding an inverted hedgerow</button>
+          <button class="chip" type="button">An oak in a Somerset field under a full moon, long exposure, stars wheeling</button>
+          <button class="chip" type="button">A brass orrery on a cluttered desk, candlelight, brass worn at the fingertips</button>
+          <button class="chip" type="button">A copperplate engraving of the twelve zodiac glyphs around a wheel</button>
+        </div>
+        <div class="ask-actions">
+          <button class="btn" type="submit" id="d-submit">Draw it</button>
+          <button class="btn btn--ghost" type="button" id="d-clear" hidden>Clear</button>
+        </div>
+      </form>
+
+      <div class="draw-out" id="draw-out" aria-live="polite"></div>
+
+      <p class="muted xsmall">Every image here is <strong>generated, not photographed</strong>. It is a
+      synthesis made to order and is never evidence of anything. The fox will not draw a real person in a
+      situation they were never in, and nothing made here should be passed off as a record.</p>
+    </div>
+
     <p class="muted xsmall oracle-foot">Test everything kindly. If an answer cannot survive your scepticism,
     it does not deserve your belief — and the written form below reaches Ed himself.</p>
   </div>
