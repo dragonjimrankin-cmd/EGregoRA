@@ -13,7 +13,9 @@
  *   status                      how the order is doing
  *   ask     { question, history? }          put a question to the oracle
  *   draw    { prompt }                      commission a picture
- *   film    { prompt, aspect?, model? }     commission a clip
+ *   film    { prompt, aspect?, model?, from?, frame? }  commission a clip; `from` is
+ *                                           an earlier job id and carries its characters,
+ *                                           setting, camera and seed across
  *   job     { id }                          how a picture or clip is getting on
  *   mailbag { limit? }                      the questions people have asked
  *   models                                  the video models on offer
@@ -22,6 +24,7 @@
  */
 import { db } from 'hatchable';
 import { checkToken } from '../lib/tokens.js';
+import { readSheet, extendSheet, composePrompt, describeSheet, seedFor } from '../lib/continuity.js';
 import { submitVideo, pollVideo, VIDEO_MODELS } from '../lib/videogen.js';
 import { generateImage } from '../lib/imagegen.js';
 import { liveWorkers } from '../lib/colab.js';
@@ -157,37 +160,66 @@ export default async function (req, res) {
         const out = await generateImage(prompt);
         if (out.error) return res.status(503).json({ error: out.error });
         if (out.id) return res.json({ id: out.id, status: 'queued', kind: 'image' });
-        return res.json({ status: 'ready', url: out.url, provider: out.provider, prompt: out.prompt });
+        return res.json({ status: 'ready', url: out.url, provider: out.provider,
+          hardware: out.hardware || null, prompt: out.prompt });
       }
 
       case 'film': {
         const prompt = String(body.prompt || '').trim();
         if (prompt.length < 3) return res.status(400).json({ error: 'Say what the clip should show.' });
-        const job = await submitVideo(prompt, {
+        /* A clip may be grown out of an earlier one: same characters, same
+           place, same camera, same seed. Mirrors /api/video exactly. */
+        const fromId = Number(body.from || 0) || null;
+        let parent = null;
+        if (fromId) {
+          const { rows: pr } = await db.query(
+            'SELECT id, prompt, sheet, seed, url, kind FROM videos WHERE id = $1', [fromId]);
+          parent = pr[0] || null;
+        }
+        let sheet;
+        try {
+          sheet = parent
+            ? extendSheet(parent.sheet ? JSON.parse(parent.sheet) : readSheet(parent.prompt), prompt)
+            : readSheet(prompt);
+        } catch { sheet = readSheet(prompt); }
+        const sent = parent ? composePrompt(sheet, prompt, { continuesFrom: true }) : prompt;
+        const seed = seedFor(sheet, parent ? parent.seed : body.seed);
+        const initUrl = String(body.frame || (parent && parent.kind === 'image' ? parent.url : '') || '') || null;
+
+        const job = await submitVideo(sent, {
           aspect: body.aspect === '9:16' ? '9:16' : '16:9',
-          model: body.model
+          model: body.model,
+          seed,
+          initUrl
         });
         if (job.error) return res.status(503).json({ error: job.error });
         const { rows } = await db.query(
-          `INSERT INTO videos (prompt, provider, model, request_id, status_url, response_url, status, asker_name)
-           VALUES ($1, $2, $3, $4, $5, $6, 'queued', $7) RETURNING id`,
-          [prompt, job.provider, job.model, job.requestId, job.statusUrl, job.responseUrl,
-           'token:' + door.name]
+          `INSERT INTO videos (prompt, provider, model, request_id, status_url, response_url, status,
+                               asker_name, sheet, parent_id, seed, init_url, hardware, progress)
+           VALUES ($1, $2, $3, $4, $5, $6, 'queued', $7, $8, $9, $10, $11, $12, 1) RETURNING id`,
+          [sent, job.provider, job.model, job.requestId, job.statusUrl, job.responseUrl,
+           'token:' + door.name, JSON.stringify(sheet), parent ? parent.id : null, seed,
+           initUrl, job.hardware || null]
         );
-        return res.json({ id: rows[0].id, status: 'queued', model: job.model });
+        return res.json({ id: rows[0].id, status: 'queued', model: job.model,
+          hardware: job.hardware || null, seed, sheet, carried: describeSheet(sheet), prompt: sent });
       }
 
       case 'job': {
         const id = Number(body.id || 0);
         if (!id) return res.status(400).json({ error: 'Which job?' });
         const { rows } = await db.query(
-          'SELECT id, prompt, provider, model, request_id, status_url, response_url, status, url, error, kind FROM videos WHERE id = $1',
+          `SELECT id, prompt, provider, model, request_id, status_url, response_url, status, url,
+                  error, kind, progress, hardware, seed, parent_id, created_at
+             FROM videos WHERE id = $1`,
           [id]
         );
         const row = rows[0];
         if (!row) return res.status(404).json({ error: 'No such job.' });
         if (row.status === 'ready' || row.status === 'failed') {
-          return res.json({ id, status: row.status, url: row.url, error: row.error, kind: row.kind, prompt: row.prompt });
+          return res.json({ id, status: row.status, url: row.url, error: row.error, kind: row.kind,
+            prompt: row.prompt, progress: row.status === 'ready' ? 100 : (row.progress || 0),
+            hardware: row.hardware || null });
         }
         const out = await pollVideo(row);
         if (out.status === 'ready') {
@@ -197,7 +229,15 @@ export default async function (req, res) {
           await db.query('UPDATE videos SET status = $1, error = $2, updated_at = NOW() WHERE id = $3',
             ['failed', out.error || 'failed', id]);
         }
-        return res.json({ id, status: out.status, url: out.url, error: out.error, kind: row.kind, prompt: row.prompt });
+        const pct = out.status === 'ready' ? 100
+          : Math.max(Number(row.progress) || 0, Number(out.progress) || 0);
+        if (out.status === 'running') {
+          await db.query('UPDATE videos SET progress = $2, hardware = COALESCE($3, hardware) WHERE id = $1',
+            [id, pct, out.hardware || null]);
+        }
+        return res.json({ id, status: out.status, url: out.url, error: out.error, kind: row.kind,
+          prompt: row.prompt, progress: pct, measured: Boolean(out.measured),
+          stage: out.stage || null, hardware: out.hardware || row.hardware || null, seed: row.seed });
       }
 
       case 'mailbag': {

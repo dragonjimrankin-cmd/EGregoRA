@@ -1,8 +1,8 @@
 {
-  "note": "v79 — does Gink know where he comes from?",
+  "note": "v82 — progress, hardware and continuity.",
   "calls": [
-    { "action": "ask", "question": "Where do you come from?" },
-    { "action": "ask", "question": "Be yourself again." },
-    { "action": "ask", "question": "Gink, what is the skull on Ed's desk?" }
+    { "action": "draw", "prompt": "A red fox with a torn left ear standing in frosted bracken, ancient stone circle behind it, low winter sun, 35mm film grain, shallow depth of field" },
+    { "action": "film", "prompt": "the fox turns and walks towards the stones" },
+    { "action": "status" }
   ]
 }
