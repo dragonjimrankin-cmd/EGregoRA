@@ -1266,3 +1266,22 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   margin-top: .5rem; max-width: 14rem;
   font-family: 'Cinzel', serif; letter-spacing: .3em; text-transform: uppercase;
 }
+
+/* --------------------------------- the familiar, with the ask box beside him */
+.fox-panel--ask {
+  grid-template-columns: minmax(230px, 0.85fr) minmax(0, 2fr);
+  align-items: start;
+  gap: 1.6rem;
+  margin: 1.4rem 0 0.6rem;
+}
+.fox-panel--ask .fox-column { position: sticky; top: 1.2rem; }
+.fox-panel--ask .fox-stage { aspect-ratio: 4 / 5; }
+.fox-panel--ask .fox-side { margin-top: 0.9rem; }
+.fox-panel--ask .fox-name { font-size: 1rem; }
+.fox-ask > .oracle-form { margin: 0; }
+.fox-ask .oracle-form textarea { min-height: 7.5rem; }
+@media (max-width: 900px) {
+  .fox-panel--ask { grid-template-columns: 1fr; }
+  .fox-panel--ask .fox-column { position: static; display: grid; gap: 1rem; }
+  .fox-panel--ask .fox-stage { max-width: 260px; margin: 0 auto; }
+}

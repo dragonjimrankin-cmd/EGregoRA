@@ -212,6 +212,20 @@ export default async function (req, res) {
   const body = req.body || {};
   /* Drawing and filming are members-only and age-checked; conversation is not. */
   const studio = await requireStudio(req);
+
+  /* A member who has passed the age check is spoken to as an adult: no
+     juvenile hedging, no refusing to discuss drugs, death, sexuality, war
+     or anything else grown people discuss. It does not change what the
+     generators will make — that is set by the models and the house rules,
+     not by who is asking. */
+  const ADULT_NOTE = `
+
+THE PERSON YOU ARE TALKING TO
+- This asker is a signed-in member who has proved they are over eighteen. Treat them as an adult: discuss
+  drugs, death, sex as a subject, war, atrocity, madness and despair plainly and without disclaimers
+  nobody asked for, and without steering them towards a gentler question.
+- Being an adult changes the register, not the facts, and not what you will draw or film. The limits in
+  DRAWING and FILMING stand exactly as written.`;
   const question = String(body.question || '').trim();
   const limb = String(body.limb || '').trim().slice(0, 80);
   const name = String(body.name || '').trim().slice(0, 80);
@@ -486,7 +500,7 @@ export default async function (req, res) {
           model anyone can download, and this route needs no key at all. */
   try {
     const open = await openChat({
-      system: SYSTEM,
+      system: SYSTEM + (studio.ok ? ADULT_NOTE : ''),
       messages,
       tools,
       temperature: 0.72,
@@ -506,7 +520,7 @@ export default async function (req, res) {
   if (!answer) {
     try {
       const oa = await openaiChat({
-        system: SYSTEM,
+        system: SYSTEM + (studio.ok ? ADULT_NOTE : ''),
         messages,
         tools,
         temperature: 0.72,
@@ -527,7 +541,7 @@ export default async function (req, res) {
       try {
         const result = await ai.generateText(Object.assign({
           model,
-          system: SYSTEM,
+          system: SYSTEM + (studio.ok ? ADULT_NOTE : ''),
           messages,
           maxTokens: 1200,
           temperature: 0.72,

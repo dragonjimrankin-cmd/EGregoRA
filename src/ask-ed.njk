@@ -15,21 +15,6 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
   <div class="frame">
     <p class="kicker">The Oracle</p>
 
-    <div class="fox-panel">
-      <div class="fox-stage" id="fox-stage" role="img"
-           aria-label="A three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
-      <div class="fox-side">
-        <h3 class="fox-name">The Familiar</h3>
-        <p class="muted small">A fox keeps the order's answers. Ask below and he will read the reply aloud in
-        his own voice; the words are the order's written ones, unchanged.</p>
-        <p class="fox-controls">
-          <button class="btn btn--ghost" type="button" id="fox-speak">Speak</button>
-          <button class="btn btn--ghost" type="button" id="fox-stop">Silence him</button>
-        </p>
-        <p class="muted xsmall" id="fox-status">Waking the familiar…</p>
-      </div>
-    </div>
-
     <h2>Ask now — and keep asking</h2>
     <p class="muted small">This is a conversation, not a search box. The oracle holds the thread, so you can
     follow up, push back, ask what it meant, or say "go on". It answers from a body of 1,280 written answers
@@ -80,75 +65,94 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       </div>
     </div>
 
+    <div class="fox-panel fox-panel--ask">
+      <div class="fox-column">
+      <div class="fox-stage" id="fox-stage" role="img"
+           aria-label="A three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
+      <div class="fox-side">
+        <h3 class="fox-name">The Familiar</h3>
+        <p class="muted small">A fox keeps the order's answers. Ask him here and he will read the reply
+        aloud in his own voice; the words are the order's written ones, unchanged.</p>
+        <p class="fox-controls">
+          <button class="btn btn--ghost" type="button" id="fox-speak">Speak</button>
+          <button class="btn btn--ghost" type="button" id="fox-stop">Silence him</button>
+        </p>
+        <p class="muted xsmall" id="fox-status">Waking the familiar…</p>
+      </div>
+      </div>
+
+      <div class="fox-ask">
     <form class="ornate oracle-form" id="oracle-form">
-      <div>
-        <label for="o-question">Your question</label>
-        <textarea id="o-question" name="question" required maxlength="2000" rows="3"
-          placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
-      </div>
-
-      <details class="oracle-opts">
-        <summary>Name and limb (optional)</summary>
-        <div class="grid two" style="gap:1rem">
           <div>
-            <label for="o-name">Name</label>
-            <input id="o-name" name="name" type="text" maxlength="80" placeholder="Rowan of the North">
+            <label for="o-question">Your question</label>
+            <textarea id="o-question" name="question" required maxlength="2000" rows="3"
+              placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
           </div>
-          <div>
-            <label for="o-limb">Limb</label>
-            <select id="o-limb" name="limb">
-              <option value="">Let the order decide</option>
-              <option>Cosmic physics &amp; astronomy</option>
-              <option>Druidry, trees &amp; nature</option>
-              <option>Sacred geometry</option>
-              <option>Astrology</option>
-              <option>Neuroscience &amp; psychology</option>
-              <option>Biology &amp; life</option>
-              <option>God, the Law of One &amp; contact</option>
-              <option>Magic &amp; the wizard's craft</option>
-              <option>The Shadow Cabinet</option>
-              <option>Alchemy &amp; the elemental forces</option>
-              <option>Consciousness</option>
-            </select>
+
+          <details class="oracle-opts">
+            <summary>Name and limb (optional)</summary>
+            <div class="grid two" style="gap:1rem">
+              <div>
+                <label for="o-name">Name</label>
+                <input id="o-name" name="name" type="text" maxlength="80" placeholder="Rowan of the North">
+              </div>
+              <div>
+                <label for="o-limb">Limb</label>
+                <select id="o-limb" name="limb">
+                  <option value="">Let the order decide</option>
+                  <option>Cosmic physics &amp; astronomy</option>
+                  <option>Druidry, trees &amp; nature</option>
+                  <option>Sacred geometry</option>
+                  <option>Astrology</option>
+                  <option>Neuroscience &amp; psychology</option>
+                  <option>Biology &amp; life</option>
+                  <option>God, the Law of One &amp; contact</option>
+                  <option>Magic &amp; the wizard's craft</option>
+                  <option>The Shadow Cabinet</option>
+                  <option>Alchemy &amp; the elemental forces</option>
+                  <option>Consciousness</option>
+                </select>
+              </div>
+            </div>
+          </details>
+
+          <div class="oracle-files">
+            <label class="btn btn--ghost file-btn">
+              <span aria-hidden="true">⌁</span> Attach a file
+              <input id="o-files" type="file" multiple
+                     accept=".txt,.md,.markdown,.csv,.tsv,.json,.yaml,.yml,.xml,.html,.htm,.log,.srt,.vtt,.tex,.ini,.toml,.js,.py,.sql,.sh,.png,.jpg,.jpeg,.gif,.webp,text/*,image/*">
+            </label>
+            <ul class="file-list" id="o-file-list" aria-live="polite"></ul>
+            <p class="muted xsmall">Notes, transcripts, data, a chapter, a photograph — up to 4&nbsp;MB each.
+            Text is read and can be quoted, searched and argued with; images are kept as references. Export a
+            PDF to text first. Anything you attach becomes part of this conversation and is stored with it, so
+            do not send anything confidential.</p>
           </div>
-        </div>
-      </details>
 
-      <div class="oracle-files">
-        <label class="btn btn--ghost file-btn">
-          <span aria-hidden="true">⌁</span> Attach a file
-          <input id="o-files" type="file" multiple
-                 accept=".txt,.md,.markdown,.csv,.tsv,.json,.yaml,.yml,.xml,.html,.htm,.log,.srt,.vtt,.tex,.ini,.toml,.js,.py,.sql,.sh,.png,.jpg,.jpeg,.gif,.webp,text/*,image/*">
-        </label>
-        <ul class="file-list" id="o-file-list" aria-live="polite"></ul>
-        <p class="muted xsmall">Notes, transcripts, data, a chapter, a photograph — up to 4&nbsp;MB each.
-        Text is read and can be quoted, searched and argued with; images are kept as references. Export a
-        PDF to text first. Anything you attach becomes part of this conversation and is stored with it, so
-        do not send anything confidential.</p>
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>
+            <button class="btn btn--mic" type="button" id="o-mic" hidden
+                    aria-describedby="o-mic-hint">
+              <span class="mic-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="2" width="6" height="12" rx="3"/>
+                  <path d="M5 11a7 7 0 0 0 14 0"/>
+                  <path d="M12 18v4M8.5 22h7"/>
+                </svg>
+              </span>
+              <span class="mic-label">Hold to speak</span>
+              <span class="mic-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            </button>
+            <button class="btn btn--ghost" type="button" id="o-reset" hidden>Begin again</button>
+          </div>
+          <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
+          question out loud, then let go — the words are transcribed into the box above and sent to the order.
+          Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
+          thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
+        </form>
       </div>
-
-      <div class="ask-actions">
-        <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>
-        <button class="btn btn--mic" type="button" id="o-mic" hidden
-                aria-describedby="o-mic-hint">
-          <span class="mic-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                 stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="2" width="6" height="12" rx="3"/>
-              <path d="M5 11a7 7 0 0 0 14 0"/>
-              <path d="M12 18v4M8.5 22h7"/>
-            </svg>
-          </span>
-          <span class="mic-label">Hold to speak</span>
-          <span class="mic-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-        </button>
-        <button class="btn btn--ghost" type="button" id="o-reset" hidden>Begin again</button>
-      </div>
-      <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
-      question out loud, then let go — the words are transcribed into the box above and sent to the order.
-      Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
-      thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
-    </form>
+    </div>
 
     <div class="draw-box reveal" id="draw-box">
       <p class="kicker">ASK THE FOX TO DRAW</p>
