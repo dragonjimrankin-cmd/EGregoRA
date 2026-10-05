@@ -15,12 +15,60 @@
     });
   }
 
-  /* --- Scroll reveals --- */
-  const io = new IntersectionObserver(
-    (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("in")),
-    { threshold: 0.12 }
-  );
-  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  /* --- Scroll reveals ---
+   *
+   * Everything marked .reveal starts at opacity 0 and is faded in when it
+   * comes into view. That is a decoration, and a decoration must never be
+   * the reason a visitor cannot read the page, so this is deliberately
+   * paranoid:
+   *
+   *   - the threshold is 0, not a fraction. A fractional threshold is the
+   *     classic phone bug: the Ask Ed panel is several thousand pixels tall
+   *     on a narrow screen, 12% of it is taller than the whole viewport, so
+   *     it could never satisfy the observer and simply stayed invisible.
+   *   - anything already on screen at load, or scrolled past, is shown at
+   *     once rather than waiting for a scroll that may never come.
+   *   - if there is no IntersectionObserver, or the observer has not fired
+   *     within a couple of seconds, everything is revealed outright.
+   */
+  const reveals = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+  const show = (el) => el.classList.add("in");
+
+  /* The fade only exists once this script is running. Without the class the
+     stylesheet leaves every panel visible, so a script that fails to load,
+     is blocked, or throws can never hide the page. */
+  document.documentElement.classList.add("js-reveals");
+
+  if (!("IntersectionObserver" in window)) {
+    reveals.forEach(show);
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting || e.intersectionRatio > 0) { show(e.target); io.unobserve(e.target); }
+      }),
+      { threshold: 0, rootMargin: "120px 0px 120px 0px" }
+    );
+    reveals.forEach((el) => io.observe(el));
+
+    /* Belt and braces: anything whose top is already above the fold. */
+    const sweep = () => {
+      const h = window.innerHeight || document.documentElement.clientHeight;
+      reveals.forEach((el) => {
+        if (el.classList.contains("in")) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < h + 120 && r.bottom > -120) show(el);
+      });
+    };
+    sweep();
+    window.addEventListener("load", sweep, { once: true });
+    setTimeout(sweep, 400);
+    /* If nothing at all has been revealed after a few seconds the observer
+       is not working on this device. Show everything rather than leave the
+       visitor with a blank page. */
+    setTimeout(() => {
+      if (!reveals.some((el) => el.classList.contains("in"))) reveals.forEach(show);
+    }, 3000);
+  }
 
   /* --- Starfield + slow nebula drift --- */
   const cv = document.getElementById("starfield");

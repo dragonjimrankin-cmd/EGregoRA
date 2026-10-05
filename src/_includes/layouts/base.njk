@@ -143,6 +143,12 @@
 {{ { "@context": "https://schema.org", "@type": "FAQPage", "@id": pageUrl + "#faq", "mainEntity": faq } | dump | safe }}
 </script>
 {%- endif %}
+  <script>
+    /* The scroll-reveal fade is armed here, before the first paint, so the
+       page never flashes its panels in and then hides them. If scripting is
+       off or blocked this line never runs and every panel stays visible. */
+    document.documentElement.classList.add('js-reveals');
+  </script>
 </head>
 <body data-page="{{ page.fileSlug or 'home' }}">
 <canvas id="starfield" aria-hidden="true"></canvas>

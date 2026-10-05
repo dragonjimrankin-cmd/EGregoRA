@@ -335,10 +335,13 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 .caution strong { color: var(--rose); }
 
 /* ---------- Reveal animation -------------------------------------------- */
-.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.9s ease, transform 0.9s ease; }
-.reveal.in { opacity: 1; transform: none; }
+/* Panels are visible by default and only hidden once site.js has announced
+   itself with .js-reveals on <html>. A decoration must never be able to
+   swallow the page when a script is blocked or an observer misbehaves. */
+.js-reveals .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.9s ease, transform 0.9s ease; }
+.js-reveals .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .js-reveals .reveal, .reveal { opacity: 1; transform: none; transition: none; }
   * { animation-duration: 0.001ms !important; }
 }
 
@@ -1515,3 +1518,61 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   letter-spacing: 0.1em;
 }
 img.shot-thumb { object-fit: cover; }
+
+/* ======================================================================
+   The Ask Ed page on a phone
+   ----------------------------------------------------------------------
+   Everything on this page exists at every width — the familiar, the ask
+   box, the thread, the three studios and the cutting room. What follows
+   only changes how they are stacked and spaced, so a narrow screen gets
+   the whole page rather than a squeezed version of a wide one.
+   ====================================================================== */
+@media (max-width: 640px) {
+  /* Deep padding is a luxury of a wide screen; on a phone it eats the
+     line length the text needs. */
+  .oracle-wrap .frame { padding: 1.1rem 0.85rem; }
+  .oracle-wrap { padding-left: 0.7rem; padding-right: 0.7rem; }
+  .oracle-wrap .draw-box { padding: 1rem 0.85rem; }
+
+  /* Nothing on this page may push the page sideways. */
+  .oracle-wrap, .oracle-wrap * { min-width: 0; }
+  .oracle-chat, .draw-box, .fox-panel--ask, .oracle-thread { max-width: 100%; }
+
+  /* Controls want the full width of the screen and a tappable height. */
+  .film-row { gap: 0.7rem; }
+  .film-row > div { flex: 1 1 100%; min-width: 0; }
+  .film-row select, .film-row input { width: 100%; min-width: 0; }
+  .oracle-form select, .oracle-form input[type="text"], .draw-form textarea,
+  .film-form textarea, #o-question { width: 100%; }
+  .ask-actions { gap: 0.6rem; }
+  .ask-actions .btn { flex: 1 1 auto; min-height: 2.9rem; justify-content: center; }
+  .chip { font-size: 0.82rem; padding: 0.5em 0.8em; }
+
+  /* The conversation: full-width bubbles, and a thread tall enough to
+     read in without being so tall the page below it disappears. */
+  .oracle-wrap .oracle-msg, body.oracle-tall .oracle-msg { max-width: 100%; }
+  body.oracle-tall .oracle-thread { min-height: 70vh; max-height: 78vh; }
+  .oracle-bar { gap: 0.5rem; }
+  .oracle-bar .btn { align-self: flex-start; }
+
+  /* Gink, and the writing that belongs above him. */
+  .fox-panel--ask { padding: 0.8rem 0.7rem; gap: 1rem; }
+  .fox-panel--ask .fox-stage { max-width: 230px; }
+  .fox-controls .btn { flex: 1 1 auto; justify-content: center; }
+
+  /* The cutting room: a thumbnail beside a row of controls does not fit
+     across a phone, so the shot stacks. */
+  .shot { flex-direction: column; gap: 0.6rem; }
+  .shot-thumb { width: 100%; height: 150px; }
+  .shot-name { white-space: normal; }
+
+  /* Generated pictures and clips are the point of the page — give them
+     the whole width. */
+  .draw-out, .montage-out { margin-left: -0.2rem; margin-right: -0.2rem; }
+}
+
+@media (max-width: 420px) {
+  .oracle-wrap .frame { padding: 0.9rem 0.65rem; }
+  .fox-panel--ask .fox-stage { max-width: 200px; }
+  .oracle-greet--lede .oracle-text p { font-size: 0.95rem; }
+}
