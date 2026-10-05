@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Occult · EGregoRA</title>
+<meta name="description" content="What the occult actually is, where it came from, and how EGregoRA treats it — a dated history from Hermetic Egypt to the present, with the evidence kept separate from the practice.">
+<meta property="og:title" content="The Occult · EGregoRA">
+<meta property="og:description" content="What the occult actually is, where it came from, and how EGregoRA treats it — a dated history from Hermetic Egypt to the present, with the evidence kept separate from the practice.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/img/sigil.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body data-page="occult">
+<canvas id="starfield" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+
+
+
+<div class="geo" aria-hidden="true">
+
+  
+  <svg class="geo-layer geo-1" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.35">
+      <circle cx="100" cy="100" r="98"/>
+      <circle cx="100" cy="100" r="78"/>
+      <circle cx="100" cy="100" r="46"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(0 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(15 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(30 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(45 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(60 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(75 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(90 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(105 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(120 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(135 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(150 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(165 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(180 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(195 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(210 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(225 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(240 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(255 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(270 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(285 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(300 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(315 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(330 100 100)" opacity="0.5"/>
+      
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate(345 100 100)" opacity="0.5"/>
+      
+      <polygon points="100,12 176,56 176,144 100,188 24,144 24,56"/>
+      <polygon points="100,22 168,61 168,139 100,178 32,139 32,61" opacity="0.6"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-2" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.4">
+      <circle cx="100" cy="100" r="40"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(0 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(60 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(120 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(180 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(240 100 100)"/>
+      
+      <circle cx="100" cy="60" r="40" transform="rotate(300 100 100)"/>
+      
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(0 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(30 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(60 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(90 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(120 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(150 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(180 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(210 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(240 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(270 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(300 100 100)" opacity="0.35"/>
+      
+      <circle cx="100" cy="30" r="40" transform="rotate(330 100 100)" opacity="0.35"/>
+      
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-3" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.45">
+      
+      <circle cx="100" cy="100" r="78" opacity="0.6"/>
+      <circle cx="100" cy="100" r="54" opacity="0.5"/>
+      
+      <circle cx="100" cy="46" r="7" transform="rotate(0 100 100)" opacity="0.7"/>
+      <line x1="100" y1="100" x2="100" y2="22" transform="rotate(0 100 100)" opacity="0.3"/>
+      
+      <circle cx="100" cy="46" r="7" transform="rotate(51.4 100 100)" opacity="0.7"/>
+      <line x1="100" y1="100" x2="100" y2="22" transform="rotate(51.4 100 100)" opacity="0.3"/>
+      
+      <circle cx="100" cy="46" r="7" transform="rotate(102.8 100 100)" opacity="0.7"/>
+      <line x1="100" y1="100" x2="100" y2="22" transform="rotate(102.8 100 100)" opacity="0.3"/>
+      
+      <circle cx="100" cy="46" r="7" transform="rotate(154.2 100 100)" opacity="0.7"/>
+      <line x1="100" y1="100" x2="100" y2="22" transform="rotate(154.2 100 100)" opacity="0.3"/>
+      
+      <circle cx="100" cy="46" r="7" transform="rotate(205.6 100 100)" opacity="0.7"/>
+      <line x1="100" y1="100" x2="100" y2="22" transform="rotate(205.6 100 100)" opacity="0.3"/>
+      
+      <circle cx="100" cy="46" r="7" transform="rotate(257 100 100)" opacity="0.7"/>
+      <line x1="100" y1="100" x2="100" y2="22" transform="rotate(257 100 100)" opacity="0.3"/>
+      
+      <circle cx="100" cy="46" r="7" transform="rotate(308.4 100 100)" opacity="0.7"/>
+      <line x1="100" y1="100" x2="100" y2="22" transform="rotate(308.4 100 100)" opacity="0.3"/>
+      
+      <path d="M100 62 L132 118 L68 118 Z" opacity="0.7"/>
+      <circle cx="100" cy="100" r="14" opacity="0.8"/>
+      
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-4" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="20"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(0 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(0 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(60 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(60 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(120 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(120 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(180 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(180 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(240 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(240 100 100)" opacity="0.7"/>
+      
+      <circle cx="100" cy="60" r="20" transform="rotate(300 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate(300 100 100)" opacity="0.7"/>
+      
+      <path d="M100 20 L169 60 L169 140 L100 180 L31 140 L31 60 Z"/>
+      <path d="M100 20 L100 180 M31 60 L169 140 M169 60 L31 140 M31 60 L169 60 M31 140 L169 140"/>
+      <path d="M100 20 L31 140 M100 20 L169 140 M100 180 L31 60 M100 180 L169 60" opacity="0.55"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-5" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.55">
+      <circle cx="100" cy="100" r="92"/>
+      <circle cx="100" cy="100" r="74"/>
+      <polygon points="100,12 173,159 11,67 189,67 27,159"/>
+      <polygon points="100,26 170,77 143,159 57,159 30,77" opacity="0.45"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-6" viewBox="0 0 320 120">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      
+      <circle cx="20" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="56" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="92" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="128" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="164" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="200" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="236" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="272" cy="60" r="36" opacity="0.7"/>
+      
+      <circle cx="308" cy="60" r="36" opacity="0.7"/>
+      
+      <line x1="0" y1="60" x2="320" y2="60" opacity="0.4"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-7" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <path d="M100 100 m0 0 a5 5 0 1 1 5 -5 a13 13 0 1 1 -18 13 a34 34 0 1 1 47 -34 a55 55 0 1 1 -76 55 a89 89 0 1 1 123 -89"/>
+      <rect x="11" y="11" width="178" height="110"/>
+      <rect x="79" y="11" width="110" height="110" opacity="0.6"/>
+      <rect x="79" y="11" width="68" height="68" opacity="0.45"/>
+    </g>
+  </svg>
+
+  
+  <svg class="geo-layer geo-8" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="88"/>
+      
+      <polygon points="100,20 180,150 20,150"/>
+      <polygon points="100,180 180,50 20,50" opacity="0.7"/>
+      
+      <polygon points="100,32 166,142 34,142"/>
+      <polygon points="100,168 166,58 34,58" opacity="0.7"/>
+      
+      <polygon points="100,44 152,134 48,134"/>
+      <polygon points="100,156 152,66 48,66" opacity="0.7"/>
+      
+      <polygon points="100,56 138,126 62,126"/>
+      <polygon points="100,144 138,74 62,74" opacity="0.7"/>
+      
+    </g>
+  </svg>
+
+</div>
+
+
+<a class="skip" href="#main">Skip to the work</a>
+
+<header class="site-head">
+  <div class="rule rule--top" aria-hidden="true"></div>
+  <div class="brand-row">
+    <a class="brand" href="/">
+      <span class="brand-sigil"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,29 M50,92 86,29"/></g></svg></span>
+      <span class="brand-text">
+        <span class="brand-name">EGregoRA</span>
+        <span class="brand-tag">Life, Love, Magic</span>
+      </span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+      <span></span><span></span><span></span>
+      <em>Menu</em>
+    </button>
+  </div>
+  <nav id="primary-nav" class="site-nav" aria-label="Primary">
+    <ul>
+      
+      <li>
+        <a href="/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></i>
+          <span>Introduction</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/podcast/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Podcasts</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/videos/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></i>
+          <span>Videos</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/ask-ed/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Ask Ed</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/infographics/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,29 M50,92 86,29"/></g></svg></i>
+          <span>Infographics</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/cosmic-ether/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Cosmic Ether</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/druids/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M50 95 V52"/><path d="M50 62 L32 46 M50 62 L68 46 M50 48 L38 34 M50 48 L62 34 M50 38 L44 28 M50 38 L56 28"/><circle cx="50" cy="30" r="26" stroke-dasharray="3 4"/><path d="M34 95 Q50 86 66 95" /></g></svg></i>
+          <span>Druids</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/sacred-geometry/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></i>
+          <span>Sacred Geometry</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/astrology/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Astrology</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/artwork/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></i>
+          <span>Artwork</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/neurobiology/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Neurobiology</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/consciousness/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,29 M50,92 86,29"/></g></svg></i>
+          <span>Consciousness</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/extraterrestrials/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></i>
+          <span>Extraterrestrials</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/music/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Sound &amp; Music</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/wizardry/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
+          <span>Wizardry</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/runes/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M50 95 V52"/><path d="M50 62 L32 46 M50 62 L68 46 M50 48 L38 34 M50 48 L62 34 M50 38 L44 28 M50 38 L56 28"/><circle cx="50" cy="30" r="26" stroke-dasharray="3 4"/><path d="M34 95 Q50 86 66 95" /></g></svg></i>
+          <span>Runes &amp; Charms</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/occult/" aria-current="page">
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></i>
+          <span>The Occult</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/elemental-alchemy/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/></g></svg></i>
+          <span>Elemental Alchemy</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/products/" >
+          <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></i>
+          <span>Products</span>
+        </a>
+      </li>
+      
+    </ul>
+  </nav>
+  <div class="rule rule--bottom" aria-hidden="true"></div>
+</header>
+
+
+<main id="main">
+  
+<section class="page-head">
+  <p class="kicker">Limb IX · i — Magic &amp; the Wizard's Craft</p>
+  <h1>The Occult</h1>
+  <p class="lede muted">A word that means <em>hidden</em>, and almost nothing else. Not a religion, not a
+  single tradition, not a secret handed down intact from Egypt. A long, documented, frequently reinvented
+  European habit of treating the world as legible — of assuming that what is concealed can be read by
+  someone who learns the grammar. This page gives the history with its real dates, the practices with their
+  real mechanisms, and our stance stated plainly at the end.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p><em>Occultus</em> is the past participle of <em>occulere</em>, to cover over. In Latin astronomy an
+    occultation is simply one body passing in front of another — the Moon occults a star. The word carried no
+    glamour at all until the nineteenth century, when Éliphas Lévi and then the Theosophists made
+    <em>l'occultisme</em> the name of a movement. ◆ Established. Everything older than about 1850 that we now
+    file under "the occult" was called something else at the time: natural magic, the art, physic, astrology,
+    philosophy.</p>
+
+    <p>That matters more than it sounds. The category is modern even where its contents are ancient, and the
+    modern category was assembled by people with motives — to unify, to sell, to claim descent, to resist a
+    mechanical universe that seemed to have no room left for meaning. When an order tells you its lineage runs
+    unbroken to the temple at Memphis, the honest response is not mockery. It is to ask for the manuscript,
+    and to notice who benefits from the claim.</p>
+
+    <p>Our working definition, used throughout this page: <strong>the occult is the body of practices and
+    doctrines that treat the hidden structure of the world as something a trained person can read and act
+    upon.</strong> Correspondence, symbol, ritual, name, number, hour. It overlaps with religion but is not
+    it; it overlaps with early science and for two centuries <em>was</em> it; and it survives today in forms
+    that range from careful contemplative work to outright fraud. We keep all three columns open —
+    established, contested, ours — and never let the third be dressed as the first.</p>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<!-- ==================== PLATE I — THE FOUR STRANDS ======================= -->
+<section class="wrap narrow reveal">
+  <figure class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The Four Strands
+      <span class="hist">◆</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 620 330" role="img" aria-label="Four historical strands — Hermetic philosophy, astrology, alchemy and ritual magic — braiding into modern occultism">
+        <g font-family="Cinzel, serif" font-size="10" letter-spacing="2" fill="#cdbb95">
+          <text x="18" y="40">HERMETIC PHILOSOPHY</text>
+          <text x="18" y="112">ASTROLOGY</text>
+          <text x="18" y="184">ALCHEMY</text>
+          <text x="18" y="256">RITUAL MAGIC</text>
+          <text x="470" y="152" fill="#d7b05a">OCCULTISM</text>
+          <text x="470" y="170" fill="#8e8468">from c. 1850</text>
+        </g>
+        <g fill="none" stroke="#d7b05a" stroke-width="1.3" opacity="0.85">
+          <path d="M210 32 C320 32 360 110 452 144"/>
+          <path d="M150 104 C300 104 350 126 452 150"/>
+          <path d="M140 176 C300 176 350 166 452 156"/>
+          <path d="M170 248 C320 248 360 194 452 162"/>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="10.5" fill="#9f947a">
+          <text x="18" y="58">Greek Egypt, c. 100–300 CE · "as above, so below"</text>
+          <text x="18" y="130">Babylon → Hellenistic Greece → Baghdad → Latin Europe</text>
+          <text x="18" y="202">Jābir, al-Rāzī, then the Latin corpus from 1144</text>
+          <text x="18" y="274">grimoires, c. 1200 onwards · Solomonic, Picatrix, Faustian</text>
+        </g>
+        <circle cx="462" cy="152" r="44" fill="none" stroke="#d7b05a" stroke-width="1" stroke-dasharray="3 5"/>
+        <g font-family="EB Garamond, serif" font-size="10" fill="#9f947a" text-anchor="middle">
+          <text x="310" y="312">four independent streams · braided late · sold as one ancient rope</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">Each strand has its own documented chronology and its own geography. The braid is
+    Victorian. Nothing here is diminished by saying so — it is simply dated correctly.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <h3>What the word has meant</h3>
+      <ul class="biblio">
+        <li><strong>Hidden (classical).</strong> A property of things, not of people. Astronomical
+        occultation; "occult qualities" in scholastic physics meant causes you could not see — magnetism was
+        an occult quality until it wasn't. <span class="sci">◆</span></li>
+        <li><strong>Natural magic (1450–1700).</strong> The legitimate study of hidden natural powers.
+        Della Porta's <em>Magia Naturalis</em> contains optics, horticulture and cosmetics alongside
+        sympathies. <span class="hist">◆</span></li>
+        <li><strong>Occultism (1850–).</strong> A self-conscious movement and marketplace: Lévi, Blavatsky,
+        the Golden Dawn, the Theosophical Society. <span class="hist">◆</span></li>
+        <li><strong>The occult (popular, 1920–).</strong> A publishing and then a cinema genre, which is
+        where most people meet the word and why it carries a smell of sulphur it did not earn.
+        <span class="hist">◆</span></li>
+      </ul>
+    </div>
+    <div class="frame reveal">
+      <h3>What it has never meant</h3>
+      <ul class="biblio">
+        <li><strong>A single continuous tradition.</strong> There is no unbroken chain. There are
+        rediscoveries, translations, revivals and inventions, each datable.
+        <span class="sci">◆</span></li>
+        <li><strong>Devil worship.</strong> A charge laid by inquisitors and later by tabloids. The
+        Satanic-ritual-abuse panic of the 1980s produced thousands of accusations and no corroborated case.
+        <span class="sci">◆ Tested, negative</span></li>
+        <li><strong>A rejection of reason.</strong> Newton wrote more on alchemy and prophecy than on
+        optics. Kepler cast horoscopes for a living. The split is later than the work.
+        <span class="hist">◆</span></li>
+        <li><strong>Something only the credulous do.</strong> The membership of the Golden Dawn included a
+        Nobel laureate poet, a professional chemist and a coroner.
+        <span class="hist">◆</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">A HISTORY, WITH DATES</p>
+    <ul class="timeline">
+      <li><span class="when">c. 1800 BCE</span> Babylonian celestial omen tablets — the <em>Enūma Anu
+      Enlil</em> series. Not natal astrology: omens for the king and the state. The sky is already being
+      read as a text.</li>
+      <li><span class="when">c. 400 BCE</span> The zodiac of twelve equal signs appears in Babylon. Horoscopic
+      astrology — a chart for an individual birth — follows in Hellenistic Egypt about two centuries
+      later.</li>
+      <li><span class="when">c. 100–300 CE</span> The Greek <em>Hermetica</em> are written in Roman Egypt:
+      philosophical dialogues attributed to Hermes Trismegistus, blending Platonism, Stoicism and Egyptian
+      temple religion. The Emerald Tablet, source of "as above, so below", is later still — Arabic, by the
+      ninth century.</li>
+      <li><span class="when">c. 800–1000</span> The great period of Arabic alchemy and magic: Jābir ibn
+      Ḥayyān, al-Rāzī's laboratory procedure, the <em>Ghāyat al-Ḥakīm</em> — later Latinised as the
+      <em>Picatrix</em>. Nearly everything medieval Europe later called its own came through this
+      transmission.</li>
+      <li><span class="when">1144</span> Robert of Chester finishes the first Latin translation of an Arabic
+      alchemical text in Spain. The twelfth-century translation movement hands Europe Aristotle, Ptolemy,
+      algebra and alchemy in the same cartload.</li>
+      <li><span class="when">1463</span> Ficino, ordered by Cosimo de' Medici, drops his Plato to translate a
+      newly arrived Greek <em>Hermetica</em> first. Europe reads it as a revelation older than Moses. It is
+      the single most consequential mistranslation of an age in Western esotericism.</li>
+      <li><span class="when">1486</span> Pico della Mirandola's <em>900 Theses</em> introduce Christian
+      Kabbalah. The same year, the <em>Malleus Maleficarum</em> is printed. Learned magic rises and the witch
+      trials begin together — and the people burned were overwhelmingly not practitioners of learned magic
+      but poor women with reputations.</li>
+      <li><span class="when">1533</span> Agrippa's <em>De occulta philosophia</em>, in three books: natural,
+      celestial, ceremonial. Still the architecture of nearly every magical system written since.</li>
+      <li><span class="when">1582–89</span> John Dee and Edward Kelley record the Enochian sessions. Dee was
+      Elizabeth I's astrologer, a serious mathematician and the man who wrote the preface to the first English
+      Euclid. The same mind did both.</li>
+      <li><span class="when">1614</span> Isaac Casaubon dates the <em>Hermetica</em> by their Greek to the
+      Christian era. The claim of Mosaic antiquity collapses. The tradition carries on regardless — which is
+      itself the most interesting fact in this timeline.</li>
+      <li><span class="when">1614–16</span> The Rosicrucian manifestos circulate in Kassel. An invisible
+      college of adepts is announced; no such college is ever found. The fraternity is then founded by people
+      responding to the rumour. A myth creating its own referent — and a pattern you will see again.</li>
+      <li><span class="when">1666–93</span> Newton's alchemical notebooks: over a million words, kept private,
+      suppressed by his heirs, sold at Sotheby's in 1936 and bought largely by Keynes, who called him "the
+      last of the magicians".</li>
+      <li><span class="when">1784</span> The French royal commission on Mesmer — Franklin, Lavoisier, Guillotin
+      — invents the blinded control to test animal magnetism, finds no fluid, and finds that the effects are
+      real and produced by imagination. The first modern test of an occult claim, and the birth of placebo
+      research.</li>
+      <li><span class="when">1856</span> Éliphas Lévi's <em>Dogme et rituel de la haute magie</em>. The word
+      <em>occultisme</em> enters general use; the tarot is wired into the Kabbalah, on no historical warrant
+      whatsoever, and the wiring holds to this day.</li>
+      <li><span class="when">1875–88</span> The Theosophical Society (Blavatsky, Olcott) and then the
+      Hermetic Order of the Golden Dawn (Westcott, Mathers, Woodman). Theosophy imports a garbled India;
+      the Golden Dawn synthesises Agrippa, Kabbalah, Egypt and Freemasonry into the grade system almost every
+      later order copies. Yeats, Maud Gonne and Crowley pass through it.</li>
+      <li><span class="when">1882</span> The Society for Psychical Research is founded by Cambridge
+      philosophers to test the claims honestly. It exposes a long run of fraudulent mediums, including
+      Blavatsky's Mahatma letters in 1885, and it has never stopped being the most useful thing the period
+      produced.</li>
+      <li><span class="when">1904–47</span> Crowley's Thelema; Gurdjieff's Fourth Way; Steiner's
+      Anthroposophy. The movement fragments into schools with named founders, which is what a living
+      tradition looks like when it stops pretending to be ancient.</li>
+      <li><span class="when">1912–45</span> <em>Ariosophy</em> and the <em>völkisch</em> occult in
+      Austria and Germany. List and Lanz von Liebenfels invent a racial prehistory; Himmler builds the
+      SS Ahnenerbe on it. Handled in full below, and handled as what it was.</li>
+      <li><span class="when">1947–54</span> Gerald Gardner publishes; modern Wicca begins. Its claim to be a
+      surviving pagan religion was disproved by Hutton and others in the 1990s. It is roughly as old as the
+      transistor, and that is no argument against anyone's practice — only against the origin story.</li>
+      <li><span class="when">1960s–80s</span> Chaos magic (Spare, then Carroll and Sherwin) strips the
+      lineage out altogether: belief as a tool, results as the only test. The most intellectually honest
+      current in the field, and the one most willing to say it does not know.</li>
+      <li><span class="when">1980–95</span> The Satanic panic. Recovered-memory therapy, daycare trials,
+      no corroborating evidence ever produced, and real lives destroyed. The occult's worst modern moment
+      belongs to its accusers, not its practitioners.</li>
+      <li><span class="when">2000–now</span> Esotericism becomes a university discipline — Amsterdam,
+      Exeter, the EASR — while online practice explodes without any gatekeeping at all. The two have barely
+      met. This page is a small attempt at introducing them.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<!-- ================ PLATE II — THE CORRESPONDENCE ENGINE ================= -->
+<section class="wrap narrow reveal">
+  <figure class="plate plate--grand">
+    <figcaption class="plate-cap"><span class="plate-num">Plate II</span> The Correspondence Engine
+      <span class="hist">◆</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 640 400" role="img" aria-label="A diagram of how a single planet is linked to a metal, a day, a plant, a part of the body and an hour">
+        <circle cx="320" cy="200" r="150" fill="none" stroke="#d7b05a" stroke-width="0.8" opacity="0.4" stroke-dasharray="3 6"/>
+        <circle cx="320" cy="200" r="46" fill="#d7b05a" fill-opacity="0.12" stroke="#d7b05a" stroke-width="1"/>
+        <g font-family="Cinzel, serif" font-size="12" fill="#f3ddaa" text-anchor="middle">
+          <text x="320" y="196">MARS</text>
+          <text x="320" y="214" font-size="9" fill="#9f947a">♂</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="11" fill="#f3ddaa" text-anchor="middle">
+          <text x="320" y="36">iron</text>
+          <text x="536" y="130">Tuesday · dies Martis</text>
+          <text x="520" y="300">nettle · garlic · wormwood</text>
+          <text x="320" y="376">the gall and the blood</text>
+          <text x="120" y="300">red · the hour of Mars</text>
+          <text x="112" y="130">war, surgery, the forge</text>
+        </g>
+        <g fill="none" stroke="#cf7f8d" stroke-width="0.9" opacity="0.75">
+          <path d="M320 154 V50"/><path d="M360 178 L492 122"/><path d="M358 226 L486 286"/>
+          <path d="M320 246 V362"/><path d="M282 226 L158 286"/><path d="M280 178 L150 124"/>
+        </g>
+        <g font-family="Cinzel, serif" font-size="9" letter-spacing="2" fill="#8e8468" text-anchor="middle">
+          <text x="320" y="394">ONE SIGNIFIER · SIX DOMAINS · NO CAUSAL CLAIM REQUIRED</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">This is the core machine of Western occultism and it is worth understanding before
+    judging it. A correspondence table is a <em>mnemonic and associative index</em>: it binds a metal, a day,
+    a herb, a colour, an organ and a mood under one head so that a practitioner can hold a whole domain in
+    mind at once and act coherently within it. Read as a filing system it is elegant and demonstrably useful
+    for memory and for focus. Read as physics — iron <em>because</em> Mars — it has never once survived a
+    test. The order uses the first reading and declines the second.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">WHAT SURVIVES CONTACT WITH EVIDENCE — AND WHAT DOES NOT</p>
+    <div class="grid two">
+      <div>
+        <h3>Survives</h3>
+        <ul class="biblio">
+          <li><span class="sci">◆</span> <strong>Ritual changes the person performing it.</strong> Narrowed
+          attention, expectancy, synchrony, distinctive memory — four measured mechanisms, no unknown forces
+          required.</li>
+          <li><span class="sci">◆</span> <strong>Expectancy has a biochemistry.</strong> The placebo response
+          is partly endogenous opioid; naloxone blocks it. Mesmer's commission found this in 1784 without the
+          vocabulary for it.</li>
+          <li><span class="sci">◆</span> <strong>The art of memory works.</strong> The method of loci,
+          central to Bruno and Camillo, remains the strongest mnemonic technique known. Memory champions still
+          use the Renaissance magician's palace.</li>
+          <li><span class="sci">◆</span> <strong>Alchemy built chemistry.</strong> Distillation, sublimation,
+          the mineral acids, phosphorus, antimony pharmacology. The apparatus is the inheritance.</li>
+          <li><span class="sci">◆</span> <strong>Astrology built astronomy.</strong> Centuries of careful
+          positional data were recorded because somebody was paying for horoscopes.</li>
+          <li><span class="hist">◆</span> <strong>Symbol work reaches what argument does not.</strong>
+          Image, repetition and ceremony move people. This is why liturgy, courtrooms and coronations exist.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Does not survive</h3>
+        <ul class="biblio">
+          <li><span class="sci">◆ Tested, negative</span> <strong>Astrological prediction of
+          personality or events.</strong> Carlson's double-blind test (<em>Nature</em>, 1985) and the
+          subsequent meta-analyses: chance performance.</li>
+          <li><span class="sci">◆ Tested, negative</span> <strong>Transmutation of base metal to gold by
+          chemical means.</strong> Nuclear, not chemical. Achievable in an accelerator at absurd cost.</li>
+          <li><span class="sci">◆ Tested, negative</span> <strong>Physical mediumship.</strong> Ectoplasm,
+          slates, apports, table-tipping — exposed repeatedly, from the Fox sisters' own 1888 confession
+          onwards.</li>
+          <li><span class="sci">◆ Contested</span> <strong>Ganzfeld telepathy.</strong> Small positive
+          meta-analytic effects that do not cleanly replicate under pre-registration. We record it as open and
+          unproven, not as proof.</li>
+          <li><span class="sci">◆ Tested, negative</span> <strong>Dowsing under blinded conditions.</strong>
+          The Kassel trials, 1990: no better than chance, and the dowsers were sincere.</li>
+          <li><span class="sci">◆ Tested, negative</span> <strong>Ancient unbroken lineages.</strong>
+          Hermetic Egypt, Wiccan continuity, Druidic survival. The documents say otherwise.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<!-- ================ PLATE III — THE STOLEN RUNES ========================= -->
+<section class="wrap narrow reveal">
+  <figure class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate III</span> How an Occult Revival Was Turned
+      Into an Atrocity <span class="hist">◆</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 620 300" role="img" aria-label="A chain of steps from romantic nationalism through invented runology to the SS Ahnenerbe">
+        <g fill="none" stroke="#d7b05a" stroke-width="1" opacity="0.8">
+          <path d="M72 120 H130"/><path d="M124 114 L130 120 L124 126"/>
+          <path d="M202 120 H260"/><path d="M254 114 L260 120 L254 126"/>
+          <path d="M332 120 H390"/><path d="M384 114 L390 120 L384 126"/>
+          <path d="M462 120 H518"/><path d="M512 114 L518 120 L512 126"/>
+        </g>
+        <g font-family="Cinzel, serif" font-size="9" letter-spacing="1.6" fill="#cdbb95" text-anchor="middle">
+          <text x="40" y="124">ROMANTIC</text><text x="40" y="138">NATIONALISM</text>
+          <text x="166" y="124">INVENTED</text><text x="166" y="138">RUNOLOGY</text>
+          <text x="296" y="124">RACIAL</text><text x="296" y="138">PREHISTORY</text>
+          <text x="426" y="124">STATE</text><text x="426" y="138">INSTITUTE</text>
+          <text x="566" y="124" fill="#cf6f6f">INDUSTRIAL</text><text x="566" y="138" fill="#cf6f6f">MURDER</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="10" fill="#9f947a" text-anchor="middle">
+          <text x="40" y="172">1800s</text>
+          <text x="166" y="172">List, 1908</text>
+          <text x="296" y="172">Lanz, Ariosophy</text>
+          <text x="426" y="172">Ahnenerbe, 1935</text>
+          <text x="566" y="172">1941–45</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="10.5" fill="#9f947a" text-anchor="middle">
+          <text x="310" y="238">not one of the eighteen "Armanen runes" appears in any inscription</text>
+          <text x="310" y="258">the sieg rune doubled for the SS is a modern typographic design</text>
+          <text x="310" y="278">the Ahnenerbe ended in human experiments at Dachau and Natzweiler</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">We draw this because it is the part of occult history most often skipped. Nothing in
+    this order romanticises fascism. What happened in Germany was an industrial atrocity dressed in stolen
+    runes, and the esoteric material it wore was not ancient wisdom misapplied — it was recently invented and
+    was invented, in part, for exactly that purpose.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">THE SHADOW, AND WHY WE DO NOT LOOK AWAY</p>
+    <p>The order holds an eighth limb — the <a href="/wizardry/">Shadow Cabinet</a> — precisely so this
+    material has somewhere to be examined rather than quietly dropped. Edward Gregory has, through meditation
+    and ritual recall, identified a past-life character who stood inside the Nazi regime. He does not present
+    this as evidence of anything to anyone else, and neither do we. He presents it as a working requirement:
+    an <strong>enforced integration</strong> with the feelings, choices and paths of previous beings, those
+    that impacted positively and those that impacted negatively alike, with nothing disowned and nothing
+    exiled to a convenient other.</p>
+    <p>That is the opposite of the occult-fascist move. Ariosophy worked by projection — the pure ancestor,
+    the contaminating outsider, the stolen inheritance to be reclaimed by force. Integration refuses the
+    projection and takes the material back inside, where it costs the practitioner something. If a symbolic
+    system cannot survive being turned on the person using it, it is not a discipline. It is a flag.</p>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <h3>How the order uses this material</h3>
+      <ul class="biblio">
+        <li><strong>Date everything.</strong> Before adopting a practice, find out when it was written. If
+        the answer is 1888 or 1954, use it anyway — but say 1888.</li>
+        <li><strong>Separate the mechanism from the metaphysics.</strong> A candle, an hour and a stated
+        intention do measurable things to attention and memory. That is enough to justify the practice without
+        a single supernatural claim.</li>
+        <li><strong>Keep the three columns.</strong> Established, contested, ours. A practice can sit in the
+        third column for a lifetime and be none the worse, provided it is never moved left by wanting.</li>
+        <li><strong>Test what can be tested.</strong> If a claim makes a difference in the world, it can be
+        blinded. If it cannot be blinded even in principle, be honest that it is a value, not a finding.</li>
+        <li><strong>Refuse hierarchy by secrecy.</strong> Grades and oaths are a governance technology. Where
+        secrecy exists to protect a teaching, examine it; where it exists to protect a teacher, leave.</li>
+      </ul>
+    </div>
+    <div class="frame reveal">
+      <h3>Where the harm actually is</h3>
+      <ul class="biblio">
+        <li><strong>Medical delay.</strong> The one lethal failure mode. Nothing on this site is medical
+        advice; no practice here replaces a doctor.</li>
+        <li><strong>Financial extraction.</strong> Paid initiations, escalating readings, courses sold on
+        fear. The oldest fraud in the field and still the commonest.</li>
+        <li><strong>Coercive groups.</strong> Isolation from outsiders, sexual access by rank, unpayable
+        debts of gratitude. The structure matters far more than the doctrine.</li>
+        <li><strong>Racialised lineage claims.</strong> Blood, soil, purity, ancestral right. Any system that
+        sorts people by descent has told you what it is.</li>
+        <li><strong>Private certainty.</strong> The quiet one. A practice that only ever confirms what the
+        practitioner already believed has stopped being enquiry.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">GLOSSARY</p>
+    <dl class="glossary">
+      <dt>Hermeticism</dt><dd>The philosophy of the Greek <em>Hermetica</em> (c. 100–300 CE): a living,
+      intelligible cosmos, humanity poised between matter and mind, knowledge as ascent. Not Egyptian in the
+      pharaonic sense, despite its own claim.</dd>
+      <dt>Esotericism</dt><dd>The academic term, preferred to "occult" because it carries no verdict.
+      Faivre's four marks: correspondences, living nature, imagination as an organ of knowledge, and
+      transmutation of the practitioner.</dd>
+      <dt>Theurgy</dt><dd>From Iamblichus: ritual aimed at the operator's own ascent, not at commanding
+      spirits. The respectable half of late antique magic.</dd>
+      <dt>Goetia</dt><dd>The other half — the evocation of named spirits, from the Greek for howling. The
+      <em>Lesser Key of Solomon</em> is a seventeenth-century compilation of much older lists.</dd>
+      <dt>Kabbalah / Qabalah</dt><dd>Jewish mysticism from twelfth-century Provence and Spain; the second
+      spelling usually signals the Christianised, then Golden Dawn, adaptation, which is a different thing
+      with the same furniture.</dd>
+      <dt>Egregore</dt><dd>A group mind generated and sustained by collective attention. Nineteenth-century
+      French in origin, from the Greek <em>egrēgoros</em>, "watcher". Read conservatively it names something
+      perfectly real: groups do develop characters their members did not individually choose. The order is
+      named for the honest version of it.</dd>
+      <dt>Ariosophy</dt><dd>The Austro-German racial-occult current of List and Lanz von Liebenfels,
+      c. 1900–1930. Pseudo-runology in service of a racial prehistory. Named here so it is never mistaken for
+      tradition.</dd>
+      <dt>Grimoire</dt><dd>A book of operations — names, hours, seals, conditions. Most famous examples are
+      early modern, not medieval, and most circulated in cheap print, not in locked libraries.</dd>
+      <dt>Sigil</dt><dd>A desire compressed into a glyph and then deliberately forgotten. Spare's method,
+      c. 1913, and the clearest case in the field of a technique that works on attention and makes no claim
+      about the world.</dd>
+    </dl>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">READING — THE HONEST SHELF</p>
+    <ul class="biblio">
+      <li><strong>Frances Yates</strong>, <em>Giordano Bruno and the Hermetic Tradition</em> (1964). The book
+      that made the field respectable. Overstates its thesis; still indispensable.</li>
+      <li><strong>Wouter Hanegraaff</strong>, <em>Western Esotericism: A Guide for the Perplexed</em> (2013).
+      The current scholarly baseline. Start here.</li>
+      <li><strong>Ronald Hutton</strong>, <em>The Triumph of the Moon</em> (1999). Dates modern pagan
+      witchcraft precisely and sympathetically, which is harder than either debunking or believing.</li>
+      <li><strong>Nicholas Goodrick-Clarke</strong>, <em>The Occult Roots of Nazism</em> (1985). The careful
+      account — including the limits of the claim. Read it before anyone's conspiracy version.</li>
+      <li><strong>Lawrence Principe</strong>, <em>The Secrets of Alchemy</em> (2013). A working chemist
+      reconstructs the recipes. Deflates the mystique and raises the respect.</li>
+      <li><strong>Owen Davies</strong>, <em>Grimoires: A History of Magic Books</em> (2009). Follows the actual
+      objects and who bought them.</li>
+      <li><strong>Shawn Carlson</strong>, "A double-blind test of astrology", <em>Nature</em> 318 (1985).
+      Short, fair, designed with astrologers' agreement.</li>
+      <li><strong>Peter J. Carroll</strong>, <em>Liber Null &amp; Psychonaut</em> (1987). For the practitioner's
+      side, by someone who refuses to claim ancestry.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <div class="creed-glyph"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M6 50 Q50 14 94 50 Q50 86 6 50 Z"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="5" fill="currentColor"/><path d="M50 18 V6 M50 94 V82 M18 50 H6 M94 50 H82"/></g></svg></div>
+    <p class="creed-line">The hidden is not the forbidden. It is only what has not yet been read carefully.</p>
+    <p>EGregoRA's position on the occult is one sentence long: <strong>we take the practices seriously and
+    the claims literally, and we do not confuse the two.</strong> A tradition that needs a false date to be
+    worth doing was never worth doing. One that can be dated to 1888, stripped of its invented pedigree, and
+    still changes the person who practises it — that is a real thing, and it is the thing we study. Everything
+    else on this site works the same way.</p>
+    <p><a class="btn" href="/wizardry/">Limb IX — The Wizard's Craft</a>
+    <a class="btn btn--ghost" href="/runes/">Runes &amp; Charms</a>
+    <a class="btn btn--ghost" href="/ask-ed/">Ask the Oracle</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="foot-glyph"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="30" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="67.3" cy="40" r="20"/><circle cx="67.3" cy="60" r="20"/><circle cx="32.7" cy="40" r="20"/><circle cx="32.7" cy="60" r="20"/><circle cx="50" cy="50" r="40"/></g></svg></div>
+  <p class="foot-motto">An Order of Enquiry into Cosmos, Consciousness &amp; the Living Earth</p>
+  <nav class="foot-nav" aria-label="Footer">
+    <a href="/">Introduction</a><a href="/podcast/">Podcasts</a><a href="/videos/">Videos</a><a href="/ask-ed/">Ask Ed</a><a href="/infographics/">Infographics</a><a href="/cosmic-ether/">Cosmic Ether</a><a href="/druids/">Druids</a><a href="/sacred-geometry/">Sacred Geometry</a><a href="/astrology/">Astrology</a><a href="/artwork/">Artwork</a><a href="/neurobiology/">Neurobiology</a><a href="/consciousness/">Consciousness</a><a href="/extraterrestrials/">Extraterrestrials</a><a href="/music/">Sound &amp; Music</a><a href="/wizardry/">Wizardry</a><a href="/runes/">Runes &amp; Charms</a><a href="/occult/">The Occult</a><a href="/elemental-alchemy/">Elemental Alchemy</a><a href="/products/">Products</a>
+  </nav>
+  <p class="foot-fine">
+    EGregoRA was co-founded by <strong>Edward Gregory</strong> and <strong>Jim Rankin</strong>. All enquiry here is offered in the spirit of
+    free thought and free doubt — test everything, keep what is true.
+  </p>
+  <p class="foot-fine small">© 2026 EGregoRA · Life, Love, Magic · <a href="mailto:ask@egregora.org">ask@egregora.org</a></p>
+</footer>
+
+
+<div class="scroll-rail" id="scroll-rail" aria-hidden="true" hidden>
+  <button class="scroll-arrow scroll-arrow--up" type="button" id="scroll-top"
+          title="Back to the top" aria-label="Scroll to the top of the page"
+          aria-hidden="true" tabindex="-1" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </button>
+  <button class="scroll-arrow scroll-arrow--down" type="button" id="scroll-bottom"
+          title="Down to the foot of the page" aria-label="Scroll to the bottom of the page"
+          aria-hidden="true" tabindex="-1" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+  </button>
+</div>
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>
