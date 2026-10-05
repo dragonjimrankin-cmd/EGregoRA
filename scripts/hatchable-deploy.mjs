@@ -285,6 +285,59 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
     console.log("\u25b8 openai key probe failed: " + (err && err.message));
   }
 
+  /* 4c — probe every vision route the age check can use. The sandbox has no
+     egress, so this is the only place the truth can be learned: which of
+     these endpoints will actually look at an image and answer. */
+  try {
+    /* A 2x2 PNG. Not a face — the point is to see which routes accept an
+       image at all and return parseable JSON rather than an error page. */
+    const PIX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91' +
+      'JpzAAAAFElEQVR4nGP8//8/AzJgYkAFpPMBZkwCB0zxYQcAAAAASUVORK5CYII=';
+    const SAY = 'Reply with strict JSON only: {"face": false, "age": 0, "note": "ok"}';
+
+    const tryRoute = async (label, url, headers, model) => {
+      try {
+        const r = await fetch(url, {
+          method: 'POST',
+          headers: Object.assign({ 'content-type': 'application/json' }, headers),
+          body: JSON.stringify({
+            model, max_tokens: 120, temperature: 0,
+            messages: [{ role: 'user', content: [
+              { type: 'text', text: SAY },
+              { type: 'image_url', image_url: { url: PIX } }
+            ] }]
+          })
+        });
+        const text = await r.text();
+        let body = text.slice(0, 160).replace(/\s+/g, ' ');
+        try {
+          const j = JSON.parse(text);
+          const c = j && j.choices && j.choices[0] && j.choices[0].message;
+          if (c) body = String(typeof c.content === 'string' ? c.content : JSON.stringify(c.content)).slice(0, 160);
+          else if (j && j.error) body = 'ERR ' + JSON.stringify(j.error).slice(0, 140);
+        } catch { /* keep the raw text */ }
+        console.log(`\u25b8 vision probe ${label} [${model}]: HTTP ${r.status} \u2014 ${body}`);
+        return r.ok;
+      } catch (err) {
+        console.log(`\u25b8 vision probe ${label} [${model}] threw: ${err && err.message}`);
+        return false;
+      }
+    };
+
+    await tryRoute('pollinations', 'https://text.pollinations.ai/openai', {}, 'openai');
+    await tryRoute('pollinations-ref', 'https://text.pollinations.ai/openai?referrer=egregora.hatchable.site', {}, 'openai-fast');
+    await tryRoute('hf-router', 'https://router.huggingface.co/v1/chat/completions',
+      process.env.HUGGINGFACE_API_KEY ? { authorization: 'Bearer ' + process.env.HUGGINGFACE_API_KEY } : {},
+      'Qwen/Qwen2.5-VL-7B-Instruct');
+
+    const store = await import('../hatchable/lib/key-store.js');
+    const oa = store.storedOpenAIKey();
+    if (oa) await tryRoute('openai', 'https://api.openai.com/v1/chat/completions',
+      { authorization: 'Bearer ' + oa }, 'gpt-4o-mini');
+  } catch (err) {
+    console.log('\u25b8 vision probe failed: ' + (err && err.message));
+  }
+
   /* 5 — deploy */
   console.log("▸ deploy");
   const deployed = await call("deploy", {
