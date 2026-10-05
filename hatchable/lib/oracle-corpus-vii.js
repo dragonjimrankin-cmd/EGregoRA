@@ -9,7 +9,7 @@ export const VOL7 = [
 
 E('the-fox','order',['fox','who is the fox','familiar','talking fox','avatar','why a fox'],
 'Why a fox?',
-`Because the fox is the right animal for an order like this one. In British and Irish folklore he is the crosser of boundaries — hedge and field, wild and town, night and day — and he is clever without being wise, which is an honest description of where enquiry usually stands. ◆ Myth, and chosen rather than inherited. Practically, he is the order's familiar rather than its authority: he reads out what has already been written and graded, in your own device's voice, and he invents nothing. If he ever starts improvising, something has gone wrong.`),
+`Because the fox is the right animal for an order like this one. In British and Irish folklore he is the crosser of boundaries — hedge and field, wild and town, night and day — and he is clever without being wise, which is an honest description of where enquiry usually stands. Myth, and chosen rather than inherited. Practically, he is the order's familiar rather than its authority: he reads out what has already been written and graded, in your own device's voice, and he invents nothing. If he ever starts improvising, something has gone wrong.`),
 
 E('voice-why','order',['why does the fox talk','speech synthesis','accessibility','read aloud'],
 'Why does the oracle speak aloud?',
