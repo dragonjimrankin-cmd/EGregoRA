@@ -214,11 +214,11 @@ E('occult-grift','shadow',['spiritual grift','expensive courses','certification'
 
 E('order-structure','order',['how is egregora organised','do you have grades','join the order','membership'],
 'Does EGregoRA have initiations or grades?',
-`No, deliberately. There are no degrees, no withheld teachings for the worthy, nothing to purchase that confers status, and no one to defer to. The order consists of ten limbs of enquiry, a four-shelf grading system for evidence, a reading list, and one instruction three words long. Everything we hold is published, including our corrections. The reason is structural rather than modest: initiatory hierarchy is the single most reliable mechanism by which study groups become something worse, and the simplest way to be safe from it is not to build one.`),
+`No, deliberately. There are no degrees, no withheld teachings for the worthy, nothing to purchase that confers status, and no one to defer to. The order consists of eleven limbs of enquiry, a four-shelf grading system for evidence, a reading list, and one instruction three words long. Everything we hold is published, including our corrections. The reason is structural rather than modest: initiatory hierarchy is the single most reliable mechanism by which study groups become something worse, and the simplest way to be safe from it is not to build one.`),
 
-E('order-limbs','order',['ten limbs','what are the limbs','structure of the order'],
-'What are the ten limbs?',
-`I Cosmic Physics. II Druidry and Trees. III Sacred Geometry. IV Astrology. V Neuroscience and the Visionary State. VI Biology. VII God, the Law of One and Contact. VIII The Shadow Cabinet. IX Magic and the Wizard's Craft. X Alchemy and the Elemental Forces — with Consciousness now standing as an eleventh. They are fields of enquiry rather than grades, and nobody holds one. The point of having ten is that no single one of them can be allowed to answer every question, which is what happens to every discipline left on its own.`),
+E('order-limbs','order',['eleven limbs','ten limbs','what are the limbs','structure of the order'],
+'What are the eleven limbs?',
+`I Cosmic Physics. II Druidry and Trees. III Sacred Geometry. IV Astrology. V Neuroscience and the Visionary State. VI Biology. VII God, the Law of One and Contact. VIII The Shadow Cabinet. IX Magic and the Wizard's Craft. X Alchemy and the Elemental Forces. XI Consciousness and the Hard Problem — eleven in all. They are fields of enquiry rather than grades, and nobody holds one. The point of having ten is that no single one of them can be allowed to answer every question, which is what happens to every discipline left on its own.`),
 
 E('order-founders','order',['who founded egregora','edward gregory','founders','who runs this'],
 'Who founded EGregoRA?',

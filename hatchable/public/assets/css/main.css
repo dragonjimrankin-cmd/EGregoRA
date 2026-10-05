@@ -933,3 +933,9 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 @media (max-width: 560px) {
   .oracle-msg { max-width: 100%; }
 }
+
+/* --- limb cards as links --- */
+.card h3 .card-link { color: var(--bright); text-decoration: none; border: 0; }
+.card h3 .card-link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
+.card:hover h3 .card-link { color: var(--gold); }
+.card .mt-1 a { position: relative; z-index: 3; }

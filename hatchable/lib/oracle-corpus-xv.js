@@ -8,8 +8,8 @@ export const VOL15 = [
  `Edward Gregory and Jim Rankin, as co-founders. Ed is the order's principal author and the voice of most of what is written here; Jim is his understudy, and sometimes his muse. Neither is described as the founder — the order was made by two people and says so. Fact of the house.`),
  E('name-meaning', O, ['what does egregora mean', 'name', 'eg ra'], 'What does the name EGregoRA mean?',
  `An egregore is a collective thoughtform — a group's shared attention acquiring coherence and acting back on its members. Inside the word sit the initials of co-founder Edward Gregory and the name RA, the solar principle and the source of the Law of One material. The name is a statement of method: the order is made by attention. Fact of the house.`),
- E('ten-limbs', O, ['ten limbs', 'what are the limbs', 'structure'], 'What are the ten limbs?',
- `I Cosmic Physics. II Druidry and the Trees. III Sacred Geometry. IV Astrology. V Neuroscience and the Visionary State. VI Biology. VII God, the Law of One and Contact. VIII The Shadow Cabinet. IX Magic and the Wizard's Craft. X Alchemy and the Elemental Forces. Consciousness is treated under a working eleventh. Fact of the house.`),
+ E('ten-limbs', O, ['eleven limbs', 'ten limbs', 'what are the limbs', 'structure'], 'What are the eleven limbs?',
+ `I Cosmic Physics. II Druidry and the Trees. III Sacred Geometry. IV Astrology. V Neuroscience and the Visionary State. VI Biology. VII God, the Law of One and Contact. VIII The Shadow Cabinet. IX Magic and the Wizard's Craft. X Alchemy and the Elemental Forces. XI Consciousness and the Hard Problem. Eleven in all; the Occult is set out under IX·i and the Cosmic Ether under I·ii. Fact of the house.`),
  E('tagline', O, ['tagline', 'life love magic'], 'What is the order\'s tagline?',
  `Life, Love, Magic. Three words, in that order: the fact of being alive, the thing that makes it bearable, and the deliberate work of changing what can be changed. We tried a longer creed once and threw it out. Fact of the house.`),
  E('join', O, ['how to join', 'membership', 'become a member'], 'How do I join the order?',
@@ -175,6 +175,6 @@ export const VOL15 = [
  E('stone-circles', P, ['stone circles', 'visiting megaliths', 'avebury'], 'How should one visit a stone circle?',
  `Early, alone, and more than once. Avebury, Castlerigg, the Ring of Brodgar and Callanish all reward arriving before the car park fills. Walk the perimeter before entering. Note the horizon the stones address, not just the stones — the landscape was the other half of the monument, and it is the part visitors reliably ignore. Craft guidance. Limb II.`),
  E('last-question', O, ['anything else', 'what should i ask', 'good question'], 'What is a good question to ask you?',
- `A specific one. "Tell me about magic" gets you a paragraph; "is there evidence for the Ganzfeld telepathy results" gets you something worth reading. The oracle holds twelve hundred written answers, each on a particular thing, and the matching works best when you name the particular thing. Ask narrowly and follow up. Our method.`)
+ `A specific one. "Tell me about magic" gets you a paragraph; "is there evidence for the Ganzfeld telepathy results" gets you something worth reading. The oracle holds twelve hundred and eighty written answers, each on a particular thing, and the matching works best when you name the particular thing. Ask narrowly and follow up. Our method.`)
 
 ];
