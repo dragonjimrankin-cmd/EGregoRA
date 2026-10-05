@@ -191,7 +191,9 @@ export default async function (req, res) {
       case 'mailbag': {
         const limit = Math.max(1, Math.min(50, Number(body.limit) || 20));
         const { rows } = await db.query(
-          'SELECT id, name, question, limb, created_at FROM questions ORDER BY created_at DESC LIMIT $1',
+          `SELECT id, asker_name AS name, question, limb, source,
+                  LEFT(COALESCE(answer, ''), 400) AS answer, created_at
+             FROM questions ORDER BY created_at DESC LIMIT $1`,
           [limit]
         );
         return res.json({ questions: rows });

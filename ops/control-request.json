@@ -1,12 +1,9 @@
 {
   "note": "Edited by the agent, executed by CI against the live site. See scripts/control-run.mjs.",
   "calls": [
-    { "action": "whoami" },
+    { "action": "mailbag", "limit": 3 },
     { "action": "status" },
-    { "action": "models" },
-    { "action": "workers" },
-    { "action": "ask", "question": "Why 137.5 degrees and not 120?" },
-    { "action": "ask", "question": "What is Gink?" },
-    { "action": "mailbag", "limit": 3 }
+    { "action": "draw", "prompt": "a red fox asleep in frosted bracken at first light, photorealistic" },
+    { "action": "ask", "question": "Is the Law of One testable?" }
   ]
 }
