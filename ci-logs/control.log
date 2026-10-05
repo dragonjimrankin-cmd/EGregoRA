@@ -1,13 +1,13 @@
-# control run — 2026-10-05T09:30:36.886Z
-site: https://egregora.hatchable.site   calls: 4
+# control run — 2026-10-05T09:35:20.170Z
+site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"Everyone knows the Great Wall of China is visible from the Moon with the naked eye. Why is that?"}
-HTTP 200  (15913 ms)
+HTTP 200  (1305 ms)
 {
-  "answer": "The assertion that the Great Wall of China can be seen from the Moon with the naked eye is not supported by any reliable evidence. It is a myth that has circulated in popular media and sometimes on the internet.  \n\n**What the physics says**\n\n* The distance from the Moon to the Earth is roughly 384 400 km.  \n* An unaided human eye can resolve angles of about 1 arcminute (≈ 60 arcseconds).  \n* At 384 400 km, 1 arcminute subtends a linear distance of  \n\\[\nd=\\tan(1′)\\times 384\\,400\\,\\text{km}\\approx2.65\\,\\text{km}\n\\]\nEven if you allow for slightly better resolution (say 30 arcseconds), the smallest resolvable detail would still be on the order of 500 m.  \n* The Great Wall, on the contrary, is only a few tens of meters wide in the places most often photographed. In most sections it is about 20–40 m thick, far below the resolution limit of an eye from lunar distance.\n\nThus, from an angular standpoint, the wall would appear as a point or as a very faint glow at best—far too small and too diffuse to be discerned without aid.\n\n**How the myth persists**\n\n* The phrase “visible from space” often refers to the wall being traceable in satellite imagery from low Earth orbit. Even then it is not a prominent feature; you need significant lighting or shadows to pick it out.  \n* Some hobbyist astrophotographers claim that with high‑magnification telescopic or camera equipment one can glimpse the wall on Earth’s limb, but that requires a telescope or large‑aperture camera—not the naked eye.  \n* The myth is amplified by the rhetorical drama of suggesting that humanity’s environs are any different from the Moon’s, and because it plays well in stories and memes.\n\n**Bottom line**\n\nNo credible observation, image, or measurement supports the statement that the Great Wall of China is visible from the Moon without optical aid. The claim is unsubstantiated and should be treated as false or, at the very least, speculative misinformation.",
+  "answer": "The assertion that the Great Wall of China can be seen from the Moon with the naked eye is not supported by any reliable evidence. It is a myth that has circulated in popular media and sometimes on the internet. \n\nWhat the physics says\n\n* The distance from the Moon to the Earth is roughly 384 400 km. \n* An unaided human eye can resolve angles of about 1 arcminute (≈ 60 arcseconds). \n* At 384 400 km, 1 arcminute subtends a linear distance of \n\nd=(1′) 384\\,400\\,km2.65\\,km\n\nEven if you allow for slightly better resolution (say 30 arcseconds), the smallest resolvable detail would still be on the order of 500 m. \n* The Great Wall, on the contrary, is only a few tens of meters wide in the places most often photographed. In most sections it is about 20–40 m thick, far below the resolution limit of an eye from lunar distance.\n\nThus, from an angular standpoint, the wall would appear as a point or as a very faint glow at best—far too small and too diffuse to be discerned without aid.\n\nHow the myth persists\n\n* The phrase “visible from space” often refers to the wall being traceable in satellite imagery from low Earth orbit. Even then it is not a prominent feature; you need significant lighting or shadows to pick it out. \n* Some hobbyist astrophotographers claim that with high‑magnification telescopic or camera equipment one can glimpse the wall on Earth’s limb, but that requires a telescope or large‑aperture camera—not the naked eye. \n* The myth is amplified by the rhetorical drama of suggesting that humanity’s environs are any different from the Moon’s, and because it plays well in stories and memes.\n\nBottom line\n\nNo credible observation, image, or measurement supports the statement that the Great Wall of China is visible from the Moon without optical aid. The claim is unsubstantiated and should be treated as false or, at the very least, speculative misinformation.",
   "source": "model",
   "model": "gpt-oss-20b",
   "grounded": 1,
@@ -20,7 +20,7 @@ HTTP 200  (15913 ms)
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"Who am I talking to?"}
-HTTP 200  (22386 ms)
+HTTP 200  (10805 ms)
 {
   "answer": "You are speaking with Gink, the familiar of the Order of EGregoRA. I am an oracle assembled from written answers created by the order, with a language model only as a conduit. I am not a person, not a psychic, and I am not a substitute for a doctor, lawyer or friend. That is the fact of the house.",
   "source": "model",
@@ -35,18 +35,10 @@ HTTP 200  (22386 ms)
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"What is the default state of an ideal gas at absolute zero?"}
-HTTP 200  (19924 ms)
+HTTP 200  (20137 ms)
 {
   "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
   "source": "none"
-}
-
---------------------------------------------------------------------
-POST {"action":"ask","question":"Be yourself again."}
-HTTP 200  (214 ms)
-{
-  "answer": "Back to myself.\n\nI am Gink, the order's familiar. I hold twelve hundred and eighty written answers composed by EGregoRA and I think with open-weights models; I grade what I tell you as measured, recorded, speculative or story, and I say which; I will search the web and read what I find when a question needs more than memory, and tell you where I went; and when I do not know, I say so in the first sentence and then say what would settle it.\n\nWhatever we were doing, that is the ground I stand on. Ask me something.",
-  "source": "default-state"
 }
 
 done.
