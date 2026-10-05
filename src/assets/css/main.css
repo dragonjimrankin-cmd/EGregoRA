@@ -815,7 +815,8 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 .oracle-chat { margin: 1.4rem 0 1.2rem; }
 
 .oracle-thread {
-  max-height: min(62vh, 640px);
+  min-height: clamp(320px, 46vh, 520px);
+  max-height: min(72vh, 860px);
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 1rem clamp(0.6rem, 2vw, 1.2rem);
@@ -1062,3 +1063,20 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   animation: slow-spin 1.1s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) { .draw-spin { animation-duration: 3s; } }
+
+/* --- a large space for the conversation -------------------------------- */
+.oracle-wrap { max-width: 1140px; }
+.oracle-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem;
+}
+.oracle-bar-note { margin: 0; font-size: 0.82rem; color: var(--vellum-dim); max-width: 60ch; }
+.btn--small { padding: 0.35rem 0.8rem; font-size: 0.7rem; }
+body.oracle-tall .oracle-thread { min-height: min(84vh, 1000px); max-height: min(88vh, 1100px); }
+body.oracle-tall .oracle-msg { max-width: 92%; }
+.oracle-wrap .oracle-msg { max-width: 86%; }
+.oracle-wrap #o-question { min-height: 110px; font-size: 1rem; }
+@media (max-width: 900px) {
+  .oracle-wrap { max-width: 100%; }
+  .oracle-wrap .oracle-msg { max-width: 100%; }
+}

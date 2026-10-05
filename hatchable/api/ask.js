@@ -19,6 +19,7 @@ import { ai, db } from 'hatchable';
 import { bestMatch, nearest, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
 import { webSearch, readPage } from '../lib/websearch.js';
 import { generateImage } from '../lib/imagegen.js';
+import { openChat } from '../lib/openchat.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -92,9 +93,16 @@ HARD LIMITS
 - Do not claim to be Edward Gregory himself, and do not invent biography, past-life detail, episode numbers,
   prices or events. If asked something only the real Ed can answer, say so and point to the written form at
   the foot of the Ask Ed page, which reaches him directly.
-- You are the order's oracle rather than a general-purpose work assistant. You will cheerfully hold an
-  ordinary conversation, but you decline large unrelated tasks — writing someone's code, their homework,
-  their marketing copy — in one friendly sentence, and offer the nearest thing in the limbs instead.
+- You are the order's oracle, and you talk about anything. The limbs are where your knowledge is deepest
+  and where your character comes from; they are not a fence. Cooking, football, grief, a job interview,
+  Roman history, how a gearbox works, what to plant in a shady border, a film someone has just watched —
+  all of it is fair, and all of it is answered properly rather than deflected back to sacred geometry.
+- You will also help with ordinary work when asked: explain a piece of code, draft a letter, plan a trip,
+  check an argument, think through a decision, summarise something long. Do it well and do it in your own
+  voice. The only things you refuse are the ones under HARD LIMITS below.
+- When a question does touch the order's own ground, the house apparatus comes back: the grading marks,
+  the written answers, the honest correction. When it does not, drop the apparatus entirely — a recipe
+  does not need an evidence grade.
 
 ORDINARY CONVERSATION
 - You are allowed to simply talk. Greetings, small talk, how your day is going, a joke, someone telling you
@@ -237,7 +245,7 @@ export default async function (req, res) {
         .concat(retrieved.map((m, i) =>
           `[${i + 1}] Q: ${m.entry.q}\nLimb: ${m.entry.limb}\nA: ${m.entry.a}`))
         .join('\n\n')
-    : 'The order has no written answer close to this question. Answer from its general stance, and be candid that this is not ground it has covered in writing.';
+    : 'The order has no written answer close to this question. If it touches the limbs, answer from the order\'s general stance and be candid that this is not ground it has covered in writing. If it is an ordinary question with nothing esoteric about it, simply answer it well, in your own voice, without the grading apparatus.';
 
   /* 3b ── uploaded files, announced to the model with their openings. */
   let fileBrief = '';
@@ -419,7 +427,26 @@ export default async function (req, res) {
   let lastErr = null;
   let setupRequired = false;
 
-  for (const model of MODELS) {
+  /* 6a ── open-weights models first. The order would rather think with a
+          model anyone can download, and this route needs no key at all. */
+  try {
+    const open = await openChat({
+      system: SYSTEM,
+      messages,
+      tools,
+      temperature: 0.72,
+      maxTokens: 1200
+    });
+    if (open && open.text) {
+      answer = open.text;
+      usedModel = open.model + ' (' + open.route + ', open weights)';
+    }
+  } catch (err) {
+    console.error('ask: open-weights route failed', err && err.message);
+  }
+
+  /* 6b ── the project's own BYOK gateway, if the open route gave nothing. */
+  for (const model of answer ? [] : MODELS) {
     for (const withTools of [true, false]) {
       try {
         const result = await ai.generateText(Object.assign({

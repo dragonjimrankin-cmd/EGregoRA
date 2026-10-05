@@ -194,7 +194,8 @@
     if (data.source === "written") bits.push("From the order\u2019s written answers" +
       (data.matched ? " \u00b7 " + esc(data.matched) : ""));
     else if (data.source === "model") {
-      bits.push("Composed just now in the order\u2019s voice");
+      bits.push("Composed just now in the order\u2019s voice" +
+        (data.model ? " \u00b7 " + esc(String(data.model)) : ""));
       if (data.grounded && data.grounded.length)
         bits.push("grounded in: " + data.grounded.slice(0, 2).map(esc).join("; "));
     } else if (data.source === "crisis") bits.push("Said before anything else");
@@ -348,6 +349,18 @@
       box.focus();
     }
   };
+
+  const expand = document.getElementById("o-expand");
+  if (expand) expand.addEventListener("click", () => {
+    const on = document.body.classList.toggle("oracle-tall");
+    expand.setAttribute("aria-pressed", on ? "true" : "false");
+    expand.textContent = on ? "Shrink the space" : "Expand the space";
+    try { localStorage.setItem("eg-oracle-tall", on ? "1" : "0"); } catch {}
+    scrollThread();
+  });
+  try {
+    if (localStorage.getItem("eg-oracle-tall") === "1" && expand) expand.click();
+  } catch {}
 
   form.addEventListener("submit", (e) => { e.preventDefault(); ask(box.value); });
 
