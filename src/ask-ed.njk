@@ -39,7 +39,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
     with nothing esoteric about it at all — and when a question needs something it cannot know from memory,
     it can search the open web and read the pages it finds, then tell you which ones it used. It can also
     <strong>draw</strong> — ask the fox for a picture and it makes a photorealistic image with FLUX.1-schnell,
-    an open-weights model, shown here and clearly labelled as generated rather than photographed — and it can
+    an open-weights model, shown here and clearly labelled as generated rather than photographed — it can <strong>film</strong> — five seconds of 480p
+    video from HunyuanVideo 1.5, open weights again — and it can
     <strong>read what you give it</strong>: attach a file and it will quote, search, summarise and argue with
     the contents rather than guessing at them. It is not Ed
     himself — but everything asked here lands in his mailbag, and the best questions get answered properly
@@ -180,6 +181,46 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       <p class="muted xsmall">Every image here is <strong>generated, not photographed</strong>. It is a
       synthesis made to order and is never evidence of anything. The fox will not draw a real person in a
       situation they were never in, and nothing made here should be passed off as a record.</p>
+    </div>
+
+    <div class="draw-box film-box reveal" id="film-box">
+      <p class="kicker">ASK THE FOX TO FILM</p>
+      <h3>Make a Video</h3>
+      <p class="muted small">Five seconds of 480p video from a sentence, made with
+      <strong>HunyuanVideo 1.5</strong> — Tencent's open-weights model, 8.3 billion parameters, code and
+      weights published. Describe motion: what moves, how the camera moves, the light. A clip takes about
+      three minutes; leave the page open and it will appear below.</p>
+
+      <form class="ornate film-form" id="film-form">
+        <div>
+          <label for="v-prompt">Your clip</label>
+          <textarea id="v-prompt" name="prompt" rows="3" maxlength="1200" required
+            placeholder="Mist moving through a stand of oaks at dawn, slow dolly forward, shafts of low sun between the trunks, leaves turning in the draught"></textarea>
+        </div>
+        <div class="film-row">
+          <label for="v-aspect">Shape</label>
+          <select id="v-aspect" name="aspect">
+            <option value="16:9">Landscape · 16:9</option>
+            <option value="9:16">Upright · 9:16</option>
+          </select>
+        </div>
+        <div class="draw-examples" id="film-examples">
+          <button class="chip" type="button">A single candle flame guttering in a draught, close, dark background</button>
+          <button class="chip" type="button">Ink dropped into still water, slow motion, backlit, blooming into filaments</button>
+          <button class="chip" type="button">Clouds racing over a standing stone circle, time-lapse, long shadows turning</button>
+        </div>
+        <div class="ask-actions">
+          <button class="btn" type="submit" id="v-submit">Film it</button>
+          <button class="btn btn--ghost" type="button" id="v-clear" hidden>Clear</button>
+        </div>
+      </form>
+
+      <div class="draw-out" id="film-out" aria-live="polite"></div>
+
+      <p class="muted xsmall">Every clip is <strong>generated, not filmed</strong>: nothing here records a
+      real event, and it should never be presented as though it did. Video needs a GPU somewhere even when
+      the model is open — if no video key is connected to this project, the fox will say so rather than
+      pretend.</p>
     </div>
 
     <p class="muted xsmall oracle-foot">Test everything kindly. If an answer cannot survive your scepticism,

@@ -326,6 +326,9 @@
       } else {
         reveal(pending, data.answer, () => {
           attachImages(pending, data);
+          if (data.videos && data.videos.length && window.EGFilmWatch) {
+            data.videos.forEach((v) => { if (v && v.id) window.EGFilmWatch(v.id, v.prompt); });
+          }
           footnote(pending, data);
           setChips(data.followups);
           scrollThread();
@@ -706,4 +709,126 @@
     box.value = "";
     box.focus();
   });
+})();
+
+/* --------------------------------------------------------------- Filming
+   /api/video is a job queue: submit a prompt, then poll until HunyuanVideo
+   1.5 has finished the clip (about three minutes for five seconds of 480p). */
+(() => {
+  "use strict";
+  const form = document.getElementById("film-form");
+  if (!form) return;
+
+  const box = document.getElementById("v-prompt");
+  const aspectEl = document.getElementById("v-aspect");
+  const btn = document.getElementById("v-submit");
+  const clear = document.getElementById("v-clear");
+  const out = document.getElementById("film-out");
+  const examples = document.getElementById("film-examples");
+  const nameEl = document.getElementById("o-name");
+  if (!box || !btn || !out) return;
+
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  const ready = (card, data, prompt) => {
+    card.classList.remove("is-working");
+    card.innerHTML =
+      '<video controls playsinline preload="metadata" src="' + esc(data.url) + '"></video>' +
+      "<figcaption>" + esc(prompt) +
+      '<span class="draw-meta">Generated, not filmed \u00b7 ' +
+      esc(data.model || "HunyuanVideo 1.5 \u00b7 480p") + "</span></figcaption>";
+  };
+
+  const failed = (card, msg, prompt) => {
+    card.classList.remove("is-working");
+    card.classList.add("is-error");
+    card.innerHTML = "<p>" + esc(msg) + "</p><figcaption>" + esc(prompt) + "</figcaption>";
+  };
+
+  /* Poll every 6 seconds, for up to twelve minutes. */
+  const watch = (card, id, prompt) => {
+    let tries = 0;
+    const tick = async () => {
+      tries += 1;
+      if (tries > 120) return failed(card, "The clip is taking longer than twelve minutes \u2014 it may still arrive; reload later.", prompt);
+      try {
+        const res = await fetch("/api/video?id=" + encodeURIComponent(id));
+        const data = await res.json().catch(() => ({}));
+        if (data.status === "ready" && data.url) return ready(card, data, prompt);
+        if (data.status === "failed") return failed(card, data.error || "The generator gave up on that one.", prompt);
+      } catch { /* keep waiting */ }
+      setTimeout(tick, 6000);
+    };
+    setTimeout(tick, 8000);
+  };
+
+  let busy = false;
+
+  const film = async (prompt) => {
+    const p = String(prompt || "").trim();
+    if (busy || p.length < 3) return;
+    busy = true;
+    btn.disabled = true;
+    const label = btn.textContent;
+    btn.textContent = "Filming\u2026";
+    if (clear) clear.hidden = false;
+
+    const card = document.createElement("figure");
+    card.className = "draw-card is-working";
+    card.innerHTML =
+      '<div class="draw-wait"><span class="draw-spin" aria-hidden="true"></span>' +
+      "<p>Filming \u2014 about three minutes for five seconds of 480p. Leave the page open.</p></div>" +
+      "<figcaption>" + esc(p) + "</figcaption>";
+    out.prepend(card);
+
+    try {
+      const res = await fetch("/api/video", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          prompt: p,
+          aspect: (aspectEl && aspectEl.value) || "16:9",
+          name: (nameEl && nameEl.value || "").trim()
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.id) failed(card, data.error || "The camera would not start.", p);
+      else watch(card, data.id, p);
+    } catch {
+      failed(card, "No clip could be requested \u2014 this page may be running without its backend.", p);
+    } finally {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  };
+
+  form.addEventListener("submit", (e) => { e.preventDefault(); film(box.value); });
+  if (examples) examples.addEventListener("click", (e) => {
+    const b = e.target.closest(".chip");
+    if (!b) return;
+    box.value = b.textContent.trim();
+    box.focus();
+  });
+  if (clear) clear.addEventListener("click", () => {
+    out.innerHTML = "";
+    clear.hidden = true;
+    box.value = "";
+    box.focus();
+  });
+
+  /* Clips the oracle starts for itself inside the conversation. */
+  window.EGFilmWatch = (id, prompt) => {
+    const card = document.createElement("figure");
+    card.className = "draw-card is-working";
+    card.innerHTML =
+      '<div class="draw-wait"><span class="draw-spin" aria-hidden="true"></span>' +
+      "<p>The oracle is filming \u2014 about three minutes.</p></div>" +
+      "<figcaption>" + esc(prompt || "") + "</figcaption>";
+    out.prepend(card);
+    document.getElementById("film-box").scrollIntoView({ block: "nearest", behavior: "smooth" });
+    watch(card, id, prompt || "");
+  };
 })();

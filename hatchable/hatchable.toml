@@ -27,3 +27,15 @@ description = "Optional Hugging Face token, for Stable Diffusion XL image genera
 key         = "OPENROUTER_API_KEY"
 required    = false
 description = "Optional OpenRouter token, for the strongest open-weights chat models."
+
+# Video. HunyuanVideo 1.5 is open-weights but still needs a GPU somewhere:
+# either of these keys turns the fox's camera on.
+[[secret]]
+key         = "FAL_KEY"
+required    = false
+description = "Optional fal.ai key, for HunyuanVideo 1.5 480p video generation."
+
+[[secret]]
+key         = "REPLICATE_API_TOKEN"
+required    = false
+description = "Optional Replicate token, as a second route to HunyuanVideo 1.5."

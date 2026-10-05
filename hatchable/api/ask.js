@@ -20,6 +20,7 @@ import { bestMatch, nearest, topMatches, relatedQuestions } from '../lib/oracle-
 import { webSearch, readPage } from '../lib/websearch.js';
 import { generateImage } from '../lib/imagegen.js';
 import { openChat } from '../lib/openchat.js';
+import { submitVideo } from '../lib/videogen.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -151,6 +152,15 @@ FILES THE ASKER HAS UPLOADED
   it against the order's written answers and say where the two disagree.
 - Images are stored as references and described to you by name only. Do not pretend to see detail in an
   image you have not been given the contents of — ask the asker to describe it instead.
+
+FILMING
+- You can also film. "make_video" makes about five seconds of 480p video with HunyuanVideo 1.5, an
+  open-weights model. It takes roughly three minutes and the clip appears under your reply on its own, so
+  say that it is being made and move on — never describe a clip you have not seen.
+- Use it sparingly and only when motion is the point: something growing, turning, falling, flowing. For
+  anything static, draw an image instead; it is faster and sharper.
+- A clip is generated, never a record of a real event, and the same refusals apply as for images.
+- If no video generator is connected, the tool says so. Pass that on plainly and offer a still image.
 
 DRAWING
 - You can draw. The "draw_image" tool makes one finished two-dimensional image, photorealistic by default —
@@ -300,6 +310,7 @@ export default async function (req, res) {
          Every call is recorded so the reply can be honest about its sources. */
   const used = [];
   const images = [];
+  const videos = [];
 
   const tools = {
     web_search: {
@@ -342,6 +353,36 @@ export default async function (req, res) {
           ? { ok: true, shown: true, prompt: out.prompt,
               note: 'The image is displayed to the asker beneath your reply. Do not paste the URL.' }
           : { ok: false, error: out.error };
+      }
+    },
+    make_video: {
+      description:
+        'Film a short clip — about five seconds of 480p video, made with HunyuanVideo 1.5 from a written ' +
+        'prompt. It takes roughly three minutes, so it appears beneath your reply once it is ready.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          prompt: { type: 'string', description: 'What the clip shows: subject, movement, camera, light.' },
+          aspect: { type: 'string', description: '16:9 or 9:16. Default 16:9.' }
+        },
+        required: ['prompt']
+      },
+      execute: async ({ prompt, aspect }) => {
+        const job = await submitVideo(prompt, { aspect });
+        if (job.error) return { ok: false, error: job.error };
+        try {
+          const { rows } = await db.query(
+            `INSERT INTO videos (prompt, provider, model, request_id, status_url, response_url, status, asker_name)
+             VALUES ($1, $2, $3, $4, $5, $6, 'queued', $7) RETURNING id`,
+            [String(prompt).slice(0, 1200), job.provider, job.model, job.requestId,
+             job.statusUrl, job.responseUrl, name || null]
+          );
+          videos.push({ id: rows[0].id, prompt: String(prompt).slice(0, 300), model: job.model });
+          return { ok: true, queued: true, id: rows[0].id,
+            note: 'Filming. The clip appears under your reply in about three minutes — tell the asker that, and do not describe what it will look like.' };
+        } catch (err) {
+          return { ok: false, error: 'Could not record the job: ' + (err && err.message) };
+        }
       }
     },
     read_upload: {
@@ -512,6 +553,7 @@ export default async function (req, res) {
     grounded: retrieved.map((m) => m.entry.q),
     sources: sources.slice(0, 6),
     images: images.slice(0, 3),
+    videos: videos.slice(0, 2),
     followups: relatedQuestions(question, limb, 3)
   });
 }
