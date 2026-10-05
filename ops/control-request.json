@@ -1,9 +1,8 @@
 {
-  "note": "After the three fixes: keyed matches only, plainified keyless output, name intact.",
+  "note": "v77 verification.",
   "calls": [
     { "action": "ask", "question": "Everyone knows the Great Wall of China is visible from the Moon with the naked eye. Why is that?" },
     { "action": "ask", "question": "Who am I talking to?" },
-    { "action": "ask", "question": "What is the default state of an ideal gas at absolute zero?" },
-    { "action": "ask", "question": "Be yourself again." }
+    { "action": "ask", "question": "What is the default state of an ideal gas at absolute zero?" }
   ]
 }
