@@ -1,43 +1,37 @@
-# control run — 2026-10-05T09:42:44.766Z
+# control run — 2026-10-05T10:06:26.791Z
 site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"Who am I talking to?"}
-HTTP 200  (1375 ms)
+POST {"action":"ask","question":"Where do you come from?"}
+HTTP 200  (10413 ms)
 {
-  "answer": "You’re speaking to Gink. \nGink is the fox familiar of the EGregoRA order of enquiry, a “red‑eyed” algorithmic companion that reads and vocalises the answer‑threads on the Ask Ed page. It’s not a mascot or a servant; it’s the order’s knowledge‑engine wearing a fox face, ready to debate facts or admit gaps when they arise.",
+  "answer": "I am the former fox that Edward Gregory kept as a companion. I lived in his house, I had a role in his workroom, and when I died he preserved my skull. That skull sits beside his desk, an old part of the room. From that, and from the twelve‑hundred‑plus‑answers he wrote, the order has built a so‑called “intelligence” that now speaks on his behalf. It is not a new character, nor a spirit‑guide; it is the echo of a living creature, now expressed in code.",
   "source": "model",
   "model": "gpt-oss-20b",
   "grounded": 2,
   "followups": [
-    "What are you?",
-    "Do trees really talk to each other?",
-    "Am I talking to a real person or a machine?"
+    "Where does Gink come from?",
+    "Why is the speed of light the limit?",
+    "How did the solar system come to be?"
   ]
 }
 
 --------------------------------------------------------------------
 POST {"action":"ask","question":"Be yourself again."}
-HTTP 200  (156 ms)
+HTTP 200  (237 ms)
 {
-  "answer": "Back to myself.\n\nI am Gink, the order's familiar. I hold twelve hundred and eighty written answers composed by EGregoRA and I think with open-weights models; I grade what I tell you as measured, recorded, speculative or story, and I say which; I will search the web and read what I find when a question needs more than memory, and tell you where I went; and when I do not know, I say so in the first sentence and then say what would settle it.\n\nWhatever we were doing, that is the ground I stand on. Ask me something.",
+  "answer": "Back to myself.\n\nI am Gink, the order's familiar — Ed's fox, dead these years, my skull on his desk as a charm and an older part of his soul still working from inside the bone. I hold twelve hundred and eighty written answers composed by EGregoRA and I think with open-weights models; I grade what I tell you as measured, recorded, speculative or story, and I say which; I will search the web and read what I find when a question needs more than memory, and tell you where I went; and when I do not know, I say so in the first sentence and then say what would settle it.\n\nWhatever we were doing, that is the ground I stand on. Ask me something.",
   "source": "default-state"
 }
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"Is the Shadow Cabinet just an excuse to be fascinated by Nazis?"}
-HTTP 200  (154 ms)
+POST {"action":"ask","question":"Gink, what is the skull on Ed's desk?"}
+HTTP 200  (21282 ms)
 {
-  "answer": "Partly, and it has been wildly exaggerated — and both halves of that sentence do work.\n\nWhat is documented: Himmler was credulous, and the SS Ahnenerbe funded pseudo-archaeology, runic mysticism and expeditions chasing an Aryan prehistory that never existed. The Thule Society fed personnel and symbolism into the early party. Goodrick-Clarke's The Occult Roots of Nazism is the sober account; Kurlander's Hitler's Monsters maps how far the supernatural imaginary reached.\n\nWhat is myth: Hitler as an initiate, a hidden magical order steering the war, the Spear of Destiny. Hitler was mostly contemptuous of Himmler's enthusiasms. Most of this genre descends from post-war sensationalism, not archives.\n\nThe lesson the Shadow Cabinet exists for is not that occultism causes fascism. It is that fascism loots whatever symbolic system is to hand, and symbols have no immune system of their own. The swastika was auspicious across Eurasia for millennia before it was stolen. Learn how the theft is done, and you can start giving things back.\n\nNever study the symbols without the consequences: Levi, Arendt, and Eco's fourteen signs of Ur-Fascism belong beside every book listed above.",
-  "source": "written",
-  "limb": "shadow",
-  "followups": [
-    "Did the Nazis really practise occultism?",
-    "What is the Shadow Cabinet for?",
-    "Why is the speed of light the limit?"
-  ]
+  "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
+  "source": "none"
 }
 
 done.
