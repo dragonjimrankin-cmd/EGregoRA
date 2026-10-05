@@ -241,6 +241,37 @@ export default async function (req, res) {
           stage: out.stage || null, hardware: out.hardware || row.hardware || null, seed: row.seed });
       }
 
+      /* Move an account to a different address. The site's own member record
+         is keyed by email: sign-in codes, the mailing list and the letters
+         index all follow it. Letters already filed under the old address are
+         re-pointed too, so a member's history does not split in half. */
+      case 'member-email': {
+        const from = String(body.from || '').trim().toLowerCase();
+        const to = String(body.to || '').trim().toLowerCase();
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(from) || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) {
+          return res.status(400).json({ error: 'Give a valid from and to address.' });
+        }
+        const { rows: found } = await db.query(
+          'SELECT id, email, name FROM members WHERE lower(email) = $1', [from]);
+        if (!found.length) return res.status(404).json({ error: 'No account uses ' + from + '.' });
+        const { rows: clash } = await db.query(
+          'SELECT id FROM members WHERE lower(email) = $1', [to]);
+        if (clash.length) return res.status(409).json({ error: to + ' is already an account here.' });
+
+        await db.query('UPDATE members SET email = $2 WHERE id = $1', [found[0].id, to]);
+        const { rowCount: letters } = await db.query(
+          'UPDATE letters SET email = $2 WHERE lower(email) = $1', [from, to]);
+        return res.json({
+          ok: true,
+          member: found[0].id,
+          name: found[0].name || null,
+          from,
+          to,
+          letters_moved: letters || 0,
+          note: 'Sign-in codes now go to ' + to + '. Any passkey on the account still works.'
+        });
+      }
+
       case 'mailbag': {
         const limit = Math.max(1, Math.min(50, Number(body.limit) || 20));
         const { rows } = await db.query(

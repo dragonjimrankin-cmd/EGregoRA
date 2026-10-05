@@ -36,6 +36,7 @@ it. To kill it: `UPDATE api_tokens SET revoked = TRUE WHERE name = 'JIM1';`
 | `film` | `prompt`, `aspect` `16:9`\|`9:16`, `model` | commissions a 480p clip; returns a job id |
 | `job` | `id` | polls a picture or clip: `queued` → `running` → `ready` with a URL |
 | `mailbag` | `limit` 1–50 | the questions visitors have asked |
+| `member-email` | `from`, `to` | move an account (and its letters) to another address |
 | `models` | — | the open-weights video models on offer |
 | `workers` | — | the live Colab GPU pool |
 
@@ -61,7 +62,7 @@ Paste this at the top of the other conversation:
 > `https://egregora.hatchable.site/api/control` with the header
 > `Authorization: Bearer jim1_c6bd62438879ec7d7cdad176bf105a352cf01866574ebb4e`
 > and a JSON body `{"action": "..."}`. Call `GET /api/control` first for the
-> manual. Actions: whoami, status, ask, draw, film, job, mailbag, models,
+> manual. Actions: whoami, status, ask, draw, film, job, mailbag, member-email, models,
 > workers.
 
 ## Issuing another one

@@ -2051,16 +2051,25 @@
   if (!link || !window.EGStudio) return;
   window.EGStudio().then(function (me) {
     if (!me || !me.signed_in) return;
-    var addr = (me.member && me.member.email) || '';
+
+    /* The chip says who you are, not what your address is. An email address
+       printed into the furniture of every page is a small privacy leak — it
+       is on screen in every screenshot, every shared tab and every projector
+       — and it is never the thing the reader needs. The address lives on the
+       account page, where you went to look for it. */
+    var member = me.member || {};
+    var name = String(member.name || '').trim();
+    var label = name ? name.split(/\s+/)[0] : 'Your account';
+
     link.classList.add('is-in');
     link.href = '/account/';
-    link.setAttribute('title', 'Signed in as ' + addr + ' — your account');
+    link.setAttribute('title', 'Your account');
     var mark = link.querySelector('.head-join-mark');
     if (mark) mark.textContent = '\u2726';
     var text = link.querySelector('.head-join-text');
     if (text) {
       text.classList.add('head-join-addr');
-      text.textContent = addr;
+      text.textContent = label;
     }
   }).catch(function () {});
 })();
