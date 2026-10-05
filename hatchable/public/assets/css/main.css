@@ -718,9 +718,12 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
    Floating scroll arrows — shown only when there is travel left that way
    ====================================================================== */
 .scroll-rail {
+  /* Parked against the middle of the right edge rather than the bottom
+     corner, which is where the host's badge lives. */
   position: fixed;
   right: clamp(0.6rem, 2vw, 1.4rem);
-  bottom: clamp(0.9rem, 4vh, 2.2rem);
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 60;
   display: flex;
   flex-direction: column;
@@ -776,4 +779,9 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 @media (max-width: 560px) {
   .scroll-arrow { width: 2.5rem; height: 2.5rem; }
   .scroll-arrow svg { width: 1.05rem; height: 1.05rem; }
+}
+/* On a short viewport the centred rail can crowd the text column; tuck it
+   in a little and keep it clear of the bottom-right badge either way. */
+@media (max-height: 520px) {
+  .scroll-rail { gap: 0.4rem; }
 }
