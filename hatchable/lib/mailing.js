@@ -14,6 +14,21 @@ import { randomToken } from './accounts.js';
 export const SITE = 'https://egregora.hatchable.site';
 export const FROM_NAME = 'EGregoRA';
 
+/**
+ * The order's address. One constant, used by every letter the site sends.
+ *
+ * Note what this does and does not control. Hatchable's `email.send` takes
+ * `{ to, subject, html, text }` and nothing else — the envelope sender is set
+ * by the platform's own SMTP relay, not by this project, so no line of code
+ * here can change the address an email appears to come FROM. What it can do,
+ * and now does, is say the correct address plainly inside every letter, so a
+ * reader always knows where to write even if the From line shows the account
+ * the project is hosted under.
+ */
+export const CONTACT = 'info@shakra.co.uk';
+export const CONTACT_LINK =
+  `<a href="mailto:${CONTACT}" style="color:#d7b05a">${CONTACT}</a>`;
+
 /** Every member needs a stable token before they can be mailed. */
 export async function unsubToken(member) {
   if (member && member.unsub_token) return member.unsub_token;
@@ -49,6 +64,8 @@ export function listFooter(addr, token) {
     <br><br>
     EGregoRA &middot; co-founded by Edward Gregory and Jim Rankin &middot;
     <a href="${SITE}" style="color:#6f6855">egregora.hatchable.site</a>
+    <br>Write to the order at ${CONTACT_LINK} &mdash; that address reaches us, whatever
+    this letter was sent from.
   </td></tr>`;
 }
 

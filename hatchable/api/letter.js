@@ -16,7 +16,11 @@ import { solveCaptcha } from '../lib/captcha.js';
 export const access = 'public';
 export const methods = ['POST'];
 
+/* Letters are forwarded here, and this is the address every letter quotes.
+   The platform's SMTP decides what the From line says; this decides what the
+   order tells people to use. */
 const ED = 'info@shakra.co.uk';
+const ED_LINK = `<a href="mailto:${ED}" style="color:#d7b05a">${ED}</a>`;
 const LIMB_NOTE = {
   'Cosmic physics & astronomy': 'the first limb',
   'Druidry, trees & nature': 'the second limb',
@@ -76,7 +80,8 @@ function autoreplyHtml({ name, topic, question, reference }) {
       <tr><td style="padding:0 30px 24px;text-align:center;color:#6f6855;font-size:11.5px;line-height:1.6">
         <hr style="border:0;border-top:1px solid rgba(215,176,90,.18);margin-bottom:12px">
         EGregoRA &middot; co-founded by Edward Gregory and Jim Rankin<br>
-        This address accepts replies. You received this because someone used your address on the form at
+        Write to the order at ${ED_LINK} &mdash; that address reaches us, whatever this letter
+        was sent from.<br> You received this because someone used your address on the form at
         egregora.hatchable.site &mdash; if that was not you, ignore it and nothing further will be sent.
       </td></tr>
     </table>

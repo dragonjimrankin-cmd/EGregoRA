@@ -88,15 +88,20 @@ export async function sendCode(member, code, purpose) {
       <p style="font-size:34px;letter-spacing:10px;color:#f3ddaa;margin:18px 0">${code}</p>
       <p style="margin:0 0 10px;font-size:14px;color:#cbbb93">
         It is good for ${CODE_MINUTES} minutes and can be used once.</p>
-      <p style="margin:0;font-size:13px;color:#8e8468">
+      <p style="margin:0 0 10px;font-size:13px;color:#8e8468">
         If you did not ask for this, ignore it — nothing has been created or changed.
         Test everything kindly.</p>
+      <p style="margin:0;font-size:12px;color:#6f6855">
+        EGregoRA &middot; write to the order at
+        <a href="mailto:info@shakra.co.uk" style="color:#d7b05a">info@shakra.co.uk</a> &mdash;
+        that address reaches us, whatever this letter was sent from.</p>
     </div>`;
   await email.send({
     to: member.email,
     subject,
     html,
-    text: `EGregoRA — your code is ${code}. It is good for ${CODE_MINUTES} minutes.`
+    text: `EGregoRA — your code is ${code}. It is good for ${CODE_MINUTES} minutes.\n` +
+      'Write to the order at info@shakra.co.uk.'
   });
 }
 

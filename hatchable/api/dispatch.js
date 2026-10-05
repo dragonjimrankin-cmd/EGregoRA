@@ -11,7 +11,9 @@ import { sendDispatch } from '../lib/mailing.js';
 export const access = 'public';
 export const methods = ['POST'];
 
-const KEEPERS = ['info@shakra.co.uk', 'ed@egregora.org', 'jim@egregora.org'];
+/* Who may send to the whole list. The egregora.org addresses that used to sit
+   here were never real mailboxes — the order's address is the Shakra one. */
+const KEEPERS = ['info@shakra.co.uk'];
 
 export default async function (req, res) {
   const me = await whoAmI(req);
