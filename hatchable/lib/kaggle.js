@@ -17,6 +17,7 @@
  */
 import { config, db } from 'hatchable';
 import { storedKaggleToken } from './key-store.js';
+import { kaggleAccounts as poolAccounts, acrossAccounts, markFailure, markSuccess } from './pool.js';
 
 const API = 'https://www.kaggle.com/api/v1';
 export const MACHINE = 'NvidiaTeslaT4';
@@ -37,8 +38,25 @@ export function kaggleUser() {
   return null;
 }
 
-async function call(path, { method = 'GET', body = null, query = null, timeout = 45000 } = {}) {
-  const token = kaggleToken();
+/**
+ * Every Kaggle account the order can use, healthiest first. The bundled
+ * token is the last fallback, so a token pasted on the setup page always
+ * wins, and a second or third account can be added with no code change
+ * (KAGGLE_API_TOKEN_2, or several at once in KAGGLE_ACCOUNTS).
+ */
+export async function kaggleAccountList() {
+  const stored = storedKaggleToken();
+  return poolAccounts(stored ? [{ id: KNOWN_USER, label: KNOWN_USER + ' (bundled)', user: KNOWN_USER, secret: stored }] : []);
+}
+
+/** The account a job is already running under, looked up by its username. */
+export async function accountFor(userName) {
+  const list = await kaggleAccountList();
+  return list.find((a) => a.user === userName) || list[0] || null;
+}
+
+async function call(path, { method = 'GET', body = null, query = null, timeout = 45000, account = null } = {}) {
+  const token = account ? account.secret : kaggleToken();
   if (!token) return { error: 'No Kaggle token configured.' };
 
   let url = API + path;
@@ -84,12 +102,15 @@ let cachedUser = null;
  * from the OAuth introspection endpoint, which returns the username for a
  * KGAT token.
  */
-export async function whoAmI() {
-  const fixed = kaggleUser();
-  if (fixed) return fixed;
-  if (cachedUser) return cachedUser;
+export async function whoAmI(account = null) {
+  if (account && account.user) return account.user;
+  if (!account) {
+    const fixed = kaggleUser();
+    if (fixed) return fixed;
+    if (cachedUser) return cachedUser;
+  }
 
-  const token = kaggleToken();
+  const token = account ? account.secret : kaggleToken();
   if (!token) return null;
   try {
     const r = await fetch(API + '/oauth2/introspect', {
@@ -104,6 +125,7 @@ export async function whoAmI() {
     if (r.ok) {
       const j = await r.json();
       if (j && j.active && j.username) {
+        if (account) { account.user = String(j.username); return account.user; }
         cachedUser = String(j.username);
         return cachedUser;
       }
@@ -118,8 +140,8 @@ export async function whoAmI() {
  * Push a script to Kaggle and start it on a GPU.
  * @returns {Promise<{slug:string,url:string,version:number}|{error:string}>}
  */
-export async function pushKernel({ slug, title, code, internet = true }) {
-  const user = await whoAmI();
+export async function pushKernel({ slug, title, code, internet = true, account = null }) {
+  const user = await whoAmI(account);
   if (!user) {
     return { error: 'Could not work out the Kaggle username for this token. Set KAGGLE_USERNAME.' };
   }
@@ -142,7 +164,8 @@ export async function pushKernel({ slug, title, code, internet = true }) {
       machineShape: MACHINE,
       kernelExecutionType: 'SaveAndRunAll'
     },
-    timeout: 90000
+    timeout: 90000,
+    account
   });
   if (out.error) return out;
   if (out.error_message) return { error: String(out.error_message).slice(0, 300) };
@@ -150,9 +173,10 @@ export async function pushKernel({ slug, title, code, internet = true }) {
 }
 
 /** QUEUED | RUNNING | COMPLETE | ERROR | CANCEL_* */
-export async function kernelStatus(fullSlug) {
+export async function kernelStatus(fullSlug, account = null) {
   const [userName, kernelSlug] = String(fullSlug).split('/');
-  const out = await call('/kernels/status', { query: { userName, kernelSlug } });
+  const acct = account || await accountFor(userName);
+  const out = await call('/kernels/status', { query: { userName, kernelSlug }, account: acct });
   if (out.error) return out;
   return {
     status: String(out.status || out.state || '').toUpperCase(),
@@ -161,9 +185,10 @@ export async function kernelStatus(fullSlug) {
 }
 
 /** The files a finished kernel left behind. */
-export async function kernelOutput(fullSlug) {
+export async function kernelOutput(fullSlug, account = null) {
   const [userName, kernelSlug] = String(fullSlug).split('/');
-  const out = await call('/kernels/output', { query: { userName, kernelSlug } });
+  const acct = account || await accountFor(userName);
+  const out = await call('/kernels/output', { query: { userName, kernelSlug }, account: acct });
   if (out.error) return out;
   const files = out.files || out.Files || [];
   return {
@@ -176,8 +201,8 @@ export async function kernelOutput(fullSlug) {
 }
 
 /** Download one of those files as bytes. */
-export async function fetchOutput(url) {
-  const token = kaggleToken();
+export async function fetchOutput(url, account = null) {
+  const token = account ? account.secret : kaggleToken();
   const r = await fetch(url, { headers: { authorization: 'Bearer ' + token } });
   if (!r.ok) return { error: 'Kaggle output download returned ' + r.status };
   const buf = new Uint8Array(await r.arrayBuffer());
@@ -215,3 +240,35 @@ export async function releaseGpu(slug, status = 'done') {
     [status, slug]
   ).catch(() => {});
 }
+
+/**
+ * Push a script to whichever Kaggle account will take it.
+ *
+ * Free GPU quota is per account and runs out roughly thirty hours into a
+ * week, after which a push is accepted and then quietly refused a machine —
+ * so a second account is not a luxury. Each is tried in turn, healthiest
+ * first, and the one that works is named in the result so the poller knows
+ * whose token to use when it asks after the job.
+ */
+export async function pushKernelAnyAccount({ slug, code, internet = true }) {
+  const accounts = await kaggleAccountList();
+  if (!accounts.length) return { error: 'No Kaggle account is configured.' };
+
+  const won = await acrossAccounts('kaggle', accounts, async (account) => {
+    const out = await pushKernel({ slug, code, internet, account });
+    if (out.error) throw new Error(out.error);
+    return Object.assign(out, { accountId: account.id, user: account.user || null });
+  });
+  if (!won) {
+    return { error: 'Every Kaggle account the order holds refused the job — quota, verification or a dead token.' };
+  }
+  return won;
+}
+
+/** Report the pool's own view of the Kaggle accounts. */
+export async function kaggleHealth() {
+  const list = await kaggleAccountList();
+  return list.map((a) => ({ account: a.label || a.id, user: a.user || null }));
+}
+
+export { markFailure as markKaggleFailure, markSuccess as markKaggleSuccess };

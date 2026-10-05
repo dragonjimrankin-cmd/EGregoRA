@@ -20,6 +20,7 @@
  *   mailbag { limit? }                      the questions people have asked
  *   models                                  the video models on offer
  *   workers                                 the Colab GPU pool
+ *   accounts                                the render pool: every account, and its health
  *   whoami                                  what this token is and may do
  */
 import { db } from 'hatchable';
@@ -28,6 +29,7 @@ import { ANSWERS } from '../lib/oracle-corpus.js';
 import { readSheet, extendSheet, composePrompt, describeSheet, seedFor } from '../lib/continuity.js';
 import { submitVideo, pollVideo, VIDEO_MODELS } from '../lib/videogen.js';
 import { generateImage } from '../lib/imagegen.js';
+import { poolReport } from '../lib/pool.js';
 import { liveWorkers } from '../lib/colab.js';
 import { bestMatch, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
 import { ginkSystem, PRELUDE, isReturnRequest, RETURN_REPLY } from '../lib/gink-mind.js';
@@ -49,6 +51,7 @@ const MANUAL = {
     mailbag: { limit: 'optional 1-50' },
     models: {},
     workers: {},
+    accounts: {},
     whoami: {}
   },
   example:
@@ -321,10 +324,18 @@ export default async function (req, res) {
         return res.json({
           workers: workers.map((w) => ({
             label: w.label, gpu: w.gpu, jobs: w.jobs,
+            account: w.account || null,
+            caps: w.caps || 'video',
+            fails: w.fails || 0,
             age_s: Math.round((Date.now() - new Date(w.last_seen).getTime()) / 1000)
           }))
         });
       }
+
+      /* Which accounts the render pool holds, and which of them are sulking.
+         A route that has just failed is on a cooldown and shows as such. */
+      case 'accounts':
+        return res.json({ pool: await poolReport() });
 
       default:
         return res.status(400).json({ error: 'Unknown action: ' + (action || '(none)'), manual: MANUAL });

@@ -13,6 +13,8 @@
  */
 import { ai, storage, config } from 'hatchable';
 import { openaiImage } from './openai.js';
+import { colabImage } from './colab.js';
+import { huggingFaceAccounts, acrossAccounts } from './pool.js';
 
 /* The order's own generator: FLUX.1-schnell, Apache-2.0 open weights, reached
    through the keyless Pollinations endpoint. It is tried first so the oracle
@@ -71,22 +73,59 @@ async function viaOpenSource(prompt) {
   }
 }
 
-/** Stable Diffusion XL via Hugging Face, when a token is configured. */
+/**
+ * The order's own GPU, through whichever Colab notebook is awake.
+ *
+ * This comes first when a worker has registered itself as able to draw:
+ * it is the one route that belongs to the order rather than being borrowed,
+ * it has no rate limit but the runtime's own, and the weights are open. If
+ * every machine is busy, reclaimed or asleep the function returns null in
+ * well under a second and the hosted routes below take over.
+ */
+async function viaColab(prompt) {
+  const out = await colabImage(prompt);
+  if (!out) return null;
+  const who = (out.worker && (out.worker.label || out.worker.account)) || 'Colab';
+  return {
+    bytes: out.bytes,
+    contentType: out.contentType || 'image/png',
+    provider: 'flux-schnell on the order\'s own GPU (' + who + ')',
+    hardware: 'Google Colab ' + ((out.worker && out.worker.gpu) || 'GPU') + ' \u00b7 ' + who
+  };
+}
+
+/**
+ * Stable Diffusion XL on Hugging Face.
+ *
+ * Free inference credits are reckoned per account and run dry, so every
+ * token the owner has configured is tried in turn — numbered
+ * HUGGINGFACE_API_KEY_2, _3 … or several at once in HUGGINGFACE_ACCOUNTS.
+ * A token that has just been refused is put on a short cooldown by the pool
+ * and skipped next time rather than retried into the same wall.
+ */
 async function viaHuggingFace(prompt) {
-  let token = null;
-  try { token = await config.get('HUGGINGFACE_API_KEY'); } catch { return null; }
-  if (!token) return null;
-  const r = await fetch('https://api-inference.huggingface.co/models/' + HF_MODEL, {
-    method: 'POST',
-    headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json', accept: 'image/png' },
-    body: JSON.stringify({ inputs: prompt.slice(0, 1800), options: { wait_for_model: true } })
+  let accounts = await huggingFaceAccounts();
+  if (!accounts.length) {
+    let token = null;
+    try { token = await config.get('HUGGINGFACE_API_KEY'); } catch { return null; }
+    if (!token) return null;
+    accounts = [{ id: 'primary', label: 'primary', secret: token }];
+  }
+
+  const won = await acrossAccounts('huggingface', accounts, async (account) => {
+    const r = await fetch('https://api-inference.huggingface.co/models/' + HF_MODEL, {
+      method: 'POST',
+      headers: { authorization: 'Bearer ' + account.secret, 'content-type': 'application/json', accept: 'image/png' },
+      body: JSON.stringify({ inputs: prompt.slice(0, 1800), options: { wait_for_model: true } })
+    });
+    if (!r || !r.ok) throw new Error('HTTP ' + (r && r.status));
+    const type = (r.headers && r.headers.get && r.headers.get('content-type')) || 'image/png';
+    if (!/^image\//i.test(type)) throw new Error('not an image: ' + type);
+    const buf = new Uint8Array(await r.arrayBuffer());
+    if (buf.length < 2048) throw new Error('empty image');
+    return { bytes: buf, contentType: type, provider: 'stable-diffusion-xl (open weights)' };
   });
-  if (!r || !r.ok) return null;
-  const type = (r.headers && r.headers.get && r.headers.get('content-type')) || 'image/png';
-  if (!/^image\//i.test(type)) return null;
-  const buf = new Uint8Array(await r.arrayBuffer());
-  if (buf.length < 2048) return null;
-  return { bytes: buf, contentType: type, provider: 'stable-diffusion-xl (open weights)' };
+  return won;
 }
 
 async function viaGoogle(prompt) {
@@ -135,6 +174,7 @@ async function viaOpenAI(prompt) {
  */
 export function hardwareFor(provider) {
   const p = String(provider || '').toLowerCase();
+  if (p.includes('own gpu') || p.includes('colab')) return 'Google Colab GPU, run by the order itself \u00b7 FLUX.1-schnell, open weights';
   if (p.includes('flux')) return 'Pollinations hosted GPU \u00b7 FLUX.1-schnell, open weights \u2014 the card is not disclosed';
   if (p.includes('stable-diffusion')) return 'Hugging Face Inference GPU \u00b7 SDXL, open weights \u2014 the card is not disclosed';
   if (p.includes('google')) return 'Google hosted accelerator (TPU or GPU) \u2014 not disclosed';
@@ -152,7 +192,9 @@ export async function generateImage(subject) {
   if (subj.length < 3) return { prompt: subj, error: 'Nothing to draw — say what the picture should show.' };
 
   const prompt = fullPrompt(subj);
-  const attempts = [viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI];
+  /* Own GPU first, then the keyless open-weights route, then anything the
+     owner has paid for. Each entry may itself span several accounts. */
+  const attempts = [viaColab, viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI];
   let lastErr = '';
 
   for (const attempt of attempts) {
@@ -163,7 +205,11 @@ export async function generateImage(subject) {
       const key = `oracle-images/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
       await storage.put(key, out.bytes || out.base64, out.contentType);
       const url = await storage.url(key, { ttl: 604800 });
-      return { url, key, prompt: subj, provider: out.provider, hardware: hardwareFor(out.provider) };
+      return {
+        url, key, prompt: subj, provider: out.provider,
+        account: out.account || null,
+        hardware: out.hardware || hardwareFor(out.provider)
+      };
     } catch (err) {
       if (err && err.code === 'SetupRequired') {
         return {

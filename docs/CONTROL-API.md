@@ -40,7 +40,8 @@ it. To kill it: `UPDATE api_tokens SET revoked = TRUE WHERE name = 'JIM1';`
 | `member-name` | `email`, `name` | set the display name the header chip and account page show |
 | `members` | `limit?` | list the register, newest first |
 | `models` | — | the open-weights video models on offer |
-| `workers` | — | the live Colab GPU pool |
+| `workers` | — | the live Colab GPU pool, with the account and capabilities of each |
+| `accounts` | — | every credential the render pool holds, per provider, with failures and cooldowns |
 
 ## Examples
 
@@ -82,3 +83,38 @@ INSERT INTO api_tokens (name, token_hash, scope) VALUES ('ED1', '<sha256>', 'con
 Publish pages, edit the corpus, read members' details, send email, or spend
 money on a paid key. It drives the public surface of the order and nothing
 behind the Register.
+
+## The render pool: more than one account
+
+Images and clips are both drawn by a pool rather than a single provider, and
+every provider in that pool may hold several accounts. Free GPU quota runs
+out, a Colab runtime gets reclaimed, a token is revoked — none of that should
+reach the visitor, so each account is tried in turn and the first that works
+wins. An account that has just refused is put on a short cooldown and stepped
+over next time rather than retried into the same wall; a success clears it.
+
+**Adding a second account needs no code change.** Any of these shapes works,
+for `KAGGLE_API_TOKEN`, `HUGGINGFACE_API_KEY`, `FAL_KEY`,
+`REPLICATE_API_TOKEN` and `OPENAI_API_KEY`:
+
+| Shape | Example |
+| --- | --- |
+| numbered | `KAGGLE_API_TOKEN`, `KAGGLE_API_TOKEN_2`, … up to `_6` (with matching `KAGGLE_USERNAME_2`) |
+| several at once, lines | `KAGGLE_ACCOUNTS` = `ed \| edgregory \| KGAT_…` on one line per account |
+| several at once, JSON | `KAGGLE_ACCOUNTS` = `[{"label":"ed","user":"edgregory","token":"KGAT_…"}]` |
+
+Colab accounts are added differently, because Colab cannot be logged into
+programmatically: open `colab/egregora-gpu.ipynb` in each Google account and
+set **ACCOUNT** to a different name in each. The site then interleaves work
+across accounts rather than loading whichever registered first, and each
+worker now registers as able to draw **stills as well as clips**, so the
+"Make an Image" box tries the order's own GPUs before any hosted service.
+
+Ask the pool how it is doing:
+
+```bash
+curl -s https://egregora.hatchable.site/api/control \
+  -H "authorization: Bearer $EGREGORA_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"action":"accounts"}'
+```

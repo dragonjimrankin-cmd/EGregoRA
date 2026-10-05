@@ -19,11 +19,12 @@
  */
 import { storage, config } from 'hatchable';
 import {
-  pushKernel, kernelStatus, kernelOutput, fetchOutput,
+  pushKernel, pushKernelAnyAccount, kaggleAccountList, kernelStatus, kernelOutput, fetchOutput,
   claimGpu, releaseGpu, gpuBusy, kaggleToken
 } from './kaggle.js';
 import { videoScript, imageScript } from './gpu-scripts.js';
 import { submitToColab, colabStatus, colabFile } from './colab.js';
+import { falAccounts, replicateAccounts, acrossAccounts } from './pool.js';
 
 const FAL_MODEL = 'fal-ai/hunyuan-video-v1.5/text-to-video';
 const FAL_QUEUE = 'https://queue.fal.run/';
@@ -127,8 +128,12 @@ export async function submitVideo(prompt, opts = {}) {
   const seed = Number.isFinite(Number(opts.seed)) && Number(opts.seed) > 0
     ? Math.floor(Number(opts.seed)) : null;
 
-  const falKey = await key('FAL_KEY');
-  if (falKey) {
+  /* fal.ai. Credit is per account and a clip is not cheap, so every key the
+     owner has configured is tried in turn — FAL_KEY, FAL_KEY_2 … or several
+     at once in FAL_ACCOUNTS — and a key that has just been refused is put on
+     a cooldown by the pool rather than retried into the same refusal. */
+  const falKeys = await falAccounts();
+  if (falKeys.length) {
     const route = initUrl && model.falI2V ? model.falI2V : model.fal;
     const payload = {
       prompt: text,
@@ -140,12 +145,15 @@ export async function submitVideo(prompt, opts = {}) {
     };
     if (seed) payload.seed = seed;
     if (initUrl && model.falI2V) payload.image_url = initUrl;
-    const r = await call(FAL_QUEUE + route, {
-      method: 'POST',
-      headers: { authorization: 'Key ' + falKey, 'content-type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (r.ok && r.json && (r.json.request_id || r.json.requestId)) {
+    const won = await acrossAccounts('fal', falKeys, async (account) => {
+      const r = await call(FAL_QUEUE + route, {
+        method: 'POST',
+        headers: { authorization: 'Key ' + account.secret, 'content-type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!(r.ok && r.json && (r.json.request_id || r.json.requestId))) {
+        throw new Error('submit ' + r.status + ' ' + String(r.text).slice(0, 160));
+      }
       const id = r.json.request_id || r.json.requestId;
       return {
         provider: 'fal',
@@ -155,17 +163,17 @@ export async function submitVideo(prompt, opts = {}) {
         statusUrl: r.json.status_url || (FAL_QUEUE + route + '/requests/' + id + '/status'),
         responseUrl: r.json.response_url || (FAL_QUEUE + route + '/requests/' + id)
       };
-    }
-    console.error('videogen: fal submit failed', r.status, String(r.text).slice(0, 300));
+    });
+    if (won) return won;
   }
 
   /* The order's own Colab workers: a notebook running on somebody's Google
      account, tunnelled out and registered with /api/colab. Free, usually a
      T4 or an L4, and much quicker than Kaggle because the worker stays warm
      between clips. Tried before the paid fallbacks. */
-  if (model.kaggle) {
+  {
     const viaColab = await submitToColab({
-      prompt: text, aspect, frames, model: model.kaggle, kind: 'video',
+      prompt: text, aspect, frames, model: model.kaggle || model.label, kind: 'video',
       seed: seed || undefined, init_image: initUrl || undefined
     });
     if (viaColab) {
@@ -184,7 +192,9 @@ export async function submitVideo(prompt, opts = {}) {
      clip takes the better part of half an hour — but it needs no paid key.
      Tried after the paid routes and before giving up. */
   const tryKaggle = async () => {
-    if (!kaggleToken()) return null;
+    /* Any configured Kaggle account will do — the push helper walks the
+       whole pool, so one account out of free GPU quota is not the end of it. */
+    if (!(await kaggleAccountList()).length) return null;
     if (!model.kaggle) {
       return {
         error: model.label + ' is too large for the order\u2019s own GPU. Choose HunyuanVideo, Wan, ' +
@@ -196,7 +206,7 @@ export async function submitVideo(prompt, opts = {}) {
     if (!claim.ok) {
       return { error: 'The order\u2019s GPU is busy with another clip. Try again in a few minutes.' };
     }
-    const out = await pushKernel({
+    const out = await pushKernelAnyAccount({
       slug,
       code: videoScript({ prompt: text, aspect, frames, model: model.kaggle })
     });
@@ -215,11 +225,12 @@ export async function submitVideo(prompt, opts = {}) {
     };
   };
 
-  const repKey = await key('REPLICATE_API_TOKEN');
-  if (repKey) {
+  const repKeys = await replicateAccounts();
+  if (repKeys.length) {
+    const won = await acrossAccounts('replicate', repKeys, async (account) => {
     const r = await call('https://api.replicate.com/v1/models/' + model.replicate + '/predictions', {
       method: 'POST',
-      headers: { authorization: 'Bearer ' + repKey, 'content-type': 'application/json' },
+      headers: { authorization: 'Bearer ' + account.secret, 'content-type': 'application/json' },
       body: JSON.stringify({
         input: Object.assign(
           { prompt: text, resolution: '480p', aspect_ratio: aspect, num_frames: frames },
@@ -228,7 +239,10 @@ export async function submitVideo(prompt, opts = {}) {
         )
       })
     });
-    if (r.ok && r.json && r.json.id) {
+    if (!(r.ok && r.json && r.json.id)) {
+      throw new Error('submit ' + r.status + ' ' + String(r.text).slice(0, 160));
+    }
+    {
       return {
         provider: 'replicate',
         hardware: 'Replicate hosted accelerator \u2014 A100 or H100 class, not named per job',
@@ -238,7 +252,8 @@ export async function submitVideo(prompt, opts = {}) {
         responseUrl: (r.json.urls && r.json.urls.get) || ('https://api.replicate.com/v1/predictions/' + r.json.id)
       };
     }
-    console.error('videogen: replicate submit failed', r.status, String(r.text).slice(0, 300));
+    });
+    if (won) return won;
   }
 
   const viaKaggle = await tryKaggle();
@@ -490,7 +505,7 @@ export async function pollVideo(row) {
  */
 export async function submitKaggleImage(prompt) {
   const text = String(prompt || '').trim().slice(0, 1500);
-  if (!kaggleToken()) return { error: 'No Kaggle token configured.' };
+  if (!(await kaggleAccountList()).length) return { error: 'No Kaggle account is configured.' };
 
   const busy = await gpuBusy();
   if (busy) {
@@ -505,7 +520,7 @@ export async function submitKaggleImage(prompt) {
   const claim = await claimGpu('image', slug);
   if (!claim.ok) return { error: 'The order\u2019s GPU is busy. Try again shortly.' };
 
-  const out = await pushKernel({ slug, code: imageScript({ prompt: text }) });
+  const out = await pushKernelAnyAccount({ slug, code: imageScript({ prompt: text }) });
   if (out.error) {
     await releaseGpu(slug, 'failed');
     return { error: out.error };
