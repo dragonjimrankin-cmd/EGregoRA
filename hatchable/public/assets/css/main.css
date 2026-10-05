@@ -213,7 +213,12 @@ h3 { font-size: 1.15rem; color: var(--gold-bright); margin: 0 0 0.4rem; letter-s
   font-family: var(--caps); letter-spacing: 0.5em; text-transform: uppercase;
   font-size: clamp(0.62rem, 1.6vw, 0.85rem); color: var(--vellum-dim);
 }
-.hero .lede { max-width: 48ch; margin: 1.6rem auto; }
+.hero .lede {
+  max-width: 48ch; margin: 1.6rem auto;
+  /* Three pixels larger than the house lede: this one sentence carries the
+     whole argument of the order, and it is the first thing read. */
+  font-size: calc(1.18em + 3px);
+}
 
 .btn {
   display: inline-block; font-family: var(--title); text-transform: uppercase;
