@@ -1,50 +1,48 @@
-# control run — 2026-10-05T08:39:08.879Z
-site: https://egregora.hatchable.site   calls: 4
+# control run — 2026-10-05T08:43:24.270Z
+site: https://egregora.hatchable.site   calls: 2
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"mailbag","limit":3}
-HTTP 500  (133 ms)
+HTTP 200  (213 ms)
 {
-  "error": "gateway internal/db/query 400: SQLSTATE[42703]: Undefined column: 7 ERROR:  column \"name\" does not exist\nLINE 2: SELECT id, name, question, limb, created_at FROM questions O...\n                   ^ (Connection: app, Host: /var/run/pgbouncer, Port: 6432, Database: hatchable_apps_e, SQL: WITH __wrap AS (\nSELECT id, name, question, limb, created_at FROM questions ORDER BY created_at DESC LIMIT 3\n) SELECT COALESCE(json_agg(row_to_json(__wrap)), '[]'::json)::text AS rows_json, COUNT(*)::int AS row_count FROM __wrap)\n\nHINT: column `name` does not exist. Check the table's columns with get_project / information_schema.columns."
-}
-
---------------------------------------------------------------------
-POST {"action":"status"}
-HTTP 200  (56 ms)
-{
-  "site": "https://egregora.hatchable.site",
-  "limbs": 11,
-  "corpus": 1280,
-  "questions": 9,
-  "jobs": {},
-  "gpu_pool": [],
-  "token": "JIM1"
-}
-
---------------------------------------------------------------------
-POST {"action":"draw","prompt":"a red fox asleep in frosted bracken at first light, photorealistic"}
-HTTP 200  (3654 ms)
-{
-  "status": "ready",
-  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791189552820-32veqst6.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T083912Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=7e4cbd5511fabf5783d103a0e9b91c49a6611e4e4b7d408792a847a5513227c3",
-  "provider": "flux-schnell (open weights)",
-  "prompt": "a red fox asleep in frosted bracken at first light, photorealistic"
-}
-
---------------------------------------------------------------------
-POST {"action":"ask","question":"Is the Law of One testable?"}
-HTTP 200  (78 ms)
-{
-  "answer": "As cosmology, it is untestable, and we should say so plainly. Densities, harvests, the Confederation — none of it makes a prediction that could fail. That is not a small objection; it is the whole of the scientific objection.\n\nAs philosophy it is far more interesting than its reputation suggests. Strip the science-fiction furniture and the core is this: consciousness is unitary, separation is the condition that makes experience possible, and free will is so nearly sacred that it will not be overridden even to help. That intuition is in good company — Advaita Vedanta, Plotinus, Eckhart, Whitehead's process theology. The Ra material's distinctive move is making polarity, the chosen orientation of the will, the hinge of the whole thing.\n\nRead it as a text rather than a transcript and it rewards you. Read it as a report from somewhere and you have left the ledger we keep. Myth and primary esoteric text — which is a respectable shelf, not a dismissal.",
-  "source": "written",
-  "limb": "law of one",
-  "followups": [
-    "Does the Law of One hold up?",
-    "How should I approach the Law of One?",
-    "Why does time only go one way?"
+  "questions": [
+    {
+      "id": 9,
+      "name": null,
+      "question": "a butterfly",
+      "limb": "image",
+      "source": "drawn",
+      "answer": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791187919204-kio9jdj7.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T081159Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=ed0c665e14b7e6ef8dff51c0f2aac205e45afccfaa",
+      "created_at": "2026-10-05T08:11:59.380837+00:00"
+    },
+    {
+      "id": 8,
+      "name": null,
+      "question": "A dew-covered spider's web at dawn, each drop holding an inverted hedgerow",
+      "limb": "image",
+      "source": "drawn",
+      "answer": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791187863266-41gqgv3t.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T081103Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=d94d1463e9c89871f7ae7dd5b51ae40f70775c4d4c",
+      "created_at": "2026-10-05T08:11:03.435653+00:00"
+    },
+    {
+      "id": 7,
+      "name": null,
+      "question": "who is edward gregory",
+      "limb": null,
+      "source": "written-fallback",
+      "answer": "Edward Gregory and Jim Rankin, as co-founders — never one of them alone, and that is not a courtesy. Ed is a natural philosopher in the old unembarrassed sense, who refuses to choose between the telescope and the tree. Jim is his understudy and, on the better days, his muse: where Ed presses a question until it yields, Jim asks why that question and not another. The pursuit and the provocation. An",
+      "created_at": "2026-10-05T08:01:38.897954+00:00"
+    }
   ]
+}
+
+--------------------------------------------------------------------
+POST {"action":"workers"}
+HTTP 200  (60 ms)
+{
+  "workers": []
 }
 
 done.
