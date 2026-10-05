@@ -1,71 +1,37 @@
 #!/usr/bin/env node
-/* Which free, keyless, open-weights chat routes actually answer today?
-   Run from the GitHub runner; the sandbox has no egress. */
-const Q = [{ role: 'user', content: 'In one short sentence: why is the sky blue?' }];
+/* Second pass: exactly how far the keyless GPT-OSS 20B route can be pushed. */
 const ms = () => Date.now();
-
-async function probe(label, fn) {
+async function probe(label, url, opts) {
   const t = ms();
   try {
-    const out = await fn();
-    console.log(`\n### ${label}  (${ms() - t} ms)\n${String(out).slice(0, 500)}`);
-  } catch (err) {
-    console.log(`\n### ${label}  (${ms() - t} ms)\nFAILED: ${(err && err.message) || err}`);
-  }
+    const r = await fetch(url, { signal: AbortSignal.timeout(90000), ...opts });
+    const txt = await r.text();
+    console.log(`\n### ${label}  HTTP ${r.status}  (${ms() - t} ms)  ${txt.length} chars\n${txt.slice(0, 700)}`);
+  } catch (e) { console.log(`\n### ${label}  FAILED (${ms() - t} ms): ${e.message}`); }
 }
+const B = 'https://text.pollinations.ai/';
+const enc = encodeURIComponent;
 
-const j = async (url, opts) => {
-  const r = await fetch(url, { signal: AbortSignal.timeout(60000), ...opts });
-  const t = await r.text();
-  return `HTTP ${r.status} :: ${t.slice(0, 400)}`;
-};
+await probe('models (full)', B + 'models');
 
-await probe('pollinations GET /openai-large', () =>
-  j('https://text.pollinations.ai/' + encodeURIComponent('Why is the sky blue? One sentence.') + '?model=openai-large'));
+await probe('GET + system param', B + enc('What is the golden angle? Two sentences.') +
+  '?model=openai&system=' + enc('You are the Oracle of EGregoRA. Answer in British English, plainly, no hedging. Sign off with the word GINK.'));
 
-await probe('pollinations GET default', () =>
-  j('https://text.pollinations.ai/' + encodeURIComponent('Why is the sky blue? One sentence.')));
+await probe('GET + json=true', B + enc('Say hello in five words.') + '?model=openai&json=true');
 
-await probe('pollinations POST /openai', () =>
-  j('https://text.pollinations.ai/openai', {
-    method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model: 'openai', messages: Q, seed: 1 })
-  }));
+await probe('GET long prompt (~3500 chars)', B +
+  enc('Here is grounding material.\n\n' + 'The order has written: the ether was never disproved; only the mechanical rest frame was struck out. '.repeat(40) +
+      '\n\nQuestion: did Michelson-Morley disprove the ether? Answer in 60 words.') + '?model=openai');
 
-await probe('pollinations POST mistral', () =>
-  j('https://text.pollinations.ai/openai', {
-    method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model: 'mistral', messages: Q })
-  }));
+await probe('GET conversation flattened', B +
+  enc('[user] My name is Jim.\n[assistant] Hello Jim.\n[user] What is my name?') + '?model=openai&system=' + enc('Continue the conversation.'));
 
-await probe('pollinations models list', () => j('https://text.pollinations.ai/models'));
+await probe('GET temperature + seed', B + enc('One word: a colour.') + '?model=openai&temperature=0.1&seed=7');
 
-await probe('HF router, no key', () =>
-  j('https://router.huggingface.co/v1/chat/completions', {
-    method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model: 'Qwen/Qwen2.5-7B-Instruct', messages: Q, max_tokens: 60 })
-  }));
+await probe('GET gpt-oss alias', B + enc('In one sentence, what are you?') + '?model=gpt-oss');
 
-await probe('openrouter free, no key', () =>
-  j('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model: 'meta-llama/llama-3.3-70b-instruct:free', messages: Q })
-  }));
-
-await probe('groq, no key', () =>
-  j('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: Q })
-  }));
-
-await probe('cloudflare ai public', () =>
-  j('https://api.cloudflare.com/client/v4/accounts/x/ai/run/@cf/meta/llama-3.1-8b-instruct', {
-    method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ messages: Q })
-  }));
-
-await probe('deepinfra openai-compat, no key', () =>
-  j('https://api.deepinfra.com/v1/openai/chat/completions', {
-    method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model: 'meta-llama/Meta-Llama-3.1-8B-Instruct', messages: Q })
-  }));
+await probe('POST /openai with referrer', B + 'openai', {
+  method: 'POST',
+  headers: { 'content-type': 'application/json', referer: 'https://egregora.hatchable.site' },
+  body: JSON.stringify({ model: 'openai', messages: [{ role: 'user', content: 'Hi in 3 words' }], referrer: 'egregora' })
+});
