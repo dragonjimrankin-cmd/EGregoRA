@@ -133,12 +133,28 @@ img { max-width: 100%; height: auto; display: block; }
   font-family: var(--title); font-size: 0.78rem; letter-spacing: 0.17em; text-transform: uppercase;
   color: var(--vellum-dim); padding: 0.55rem 0.75rem; border: 1px solid transparent; position: relative;
 }
-.site-nav a i { width: 15px; height: 15px; opacity: 0.6; color: var(--gold); }
+.site-nav a i .glyph * { stroke-width: 1.6; }
+.site-nav a i {
+  width: 21px; height: 21px; opacity: 0.95; color: var(--gold-bright);
+  filter: drop-shadow(0 0 4px rgba(215,176,90,0.55));
+  transition: opacity 0.25s, transform 0.25s, filter 0.25s;
+}
 .site-nav a:hover, .site-nav a[aria-current="page"] {
   color: var(--gold-bright); border-color: rgba(215,176,90,0.35);
   background: radial-gradient(120% 140% at 50% 120%, rgba(215,176,90,0.16), transparent 70%);
 }
-.site-nav a:hover i, .site-nav a[aria-current="page"] i { opacity: 1; }
+.site-nav a:hover i, .site-nav a[aria-current="page"] i {
+  opacity: 1; transform: scale(1.12);
+  filter: drop-shadow(0 0 7px rgba(243,221,170,0.85));
+}
+@media (min-width: 861px) {
+  .site-nav a { gap: 0.55rem; }
+  .site-nav a i { width: 24px; height: 24px; }
+  .site-nav a i .glyph * { stroke-width: 1.9; }
+}
+@media (max-width: 860px) {
+  .site-nav a i { width: 20px; height: 20px; }
+}
 
 /* ---------- Layout ---------------------------------------------------- */
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 1.25rem; }
@@ -939,3 +955,8 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 .card h3 .card-link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
 .card:hover h3 .card-link { color: var(--gold); }
 .card .mt-1 a { position: relative; z-index: 3; }
+
+/* --- oracle: links inside answers and in the source footnote --- */
+.oracle-text a { color: var(--gold-bright); text-decoration: underline; text-underline-offset: 2px; }
+.oracle-text a:hover { color: var(--vellum); }
+.oracle-src a { color: var(--gold); text-decoration: underline; }

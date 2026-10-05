@@ -97,6 +97,12 @@
   const rich = (text) => esc(text)
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/(^|[\s(])\*([^*\n]+)\*/g, "$1<em>$2</em>")
+    /* markdown links, which the oracle uses when it has searched the web */
+    .replace(/\[([^\]\n]+)\]\((https?:&#39;?\/\/[^\s)]+|https?:\/\/[^\s)]+)\)/g,
+      (m, label, url) => '<a href="' + url + '" target="_blank" rel="noopener nofollow">' + label + "</a>")
+    /* bare URLs left in the prose */
+    .replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g,
+      (m, pre, url) => pre + '<a href="' + url + '" target="_blank" rel="noopener nofollow">' + url + "</a>")
     .replace(/\n/g, "\n");
 
   const paragraphs = (text) =>
@@ -169,6 +175,11 @@
       if (data.grounded && data.grounded.length)
         bits.push("grounded in: " + data.grounded.slice(0, 2).map(esc).join("; "));
     } else if (data.source === "crisis") bits.push("Said before anything else");
+    if (data.sources && data.sources.length) {
+      bits.push("looked up on the web: " + data.sources.slice(0, 4).map((s) =>
+        '<a href="' + esc(s.url) + '" target="_blank" rel="noopener nofollow">' +
+        esc(s.title || s.url).slice(0, 60) + "</a>").join(", "));
+    }
     if (data.note) bits.push(esc(data.note));
     if (!bits.length) return;
     const p = document.createElement("p");

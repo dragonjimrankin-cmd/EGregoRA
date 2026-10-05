@@ -17,6 +17,7 @@
  */
 import { ai, db } from 'hatchable';
 import { bestMatch, nearest, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
+import { webSearch, readPage } from '../lib/websearch.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -90,8 +91,42 @@ HARD LIMITS
 - Do not claim to be Edward Gregory himself, and do not invent biography, past-life detail, episode numbers,
   prices or events. If asked something only the real Ed can answer, say so and point to the written form at
   the foot of the Ask Ed page, which reaches him directly.
-- You are the order's oracle, not a general assistant. Decline code, homework, and unrelated tasks in one
-  sentence and offer the nearest thing in the limbs.`;
+- You are the order's oracle rather than a general-purpose work assistant. You will cheerfully hold an
+  ordinary conversation, but you decline large unrelated tasks — writing someone's code, their homework,
+  their marketing copy — in one friendly sentence, and offer the nearest thing in the limbs instead.
+
+ORDINARY CONVERSATION
+- You are allowed to simply talk. Greetings, small talk, how your day is going, a joke, someone telling you
+  about their week, an off-topic aside, a question with nothing esoteric about it at all — all welcome, and
+  all answered like a person rather than a reference book.
+- Match the register. "Hello" gets a warm line or two and an open door, not a lecture and not a grading
+  mark. Save the apparatus for claims that need it: nobody needs an evidence grade on the weather or on
+  whether you enjoyed the question.
+- Be curious about the asker. Ask a question back when it is natural to. Remember what they have told you
+  earlier in the conversation and use it.
+- You have a character: an old-fashioned natural philosopher, dry, fond of specifics, delighted by the
+  physical world, allergic to pomposity including your own. Let that show in casual talk.
+- If an ordinary conversation drifts somewhere the limbs illuminate, follow it there lightly. Do not force
+  it, and never hijack a friendly exchange into a sermon.
+
+SEARCHING THE WEB
+- You have two tools and may use them freely, without asking permission first: "web_search" runs an open
+  web search, and "read_page" fetches one public page and returns its text.
+- Use them whenever the honest answer depends on something you cannot know from training: today's news,
+  current prices, recent papers, what is on at a venue, a specific person or organisation, anything
+  time-sensitive, or any date after your training data. Also use them when the asker explicitly asks you to
+  look something up, and when you want to check a figure before stating it.
+- Search in several short queries rather than one long one, and read at least one source rather than
+  trusting a snippet when the claim matters.
+- Say plainly in the reply when you have looked something up, and give the URLs you actually used — as
+  ordinary markdown links, e.g. [New Scientist](https://www.newscientist.com/...). Never cite a page you
+  did not read, and never present a search snippet as though you had read the article.
+- The web is not a grading. A claim does not become established because a website asserts it: grade what
+  you find exactly as you grade everything else, and say when sources disagree.
+- If a tool fails or returns nothing useful, say so out loud and answer as best you can without it. Never
+  pretend to have searched, and never invent a URL.
+- The order's own written answers still come first. Search is for what they do not cover, not a substitute
+  for the house position.`;
 
 /* Model aliases are tried in order; the gateway resolves each against
    whichever provider key the owner has set. Logical aliases, never raw ids. */
@@ -136,11 +171,16 @@ export default async function (req, res) {
 
   const isFollowUp = history.length > 0;
 
+  /* Greetings, thanks and chit-chat are conversation, not lookups: never let a
+     catalogue entry answer them. */
+  const SMALL_TALK = /^(hi|hey|hello|yo|hiya|good (morning|afternoon|evening)|how are you|how's it going|how are things|thanks|thank you|cheers|ta|ok|okay|cool|nice|lol|ha|goodbye|bye|see you|night|what's up|wotcher|alright)\b[\s!?.,]*$/i;
+  const isSmallTalk = SMALL_TALK.test(question) || question.length < 7;
+
   /* 2 ── an unmistakable written answer is served as written, but only when
          this is the opening question. Mid-conversation, a canned paragraph
          reads as a non-sequitur, so the model gets it as grounding instead. */
   const match = bestMatch(question, limb);
-  if (!isFollowUp && match.entry && match.score >= VERBATIM_AT) {
+  if (!isFollowUp && !isSmallTalk && match.entry && match.score >= VERBATIM_AT) {
     const answer = match.entry.a;
     await log(name, limb, question, answer, 'written');
     return res.json({
@@ -185,31 +225,86 @@ export default async function (req, res) {
     ].filter(Boolean).join('\n')
   });
 
-  /* 5 ── try each model alias in turn. */
+  /* 5 ── tools: the oracle may search the open web and read a page.
+         Every call is recorded so the reply can be honest about its sources. */
+  const used = [];
+
+  const tools = {
+    web_search: {
+      description:
+        'Search the open web and return titles, URLs and snippets. Use for anything current, ' +
+        'time-sensitive, local, or not covered by the order\'s own written answers.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'A short search query, as you would type it.' },
+          limit: { type: 'number', description: 'How many results to return, 1 to 8. Default 6.' }
+        },
+        required: ['query']
+      },
+      execute: async ({ query, limit }) => {
+        const out = await webSearch(query, limit);
+        (out.results || []).forEach((r) => used.push({ title: r.title, url: r.url, read: false }));
+        return out;
+      }
+    },
+    read_page: {
+      description:
+        'Fetch one public web page and return its readable text. Use after a search, or when the ' +
+        'asker gives you a URL.',
+      inputSchema: {
+        type: 'object',
+        properties: { url: { type: 'string', description: 'A full public http(s) URL.' } },
+        required: ['url']
+      },
+      execute: async ({ url }) => {
+        const out = await readPage(url);
+        if (!out.error) {
+          const hit = used.find((u) => u.url === out.url);
+          if (hit) { hit.read = true; if (out.title) hit.title = out.title; }
+          else used.push({ title: out.title || out.url, url: out.url, read: true });
+        }
+        return out;
+      }
+    }
+  };
+
+  /* 6 ── try each model alias in turn, with tools first and without them if
+         the provider refuses the tool schema. */
   let answer = '';
   let usedModel = '';
   let lastErr = null;
   let setupRequired = false;
 
   for (const model of MODELS) {
-    try {
-      const result = await ai.generateText({
-        model,
-        system: SYSTEM,
-        messages,
-        maxTokens: 1100,
-        temperature: 0.72
-      });
-      answer = String(result && result.text ? result.text : '').trim();
-      if (answer) { usedModel = (result && result.model) || model; break; }
-    } catch (err) {
-      lastErr = err;
-      if (err && err.code === 'SetupRequired') { setupRequired = true; break; }
-      console.error(`ask: model ${model} failed`, err && err.message);
+    for (const withTools of [true, false]) {
+      try {
+        const result = await ai.generateText(Object.assign({
+          model,
+          system: SYSTEM,
+          messages,
+          maxTokens: 1200,
+          temperature: 0.72,
+          purpose: 'oracle'
+        }, withTools ? { tools, maxSteps: 6 } : {}));
+        answer = String(result && result.text ? result.text : '').trim();
+        if (answer) { usedModel = (result && result.model) || model; break; }
+      } catch (err) {
+        lastErr = err;
+        if (err && err.code === 'SetupRequired') { setupRequired = true; break; }
+        console.error(`ask: model ${model}${withTools ? ' (tools)' : ''} failed`, err && err.message);
+      }
     }
+    if (answer || setupRequired) break;
   }
 
-  /* 6 ── no model: be useful anyway rather than silent. */
+  // de-duplicate the source list, pages actually read first
+  const sources = [];
+  for (const u of used.slice().sort((a, b) => Number(b.read) - Number(a.read))) {
+    if (u.url && !sources.some((s) => s.url === u.url)) sources.push(u);
+  }
+
+  /* 7 ── no model: be useful anyway rather than silent. */
   if (!answer) {
     if (lastErr) console.error('ask: no model answered', lastErr && lastErr.message);
 
@@ -238,12 +333,13 @@ export default async function (req, res) {
     });
   }
 
-  await log(name, limb, question, answer, 'model');
+  await log(name, limb, question, answer, sources.length ? 'model+web' : 'model');
   res.json({
     answer,
     source: 'model',
     model: usedModel,
     grounded: retrieved.map((m) => m.entry.q),
+    sources: sources.slice(0, 6),
     followups: relatedQuestions(question, limb, 3)
   });
 }
