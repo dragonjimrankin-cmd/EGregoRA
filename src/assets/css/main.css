@@ -1576,3 +1576,42 @@ img.shot-thumb { object-fit: cover; }
   .fox-panel--ask .fox-stage { max-width: 200px; }
   .oracle-greet--lede .oracle-text p { font-size: 0.95rem; }
 }
+
+/* ======================================================================
+   The two doors under the hero, on a desktop
+   ----------------------------------------------------------------------
+   On a wide screen there is room to make them properly: larger type, a
+   deeper hit area, and a backdrop solid enough that the wandering sacred
+   geometry behind the hero passes behind them rather than through the
+   lettering. Phones keep the compact buttons — the width is not there to
+   spend, and they are already easy to hit.
+   ====================================================================== */
+@media (min-width: 861px) {
+  .hero .btn-row { gap: 1.1rem; margin-top: 2rem; }
+  .hero .btn-row .btn {
+    font-size: 0.92rem;
+    letter-spacing: 0.26em;
+    padding: 1.15rem 2.6rem;
+    border-width: 1px;
+    border-radius: 2px;
+    /* An opaque plate: the ink behind, then the gold wash on top of it. */
+    background:
+      linear-gradient(180deg, rgba(215,176,90,0.20), rgba(215,176,90,0.07)),
+      linear-gradient(180deg, rgba(14,12,26,0.94), rgba(7,7,13,0.96));
+    border-color: rgba(215,176,90,0.72);
+    box-shadow: inset 0 0 24px rgba(215,176,90,0.08), 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .hero .btn-row .btn--ghost {
+    color: var(--vellum);
+    border-color: rgba(239,227,200,0.42);
+    background:
+      linear-gradient(180deg, rgba(239,227,200,0.09), rgba(239,227,200,0.02)),
+      linear-gradient(180deg, rgba(14,12,26,0.94), rgba(7,7,13,0.96));
+  }
+  .hero .btn-row .btn:hover {
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 36px rgba(215,176,90,0.4);
+  }
+}
