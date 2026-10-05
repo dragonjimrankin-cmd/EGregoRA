@@ -23,6 +23,7 @@ import {
   claimGpu, releaseGpu, gpuBusy, kaggleToken
 } from './kaggle.js';
 import { videoScript, imageScript } from './gpu-scripts.js';
+import { submitToColab, colabStatus, colabFile } from './colab.js';
 
 const FAL_MODEL = 'fal-ai/hunyuan-video-v1.5/text-to-video';
 const FAL_QUEUE = 'https://queue.fal.run/';
@@ -141,6 +142,25 @@ export async function submitVideo(prompt, opts = {}) {
     console.error('videogen: fal submit failed', r.status, String(r.text).slice(0, 300));
   }
 
+  /* The order's own Colab workers: a notebook running on somebody's Google
+     account, tunnelled out and registered with /api/colab. Free, usually a
+     T4 or an L4, and much quicker than Kaggle because the worker stays warm
+     between clips. Tried before the paid fallbacks. */
+  if (model.kaggle) {
+    const viaColab = await submitToColab({
+      prompt: text, aspect, frames, model: model.kaggle, kind: 'video'
+    });
+    if (viaColab) {
+      return {
+        provider: 'colab',
+        model: model.label + ' \u00b7 Colab ' + (viaColab.worker.gpu || 'GPU'),
+        requestId: viaColab.jobId,
+        statusUrl: viaColab.worker.endpoint,
+        responseUrl: viaColab.worker.endpoint
+      };
+    }
+  }
+
   /* Kaggle's free GPU. Slow — the model is downloaded on every run, so a
      clip takes the better part of half an hour — but it needs no paid key.
      Tried after the paid routes and before giving up. */
@@ -202,8 +222,9 @@ export async function submitVideo(prompt, opts = {}) {
   return {
     error:
       'No video generator is reachable just now. HunyuanVideo 1.5 is open-weights but it still has to run ' +
-      'on somebody\'s GPU: the order\'s Kaggle GPU did not accept the job, and no FAL_KEY or ' +
-      'REPLICATE_API_TOKEN is configured.'
+      'on somebody\'s GPU: no Colab worker is awake, the order\'s Kaggle GPU did not accept the ' +
+      'job, and no FAL_KEY or REPLICATE_API_TOKEN is configured. Opening colab/egregora-gpu.ipynb ' +
+      'in any Google account and running it is enough to wake one.'
   };
 }
 
@@ -270,6 +291,31 @@ export async function pollVideo(row) {
       await storage.put(key, got.bytes, wantImage ? 'image/png' : 'video/mp4');
       const signed = await storage.url(key, { ttl: 604800 });
       return { status: 'ready', url: signed, key };
+    } catch (err) {
+      return { status: 'failed', error: 'The clip could not be stored: ' + (err && err.message) };
+    }
+  }
+
+  /* A Colab worker keeps its own little job table in memory and hands back
+     the finished file on request; we copy it into our storage as usual. */
+  if (row.provider === 'colab') {
+    const endpoint = row.status_url;
+    const st = await colabStatus(endpoint, row.request_id);
+    const state = String(st.status || 'running').toLowerCase();
+    if (state === 'failed' || state === 'error') {
+      return { status: 'failed', error: String(st.error || 'The Colab worker gave up on that one.').slice(0, 300) };
+    }
+    if (state !== 'ready' && state !== 'done' && state !== 'complete') return { status: 'running' };
+
+    const got = await colabFile(endpoint, row.request_id);
+    if (got.error) return { status: 'running' };
+    try {
+      const wantImage = row.kind === 'image';
+      const skey = (wantImage ? 'oracle-art/' : 'oracle-videos/') +
+        Date.now().toString(36) + (wantImage ? '.png' : '.mp4');
+      await storage.put(skey, got.bytes, wantImage ? 'image/png' : 'video/mp4');
+      const signed = await storage.url(skey, { ttl: 604800 });
+      return { status: 'ready', url: signed, key: skey };
     } catch (err) {
       return { status: 'failed', error: 'The clip could not be stored: ' + (err && err.message) };
     }

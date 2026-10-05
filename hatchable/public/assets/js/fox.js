@@ -492,7 +492,12 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
      top, with a brow ridge, zygomatic flare and an occipital taper. */
   const skullGeo = sculpt(new THREE.SphereGeometry(1.0, 64, 48), (v) => {
     const fwd = smoothstep(0.08, 1.0, v.z);
-    v.z += fwd * fwd * 1.24;
+    /* The muzzle used to run to z 2.24 — and its fur shells to 2.30 — while
+       the nose leather ends at 2.11. The orange tip of the skull was simply
+       standing in front of the black, which is the fur that was showing on
+       the end of the nose. The bone now stops at 1.94, the same place the
+       cream wrap stops, and the leather covers both. */
+    v.z += fwd * fwd * 0.94;
     v.x *= 1 - 0.80 * fwd;
     v.y = v.y * (1 - 0.54 * fwd) - fwd * 0.2;
     // flatten the crown and dish the forehead slightly
@@ -515,7 +520,13 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   const skull = new THREE.Mesh(skullGeo, M.fur);
   skull.castShadow = true; skull.receiveShadow = true;
   head.add(skull);
-  furShells(skull, { depth: 0.062, tipDark: 0.48 });
+  furShells(skull, {
+    depth: 0.062, tipDark: 0.48,
+    /* and no hair at all grows in the last stretch of the muzzle, where the
+       leather sits over it — shells pushed along the normals there would
+       spike straight out through the front of the nose */
+    fade: (x, y, z) => 1 - smoothstep(1.45, 1.78, z)
+  });
 
   // cream muzzle wrap and chin
   const snoutGeo = sculpt(new THREE.SphereGeometry(0.52, 36, 26), (v) => {
