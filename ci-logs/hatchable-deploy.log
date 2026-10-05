@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-05T02:49:40Z
+# Hatchable deploy — 2026-10-05T02:58:32Z
 
 token present: 43 chars, prefix hb_
 
@@ -11,10 +11,10 @@ hatchable.com/mcp -> HTTP 200
   connected to hatchable 2.0.0
   34 tools available
 ▸ using existing project proj_eiuxpFfTnwwx
-▸ write_files — 52 text files
-  ✓ api/ask.js, hatchable.toml, lib/imagegen.js, lib/oracle-corpus-iii.js, lib/oracle-corpus-iv.js, lib/oracle-cor…
-  ✓ lib/oracle-corpus-xviii.js, lib/oracle-corpus.js, lib/websearch.js, migrations/0001_questions.sql, migrations/…
-  ✓ public/index.html, public/infographics/index.html, public/music/index.html, public/neurobiology/index.html, pu…
+▸ write_files — 54 text files
+  ✓ api/ask.js, api/upload.js, hatchable.toml, lib/imagegen.js, lib/oracle-corpus-iii.js, lib/oracle-corpus-iv.js,…
+  ✓ lib/oracle-corpus-xvii.js, lib/oracle-corpus-xviii.js, lib/oracle-corpus.js, lib/websearch.js, migrations/0001…
+  ✓ public/extraterrestrials/index.html, public/feed.xml, public/index.html, public/infographics/index.html, publi…
 ▸ uploading 10 binary assets (server-side URL import)
   ✓ public/assets/img/art-inner-cosmos.jpg (361 KB) via url import
   ✓ public/assets/img/art-ouroboros-elements.jpg (471 KB) via url import
@@ -27,7 +27,7 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/img/product-solids.jpg (153 KB) via url import
   ✓ public/assets/img/product-wheel.jpg (215 KB) via url import
 ▸ dry_run_deploy
-  {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":40,"api_functions":1,"pages":0,"migrations":2,"auth_enabled":false,"next_version":41}}
+  {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":40,"api_functions":2,"pages":0,"migrations":3,"auth_enabled":false,"next_version":42}}
 ▸ deploy
 
 ✔ Deployed.
@@ -35,17 +35,17 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 41,
+  "version": 42,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v40.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v41.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v41.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v42.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
-  "files_deployed": 65,
-  "functions_deployed": 1,
+  "files_deployed": 67,
+  "functions_deployed": 2,
   "warnings": [],
   "visibility": "public",
   "preview_url": null
