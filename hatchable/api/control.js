@@ -25,8 +25,9 @@ import { checkToken } from '../lib/tokens.js';
 import { submitVideo, pollVideo, VIDEO_MODELS } from '../lib/videogen.js';
 import { generateImage } from '../lib/imagegen.js';
 import { liveWorkers } from '../lib/colab.js';
-import { bestMatch } from '../lib/oracle-corpus.js';
-import askHandler from './ask.js';
+import { bestMatch, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
+import { openChat } from '../lib/openchat.js';
+import { openaiChat } from '../lib/openai.js';
 
 export const access = 'public';
 export const methods = ['GET', 'POST'];
@@ -84,25 +85,58 @@ export default async function (req, res) {
       case 'ask': {
         const question = String(body.question || '').trim();
         if (question.length < 2) return res.status(400).json({ error: 'Ask something.' });
-        /* Straight through the oracle the page uses, so an agent gets exactly
-           the answer a visitor would get — corpus first, model second. */
-        let captured = null, code = 200;
-        const fakeRes = {
-          status(c) { code = c; return this; },
-          json(obj) { captured = obj; return obj; }
-        };
-        await askHandler({
-          method: 'POST',
-          headers: {},
-          query: {},
-          body: { question, history: Array.isArray(body.history) ? body.history.slice(-12) : [],
-                  name: body.name || 'An agent', limb: body.limb || '' }
-        }, fakeRes);
-        if (!captured) {
-          const m = bestMatch(question);
-          captured = { answer: m && m.entry ? m.entry.a : 'No answer here.', source: 'corpus' };
+        const limb = String(body.limb || '');
+
+        /* The same two-stage answer the page gives: a written house answer
+           when the match is unmistakable, otherwise the closest written
+           answers handed to a model as grounding. Handler files cannot
+           import one another here, so the logic is kept deliberately plain
+           — an agent gets the order's answers, not a second oracle. */
+        const match = bestMatch(question, limb);
+        if (match && match.entry && match.score >= 0.82) {
+          return res.json({
+            answer: match.entry.a,
+            source: 'written',
+            limb: match.entry.limb,
+            followups: relatedQuestions(question, limb, 3)
+          });
         }
-        return res.status(code).json(captured);
+
+        const retrieved = topMatches(question, limb, 5).filter((m) => m.score >= 0.16);
+        const grounding = retrieved
+          .map((m, i) => (i + 1) + '. Q: ' + m.entry.q + '\n   A: ' + m.entry.a)
+          .join('\n\n');
+        const system =
+          'You are the Oracle of EGregoRA, an order of enquiry co-founded by Edward Gregory and ' +
+          'Jim Rankin. Answer in British English, 45 to 120 words, plainly and without hedging. ' +
+          'Say in plain words how firm a claim is — measured, recorded, speculative, story — and ' +
+          'never use diamond marks. Anchor the reply in the order\u2019s own written answers below ' +
+          'rather than inventing. If they do not cover it, say so and answer honestly anyway.' +
+          (grounding ? '\n\nThe order has written:\n\n' + grounding : '');
+        const messages = (Array.isArray(body.history) ? body.history.slice(-12) : [])
+          .filter((m) => m && m.content)
+          .map((m) => ({ role: m.role === 'oracle' ? 'assistant' : 'user', content: String(m.content).slice(0, 4000) }));
+        messages.push({ role: 'user', content: question });
+
+        let out = await openChat({ system, messages });
+        if (!out || !out.text) out = await openaiChat({ system, messages });
+        if (out && out.text) {
+          return res.json({
+            answer: out.text,
+            source: 'model',
+            model: out.model || null,
+            grounded: retrieved.length,
+            followups: relatedQuestions(question, limb, 3)
+          });
+        }
+        if (match && match.entry) {
+          return res.json({ answer: match.entry.a, source: 'written', limb: match.entry.limb });
+        }
+        return res.json({
+          answer: 'Nothing here matches that, and no model is reachable to think about it properly. ' +
+            'Ask it again with different words, or ask something inside the eleven limbs.',
+          source: 'none'
+        });
       }
 
       case 'draw': {
