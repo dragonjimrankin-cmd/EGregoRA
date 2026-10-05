@@ -1,26 +1,44 @@
-# control run — 2026-10-05T10:31:32.903Z
-site: https://egregora.hatchable.site   calls: 2
+# control run — 2026-10-05T10:41:31.115Z
+site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"draw","prompt":"A red fox with a torn left ear asleep on a stone step, lamplight, 35mm film grain"}
-HTTP 200  (4056 ms)
+POST {"action":"ask","question":"Why is it called the Black Tribunal?"}
+HTTP 200  (326 ms)
 {
-  "status": "ready",
-  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791196297193-8kgx1rwv.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T103137Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=5fd3e840babd026ea14c7e4ef1a17cdebb5a95714da46879ce99b46f9a73b16a",
-  "provider": "flux-schnell (open weights)",
-  "hardware": "Pollinations hosted GPU · FLUX.1-schnell, open weights — the card is not disclosed",
-  "prompt": "A red fox with a torn left ear asleep on a stone step, lamplight, 35mm film grain"
+  "answer": "Because a cabinet governs and a tribunal judges, and the limb does the second thing. It was called the Shadow Cabinet for a while and the name was wrong twice over: it borrowed a parliamentary joke, and it suggested a body with a policy rather than a hearing with a dock. The Black Tribunal is a court the order holds against its own inheritance. Evidence is produced, the worst of it is read out, nothing is disowned and nothing is excused. Black for the subject, not for the glamour: an industrial atrocity dressed in stolen runes is the defendant, and the order's own past-life material stands in the dock beside it.",
+  "source": "written",
+  "limb": "order",
+  "followups": [
+    "Why is Limb VIII called the Black Tribunal?",
+    "What is the Black Tribunal for?",
+    "Why is the speed of light the limit?"
+  ]
+}
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"What is the Shadow Cabinet?"}
+HTTP 200  (25110 ms)
+{
+  "answer": "A Shadow Cabinet is the organized opposition to an actual cabinet. In a Westminster‑style democracy the leading opposition party appoints a “shadow minister” for each government minister’s portfolio. Together they form a Shadow Cabinet.\n\nThe function of a Shadow Cabinet is twofold:\nScrutiny – Shadow ministers monitor and critique the policies and actions of their counterparts. They attend parliamentary questions, submit written and oral responses, and press the government to explain its decisions.\nAlternatives – They develop and communicate their own policy proposals for each portfolio, thereby presenting a ready‑made alternative government. If the opposition wins an election, the Shadow Cabinet can immediately step into the official roles.\n\nThe system gives the opposition a structured way to hold power to account and to demonstrate that it is capable of governing. While the term originates in the UK, similar arrangements exist in other parliamentary systems (e.g., in Canada, Australia, and New Zealand) and informal “shadow” groups occasionally appear in other contexts (e.g., the U.S. “Shadow Cabinet” blogs of some think‑tanks).",
+  "source": "model",
+  "model": "gpt-oss-20b",
+  "grounded": 2,
+  "followups": [
+    "What is the Black Tribunal for?",
+    "Why is the speed of light the limit?",
+    "What is shadow work, concretely?"
+  ]
 }
 
 --------------------------------------------------------------------
 POST {"action":"status"}
-HTTP 200  (129 ms)
+HTTP 200  (169 ms)
 {
   "site": "https://egregora.hatchable.site",
   "limbs": 11,
-  "corpus": 1283,
+  "corpus": 1286,
   "questions": 11,
   "jobs": {},
   "gpu_pool": [],
