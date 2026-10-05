@@ -106,6 +106,8 @@ function plainify(text) {
     .replace(/(^|\s)\*([^*\n]+)\*/g, '$1$2')
     .replace(/`{1,3}([^`]*)`{1,3}/g, '$1')
     .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^\s*[*\-\u2022]\s+/gm, '')
+    .replace(/^\s*\d+[.)]\s+/gm, '')
     .replace(/\bG\s+ink\b/g, 'Gink')
     .replace(/[ \t]{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
