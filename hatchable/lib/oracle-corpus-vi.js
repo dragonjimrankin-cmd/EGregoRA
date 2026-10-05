@@ -1,6 +1,6 @@
 /**
  * The Oracle's written answers — volume VI: magic, alchemy, astrology, contact,
- * the Law of One, the Shadow Cabinet, history, and the order itself.
+ * the Law of One, the Black Tribunal, history, and the order itself.
  * Sixty entries, graded by the house rules.
  */
 
@@ -194,7 +194,7 @@ E('evola','shadow',['evola','traditionalism','guenon','radical traditionalism'],
 
 E('runes-use','shadow',['elder futhark','can i use runes','rune divination','odal rune'],
 'Can I use runes honestly?',
-`Yes, with the history. Scholarship: the Elder Futhark is a genuine Germanic writing system from around the second century CE, used for names, ownership, memorials and occasionally charms. Myth: the elaborate divinatory meanings in most modern rune books, which derive largely from twentieth-century reconstruction, with a significant debt to Guido von List's Armanen runes — an explicitly völkisch invention of 1902 that fed directly into Nazi symbolism. So: the alphabet is ancient, the divination system is not, and one strand of its modern transmission runs straight through the material the Shadow Cabinet studies. Learn which rune you are holding.`),
+`Yes, with the history. Scholarship: the Elder Futhark is a genuine Germanic writing system from around the second century CE, used for names, ownership, memorials and occasionally charms. Myth: the elaborate divinatory meanings in most modern rune books, which derive largely from twentieth-century reconstruction, with a significant debt to Guido von List's Armanen runes — an explicitly völkisch invention of 1902 that fed directly into Nazi symbolism. So: the alphabet is ancient, the divination system is not, and one strand of its modern transmission runs straight through the material the Black Tribunal studies. Learn which rune you are holding.`),
 
 E('propaganda','shadow',['propaganda','how propaganda works','disinformation','how to resist'],
 'How does propaganda actually work?',
@@ -202,7 +202,7 @@ E('propaganda','shadow',['propaganda','how propaganda works','disinformation','h
 
 E('order-and-politics','shadow',['is this order political','why talk about fascism','keep politics out'],
 'Why does a mystical order talk about fascism at all?',
-`Because this particular territory has been repeatedly colonised by it, and silence is how that keeps succeeding. Esoteric spaces offer hidden knowledge, hierarchy, golden-age nostalgia, distrust of institutions and a hunger for lineage — five handholds the far right has used for a century. Scholarship, documented from Ariosophy to the present. The Shadow Cabinet is not an excursion into politics; it is immune function. An order that studies symbols and refuses to notice who else is using them is not neutral. It is available.`),
+`Because this particular territory has been repeatedly colonised by it, and silence is how that keeps succeeding. Esoteric spaces offer hidden knowledge, hierarchy, golden-age nostalgia, distrust of institutions and a hunger for lineage — five handholds the far right has used for a century. Scholarship, documented from Ariosophy to the present. The Black Tribunal is not an excursion into politics; it is immune function. An order that studies symbols and refuses to notice who else is using them is not neutral. It is available.`),
 
 E('ed-past-life','shadow',['ed past life','past life nazi','ritual recall','edward gregory past life'],
 'What is Ed’s account of a past life?',
@@ -218,7 +218,7 @@ E('order-structure','order',['how is egregora organised','do you have grades','j
 
 E('order-limbs','order',['eleven limbs','ten limbs','what are the limbs','structure of the order'],
 'What are the eleven limbs?',
-`I Cosmic Physics. II Druidry and Trees. III Sacred Geometry. IV Astrology. V Neuroscience and the Visionary State. VI Biology. VII God, the Law of One and Contact. VIII The Shadow Cabinet. IX Magic and the Wizard's Craft. X Alchemy and the Elemental Forces. XI Consciousness and the Hard Problem — eleven in all. They are fields of enquiry rather than grades, and nobody holds one. The point of having ten is that no single one of them can be allowed to answer every question, which is what happens to every discipline left on its own.`),
+`I Cosmic Physics. II Druidry and Trees. III Sacred Geometry. IV Astrology. V Neuroscience and the Visionary State. VI Biology. VII God, the Law of One and Contact. VIII The Black Tribunal. IX Magic and the Wizard's Craft. X Alchemy and the Elemental Forces. XI Consciousness and the Hard Problem — eleven in all. They are fields of enquiry rather than grades, and nobody holds one. The point of having ten is that no single one of them can be allowed to answer every question, which is what happens to every discipline left on its own.`),
 
 E('order-founders','order',['who founded egregora','edward gregory','founders','who runs this'],
 'Who founded EGregoRA?',

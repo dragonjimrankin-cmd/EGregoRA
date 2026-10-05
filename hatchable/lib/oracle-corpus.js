@@ -113,7 +113,7 @@ What is documented: Himmler was credulous, and the SS Ahnenerbe funded pseudo-ar
 
 What is myth: Hitler as an initiate, a hidden magical order steering the war, the Spear of Destiny. Hitler was mostly contemptuous of Himmler's enthusiasms. Most of this genre descends from post-war sensationalism, not archives.
 
-The lesson the Shadow Cabinet exists for is not that occultism causes fascism. It is that fascism loots whatever symbolic system is to hand, and symbols have no immune system of their own. The swastika was auspicious across Eurasia for millennia before it was stolen. Learn how the theft is done, and you can start giving things back.
+The lesson the Black Tribunal exists for is not that occultism causes fascism. It is that fascism loots whatever symbolic system is to hand, and symbols have no immune system of their own. The swastika was auspicious across Eurasia for millennia before it was stolen. Learn how the theft is done, and you can start giving things back.
 
 Never study the symbols without the consequences: Levi, Arendt, and Eco's fourteen signs of Ur-Fascism belong beside every book listed above.`
  },

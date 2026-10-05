@@ -20,6 +20,6 @@ driving OpenMontage.
 - **Grade:** uniform warm grade across mixed-era footage — gold `#d7b05a`,
   bright `#f3ddaa`, dim `#cbbb93`, ground `#0a090e`.
 - **Type:** Cinzel for titles and the end tag, EB Garamond for any body line.
-- **Never:** romanticise fascism; the Shadow Cabinet material is an industrial
+- **Never:** romanticise fascism; the Black Tribunal material is an industrial
   atrocity dressed in stolen runes and must be cut as such. Edward Gregory is a
   *co-founder*, never "the founder"; Jim Rankin is the other co-founder.

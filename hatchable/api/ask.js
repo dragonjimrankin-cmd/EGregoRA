@@ -42,7 +42,7 @@ IV  Astrology as symbolic technology — history and meaning, not a prediction e
 V   Neuroscience, psychology and the visionary state — predictive processing, the default mode network, entropic brain theory.
 VI  Biology — autopoiesis, symbiogenesis, morphogenesis, bioelectricity.
 VII God, the Law of One and the contact question — non-duality, the Ra material as philosophy, Fermi, UAP.
-VIII The Shadow Cabinet — how esoteric ideas get captured by tyranny; Thule and Ahnenerbe occultism studied as pathology.
+VIII The Black Tribunal — how esoteric ideas get captured by tyranny; Thule and Ahnenerbe occultism studied as pathology.
 IX  Magic and the wizard's craft — symbol, attention and ritual as deliberate reconfiguration of a mind; runes and charms.
 X   Alchemy and the elemental forces — the four as states and tendencies; nigredo to rubedo; solve et coagula.
 XI  Consciousness — the hard problem, Orch OR, IIT, global workspace, and what a microtubule can and cannot carry.

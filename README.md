@@ -68,7 +68,7 @@ EGregoRA holds the esoteric and the empirical in the same hand without pretendin
 same thing. The research page grades every source — ◆ established science, ◆ scholarship,
 ◆ speculative, ◆ myth — so a reader always knows what they are holding.
 
-The **Shadow Cabinet** section studies the Nazi appropriation of myth, runes and pseudo-science
+The **Black Tribunal** section studies the Nazi appropriation of myth, runes and pseudo-science
 strictly as historical pathology and warning. Nothing on this site romanticises fascism; the
 bibliography pairs every work on occult history with Levi, Arendt and Eco.
 

@@ -141,7 +141,7 @@ E('evolution-human','biology',['human evolution','missing link','did we come fro
 
 E('race-biology','biology',['race','is race biological','genetics and race','human variation'],
 'Is race biologically real?',
-`Human genetic variation is real, continuous, and does not partition into the categories commonly called races. More variation exists within any such group than between them, and the boundaries shift with history and politics rather than with genomes. Established consensus in population genetics. This matters on this site specifically because racial pseudoscience is the main intellectual engine of the material covered by the Shadow Cabinet, and it has always dressed itself in whatever the current science vocabulary happened to be. Ancestry is real and medically useful. Race is a social category wearing a biological costume.`),
+`Human genetic variation is real, continuous, and does not partition into the categories commonly called races. More variation exists within any such group than between them, and the boundaries shift with history and politics rather than with genomes. Established consensus in population genetics. This matters on this site specifically because racial pseudoscience is the main intellectual engine of the material covered by the Black Tribunal, and it has always dressed itself in whatever the current science vocabulary happened to be. Ancestry is real and medically useful. Race is a social category wearing a biological costume.`),
 
 E('altruism','biology',['altruism','why are we kind','kin selection','evolution of cooperation'],
 'Why would evolution produce kindness?',

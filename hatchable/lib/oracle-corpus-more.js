@@ -661,7 +661,7 @@ The handholds: a hunger for hidden knowledge, which makes conspiracy thinking fe
 
 Scholarship: Goodrick-Clarke's The Occult Roots of Nazism traces Ariosophy and List and Lanz precisely; Evola's Traditionalism remains directly influential on the contemporary far right. This is documented history, not insinuation.
 
-The Shadow Cabinet exists for this. Nothing in this order romanticises it: it was an industrial atrocity dressed in stolen runes. Study it the way you study a pathogen — closely, and with gloves.`
+The Black Tribunal exists for this. Nothing in this order romanticises it: it was an industrial atrocity dressed in stolen runes. Study it the way you study a pathogen — closely, and with gloves.`
  },
  {
  id: 'spiritual-bypass',
