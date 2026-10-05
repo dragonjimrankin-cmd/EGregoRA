@@ -359,14 +359,34 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
         console.log(`\u25b8 kaggle probe: HTTP ${r.status} \u2014 ${text.slice(0, 180).replace(/\s+/g, ' ')}`);
       }
 
-      /* Try the username endpoints the CLI falls back on. */
-      for (const path of ['/api/v1/oauth2/introspect', '/api/v1/users/me']) {
+      /* Hunt for the username: the slug of every kernel is username/name,
+         so nothing can be pushed until we know it. */
+      const show = async (label, url, init) => {
         try {
-          const rr = await fetch('https://www.kaggle.com' + path, { method: path.includes('introspect') ? 'POST' : 'GET', headers: H });
-          const tt = (await rr.text()).slice(0, 200).replace(/\s+/g, ' ');
-          console.log(`\u25b8 kaggle ${path}: HTTP ${rr.status} \u2014 ${tt}`);
-        } catch (e) { console.log(`\u25b8 kaggle ${path} threw: ${e && e.message}`); }
-      }
+          const rr = await fetch(url, init);
+          const tt = (await rr.text()).slice(0, 220).replace(/\s+/g, ' ');
+          console.log(`\u25b8 kaggle ${label}: HTTP ${rr.status} \u2014 ${tt}`);
+        } catch (e) { console.log(`\u25b8 kaggle ${label} threw: ${e && e.message}`); }
+      };
+
+      await show('introspect(form)', 'https://www.kaggle.com/api/v1/oauth2/introspect', {
+        method: 'POST',
+        headers: Object.assign({ 'content-type': 'application/x-www-form-urlencoded' }, H),
+        body: 'token=' + encodeURIComponent(tok)
+      });
+      await show('introspect(json)', 'https://www.kaggle.com/api/v1/oauth2/introspect', {
+        method: 'POST',
+        headers: Object.assign({ 'content-type': 'application/json' }, H),
+        body: JSON.stringify({ token: tok })
+      });
+      await show('kernels/list(plain)', 'https://www.kaggle.com/api/v1/kernels/list?page=1&pageSize=2', { headers: H });
+      await show('kernels/list(mine)', 'https://www.kaggle.com/api/v1/kernels/list?page=1&pageSize=2&mine=true', { headers: H });
+      await show('datasets/list(mine)', 'https://www.kaggle.com/api/v1/datasets/list?page=1&mine=true', { headers: H });
+      await show('mcp/whoami', 'https://www.kaggle.com/mcp', {
+        method: 'POST',
+        headers: Object.assign({ 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, H),
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
+      });
     }
   } catch (err) {
     console.log('\u25b8 kaggle probe failed: ' + (err && err.message));
