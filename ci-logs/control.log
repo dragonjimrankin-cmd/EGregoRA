@@ -1,30 +1,26 @@
-# control run — 2026-10-05T08:51:06.526Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-05T08:55:40.796Z
+site: https://egregora.hatchable.site   calls: 2
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"workers"}
-HTTP 200  (296 ms)
-{
-  "workers": []
-}
-
---------------------------------------------------------------------
 POST {"action":"ask","question":"What is Gink?"}
-HTTP 200  (2936 ms)
+HTTP 200  (5601 ms)
 {
-  "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
-  "source": "none"
+  "answer": "The Oracle’s published answers do not mention “Gink.” Consequently, the claim cannot be measured against the order’s documentation. Generally, “gink” is informal slang for a foolish or incompetent person. It is an unqualified, colloquial term whose usage is widely accepted in everyday speech, rather than a formally defined concept. In short, it is a simple, conversational label rather than a structured idea or claim.",
+  "source": "model",
+  "model": "gpt-oss-20b",
+  "grounded": 0,
+  "followups": []
 }
 
 --------------------------------------------------------------------
-POST {"action":"ask","question":"In two sentences, what would you say to someone who thinks astrology is simply nonsense?"}
-HTTP 200  (3162 ms)
+POST {"action":"ask","question":"What did you have for breakfast, and do you mind the question?"}
+HTTP 200  (20577 ms)
 {
-  "answer": "Two answers, and both matter.\n\nAs a symbolic system with four millennia of continuous use — real, demonstrably, and enormously consequential. It gave us the calendar habits, the hours, much of the vocabulary we still use for character, and a library of images for time and temperament that nothing has replaced. Studying it is studying how humans mapped meaning onto the sky.\n\nAs a physical force by which Saturn's position alters your week — no. Every controlled test has failed. Shawn Carlson's double-blind study in Nature (1985) is the famous one; Geoffrey Dean's meta-analyses are the thorough ones. Astrologers could not match charts to personality profiles above chance.\n\nSo we study it as scholarship and use it, if at all, as a mirror — a set of prompts that make you say something true about yourself you would not otherwise have said. That is a real effect. It is just not an astronomical one.",
+  "answer": "A specific one that you have already worked on. \"Is astrology real\" produces a lecture; \"I have found birth charts uncannily accurate about three friends and I want to know whether I am fooling myself\" produces a conversation. Say what you have read, what you have tried, and what would change your mind — the third of those is the one almost nobody includes and the one that makes a question answerable. If nothing here fits, the oracle will say so plainly and the written form reaches a person.",
   "source": "written",
-  "limb": "astrology"
+  "limb": "order"
 }
 
 done.
