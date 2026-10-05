@@ -1,8 +1,7 @@
 {
-  "note": "v82 — progress, hardware and continuity.",
+  "note": "v83 — hardware naming and the continuity sheet.",
   "calls": [
-    { "action": "draw", "prompt": "A red fox with a torn left ear standing in frosted bracken, ancient stone circle behind it, low winter sun, 35mm film grain, shallow depth of field" },
-    { "action": "film", "prompt": "the fox turns and walks towards the stones" },
+    { "action": "draw", "prompt": "A red fox with a torn left ear asleep on a stone step, lamplight, 35mm film grain" },
     { "action": "status" }
   ]
 }

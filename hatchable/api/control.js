@@ -24,6 +24,7 @@
  */
 import { db } from 'hatchable';
 import { checkToken } from '../lib/tokens.js';
+import { ANSWERS } from '../lib/oracle-corpus.js';
 import { readSheet, extendSheet, composePrompt, describeSheet, seedFor } from '../lib/continuity.js';
 import { submitVideo, pollVideo, VIDEO_MODELS } from '../lib/videogen.js';
 import { generateImage } from '../lib/imagegen.js';
@@ -78,7 +79,7 @@ export default async function (req, res) {
         return res.json({
           site: 'https://egregora.hatchable.site',
           limbs: 11,
-          corpus: 1283,
+          corpus: ANSWERS.length,
           questions: q[0] ? q[0].n : 0,
           jobs: v.reduce((o, r) => Object.assign(o, { [r.status]: r.n }), {}),
           gpu_pool: workers.map((w) => ({ label: w.label, gpu: w.gpu, jobs: w.jobs })),
