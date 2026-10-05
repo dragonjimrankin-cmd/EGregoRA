@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-05T05:36:12Z
+# Hatchable deploy — 2026-10-05T05:39:23Z
 
 token present: 43 chars, prefix hb_
 
@@ -41,7 +41,7 @@ hatchable.com/mcp -> HTTP 200
 ▸ kaggle kernels/list(plain): HTTP 200 — [{"id":0,"ref":"goodpjw2008/rsna-knee-stack-2-5d-convnext-mil-lb-0-944","title":"RSNA Knee | Stack + 2.5D ConvNeXt MIL | LB 0.944","author":"goodpjw2008","slug":"","lastRunTime":"2026-10-05T01:37:40.793Z","language":"","
 ▸ kaggle kernels/list(mine): HTTP 400 — {"code":400,"message":"Invalid field \u0027mine\u0027"}
 ▸ kaggle datasets/list(mine): HTTP 400 — {"code":400,"message":"Invalid field \u0027mine\u0027"}
-▸ kaggle mcp/whoami: HTTP 406 — {"error":{"code":-32000,"message":"Not Acceptable: Client must accept both application/json and text/event-stream"},"id":null,"jsonrpc":"2.0"}
+▸ kaggle push: HTTP 400 — {"code":400,"message":"Invalid kernel type \u0027\u0027. Must be \u0027script\u0027 or \u0027notebook\u0027."}
 ▸ deploy
 
 ✔ Deployed.
@@ -49,10 +49,20 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 60,
+  "version": 61,
   "url": "https://egregora.hatchable.site",
+  "status": "live",
   "is_draft": false,
-  "deduplicated": true
+  "public_url": "https://egregora.hatchable.site",
+  "draft_url": "https://egregora-draft.hatchable.site",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v60.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v61.png",
+  "console_url": "https://hatchable.com/console/projects/egregora",
+  "files_deployed": 99,
+  "functions_deployed": 15,
+  "warnings": [],
+  "visibility": "public",
+  "preview_url": null
 }
 
    https://egregora.hatchable.site
