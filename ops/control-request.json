@@ -1,7 +1,8 @@
 {
-  "note": "v83 — hardware naming and the continuity sheet.",
+  "note": "v84 — the Black Tribunal.",
   "calls": [
-    { "action": "draw", "prompt": "A red fox with a torn left ear asleep on a stone step, lamplight, 35mm film grain" },
+    { "action": "ask", "question": "Why is it called the Black Tribunal?" },
+    { "action": "ask", "question": "What is the Shadow Cabinet?" },
     { "action": "status" }
   ]
 }
