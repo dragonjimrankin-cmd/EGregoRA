@@ -352,3 +352,39 @@ export function nearest(question, limit = 3) {
     .slice(0, limit)
     .map(({ e }) => e.q);
 }
+
+/**
+ * The k best-scoring written answers, for use as grounding material when a
+ * model composes a fresh reply. Retrieval, rather than a single lookup: the
+ * oracle then speaks from the order's own body of work even when it is
+ * writing a sentence nobody has written before.
+ */
+export function topMatches(question, limbHint = '', k = 5) {
+  const text = String(question).toLowerCase();
+  const words = new Set(tokenize(question));
+  if (!words.size) return [];
+
+  const scored = [];
+  for (const entry of ANSWERS) {
+    let score = 0;
+    for (const key of entry.keys) {
+      if (text.includes(key)) score += key.includes(' ') ? 6 : 4;
+      else if (words.has(key)) score += 3;
+    }
+    for (const w of tokenize(entry.q)) if (words.has(w)) score += 1.2;
+    for (const w of new Set(tokenize(entry.a))) if (words.has(w)) score += 0.18;
+    if (limbHint && entry.limb && limbHint.toLowerCase().includes(entry.limb)) score += 1.5;
+    if (score > 0) scored.push({ entry, score: Math.min(1, score / 9) });
+  }
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, k);
+}
+
+/** Questions the corpus can answer well, for suggesting next turns. */
+export function relatedQuestions(question, limbHint = '', limit = 3) {
+  const asked = String(question).toLowerCase();
+  return topMatches(question, limbHint, limit + 4)
+    .map((m) => m.entry.q)
+    .filter((q) => q.toLowerCase() !== asked)
+    .slice(0, limit);
+}

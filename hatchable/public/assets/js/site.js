@@ -64,72 +64,218 @@
   addEventListener("resize", () => { clearTimeout(t); t = setTimeout(seed, 200); });
 })();
 
-/* ------------------------------------------------------------------ Oracle */
+/* ------------------------------------------------------------------ Oracle
+   A conversational client for /api/ask. Keeps the thread in memory, sends the
+   last turns with each question so the oracle can follow a line of enquiry,
+   renders a transcript, streams the answer in word by word, offers follow-up
+   chips, and hands the finished text to the fox to read aloud. */
 (() => {
   "use strict";
   const form = document.getElementById("oracle-form");
   if (!form) return;
-  const out = document.getElementById("oracle-answer");
-  const body = out.querySelector(".oracle-body");
-  const btn = document.getElementById("o-submit");
 
-  const show = (html, tone) => {
-    out.hidden = false;
-    body.className = "oracle-body" + (tone ? " " + tone : "");
-    body.innerHTML = html;
-    out.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  };
+  const thread = document.getElementById("oracle-thread");
+  const chips = document.getElementById("oracle-chips");
+  const box = document.getElementById("o-question");
+  const btn = document.getElementById("o-submit");
+  const reset = document.getElementById("o-reset");
+  const nameEl = document.getElementById("o-name");
+  const limbEl = document.getElementById("o-limb");
+  if (!thread || !box || !btn) return;
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const MAX_KEPT = 16;                 // turns held in the client thread
+  let history = [];                    // [{ role, text }]
+  let busy = false;
 
   const esc = (s) =>
-    s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    String(s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  /* A deliberately small amount of markdown: the order's answers use bold,
+     italics, em dashes and the ◆ grading marks, and nothing else. */
+  const rich = (text) => esc(text)
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|[\s(])\*([^*\n]+)\*/g, "$1<em>$2</em>")
+    .replace(/\n/g, "\n");
 
   const paragraphs = (text) =>
-    esc(text)
-      .split(/\n{2,}/)
-      .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
-      .join("");
+    rich(text).split(/\n{2,}/).map((p) => {
+      const lines = p.split("\n");
+      if (lines.every((l) => /^\s*[—\-•]\s+/.test(l)) && lines.length > 1) {
+        return "<ul>" + lines.map((l) =>
+          "<li>" + l.replace(/^\s*[—\-•]\s+/, "") + "</li>").join("") + "</ul>";
+      }
+      return "<p>" + lines.join("<br>") + "</p>";
+    }).join("");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const question = form.question.value.trim();
-    if (question.length < 8) return show("<p>Ask a fuller question — at least a sentence.</p>", "is-error");
+  const scrollThread = () => {
+    thread.scrollTop = thread.scrollHeight;
+  };
 
+  const addMsg = (role, html, cls) => {
+    const el = document.createElement("div");
+    el.className = "oracle-msg oracle-msg--" + role + (cls ? " " + cls : "");
+    el.innerHTML =
+      '<p class="oracle-who">' + (role === "you" ? "You" : "The Oracle") + "</p>" +
+      '<div class="oracle-text">' + html + "</div>";
+    thread.appendChild(el);
+    scrollThread();
+    return el;
+  };
+
+  const thinking = () => {
+    const el = addMsg("oracle", '<p class="oracle-dots"><i></i><i></i><i></i></p>', "is-thinking");
+    return el;
+  };
+
+  /* Reveal an answer a few words at a time, which is what makes a reply feel
+     answered rather than pasted. Instant under reduced-motion. */
+  const reveal = (el, text, done) => {
+    const target = el.querySelector(".oracle-text");
+    if (reduce) { target.innerHTML = paragraphs(text); scrollThread(); done && done(); return; }
+    const words = text.split(/(\s+)/);
+    let i = 0;
+    const step = () => {
+      i = Math.min(words.length, i + 3);
+      target.innerHTML = paragraphs(words.slice(0, i).join(""));
+      scrollThread();
+      if (i < words.length) setTimeout(step, 16);
+      else done && done();
+    };
+    step();
+  };
+
+  const setChips = (list) => {
+    if (!chips) return;
+    chips.innerHTML = "";
+    if (!list || !list.length) { chips.hidden = true; return; }
+    chips.hidden = false;
+    list.forEach((q) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = q;
+      chips.appendChild(b);
+    });
+  };
+
+  const footnote = (el, data) => {
+    const bits = [];
+    if (data.source === "written") bits.push("From the order\u2019s written answers" +
+      (data.matched ? " \u00b7 " + esc(data.matched) : ""));
+    else if (data.source === "model") {
+      bits.push("Composed just now in the order\u2019s voice");
+      if (data.grounded && data.grounded.length)
+        bits.push("grounded in: " + data.grounded.slice(0, 2).map(esc).join("; "));
+    } else if (data.source === "crisis") bits.push("Said before anything else");
+    if (data.note) bits.push(esc(data.note));
+    if (!bits.length) return;
+    const p = document.createElement("p");
+    p.className = "oracle-src";
+    p.innerHTML = bits.join(" \u00b7 ");
+    el.appendChild(p);
+  };
+
+  const ask = async (question) => {
+    if (busy) return;
+    const q = String(question || "").trim();
+    if (q.length < 2) return;
+
+    busy = true;
     btn.disabled = true;
     const label = btn.textContent;
-    btn.textContent = "Consulting…";
-    show('<p class="muted">The order is considering your question…</p>', "is-waiting");
+    btn.textContent = "Consulting\u2026";
+    if (reset) reset.hidden = false;
+    setChips([]);
+
+    addMsg("you", paragraphs(q));
+    history.push({ role: "user", text: q });
+    box.value = "";
+    box.style.height = "";
+
+    const pending = thinking();
 
     try {
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          question,
-          name: form.name.value.trim(),
-          limb: form.limb.value
+          question: q,
+          name: (nameEl && nameEl.value || "").trim(),
+          limb: (limbEl && limbEl.value) || "",
+          history: history.slice(0, -1).slice(-MAX_KEPT)
         })
       });
       const data = await res.json().catch(() => ({}));
+
+      pending.classList.remove("is-thinking");
+
       if (!res.ok || !data.answer) {
-        show(`<p>${esc(data.error || "The oracle is silent just now. The written form below still reaches Ed.")}</p>`, "is-error");
+        pending.querySelector(".oracle-text").innerHTML =
+          "<p>" + esc(data.error || "The oracle is silent just now. The written form below still reaches Ed.") + "</p>";
+        pending.classList.add("is-error");
+        history.pop();
       } else {
-        const note =
-          data.source === "written"
-            ? '<p class="oracle-src">From the order\u2019s written answers' +
-              (data.matched ? " \u00b7 " + esc(data.matched) : "") + "</p>"
-            : data.source === "model"
-              ? '<p class="oracle-src">Composed just now in the order\u2019s voice</p>'
-              : "";
-        show(paragraphs(data.answer) + note, "");
+        reveal(pending, data.answer, () => {
+          footnote(pending, data);
+          setChips(data.followups);
+          scrollThread();
+        });
+        history.push({ role: "oracle", text: data.answer });
+        if (history.length > MAX_KEPT) history = history.slice(-MAX_KEPT);
         if (window.EGFox && window.EGFox.available) window.EGFox.speak(data.answer);
         else window.__EG_PENDING_SPEECH__ = data.answer;
       }
     } catch {
-      show("<p>No answer could be fetched — this page may be running without its backend. The written form below still reaches Ed.</p>", "is-error");
+      pending.classList.remove("is-thinking");
+      pending.classList.add("is-error");
+      pending.querySelector(".oracle-text").innerHTML =
+        "<p>No answer could be fetched \u2014 this page may be running without its backend. " +
+        "The written form below still reaches Ed.</p>";
+      history.pop();
     } finally {
+      busy = false;
       btn.disabled = false;
       btn.textContent = label;
+      box.focus();
     }
+  };
+
+  form.addEventListener("submit", (e) => { e.preventDefault(); ask(box.value); });
+
+  // Enter sends, Shift+Enter makes a new line
+  box.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      form.requestSubmit ? form.requestSubmit() : ask(box.value);
+    }
+  });
+
+  // grow the box with the question
+  const grow = () => {
+    box.style.height = "auto";
+    box.style.height = Math.min(box.scrollHeight, 240) + "px";
+  };
+  box.addEventListener("input", grow);
+
+  if (chips) chips.addEventListener("click", (e) => {
+    const b = e.target.closest(".chip");
+    if (b) ask(b.textContent);
+  });
+
+  if (reset) reset.addEventListener("click", () => {
+    history = [];
+    thread.querySelectorAll(".oracle-msg:not(.oracle-greet)").forEach((n) => n.remove());
+    setChips([
+      "Why 137.5 degrees and not 120?",
+      "Is the Law of One testable?",
+      "Is magic real, in one paragraph?"
+    ]);
+    reset.hidden = true;
+    if (window.EGFox) window.EGFox.stop();
+    box.value = "";
+    box.focus();
   });
 })();
 
