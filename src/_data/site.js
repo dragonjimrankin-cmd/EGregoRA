@@ -26,6 +26,7 @@ export default {
     { url: "/runes/", label: "Runes & Charms", glyph: "tree" },
     { url: "/occult/", label: "The Occult", glyph: "eye" },
     { url: "/elemental-alchemy/", label: "Elemental Alchemy", glyph: "spiral" },
-    { url: "/products/", label: "Products", glyph: "seed" }
+    { url: "/products/", label: "Products", glyph: "seed" },
+    { url: "/join/", label: "Join", glyph: "star" }
   ]
 };

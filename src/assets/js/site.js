@@ -832,3 +832,294 @@
     watch(card, id, prompt || "");
   };
 })();
+
+/* ------------------------------------------------------------------ *
+ * The Threshold — accounts, emailed codes, and passkey biometrics.
+ * ------------------------------------------------------------------ */
+(function () {
+  var box = document.getElementById('auth-box');
+  var KEY = 'eg-session';
+
+  /* token lives in localStorage and travels as a bearer header */
+  function token() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
+  function setToken(t) {
+    try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) {}
+  }
+  window.EGToken = token;
+
+  function post(url, body) {
+    var h = { 'Content-Type': 'application/json' };
+    var t = token();
+    if (t) h.Authorization = 'Bearer ' + t;
+    return fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body || {}) })
+      .then(function (r) { return r.json().then(function (d) { d._ok = r.ok; return d; }); });
+  }
+
+  /* base64url <-> bytes, the currency WebAuthn deals in */
+  function fromB64(s) {
+    s = String(s).replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function toB64(buf) {
+    var b = new Uint8Array(buf), s = '';
+    for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  if (!box) return;
+
+  var panes = {};
+  Array.prototype.forEach.call(box.querySelectorAll('.auth-pane'), function (p) {
+    panes[p.getAttribute('data-pane')] = p;
+  });
+  function show(name) {
+    Object.keys(panes).forEach(function (k) { panes[k].hidden = (k !== name); });
+    box.setAttribute('data-state', name);
+  }
+  function say(el, text, bad) {
+    if (!el) return;
+    el.textContent = text || '';
+    el.className = 'auth-msg' + (text ? (bad ? ' is-bad' : ' is-good') : '');
+  }
+
+  var emailIn = document.getElementById('a-email');
+  var nameIn = document.getElementById('a-name');
+  var msg = document.getElementById('a-msg');
+  var codeMsg = document.getElementById('a-code-msg');
+  var bioMsg = document.getElementById('a-bio-msg');
+  var sendBtn = document.getElementById('a-send');
+  var bioBtn = document.getElementById('a-bio');
+
+  var hasWebAuthn = !!(window.PublicKeyCredential && navigator.credentials && navigator.credentials.create);
+  if (hasWebAuthn && bioBtn) bioBtn.hidden = false;
+  var unsupported = document.getElementById('a-bio-unsupported');
+  if (!hasWebAuthn && unsupported) unsupported.hidden = false;
+
+  /* ---------------------------------------------------- step one: code */
+  var startForm = document.getElementById('auth-start-form');
+  function sendCode(quiet) {
+    var addr = (emailIn.value || '').trim();
+    if (!addr) { say(msg, 'An address first.', true); return; }
+    if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Sending…'; }
+    post('/api/account-start', { email: addr, name: (nameIn && nameIn.value) || '' })
+      .then(function (d) {
+        if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Send my code'; }
+        if (!d._ok) { say(quiet ? codeMsg : msg, d.error || 'That did not work.', true); return; }
+        var note = document.getElementById('a-code-note');
+        if (note) {
+          note.textContent = (d.returning
+            ? 'Welcome back. A sign-in code is on its way to ' + addr + '. '
+            : 'A code is on its way to ' + addr + '. ') +
+            'It lasts fifteen minutes and works once.';
+        }
+        say(codeMsg, quiet ? 'Another code sent.' : '', false);
+        show('code');
+        var ci = document.getElementById('a-code');
+        if (ci) { ci.value = ''; ci.focus(); }
+      })
+      .catch(function () {
+        if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Send my code'; }
+        say(msg, 'The threshold did not answer. Try again.', true);
+      });
+  }
+  if (startForm) startForm.addEventListener('submit', function (e) { e.preventDefault(); sendCode(false); });
+  var again = document.getElementById('a-again');
+  if (again) again.addEventListener('click', function () { sendCode(true); });
+  var back = document.getElementById('a-back');
+  if (back) back.addEventListener('click', function () { say(msg, ''); show('start'); });
+
+  /* ---------------------------------------------------- step two: enter */
+  var codeForm = document.getElementById('auth-code-form');
+  if (codeForm) codeForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var code = (document.getElementById('a-code').value || '').replace(/\D/g, '');
+    var btn = document.getElementById('a-check');
+    if (btn) { btn.disabled = true; btn.textContent = 'Checking…'; }
+    post('/api/account-verify', { email: (emailIn.value || '').trim(), code: code })
+      .then(function (d) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Verify and enter'; }
+        if (!d._ok || !d.token) { say(codeMsg, d.error || 'That code was refused.', true); return; }
+        setToken(d.token);
+        say(codeMsg, '');
+        enter(d.member);
+      })
+      .catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = 'Verify and enter'; }
+        say(codeMsg, 'The threshold did not answer.', true);
+      });
+  });
+
+  /* ------------------------------------------------------- signed in UI */
+  function enter(member) {
+    var g = document.getElementById('a-greeting');
+    var who = document.getElementById('a-who');
+    var first = (member && member.name ? String(member.name).split(/\s+/)[0] : '');
+    if (g) g.textContent = first ? 'Welcome, ' + first + '.' : 'Welcome.';
+    if (who) {
+      who.textContent = 'Signed in as ' + (member && member.email ? member.email : 'a verified member') +
+        '. This session lasts thirty days unless you end it.';
+    }
+    show('in');
+    loadKeys();
+  }
+
+  function loadKeys() {
+    var list = document.getElementById('a-keys');
+    if (!list) return;
+    post('/api/account-me', {}).then(function (d) {
+      if (!d.signed_in) { setToken(''); show('start'); return; }
+      list.innerHTML = '';
+      if (!d.passkeys || !d.passkeys.length) {
+        var li = document.createElement('li');
+        li.className = 'muted small';
+        li.textContent = 'No device enrolled yet.';
+        list.appendChild(li);
+        return;
+      }
+      d.passkeys.forEach(function (k) {
+        var li = document.createElement('li');
+        var span = document.createElement('span');
+        span.textContent = k.label || 'A device';
+        var drop = document.createElement('button');
+        drop.type = 'button';
+        drop.className = 'linkish';
+        drop.textContent = 'forget';
+        drop.addEventListener('click', function () {
+          post('/api/account-passkey', { action: 'forget', id: k.id }).then(loadKeys);
+        });
+        li.appendChild(span);
+        li.appendChild(drop);
+        list.appendChild(li);
+      });
+    });
+  }
+
+  var out = document.getElementById('a-signout');
+  if (out) out.addEventListener('click', function () {
+    post('/api/account-signout', {}).catch(function () {}).then(function () {
+      setToken('');
+      say(msg, 'Signed out. The door is only ever closed, never locked.');
+      show('start');
+    });
+  });
+
+  /* --------------------------------------------- enrol a biometric key */
+  function deviceLabel() {
+    var u = navigator.userAgent || '';
+    if (/iPhone|iPad/.test(u)) return 'iPhone or iPad (Face ID / Touch ID)';
+    if (/Macintosh/.test(u)) return 'Mac (Touch ID)';
+    if (/Android/.test(u)) return 'Android device (fingerprint)';
+    if (/Windows/.test(u)) return 'Windows (Hello)';
+    return 'This device';
+  }
+
+  var addKey = document.getElementById('a-add-key');
+  if (addKey) addKey.addEventListener('click', function () {
+    if (!hasWebAuthn) { say(bioMsg, 'This browser has no passkey support.', true); return; }
+    addKey.disabled = true;
+    say(bioMsg, 'Ask your device…');
+    post('/api/account-passkey', { action: 'register-options' })
+      .then(function (o) {
+        if (!o._ok) throw new Error(o.error || 'The server refused.');
+        return navigator.credentials.create({
+          publicKey: {
+            challenge: fromB64(o.challenge),
+            rp: o.rp,
+            user: {
+              id: fromB64(o.user.id),
+              name: o.user.name,
+              displayName: o.user.displayName
+            },
+            pubKeyCredParams: o.pubKeyCredParams,
+            authenticatorSelection: o.authenticatorSelection,
+            timeout: o.timeout,
+            attestation: o.attestation,
+            excludeCredentials: (o.excludeCredentials || []).map(function (c) {
+              return { type: 'public-key', id: fromB64(c.id) };
+            })
+          }
+        }).then(function (cred) {
+          /* getPublicKey() hands us SPKI directly — no CBOR to unpick */
+          var spki = cred.response.getPublicKey && cred.response.getPublicKey();
+          if (!spki) throw new Error('This device did not offer a readable public key.');
+          return post('/api/account-passkey', {
+            action: 'register',
+            credId: toB64(cred.rawId),
+            publicKey: toB64(spki),
+            challenge: o.challenge,
+            clientDataJSON: toB64(cred.response.clientDataJSON),
+            label: deviceLabel()
+          });
+        });
+      })
+      .then(function (d) {
+        addKey.disabled = false;
+        if (!d._ok) { say(bioMsg, d.error || 'The key was not accepted.', true); return; }
+        say(bioMsg, d.message || 'Enrolled.');
+        loadKeys();
+      })
+      .catch(function (err) {
+        addKey.disabled = false;
+        var m = (err && err.name === 'NotAllowedError')
+          ? 'The device declined, or the prompt was dismissed.'
+          : (err && err.message) || 'The enrolment failed.';
+        say(bioMsg, m, true);
+      });
+  });
+
+  /* ------------------------------------------- sign in with the finger */
+  if (bioBtn) bioBtn.addEventListener('click', function () {
+    var addr = (emailIn.value || '').trim();
+    if (!addr) { say(msg, 'Type your address first, then press this.', true); return; }
+    bioBtn.disabled = true;
+    say(msg, 'Ask your device…');
+    post('/api/account-passkey', { action: 'login-options', email: addr })
+      .then(function (o) {
+        if (!o._ok) throw new Error(o.error || 'No passkey here.');
+        return navigator.credentials.get({
+          publicKey: {
+            challenge: fromB64(o.challenge),
+            rpId: o.rpId,
+            timeout: o.timeout,
+            userVerification: o.userVerification,
+            allowCredentials: (o.allowCredentials || []).map(function (c) {
+              return { type: 'public-key', id: fromB64(c.id) };
+            })
+          }
+        }).then(function (as) {
+          return post('/api/account-passkey', {
+            action: 'login',
+            credId: toB64(as.rawId),
+            challenge: o.challenge,
+            authenticatorData: toB64(as.response.authenticatorData),
+            clientDataJSON: toB64(as.response.clientDataJSON),
+            signature: toB64(as.response.signature)
+          });
+        });
+      })
+      .then(function (d) {
+        bioBtn.disabled = false;
+        if (!d._ok || !d.token) { say(msg, d.error || 'That was refused.', true); return; }
+        setToken(d.token);
+        say(msg, '');
+        enter(d.member);
+      })
+      .catch(function (err) {
+        bioBtn.disabled = false;
+        var m = (err && err.name === 'NotAllowedError')
+          ? 'The device declined, or the prompt was dismissed.'
+          : (err && err.message) || 'The sign-in failed.';
+        say(msg, m, true);
+      });
+  });
+
+  /* already carrying a session? walk straight in */
+  if (token()) {
+    post('/api/account-me', {}).then(function (d) {
+      if (d && d.signed_in) enter(d.member); else setToken('');
+    }).catch(function () {});
+  }
+})();

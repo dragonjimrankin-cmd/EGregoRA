@@ -1,0 +1,127 @@
+---
+layout: layouts/base.njk
+title: Join the Order
+permalink: /join/
+description: "Create an EGregoRA account or sign in — a verified email address, and then your face or fingerprint. No passwords, anywhere."
+---
+
+<section class="page-head">
+  <p class="kicker">The Threshold</p>
+  <h1>Join the Order</h1>
+  <p class="lede muted">No passwords. An address you can prove is yours, and after that your own face or
+  fingerprint if your device has one. Membership costs nothing, confers no rank, and withholds no teaching —
+  everything on this site stays public. An account simply means the oracle knows who it is talking to.</p>
+</section>
+
+<section class="wrap narrow reveal" id="gate">
+  <div class="frame frame--first illuminated">
+    <div class="auth-box" id="auth-box" data-state="start">
+
+      <!-- ------------------------------------------------ signed out --- -->
+      <div class="auth-pane" data-pane="start">
+        <p class="kicker">STEP ONE · YOUR ADDRESS</p>
+        <h2>Sign in, or create an account</h2>
+        <p class="muted small">One form does both. If the address is new, an account is made; if it is known,
+        you are signed back in. Either way a six-digit code goes to the inbox and nothing is created until
+        you enter it.</p>
+
+        <form class="ornate" id="auth-start-form">
+          <div>
+            <label for="a-email">Email address</label>
+            <input id="a-email" type="email" name="email" required autocomplete="email"
+                   inputmode="email" placeholder="rowan@example.org">
+          </div>
+          <div>
+            <label for="a-name">Name <span class="muted xsmall">(optional — what the oracle should call you)</span></label>
+            <input id="a-name" type="text" name="name" maxlength="80" autocomplete="name"
+                   placeholder="Rowan of the North">
+          </div>
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="a-send">Send my code</button>
+            <button class="btn btn--ghost" type="button" id="a-bio" hidden>
+              <span aria-hidden="true">☉</span> Use face or fingerprint
+            </button>
+          </div>
+        </form>
+        <p class="auth-msg" id="a-msg" role="status"></p>
+      </div>
+
+      <!-- -------------------------------------------------- the code --- -->
+      <div class="auth-pane" data-pane="code" hidden>
+        <p class="kicker">STEP TWO · THE SIX DIGITS</p>
+        <h2>Check your inbox</h2>
+        <p class="muted small" id="a-code-note">A code is on its way. It lasts fifteen minutes and works once.</p>
+        <form class="ornate" id="auth-code-form">
+          <div>
+            <label for="a-code">Verification code</label>
+            <input id="a-code" type="text" name="code" required inputmode="numeric" pattern="[0-9]*"
+                   maxlength="6" autocomplete="one-time-code" class="code-input" placeholder="000000">
+          </div>
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="a-check">Verify and enter</button>
+            <button class="btn btn--ghost" type="button" id="a-again">Send another</button>
+            <button class="btn btn--ghost" type="button" id="a-back">Different address</button>
+          </div>
+        </form>
+        <p class="auth-msg" id="a-code-msg" role="status"></p>
+      </div>
+
+      <!-- --------------------------------------------------- signed in -- -->
+      <div class="auth-pane" data-pane="in" hidden>
+        <p class="kicker">INSIDE</p>
+        <h2 id="a-greeting">Welcome</h2>
+        <p class="muted small" id="a-who"></p>
+
+        <div class="auth-bio">
+          <h3>Biometric entry</h3>
+          <p class="muted small">Add a passkey and your device will let you back in with
+          <strong>Face ID, Touch ID, Windows Hello, an Android fingerprint</strong> or a hardware key. The
+          scan happens on your device and stays there: nothing biometric is sent here, ever. All this server
+          keeps is a public key and the device's word — cryptographically signed — that it checked a real
+          human.</p>
+          <ul class="passkey-list" id="a-keys"></ul>
+          <p class="ask-actions">
+            <button class="btn" type="button" id="a-add-key">Enrol this device</button>
+            <button class="btn btn--ghost" type="button" id="a-signout">Sign out</button>
+          </p>
+          <p class="auth-msg" id="a-bio-msg" role="status"></p>
+          <p class="muted xsmall" id="a-bio-unsupported" hidden>This browser or device does not offer
+          platform biometrics, so the emailed code remains your way in. Nothing is lost by that.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <h3>What an account is for</h3>
+      <ul class="biblio">
+        <li>The oracle greets you by name and keeps the thread of what you have asked.</li>
+        <li>Files you hand it stay attached to you rather than to a browser tab.</li>
+        <li>Images and clips you make are gathered in one place instead of scattering.</li>
+        <li>Nothing on this site is hidden behind it. There are no grades, no fees and no secrets withheld
+        from the page — an account is a convenience, not an initiation.</li>
+      </ul>
+    </div>
+    <div class="frame reveal">
+      <h3>How the door is built</h3>
+      <ul class="biblio">
+        <li><span class="sci">◆</span> <strong>No passwords.</strong> Nothing to reuse, leak, phish or reset.
+        Proof of the address is a one-time code that expires in fifteen minutes.</li>
+        <li><span class="sci">◆</span> <strong>Passkeys, not fingerprints.</strong> WebAuthn keeps the
+        biometric on your device's secure element; the server only ever sees a public key and a signature.</li>
+        <li><span class="sci">◆</span> <strong>User verification required.</strong> We reject any sign-in
+        where the device did not actually check a face, a finger or a PIN.</li>
+        <li><span class="sci">◆</span> <strong>Sessions expire.</strong> Thirty days, revocable by signing
+        out, and every passkey can be forgotten individually.</li>
+        <li><span class="myth">◆</span> We will not sell the list, because there is nothing we want to sell
+        it for.</li>
+      </ul>
+    </div>
+  </div>
+</section>

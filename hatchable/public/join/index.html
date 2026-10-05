@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ask Ed a Question · EGregoRA</title>
-<meta name="description" content="Put a question to Edward Gregory, co-founder of EGregoRA. Answered publicly on the podcast or privately by letter.">
-<meta property="og:title" content="Ask Ed a Question · EGregoRA">
-<meta property="og:description" content="Put a question to Edward Gregory, co-founder of EGregoRA. Answered publicly on the podcast or privately by letter.">
+<title>Join the Order · EGregoRA</title>
+<meta name="description" content="Create an EGregoRA account or sign in — a verified email address, and then your face or fingerprint. No passwords, anywhere.">
+<meta property="og:title" content="Join the Order · EGregoRA">
+<meta property="og:description" content="Create an EGregoRA account or sign in — a verified email address, and then your face or fingerprint. No passwords, anywhere.">
 <meta property="og:type" content="website">
 <link rel="icon" href="/assets/img/sigil.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/main.css">
 </head>
-<body data-page="ask-ed">
+<body data-page="join">
 <canvas id="starfield" aria-hidden="true"></canvas>
 <div class="veil" aria-hidden="true"></div>
 
@@ -132,9 +132,34 @@
     <g fill="none" stroke="currentColor" stroke-width="0.45">
       
         
-        <circle cx="100" cy="100" r="88"/>
-        <polygon points="100,12 125,61 180,65 142,105 155,160 100,134 45,160 58,105 20,65 75,61"/>
-        <polygon points="100,20 162,45 180,100 162,155 100,180 38,155 20,100 38,45" opacity="0.5"/>
+        <circle cx="100" cy="100" r="20"/>
+        
+        <circle cx="100" cy="80" r="20" transform="rotate(0 100 100)"/>
+        <circle cx="100" cy="60" r="20" transform="rotate(0 100 100)" opacity="0.7"/>
+        <circle cx="117" cy="70" r="20" transform="rotate(0 100 100)" opacity="0.5"/>
+        
+        <circle cx="100" cy="80" r="20" transform="rotate(60 100 100)"/>
+        <circle cx="100" cy="60" r="20" transform="rotate(60 100 100)" opacity="0.7"/>
+        <circle cx="117" cy="70" r="20" transform="rotate(60 100 100)" opacity="0.5"/>
+        
+        <circle cx="100" cy="80" r="20" transform="rotate(120 100 100)"/>
+        <circle cx="100" cy="60" r="20" transform="rotate(120 100 100)" opacity="0.7"/>
+        <circle cx="117" cy="70" r="20" transform="rotate(120 100 100)" opacity="0.5"/>
+        
+        <circle cx="100" cy="80" r="20" transform="rotate(180 100 100)"/>
+        <circle cx="100" cy="60" r="20" transform="rotate(180 100 100)" opacity="0.7"/>
+        <circle cx="117" cy="70" r="20" transform="rotate(180 100 100)" opacity="0.5"/>
+        
+        <circle cx="100" cy="80" r="20" transform="rotate(240 100 100)"/>
+        <circle cx="100" cy="60" r="20" transform="rotate(240 100 100)" opacity="0.7"/>
+        <circle cx="117" cy="70" r="20" transform="rotate(240 100 100)" opacity="0.5"/>
+        
+        <circle cx="100" cy="80" r="20" transform="rotate(300 100 100)"/>
+        <circle cx="100" cy="60" r="20" transform="rotate(300 100 100)" opacity="0.7"/>
+        <circle cx="117" cy="70" r="20" transform="rotate(300 100 100)" opacity="0.5"/>
+        
+        <circle cx="100" cy="100" r="62" stroke-width="0.6"/>
+        <circle cx="100" cy="100" r="66" stroke-width="0.3"/>
       
     </g>
   </svg>
@@ -279,7 +304,7 @@
       </li>
       
       <li>
-        <a href="/ask-ed/" aria-current="page">
+        <a href="/ask-ed/" >
           <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
           <span>Ask Ed</span>
         </a>
@@ -391,7 +416,7 @@
       </li>
       
       <li>
-        <a href="/join/" >
+        <a href="/join/" aria-current="page">
           <i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="50" cy="50" r="44"/><polygon points="50,6 63,38 94,38 69,58 78,90 50,71 22,90 31,58 6,38 37,38"/></g></svg></i>
           <span>Join</span>
         </a>
@@ -406,311 +431,125 @@
 <main id="main">
   
 <section class="page-head">
-  <p class="kicker">The Open Door</p>
-  <h1>Ask Ed a Question</h1>
-  <p class="lede muted">No question is too large, too small or too strange. Several are too urgent — see the note below.</p>
+  <p class="kicker">The Threshold</p>
+  <h1>Join the Order</h1>
+  <p class="lede muted">No passwords. An address you can prove is yours, and after that your own face or
+  fingerprint if your device has one. Membership costs nothing, confers no rank, and withholds no teaching —
+  everything on this site stays public. An account simply means the oracle knows who it is talking to.</p>
 </section>
 
-<section class="wrap oracle-wrap reveal" id="oracle">
-  <div class="frame">
-    <p class="kicker">The Oracle</p>
+<section class="wrap narrow reveal" id="gate">
+  <div class="frame frame--first illuminated">
+    <div class="auth-box" id="auth-box" data-state="start">
 
-    <div class="fox-panel">
-      <div class="fox-stage" id="fox-stage" role="img"
-           aria-label="A three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
-      <div class="fox-side">
-        <h3 class="fox-name">The Familiar</h3>
-        <p class="muted small">A fox keeps the order's answers. Ask below and he will read the reply aloud in
-        his own voice; the words are the order's written ones, unchanged.</p>
-        <p class="fox-controls">
-          <button class="btn btn--ghost" type="button" id="fox-speak">Speak</button>
-          <button class="btn btn--ghost" type="button" id="fox-stop">Silence him</button>
-        </p>
-        <p class="muted xsmall" id="fox-status">Waking the familiar…</p>
-      </div>
-    </div>
+      <!-- ------------------------------------------------ signed out --- -->
+      <div class="auth-pane" data-pane="start">
+        <p class="kicker">STEP ONE · YOUR ADDRESS</p>
+        <h2>Sign in, or create an account</h2>
+        <p class="muted small">One form does both. If the address is new, an account is made; if it is known,
+        you are signed back in. Either way a six-digit code goes to the inbox and nothing is created until
+        you enter it.</p>
 
-    <h2>Ask now — and keep asking</h2>
-    <p class="muted small">This is a conversation, not a search box. The oracle holds the thread, so you can
-    follow up, push back, ask what it meant, or say "go on". It answers from a body of 1,280 written answers
-    composed for EGregoRA and graded by the house rules on evidence; where a model key is configured it
-    composes fresh replies in the same voice, anchored to those same written answers rather than invented.
-    Where it has nothing, it says so. It will also simply talk — a greeting, an aside, a bad day, something
-    with nothing esoteric about it at all — and when a question needs something it cannot know from memory,
-    it can search the open web and read the pages it finds, then tell you which ones it used. It can also
-    <strong>draw</strong> — ask the fox for a picture and it makes a photorealistic image with FLUX.1-schnell,
-    an open-weights model, shown here and clearly labelled as generated rather than photographed — it can <strong>film</strong> — five seconds of 480p
-    video from HunyuanVideo 1.5, open weights again — and it can
-    <strong>read what you give it</strong>: attach a file and it will quote, search, summarise and argue with
-    the contents rather than guessing at them. It is not Ed
-    himself — but everything asked here lands in his mailbag, and the best questions get answered properly
-    on the podcast.</p>
-
-    <div class="oracle-chat">
-      <div class="oracle-bar">
-        <p class="oracle-bar-note">A room to talk in — the oracle holds the whole thread, and will talk
-        about anything, not only the limbs.</p>
-        <button class="btn btn--ghost btn--small" type="button" id="o-expand"
-                aria-pressed="false">Expand the space</button>
-      </div>
-      <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
-        <div class="oracle-msg oracle-msg--oracle oracle-greet">
-          <p class="oracle-who">The Oracle</p>
-          <div class="oracle-text">
-            <p>Ask me anything inside the eleven limbs — cosmic physics, druidry and trees, sacred geometry,
-            astrology, neuroscience, biology, the Law of One and contact, the Shadow Cabinet, magic and
-            ritual, alchemy, consciousness — or anything else at all. Cooking, grief, a gearbox, a bad
-            week, Roman history, a line of code: I will talk about it properly rather than steering you
-            back to sacred geometry. Ask me something awkward and watch me say I don't know — or just say
-            hello, if that is where you are. If a question needs today's news or a figure I ought to check,
-            I will go and look it up and show you where I went. Ask me to draw something and I will — a photograph
-            of a thing that does not exist, made to order, by an open-weights model the order runs rather
-            than a company's. And you can hand me a file: attach notes, a transcript, a spreadsheet or a
-            chapter and I will read it properly and work from it.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="oracle-chips" id="oracle-chips">
-        <button class="chip" type="button">Why 137.5 degrees and not 120?</button>
-        <button class="chip" type="button">Is the Law of One testable?</button>
-        <button class="chip" type="button">Did the druids really build Stonehenge?</button>
-        <button class="chip" type="button">What does a psychedelic actually do to a brain?</button>
-        <button class="chip" type="button">Is magic real, in one paragraph?</button>
-      </div>
-    </div>
-
-    <form class="ornate oracle-form" id="oracle-form">
-      <div>
-        <label for="o-question">Your question</label>
-        <textarea id="o-question" name="question" required maxlength="2000" rows="3"
-          placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
-      </div>
-
-      <details class="oracle-opts">
-        <summary>Name and limb (optional)</summary>
-        <div class="grid two" style="gap:1rem">
+        <form class="ornate" id="auth-start-form">
           <div>
-            <label for="o-name">Name</label>
-            <input id="o-name" name="name" type="text" maxlength="80" placeholder="Rowan of the North">
+            <label for="a-email">Email address</label>
+            <input id="a-email" type="email" name="email" required autocomplete="email"
+                   inputmode="email" placeholder="rowan@example.org">
           </div>
           <div>
-            <label for="o-limb">Limb</label>
-            <select id="o-limb" name="limb">
-              <option value="">Let the order decide</option>
-              <option>Cosmic physics &amp; astronomy</option>
-              <option>Druidry, trees &amp; nature</option>
-              <option>Sacred geometry</option>
-              <option>Astrology</option>
-              <option>Neuroscience &amp; psychology</option>
-              <option>Biology &amp; life</option>
-              <option>God, the Law of One &amp; contact</option>
-              <option>Magic &amp; the wizard's craft</option>
-              <option>The Shadow Cabinet</option>
-              <option>Alchemy &amp; the elemental forces</option>
-              <option>Consciousness</option>
-            </select>
+            <label for="a-name">Name <span class="muted xsmall">(optional — what the oracle should call you)</span></label>
+            <input id="a-name" type="text" name="name" maxlength="80" autocomplete="name"
+                   placeholder="Rowan of the North">
           </div>
-        </div>
-      </details>
-
-      <div class="oracle-files">
-        <label class="btn btn--ghost file-btn">
-          <span aria-hidden="true">⌁</span> Attach a file
-          <input id="o-files" type="file" multiple
-                 accept=".txt,.md,.markdown,.csv,.tsv,.json,.yaml,.yml,.xml,.html,.htm,.log,.srt,.vtt,.tex,.ini,.toml,.js,.py,.sql,.sh,.png,.jpg,.jpeg,.gif,.webp,text/*,image/*">
-        </label>
-        <ul class="file-list" id="o-file-list" aria-live="polite"></ul>
-        <p class="muted xsmall">Notes, transcripts, data, a chapter, a photograph — up to 4&nbsp;MB each.
-        Text is read and can be quoted, searched and argued with; images are kept as references. Export a
-        PDF to text first. Anything you attach becomes part of this conversation and is stored with it, so
-        do not send anything confidential.</p>
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="a-send">Send my code</button>
+            <button class="btn btn--ghost" type="button" id="a-bio" hidden>
+              <span aria-hidden="true">☉</span> Use face or fingerprint
+            </button>
+          </div>
+        </form>
+        <p class="auth-msg" id="a-msg" role="status"></p>
       </div>
 
-      <div class="ask-actions">
-        <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>
-        <button class="btn btn--mic" type="button" id="o-mic" hidden
-                aria-describedby="o-mic-hint">
-          <span class="mic-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                 stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="2" width="6" height="12" rx="3"/>
-              <path d="M5 11a7 7 0 0 0 14 0"/>
-              <path d="M12 18v4M8.5 22h7"/>
-            </svg>
-          </span>
-          <span class="mic-label">Hold to speak</span>
-          <span class="mic-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-        </button>
-        <button class="btn btn--ghost" type="button" id="o-reset" hidden>Begin again</button>
+      <!-- -------------------------------------------------- the code --- -->
+      <div class="auth-pane" data-pane="code" hidden>
+        <p class="kicker">STEP TWO · THE SIX DIGITS</p>
+        <h2>Check your inbox</h2>
+        <p class="muted small" id="a-code-note">A code is on its way. It lasts fifteen minutes and works once.</p>
+        <form class="ornate" id="auth-code-form">
+          <div>
+            <label for="a-code">Verification code</label>
+            <input id="a-code" type="text" name="code" required inputmode="numeric" pattern="[0-9]*"
+                   maxlength="6" autocomplete="one-time-code" class="code-input" placeholder="000000">
+          </div>
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="a-check">Verify and enter</button>
+            <button class="btn btn--ghost" type="button" id="a-again">Send another</button>
+            <button class="btn btn--ghost" type="button" id="a-back">Different address</button>
+          </div>
+        </form>
+        <p class="auth-msg" id="a-code-msg" role="status"></p>
       </div>
-      <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
-      question out loud, then let go — the words are transcribed into the box above and sent to the order.
-      Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
-      thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
-    </form>
 
-    <div class="draw-box reveal" id="draw-box">
-      <p class="kicker">ASK THE FOX TO DRAW</p>
-      <h3>Make an Image</h3>
-      <p class="muted small">Type what you want to see and the fox will draw it — photorealistic unless you
-      ask for a painting, an engraving, a diagram or a cartoon. Made with FLUX.1-schnell, an open-weights
-      model, so no company's key is required. Be specific: subject, setting, light, weather, lens, mood. A
-      picture takes fifteen to forty seconds.</p>
+      <!-- --------------------------------------------------- signed in -- -->
+      <div class="auth-pane" data-pane="in" hidden>
+        <p class="kicker">INSIDE</p>
+        <h2 id="a-greeting">Welcome</h2>
+        <p class="muted small" id="a-who"></p>
 
-      <form class="ornate draw-form" id="draw-form">
-        <div>
-          <label for="d-prompt">Your image</label>
-          <textarea id="d-prompt" name="prompt" rows="3" maxlength="1200" required
-            placeholder="A red fox standing in frosted bracken at first light, low winter sun behind it, breath visible on the cold air, shallow depth of field"></textarea>
+        <div class="auth-bio">
+          <h3>Biometric entry</h3>
+          <p class="muted small">Add a passkey and your device will let you back in with
+          <strong>Face ID, Touch ID, Windows Hello, an Android fingerprint</strong> or a hardware key. The
+          scan happens on your device and stays there: nothing biometric is sent here, ever. All this server
+          keeps is a public key and the device's word — cryptographically signed — that it checked a real
+          human.</p>
+          <ul class="passkey-list" id="a-keys"></ul>
+          <p class="ask-actions">
+            <button class="btn" type="button" id="a-add-key">Enrol this device</button>
+            <button class="btn btn--ghost" type="button" id="a-signout">Sign out</button>
+          </p>
+          <p class="auth-msg" id="a-bio-msg" role="status"></p>
+          <p class="muted xsmall" id="a-bio-unsupported" hidden>This browser or device does not offer
+          platform biometrics, so the emailed code remains your way in. Nothing is lost by that.</p>
         </div>
-        <div class="draw-examples" id="draw-examples">
-          <button class="chip" type="button">A dew-covered spider's web at dawn, each drop holding an inverted hedgerow</button>
-          <button class="chip" type="button">An oak in a Somerset field under a full moon, long exposure, stars wheeling</button>
-          <button class="chip" type="button">A brass orrery on a cluttered desk, candlelight, brass worn at the fingertips</button>
-          <button class="chip" type="button">A copperplate engraving of the twelve zodiac glyphs around a wheel</button>
-        </div>
-        <div class="ask-actions">
-          <button class="btn" type="submit" id="d-submit">Draw it</button>
-          <button class="btn btn--ghost" type="button" id="d-clear" hidden>Clear</button>
-        </div>
-      </form>
+      </div>
 
-      <div class="draw-out" id="draw-out" aria-live="polite"></div>
-
-      <p class="muted xsmall">Every image here is <strong>generated, not photographed</strong>. It is a
-      synthesis made to order and is never evidence of anything. The fox will not draw a real person in a
-      situation they were never in, and nothing made here should be passed off as a record.</p>
     </div>
-
-    <div class="draw-box film-box reveal" id="film-box">
-      <p class="kicker">ASK THE FOX TO FILM</p>
-      <h3>Make a Video</h3>
-      <p class="muted small">Five seconds of 480p video from a sentence, made with
-      <strong>HunyuanVideo 1.5</strong> — Tencent's open-weights model, 8.3 billion parameters, code and
-      weights published. Describe motion: what moves, how the camera moves, the light. A clip takes about
-      three minutes; leave the page open and it will appear below.</p>
-
-      <form class="ornate film-form" id="film-form">
-        <div>
-          <label for="v-prompt">Your clip</label>
-          <textarea id="v-prompt" name="prompt" rows="3" maxlength="1200" required
-            placeholder="Mist moving through a stand of oaks at dawn, slow dolly forward, shafts of low sun between the trunks, leaves turning in the draught"></textarea>
-        </div>
-        <div class="film-row">
-          <label for="v-aspect">Shape</label>
-          <select id="v-aspect" name="aspect">
-            <option value="16:9">Landscape · 16:9</option>
-            <option value="9:16">Upright · 9:16</option>
-          </select>
-        </div>
-        <div class="draw-examples" id="film-examples">
-          <button class="chip" type="button">A single candle flame guttering in a draught, close, dark background</button>
-          <button class="chip" type="button">Ink dropped into still water, slow motion, backlit, blooming into filaments</button>
-          <button class="chip" type="button">Clouds racing over a standing stone circle, time-lapse, long shadows turning</button>
-        </div>
-        <div class="ask-actions">
-          <button class="btn" type="submit" id="v-submit">Film it</button>
-          <button class="btn btn--ghost" type="button" id="v-clear" hidden>Clear</button>
-        </div>
-      </form>
-
-      <div class="draw-out" id="film-out" aria-live="polite"></div>
-
-      <p class="muted xsmall">Every clip is <strong>generated, not filmed</strong>: nothing here records a
-      real event, and it should never be presented as though it did. Video needs a GPU somewhere even when
-      the model is open — if no video key is connected to this project, the fox will say so rather than
-      pretend.</p>
-    </div>
-
-    <p class="muted xsmall oracle-foot">Test everything kindly. If an answer cannot survive your scepticism,
-    it does not deserve your belief — and the written form below reaches Ed himself.</p>
   </div>
 </section>
 
-<div class="divider">✦ ✦ ✦</div>
+<div class="divider">✦</div>
 
 <section class="wrap">
   <div class="grid two">
     <div class="frame reveal">
-      <h3 style="margin-bottom:1rem">Write to Ed directly</h3>
-      <form class="ornate" action="https://formspree.io/f/your-form-id" method="POST">
-        <div>
-          <label for="name">Your name or chosen name</label>
-          <input id="name" name="name" type="text" required placeholder="Rowan of the North">
-        </div>
-        <div>
-          <label for="email">Email (so Ed can reply)</label>
-          <input id="email" name="email" type="email" required placeholder="you@example.com">
-        </div>
-        <div>
-          <label for="topic">Which limb does this belong to?</label>
-          <select id="topic" name="topic">
-            <option>Cosmic physics &amp; astronomy</option>
-            <option>Druidry, trees &amp; nature</option>
-            <option>Sacred geometry</option>
-            <option>Astrology</option>
-            <option>Neuroscience &amp; psychology</option>
-            <option>Biology &amp; life</option>
-            <option>God, the Law of One &amp; contact</option>
-            <option>Magic &amp; the wizard's craft</option>
-            <option>History, propaganda &amp; the shadow</option>
-            <option>Something that fits nowhere</option>
-          </select>
-        </div>
-        <div>
-          <label for="question">Your question</label>
-          <textarea id="question" name="question" required placeholder="Ask plainly. Ed would rather have the real question than the polite one."></textarea>
-        </div>
-        <div>
-          <label for="public">May we answer this publicly?</label>
-          <select id="public" name="public">
-            <option>Yes — use my name</option>
-            <option>Yes — but keep me anonymous</option>
-            <option>No — private reply only</option>
-          </select>
-        </div>
-        <button class="btn" type="submit">Send the Question</button>
-        <p class="form-note">This form posts to Formspree. Replace <code>your-form-id</code> in
-        <code>src/ask-ed.njk</code> with your own endpoint (Formspree, Basin, Netlify Forms or Tally all work),
-        or simply email <a href="mailto:ask@egregora.org">ask@egregora.org</a>.</p>
-      </form>
+      <h3>What an account is for</h3>
+      <ul class="biblio">
+        <li>The oracle greets you by name and keeps the thread of what you have asked.</li>
+        <li>Files you hand it stay attached to you rather than to a browser tab.</li>
+        <li>Images and clips you make are gathered in one place instead of scattering.</li>
+        <li>Nothing on this site is hidden behind it. There are no grades, no fees and no secrets withheld
+        from the page — an account is a convenience, not an initiation.</li>
+      </ul>
     </div>
-
-    <div class="reveal">
-      <div class="frame mb-2">
-        <h2>How Ed Answers</h2>
-        <ul class="biblio">
-          <li>Every question is read. Most are answered within a fortnight.</li>
-          <li>The best are answered at length in the <a href="/podcast/">podcast mailbag</a>.</li>
-          <li>Ed will tell you plainly when he does not know — that is the most common answer, and the most useful.</li>
-          <li>Where evidence exists, you get the evidence. Where only tradition exists, you get told it is tradition.</li>
-        </ul>
-      </div>
-
-      <div class="frame caution">
-        <p><strong>Please read.</strong> EGregoRA is a study order, not a clinic. Ed cannot give medical,
-        psychiatric, legal or financial advice, and will not advise on taking any controlled substance. If you
-        are in crisis, please contact your local emergency service or a crisis line
-        (UK: Samaritans, 116 123, free, 24 hours) rather than waiting for a reply here.</p>
-      </div>
-
-      <div class="frame mt-2">
-        <h3>Questions Already in the Pile</h3>
-        <details class="scroll"><summary>Is astrology real?</summary>
-          <p>Real as a symbolic system with four millennia of continuous use and enormous cultural weight — yes,
-          demonstrably. Real as a physical force by which Saturn's position alters your week — no; every
-          controlled test of that claim has failed. Both halves of that sentence matter.</p></details>
-        <details class="scroll"><summary>Does the Law of One hold up?</summary>
-          <p>As cosmology, it is untestable. As philosophy, its core — that consciousness is unitary and that free
-          will is sacred — sits in good company with Advaita Vedanta, Plotinus and Whitehead. Read it as a text, not
-          a transcript, and it becomes much more interesting.</p></details>
-      </div>
+    <div class="frame reveal">
+      <h3>How the door is built</h3>
+      <ul class="biblio">
+        <li><span class="sci">◆</span> <strong>No passwords.</strong> Nothing to reuse, leak, phish or reset.
+        Proof of the address is a one-time code that expires in fifteen minutes.</li>
+        <li><span class="sci">◆</span> <strong>Passkeys, not fingerprints.</strong> WebAuthn keeps the
+        biometric on your device's secure element; the server only ever sees a public key and a signature.</li>
+        <li><span class="sci">◆</span> <strong>User verification required.</strong> We reject any sign-in
+        where the device did not actually check a face, a finger or a PIN.</li>
+        <li><span class="sci">◆</span> <strong>Sessions expire.</strong> Thirty days, revocable by signing
+        out, and every passkey can be forgotten individually.</li>
+        <li><span class="myth">◆</span> We will not sell the list, because there is nothing we want to sell
+        it for.</li>
+      </ul>
     </div>
   </div>
 </section>
-
-<script type="module" src="/assets/js/fox.js"></script>
 
 </main>
 
