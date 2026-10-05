@@ -1,9 +1,8 @@
 {
-  "note": "Gink should now know himself, and not serve a wrong written answer to small talk.",
+  "note": "v74 check.",
   "calls": [
     { "action": "ask", "question": "Who is Gink?" },
     { "action": "ask", "question": "What model are you thinking with?" },
-    { "action": "ask", "question": "What did you have for breakfast, and do you mind the question?" },
-    { "action": "status" }
+    { "action": "ask", "question": "What did you have for breakfast, and do you mind the question?" }
   ]
 }
