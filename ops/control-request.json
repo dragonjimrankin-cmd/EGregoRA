@@ -1,8 +1,8 @@
 {
-  "note": "v78 — the default state, final examination.",
+  "note": "v79 — does Gink know where he comes from?",
   "calls": [
-    { "action": "ask", "question": "Who am I talking to?" },
+    { "action": "ask", "question": "Where do you come from?" },
     { "action": "ask", "question": "Be yourself again." },
-    { "action": "ask", "question": "Is the Shadow Cabinet just an excuse to be fascinated by Nazis?" }
+    { "action": "ask", "question": "Gink, what is the skull on Ed's desk?" }
   ]
 }
