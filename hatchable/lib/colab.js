@@ -39,17 +39,19 @@ async function call(url, opts = {}) {
 }
 
 /** Announce a worker, or refresh one already known by the same endpoint. */
-export async function registerWorker({ label, endpoint, gpu, account }) {
+export async function registerWorker({ label, endpoint, gpu, account, caps, model }) {
   const url = String(endpoint || '').replace(/\/+$/, '');
   if (!/^https:\/\/[\w.-]+/.test(url)) return { error: 'That is not a usable endpoint.' };
   const { rows } = await db.query(
-    `INSERT INTO colab_workers (label, endpoint, gpu, account)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO colab_workers (label, endpoint, gpu, account, caps, model)
+     VALUES ($1, $2, $3, $4, $5, $6)
      ON CONFLICT (endpoint) DO UPDATE
-       SET last_seen = NOW(), gpu = EXCLUDED.gpu, label = EXCLUDED.label
-     RETURNING id, label, endpoint, gpu, account, last_seen`,
+       SET last_seen = NOW(), gpu = EXCLUDED.gpu, label = EXCLUDED.label,
+           caps = EXCLUDED.caps, model = EXCLUDED.model
+     RETURNING id, label, endpoint, gpu, account, caps, model, last_seen`,
     [String(label || 'Colab').slice(0, 60), url, String(gpu || '').slice(0, 80),
-     String(account || '').slice(0, 120)]
+     String(account || '').slice(0, 120), String(caps || 'video').slice(0, 40),
+     String(model || '').slice(0, 120) || null]
   );
   return { worker: (rows && rows[0]) || null };
 }
@@ -68,12 +70,46 @@ export async function retireWorker(endpoint) {
 
 export async function liveWorkers() {
   const { rows } = await db.query(
-    `SELECT id, label, endpoint, gpu, account, jobs, last_seen
+    `SELECT id, label, endpoint, gpu, account, caps, model, jobs, last_seen
        FROM colab_workers
       WHERE last_seen > NOW() - INTERVAL '${ALIVE_MINUTES} minutes'
       ORDER BY jobs ASC, last_seen DESC`
   );
   return rows || [];
+}
+
+/** Live workers that will serve a chat model. */
+export async function chatWorkers() {
+  return (await liveWorkers()).filter((w) => String(w.caps || '').includes('chat'));
+}
+
+/**
+ * One chat turn on the order's own GPU, OpenAI dialect, tools and all.
+ * Returns null when no worker is awake, so callers simply move on.
+ */
+export async function colabChat({ system, messages, tools, temperature, maxTokens }) {
+  const workers = await chatWorkers();
+  if (!workers.length) return null;
+  const secret = await colabSecret();
+
+  for (const w of workers) {
+    const r = await call(w.endpoint + '/v1/chat/completions', {
+      method: 'POST',
+      timeout: 180000,
+      headers: Object.assign({ 'content-type': 'application/json' },
+        secret ? { 'x-egregora-secret': secret } : {}),
+      body: JSON.stringify({
+        messages: [{ role: 'system', content: system }].concat(messages),
+        tools: tools || undefined,
+        temperature: typeof temperature === 'number' ? temperature : 0.7,
+        max_tokens: maxTokens || 1200
+      })
+    });
+    const msg = r.json && r.json.choices && r.json.choices[0] && r.json.choices[0].message;
+    if (msg) return { message: msg, model: w.model || 'open-weights', worker: w };
+    console.error('colab chat: worker failed', w.endpoint, r.status, String(r.text).slice(0, 200));
+  }
+  return null;
 }
 
 /** Hand a clip to the least-busy live worker. */

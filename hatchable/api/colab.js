@@ -1,7 +1,7 @@
 /**
  * /api/colab — the door Colab notebooks knock on.
  *
- *   POST { action:'register', label, endpoint, gpu, account, secret }
+ *   POST { action:'register', label, endpoint, gpu, account, caps, model, secret }
  *   POST { action:'heartbeat'|'retire', endpoint, secret }
  *   GET                                  → { workers:[{label,gpu,jobs,age_s}] }
  *
@@ -21,6 +21,8 @@ export default async function (req, res) {
       workers: workers.map((w) => ({
         label: w.label,
         gpu: w.gpu || null,
+        caps: w.caps || 'video',
+        model: w.model || null,
         jobs: w.jobs,
         age_s: Math.round((Date.now() - new Date(w.last_seen).getTime()) / 1000)
       }))

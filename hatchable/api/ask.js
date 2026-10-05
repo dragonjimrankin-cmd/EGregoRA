@@ -19,7 +19,7 @@ import { ai, db } from 'hatchable';
 import { bestMatch, nearest, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
 import { webSearch, readPage } from '../lib/websearch.js';
 import { generateImage } from '../lib/imagegen.js';
-import { openChat } from '../lib/openchat.js';
+import { openChat, keylessChat } from '../lib/openchat.js';
 import { openaiChat } from '../lib/openai.js';
 import { submitVideo } from '../lib/videogen.js';
 import { requireStudio } from '../lib/accounts.js';
@@ -275,7 +275,7 @@ THE PERSON YOU ARE TALKING TO
   }
 
   /* 3 ── retrieval: the closest written answers become the model's footing. */
-  const retrieved = topMatches(question, limb, 5).filter((m) => m.score >= GROUND_AT);
+  const retrieved = topMatches(question, limb, 8).filter((m) => m.score >= GROUND_AT);
   const grounding = retrieved.length
     ? ['THE ORDER\'S WRITTEN ANSWERS CLOSEST TO THIS QUESTION:', '']
         .concat(retrieved.map((m, i) =>
@@ -556,6 +556,25 @@ THE PERSON YOU ARE TALKING TO
       }
     }
     if (answer || setupRequired) break;
+  }
+
+  /* 6d ── last resort: GPT-OSS 20B on the keyless public route. No tools and
+          rate-limited to almost nothing, but it is open weights and it means
+          the oracle can still think on a project with no keys at all. */
+  if (!answer) {
+    try {
+      const last = await keylessChat({
+        system: SYSTEM + (studio.ok ? ADULT_NOTE : ''),
+        messages,
+        maxTokens: 900
+      });
+      if (last && last.text) {
+        answer = last.text;
+        usedModel = last.model + ' (keyless, open weights)';
+      }
+    } catch (err) {
+      console.error('ask: keyless route failed', err && err.message);
+    }
   }
 
   // de-duplicate the source list, pages actually read first

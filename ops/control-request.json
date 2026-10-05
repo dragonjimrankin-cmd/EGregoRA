@@ -1,7 +1,8 @@
 {
-  "note": "Edited by the agent, executed by CI against the live site. See scripts/control-run.mjs.",
+  "note": "Does Gink think without any key at all?",
   "calls": [
-    { "action": "mailbag", "limit": 3 },
-    { "action": "workers" }
+    { "action": "workers" },
+    { "action": "ask", "question": "What is Gink?" },
+    { "action": "ask", "question": "In two sentences, what would you say to someone who thinks astrology is simply nonsense?" }
   ]
 }

@@ -26,7 +26,7 @@ import { submitVideo, pollVideo, VIDEO_MODELS } from '../lib/videogen.js';
 import { generateImage } from '../lib/imagegen.js';
 import { liveWorkers } from '../lib/colab.js';
 import { bestMatch, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
-import { openChat } from '../lib/openchat.js';
+import { openChat, keylessChat } from '../lib/openchat.js';
 import { openaiChat } from '../lib/openai.js';
 
 export const access = 'public';
@@ -120,6 +120,7 @@ export default async function (req, res) {
 
         let out = await openChat({ system, messages });
         if (!out || !out.text) out = await openaiChat({ system, messages });
+        if (!out || !out.text) out = await keylessChat({ system, messages });
         if (out && out.text) {
           return res.json({
             answer: out.text,

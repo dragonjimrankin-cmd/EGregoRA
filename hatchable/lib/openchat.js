@@ -15,6 +15,7 @@
  * Nothing here throws: a dead route returns null and the caller moves on.
  */
 import { config } from 'hatchable';
+import { colabChat } from './colab.js';
 
 const TIMEOUT = 75000;
 const MAX_STEPS = 6;
@@ -29,9 +30,14 @@ export const OPENROUTER_MODELS = [
   'google/gemma-3-27b-it'
 ];
 
-/* Pollinations aliases. 'mistral' and 'deepseek' are open-weights; they are
-   the only ones used here. */
-export const KEYLESS_MODELS = ['mistral', 'deepseek', 'llama'];
+/* Pollinations' anonymous tier. Probed from the runner on 5 October 2026: the
+   POST endpoint now answers 402 without a key, and the only model offered to
+   anonymous callers is GPT-OSS 20B — OpenAI's open-weights release, served by
+   OVH. The plain GET route still works and honours a `system` parameter, but
+   it is rate-limited hard: two calls in quick succession and the third is a
+   402. So it is kept as the last resort, not the mainstay. */
+export const KEYLESS_MODELS = ['openai'];
+const KEYLESS_GET = 'https://text.pollinations.ai/';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const KEYLESS_URL = 'https://text.pollinations.ai/openai';
@@ -79,6 +85,46 @@ function parseArgs(raw) {
   try { return JSON.parse(raw); } catch { return {}; }
 }
 
+/**
+ * GPT-OSS 20B, keyless, through Pollinations' GET route — the only free
+ * open-weights model on the public internet that will still answer this
+ * project without an account. No tools, one shot, heavily rate-limited.
+ */
+export async function keylessChat({ system, messages, maxTokens = 900 }) {
+  const convo = (messages || [])
+    .slice(-8)
+    .map((m) => (m.role === 'assistant' ? 'Oracle: ' : 'Visitor: ') + String(m.content || ''))
+    .join('\n\n');
+  const prompt = convo.slice(-5000);
+  if (!prompt) return null;
+
+  const url = KEYLESS_GET + encodeURIComponent(prompt) +
+    '?model=openai&system=' + encodeURIComponent(String(system || '').slice(0, 2500));
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), TIMEOUT);
+    try {
+      const r = await fetch(url, { signal: ctrl.signal, headers: { accept: 'text/plain' } });
+      if (r.status === 402 || r.status === 429) {
+        await new Promise((res) => setTimeout(res, 1500 * (attempt + 1)));
+        continue;
+      }
+      if (!r.ok) return null;
+      const text = (await r.text()).trim();
+      if (text && text.length > 2 && !text.startsWith('{')) {
+        return { text: text.slice(0, maxTokens * 4), model: 'gpt-oss-20b', route: 'pollinations' };
+      }
+      return null;
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  return null;
+}
+
 /* ------------------------------------------------------------- the loop */
 
 /**
@@ -112,9 +158,13 @@ export async function openChat(opts) {
       }
     });
   }
-  routes.push({ name: 'pollinations', url: KEYLESS_URL, models: KEYLESS_MODELS, headers: {} });
-
   const schema = toolSchema(tools);
+
+  /* The order's own model first when a Colab worker is awake: open weights,
+     running on a GPU the order borrowed rather than rented, with the tool
+     loop intact. */
+  const viaColab = await runColab({ system, messages, tools, schema, temperature, maxTokens });
+  if (viaColab) return viaColab;
 
   for (const route of routes) {
     for (const model of route.models) {
@@ -180,5 +230,60 @@ export async function openChat(opts) {
     }
   }
 
+  /* Nothing with a key answered. One last try on the keyless open model. */
+  return await keylessChat({ system, messages, maxTokens });
+}
+
+/* ------------------------------------------------- the order's own model */
+
+/**
+ * The same tool loop, but pointed at a Colab worker instead of a provider.
+ * Kept separate because the worker speaks the dialect but is not a route in
+ * the list above: it is found by capability, not by key.
+ */
+async function runColab({ system, messages, tools, schema, temperature, maxTokens }) {
+  const convo = messages.map((m) => ({ role: m.role, content: m.content }));
+  let steps = 0;
+
+  while (steps <= MAX_STEPS) {
+    const out = await colabChat({
+      system,
+      messages: convo,
+      tools: schema.length ? schema : undefined,
+      temperature,
+      maxTokens
+    });
+    if (!out) return null;
+
+    const msg = out.message;
+    const calls = msg.tool_calls || [];
+    if (calls.length && steps < MAX_STEPS) {
+      convo.push({ role: 'assistant', content: msg.content || '', tool_calls: calls });
+      for (const call of calls) {
+        const fname = call && call.function && call.function.name;
+        const tool = tools && tools[fname];
+        let result;
+        try {
+          result = tool && typeof tool.execute === 'function'
+            ? await tool.execute(parseArgs(call.function.arguments))
+            : { error: 'No such tool: ' + fname };
+        } catch (err) {
+          result = { error: 'Tool failed: ' + (err && err.message) };
+        }
+        convo.push({
+          role: 'tool',
+          tool_call_id: call.id || fname,
+          name: fname,
+          content: JSON.stringify(result).slice(0, 12000)
+        });
+      }
+      steps += 1;
+      continue;
+    }
+
+    const text = String(msg.content || '').trim();
+    if (text) return { text, model: out.model, route: 'colab' };
+    return null;
+  }
   return null;
 }
