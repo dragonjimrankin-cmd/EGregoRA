@@ -42,7 +42,7 @@ async function call(url, opts = {}) {
 export async function registerWorker({ label, endpoint, gpu, account }) {
   const url = String(endpoint || '').replace(/\/+$/, '');
   if (!/^https:\/\/[\w.-]+/.test(url)) return { error: 'That is not a usable endpoint.' };
-  const rows = await db.query(
+  const { rows } = await db.query(
     `INSERT INTO colab_workers (label, endpoint, gpu, account)
      VALUES ($1, $2, $3, $4)
      ON CONFLICT (endpoint) DO UPDATE
@@ -67,7 +67,7 @@ export async function retireWorker(endpoint) {
 }
 
 export async function liveWorkers() {
-  const rows = await db.query(
+  const { rows } = await db.query(
     `SELECT id, label, endpoint, gpu, account, jobs, last_seen
        FROM colab_workers
       WHERE last_seen > NOW() - INTERVAL '${ALIVE_MINUTES} minutes'
