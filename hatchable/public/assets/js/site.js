@@ -1025,15 +1025,29 @@
   canvas.addEventListener("pointerleave", (e) => { if (drawing) finish(e); });
 
   /* --- the tool bar --- */
+  /* Ten quick swatches, and behind them the whole wheel: any of the
+     sixteen million, by picker or by hex. */
+  const rgb = document.getElementById("sk-rgb");
+  const hex = document.getElementById("sk-hex");
+
+  const setColour = (value, from) => {
+    const v = String(value || "").trim();
+    if (!/^#[0-9a-f]{6}$/i.test(v)) return;
+    colour = v.toLowerCase();
+    if (rgb && from !== "wheel") rgb.value = colour;
+    if (hex && from !== "hex") hex.value = colour;
+    pad.querySelectorAll(".swatch").forEach((o) =>
+      o.classList.toggle("is-on", String(o.dataset.colour).toLowerCase() === colour));
+    pad.style.setProperty("--ink", colour);
+    if (tool === "erase") setTool("free");
+  };
+
   pad.querySelectorAll(".swatch").forEach((b) => {
     b.style.background = b.dataset.colour;
-    b.addEventListener("click", () => {
-      colour = b.dataset.colour;
-      pad.querySelectorAll(".swatch").forEach((o) => o.classList.toggle("is-on", o === b));
-      if (tool === "erase") setTool("free");
-      pad.style.setProperty("--ink", colour);
-    });
+    b.addEventListener("click", () => setColour(b.dataset.colour));
   });
+  if (rgb) rgb.addEventListener("input", () => setColour(rgb.value, "wheel"));
+  if (hex) hex.addEventListener("change", () => setColour(hex.value, "hex"));
 
   const setTool = (name) => {
     tool = name;
