@@ -1935,3 +1935,24 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 .shot-tick { accent-color: #d7b05a; margin-right: 0.25rem; }
 .card-to-montage { margin: 0.4rem 0.6rem 0.6rem; }
 .card-to-montage.is-on { color: var(--verdant); border-color: rgba(127,174,122,0.5); }
+
+/* --- the plates in the pattern book ------------------------------------- */
+.book-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tool.book-piece {
+  padding: 0.2rem;
+  line-height: 0;
+  width: 58px;
+  height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.tool.book-piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+}
+.tool.book-piece:hover img, .tool.book-piece:focus-visible img { transform: scale(1.08); }
+.tool.book-piece img { transition: transform 0.15s ease; }

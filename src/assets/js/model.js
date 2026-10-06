@@ -300,6 +300,63 @@ function start() {
   const count = document.getElementById("pb-count");
   const bookBtn = document.getElementById("md-book");
 
+  /* --- the plates in the book ---------------------------------------------
+     A name is a poor picture of a shape, so every piece in the book is drawn
+     rather than written: a second, tiny renderer builds each model once,
+     frames it, photographs it on a transparent ground and keeps the picture.
+     It is all local and takes a fraction of a second \u2014 nothing is fetched. */
+  const thumbs = new Map();
+  let shutter = null;
+
+  function photographer() {
+    if (shutter) return shutter;
+    let r;
+    try {
+      r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    } catch { return null; }
+    r.setPixelRatio(2);
+    r.setSize(72, 72, false);
+    const sc = new THREE.Scene();
+    sc.add(new THREE.HemisphereLight(0xfff0d0, 0x20202c, 1.3));
+    const k = new THREE.DirectionalLight(0xffe9c0, 1.6);
+    k.position.set(4, 7, 5);
+    sc.add(k);
+    const rimLight = new THREE.DirectionalLight(0x8fa0ff, 0.6);
+    rimLight.position.set(-5, 2, -4);
+    sc.add(rimLight);
+    const cam = new THREE.PerspectiveCamera(32, 1, 0.05, 400);
+    shutter = { r, sc, cam };
+    return shutter;
+  }
+
+  function thumbFor(item) {
+    if (thumbs.has(item.id)) return thumbs.get(item.id);
+    const shop = photographer();
+    if (!shop) return null;
+    let url = null;
+    const piece = item.make("#d7b05a");
+    shop.sc.add(piece);
+    try {
+      piece.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(piece);
+      const mid = box.getCenter(new THREE.Vector3());
+      const span = box.getSize(new THREE.Vector3());
+      const reach = Math.max(span.x, span.y, span.z) || 1;
+      const away = reach * 2.1;
+      shop.cam.position.set(mid.x + away * 0.78, mid.y + away * 0.62, mid.z + away * 0.78);
+      shop.cam.lookAt(mid);
+      shop.cam.near = Math.max(0.05, away * 0.05);
+      shop.cam.far = away * 8;
+      shop.cam.updateProjectionMatrix();
+      shop.r.render(shop.sc, shop.cam);
+      url = shop.r.domElement.toDataURL("image/png");
+    } catch { url = null; }
+    shop.sc.remove(piece);
+    dispose(piece);
+    thumbs.set(item.id, url);
+    return url;
+  }
+
   function fillShelf(q) {
     if (!shelf) return;
     const want = String(q || "").trim().toLowerCase();
@@ -321,8 +378,20 @@ function start() {
       items.forEach((item) => {
         const b = document.createElement("button");
         b.type = "button";
-        b.className = "tool";
-        b.textContent = item.label;
+        b.className = "tool book-piece";
+        b.title = item.label;
+        b.setAttribute("aria-label", item.label);
+        const art = thumbFor(item);
+        if (art) {
+          const img = document.createElement("img");
+          img.src = art;
+          img.alt = "";
+          img.width = 72;
+          img.height = 72;
+          b.appendChild(img);
+        } else {
+          b.textContent = item.label;      /* no 3D here: the names will do */
+        }
         b.addEventListener("click", () => addFromBook(item));
         row.appendChild(b);
       });
