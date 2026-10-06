@@ -1629,3 +1629,33 @@ img.shot-thumb { object-fit: cover; }
    charter starts nearer the top of the scroll.
    ---------------------------------------------------------------------- */
 .hero + .divider { margin-top: 1rem; margin-bottom: 1.1rem; }
+
+/* ======================================================================
+   The question box fills its half of the panel
+   ----------------------------------------------------------------------
+   Beside Gink there was dead space under the ask box whenever his column
+   ran longer than the form. On a wide screen the form is now a flex
+   column and the question itself takes every pixel left over, so the two
+   halves of the panel end level and the thing you came to type in is the
+   largest object on the page.
+   ====================================================================== */
+@media (min-width: 901px) {
+  .fox-panel--ask { align-items: stretch; }
+  .fox-panel--ask .fox-ask { display: flex; min-height: 0; }
+  .fox-panel--ask .fox-ask > .oracle-form {
+    display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; width: 100%;
+  }
+  /* Everything above the question keeps its natural height; the question
+     box alone absorbs the slack. */
+  .fox-panel--ask .fox-ask .ask-box {
+    display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0;
+  }
+  .fox-panel--ask .fox-ask .ask-box textarea {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 11rem;
+    resize: vertical;
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+}
