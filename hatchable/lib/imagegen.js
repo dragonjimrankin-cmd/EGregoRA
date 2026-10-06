@@ -21,6 +21,8 @@ import { huggingFaceAccounts, acrossAccounts } from './pool.js';
    can draw on a project with no provider key at all; the proprietary models
    below are only a fallback. */
 const OPEN_MODEL = 'flux';
+/* The image-to-image sibling, used only when a sketch has been drawn. */
+const OPEN_I2I_MODEL = 'kontext';
 const OPEN_ENDPOINT = 'https://image.pollinations.ai/prompt/';
 const OPEN_TIMEOUT = 45000;
 
@@ -41,6 +43,20 @@ const PHOTO_STYLE = [
 const STYLE_OVERRIDE =
   /\b(illustrat|paint|drawing|drawn|sketch|woodcut|engrav|etching|diagram|cartoon|anime|watercolou?r|ink|render|3d|pixel|poster|icon|logo|stained glass|tapestry|fresco|mosaic)\b/i;
 
+/**
+ * The wording used when a sketch has been drawn. The drawing is a
+ * composition, not a style: the model is told to keep the arrangement and
+ * the masses and to render them properly, rather than to reproduce the
+ * wobbly lines of a mouse drawing.
+ */
+function sketchPrompt(subject) {
+  const s = String(subject || '').trim();
+  return s + '\n\nFollow the attached sketch as the composition: keep the arrangement, the ' +
+    'placement and the rough proportions of what is drawn, and keep the colours where they are ' +
+    'indicated. Do not reproduce the sketch\'s crude lines \u2014 render the scene properly.' +
+    (STYLE_OVERRIDE.test(s) ? ' Single standalone 2D image. No text, no watermark.' : '\n\n' + PHOTO_STYLE);
+}
+
 function fullPrompt(subject) {
   const s = String(subject || '').trim();
   // If the asker explicitly wants a style, honour it rather than forcing a photograph.
@@ -50,10 +66,19 @@ function fullPrompt(subject) {
   return s + '\n\n' + PHOTO_STYLE;
 }
 
-/** FLUX.1-schnell (open weights) — no key required. */
-async function viaOpenSource(prompt) {
+/**
+ * FLUX.1-schnell (open weights) — no key required.
+ *
+ * When the asker has drawn a sketch, the keyless endpoint is asked for its
+ * image-to-image model and given the sketch as the starting frame. If that
+ * model refuses, the caller falls through to a text-only attempt rather
+ * than pretending the sketch was used.
+ */
+async function viaOpenSource(prompt, opts = {}) {
+  const init = opts.initUrl || null;
   const url = OPEN_ENDPOINT + encodeURIComponent(prompt.slice(0, 1800)) +
-    '?width=1024&height=1024&nologo=true&safe=true&model=' + OPEN_MODEL +
+    '?width=1024&height=1024&nologo=true&safe=true&model=' + (init ? OPEN_I2I_MODEL : OPEN_MODEL) +
+    (init ? '&image=' + encodeURIComponent(init) : '') +
     '&seed=' + Math.floor(Math.random() * 1e9);
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), OPEN_TIMEOUT);
@@ -64,7 +89,11 @@ async function viaOpenSource(prompt) {
     if (!/^image\//i.test(type)) return null;
     const buf = new Uint8Array(await r.arrayBuffer());
     if (buf.length < 2048) return null;
-    return { bytes: buf, contentType: type, provider: 'flux-schnell (open weights)' };
+    return {
+      bytes: buf, contentType: type,
+      usedSketch: Boolean(init),
+      provider: init ? 'flux-kontext, image to image (open weights)' : 'flux-schnell (open weights)'
+    };
   } catch (err) {
     console.error('imagegen: open-source route failed', err && err.message);
     return null;
@@ -82,13 +111,14 @@ async function viaOpenSource(prompt) {
  * every machine is busy, reclaimed or asleep the function returns null in
  * well under a second and the hosted routes below take over.
  */
-async function viaColab(prompt) {
-  const out = await colabImage(prompt);
+async function viaColab(prompt, opts = {}) {
+  const out = await colabImage(prompt, { initUrl: opts.initUrl || null });
   if (!out) return null;
   const who = (out.worker && (out.worker.label || out.worker.account)) || 'Colab';
   return {
     bytes: out.bytes,
     contentType: out.contentType || 'image/png',
+    usedSketch: Boolean(opts.initUrl),
     provider: 'flux-schnell on the order\'s own GPU (' + who + ')',
     hardware: 'Google Colab ' + ((out.worker && out.worker.gpu) || 'GPU') + ' \u00b7 ' + who
   };
@@ -187,19 +217,35 @@ export function hardwareFor(provider) {
  * @param {string} subject what to draw, in plain words
  * @returns {Promise<{url?:string, prompt:string, provider?:string, error?:string}>}
  */
-export async function generateImage(subject) {
+export async function generateImage(subject, opts = {}) {
   const subj = String(subject || '').trim().slice(0, 1200);
   if (subj.length < 3) return { prompt: subj, error: 'Nothing to draw — say what the picture should show.' };
 
-  const prompt = fullPrompt(subj);
+  /* A sketch, if one was drawn in the page. Only some routes can follow it;
+     the result says plainly whether it was used or ignored, because a
+     drawing that quietly disregards what you drew is worse than one that
+     admits it. */
+  const initUrl = typeof opts.initUrl === 'string' && /^https?:\/\//.test(opts.initUrl)
+    ? opts.initUrl : null;
+
+  const prompt = initUrl ? sketchPrompt(subj) : fullPrompt(subj);
   /* Own GPU first, then the keyless open-weights route, then anything the
      owner has paid for. Each entry may itself span several accounts. */
-  const attempts = [viaColab, viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI];
+  const attempts = initUrl
+    /* Routes that can follow a sketch come first; the rest are the fallback
+       and will draw from the words alone. */
+    ? [viaColab, viaOpenSource, viaColab, viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI]
+    : [viaColab, viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI];
   let lastErr = '';
 
+  let sketchTried = 0;
   for (const attempt of attempts) {
     try {
-      const out = await attempt(prompt);
+      /* Each sketch-capable route gets one attempt with the sketch and, if
+         that fails, one without it. */
+      const useSketch = Boolean(initUrl) && sketchTried < 2;
+      if (initUrl && (attempt === viaColab || attempt === viaOpenSource)) sketchTried++;
+      const out = await attempt(prompt, useSketch ? { initUrl } : {});
       if (!out) continue;
       const ext = out.contentType.includes('jpeg') ? 'jpg' : 'png';
       const key = `oracle-images/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
@@ -208,6 +254,7 @@ export async function generateImage(subject) {
       return {
         url, key, prompt: subj, provider: out.provider,
         account: out.account || null,
+        sketch: initUrl ? Boolean(out.usedSketch) : null,
         hardware: out.hardware || hardwareFor(out.provider)
       };
     } catch (err) {

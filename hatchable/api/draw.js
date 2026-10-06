@@ -35,7 +35,12 @@ export default async function (req, res) {
     });
   }
 
-  const out = await generateImage(prompt);
+  /* A sketch drawn in the page, already uploaded and stored. It guides the
+     composition where a route can follow it. */
+  const sketchUrl = typeof body.sketch === 'string' && /^https?:\/\//.test(body.sketch)
+    ? body.sketch : null;
+
+  const out = await generateImage(prompt, { initUrl: sketchUrl });
 
   if (!out.url) {
     /* Every quick route failed. The order's own GPU can draw it, but a
@@ -71,5 +76,12 @@ export default async function (req, res) {
     console.error('draw: could not log prompt', err && err.message);
   }
 
-  res.json({ url: out.url, prompt: out.prompt, provider: out.provider, hardware: out.hardware || null });
+  res.json({
+    url: out.url, prompt: out.prompt, provider: out.provider,
+    hardware: out.hardware || null,
+    sketch: out.sketch,
+    note: sketchUrl && out.sketch === false
+      ? 'Your sketch could not be followed \u2014 no route that takes a starting image was free, so this was drawn from the words alone.'
+      : undefined
+  });
 }

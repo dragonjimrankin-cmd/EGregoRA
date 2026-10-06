@@ -782,7 +782,11 @@
       const res = await fetch("/api/draw", {
         method: "POST",
         headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
-        body: JSON.stringify({ prompt: p, name: (nameEl && nameEl.value || "").trim() })
+        body: JSON.stringify({
+          prompt: p,
+          name: (nameEl && nameEl.value || "").trim(),
+          sketch: window.EGSketchUrl ? window.EGSketchUrl() : null
+        })
       });
       const data = await res.json().catch(() => ({}));
 
@@ -810,6 +814,8 @@
           '<span class="draw-meta">Generated, not photographed' +
           (data.provider ? " \u00b7 " + esc(data.provider) : "") +
           (data.hardware ? '<br>Drawn on ' + esc(data.hardware) : "") +
+          (data.sketch === true ? '<br>Followed your sketch' : "") +
+          (data.note ? '<br>' + esc(data.note) : "") +
           " \u00b7 open in a new tab for the full size</span></figcaption>";
         if (window.EGMontageAdd) window.EGMontageAdd(data.url, p, "image");
         if (window.EGArrived) window.EGArrived("image", card);
@@ -850,6 +856,203 @@
     box.value = "";
     box.focus();
   });
+})();
+
+/* ----------------------------------------------------------- Sketch it first
+   An eight-hundred-pixel square to plan a picture in before the model draws
+   it. Freehand or straight lines, a few shapes, ten colours, three pen
+   widths, undo and clear. When it is handed over, the sketch is uploaded
+   like any other attachment and the drawing route uses it as the starting
+   frame — so what comes back follows the arrangement you put down rather
+   than only the words. */
+(() => {
+  "use strict";
+  const pad = document.getElementById("sketch-pad");
+  const canvas = document.getElementById("sketch-canvas");
+  const open = document.getElementById("d-sketch-open");
+  if (!pad || !canvas || !open) return;
+
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  const msg = document.getElementById("sk-msg");
+  const prompt = document.getElementById("d-prompt");
+  const PAPER = "#fdfbf5";
+
+  let tool = "free", colour = "#1b1b1f", size = 4, fill = false;
+  let drawing = false, startX = 0, startY = 0, snapshot = null;
+  const history = [];
+
+  const blank = () => {
+    ctx.fillStyle = PAPER;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  };
+  blank();
+
+  const remember = () => {
+    try { history.push(ctx.getImageData(0, 0, canvas.width, canvas.height)); } catch { /* tainted */ }
+    if (history.length > 24) history.shift();
+  };
+
+  /* The canvas is 800 square whatever size it is shown at. */
+  const at = (e) => {
+    const r = canvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - r.left) * (canvas.width / r.width),
+      y: (e.clientY - r.top) * (canvas.height / r.height)
+    };
+  };
+
+  const pen = () => {
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = size;
+    ctx.strokeStyle = tool === "erase" ? PAPER : colour;
+    ctx.fillStyle = tool === "erase" ? PAPER : colour;
+  };
+
+  const shape = (x, y) => {
+    if (snapshot) ctx.putImageData(snapshot, 0, 0);
+    pen();
+    ctx.beginPath();
+    if (tool === "line") {
+      ctx.moveTo(startX, startY); ctx.lineTo(x, y);
+    } else if (tool === "rect") {
+      ctx.rect(Math.min(startX, x), Math.min(startY, y), Math.abs(x - startX), Math.abs(y - startY));
+    } else if (tool === "ellipse") {
+      ctx.ellipse((startX + x) / 2, (startY + y) / 2,
+        Math.abs(x - startX) / 2, Math.abs(y - startY) / 2, 0, 0, Math.PI * 2);
+    } else if (tool === "triangle") {
+      ctx.moveTo((startX + x) / 2, startY);
+      ctx.lineTo(x, y);
+      ctx.lineTo(startX, y);
+      ctx.closePath();
+    }
+    if (fill && tool !== "line") ctx.fill(); else ctx.stroke();
+  };
+
+  canvas.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    canvas.setPointerCapture(e.pointerId);
+    const p = at(e);
+    drawing = true; startX = p.x; startY = p.y;
+    remember();
+    if (tool === "free" || tool === "erase") {
+      pen();
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + 0.01, p.y);
+      ctx.stroke();
+    } else {
+      try { snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch { snapshot = null; }
+    }
+  });
+
+  canvas.addEventListener("pointermove", (e) => {
+    if (!drawing) return;
+    const p = at(e);
+    if (tool === "free" || tool === "erase") { ctx.lineTo(p.x, p.y); ctx.stroke(); }
+    else shape(p.x, p.y);
+  });
+
+  const finish = (e) => {
+    if (!drawing) return;
+    drawing = false;
+    if (tool !== "free" && tool !== "erase") shape(at(e).x, at(e).y);
+    snapshot = null;
+    mark(false);
+  };
+  canvas.addEventListener("pointerup", finish);
+  canvas.addEventListener("pointercancel", finish);
+  canvas.addEventListener("pointerleave", (e) => { if (drawing) finish(e); });
+
+  /* --- the tool bar --- */
+  pad.querySelectorAll(".swatch").forEach((b) => {
+    b.style.background = b.dataset.colour;
+    b.addEventListener("click", () => {
+      colour = b.dataset.colour;
+      pad.querySelectorAll(".swatch").forEach((o) => o.classList.toggle("is-on", o === b));
+      if (tool === "erase") setTool("free");
+    });
+  });
+
+  const setTool = (name) => {
+    tool = name;
+    pad.querySelectorAll("[data-tool]").forEach((o) =>
+      o.classList.toggle("is-on", o.dataset.tool === name));
+  };
+  pad.querySelectorAll("[data-tool]").forEach((b) =>
+    b.addEventListener("click", () => setTool(b.dataset.tool)));
+
+  pad.querySelectorAll("[data-size]").forEach((b) =>
+    b.addEventListener("click", () => {
+      size = Number(b.dataset.size) || 4;
+      pad.querySelectorAll("[data-size]").forEach((o) => o.classList.toggle("is-on", o === b));
+    }));
+
+  const fillBtn = document.getElementById("sk-fill");
+  if (fillBtn) fillBtn.addEventListener("click", () => {
+    fill = !fill;
+    fillBtn.classList.toggle("is-on", fill);
+    fillBtn.setAttribute("aria-pressed", String(fill));
+  });
+
+  const undo = document.getElementById("sk-undo");
+  if (undo) undo.addEventListener("click", () => {
+    const prev = history.pop();
+    if (prev) ctx.putImageData(prev, 0, 0);
+    mark(false);
+  });
+
+  const wipe = document.getElementById("sk-clear");
+  if (wipe) wipe.addEventListener("click", () => { remember(); blank(); mark(false); });
+
+  /* --- handing it over --- */
+  let attached = null;           // { url, name }
+  const say = (t, bad) => { if (msg) { msg.textContent = t || ""; msg.className = "auth-msg" + (bad ? " is-bad" : ""); } };
+
+  const mark = (on) => {
+    pad.classList.toggle("is-attached", Boolean(on));
+    open.classList.toggle("has-sketch", Boolean(on));
+    open.textContent = on ? "Sketch attached" : "Sketch it first";
+    if (!on && attached) { attached = null; say("The sketch changed \u2014 hand it over again when you are ready."); }
+    window.EGSketch = on ? attached : null;
+  };
+
+  const use = document.getElementById("sk-use");
+  if (use) use.addEventListener("click", async () => {
+    use.disabled = true;
+    say("Handing the sketch over\u2026");
+    try {
+      const data = canvas.toDataURL("image/png").split(",")[1];
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
+        body: JSON.stringify({ name: "sketch.png", type: "image/png", data, asker: "sketch" })
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || !out.url) throw new Error(out.error || "the upload was refused");
+      attached = { url: out.url, name: out.name || "sketch.png" };
+      mark(true);
+      say("Sketch attached. Write what it should become, then press Draw it.");
+      if (prompt) prompt.focus();
+    } catch (err) {
+      say("The sketch could not be handed over: " + ((err && err.message) || "unknown error"), true);
+    } finally {
+      use.disabled = false;
+    }
+  });
+
+  const shut = document.getElementById("sk-close");
+  const toggle = (on) => {
+    pad.hidden = !on;
+    open.setAttribute("aria-expanded", String(on));
+    if (on) pad.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  };
+  open.addEventListener("click", () => toggle(pad.hidden));
+  if (shut) shut.addEventListener("click", () => toggle(false));
+
+  /* The drawing code asks for this when it submits. */
+  window.EGSketchUrl = () => (attached ? attached.url : null);
+  window.EGSketchClear = () => { attached = null; mark(false); };
 })();
 
 /* --------------------------------------------------------------- Filming

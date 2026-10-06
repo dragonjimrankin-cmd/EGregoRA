@@ -204,7 +204,29 @@ export async function submitVideo(prompt, opts = {}) {
     const slug = 'egregora-film-' + Date.now().toString(36);
     const claim = await claimGpu('video', slug);
     if (!claim.ok) {
-      return { error: 'The order\u2019s GPU is busy with another clip. Try again in a few minutes.' };
+      /* The Kaggle notebook is already filming. Before telling anyone to
+         come back later, look for a GPU that is free on one of the Colab
+         accounts — a second Google login with an idle runtime is exactly
+         what the pool is for. */
+      const spare = await submitToColab({
+        prompt: text, aspect, frames, model: model.kaggle || model.label, kind: 'video',
+        seed: seed || undefined, init_image: initUrl || undefined
+      });
+      if (spare) {
+        return {
+          provider: 'colab',
+          hardware: (spare.worker.gpu || 'an unnamed GPU') + ' \u00b7 Google Colab, lent to the order',
+          model: model.label + ' \u00b7 Colab ' + (spare.worker.gpu || 'GPU'),
+          requestId: spare.jobId,
+          statusUrl: spare.worker.endpoint,
+          responseUrl: spare.worker.endpoint
+        };
+      }
+      return {
+        error: 'Every GPU the order can reach is busy \u2014 the Kaggle notebook is filming and no ' +
+          'Colab account has a free runtime. Try again in a few minutes, or open ' +
+          'colab/egregora-gpu.ipynb in another Google account to add one.'
+      };
     }
     const out = await pushKernelAnyAccount({
       slug,
@@ -509,10 +531,23 @@ export async function submitKaggleImage(prompt) {
 
   const busy = await gpuBusy();
   if (busy) {
+    /* The Kaggle GPU is taken. Look across the Colab accounts for a
+       runtime that is sitting idle before refusing the picture. */
+    const spare = await submitToColab({ prompt: text, kind: 'image', model: 'flux-schnell' });
+    if (spare) {
+      return {
+        provider: 'colab',
+        hardware: (spare.worker.gpu || 'an unnamed GPU') + ' \u00b7 Google Colab, lent to the order',
+        model: 'FLUX.1-schnell \u00b7 Colab ' + (spare.worker.gpu || 'GPU'),
+        requestId: spare.jobId,
+        statusUrl: spare.worker.endpoint,
+        responseUrl: spare.worker.endpoint
+      };
+    }
     return {
       error: busy.kind === 'video'
-        ? 'The order\u2019s GPU is filming a clip just now, so it cannot draw as well. Try again shortly.'
-        : 'The order\u2019s GPU is already drawing something. Try again shortly.'
+        ? 'The order\u2019s GPU is filming a clip just now and no Colab account has a free runtime. Try again shortly.'
+        : 'Every GPU the order can reach is already drawing something. Try again shortly.'
     };
   }
 

@@ -160,9 +160,64 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
         </div>
         <div class="ask-actions">
           <button class="btn" type="submit" id="d-submit">Draw it</button>
+          <button class="btn btn--ghost" type="button" id="d-sketch-open"
+                  aria-expanded="false" aria-controls="sketch-pad">Sketch it first</button>
           <button class="btn btn--ghost" type="button" id="d-clear" hidden>Clear</button>
         </div>
       </form>
+
+      <div class="sketch-pad" id="sketch-pad" hidden>
+        <p class="muted small">Draw the arrangement you want &mdash; where things sit, how big they are,
+        roughly what colour. Gink follows the composition, not the handwriting: the lines you put down are
+        a plan, and the picture is rendered properly from them. Eight hundred pixels square.</p>
+
+        <div class="sketch-tools" role="group" aria-label="Sketch tools">
+          <div class="sketch-group" role="group" aria-label="Colour">
+            <button class="swatch is-on" type="button" data-colour="#1b1b1f" aria-label="Near black"></button>
+            <button class="swatch" type="button" data-colour="#ffffff" aria-label="White"></button>
+            <button class="swatch" type="button" data-colour="#c8352f" aria-label="Red"></button>
+            <button class="swatch" type="button" data-colour="#d98c2b" aria-label="Orange"></button>
+            <button class="swatch" type="button" data-colour="#d7b05a" aria-label="Gold"></button>
+            <button class="swatch" type="button" data-colour="#5f9e58" aria-label="Green"></button>
+            <button class="swatch" type="button" data-colour="#2f6fa8" aria-label="Blue"></button>
+            <button class="swatch" type="button" data-colour="#7a4fa3" aria-label="Violet"></button>
+            <button class="swatch" type="button" data-colour="#8a5a33" aria-label="Brown"></button>
+            <button class="swatch" type="button" data-colour="#9a9aa2" aria-label="Grey"></button>
+          </div>
+
+          <div class="sketch-group" role="group" aria-label="Tool">
+            <button class="tool is-on" type="button" data-tool="free">Freehand</button>
+            <button class="tool" type="button" data-tool="line">Straight line</button>
+            <button class="tool" type="button" data-tool="rect">Rectangle</button>
+            <button class="tool" type="button" data-tool="ellipse">Ellipse</button>
+            <button class="tool" type="button" data-tool="triangle">Triangle</button>
+            <button class="tool" type="button" data-tool="erase">Eraser</button>
+          </div>
+
+          <div class="sketch-group" role="group" aria-label="Pen size">
+            <button class="tool is-on" type="button" data-size="4">Fine</button>
+            <button class="tool" type="button" data-size="12">Medium</button>
+            <button class="tool" type="button" data-size="30">Broad</button>
+            <button class="tool" type="button" id="sk-fill" aria-pressed="false">Fill shapes</button>
+          </div>
+
+          <div class="sketch-group" role="group" aria-label="The sketch itself">
+            <button class="tool" type="button" id="sk-undo">Undo</button>
+            <button class="tool" type="button" id="sk-clear">Clear</button>
+          </div>
+        </div>
+
+        <div class="sketch-stage">
+          <canvas id="sketch-canvas" width="800" height="800" role="img"
+                  aria-label="A square sketching surface, eight hundred pixels across"></canvas>
+        </div>
+
+        <div class="ask-actions">
+          <button class="btn" type="button" id="sk-use">Use this sketch</button>
+          <button class="btn btn--ghost" type="button" id="sk-close">Put it away</button>
+        </div>
+        <p class="auth-msg" id="sk-msg" role="status"></p>
+      </div>
 
       <div class="draw-out" id="draw-out" aria-live="polite"></div>
 

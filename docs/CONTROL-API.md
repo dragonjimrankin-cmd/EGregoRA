@@ -110,6 +110,13 @@ across accounts rather than loading whichever registered first, and each
 worker now registers as able to draw **stills as well as clips**, so the
 "Make an Image" box tries the order's own GPUs before any hosted service.
 
+**A busy GPU is not a refusal.** Before any job is queued, each live worker's
+`/health` is polled in parallel and the idle machines are put first, so work
+lands on a free runtime in another Google account rather than behind a render
+already in progress. If the Kaggle notebook is occupied, clips and stills both
+divert to Colab instead of returning "the order's GPU is busy"; only when every
+account is genuinely working does the visitor get told to come back.
+
 Ask the pool how it is doing:
 
 ```bash

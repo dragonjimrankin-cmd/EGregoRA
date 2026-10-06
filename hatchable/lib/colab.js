@@ -136,6 +136,49 @@ export async function imageWorkers() {
 const workerAccount = (w) => String(w.account || w.endpoint);
 
 /**
+ * Ask every candidate worker whether it is actually free right now.
+ *
+ * The register knows which machines are awake; it does not know which are
+ * mid-render. One notebook can only hold one job at a time, so before a
+ * clip or a picture is handed over, each worker's /health is polled in
+ * parallel on a short leash and the idle ones are put first. The effect is
+ * the one that matters: if the GPU on one Google account is busy, the work
+ * goes to a free GPU on another account instead of queueing behind it.
+ *
+ * A worker that does not answer the health probe is treated as unknown
+ * rather than dead — it keeps its place behind the known-idle machines but
+ * ahead of the ones that said they were busy.
+ */
+export async function sortByFree(workers, { timeout = 4000 } = {}) {
+  if (workers.length < 2) return { free: workers, rest: [] };
+  const secret = await colabSecret();
+  const probes = await Promise.all(workers.map(async (w) => {
+    const r = await call(w.endpoint + '/health', {
+      timeout,
+      headers: secret ? { 'x-egregora-secret': secret } : {}
+    });
+    if (!r.ok || !r.json) return { w, state: 'unknown' };
+    return { w, state: r.json.busy ? 'busy' : 'free' };
+  }));
+  const pick = (state) => probes.filter((p) => p.state === state).map((p) => p.w);
+  const free = pick('free');
+  const rest = pick('unknown').concat(pick('busy'));
+  if (free.length) {
+    console.log('colab: ' + free.length + ' free worker(s) of ' + workers.length +
+      ' \u2014 using ' + workerAccount(free[0]));
+  }
+  return { free, rest };
+}
+
+/** Live workers, idle ones first, across all the accounts in the pool. */
+export async function workersByAvailability(caps) {
+  const live = await liveWorkers(caps ? { caps } : {});
+  if (!live.length) return [];
+  const { free, rest } = await sortByFree(live);
+  return free.concat(rest);
+}
+
+/**
  * One chat turn on the order's own GPU, OpenAI dialect, tools and all.
  * Returns null when no worker is awake, so callers simply move on.
  */
@@ -183,7 +226,7 @@ export async function noteWorkerFailure(w, why) {
  * account should pick the job up without the visitor ever knowing.
  */
 export async function submitToColab(payload) {
-  const workers = await liveWorkers({ caps: (payload && payload.kind === 'image') ? 'image' : 'video' });
+  const workers = await workersByAvailability((payload && payload.kind === 'image') ? 'image' : 'video');
   if (!workers.length) return null;
   const secret = await colabSecret();
 
@@ -212,8 +255,8 @@ export async function submitToColab(payload) {
  * dies mid-render the next account is tried, which is the whole point of
  * keeping more than one notebook open.
  */
-export async function colabImage(prompt, { budgetMs = 95000, model = 'flux-schnell' } = {}) {
-  const workers = await imageWorkers();
+export async function colabImage(prompt, { budgetMs = 95000, model = 'flux-schnell', initUrl = null } = {}) {
+  const workers = await workersByAvailability('image');
   if (!workers.length) return null;
   const secret = await colabSecret();
   const headers = Object.assign({ 'content-type': 'application/json' },
@@ -225,7 +268,7 @@ export async function colabImage(prompt, { budgetMs = 95000, model = 'flux-schne
     if (left < 15000) break;
     const r = await call(w.endpoint + '/submit', {
       method: 'POST', headers,
-      body: JSON.stringify({ prompt, model, kind: 'image' })
+      body: JSON.stringify({ prompt, model, kind: 'image', init_image: initUrl || undefined })
     });
     if (!r.ok || !r.json || !r.json.id) {
       await noteWorkerFailure(w, 'image refused ' + r.status);
