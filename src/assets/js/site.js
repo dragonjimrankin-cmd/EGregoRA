@@ -1118,7 +1118,7 @@
       if (!res.ok || !out.url) throw new Error(out.error || "the upload was refused");
       attached = { url: out.url, name: out.name || "sketch.png" };
       mark(true);
-      say("Sketch attached. Write what it should become, then press Draw it.");
+      say("Sketch attached. Write what it should become, then press Generate.");
       if (prompt) prompt.focus();
     } catch (err) {
       say("The sketch could not be handed over: " + ((err && err.message) || "unknown error"), true);
@@ -1212,7 +1212,7 @@
   window.EGModelHandOver = (url) => {
     attached = { url, name: "model.png" };
     mark(true);
-    say("A view from the Turning Shop is attached. Say what it is made of, then press Draw it.");
+    say("A view from the Turning Shop is attached. Say what it is made of, then press Generate.");
     const target = document.getElementById("draw-box");
     if (target) target.scrollIntoView({ block: "start", behavior: "smooth" });
     if (prompt) prompt.focus();
@@ -1572,7 +1572,8 @@
           from: cont && cont.id ? cont.id : undefined,
           frame: cont ? cont.frame : undefined,
           sheet: cont ? cont.sheet : undefined,
-          seed: cont ? cont.seed : undefined
+          seed: cont ? cont.seed : undefined,
+          byok: window.EGOwnFilmKey ? window.EGOwnFilmKey() : null
         })
       });
       const data = await res.json().catch(() => ({}));
@@ -3652,4 +3653,98 @@
 
   /* The drawing code asks for this when it submits. */
   window.EGOwnKey = () => own;
+})();
+
+
+/* ------------------------------------------- A key of your own, for film
+   The same bargain as the picture box, for clips: a member who holds a key
+   at fal.ai or Replicate can have the order submit the job through their
+   account instead of queueing behind the house GPUs. Held in this tab only
+   and sent with the one request it is used on. */
+(() => {
+  "use strict";
+  const open = document.getElementById("vk-open");
+  const panel = document.getElementById("vbyok-box");
+  if (!open || !panel) return;
+
+  const providerEl = document.getElementById("vk-provider");
+  const modelEl = document.getElementById("vk-model");
+  const keyEl = document.getElementById("vk-key");
+  const keepEl = document.getElementById("vk-keep");
+  const msg = document.getElementById("vk-msg");
+  const STORE = "eg-byok-film";
+
+  const HINT = {
+    fal: "A fal.ai key is the whole id:secret pair. Leave the route empty and the model you chose " +
+      "above is used; fill it in to send the job somewhere else on fal.",
+    replicate: "A Replicate token begins r8_. Leave the route empty for the house model, or write " +
+      "owner/name to pick another."
+  };
+
+  const say = (t, bad) => {
+    if (!msg) return;
+    msg.textContent = t || "";
+    msg.className = "auth-msg" + (bad ? " is-bad" : "");
+  };
+
+  let own = null;
+  const remember = (rec) => {
+    try {
+      if (rec && keepEl && keepEl.checked) sessionStorage.setItem(STORE, JSON.stringify(rec));
+      else sessionStorage.removeItem(STORE);
+    } catch { /* memory only */ }
+  };
+  const mark = () => {
+    open.textContent = own ? "Your own API \u00b7 in use" : "Use your own API";
+    open.classList.toggle("has-key", Boolean(own));
+  };
+
+  open.addEventListener("click", () => {
+    const show = panel.hidden;
+    panel.hidden = !show;
+    open.setAttribute("aria-expanded", String(show));
+    if (show) {
+      say(HINT[(providerEl && providerEl.value) || "fal"]);
+      if (keyEl && !own) keyEl.focus();
+    }
+  });
+  if (providerEl) providerEl.addEventListener("change", () =>
+    say(HINT[providerEl.value] || HINT.fal));
+
+  const use = document.getElementById("vk-use");
+  if (use) use.addEventListener("click", () => {
+    const key = (keyEl && keyEl.value || "").trim();
+    if (!key) { say("Paste the key first.", true); return; }
+    own = {
+      provider: (providerEl && providerEl.value) || "fal",
+      model: (modelEl && modelEl.value || "").trim() || undefined,
+      key
+    };
+    remember(own);
+    mark();
+    say("Held for this tab. The next clip is filmed through your own account on " + own.provider + ".");
+  });
+
+  const forget = document.getElementById("vk-forget");
+  if (forget) forget.addEventListener("click", () => {
+    own = null;
+    if (keyEl) keyEl.value = "";
+    remember(null);
+    mark();
+    say("Forgotten. Clips queue for the order\u2019s own GPUs again.");
+  });
+
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(STORE) || "null");
+    if (saved && saved.key) {
+      own = saved;
+      if (providerEl) providerEl.value = saved.provider || "fal";
+      if (modelEl && saved.model) modelEl.value = saved.model;
+      if (keyEl) keyEl.value = saved.key;
+      if (keepEl) keepEl.checked = true;
+      mark();
+    }
+  } catch { /* nothing kept */ }
+
+  window.EGOwnFilmKey = () => own;
 })();

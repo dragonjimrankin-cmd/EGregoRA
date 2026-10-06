@@ -446,6 +446,714 @@ export function buildLibrary(THREE) {
     entry('Human poses', 'pose-' + id, label, (c) => human(c, pose));
   });
 
+
+  /* -------------------------------------------------------------- vehicles */
+  const wheels = (g, m, pts, r) => pts.forEach(([x, y, z]) =>
+    put(g, CYL(r, r, 0.22, 16), m, x, y, z, 0, 0, Math.PI / 2));
+
+  entry('Vehicles', 'car', 'Car', (c) => {
+    const g = new THREE.Group(), m = mat(c), gl = mat('#8fb6d8', { opacity: 0.6, transparent: true });
+    put(g, BOX(3.8, 0.7, 1.7), m, 0, 0.75, 0);
+    put(g, BOX(2, 0.6, 1.55), gl, -0.1, 1.35, 0);
+    wheels(g, m, [[1.2, 0.4, 0.85], [1.2, 0.4, -0.85], [-1.2, 0.4, 0.85], [-1.2, 0.4, -0.85]], 0.4);
+    return g;
+  });
+  entry('Vehicles', 'van', 'Van', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(4.2, 1.8, 1.9), m, -0.4, 1.4, 0);
+    put(g, BOX(1.6, 1.1, 1.85), m, 2, 1, 0);
+    wheels(g, m, [[1.7, 0.45, 0.95], [1.7, 0.45, -0.95], [-1.4, 0.45, 0.95], [-1.4, 0.45, -0.95]], 0.45);
+    return g;
+  });
+  entry('Vehicles', 'lorry', 'Lorry', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(4.6, 2.2, 2.2), m, -1.4, 1.9, 0);
+    put(g, BOX(1.8, 1.6, 2.1), m, 1.8, 1.4, 0);
+    wheels(g, m, [[2.1, 0.5, 1.1], [2.1, 0.5, -1.1], [-1, 0.5, 1.1], [-1, 0.5, -1.1],
+      [-2.2, 0.5, 1.1], [-2.2, 0.5, -1.1]], 0.5);
+    return g;
+  });
+  entry('Vehicles', 'bus', 'Bus', (c) => {
+    const g = new THREE.Group(), m = mat(c), gl = mat('#8fb6d8', { opacity: 0.55, transparent: true });
+    put(g, BOX(6.4, 2.2, 2.2), m, 0, 1.7, 0);
+    [-2, -0.8, 0.4, 1.6].forEach((x) => [1.12, -1.12].forEach((z) =>
+      put(g, BOX(0.9, 0.8, 0.06), gl, x, 2.1, z)));
+    wheels(g, m, [[2.3, 0.5, 1.1], [2.3, 0.5, -1.1], [-2.3, 0.5, 1.1], [-2.3, 0.5, -1.1]], 0.5);
+    return g;
+  });
+  entry('Vehicles', 'bicycle', 'Bicycle', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.6, roughness: 0.3 });
+    [[-0.9], [0.9]].forEach(([x]) => put(g, TOR(0.62, 0.06, 28), m, x, 0.62, 0));
+    put(g, CYL(0.04, 0.04, 1.8, 8), m, 0, 0.95, 0, 0, 0, Math.PI / 2);
+    put(g, CYL(0.04, 0.04, 0.9, 8), m, -0.4, 0.75, 0, 0, 0, 0.6);
+    put(g, CYL(0.04, 0.04, 0.9, 8), m, 0.75, 0.95, 0, 0, 0, 0.3);
+    put(g, BOX(0.4, 0.08, 0.16), m, -0.5, 1.2, 0);
+    put(g, CYL(0.03, 0.03, 0.5, 8), m, 0.95, 1.3, 0, Math.PI / 2);
+    return g;
+  });
+  entry('Vehicles', 'motorbike', 'Motorbike', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    [[-0.85], [0.85]].forEach(([x]) => put(g, TOR(0.5, 0.16, 24), m, x, 0.5, 0));
+    put(g, BOX(1.5, 0.4, 0.5), m, 0, 0.85, 0);
+    put(g, BOX(0.6, 0.25, 0.45), m, -0.5, 1.15, 0);
+    put(g, CYL(0.04, 0.04, 0.6, 8), m, 0.85, 1.2, 0, Math.PI / 2);
+    return g;
+  });
+  entry('Vehicles', 'tractor', 'Tractor', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(2.4, 1, 1.4), m, 0, 1.2, 0);
+    put(g, BOX(1, 1.1, 1.2), m, -0.6, 2.1, 0);
+    wheels(g, m, [[1.1, 0.55, 0.85], [1.1, 0.55, -0.85]], 0.55);
+    wheels(g, m, [[-0.9, 1, 0.95], [-0.9, 1, -0.95]], 1);
+    return g;
+  });
+  entry('Vehicles', 'cart', 'Horse cart', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(2.6, 0.2, 1.4), m, 0, 1, 0);
+    [[1.3, 0.12], [-1.3, 0.12]].forEach(([x]) => put(g, BOX(0.12, 0.7, 1.4), m, x, 1.35, 0));
+    [1, -1].forEach((z) => put(g, TOR(0.8, 0.1, 24), m, -0.4, 0.8, z * 0.75));
+    put(g, CYL(0.07, 0.07, 2.4, 8), m, 2.2, 0.9, 0, 0, 0, Math.PI / 2);
+    return g;
+  });
+  entry('Vehicles', 'carriage', 'Train carriage', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(7, 2.4, 2.4), m, 0, 2.1, 0);
+    put(g, BOX(7.2, 0.4, 2.6), m, 0, 0.8, 0);
+    wheels(g, m, [[2.4, 0.45, 1.2], [2.4, 0.45, -1.2], [-2.4, 0.45, 1.2], [-2.4, 0.45, -1.2]], 0.45);
+    return g;
+  });
+  entry('Vehicles', 'locomotive', 'Steam locomotive', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, CYL(0.95, 0.95, 4.4, 20), m, 0.6, 1.6, 0, 0, 0, Math.PI / 2);
+    put(g, BOX(1.8, 2, 2), m, -2, 2, 0);
+    put(g, CYL(0.26, 0.34, 1.1, 14), m, 2.1, 3, 0);
+    wheels(g, m, [[1.6, 0.6, 1], [1.6, 0.6, -1], [0, 0.8, 1], [0, 0.8, -1], [-1.7, 0.8, 1], [-1.7, 0.8, -1]], 0.7);
+    return g;
+  });
+  entry('Vehicles', 'sailboat', 'Sailing boat', (c) => {
+    const g = new THREE.Group(), m = mat(c), sail = mat('#efe3c8');
+    put(g, new THREE.CapsuleGeometry(0.7, 3.2, 6, 16), m, 0, 0.7, 0, 0, 0, Math.PI / 2);
+    put(g, CYL(0.07, 0.07, 4, 10), m, 0, 2.8, 0);
+    put(g, CONE(1.1, 3.4, 3), sail, 0.35, 2.6, 0);
+    return g;
+  });
+  entry('Vehicles', 'aeroplane', 'Aeroplane', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.5, roughness: 0.35 });
+    put(g, new THREE.CapsuleGeometry(0.5, 4, 8, 18), m, 0, 2.4, 0, 0, 0, Math.PI / 2);
+    put(g, BOX(1.1, 0.12, 6), m, 0, 2.4, 0);
+    put(g, BOX(0.7, 0.1, 2.2), m, -2.1, 2.5, 0);
+    put(g, BOX(0.7, 1.1, 0.1), m, -2.2, 3, 0);
+    [[2.6], [-2.6]].forEach(([z]) => put(g, CYL(0.3, 0.3, 1, 14), m, 0.2, 2.1, z, 0, 0, Math.PI / 2));
+    return g;
+  });
+  entry('Vehicles', 'helicopter', 'Helicopter', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, SPH(1, 20, 14), m, 0, 1.8, 0);
+    put(g, CYL(0.18, 0.18, 3.4, 10), m, -2, 2.2, 0, 0, 0, Math.PI / 2);
+    put(g, CYL(0.08, 0.08, 0.7, 8), m, 0, 2.9, 0);
+    [0, Math.PI / 2].forEach((r) => put(g, BOX(6, 0.06, 0.3), m, 0, 3.2, 0, 0, r, 0));
+    put(g, BOX(0.06, 1.2, 0.5), m, -3.6, 2.5, 0);
+    [0.6, -0.6].forEach((z) => put(g, CYL(0.06, 0.06, 2.4, 8), m, 0, 0.7, z, 0, 0, Math.PI / 2));
+    return g;
+  });
+  entry('Vehicles', 'balloon', 'Hot-air balloon', (c) => {
+    const g = new THREE.Group(), m = mat(c), basket = mat('#8a5a33');
+    put(g, SPH(1.7, 24, 18), m, 0, 4.4, 0);
+    put(g, CONE(1, 1.2, 18), m, 0, 2.8, 0, Math.PI);
+    put(g, BOX(1.1, 0.9, 1.1), basket, 0, 1.3, 0);
+    [[0.45, 0.45], [-0.45, 0.45], [0.45, -0.45], [-0.45, -0.45]].forEach(([x, z]) =>
+      put(g, CYL(0.025, 0.025, 1.1, 6), m, x, 2.2, z));
+    return g;
+  });
+
+  /* ------------------------------------------------------------ spacecraft */
+  entry('Spacecraft', 'rocket', 'Rocket', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.6, roughness: 0.3 });
+    put(g, CYL(0.7, 0.7, 5, 22), m, 0, 3, 0);
+    put(g, CONE(0.7, 1.6, 22), m, 0, 6.3, 0);
+    [0, 2.1, 4.2].forEach((r) => put(g, BOX(0.1, 1.4, 1.1), m, 0, 1, 0, 0, r, 0.2));
+    put(g, CYL(0.5, 0.75, 0.8, 18), m, 0, 0.2, 0);
+    return g;
+  });
+  entry('Spacecraft', 'shuttle', 'Shuttle', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.4 });
+    put(g, new THREE.CapsuleGeometry(0.7, 3.4, 8, 18), m, 0, 2, 0, 0, 0, Math.PI / 2);
+    put(g, CONE(0.7, 1.2, 18), m, 2.5, 2, 0, 0, 0, -Math.PI / 2);
+    put(g, BOX(2, 0.14, 5), m, -0.6, 1.8, 0);
+    put(g, BOX(1.2, 1.3, 0.12), m, -2, 2.6, 0);
+    return g;
+  });
+  entry('Spacecraft', 'saucer', 'Flying saucer', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.8, roughness: 0.2 });
+    const glass = mat('#9fe3ff', { opacity: 0.55, transparent: true, metalness: 0.2 });
+    put(g, CYL(2.4, 2.4, 0.3, 36), m, 0, 2, 0);
+    put(g, CONE(2.4, 0.9, 36), m, 0, 1.6, 0, Math.PI);
+    put(g, CONE(2.4, 0.7, 36), m, 0, 2.5, 0);
+    put(g, new THREE.SphereGeometry(0.9, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), glass, 0, 2.5, 0);
+    [0, 1, 2, 3, 4, 5].forEach((n) => {
+      const a = (n / 6) * Math.PI * 2;
+      put(g, SPH(0.16, 12, 10), glass, Math.cos(a) * 1.9, 1.95, Math.sin(a) * 1.9);
+    });
+    return g;
+  });
+  entry('Spacecraft', 'probe', 'Probe', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.7 });
+    const panel = mat('#2f4f8a', { metalness: 0.4 });
+    put(g, BOX(1, 1, 1), m, 0, 2, 0);
+    [1, -1].forEach((x) => put(g, BOX(2.4, 0.06, 1), panel, x * 1.8, 2, 0));
+    put(g, CYL(0.05, 0.05, 1.4, 8), m, 0, 3, 0);
+    put(g, new THREE.SphereGeometry(0.6, 18, 12, 0, Math.PI * 2, 0, Math.PI / 2), m, 0, 1.4, 0, Math.PI);
+    return g;
+  });
+  entry('Spacecraft', 'station', 'Ring station', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.65, roughness: 0.3 });
+    put(g, TOR(2.6, 0.4, 44), m, 0, 3, 0, Math.PI / 2);
+    put(g, CYL(0.3, 0.3, 5.2, 14), m, 0, 3, 0, 0, 0, Math.PI / 2);
+    put(g, CYL(0.3, 0.3, 5.2, 14), m, 0, 3, 0, Math.PI / 2, 0, 0);
+    put(g, SPH(0.8, 20, 14), m, 0, 3, 0);
+    return g;
+  });
+  entry('Spacecraft', 'lander', 'Lander', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.5 });
+    put(g, new THREE.OctahedronGeometry(1.1), m, 0, 1.9, 0);
+    [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([x, z]) => {
+      put(g, CYL(0.07, 0.07, 1.7, 8), m, x * 0.9, 1, z * 0.9, 0.5 * z, 0, -0.5 * x);
+      put(g, CYL(0.3, 0.3, 0.1, 12), m, x * 1.45, 0.1, z * 1.45);
+    });
+    put(g, CYL(0.25, 0.25, 0.5, 10), m, 0, 0.9, 0);
+    return g;
+  });
+  entry('Spacecraft', 'cruiser', 'Cruiser', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.7, roughness: 0.25 });
+    put(g, BOX(6, 0.8, 1.6), m, 0, 2.4, 0);
+    put(g, BOX(2, 0.7, 2.6), m, -1.4, 3, 0);
+    put(g, CONE(0.8, 2, 16), m, 3.6, 2.4, 0, 0, 0, -Math.PI / 2);
+    [1, -1].forEach((z) => put(g, CYL(0.4, 0.4, 2.4, 14), m, -2.2, 2.2, z * 1.6, 0, 0, Math.PI / 2));
+    return g;
+  });
+
+  /* ---------------------------------------------------------------- animals */
+  const beast = (c, P) => {
+    const g = new THREE.Group(), m = mat(c);
+    const body = P.body || [0.5, 1.4];
+    put(g, new THREE.CapsuleGeometry(body[0], body[1], 6, 14), m, 0, P.h, 0, 0, 0, Math.PI / 2);
+    put(g, SPH(P.head || 0.4, 18, 14), m, (body[1] / 2) + 0.3, P.h + (P.lift || 0.2), 0);
+    if (P.snout) put(g, new THREE.CapsuleGeometry(P.snout, 0.3, 5, 10), m,
+      (body[1] / 2) + 0.65, P.h + (P.lift || 0.2) - 0.08, 0, 0, 0, Math.PI / 2);
+    (P.ears || []).forEach(([x, y, z, r]) => put(g, CONE(0.14, 0.3, 8), m, x, y, z, 0, 0, r || 0));
+    const legs = P.legs == null ? 4 : P.legs;
+    if (legs) {
+      [[body[1] / 2 - 0.1, 1], [body[1] / 2 - 0.1, -1], [-body[1] / 2 + 0.1, 1], [-body[1] / 2 + 0.1, -1]]
+        .forEach(([x, s]) => put(g, CYL(P.leg || 0.11, P.leg || 0.11, P.h - (P.foot || 0.05), 8),
+          m, x, (P.h - (P.foot || 0.05)) / 2, s * (body[0] * 0.7)));
+    }
+    if (P.tail) put(g, new THREE.CapsuleGeometry(P.tail[0], P.tail[1], 5, 10), m,
+      -(body[1] / 2) - 0.3, P.h + (P.tailLift || 0.2), 0, 0, 0, P.tailAngle == null ? Math.PI / 3 : P.tailAngle);
+    return g;
+  };
+
+  entry('Animals', 'dog', 'Dog', (c) => beast(c, { h: 0.95, body: [0.36, 1.1], head: 0.33, snout: 0.16,
+    ears: [[0.75, 1.3, 0.2, 0.2], [0.75, 1.3, -0.2, -0.2]], tail: [0.08, 0.5], leg: 0.1 }));
+  entry('Animals', 'cat', 'Cat', (c) => beast(c, { h: 0.62, body: [0.26, 0.85], head: 0.26, snout: 0.12,
+    ears: [[0.6, 0.92, 0.14], [0.6, 0.92, -0.14]], tail: [0.06, 0.7], tailAngle: Math.PI / 2.4, leg: 0.07 }));
+  entry('Animals', 'horse', 'Horse', (c) => beast(c, { h: 1.6, body: [0.6, 2, 0], head: 0.42, snout: 0.22,
+    ears: [[1.35, 2.1, 0.14], [1.35, 2.1, -0.14]], tail: [0.1, 0.8], leg: 0.14, lift: 0.5 }));
+  entry('Animals', 'cow', 'Cow', (c) => beast(c, { h: 1.35, body: [0.75, 2, 0], head: 0.45, snout: 0.26,
+    ears: [[1.3, 1.6, 0.35, 1.2], [1.3, 1.6, -0.35, -1.2]], tail: [0.07, 0.9], tailAngle: 0.1, leg: 0.15 }));
+  entry('Animals', 'sheep', 'Sheep', (c) => {
+    const g = beast(c, { h: 0.95, body: [0.6, 1, 0], head: 0.3, snout: 0.16, leg: 0.1 });
+    const m = mat(c);
+    [[0.3, 0.3], [-0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [0, 0]].forEach(([x, z]) =>
+      put(g, SPH(0.42, 14, 10), m, x, 1.25, z));
+    return g;
+  });
+  entry('Animals', 'deer', 'Deer', (c) => {
+    const g = beast(c, { h: 1.4, body: [0.42, 1.5, 0], head: 0.32, snout: 0.16, leg: 0.09, lift: 0.5 });
+    const m = mat(c);
+    [1, -1].forEach((z) => {
+      put(g, CYL(0.04, 0.05, 0.7, 6), m, 1.05, 2.2, z * 0.13, 0, 0, -z * 0.25);
+      put(g, CYL(0.03, 0.03, 0.35, 6), m, 1.2, 2.5, z * 0.3, 0, 0, -z * 0.8);
+    });
+    return g;
+  });
+  entry('Animals', 'wolf', 'Wolf', (c) => beast(c, { h: 1.05, body: [0.4, 1.35], head: 0.34, snout: 0.2,
+    ears: [[0.95, 1.45, 0.17], [0.95, 1.45, -0.17]], tail: [0.1, 0.6], tailAngle: 0.6, leg: 0.1, lift: 0.3 }));
+  entry('Animals', 'bear', 'Bear', (c) => beast(c, { h: 1.2, body: [0.75, 1.5], head: 0.5, snout: 0.26,
+    ears: [[1.1, 1.85, 0.3], [1.1, 1.85, -0.3]], leg: 0.2, lift: 0.3 }));
+  entry('Animals', 'rabbit', 'Rabbit', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, new THREE.CapsuleGeometry(0.3, 0.4, 6, 14), m, 0, 0.5, 0, 0, 0, Math.PI / 2);
+    put(g, SPH(0.24, 16, 12), m, 0.42, 0.72, 0);
+    [0.1, -0.1].forEach((z) => put(g, new THREE.CapsuleGeometry(0.06, 0.4, 4, 8), m, 0.38, 1.1, z, 0, 0, z * 1.4));
+    put(g, SPH(0.14, 12, 10), m, -0.5, 0.5, 0);
+    [[0.3, 1], [0.3, -1], [-0.3, 1], [-0.3, -1]].forEach(([x, s]) =>
+      put(g, CYL(0.07, 0.07, 0.35, 8), m, x, 0.18, s * 0.2));
+    return g;
+  });
+  entry('Animals', 'mouse', 'Mouse', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, new THREE.CapsuleGeometry(0.18, 0.3, 6, 12), m, 0, 0.25, 0, 0, 0, Math.PI / 2);
+    put(g, CONE(0.16, 0.3, 12), m, 0.34, 0.25, 0, 0, 0, -Math.PI / 2);
+    [0.1, -0.1].forEach((z) => put(g, CYL(0.1, 0.1, 0.03, 12), m, 0.18, 0.42, z, Math.PI / 2, 0, 0));
+    put(g, new THREE.CapsuleGeometry(0.03, 0.6, 4, 8), m, -0.5, 0.2, 0, 0, 0, Math.PI / 2.2);
+    return g;
+  });
+  entry('Animals', 'fish', 'Fish', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.35, roughness: 0.3 });
+    put(g, SPH(0.5, 20, 14), m, 0, 1.2, 0).scale.set(1.8, 1, 0.5);
+    put(g, CONE(0.45, 0.7, 10), m, -1.1, 1.2, 0, 0, 0, Math.PI / 2).scale.set(1, 1, 0.4);
+    put(g, CONE(0.3, 0.5, 8), m, 0, 1.6, 0).scale.set(1, 1, 0.3);
+    return g;
+  });
+  entry('Animals', 'whale', 'Whale', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, new THREE.CapsuleGeometry(1, 3, 8, 20), m, 0, 1.6, 0, 0, 0, Math.PI / 2).scale.set(1, 1, 0.75);
+    put(g, CONE(0.9, 1.4, 10), m, -2.6, 1.7, 0, 0, 0, Math.PI / 2).scale.set(1, 1, 0.25);
+    [1, -1].forEach((z) => put(g, BOX(0.9, 0.1, 0.5), m, 0.4, 1.2, z * 0.8, 0, z * 0.4, 0));
+    return g;
+  });
+  entry('Animals', 'snake', 'Snake', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    for (let i = 0; i < 14; i++) {
+      const a = i * 0.55;
+      put(g, SPH(0.26 - i * 0.012, 14, 10), m, Math.sin(a) * 1.2, 0.26, i * 0.28 - 1.8);
+    }
+    put(g, SPH(0.3, 14, 10), m, Math.sin(-0.55) * 1.2, 0.3, -2.1).scale.set(1.3, 0.8, 1);
+    return g;
+  });
+  entry('Animals', 'owl', 'Owl', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, new THREE.CapsuleGeometry(0.45, 0.5, 6, 16), m, 0, 1.4, 0);
+    put(g, SPH(0.42, 18, 14), m, 0, 2.05, 0);
+    [0.18, -0.18].forEach((z) => put(g, CONE(0.12, 0.25, 8), m, 0, 2.4, z, 0, 0, z * 0.6));
+    [0.16, -0.16].forEach((z) => put(g, SPH(0.13, 12, 10), m, 0.3, 2.1, z));
+    put(g, CONE(0.07, 0.18, 8), m, 0.42, 2, 0, 0, 0, -Math.PI / 2);
+    return g;
+  });
+  entry('Animals', 'raven', 'Raven', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, new THREE.CapsuleGeometry(0.3, 0.8, 6, 14), m, 0, 1.1, 0, 0, 0, Math.PI / 2.6);
+    put(g, SPH(0.26, 16, 12), m, 0.65, 1.5, 0);
+    put(g, CONE(0.1, 0.4, 8), m, 0.95, 1.45, 0, 0, 0, -Math.PI / 2);
+    put(g, CONE(0.25, 0.9, 6), m, -0.7, 0.95, 0, 0, 0, Math.PI / 2).scale.set(1, 1, 0.3);
+    [1, -1].forEach((z) => put(g, CYL(0.05, 0.05, 0.5, 6), m, 0.1, 0.5, z * 0.12));
+    return g;
+  });
+  entry('Animals', 'butterfly', 'Butterfly', (c) => {
+    const g = new THREE.Group(), m = mat(c, { opacity: 0.85, transparent: true });
+    put(g, new THREE.CapsuleGeometry(0.06, 0.5, 4, 8), m, 0, 1.6, 0, 0, 0, Math.PI / 2);
+    [1, -1].forEach((z) => {
+      put(g, SPH(0.4, 14, 10), m, 0.1, 1.75, z * 0.4, 0, 0, 0).scale.set(0.8, 0.08, 1);
+      put(g, SPH(0.28, 14, 10), m, -0.25, 1.6, z * 0.32).scale.set(0.7, 0.08, 1);
+    });
+    return g;
+  });
+  entry('Animals', 'beetle', 'Beetle', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.6, roughness: 0.25 });
+    put(g, SPH(0.5, 20, 14), m, 0, 0.45, 0).scale.set(1, 0.6, 1.4);
+    put(g, SPH(0.26, 14, 10), m, 0, 0.42, 0.75);
+    [1, -1].forEach((s) => [0.3, 0, -0.3].forEach((z) =>
+      put(g, CYL(0.04, 0.04, 0.5, 6), m, s * 0.5, 0.2, z, 0, 0, s * 0.9)));
+    return g;
+  });
+  entry('Animals', 'spider', 'Spider', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, SPH(0.45, 18, 14), m, -0.25, 0.6, 0);
+    put(g, SPH(0.25, 14, 10), m, 0.3, 0.55, 0);
+    for (let i = 0; i < 4; i++) [1, -1].forEach((s) => {
+      const a = -0.5 + i * 0.35;
+      put(g, CYL(0.035, 0.035, 1.1, 6), m, Math.sin(a) * 0.4, 0.4, s * 0.55, s * 0.9, a, 0);
+    });
+    return g;
+  });
+  entry('Animals', 'frog', 'Frog', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, SPH(0.45, 18, 14), m, 0, 0.4, 0).scale.set(1, 0.75, 1.2);
+    [0.16, -0.16].forEach((z) => put(g, SPH(0.13, 12, 10), m, 0.25, 0.65, z));
+    [1, -1].forEach((s) => {
+      put(g, new THREE.CapsuleGeometry(0.09, 0.3, 4, 8), m, -0.2, 0.3, s * 0.42, 0, 0, Math.PI / 3);
+      put(g, new THREE.CapsuleGeometry(0.07, 0.2, 4, 8), m, 0.35, 0.18, s * 0.33, 0, 0, Math.PI / 2.4);
+    });
+    return g;
+  });
+  entry('Animals', 'tortoise', 'Tortoise', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, new THREE.SphereGeometry(0.7, 20, 14, 0, Math.PI * 2, 0, Math.PI / 2), m, 0, 0.42, 0).scale.set(1, 0.7, 1.3);
+    put(g, SPH(0.22, 14, 10), m, 0, 0.4, 1);
+    [[0.45, 0.6], [-0.45, 0.6], [0.45, -0.6], [-0.45, -0.6]].forEach(([x, z]) =>
+      put(g, CYL(0.12, 0.12, 0.35, 8), m, x, 0.18, z));
+    return g;
+  });
+
+  /* ----------------------------------------------------------------- plants */
+  entry('Plants', 'fern', 'Fern', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    for (let i = 0; i < 7; i++) {
+      const a = (i / 7) * Math.PI * 2;
+      const f = put(g, new THREE.CapsuleGeometry(0.05, 1.3, 4, 8), m,
+        Math.cos(a) * 0.35, 0.85, Math.sin(a) * 0.35, Math.sin(a) * 0.5, 0, -Math.cos(a) * 0.5);
+      f.scale.set(1, 1, 0.4);
+    }
+    return g;
+  });
+  entry('Plants', 'flower', 'Flower', (c) => {
+    const g = new THREE.Group(), m = mat(c), stem = mat('#5f9e58');
+    put(g, CYL(0.05, 0.05, 1.6, 8), stem, 0, 0.8, 0);
+    put(g, SPH(0.18, 14, 10), m, 0, 1.65, 0);
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      put(g, SPH(0.26, 12, 10), m, Math.cos(a) * 0.3, 1.65, Math.sin(a) * 0.3).scale.set(1, 0.3, 1);
+    }
+    [0.4, -0.4].forEach((z) => put(g, SPH(0.3, 12, 8), stem, 0, 0.7, z).scale.set(0.4, 0.1, 1));
+    return g;
+  });
+  entry('Plants', 'sunflower', 'Sunflower', (c) => {
+    const g = new THREE.Group(), m = mat(c), stem = mat('#5f9e58');
+    put(g, CYL(0.09, 0.11, 3.2, 10), stem, 0, 1.6, 0);
+    put(g, CYL(0.42, 0.42, 0.12, 24), m, 0, 3.3, 0, Math.PI / 2.2);
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2;
+      put(g, BOX(0.42, 0.05, 0.16), m, Math.cos(a) * 0.6, 3.3, Math.sin(a) * 0.6, 0.5, -a, 0);
+    }
+    return g;
+  });
+  entry('Plants', 'grass', 'Tuft of grass', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    for (let i = 0; i < 14; i++) {
+      const a = Math.random() * Math.PI * 2, r = Math.random() * 0.35;
+      put(g, CONE(0.05, 0.7 + Math.random() * 0.5, 5), m,
+        Math.cos(a) * r, 0.45, Math.sin(a) * r, Math.sin(a) * 0.3, 0, -Math.cos(a) * 0.3);
+    }
+    return g;
+  });
+  entry('Plants', 'reeds', 'Reeds', (c) => {
+    const g = new THREE.Group(), m = mat(c), head = mat('#8a5a33');
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2, r = 0.2 + (i % 3) * 0.12, h = 1.8 + (i % 4) * 0.4;
+      put(g, CYL(0.04, 0.05, h, 7), m, Math.cos(a) * r, h / 2, Math.sin(a) * r, 0, 0, (i % 2 ? 1 : -1) * 0.07);
+      put(g, new THREE.CapsuleGeometry(0.09, 0.3, 5, 10), head, Math.cos(a) * r, h + 0.1, Math.sin(a) * r);
+    }
+    return g;
+  });
+  entry('Plants', 'cactus', 'Cactus', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, new THREE.CapsuleGeometry(0.42, 2.2, 8, 16), m, 0, 1.5, 0);
+    [[1, 0.4], [-1, 0.9]].forEach(([s, y]) => {
+      put(g, new THREE.CapsuleGeometry(0.2, 0.8, 6, 12), m, s * 0.5, 1.2 + y, 0, 0, 0, -s * Math.PI / 2);
+      put(g, new THREE.CapsuleGeometry(0.2, 0.7, 6, 12), m, s * 0.95, 1.7 + y, 0);
+    });
+    return g;
+  });
+  entry('Plants', 'palm', 'Palm', (c) => {
+    const g = new THREE.Group(), m = mat('#8a5a33'), leaf = mat(c);
+    for (let i = 0; i < 7; i++) put(g, CYL(0.19, 0.22, 0.6, 10), m, Math.sin(i * 0.4) * 0.2, 0.3 + i * 0.58, 0);
+    for (let i = 0; i < 7; i++) {
+      const a = (i / 7) * Math.PI * 2;
+      put(g, SPH(1.1, 12, 8), leaf, Math.cos(a) * 0.9 + 0.5, 4.5, Math.sin(a) * 0.9,
+        0, -a, 0.35).scale.set(1, 0.06, 0.35);
+    }
+    return g;
+  });
+  entry('Plants', 'vine', 'Climbing vine', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    for (let i = 0; i < 22; i++) {
+      const t = i / 22, a = t * Math.PI * 5;
+      put(g, SPH(0.12, 10, 8), m, Math.cos(a) * 0.45, t * 3.4 + 0.1, Math.sin(a) * 0.45);
+      if (i % 3 === 0) put(g, SPH(0.3, 10, 8), m, Math.cos(a) * 0.75, t * 3.4 + 0.1, Math.sin(a) * 0.75)
+        .scale.set(1, 0.12, 0.7);
+    }
+    return g;
+  });
+  entry('Plants', 'potted', 'Herb in a pot', (c) => {
+    const g = new THREE.Group(), pot = mat('#8a5a33'), m = mat(c);
+    put(g, CYL(0.42, 0.32, 0.6, 16), pot, 0, 0.3, 0);
+    put(g, CYL(0.46, 0.46, 0.1, 16), pot, 0, 0.6, 0);
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2, r = 0.2;
+      put(g, new THREE.CapsuleGeometry(0.05, 0.5, 4, 8), m,
+        Math.cos(a) * r, 0.95, Math.sin(a) * r, Math.sin(a) * 0.4, 0, -Math.cos(a) * 0.4);
+    }
+    return g;
+  });
+  entry('Plants', 'lily', 'Lily pads', (c) => {
+    const g = new THREE.Group(), m = mat(c), flower = mat('#efe3c8');
+    [[0, 0, 0.7], [1.1, 0.3, 0.5], [-0.8, -0.6, 0.45], [0.4, -1.1, 0.4]].forEach(([x, z, r]) =>
+      put(g, CYL(r, r, 0.06, 20), m, x, 0.06, z));
+    put(g, SPH(0.22, 14, 10), flower, 0, 0.18, 0);
+    return g;
+  });
+  entry('Plants', 'wheat', 'Wheat', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2, r = 0.1 + (i % 4) * 0.1;
+      put(g, CYL(0.025, 0.03, 1.8, 6), m, Math.cos(a) * r, 0.9, Math.sin(a) * r, 0, 0, Math.cos(a) * 0.08);
+      put(g, new THREE.CapsuleGeometry(0.07, 0.4, 5, 8), m, Math.cos(a) * r, 2, Math.sin(a) * r);
+    }
+    return g;
+  });
+  entry('Plants', 'bramble', 'Bramble', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    for (let i = 0; i < 16; i++) {
+      const a = Math.random() * Math.PI * 2, r = Math.random() * 0.8;
+      put(g, CYL(0.04, 0.04, 0.9, 6), m, Math.cos(a) * r, 0.5 + Math.random() * 0.4, Math.sin(a) * r,
+        Math.random() - 0.5, a, Math.random() - 0.5);
+    }
+    return g;
+  });
+
+  /* -------------------------------------------------------------- buildings */
+  entry('Buildings', 'chapel', 'Chapel', (c) => {
+    const g = new THREE.Group(), m = mat(c), roof = mat('#5a4a3a');
+    put(g, BOX(3, 2.6, 5), m, 0, 1.3, 0);
+    put(g, CONE(2.6, 1.4, 4), roof, 0, 3.3, 0, 0, Math.PI / 4).scale.set(1, 1, 1.7);
+    put(g, BOX(1.4, 4.4, 1.4), m, 0, 2.2, 3);
+    put(g, CONE(1.1, 1.6, 4), roof, 0, 5.2, 3, 0, Math.PI / 4);
+    put(g, BOX(0.12, 0.9, 0.12), m, 0, 6.3, 3);
+    put(g, BOX(0.5, 0.12, 0.12), m, 0, 6.2, 3);
+    return g;
+  });
+  entry('Buildings', 'barn', 'Barn', (c) => {
+    const g = new THREE.Group(), m = mat(c), roof = mat('#5a4a3a');
+    put(g, BOX(4, 2.4, 6), m, 0, 1.2, 0);
+    put(g, new THREE.CylinderGeometry(2.2, 2.2, 6, 14, 1, false, 0, Math.PI), roof, 0, 2.4, 0, Math.PI / 2, 0, 0);
+    put(g, BOX(1.6, 1.8, 0.1), mat('#8a5a33'), 0, 0.9, 3.02);
+    return g;
+  });
+  entry('Buildings', 'keep', 'Castle keep', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(4, 5, 4), m, 0, 2.5, 0);
+    [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([x, z]) => {
+      put(g, CYL(0.8, 0.8, 6, 14), m, x * 2, 3, z * 2);
+      put(g, CYL(0.95, 0.95, 0.4, 14), m, x * 2, 6.2, z * 2);
+    });
+    for (let i = 0; i < 8; i++) {
+      const a = i / 8 * Math.PI * 2;
+      put(g, BOX(0.5, 0.5, 0.5), m, Math.cos(a) * 1.8, 5.2, Math.sin(a) * 1.8);
+    }
+    put(g, BOX(1.2, 2, 0.2), mat('#5a4a3a'), 0, 1, 2.05);
+    return g;
+  });
+  entry('Buildings', 'watchtower', 'Watchtower', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, CYL(0.9, 1.2, 6, 16), m, 0, 3, 0);
+    put(g, CYL(1.5, 1.5, 0.4, 16), m, 0, 6.2, 0);
+    put(g, CONE(1.6, 1.4, 16), mat('#5a4a3a'), 0, 7.1, 0);
+    for (let i = 0; i < 10; i++) {
+      const a = i / 10 * Math.PI * 2;
+      put(g, BOX(0.3, 0.5, 0.3), m, Math.cos(a) * 1.3, 6.6, Math.sin(a) * 1.3, 0, -a, 0);
+    }
+    return g;
+  });
+  entry('Buildings', 'windmill', 'Windmill', (c) => {
+    const g = new THREE.Group(), m = mat(c), sail = mat('#efe3c8');
+    put(g, CYL(1, 1.5, 5, 18), m, 0, 2.5, 0);
+    put(g, CONE(1.3, 1.2, 18), mat('#5a4a3a'), 0, 5.5, 0);
+    for (let i = 0; i < 4; i++) {
+      put(g, BOX(0.18, 3.4, 0.7), sail, 0, 4.4, 1.3, 0, 0, (i / 4) * Math.PI * 2)
+        .position.set(Math.sin(i / 4 * Math.PI * 2) * 1.7, 4.4 + Math.cos(i / 4 * Math.PI * 2) * 1.7, 1.3);
+    }
+    return g;
+  });
+  entry('Buildings', 'lighthouse', 'Lighthouse', (c) => {
+    const g = new THREE.Group(), m = mat(c), glass = mat('#ffe9a0', { opacity: 0.7, transparent: true });
+    put(g, CYL(0.8, 1.6, 7, 20), m, 0, 3.5, 0);
+    put(g, CYL(1.1, 1.1, 0.3, 20), m, 0, 7.1, 0);
+    put(g, CYL(0.8, 0.8, 1, 16), glass, 0, 7.7, 0);
+    put(g, CONE(1, 0.9, 16), mat('#5a4a3a'), 0, 8.6, 0);
+    return g;
+  });
+  entry('Buildings', 'hut', 'Round hut', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, CYL(1.6, 1.7, 1.8, 18), m, 0, 0.9, 0);
+    put(g, CONE(2, 1.8, 18), mat('#8a7a53'), 0, 2.7, 0);
+    put(g, BOX(0.8, 1.2, 0.12), mat('#5a4a3a'), 0, 0.6, 1.7);
+    return g;
+  });
+  entry('Buildings', 'temple', 'Temple front', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(7, 0.5, 4), m, 0, 0.25, 0);
+    put(g, BOX(6.4, 0.4, 3.6), m, 0, 0.65, 0);
+    [-2.6, -1.3, 0, 1.3, 2.6].forEach((x) => put(g, CYL(0.32, 0.36, 3.6, 16), m, x, 2.6, 1.4));
+    put(g, BOX(6.6, 0.5, 3.4), m, 0, 4.6, 0);
+    put(g, CONE(3.6, 1.2, 3), m, 0, 5.4, 0, 0, Math.PI / 6).scale.set(1, 1, 0.5);
+    return g;
+  });
+  entry('Buildings', 'pyramid', 'Step pyramid', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    for (let i = 0; i < 5; i++) {
+      const w = 6 - i * 1.1;
+      put(g, BOX(w, 0.8, w), m, 0, 0.4 + i * 0.8, 0);
+    }
+    return g;
+  });
+  entry('Buildings', 'ziggurat', 'Ziggurat', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    for (let i = 0; i < 4; i++) {
+      const w = 7 - i * 1.6;
+      put(g, BOX(w, 1.1, w * 0.8), m, 0, 0.55 + i * 1.1, 0);
+    }
+    put(g, BOX(1.4, 1.4, 1.2), m, 0, 5, 0);
+    for (let i = 0; i < 8; i++) put(g, BOX(1.2, 0.18, 0.4), m, 0, 0.3 + i * 0.55, 3 - i * 0.3);
+    return g;
+  });
+  entry('Buildings', 'longhouse', 'Longhouse', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(3.2, 1.6, 8), m, 0, 0.8, 0);
+    put(g, new THREE.CylinderGeometry(2.1, 2.1, 8, 12, 1, false, 0, Math.PI), mat('#6a5a3a'), 0, 1.6, 0, Math.PI / 2, 0, 0);
+    put(g, BOX(1, 1.4, 0.12), mat('#5a4a3a'), 0, 0.7, 4.02);
+    return g;
+  });
+  entry('Buildings', 'tenement', 'City block', (c) => {
+    const g = new THREE.Group(), m = mat(c), gl = mat('#8fb6d8', { opacity: 0.5, transparent: true });
+    put(g, BOX(4, 9, 4), m, 0, 4.5, 0);
+    for (let f = 0; f < 6; f++) for (let w = -1; w <= 1; w++) {
+      put(g, BOX(0.8, 0.9, 0.08), gl, w * 1.2, 1.4 + f * 1.4, 2.02);
+      put(g, BOX(0.08, 0.9, 0.8), gl, 2.02, 1.4 + f * 1.4, w * 1.2);
+    }
+    return g;
+  });
+
+  /* ------------------------------------------------------------------ tools */
+  entry('Tools', 'hammer', 'Hammer', (c) => {
+    const g = new THREE.Group(), wood = mat('#8a5a33'), m = mat(c, { metalness: 0.8, roughness: 0.25 });
+    put(g, CYL(0.07, 0.08, 1.6, 12), wood, 0, 0.8, 0);
+    put(g, BOX(0.7, 0.26, 0.26), m, 0, 1.7, 0);
+    put(g, CONE(0.18, 0.4, 8), m, -0.45, 1.7, 0, 0, 0, Math.PI / 2);
+    return g;
+  });
+  entry('Tools', 'axe', 'Axe', (c) => {
+    const g = new THREE.Group(), wood = mat('#8a5a33'), m = mat(c, { metalness: 0.8, roughness: 0.25 });
+    put(g, CYL(0.07, 0.08, 2, 12), wood, 0, 1, 0);
+    put(g, BOX(0.5, 0.6, 0.1), m, 0.3, 1.9, 0, 0, 0, -0.15);
+    put(g, CONE(0.35, 0.4, 6), m, 0.6, 1.9, 0, 0, 0, -Math.PI / 2).scale.set(1, 1, 0.25);
+    return g;
+  });
+  entry('Tools', 'saw', 'Saw', (c) => {
+    const g = new THREE.Group(), wood = mat('#8a5a33'), m = mat(c, { metalness: 0.7, roughness: 0.3 });
+    put(g, BOX(2.4, 0.5, 0.05), m, 0.4, 1.2, 0);
+    for (let i = 0; i < 18; i++) put(g, CONE(0.06, 0.14, 4), m, -0.75 + i * 0.13, 0.9, 0, Math.PI);
+    put(g, BOX(0.5, 0.7, 0.18), wood, -1.1, 1.25, 0);
+    return g;
+  });
+  entry('Tools', 'chisel', 'Chisel', (c) => {
+    const g = new THREE.Group(), wood = mat('#8a5a33'), m = mat(c, { metalness: 0.8, roughness: 0.2 });
+    put(g, new THREE.CapsuleGeometry(0.11, 0.5, 6, 12), wood, 0, 1.2, 0);
+    put(g, CYL(0.05, 0.05, 0.9, 10), m, 0, 0.5, 0);
+    put(g, BOX(0.16, 0.12, 0.06), m, 0, 0.08, 0);
+    return g;
+  });
+  entry('Tools', 'spade', 'Spade', (c) => {
+    const g = new THREE.Group(), wood = mat('#8a5a33'), m = mat(c, { metalness: 0.7, roughness: 0.3 });
+    put(g, CYL(0.06, 0.07, 2.4, 12), wood, 0, 1.5, 0);
+    put(g, TOR(0.16, 0.05, 14), wood, 0, 2.75, 0, Math.PI / 2);
+    put(g, BOX(0.5, 0.6, 0.06), m, 0, 0.35, 0);
+    put(g, CONE(0.3, 0.3, 4), m, 0, 0.03, 0, Math.PI).scale.set(1, 1, 0.2);
+    return g;
+  });
+  entry('Tools', 'rake', 'Rake', (c) => {
+    const g = new THREE.Group(), wood = mat('#8a5a33'), m = mat(c, { metalness: 0.6 });
+    put(g, CYL(0.06, 0.06, 2.6, 12), wood, 0, 1.4, 0);
+    put(g, BOX(1.2, 0.1, 0.1), m, 0, 0.2, 0);
+    for (let i = 0; i < 7; i++) put(g, CONE(0.05, 0.3, 6), m, -0.5 + i * 0.17, 0.05, 0, Math.PI);
+    return g;
+  });
+  entry('Tools', 'scythe', 'Scythe', (c) => {
+    const g = new THREE.Group(), wood = mat('#8a5a33'), m = mat(c, { metalness: 0.8, roughness: 0.2 });
+    put(g, CYL(0.06, 0.07, 3, 12), wood, 0, 1.5, 0, 0, 0, 0.12);
+    put(g, CYL(0.05, 0.05, 0.4, 8), wood, 0.25, 1.6, 0, Math.PI / 2);
+    for (let i = 0; i < 10; i++) {
+      const a = (i / 10) * 1.4;
+      put(g, BOX(0.3, 0.07, 0.04), m, -0.3 - Math.sin(a) * 1.5, 0.1 + Math.cos(a) * 0.5, 0, 0, 0, -a);
+    }
+    return g;
+  });
+  entry('Tools', 'anvil', 'Anvil', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.85, roughness: 0.3 });
+    put(g, BOX(1.6, 0.4, 0.7), m, 0, 1.2, 0);
+    put(g, BOX(0.7, 0.5, 0.6), m, 0, 0.85, 0);
+    put(g, BOX(1.2, 0.3, 0.8), m, 0, 0.5, 0);
+    put(g, CONE(0.3, 0.9, 10), m, 1.1, 1.2, 0, 0, 0, -Math.PI / 2);
+    return g;
+  });
+  entry('Tools', 'workbench', 'Workbench', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, BOX(3.4, 0.25, 1.4), m, 0, 1.5, 0);
+    [[1.5, 0.6], [1.5, -0.6], [-1.5, 0.6], [-1.5, -0.6]].forEach(([x, z]) =>
+      put(g, BOX(0.2, 1.5, 0.2), m, x, 0.75, z));
+    put(g, BOX(3, 0.12, 0.8), m, 0, 0.6, 0);
+    put(g, BOX(0.5, 0.4, 0.4), mat(c, { metalness: 0.8 }), 1.4, 1.75, 0.4);
+    return g;
+  });
+  entry('Tools', 'bucket', 'Bucket', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.6, roughness: 0.35 });
+    put(g, new THREE.CylinderGeometry(0.5, 0.38, 0.9, 18, 1, true), m, 0, 0.45, 0);
+    put(g, CYL(0.38, 0.38, 0.05, 18), m, 0, 0.03, 0);
+    put(g, TOR(0.5, 0.04, 20), m, 0, 0.6, 0, 0, 0, Math.PI / 2).rotation.set(0, 0, 0);
+    return g;
+  });
+  entry('Tools', 'telescope', 'Telescope', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.75, roughness: 0.25 });
+    put(g, CYL(0.22, 0.3, 2.4, 18), m, 0, 2, 0, 0, 0, -Math.PI / 4);
+    put(g, CYL(0.14, 0.14, 0.5, 12), m, -0.95, 1.05, 0, 0, 0, -Math.PI / 4);
+    [0, 2.1, 4.2].forEach((r) => put(g, CYL(0.05, 0.05, 1.8, 8), m, 0, 0.9, 0, 0.35, r, 0));
+    put(g, CYL(0.3, 0.3, 0.1, 14), m, 0, 0.05, 0);
+    return g;
+  });
+  entry('Tools', 'microscope', 'Microscope', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.7, roughness: 0.3 });
+    put(g, CYL(0.55, 0.65, 0.2, 18), m, 0, 0.1, 0);
+    put(g, BOX(0.28, 1.6, 0.3), m, -0.3, 0.9, 0, 0.25);
+    put(g, BOX(0.9, 0.08, 0.7), m, 0.1, 0.9, 0);
+    put(g, CYL(0.16, 0.16, 1, 14), m, 0.1, 1.75, 0, 0.3);
+    put(g, CYL(0.1, 0.1, 0.35, 12), m, 0.1, 1.15, 0);
+    return g;
+  });
+  entry('Tools', 'mortar', 'Mortar & pestle', (c) => {
+    const g = new THREE.Group(), m = mat(c);
+    put(g, new THREE.CylinderGeometry(0.55, 0.42, 0.6, 20, 1, true), m, 0, 0.3, 0);
+    put(g, CYL(0.42, 0.42, 0.08, 20), m, 0, 0.04, 0);
+    put(g, new THREE.CapsuleGeometry(0.1, 0.7, 6, 12), m, 0.18, 0.7, 0, 0, 0, 0.4);
+    return g;
+  });
+  entry('Tools', 'hourglass', 'Hourglass', (c) => {
+    const g = new THREE.Group(), wood = mat('#8a5a33');
+    const glass = mat(c, { opacity: 0.45, transparent: true, roughness: 0.1 });
+    [0.1, 1.9].forEach((y) => put(g, CYL(0.5, 0.5, 0.14, 18), wood, 0, y, y > 1 ? 0 : 0));
+    put(g, CONE(0.42, 0.85, 18), glass, 0, 0.6, 0, Math.PI);
+    put(g, CONE(0.42, 0.85, 18), glass, 0, 1.4, 0);
+    [[0.4, 0.4], [-0.4, 0.4], [0.4, -0.4], [-0.4, -0.4]].forEach(([x, z]) =>
+      put(g, CYL(0.05, 0.05, 1.8, 8), wood, x, 1, z));
+    return g;
+  });
+  entry('Tools', 'scales', 'Scales', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.75, roughness: 0.25 });
+    put(g, CYL(0.6, 0.7, 0.14, 20), m, 0, 0.07, 0);
+    put(g, CYL(0.07, 0.07, 3, 12), m, 0, 1.5, 0);
+    put(g, BOX(2.6, 0.08, 0.08), m, 0, 3, 0);
+    [1.2, -1.2].forEach((x) => {
+      [0.3, -0.3].forEach((z) => put(g, CYL(0.012, 0.012, 0.9, 6), m, x, 2.55, z, 0, 0, 0));
+      put(g, CYL(0.42, 0.38, 0.12, 18), m, x, 2.1, 0);
+    });
+    return g;
+  });
+  entry('Tools', 'dividers', 'Dividers', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.85, roughness: 0.2 });
+    [1, -1].forEach((s) => put(g, CYL(0.05, 0.03, 2.4, 8), m, s * 0.35, 1.2, 0, 0, 0, -s * 0.28));
+    put(g, SPH(0.13, 12, 10), m, 0, 2.3, 0);
+    put(g, TOR(0.12, 0.03, 12), m, 0, 2.45, 0, Math.PI / 2);
+    return g;
+  });
+  entry('Tools', 'brazier', 'Brazier', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.7, roughness: 0.35 });
+    const fire = mat('#ff9a3c', { emissive: new THREE.Color('#ff6a00'), emissiveIntensity: 0.6 });
+    put(g, new THREE.CylinderGeometry(0.8, 0.5, 0.7, 20, 1, true), m, 0, 1.5, 0);
+    put(g, CYL(0.5, 0.5, 0.08, 20), m, 0, 1.2, 0);
+    [0, 2.1, 4.2].forEach((r) => put(g, CYL(0.06, 0.06, 1.4, 8), m, 0, 0.6, 0, 0.22, r, 0));
+    [0, 1, 2, 3].forEach((i) => put(g, CONE(0.22 - i * 0.04, 0.5, 8), fire,
+      Math.cos(i) * 0.2, 1.95 + i * 0.16, Math.sin(i) * 0.2));
+    return g;
+  });
+
   /* ---------------------------------------------------- the order's things */
   entry('The order', 'chalice', 'Chalice', (c) => {
     const g = new THREE.Group(), m = mat(c, { metalness: 0.7, roughness: 0.25 });

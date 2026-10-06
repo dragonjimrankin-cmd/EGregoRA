@@ -159,7 +159,7 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           <button class="chip" type="button">A copperplate engraving of the twelve zodiac glyphs around a wheel</button>
         </div>
         <div class="ask-actions">
-          <button class="btn" type="submit" id="d-submit">Draw it</button>
+          <button class="btn" type="submit" id="d-submit">Generate</button>
           <button class="btn btn--ghost" type="button" id="d-sketch-open"
                   aria-expanded="false" aria-controls="sketch-pad">Sketch it first</button>
           <button class="btn btn--ghost" type="button" id="d-clear" hidden>Clear</button>
@@ -339,6 +339,50 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           <button class="btn btn--ghost" type="button" id="v-clear" hidden>Clear</button>
         </div>
       </form>
+
+      <div class="byok">
+        <button class="btn btn--ghost" type="button" id="vk-open"
+                aria-expanded="false" aria-controls="vbyok-box">Use your own API</button>
+        <div class="byok-box" id="vbyok-box" hidden>
+          <p class="muted xsmall">A clip costs real money on a paid endpoint, and the order's own GPUs
+          are often busy. If you hold a key at fal.ai or Replicate, hand it over and the clip is made
+          through your account instead &mdash; used once, for that request only, never written down and
+          never logged. The same open-weights models either way.</p>
+
+          <div class="byok-grid">
+            <div>
+              <label for="vk-provider">Provider</label>
+              <select id="vk-provider">
+                <option value="fal">fal.ai</option>
+                <option value="replicate">Replicate</option>
+              </select>
+            </div>
+            <div>
+              <label for="vk-model">Route, if not the house one</label>
+              <input id="vk-model" type="text" autocomplete="off" spellcheck="false"
+                     placeholder="fal-ai/hunyuan-video-v1.5/text-to-video">
+            </div>
+            <div>
+              <label for="vk-key">Your key</label>
+              <input id="vk-key" type="password" autocomplete="current-password"
+                     spellcheck="false" placeholder="key id:secret, or r8_&hellip;">
+            </div>
+          </div>
+
+          <p class="byok-remember">
+            <label class="check">
+              <input id="vk-keep" type="checkbox">
+              <span>Keep it in this tab until I close it</span>
+            </label>
+          </p>
+
+          <div class="ask-actions">
+            <button class="btn" type="button" id="vk-use">Use this key</button>
+            <button class="btn btn--ghost" type="button" id="vk-forget">Forget it</button>
+          </div>
+          <p class="auth-msg" id="vk-msg" role="status"></p>
+        </div>
+      </div>
 
       <div class="draw-out" id="film-out" aria-live="polite"></div>
 

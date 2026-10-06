@@ -148,6 +148,15 @@ export async function submitVideo(prompt, opts = {}) {
      only ever sent as the frame count every route already understands. */
   const { frames } = lengthFor(model.key, opts.frames);
 
+  /* A key of the member's own. It is used for this one submission and then
+     forgotten: it is never written to the database and never logged. Where
+     a member brings their own fal or Replicate key, the order's own pool is
+     left alone entirely and their account does the work. */
+  const own = opts.byok && typeof opts.byok.key === 'string' && opts.byok.key.trim()
+    ? { provider: String(opts.byok.provider || 'fal'), key: opts.byok.key.trim(),
+        model: String(opts.byok.model || '').trim() }
+    : null;
+
   /* Continuation. `initUrl` is the frame this shot grows out of; where a route
      offers image-to-video it becomes the literal first frame, which is the
      strongest continuity lock there is. `seed` is the second lock: the same
@@ -161,9 +170,13 @@ export async function submitVideo(prompt, opts = {}) {
      owner has configured is tried in turn — FAL_KEY, FAL_KEY_2 … or several
      at once in FAL_ACCOUNTS — and a key that has just been refused is put on
      a cooldown by the pool rather than retried into the same refusal. */
-  const falKeys = await falAccounts();
+  const falKeys = own
+    ? (own.provider === 'fal' ? [{ id: 'own-' + Math.random().toString(36).slice(2, 8), label: 'your own fal key', secret: own.key }] : [])
+    : await falAccounts();
   if (falKeys.length) {
-    const route = initUrl && model.falI2V ? model.falI2V : model.fal;
+    const route = (own && own.provider === 'fal' && own.model)
+      ? own.model
+      : (initUrl && model.falI2V ? model.falI2V : model.fal);
     const payload = {
       prompt: text,
       resolution: '480p',
@@ -276,10 +289,14 @@ export async function submitVideo(prompt, opts = {}) {
     };
   };
 
-  const repKeys = await replicateAccounts();
+  const repKeys = own
+    ? (own.provider === 'replicate' ? [{ id: 'own-' + Math.random().toString(36).slice(2, 8), label: 'your own Replicate token', secret: own.key }] : [])
+    : await replicateAccounts();
   if (repKeys.length) {
     const won = await acrossAccounts('replicate', repKeys, async (account) => {
-    const r = await call('https://api.replicate.com/v1/models/' + model.replicate + '/predictions', {
+    const r = await call('https://api.replicate.com/v1/models/' +
+      ((own && own.provider === 'replicate' && own.model) ? own.model : model.replicate) +
+      '/predictions', {
       method: 'POST',
       headers: { authorization: 'Bearer ' + account.secret, 'content-type': 'application/json' },
       body: JSON.stringify({

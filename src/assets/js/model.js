@@ -306,6 +306,27 @@ function start() {
     panCamera("panY", 0, Math.sign(e.deltaY) * 26);
   }, { passive: false });
 
+  /* --- keeping the page still ---------------------------------------------
+     A 3D window is worked with the mouse, and browsers read some of those
+     presses as page gestures: the middle button starts autoscroll, the two
+     side buttons walk back and forward through history, and a stray drag
+     can pull the page about. Over the bench, all of that is held off. The
+     arrow keys are left alone, so the page can still be moved by keyboard,
+     and nothing here touches the rest of the site. */
+  const hush = (e) => { e.preventDefault(); e.stopPropagation(); };
+  ["mousedown", "mouseup", "auxclick", "click"].forEach((kind) =>
+    stage.addEventListener(kind, (e) => {
+      if (e.button === 0) return;          // the ordinary left press is wanted
+      hush(e);
+    }, true));
+  stage.addEventListener("dragstart", hush);
+  stage.addEventListener("pointerdown", (e) => { if (e.button >= 1) e.preventDefault(); }, true);
+  /* Space and the page keys scroll a page; over the bench they should not. */
+  stage.addEventListener("keydown", (e) => {
+    if ([" ", "PageUp", "PageDown", "Home", "End"].includes(e.key)) e.preventDefault();
+  });
+  stage.tabIndex = -1;
+
   /* --- the solids --------------------------------------------------------- */
   const SHAPES = {
     box: () => new THREE.BoxGeometry(2, 2, 2),
@@ -1134,6 +1155,161 @@ function start() {
     });
   });
 
+  /* --- the animator --------------------------------------------------------
+     Press Animate and a box opens asking, in so many words, how you would
+     like the piece to move. The sentence is read here in the page — no model,
+     no service — and turned into a handful of motions laid over whatever
+     position the piece is already in. Say "hold still" and it returns to
+     exactly where it stood. */
+  const MOTIONS = [
+    { kind: "spin", test: /spin|rotat|revolv|whirl|twirl|turn(?!s? (into|to))|pirouett|gyrat/, name: "spin" },
+    { kind: "orbit", test: /orbit|circl|go(es)? round|goes around|fly round|flies round|round the centre|round the middle/, name: "orbit the centre" },
+    { kind: "bob", test: /bob|float|hover|rise and fall|up and down(?! the)|levitat/, name: "bob in the air" },
+    { kind: "swing", test: /swing|sway|rock|pendul|lean|tilt back/, name: "swing" },
+    { kind: "pulse", test: /puls|throb|heartbeat|beat|breath|grow and shrink|swell/, name: "pulse" },
+    { kind: "drift", test: /drift|slide|glide|shuttle|side to side|back and forth|to and fro|paces?/, name: "drift from side to side" },
+    { kind: "wobble", test: /wobbl|shak|shiver|judder|trembl|quiver|shudder|rattl/, name: "wobble" },
+    { kind: "bounce", test: /bounc|hop|jump|spring|skip/, name: "bounce" }
+  ];
+
+  function readMotion(text) {
+    const s = String(text || "").toLowerCase();
+    let speed = 1;
+    if (/\b(slow|slowly|gentl[ey]|lazy|lazily|softly|barely|calm)\b/.test(s)) speed = 0.45;
+    if (/\b(fast|quick|quickly|rapid|rapidly|briskly)\b/.test(s)) speed = 2.2;
+    if (/\b(wildly|violently|furious|frantic|very fast|like mad|madly)\b/.test(s)) speed = 3.6;
+    let size = 1;
+    if (/\b(small|slight|slightly|subtle|little|tiny|faint|a touch)\b/.test(s)) size = 0.45;
+    if (/\b(big|large|wide|wildly|high|huge|great|far)\b/.test(s)) size = 1.9;
+    const dir = /\b(anti-?clockwise|counter-?clockwise|widdershins|backwards?|the other way|left)\b/.test(s) ? -1 : 1;
+    let axis = "y";
+    if (/\b(end over end|tumbl|cartwheel|roll|sideways)\b/.test(s)) axis = "z";
+    if (/\b(somersault|forwards? roll|pitch|head over heels)\b/.test(s)) axis = "x";
+    const moves = [];
+    const names = [];
+    MOTIONS.forEach((m) => {
+      if (!m.test.test(s)) return;
+      moves.push({ kind: m.kind, speed, size, dir, axis });
+      names.push(m.name);
+    });
+    let guessed = false;
+    if (!moves.length) {
+      moves.push({ kind: "spin", speed, size, dir, axis });
+      names.push("turn on the spot");
+      guessed = true;
+    }
+    return { moves, names, guessed, speed, dir };
+  }
+
+  function rebase(o) {
+    const a = o.userData.anim;
+    if (!a) return;
+    a.base = {
+      px: o.position.x, py: o.position.y, pz: o.position.z,
+      rx: o.rotation.x, ry: o.rotation.y, rz: o.rotation.z,
+      sc: o.scale.x,
+      radius: Math.hypot(o.position.x, o.position.z),
+      angle: Math.atan2(o.position.z, o.position.x)
+    };
+  }
+
+  function runMotion(o, t) {
+    const a = o.userData.anim;
+    if (!a) return;
+    const b = a.base;
+    let px = b.px, py = b.py, pz = b.pz;
+    let rx = b.rx, ry = b.ry, rz = b.rz, sc = b.sc;
+    a.moves.forEach((m) => {
+      const w = m.speed, A = m.size;
+      if (m.kind === "spin") {
+        if (m.axis === "x") rx += t * w * m.dir;
+        else if (m.axis === "z") rz += t * w * m.dir;
+        else ry += t * w * m.dir;
+      } else if (m.kind === "orbit") {
+        const r = Math.max(2, b.radius) * (A > 1 ? 1.4 : 1);
+        const ang = b.angle + t * w * 0.6 * m.dir;
+        px = Math.cos(ang) * r;
+        pz = Math.sin(ang) * r;
+        ry = b.ry - ang;
+      } else if (m.kind === "bob") {
+        py += Math.sin(t * w * 1.4) * 0.6 * A;
+      } else if (m.kind === "swing") {
+        rz += Math.sin(t * w * 1.6) * 0.35 * A;
+      } else if (m.kind === "pulse") {
+        sc = b.sc * (1 + Math.sin(t * w * 2.2) * 0.16 * A);
+      } else if (m.kind === "drift") {
+        px += Math.sin(t * w) * 1.6 * A;
+      } else if (m.kind === "wobble") {
+        rx += Math.sin(t * w * 7) * 0.09 * A;
+        rz += Math.cos(t * w * 9) * 0.09 * A;
+      } else if (m.kind === "bounce") {
+        py += Math.abs(Math.sin(t * w * 2)) * 0.9 * A;
+      }
+    });
+    o.position.set(px, py, pz);
+    o.rotation.set(rx, ry, rz);
+    o.scale.set(sc, sc, sc);
+  }
+
+  const animBox = document.getElementById("anim-box");
+  const animText = document.getElementById("md-anim-text");
+  const animRead = document.getElementById("md-anim-read");
+  const animBtn = on("md-anim", () => {
+    if (!animBox) return;
+    animBox.hidden = !animBox.hidden;
+    animBtn.setAttribute("aria-expanded", String(!animBox.hidden));
+    animBtn.classList.toggle("is-on", !animBox.hidden);
+    if (!animBox.hidden) {
+      if (!picked.length) note("Nothing is selected \u2014 pick a piece and the instruction will land on it.", true);
+      if (animText) animText.focus();
+    }
+  });
+
+  const list = (names) => names.length < 2
+    ? names[0]
+    : names.slice(0, -1).join(", ") + " and " + names[names.length - 1];
+
+  on("md-anim-go", () => {
+    if (!picked.length) return note("Select a piece for the instruction to land on.", true);
+    remember();
+    const want = readMotion(animText ? animText.value : "");
+    picked.forEach((o) => {
+      o.userData.anim = { moves: want.moves, base: null };
+      rebase(o);
+    });
+    const how = (want.speed < 0.6 ? "slowly" : want.speed > 3 ? "wildly" : want.speed > 1.5 ? "quickly" : "steadily") +
+      (want.dir < 0 ? ", the other way round" : "");
+    if (animRead) {
+      animRead.textContent = want.guessed
+        ? "I could not find a motion in that, so " + (picked.length > 1 ? "they turn" : "it turns") +
+          " on the spot, " + how + ". Try: spin, orbit, bob, swing, pulse, drift, wobble or bounce."
+        : "Set going: " + list(want.names) + ", " + how + ". " +
+          (picked.length > 1 ? picked.length + " pieces are moving." : "");
+    }
+    note("");
+  });
+
+  on("md-anim-stop", () => {
+    const held = picked.length ? picked : pieces.children;
+    let n = 0;
+    held.slice().forEach((o) => {
+      const a = o.userData.anim;
+      if (!a) return;
+      n++;
+      o.position.set(a.base.px, a.base.py, a.base.pz);
+      o.rotation.set(a.base.rx, a.base.ry, a.base.rz);
+      o.scale.set(a.base.sc, a.base.sc, a.base.sc);
+      o.userData.anim = null;
+    });
+    refreshHalos();
+    load();
+    if (animRead) {
+      animRead.textContent = n
+        ? (n > 1 ? n + " pieces are" : "It is") + " holding still again, back where it stood."
+        : "Nothing selected was moving.";
+    }
+  });
+
   /* --- taking it away ----------------------------------------------------- */
   function toObj() {
     const lines = ["# EGregoRA — the Turning Shop", "mtllib egregora-model.mtl"];
@@ -1256,7 +1432,7 @@ function start() {
       else if (window.EGModelHandOver) window.EGModelHandOver(url);
     },
     done: "The sketch pad is open above with the piece on the cursor \u2014 click to put it down, " +
-      "scroll to size it, then write what it is made of and press Draw it."
+      "scroll to size it, then write what it is made of and press Generate."
   });
 
   sender("md-to-film", {
@@ -1273,7 +1449,7 @@ function start() {
     name: "model.png",
     go: (url) => { if (window.EGModelHandOver) window.EGModelHandOver(url); },
     done: "The whole view is attached to the image box above as a sketch. Write what it is made of \u2014 " +
-      "brass, oak, stone, flesh \u2014 and press Draw it."
+      "brass, oak, stone, flesh \u2014 and press Generate."
   });
 
   /* --- the loop ----------------------------------------------------------- */
