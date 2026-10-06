@@ -133,7 +133,7 @@ export default async function (req, res) {
   const initUrl = String(body.frame || (parent && parent.kind === 'image' ? parent.url : '') || '').trim() || null;
 
   const job = await submitVideo(sent, {
-    aspect, model: body.model, seed, initUrl
+    aspect, model: body.model, seed, initUrl, frames: body.frames
   });
   if (job.error) return res.status(503).json({ error: job.error });
 

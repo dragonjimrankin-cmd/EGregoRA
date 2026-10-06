@@ -316,6 +316,10 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             </select>
           </div>
           <div>
+            <label for="v-length">Length</label>
+            <select id="v-length" name="length"></select>
+          </div>
+          <div>
             <label for="v-aspect">Shape</label>
             <select id="v-aspect" name="aspect">
               <option value="16:9">Landscape · 16:9</option>
@@ -505,7 +509,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       <p class="kicker">THE CUTTING ROOM</p>
       <h3>Make a Montage</h3>
       <p class="muted small">Every clip <em>and every picture</em> you generate on this page is collected
-      here. Put them in order, trim the ends or set how long a still holds, choose a cut or a crossfade,
+      here. Put them in order, trim the ends or set how long a still holds, choose a cut or a crossfade, lay sound
+      under the whole thing or onto single scenes,
       and the page will edit them into one film — rendered in
       your own browser, with no upload and no service in the middle. The result downloads as a single
       file. Clips made before you cleared the page are not kept; this is a cutting room, not an archive.</p>
@@ -530,6 +535,24 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             <option value="480x854">Upright · 480 × 854</option>
           </select>
         </div>
+      </div>
+
+      <div class="montage-sound">
+        <h4>Sound</h4>
+        <p class="muted xsmall">The models make no sound at all, so every clip here is silent. Bring
+        your own: a bed of music or narration under the whole film, or a piece of audio dropped onto
+        one scene or a run of scenes. Scene sound wins wherever it lands — the bed drops out
+        underneath it for exactly that stretch and comes back after. Nothing is uploaded; the audio is
+        decoded and mixed in this page while the cut plays.</p>
+
+        <div class="sound-row">
+          <label class="btn btn--ghost btn--small" for="m-bed-file">Sound under the whole film</label>
+          <input id="m-bed-file" type="file" accept="audio/*" class="sound-file">
+          <button class="btn btn--ghost btn--small" type="button" id="m-shot-sound" disabled>Sound on the
+          selected scenes</button>
+          <input id="m-shot-file" type="file" accept="audio/*" class="sound-file">
+        </div>
+        <div class="sound-bed" id="m-bed" hidden></div>
       </div>
 
       <div class="ask-actions">

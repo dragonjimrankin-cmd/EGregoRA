@@ -1360,12 +1360,45 @@
   const aspectEl = document.getElementById("v-aspect");
   const modelEl = document.getElementById("v-model");
   const modelNote = document.getElementById("v-model-note");
+  const lengthEl = document.getElementById("v-length");
   const btn = document.getElementById("v-submit");
   const clear = document.getElementById("v-clear");
   const out = document.getElementById("film-out");
   const examples = document.getElementById("film-examples");
   const nameEl = document.getElementById("o-name");
   if (!box || !btn || !out) return;
+
+  /* --- how long a clip may be ---------------------------------------------
+     Each model is trained at its own frame rate and its own length, so the
+     choices differ: 49 frames of CogVideoX is six seconds, 49 frames of
+     HunyuanVideo is two. The list here matches the one the server snaps to,
+     in hatchable/lib/videogen.js. */
+  const LENGTHS = {
+    hunyuan15: { fps: 24, frames: [49, 73, 97, 121, 185, 241], def: 121 },
+    wan22: { fps: 16, frames: [33, 49, 65, 81], def: 81 },
+    ltx: { fps: 24, frames: [49, 97, 145, 193, 257], def: 97 },
+    cogvideox: { fps: 8, frames: [25, 49], def: 49 },
+    mochi: { fps: 30, frames: [61, 91, 163], def: 163 }
+  };
+
+  const fillLengths = () => {
+    if (!lengthEl) return;
+    const spec = LENGTHS[(modelEl && modelEl.value) || "hunyuan15"] || LENGTHS.hunyuan15;
+    const had = Number(lengthEl.value) || 0;
+    lengthEl.innerHTML = "";
+    spec.frames.forEach((f) => {
+      const secs = Math.round((f / spec.fps) * 10) / 10;
+      const o = document.createElement("option");
+      o.value = String(f);
+      o.textContent = secs + (secs === 1 ? " second" : " seconds") + " \u00b7 " + f + " frames" +
+        (f === spec.def ? " \u00b7 the model\u2019s own length" : "");
+      lengthEl.appendChild(o);
+    });
+    const keep = spec.frames.indexOf(had) >= 0 ? had : spec.def;
+    lengthEl.value = String(keep);
+  };
+  fillLengths();
+  if (modelEl) modelEl.addEventListener("change", fillLengths);
 
   const esc = (s) =>
     String(s).replace(/[&<>"']/g, (c) =>
@@ -1385,10 +1418,25 @@
       (data.hardware ? "<br>Rendered on " + esc(data.hardware) : "") +
       (data.carried ? '<br>Carried over \u00b7 ' + esc(data.carried) : "") +
       "</span></figcaption>";
+    const meta = { id: data.id, sheet: data.sheet, seed: data.seed };
+    if (window.EGMontageAdd) window.EGMontageAdd(data.url, prompt, isImage ? "image" : "video", meta);
     if (window.EGMontageAdd) {
-      window.EGMontageAdd(data.url, prompt, isImage ? "image" : "video", {
-        id: data.id, sheet: data.sheet, seed: data.seed
+      const cut = document.createElement("button");
+      cut.type = "button";
+      cut.className = "btn btn--ghost btn--small card-to-montage";
+      const settle = () => {
+        const inRoom = window.EGMontageHas && window.EGMontageHas(data.url);
+        cut.textContent = inRoom ? "In the cutting room" : "Add to the montage";
+        cut.classList.toggle("is-on", Boolean(inRoom));
+      };
+      cut.addEventListener("click", () => {
+        window.EGMontageAdd(data.url, prompt, isImage ? "image" : "video", meta);
+        settle();
+        const room = document.getElementById("montage-box");
+        if (room) room.scrollIntoView({ block: "start", behavior: "smooth" });
       });
+      settle();
+      card.appendChild(cut);
     }
     if (window.EGArrived) window.EGArrived(card.dataset.origin === "oracle" ? "oracle-video" : "video", card);
   };
@@ -1519,6 +1567,7 @@
           prompt: p,
           aspect: (aspectEl && aspectEl.value) || "16:9",
           model: (modelEl && modelEl.value) || "hunyuan15",
+          frames: Number(lengthEl && lengthEl.value) || undefined,
           name: (nameEl && nameEl.value || "").trim(),
           from: cont && cont.id ? cont.id : undefined,
           frame: cont ? cont.frame : undefined,
@@ -2824,6 +2873,20 @@
   var shots = [];
   var busy = false;
 
+  /* Sound. Nothing is uploaded: a file dropped here is decoded with the Web
+     Audio API and mixed into the recording as the cut plays. `bed` runs
+     under the whole film; a clip attached to a shot runs only across that
+     shot, or across a run of shots sharing the same clip id, and the bed
+     ducks out underneath it for exactly that stretch. */
+  var bed = null;              // { name, buffer, from, gain, loop }
+  var audioCtx = null;
+  var clipSeq = 0;
+  var bedBox = document.getElementById('m-bed');
+  var bedFile = document.getElementById('m-bed-file');
+  var shotFile = document.getElementById('m-shot-file');
+  var shotSound = document.getElementById('m-shot-sound');
+  var pendingTargets = [];
+
   function say(text, bad) {
     msg.textContent = text || '';
     msg.className = 'auth-msg' + (text ? (bad ? ' is-bad' : ' is-good') : '');
@@ -2832,6 +2895,10 @@
   /* ----------------------------------------------------------- shots */
 
   var STILL = 3;   // seconds a still picture holds in the cut
+
+  window.EGMontageHas = function (url) {
+    return shots.some(function (s) { return s.url === url; });
+  };
 
   window.EGMontageAdd = function (url, prompt, kind, meta) {
     if (!url || shots.some(function (s) { return s.url === url; })) return;
@@ -2957,6 +3024,136 @@
       !hosted);
   }
 
+  /* ------------------------------------------------------------ sound */
+
+  function context() {
+    var C = window.AudioContext || window.webkitAudioContext;
+    if (!C) return null;
+    if (!audioCtx) audioCtx = new C();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function decode(file) {
+    return new Promise(function (resolve, reject) {
+      var ac = context();
+      if (!ac) { reject(new Error('this browser has no Web Audio')); return; }
+      var reader = new FileReader();
+      reader.onerror = function () { reject(new Error('the file could not be read')); };
+      reader.onload = function () {
+        ac.decodeAudioData(reader.result,
+          function (buf) { resolve(buf); },
+          function () { reject(new Error('that is not an audio file this browser can decode')); });
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  function clock(sec) {
+    var s = Math.max(0, Number(sec) || 0);
+    var m = Math.floor(s / 60);
+    var r = Math.round(s % 60);
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+
+  function paintBed() {
+    if (!bedBox) return;
+    if (!bed) { bedBox.hidden = true; bedBox.innerHTML = ''; return; }
+    bedBox.hidden = false;
+    bedBox.innerHTML = '';
+    var name = document.createElement('p');
+    name.className = 'sound-name';
+    name.textContent = '\u266a ' + bed.name + ' \u00b7 ' + clock(bed.buffer.duration) +
+      ' under the whole film';
+    bedBox.appendChild(name);
+    bedBox.appendChild(controls(bed, bed.buffer.duration, function () { bed = null; paintBed(); }));
+  }
+
+  /* The three things a piece of sound needs: where in the file to start,
+     how loud, and a way to take it off again. */
+  function controls(clip, len, remove) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sound-controls';
+
+    var from = document.createElement('label');
+    from.innerHTML = 'Play from <input type="number" min="0" step="0.5" value="' +
+      clip.from.toFixed(1) + '"><span class="muted xsmall">s of ' + clock(len) + '</span>';
+    var fi = from.querySelector('input');
+    fi.max = String(Math.max(0, len - 0.2).toFixed(1));
+    fi.addEventListener('change', function () {
+      clip.from = Math.max(0, Math.min(Number(fi.value) || 0, Math.max(0, len - 0.2)));
+      fi.value = clip.from.toFixed(1);
+    });
+    wrap.appendChild(from);
+
+    var vol = document.createElement('label');
+    vol.innerHTML = 'Level <input type="range" min="0" max="1.5" step="0.05" value="' + clip.gain + '">';
+    var vi = vol.querySelector('input');
+    vi.addEventListener('input', function () { clip.gain = Number(vi.value); });
+    wrap.appendChild(vol);
+
+    if (clip === bed) {
+      var loop = document.createElement('label');
+      loop.className = 'check';
+      loop.innerHTML = '<input type="checkbox"' + (clip.loop ? ' checked' : '') +
+        '><span>Loop it if the film runs longer</span>';
+      var li = loop.querySelector('input');
+      li.addEventListener('change', function () { clip.loop = li.checked; });
+      wrap.appendChild(loop);
+    }
+
+    var off = document.createElement('button');
+    off.type = 'button';
+    off.className = 'btn btn--ghost btn--small';
+    off.textContent = 'Take it off';
+    off.addEventListener('click', remove);
+    wrap.appendChild(off);
+    return wrap;
+  }
+
+  function chosenShots() {
+    var picked = [];
+    shots.forEach(function (s, i) { if (s.sel) picked.push(i); });
+    return picked;
+  }
+
+  if (bedFile) bedFile.addEventListener('change', function () {
+    var f = bedFile.files && bedFile.files[0];
+    if (!f) return;
+    say('Decoding ' + f.name + '\u2026');
+    decode(f).then(function (buf) {
+      bed = { name: f.name, buffer: buf, from: 0, gain: 0.7, loop: true };
+      paintBed();
+      say('Sound laid under the whole film. Set where in the file it should start.');
+    }).catch(function (e) { say(e.message, true); });
+    bedFile.value = '';
+  });
+
+  if (shotSound) shotSound.addEventListener('click', function () {
+    pendingTargets = chosenShots();
+    if (!pendingTargets.length) { say('Tick the scenes the sound belongs to first.', true); return; }
+    if (shotFile) shotFile.click();
+  });
+
+  if (shotFile) shotFile.addEventListener('change', function () {
+    var f = shotFile.files && shotFile.files[0];
+    if (!f || !pendingTargets.length) return;
+    var targets = pendingTargets.slice();
+    say('Decoding ' + f.name + '\u2026');
+    decode(f).then(function (buf) {
+      clipSeq++;
+      var clip = { id: clipSeq, name: f.name, buffer: buf, from: 0, gain: 1 };
+      targets.forEach(function (i) { if (shots[i]) shots[i].audio = clip; });
+      paint();
+      say('\u266a ' + f.name + ' sits on ' + (targets.length === 1
+        ? 'scene ' + (targets[0] + 1)
+        : targets.length + ' scenes') + '. Anything already playing underneath drops out for that ' +
+        'stretch and comes back after.');
+    }).catch(function (e) { say(e.message, true); });
+    shotFile.value = '';
+    pendingTargets = [];
+  });
+
   function total() {
     return shots.reduce(function (n, s) {
       return n + Math.max(0, (s.out || 0) - (s.in || 0));
@@ -2977,6 +3174,7 @@
     }
     if (clearBtn) clearBtn.hidden = false;
     renderBtn.disabled = busy || shots.length < 1;
+    if (shotSound) shotSound.disabled = !chosenShots().length;
 
     shots.forEach(function (s, i) {
       var li = document.createElement('li');
@@ -3002,8 +3200,19 @@
 
       var head = document.createElement('p');
       head.className = 'shot-name';
-      head.textContent = (i + 1) + '. ' + (s.kind === 'image' ? '\u25a3 ' : '\u25b6 ') +
-        String(s.prompt).slice(0, 90);
+      var tick = document.createElement('input');
+      tick.type = 'checkbox';
+      tick.className = 'shot-tick';
+      tick.checked = Boolean(s.sel);
+      tick.title = 'Choose this scene, for laying sound on it';
+      tick.setAttribute('aria-label', 'Select scene ' + (i + 1));
+      tick.addEventListener('change', function () {
+        s.sel = tick.checked;
+        if (shotSound) shotSound.disabled = !chosenShots().length;
+      });
+      head.appendChild(tick);
+      head.appendChild(document.createTextNode(' ' + (i + 1) + '. ' +
+        (s.kind === 'image' ? '\u25a3 ' : '\u25b6 ') + String(s.prompt).slice(0, 90)));
       body.appendChild(head);
 
       var ext = document.createElement('button');
@@ -3045,8 +3254,40 @@
         body.appendChild(trim);
       }
 
+      if (s.audio) {
+        var run = shots.filter(function (o) { return o.audio && o.audio.id === s.audio.id; }).length;
+        var sline = document.createElement('div');
+        sline.className = 'shot-sound';
+        var sname = document.createElement('p');
+        sname.className = 'sound-name';
+        sname.textContent = '\u266a ' + s.audio.name +
+          (run > 1 ? ' \u00b7 across ' + run + ' scenes' : '');
+        sline.appendChild(sname);
+        /* Only the first scene of a run carries the controls \u2014 it is one
+           piece of sound running through, not one per scene. */
+        if (!shots[i - 1] || !shots[i - 1].audio || shots[i - 1].audio.id !== s.audio.id) {
+          sline.appendChild(controls(s.audio, s.audio.buffer.duration, (function (clip) {
+            return function () {
+              shots.forEach(function (o) { if (o.audio && o.audio.id === clip.id) o.audio = null; });
+              paint();
+            };
+          })(s.audio)));
+        }
+        body.appendChild(sline);
+      }
+
       var tools = document.createElement('div');
       tools.className = 'shot-tools';
+      var snd = document.createElement('button');
+      snd.type = 'button';
+      snd.className = 'shot-btn';
+      snd.textContent = '\u266a';
+      snd.title = 'Lay a piece of sound on this scene';
+      snd.addEventListener('click', function () {
+        pendingTargets = [i];
+        if (shotFile) shotFile.click();
+      });
+      tools.appendChild(snd);
       [['▲', 'Earlier', -1], ['▼', 'Later', 1]].forEach(function (b) {
         var btn = document.createElement('button');
         btn.type = 'button';
@@ -3084,6 +3325,8 @@
 
   if (clearBtn) clearBtn.addEventListener('click', function () {
     shots = [];
+    bed = null;
+    paintBed();
     out.innerHTML = '';
     say('');
     paint();
@@ -3198,8 +3441,58 @@
     ctx.fillStyle = '#0a090e';
     ctx.fillRect(0, 0, W, H);
 
-    var stream = canvas.captureStream(30);
-    var mime = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm']
+    /* ---- the sound desk ---------------------------------------------
+       The canvas gives the picture; the Web Audio graph gives the track,
+       and the two streams are recorded together. The bed runs from the
+       first frame; a scene's own sound starts when that scene starts and
+       the bed is ducked to silence for exactly as long as it plays. */
+    var hasSound = Boolean(bed) || shots.some(function (sh) { return sh.audio; });
+    var ac = hasSound ? context() : null;
+    var dest = ac ? ac.createMediaStreamDestination() : null;
+    var bedGain = null, bedSrc = null, sceneSrc = null;
+
+    var startBed = function () {
+      if (!ac || !bed) return;
+      bedGain = ac.createGain();
+      bedGain.gain.value = bed.gain;
+      bedGain.connect(dest);
+      bedSrc = ac.createBufferSource();
+      bedSrc.buffer = bed.buffer;
+      bedSrc.loop = Boolean(bed.loop);
+      bedSrc.connect(bedGain);
+      try { bedSrc.start(0, Math.min(bed.from, Math.max(0, bed.buffer.duration - 0.05))); }
+      catch (e) { bedSrc = null; }
+    };
+    var duck = function (down) {
+      if (!bedGain || !ac) return;
+      bedGain.gain.cancelScheduledValues(ac.currentTime);
+      bedGain.gain.setTargetAtTime(down ? 0.0001 : bed.gain, ac.currentTime, 0.05);
+    };
+    var startScene = function (clip) {
+      if (!ac || !clip) return;
+      var g = ac.createGain();
+      g.gain.value = clip.gain;
+      g.connect(dest);
+      var src = ac.createBufferSource();
+      src.buffer = clip.buffer;
+      src.connect(g);
+      try { src.start(0, Math.min(clip.from, Math.max(0, clip.buffer.duration - 0.05))); }
+      catch (e) { return; }
+      sceneSrc = src;
+      duck(true);
+    };
+    var stopScene = function () {
+      if (sceneSrc) { try { sceneSrc.stop(); } catch (e) {} sceneSrc = null; }
+      duck(false);
+    };
+
+    var vstream = canvas.captureStream(30);
+    var tracks = vstream.getVideoTracks().slice();
+    if (dest) tracks = tracks.concat(dest.stream.getAudioTracks());
+    var stream = new MediaStream(tracks);
+    var mime = (dest
+      ? ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']
+      : ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'])
       .find(function (m) { return MediaRecorder.isTypeSupported(m); }) || '';
     var rec = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 4000000 } : undefined);
     var chunks = [];
@@ -3207,22 +3500,29 @@
 
     var finished = new Promise(function (res) { rec.onstop = res; });
     rec.start(200);
+    startBed();
 
     try {
       for (var i = 0; i < shots.length; i++) {
         var shot = shots[i];
         var next = shots[i + 1] || null;
         if (shot.out === null && shot.duration) shot.out = shot.duration;
+        var prevClip = shots[i - 1] ? shots[i - 1].audio : null;
+        if (shot.audio && (!prevClip || prevClip.id !== shot.audio.id)) startScene(shot.audio);
         say('Cutting shot ' + (i + 1) + ' of ' + shots.length + '…');
         var preRolled = shot.kind === 'image'
           ? await holdStill(ctx, W, H, shot, next, fade)
           : await playSegment(ctx, W, H, shot, next, fade);
+        var nextClip = next ? next.audio : null;
+        if (shot.audio && (!nextClip || nextClip.id !== shot.audio.id)) stopScene();
         if (preRolled && next) next.in = Math.min((next.out || 0) - 0.2, next.in + fade);
       }
     } catch (err) {
       say('The cut broke partway: ' + ((err && err.message) || 'unknown'), true);
     }
 
+    stopScene();
+    if (bedSrc) { try { bedSrc.stop(); } catch (e) {} bedSrc = null; }
     rec.stop();
     await finished;
     shots.forEach(function (s) { try { if (s.video) s.video.pause(); } catch (e) {} });
@@ -3232,6 +3532,7 @@
     out.innerHTML =
       '<figure class="draw-card"><video controls playsinline src="' + url + '"></video>' +
       '<figcaption>Your montage · ' + shots.length + ' shots · ' + Math.round(blob.size / 1024) + ' KB' +
+      (hasSound ? ' · with your sound' : ' · silent') +
       '<span class="draw-meta">Cut in your browser · generated, not filmed</span></figcaption></figure>' +
       '<p><a class="btn" href="' + url + '" download="egregora-montage.webm">Download the film</a></p>';
     say('Done. The film is below, and the download keeps it.');

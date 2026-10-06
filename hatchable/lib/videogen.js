@@ -100,6 +100,33 @@ export const VIDEO_MODELS = {
   }
 };
 
+/* ------------------------------------------------------------- lengths
+ *
+ * What each model will actually make. Frame counts are the ones the
+ * published configs are happy with — a diffusion video model is trained at
+ * a particular length and a particular frame rate, and asking for a count
+ * far outside that gives either a refusal or a clip that falls apart in the
+ * second half. The fps below is the model's own, so the seconds are honest:
+ * 49 frames of CogVideoX is six seconds, 49 frames of Hunyuan is two.
+ */
+export const VIDEO_LENGTHS = {
+  hunyuan15: { fps: 24, frames: [49, 73, 97, 121, 185, 241], def: 121 },
+  wan22:     { fps: 16, frames: [33, 49, 65, 81], def: 81 },
+  ltx:       { fps: 24, frames: [49, 97, 145, 193, 257], def: 97 },
+  cogvideox: { fps: 8,  frames: [25, 49], def: 49 },
+  mochi:     { fps: 30, frames: [61, 91, 163], def: 163 }
+};
+
+/** Snap a request to the nearest length the chosen model actually offers. */
+export function lengthFor(modelKey, wanted) {
+  const spec = VIDEO_LENGTHS[modelKey] || VIDEO_LENGTHS.hunyuan15;
+  const n = Number(wanted);
+  if (!Number.isFinite(n) || n <= 0) return { frames: spec.def, fps: spec.fps };
+  const frames = spec.frames.reduce((best, f) =>
+    Math.abs(f - n) < Math.abs(best - n) ? f : best, spec.frames[0]);
+  return { frames, fps: spec.fps };
+}
+
 export function pickModel(name) {
   const key = String(name || '').trim();
   return VIDEO_MODELS[key] ? { key, ...VIDEO_MODELS[key] } : { key: 'hunyuan15', ...VIDEO_MODELS.hunyuan15 };
@@ -117,7 +144,9 @@ export async function submitVideo(prompt, opts = {}) {
 
   const aspect = opts.aspect === '9:16' ? '9:16' : '16:9';
   const model = pickModel(opts.model);
-  const frames = Math.max(49, Math.min(121, Number(opts.frames) || 121));
+  /* An unknown field is a 422 on both fal and Replicate, so the length is
+     only ever sent as the frame count every route already understands. */
+  const { frames } = lengthFor(model.key, opts.frames);
 
   /* Continuation. `initUrl` is the frame this shot grows out of; where a route
      offers image-to-video it becomes the literal first frame, which is the

@@ -1907,3 +1907,31 @@ img.shot-thumb { object-fit: cover; }
 .model-stage.is-nudging canvas { cursor: move; }
 .sketch-pad.is-placing canvas { cursor: crosshair; outline: 2px dashed rgba(215,176,90,0.6); }
 #bk-open.has-key { border-color: rgba(127,174,122,0.6); color: var(--verdant); }
+
+/* --- sound in the cutting room ------------------------------------------ */
+.montage-sound { margin: 1rem 0 0.4rem; }
+.montage-sound h4 {
+  font-family: "Cinzel", serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 0.35rem;
+}
+.sound-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.5rem 0; }
+input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.sound-bed, .shot-sound {
+  margin: 0.45rem 0 0;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid rgba(215,176,90,0.22);
+  border-radius: 5px;
+  background: rgba(0,0,0,0.25);
+}
+.sound-name { margin: 0 0 0.35rem; font-size: 0.8rem; color: var(--vellum-dim); }
+.sound-controls { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.sound-controls label { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: var(--vellum-dim); }
+.sound-controls input[type="number"] { width: 5rem; }
+.sound-controls input[type="range"] { width: 7rem; }
+.shot-tick { accent-color: #d7b05a; margin-right: 0.25rem; }
+.card-to-montage { margin: 0.4rem 0.6rem 0.6rem; }
+.card-to-montage.is-on { color: var(--verdant); border-color: rgba(127,174,122,0.5); }
