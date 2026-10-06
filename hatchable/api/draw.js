@@ -8,7 +8,8 @@
  * the full order of generators.
  */
 import { db } from 'hatchable';
-import { generateImage } from '../lib/imagegen.js';
+import { generateImage, storeImage } from '../lib/imagegen.js';
+import { drawWithOwnKey } from '../lib/byok.js';
 import { requireStudio } from '../lib/accounts.js';
 import { submitKaggleImage } from '../lib/videogen.js';
 
@@ -39,6 +40,26 @@ export default async function (req, res) {
      composition where a route can follow it. */
   const sketchUrl = typeof body.sketch === 'string' && /^https?:\/\//.test(body.sketch)
     ? body.sketch : null;
+
+  /* A key handed over for this one picture. It is used here and nowhere
+     else: not logged, not stored, not kept after this response. */
+  if (body.byok && body.byok.key) {
+    const own = await drawWithOwnKey(body.byok, prompt);
+    if (own.error) return res.status(502).json({ error: own.error });
+    const saved = await storeImage(own);
+    if (saved.error) return res.status(502).json({ error: saved.error });
+    try {
+      await db.query(
+        'INSERT INTO questions (asker_name, limb, question, answer, source) VALUES ($1, $2, $3, $4, $5)',
+        [name || null, 'image', prompt, saved.url, 'drawn-own-key']
+      );
+    } catch { /* the log is a convenience */ }
+    return res.json({
+      url: saved.url, prompt, provider: own.provider, hardware: own.hardware,
+      sketch: sketchUrl ? false : null,
+      note: sketchUrl ? 'Your own provider was used, and it draws from words rather than a sketch.' : undefined
+    });
+  }
 
   const out = await generateImage(prompt, { initUrl: sketchUrl });
 

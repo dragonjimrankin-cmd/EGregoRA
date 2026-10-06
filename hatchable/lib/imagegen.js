@@ -26,9 +26,19 @@ const OPEN_I2I_MODEL = 'kontext';
 const OPEN_ENDPOINT = 'https://image.pollinations.ai/prompt/';
 const OPEN_TIMEOUT = 45000;
 
-/* Optional second open-source route: Stable Diffusion XL on Hugging Face's
-   inference API, used when the owner has pasted HUGGINGFACE_API_KEY. */
-const HF_MODEL = 'stabilityai/stable-diffusion-xl-base-1.0';
+/* The Stable Diffusion route, on Hugging Face's inference API, used when a
+   HUGGINGFACE_API_KEY is configured. Newest first: SD 3.5 Large is the
+   current official release (8.1B, MMDiT), Large Turbo is its four-step
+   sibling, Medium runs where the big one will not, and SDXL is kept at the
+   end because it is the one that is always available. Each repo is tried in
+   turn, so a model that has been moved, gated or retired costs one attempt
+   rather than the whole route. */
+const HF_MODELS = [
+  'stabilityai/stable-diffusion-3.5-large',
+  'stabilityai/stable-diffusion-3.5-large-turbo',
+  'stabilityai/stable-diffusion-3.5-medium',
+  'stabilityai/stable-diffusion-xl-base-1.0'
+];
 
 /* House style. The fox draws photographs unless it is told otherwise:
    real optics, real light, no illustration, no text burned into the frame. */
@@ -143,17 +153,24 @@ async function viaHuggingFace(prompt) {
   }
 
   const won = await acrossAccounts('huggingface', accounts, async (account) => {
-    const r = await fetch('https://api-inference.huggingface.co/models/' + HF_MODEL, {
-      method: 'POST',
-      headers: { authorization: 'Bearer ' + account.secret, 'content-type': 'application/json', accept: 'image/png' },
-      body: JSON.stringify({ inputs: prompt.slice(0, 1800), options: { wait_for_model: true } })
-    });
-    if (!r || !r.ok) throw new Error('HTTP ' + (r && r.status));
-    const type = (r.headers && r.headers.get && r.headers.get('content-type')) || 'image/png';
-    if (!/^image\//i.test(type)) throw new Error('not an image: ' + type);
-    const buf = new Uint8Array(await r.arrayBuffer());
-    if (buf.length < 2048) throw new Error('empty image');
-    return { bytes: buf, contentType: type, provider: 'stable-diffusion-xl (open weights)' };
+    let last = 'no model answered';
+    for (const repo of HF_MODELS) {
+      const r = await fetch('https://api-inference.huggingface.co/models/' + repo, {
+        method: 'POST',
+        headers: { authorization: 'Bearer ' + account.secret, 'content-type': 'application/json', accept: 'image/png' },
+        body: JSON.stringify({ inputs: prompt.slice(0, 1800), options: { wait_for_model: true } })
+      });
+      if (!r || !r.ok) { last = 'HTTP ' + (r && r.status) + ' from ' + repo; continue; }
+      const type = (r.headers && r.headers.get && r.headers.get('content-type')) || 'image/png';
+      if (!/^image\//i.test(type)) { last = repo + ' returned ' + type; continue; }
+      const buf = new Uint8Array(await r.arrayBuffer());
+      if (buf.length < 2048) { last = repo + ' returned an empty image'; continue; }
+      return {
+        bytes: buf, contentType: type,
+        provider: repo.split('/').pop().replace(/-/g, ' ') + ' (open weights)'
+      };
+    }
+    throw new Error(last);
   });
   return won;
 }
@@ -206,10 +223,27 @@ export function hardwareFor(provider) {
   const p = String(provider || '').toLowerCase();
   if (p.includes('own gpu') || p.includes('colab')) return 'Google Colab GPU, run by the order itself \u00b7 FLUX.1-schnell, open weights';
   if (p.includes('flux')) return 'Pollinations hosted GPU \u00b7 FLUX.1-schnell, open weights \u2014 the card is not disclosed';
-  if (p.includes('stable-diffusion')) return 'Hugging Face Inference GPU \u00b7 SDXL, open weights \u2014 the card is not disclosed';
+  if (p.includes('stable diffusion') || p.includes('stable-diffusion')) return 'Hugging Face Inference GPU \u00b7 Stable Diffusion, open weights \u2014 the card is not disclosed';
   if (p.includes('google')) return 'Google hosted accelerator (TPU or GPU) \u2014 not disclosed';
   if (p.includes('openai')) return 'OpenAI hosted accelerator \u2014 not disclosed';
   return 'A hosted accelerator \u2014 the provider does not name it';
+}
+
+/**
+ * Put a finished image into the project's storage and hand back a URL the
+ * browser can show. Shared with the bring-your-own-key route so a picture
+ * drawn on somebody's own account is kept exactly like any other.
+ */
+export async function storeImage(out) {
+  try {
+    const ext = String(out.contentType || '').includes('jpeg') ? 'jpg' : 'png';
+    const key = `oracle-images/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
+    await storage.put(key, out.bytes || out.base64, out.contentType || 'image/png');
+    const url = await storage.url(key, { ttl: 604800 });
+    return { url, key };
+  } catch (err) {
+    return { error: 'The picture was drawn but could not be stored: ' + ((err && err.message) || 'unknown') };
+  }
 }
 
 /**

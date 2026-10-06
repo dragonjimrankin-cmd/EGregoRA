@@ -785,7 +785,8 @@
         body: JSON.stringify({
           prompt: p,
           name: (nameEl && nameEl.value || "").trim(),
-          sketch: window.EGSketchUrl ? window.EGSketchUrl() : null
+          sketch: window.EGSketchUrl ? window.EGSketchUrl() : null,
+          byok: window.EGOwnKey ? window.EGOwnKey() : null
         })
       });
       const data = await res.json().catch(() => ({}));
@@ -929,10 +930,69 @@
     if (fill && tool !== "line") ctx.fill(); else ctx.stroke();
   };
 
+  /* --- fill an area ---------------------------------------------------
+     A flood fill from the point clicked, spreading through everything that
+     matches the colour under the cursor within a small tolerance, so an
+     outline drawn with a soft edge still holds the paint in. Scanline
+     spans rather than a pixel queue, because 640,000 pixels is enough to
+     notice the difference. */
+  const near = (d, i, r, g, b, tol) =>
+    Math.abs(d[i] - r) <= tol && Math.abs(d[i + 1] - g) <= tol &&
+    Math.abs(d[i + 2] - b) <= tol && Math.abs(d[i + 3] - 255) <= tol;
+
+  function flood(sx, sy, hex) {
+    const w = canvas.width, h = canvas.height;
+    sx = Math.round(sx); sy = Math.round(sy);
+    if (sx < 0 || sy < 0 || sx >= w || sy >= h) return;
+    const img = ctx.getImageData(0, 0, w, h);
+    const d = img.data;
+    const at0 = (sy * w + sx) * 4;
+    const sr = d[at0], sg = d[at0 + 1], sb = d[at0 + 2];
+
+    const t = document.createElement("canvas");
+    t.width = t.height = 1;
+    const tc = t.getContext("2d");
+    tc.fillStyle = hex;
+    tc.fillRect(0, 0, 1, 1);
+    const [fr, fg, fb] = tc.getImageData(0, 0, 1, 1).data;
+    if (Math.abs(sr - fr) < 3 && Math.abs(sg - fg) < 3 && Math.abs(sb - fb) < 3) return;
+
+    const tol = 32;
+    const seen = new Uint8Array(w * h);
+    const stack = [[sx, sy]];
+    while (stack.length) {
+      const [px, py] = stack.pop();
+      let x0 = px;
+      while (x0 >= 0 && !seen[py * w + x0] && near(d, (py * w + x0) * 4, sr, sg, sb, tol)) x0--;
+      x0++;
+      let up = false, down = false;
+      for (let x = x0; x < w && !seen[py * w + x] && near(d, (py * w + x) * 4, sr, sg, sb, tol); x++) {
+        const i = (py * w + x) * 4;
+        d[i] = fr; d[i + 1] = fg; d[i + 2] = fb; d[i + 3] = 255;
+        seen[py * w + x] = 1;
+        if (py > 0) {
+          const ok = !seen[(py - 1) * w + x] && near(d, ((py - 1) * w + x) * 4, sr, sg, sb, tol);
+          if (ok && !up) { stack.push([x, py - 1]); up = true; } else if (!ok) up = false;
+        }
+        if (py < h - 1) {
+          const ok = !seen[(py + 1) * w + x] && near(d, ((py + 1) * w + x) * 4, sr, sg, sb, tol);
+          if (ok && !down) { stack.push([x, py + 1]); down = true; } else if (!ok) down = false;
+        }
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
   canvas.addEventListener("pointerdown", (e) => {
     e.preventDefault();
     canvas.setPointerCapture(e.pointerId);
     const p = at(e);
+    if (tool === "fill") {
+      remember();
+      flood(p.x, p.y, colour);
+      mark(false);
+      return;
+    }
     drawing = true; startX = p.x; startY = p.y;
     remember();
     if (tool === "free" || tool === "erase") {
@@ -971,6 +1031,7 @@
       colour = b.dataset.colour;
       pad.querySelectorAll(".swatch").forEach((o) => o.classList.toggle("is-on", o === b));
       if (tool === "erase") setTool("free");
+      pad.style.setProperty("--ink", colour);
     });
   });
 
@@ -982,17 +1043,24 @@
   pad.querySelectorAll("[data-tool]").forEach((b) =>
     b.addEventListener("click", () => setTool(b.dataset.tool)));
 
-  pad.querySelectorAll("[data-size]").forEach((b) =>
-    b.addEventListener("click", () => {
-      size = Number(b.dataset.size) || 4;
-      pad.querySelectorAll("[data-size]").forEach((o) => o.classList.toggle("is-on", o === b));
-    }));
+  /* One nib, dragged from a hair to a house-painter's brush. */
+  const sizeEl = document.getElementById("sk-size");
+  const sizeOut = document.getElementById("sk-size-out");
+  if (sizeEl) {
+    const setSize = () => {
+      size = Number(sizeEl.value) || 1;
+      if (sizeOut) sizeOut.textContent = String(size);
+      pad.style.setProperty("--nib", Math.max(4, Math.min(44, size)) + "px");
+    };
+    sizeEl.addEventListener("input", setSize);
+    setSize();
+  }
 
-  const fillBtn = document.getElementById("sk-fill");
-  if (fillBtn) fillBtn.addEventListener("click", () => {
+  const solidBtn = document.getElementById("sk-solid");
+  if (solidBtn) solidBtn.addEventListener("click", () => {
     fill = !fill;
-    fillBtn.classList.toggle("is-on", fill);
-    fillBtn.setAttribute("aria-pressed", String(fill));
+    solidBtn.classList.toggle("is-on", fill);
+    solidBtn.setAttribute("aria-pressed", String(fill));
   });
 
   const undo = document.getElementById("sk-undo");
