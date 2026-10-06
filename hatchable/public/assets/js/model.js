@@ -32,7 +32,7 @@ function start() {
   const camera = new THREE.PerspectiveCamera(45, 16 / 10, 0.1, 500);
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true });
   } catch {
     stage.classList.add("model-stage--failed");
     stage.textContent = "This browser will not open a 3D window.";
@@ -731,39 +731,88 @@ function start() {
     note("Saved: egregora-model.obj and its colour file. Open either in Blender, Meshlab or a printer slicer.");
   });
 
-  /* --- handing the view to Gink ------------------------------------------- */
-  on("md-render", async () => {
-    if (!pieces.children.length) return note("Build something first.", true);
-    const btn = document.getElementById("md-render");
-    btn.disabled = true;
-    note("Handing the view over\u2026");
+  /* --- handing the bench over --------------------------------------------
+     Two doors out of the Turning Shop. The image generator wants a cut-out:
+     the pieces on a transparent ground, no floor grid, no selection marks,
+     so it can be put down anywhere on the sketch paper. The video generator
+     wants a frame: the view exactly as it stands, which becomes the literal
+     first frame of the clip where the route allows it. */
+  function capture(cutout) {
     const held = picked.slice();
-    select(null);                        // no green outline in the render
+    const wasGrid = grid.visible;
+    const wasBg = scene.background;
+    select(null);
+    if (cutout) { grid.visible = false; scene.background = null; }
     renderer.render(scene, camera);
-    try {
-      const data = renderer.domElement.toDataURL("image/png").split(",")[1];
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
-        body: JSON.stringify({ name: "model.png", type: "image/png", data, asker: "model" })
-      });
-      const out = await res.json().catch(() => ({}));
-      if (!res.ok || !out.url) throw new Error(out.error || "the upload was refused");
-      if (window.EGModelHandOver) window.EGModelHandOver(out.url);
-      note("The view is attached to the image box above as a sketch. Write what it is made of \u2014 " +
-        "brass, oak, stone, flesh \u2014 and press Draw it.");
-    } catch (err) {
-      note("It could not be handed over: " + ((err && err.message) || "unknown error"), true);
-    } finally {
-      if (held.length) {
-        picked = held;
-        chosen = held[held.length - 1];
-        drawHalos();
-        load();
-        say(describe());
-      }
-      btn.disabled = false;
+    const data = renderer.domElement.toDataURL("image/png").split(",")[1];
+    grid.visible = wasGrid;
+    scene.background = wasBg;
+    renderer.render(scene, camera);
+    if (held.length) {
+      picked = held;
+      chosen = held[held.length - 1];
+      drawHalos();
+      load();
+      say(describe());
     }
+    return data;
+  }
+
+  async function hostIt(data, name) {
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
+      body: JSON.stringify({ name, type: "image/png", data, asker: "model" })
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.url) throw new Error(out.error || "the upload was refused");
+    return out.url;
+  }
+
+  function sender(id, { cutout, name, go, done }) {
+    on(id, async () => {
+      if (!pieces.children.length) return note("Build something first.", true);
+      const btn = document.getElementById(id);
+      btn.disabled = true;
+      note("Sending the bench over\u2026");
+      try {
+        const url = await hostIt(capture(cutout), name);
+        go(url);
+        note(done);
+      } catch (err) {
+        note("It could not be sent: " + ((err && err.message) || "unknown error"), true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  sender("md-to-image", {
+    cutout: true,
+    name: "model-cutout.png",
+    go: (url) => {
+      if (window.EGModelPlace) window.EGModelPlace(url);
+      else if (window.EGModelHandOver) window.EGModelHandOver(url);
+    },
+    done: "The sketch pad is open above with the piece on the cursor \u2014 click to put it down, " +
+      "scroll to size it, then write what it is made of and press Draw it."
+  });
+
+  sender("md-to-film", {
+    cutout: false,
+    name: "model-frame.png",
+    go: (url) => {
+      if (window.EGModelToFilm) window.EGModelToFilm(url);
+    },
+    done: "The view is attached to the video box above as the opening frame. Write what moves."
+  });
+
+  sender("md-render", {
+    cutout: false,
+    name: "model.png",
+    go: (url) => { if (window.EGModelHandOver) window.EGModelHandOver(url); },
+    done: "The whole view is attached to the image box above as a sketch. Write what it is made of \u2014 " +
+      "brass, oak, stone, flesh \u2014 and press Draw it."
   });
 
   /* --- the loop ----------------------------------------------------------- */

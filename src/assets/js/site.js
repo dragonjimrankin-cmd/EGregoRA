@@ -880,6 +880,8 @@
 
   let tool = "free", colour = "#1b1b1f", size = 4, fill = false;
   let drawing = false, startX = 0, startY = 0, snapshot = null;
+  /* A piece carried in from the Turning Shop, waiting to be put down. */
+  let placing = null;   // { img, scale, under }
   const history = [];
 
   const blank = () => {
@@ -987,6 +989,7 @@
     e.preventDefault();
     canvas.setPointerCapture(e.pointerId);
     const p = at(e);
+    if (placing) { stamp(p.x, p.y); return; }
     if (tool === "fill") {
       remember();
       flood(p.x, p.y, colour);
@@ -1007,6 +1010,7 @@
   });
 
   canvas.addEventListener("pointermove", (e) => {
+    if (placing) { ghost(at(e)); return; }
     if (!drawing) return;
     const p = at(e);
     if (tool === "free" || tool === "erase") { ctx.lineTo(p.x, p.y); ctx.stroke(); }
@@ -1134,6 +1138,75 @@
 
   /* The drawing code asks for this when it submits. */
   window.EGSketchUrl = () => (attached ? attached.url : null);
+
+  /* --- putting a model down on the paper -----------------------------------
+     The Turning Shop can send a cut-out of whatever is on the bench straight
+     here. It does not land anywhere until you say where: the pad opens, the
+     piece follows the cursor as a ghost, the wheel sizes it, and the next
+     click prints it onto the paper. Escape puts it back in the drawer. */
+  function ghost(p) {
+    if (!placing) return;
+    if (placing.under) ctx.putImageData(placing.under, 0, 0);
+    const w = placing.img.width * placing.scale;
+    const h = placing.img.height * placing.scale;
+    ctx.save();
+    ctx.globalAlpha = 0.65;
+    ctx.drawImage(placing.img, p.x - w / 2, p.y - h / 2, w, h);
+    ctx.restore();
+  }
+
+  function stamp(x, y) {
+    if (!placing) return;
+    if (placing.under) ctx.putImageData(placing.under, 0, 0);
+    remember();
+    const w = placing.img.width * placing.scale;
+    const h = placing.img.height * placing.scale;
+    ctx.drawImage(placing.img, x - w / 2, y - h / 2, w, h);
+    placing = null;
+    pad.classList.remove("is-placing");
+    mark(false);
+    say("The piece is down. Draw round it, put another one down, or press Use this sketch.");
+  }
+
+  function dropPlacing() {
+    if (!placing) return;
+    if (placing.under) ctx.putImageData(placing.under, 0, 0);
+    placing = null;
+    pad.classList.remove("is-placing");
+    say("The piece was put back in the drawer.");
+  }
+
+  canvas.addEventListener("wheel", (e) => {
+    if (!placing) return;
+    e.preventDefault();
+    placing.scale = Math.max(0.05, Math.min(3, placing.scale * (e.deltaY > 0 ? 0.92 : 1.09)));
+  }, { passive: false });
+  canvas.addEventListener("pointerleave", () => {
+    if (placing && placing.under) ctx.putImageData(placing.under, 0, 0);
+  });
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape") dropPlacing(); });
+
+  /* Called by the Turning Shop: a transparent cut-out of the bench. */
+  window.EGModelPlace = (url) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      toggle(true);
+      const fit = Math.min(
+        (canvas.width * 0.45) / img.width,
+        (canvas.height * 0.45) / img.height, 1);
+      let under = null;
+      try { under = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch { under = null; }
+      placing = { img, scale: fit, under };
+      pad.classList.add("is-placing");
+      say("Click on the paper to put the model down \u2014 move the mouse to aim, " +
+        "scroll to size it, Escape to put it back.");
+      pad.scrollIntoView({ block: "center", behavior: "smooth" });
+      canvas.focus();
+    };
+    img.onerror = () => say("The view could not be loaded onto the paper.", true);
+    img.src = url;
+  };
 
   /* The Turning Shop renders its view and hands it over as a sketch. */
   window.EGModelHandOver = (url) => {
@@ -1372,6 +1445,18 @@
     if (!contBox) return;
     if (!cont) { contBox.hidden = true; contBox.innerHTML = ""; return; }
     contBox.hidden = false;
+    if (cont.kind === "model") {
+      contBox.innerHTML =
+        '<img src="' + esc(cont.thumb) + '" alt="The arrangement from the Turning Shop">' +
+        '<div><p class="cont-head">Filming the Turning Shop</p>' +
+        '<p class="muted xsmall">This view goes to the model as the clip\u2019s first frame, so the ' +
+        'camera starts on the arrangement you built rather than on a guess at it. Write what moves, ' +
+        'how the camera moves, and what it is all made of.</p>' +
+        '<button type="button" class="btn btn--ghost btn--small" id="v-cont-drop">Film without it</button></div>';
+      const off = document.getElementById("v-cont-drop");
+      if (off) off.addEventListener("click", () => { cont = null; paintCont(); });
+      return;
+    }
     contBox.innerHTML =
       (cont.thumb ? '<img src="' + esc(cont.thumb) + '" alt="The frame this shot continues from">' : "") +
       '<div><p class="cont-head">Continuing from shot ' + esc(String(cont.index || "?")) + "</p>" +
@@ -1385,6 +1470,18 @@
       '<button type="button" class="btn btn--ghost btn--small" id="v-cont-drop">Start fresh instead</button></div>';
     const drop = document.getElementById("v-cont-drop");
     if (drop) drop.addEventListener("click", () => { cont = null; paintCont(); });
+  };
+
+  /* Called by the Turning Shop: the bench becomes the opening frame. */
+  window.EGModelToFilm = (url) => {
+    cont = { id: null, frame: url, thumb: url, kind: "model" };
+    paintCont();
+    const anchor = document.getElementById("film-box");
+    if (anchor) anchor.scrollIntoView({ block: "start", behavior: "smooth" });
+    if (box) {
+      box.focus();
+      if (!box.value.trim()) box.placeholder = "What moves, and how the camera moves \u2014 the arrangement is already set.";
+    }
   };
 
   /* Called by the montage. */
@@ -1423,7 +1520,7 @@
           aspect: (aspectEl && aspectEl.value) || "16:9",
           model: (modelEl && modelEl.value) || "hunyuan15",
           name: (nameEl && nameEl.value || "").trim(),
-          from: cont ? cont.id : undefined,
+          from: cont && cont.id ? cont.id : undefined,
           frame: cont ? cont.frame : undefined,
           sheet: cont ? cont.sheet : undefined,
           seed: cont ? cont.seed : undefined
@@ -3144,4 +3241,114 @@
   });
 
   paint();
+})();
+
+/* ------------------------------------------------------ A key of your own
+   Anyone who already pays for a picture service can hand their own key over
+   for a single request. The panel below the sketch pad opens on a press,
+   fills in a sensible model name for whichever house they bank with, and
+   hands the details to /api/draw with the prompt. The key is held in this
+   tab only — in memory by default, or in sessionStorage if the box is
+   ticked, which the browser throws away when the tab closes. It is never
+   written to the order's database and never logged. */
+(() => {
+  "use strict";
+  const open = document.getElementById("bk-open");
+  const panel = document.getElementById("byok-box");
+  if (!open || !panel) return;
+
+  const providerEl = document.getElementById("bk-provider");
+  const modelEl = document.getElementById("bk-model");
+  const keyEl = document.getElementById("bk-key");
+  const baseEl = document.getElementById("bk-base");
+  const baseWrap = document.getElementById("bk-base-wrap");
+  const keepEl = document.getElementById("bk-keep");
+  const useBtn = document.getElementById("bk-use");
+  const forgetBtn = document.getElementById("bk-forget");
+  const msg = document.getElementById("bk-msg");
+
+  const DEFAULTS = {
+    stability: { model: "sd3.5-large", hint: "Stability's own endpoint. Models: sd3.5-large, sd3.5-large-turbo, sd3.5-medium, core, ultra." },
+    openai: { model: "gpt-image-1", hint: "OpenAI, or any service that copies its shape \u2014 give the base URL if it is not OpenAI itself." },
+    huggingface: { model: "stabilityai/stable-diffusion-3.5-large", hint: "Any text-to-image model on the Hugging Face Inference API, written owner/name." },
+    replicate: { model: "stability-ai/stable-diffusion-3.5-large", hint: "A Replicate model, written owner/name. Your token begins r8_." },
+    fal: { model: "fal-ai/stable-diffusion-v35-large", hint: "A fal.ai route. Your key is the whole id:secret pair." }
+  };
+
+  const say = (t, bad) => {
+    if (!msg) return;
+    msg.textContent = t || "";
+    msg.className = "auth-msg" + (bad ? " is-bad" : "");
+  };
+
+  let own = null;
+
+  const STORE = "eg-byok";
+  const remember = (rec) => {
+    try {
+      if (rec && keepEl && keepEl.checked) sessionStorage.setItem(STORE, JSON.stringify(rec));
+      else sessionStorage.removeItem(STORE);
+    } catch { /* private browsing: memory only, which is no loss */ }
+  };
+
+  const mark = () => {
+    open.textContent = own ? "Your own API \u00b7 in use" : "Use your own API";
+    open.classList.toggle("has-key", Boolean(own));
+  };
+
+  const shape = () => {
+    const p = (providerEl && providerEl.value) || "stability";
+    const d = DEFAULTS[p] || DEFAULTS.stability;
+    if (modelEl) modelEl.placeholder = d.model;
+    if (baseWrap) baseWrap.hidden = p !== "openai";
+    say(d.hint);
+  };
+
+  open.addEventListener("click", () => {
+    const show = panel.hidden;
+    panel.hidden = !show;
+    open.setAttribute("aria-expanded", String(show));
+    if (show) {
+      shape();
+      if (keyEl && !own) keyEl.focus();
+    }
+  });
+  if (providerEl) providerEl.addEventListener("change", shape);
+
+  if (useBtn) useBtn.addEventListener("click", () => {
+    const provider = (providerEl && providerEl.value) || "stability";
+    const key = (keyEl && keyEl.value || "").trim();
+    if (!key) { say("Paste the key first \u2014 it goes no further than the request it is used on.", true); return; }
+    const model = (modelEl && modelEl.value || "").trim() || DEFAULTS[provider].model;
+    const base = (baseEl && baseEl.value || "").trim();
+    own = { provider, model, key, base: base || undefined };
+    remember(own);
+    mark();
+    say("Held for this tab. The next picture is drawn through your own account on " +
+      provider + ", with " + model + ". Press Forget it to go back to the order's routes.");
+  });
+
+  if (forgetBtn) forgetBtn.addEventListener("click", () => {
+    own = null;
+    if (keyEl) keyEl.value = "";
+    remember(null);
+    mark();
+    say("Forgotten. Pictures go through the order's own open-weights routes again.");
+  });
+
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(STORE) || "null");
+    if (saved && saved.provider && saved.key) {
+      own = saved;
+      if (providerEl) providerEl.value = saved.provider;
+      if (modelEl) modelEl.value = saved.model || "";
+      if (keyEl) keyEl.value = saved.key;
+      if (baseEl && saved.base) baseEl.value = saved.base;
+      if (keepEl) keepEl.checked = true;
+      mark();
+    }
+  } catch { /* nothing kept */ }
+
+  /* The drawing code asks for this when it submits. */
+  window.EGOwnKey = () => own;
 })();

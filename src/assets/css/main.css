@@ -1905,3 +1905,5 @@ img.shot-thumb { object-fit: cover; }
 }
 .anim-box p { margin: 0; }
 .model-stage.is-nudging canvas { cursor: move; }
+.sketch-pad.is-placing canvas { cursor: crosshair; outline: 2px dashed rgba(215,176,90,0.6); }
+#bk-open.has-key { border-color: rgba(127,174,122,0.6); color: var(--verdant); }
