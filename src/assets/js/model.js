@@ -781,27 +781,345 @@ function start() {
     note(parts.length + " pieces are one piece now. Unpick takes them apart again.");
   });
 
-  on("md-unstitch", () => {
-    const sewn = picked.filter((o) => o.userData && o.userData.stitched);
-    if (!sewn.length) return note("Hold a stitched piece first.", true);
-    remember();
-    const freed = [];
-    sewn.forEach((whole) => {
-      whole.updateMatrixWorld(true);
-      whole.children.slice().forEach((part) => {
-        part.applyMatrix4(whole.matrix);      // keep it exactly where it looks
-        whole.remove(part);
-        pieces.add(part);
-        freed.push(part);
-      });
-      pieces.remove(whole);
+  /* --- unstitching ---------------------------------------------------------
+     Taking a piece apart. A stitched piece comes apart at its seams, exactly
+     as it went together. Anything else \u2014 a tree, a cottage, a cart \u2014 is read
+     for its natural divisions: parts that share a colour and a kind of shape
+     belong together, so a tree falls into trunk and leaves rather than into
+     nine separate spheres. If the reading is not what you wanted, the
+     splitting bench below lets you say exactly where the cuts go. */
+  const hexOf = (m) => {
+    const one = Array.isArray(m) ? m[0] : m;
+    return one && one.color ? one.color.getHexString() : "ffffff";
+  };
+  const family = (geo) => {
+    const t = String((geo && geo.type) || "").replace("Geometry", "");
+    if (t === "Sphere" || t === "Icosahedron" || t === "Dodecahedron") return "round";
+    if (t === "Cylinder" || t === "Capsule") return "shaft";
+    if (t === "Cone") return "point";
+    if (t === "Box") return "block";
+    return t.toLowerCase() || "part";
+  };
+
+  /* The reading: a list of lists of meshes. */
+  function readParts(obj) {
+    const list = meshesOf(obj);
+    if (list.length < 2) return [list];
+    const byKey = new Map();
+    list.forEach((m) => {
+      const key = hexOf(m.material) + "|" + family(m.geometry);
+      if (!byKey.has(key)) byKey.set(key, []);
+      byKey.get(key).push(m);
     });
-    picked = freed;
-    chosen = freed[freed.length - 1] || null;
+    if (byKey.size > 1) return Array.from(byKey.values());
+    /* One colour, one kind of shape: fall back on height, which separates a
+       plinth from what stands on it. */
+    obj.updateMatrixWorld(true);
+    const mid = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
+    const low = [], high = [];
+    list.forEach((m) => {
+      const p = new THREE.Vector3().setFromMatrixPosition(m.matrixWorld);
+      (p.y < mid.y ? low : high).push(m);
+    });
+    if (low.length && high.length) return [low, high];
+    return list.map((m) => [m]);
+  }
+
+  /* Build one loose piece out of a handful of meshes, keeping them exactly
+     where they look and centring the new piece on its own middle. */
+  function buildPart(meshes, root, label) {
+    root.updateMatrixWorld(true);
+    const g = new THREE.Group();
+    meshes.forEach((m) => {
+      const copy = new THREE.Mesh(
+        m.geometry.clone(),
+        Array.isArray(m.material) ? m.material.map((x) => x.clone()) : m.material.clone());
+      copy.name = m.name;
+      copy.applyMatrix4(m.matrixWorld);
+      g.add(copy);
+    });
+    const mid = new THREE.Box3().setFromObject(g).getCenter(new THREE.Vector3());
+    g.children.forEach((ch) => ch.position.sub(mid));
+    g.position.copy(mid);
+    const first = meshes[0];
+    g.userData = {
+      kind: label, colour: "#" + hexOf(first.material), finish,
+      raw: true, tex: null
+    };
+    return g;
+  }
+
+  function splitInto(obj, groups, how) {
+    const made = [];
+    groups.forEach((meshes, n) => {
+      if (!meshes.length) return;
+      const name = (obj.userData.kind || "piece") + " \u00b7 " +
+        (meshes.length === 1 && meshes[0].name ? meshes[0].name : family(meshes[0].geometry)) +
+        (groups.length > 2 ? " " + (n + 1) : "");
+      made.push(buildPart(meshes, obj, name));
+    });
+    if (made.length < 2) return null;
+    pieces.remove(obj);
+    dispose(obj);
+    made.forEach((g) => pieces.add(g));
+    picked = made;
+    chosen = made[made.length - 1];
     drawHalos();
-    if (chosen) load();
+    load();
     say(describe());
-    note(freed.length + " pieces are loose again.");
+    note("Split into " + made.length + " pieces" + (how ? " \u2014 " + how : "") + ".");
+    return made;
+  }
+
+  on("md-unstitch", () => {
+    if (!picked.length) return note("Hold a piece first.", true);
+    remember();
+    let done = 0;
+    picked.slice().forEach((obj) => {
+      if (obj.userData && obj.userData.stitched) {
+        obj.updateMatrixWorld(true);
+        const freed = [];
+        obj.children.slice().forEach((part) => {
+          part.applyMatrix4(obj.matrix);
+          obj.remove(part);
+          pieces.add(part);
+          freed.push(part);
+        });
+        pieces.remove(obj);
+        picked = freed;
+        chosen = freed[freed.length - 1] || null;
+        done += freed.length;
+        return;
+      }
+      const read = readParts(obj);
+      if (read.length < 2) { note("That piece is a single surface \u2014 there is nothing to split.", true); return; }
+      const made = splitInto(obj, read, "by colour and shape");
+      if (made) done += made.length;
+    });
+    if (done) {
+      drawHalos();
+      if (chosen) load();
+      say(describe());
+    }
+  });
+
+  /* --- the splitting bench -------------------------------------------------
+     A second little 3D window showing only the piece being taken apart. Each
+     part of it belongs to a numbered piece-to-be; click a part in the window,
+     or its row in the list, and it joins whichever piece-to-be is active.
+     The reading above is loaded in as the opening proposal, so most of the
+     time the work is one or two corrections rather than a sorting job. */
+  const splitBox = document.getElementById("split-box");
+  const splitStage = document.getElementById("split-stage");
+  const splitList = document.getElementById("split-parts");
+  const splitBuckets = document.getElementById("split-buckets");
+  const BUCKET_COLOURS = [0x7fae7a, 0xd7b05a, 0x8fb6d8, 0xc8352f, 0xb98fd8, 0xe0a060, 0x6fd0c0, 0xe0e0a0];
+
+  let splitShop = null;      // { renderer, scene, camera, parts, source, assign, bucket, count }
+
+  function splitRender() {
+    if (!splitShop) return;
+    splitShop.renderer.render(splitShop.scene, splitShop.camera);
+  }
+
+  function paintSplit() {
+    if (!splitShop) return;
+    splitShop.parts.forEach((p, i) => {
+      const b = splitShop.assign[i];
+      const col = new THREE.Color(BUCKET_COLOURS[b % BUCKET_COLOURS.length]);
+      p.mesh.material.color.copy(col);
+      p.mesh.material.emissive = new THREE.Color(col).multiplyScalar(0.18);
+      p.mesh.material.needsUpdate = true;
+    });
+    if (splitBuckets) {
+      splitBuckets.textContent = "";
+      for (let b = 0; b < splitShop.count; b++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tool bucket" + (b === splitShop.bucket ? " is-on" : "");
+        btn.style.borderColor = "#" + new THREE.Color(BUCKET_COLOURS[b % BUCKET_COLOURS.length]).getHexString();
+        const n = splitShop.assign.filter((a) => a === b).length;
+        btn.textContent = "Piece " + (b + 1) + " \u00b7 " + n;
+        btn.addEventListener("click", () => { splitShop.bucket = b; paintSplit(); });
+        splitBuckets.appendChild(btn);
+      }
+      const add = document.createElement("button");
+      add.type = "button";
+      add.className = "tool";
+      add.textContent = "+ another piece";
+      add.addEventListener("click", () => {
+        splitShop.count = Math.min(8, splitShop.count + 1);
+        splitShop.bucket = splitShop.count - 1;
+        paintSplit();
+      });
+      splitBuckets.appendChild(add);
+    }
+    if (splitList) {
+      splitList.textContent = "";
+      splitShop.parts.forEach((p, i) => {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "split-row";
+        const dot = document.createElement("span");
+        dot.className = "split-dot";
+        dot.style.background = "#" + new THREE.Color(
+          BUCKET_COLOURS[splitShop.assign[i] % BUCKET_COLOURS.length]).getHexString();
+        row.appendChild(dot);
+        const txt = document.createElement("span");
+        txt.textContent = (p.source.name || family(p.source.geometry)) +
+          " \u00b7 piece " + (splitShop.assign[i] + 1);
+        row.appendChild(txt);
+        row.addEventListener("click", () => {
+          splitShop.assign[i] = splitShop.bucket;
+          paintSplit();
+        });
+        splitList.appendChild(row);
+      });
+    }
+    splitRender();
+  }
+
+  function openSplit(obj) {
+    if (!splitBox || !splitStage) return;
+    closeSplit();
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch { note("This browser will not open a second 3D window.", true); return; }
+    const w = splitStage.clientWidth || 420;
+    const h = Math.max(240, Math.round(w * 0.7));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(w, h, false);
+    splitStage.textContent = "";
+    splitStage.appendChild(renderer.domElement);
+
+    const sc = new THREE.Scene();
+    sc.add(new THREE.HemisphereLight(0xfff0d0, 0x20202c, 1.2));
+    const k = new THREE.DirectionalLight(0xffe9c0, 1.4);
+    k.position.set(5, 8, 6);
+    sc.add(k);
+
+    obj.updateMatrixWorld(true);
+    const source = meshesOf(obj);
+    const holder = new THREE.Group();
+    sc.add(holder);
+    const parts = source.map((m) => {
+      const mesh = new THREE.Mesh(m.geometry.clone(), new THREE.MeshStandardMaterial({
+        color: 0x7fae7a, roughness: 0.5, metalness: 0.1
+      }));
+      mesh.applyMatrix4(m.matrixWorld);
+      holder.add(mesh);
+      return { mesh, source: m };
+    });
+    const box = new THREE.Box3().setFromObject(holder);
+    const mid = box.getCenter(new THREE.Vector3());
+    const reach = Math.max(0.5, box.getSize(new THREE.Vector3()).length());
+    holder.position.sub(mid);
+
+    const cam = new THREE.PerspectiveCamera(38, w / h, 0.05, reach * 20);
+    let sYaw = 0.8, sPitch = 0.45, sDist = reach * 1.5;
+    const put3 = () => {
+      cam.position.set(
+        sDist * Math.cos(sPitch) * Math.sin(sYaw),
+        sDist * Math.sin(sPitch),
+        sDist * Math.cos(sPitch) * Math.cos(sYaw));
+      cam.lookAt(0, 0, 0);
+    };
+    put3();
+
+    /* The reading above becomes the opening proposal. */
+    const read = readParts(obj);
+    const assign = source.map((m) => {
+      const at = read.findIndex((set) => set.indexOf(m) >= 0);
+      return at < 0 ? 0 : at;
+    });
+
+    splitShop = {
+      renderer, scene: sc, camera: cam, parts, source: obj, assign,
+      bucket: 0, count: Math.max(2, Math.min(8, read.length)), holder
+    };
+
+    const ray = new THREE.Raycaster();
+    let turning = false, px = 0, py = 0, travelled = 0;
+    const el = renderer.domElement;
+    el.addEventListener("pointerdown", (e) => {
+      turning = true; travelled = 0; px = e.clientX; py = e.clientY;
+      el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener("pointermove", (e) => {
+      if (!turning) return;
+      const dx = e.clientX - px, dy = e.clientY - py;
+      px = e.clientX; py = e.clientY;
+      travelled += Math.abs(dx) + Math.abs(dy);
+      sYaw -= dx * 0.008;
+      sPitch = Math.max(-1.3, Math.min(1.4, sPitch + dy * 0.008));
+      put3();
+      splitRender();
+    });
+    el.addEventListener("pointerup", (e) => {
+      if (!turning) return;
+      turning = false;
+      if (travelled > 4) return;
+      const r = el.getBoundingClientRect();
+      ray.setFromCamera(new THREE.Vector2(
+        ((e.clientX - r.left) / r.width) * 2 - 1,
+        -((e.clientY - r.top) / r.height) * 2 + 1), cam);
+      const hit = ray.intersectObjects(parts.map((p) => p.mesh), false)[0];
+      if (!hit) return;
+      const at = parts.findIndex((p) => p.mesh === hit.object);
+      if (at >= 0) { splitShop.assign[at] = splitShop.bucket; paintSplit(); }
+    });
+    el.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      sDist = Math.max(reach * 0.4, Math.min(reach * 6, sDist + Math.sign(e.deltaY) * reach * 0.12));
+      put3();
+      splitRender();
+    }, { passive: false });
+    ["mousedown", "mouseup", "auxclick", "click", "contextmenu"].forEach((kind) =>
+      el.addEventListener(kind, (ev) => { if (ev.button !== 0) { ev.preventDefault(); ev.stopPropagation(); } }, true));
+
+    splitBox.hidden = false;
+    paintSplit();
+    splitBox.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  function closeSplit() {
+    if (!splitShop) return;
+    splitShop.parts.forEach((p) => { p.mesh.geometry.dispose(); p.mesh.material.dispose(); });
+    splitShop.renderer.dispose();
+    if (splitStage) splitStage.textContent = "";
+    splitShop = null;
+    if (splitBox) splitBox.hidden = true;
+  }
+
+  on("md-split", () => {
+    if (picked.length !== 1) return note("Hold exactly one piece to take it apart by hand.", true);
+    if (meshesOf(chosen).length < 2) return note("That piece is a single surface \u2014 there is nothing to split.", true);
+    openSplit(chosen);
+  });
+  on("split-close", () => closeSplit());
+  on("split-auto", () => {
+    if (!splitShop) return;
+    const read = readParts(splitShop.source);
+    splitShop.assign = splitShop.parts.map((p) => {
+      const at = read.findIndex((set) => set.indexOf(p.source) >= 0);
+      return at < 0 ? 0 : at;
+    });
+    splitShop.count = Math.max(2, Math.min(8, read.length));
+    paintSplit();
+  });
+  on("split-do", () => {
+    if (!splitShop) return;
+    const obj = splitShop.source;
+    const buckets = [];
+    for (let b = 0; b < splitShop.count; b++) {
+      buckets.push(splitShop.parts.filter((p, i) => splitShop.assign[i] === b).map((p) => p.source));
+    }
+    const full = buckets.filter((b) => b.length);
+    if (full.length < 2) { note("Put the parts into at least two pieces first.", true); return; }
+    remember();
+    closeSplit();
+    splitInto(obj, full, "by hand");
   });
 
   /* --- the texture drawer --------------------------------------------------
@@ -869,6 +1187,12 @@ function start() {
      which keeps one honest list rather than thirty kinds of reversal. */
   const recipeOf = (o) => {
     const u = o.userData || {};
+    if (u.raw) {
+      /* A piece that was cut by hand has no recipe to rebuild from, so undo
+         keeps the thing itself, cloned, rather than a description of it. */
+      return { raw: o.clone(true), label: u.kind || "a piece",
+        colour: u.colour || colour, finish: u.finish || finish };
+    }
     if (u.stitched) {
       return {
         stitch: o.children.map(recipeOf),
@@ -911,6 +1235,11 @@ function start() {
 
   function buildFrom(rec) {
     let o = null;
+    if (rec.raw) {
+      const back = rec.raw.clone(true);
+      back.userData = { kind: rec.label, colour: rec.colour, finish: rec.finish, raw: true, tex: null };
+      return back;
+    }
     if (rec.stitch) {
       o = new THREE.Group();
       rec.stitch.forEach((kid) => o.add(buildFrom(kid)));

@@ -472,7 +472,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           <button class="tool" type="button" id="md-delete">Delete</button>
           <button class="tool" type="button" id="md-all">Select all</button>
           <button class="tool" type="button" id="md-stitch">Stitch together</button>
-          <button class="tool" type="button" id="md-unstitch">Unpick</button>
+          <button class="tool" type="button" id="md-unstitch">Unstitch</button>
+          <button class="tool" type="button" id="md-split">Split by hand…</button>
           <button class="tool" type="button" id="md-none">Select none</button>
           <button class="tool" type="button" id="md-anim"
                   aria-expanded="false" aria-controls="anim-box">Animate…</button>
@@ -505,6 +506,30 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
         swing, rock, pulse, breathe, drift, wobble, bounce — with slowly, quickly, gently, wildly,
         clockwise or anticlockwise, and end over end for a tumble. Whatever is selected takes the
         instruction, so several pieces can be set going at once.</p>
+      </div>
+
+      <div class="texture-box split-box" id="split-box" hidden>
+        <h4>The splitting bench</h4>
+        <p class="muted xsmall">The piece on its own, taken to bits. Every part of it belongs to one of
+        the numbered pieces-to-be: choose a piece-to-be below, then click parts in the window — or
+        their rows in the list — to put them in it. Drag the window to walk round, scroll to come
+        closer. The colours are only there to show you what goes where; the real colours come back when
+        the cut is made.</p>
+
+        <div class="split-cols">
+          <div class="split-stage" id="split-stage" role="img"
+               aria-label="The piece being taken apart, part by part"></div>
+          <div>
+            <div class="split-buckets" id="split-buckets"></div>
+            <div class="split-list" id="split-parts"></div>
+          </div>
+        </div>
+
+        <div class="ask-actions">
+          <button class="btn" type="button" id="split-do">Make the cut</button>
+          <button class="btn btn--ghost" type="button" id="split-auto">Read it for me again</button>
+          <button class="btn btn--ghost" type="button" id="split-close">Leave it whole</button>
+        </div>
       </div>
 
       <div class="texture-box" id="texture-box" hidden>
@@ -598,7 +623,11 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       <strong>Ctrl&nbsp;+&nbsp;Shift</strong>, resizes it from its own centre. The arrow keys repeat
       all of them in steps. <strong>Tab</strong> walks the selection on to the next piece,
       or round the handful you are holding, and Shift+Tab goes back. Two or more pieces can be
-      <strong>stitched together</strong> into one object, and unpicked again.
+      <strong>stitched together</strong> into one object. <strong>Unstitch</strong> takes a piece
+      apart again: a stitched piece comes apart at its seams, and anything else is read for its natural
+      divisions — a tree falls into trunk and leaves rather than into nine loose spheres.
+      <strong>Split by hand</strong> opens a second little window where you say exactly where the cuts
+      go.
       For the camera: <strong>right-drag</strong>, or Shift, or an empty selection turns the view;
       <strong>Alt&nbsp;+&nbsp;Shift</strong> walks it across the floor,
       <strong>Ctrl&nbsp;+&nbsp;Alt&nbsp;+&nbsp;Shift</strong> or the <strong>wheel</strong> walks it up

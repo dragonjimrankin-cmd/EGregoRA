@@ -1390,8 +1390,7 @@
       const secs = Math.round((f / spec.fps) * 10) / 10;
       const o = document.createElement("option");
       o.value = String(f);
-      o.textContent = secs + (secs === 1 ? " second" : " seconds") + " \u00b7 " + f + " frames" +
-        (f === spec.def ? " \u00b7 the model\u2019s own length" : "");
+      o.textContent = secs + "s \u00b7 " + f + " frames" + (f === spec.def ? " \u00b7 native" : "");
       lengthEl.appendChild(o);
     });
     const keep = spec.frames.indexOf(had) >= 0 ? had : spec.def;

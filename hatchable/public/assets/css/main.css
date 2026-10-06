@@ -1982,3 +1982,32 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 .tx-surfaces { display: flex; flex-direction: column; gap: 0.25rem; max-height: 14rem; overflow: auto; }
 .tx-surfaces .check { font-size: 0.78rem; }
 @media (max-width: 720px) { .tx-cols { grid-template-columns: 1fr; } }
+
+/* --- the row of pickers in the film box must not overlap ----------------- */
+.film-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; }
+.film-row > div { flex: 1 1 12rem; min-width: 0; }
+.film-row select, .film-row input { width: 100%; min-width: 0; max-width: 100%; }
+
+/* --- the splitting bench ------------------------------------------------- */
+.split-cols { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; align-items: start; }
+.split-stage {
+  border: 1px solid rgba(215,176,90,0.3);
+  border-radius: 5px;
+  background: rgba(8,7,12,0.85);
+  overflow: hidden;
+  min-height: 240px;
+}
+.split-stage canvas { display: block; width: 100%; height: auto; cursor: grab; }
+.split-buckets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
+.split-buckets .tool.bucket { border-width: 2px; }
+.split-list { display: flex; flex-direction: column; gap: 0.25rem; max-height: 15rem; overflow: auto; }
+.split-row {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: none; border: 1px solid rgba(239,227,200,0.14);
+  border-radius: 4px; padding: 0.3rem 0.5rem;
+  color: var(--vellum-dim); font-family: "EB Garamond", serif; font-size: 0.8rem;
+  text-align: left; cursor: pointer;
+}
+.split-row:hover { border-color: rgba(215,176,90,0.5); color: var(--vellum); }
+.split-dot { width: 0.8rem; height: 0.8rem; border-radius: 50%; flex: 0 0 auto; }
+@media (max-width: 720px) { .split-cols { grid-template-columns: 1fr; } }
