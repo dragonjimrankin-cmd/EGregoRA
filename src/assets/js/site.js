@@ -1052,7 +1052,145 @@
 
   /* The drawing code asks for this when it submits. */
   window.EGSketchUrl = () => (attached ? attached.url : null);
+
+  /* The Turning Shop renders its view and hands it over as a sketch. */
+  window.EGModelHandOver = (url) => {
+    attached = { url, name: "model.png" };
+    mark(true);
+    say("A view from the Turning Shop is attached. Say what it is made of, then press Draw it.");
+    const target = document.getElementById("draw-box");
+    if (target) target.scrollIntoView({ block: "start", behavior: "smooth" });
+    if (prompt) prompt.focus();
+  };
   window.EGSketchClear = () => { attached = null; mark(false); };
+})();
+
+/* -------------------------------------------------------- The keeper's key
+   A small door for whoever is minding the machines: who asked for what, the
+   state of every GPU the order can reach, and a release for the Kaggle lock
+   when a job has died without saying so. The key is checked on the server;
+   this page only ever learns whether it was right. */
+(() => {
+  "use strict";
+  const open = document.getElementById("kp-open");
+  const panel = document.getElementById("keeper-box");
+  const form = document.getElementById("keeper-form");
+  if (!open || !panel || !form) return;
+
+  const pass = document.getElementById("kp-pass");
+  const msg = document.getElementById("kp-msg");
+  const out = document.getElementById("kp-out");
+
+  const esc = (s) =>
+    String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  const say = (t, bad) => {
+    msg.textContent = t || "";
+    msg.className = "auth-msg" + (bad ? " is-bad" : "");
+  };
+
+  open.addEventListener("click", () => {
+    panel.hidden = !panel.hidden;
+    open.setAttribute("aria-expanded", String(!panel.hidden));
+    if (!panel.hidden && pass) pass.focus();
+  });
+
+  const ago = (n) => {
+    if (n == null) return "";
+    if (n < 90) return n + "s ago";
+    if (n < 5400) return Math.round(n / 60) + " min ago";
+    return Math.round(n / 3600) + " h ago";
+  };
+
+  const call = async (action, extra) => {
+    const res = await fetch("/api/keeper", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(Object.assign({ action, pass: (pass && pass.value) || "" }, extra || {}))
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "the door did not open");
+    return data;
+  };
+
+  const render = (d) => {
+    const rows = [];
+
+    rows.push('<h4>The order\u2019s Kaggle GPU</h4>');
+    if (d.kaggle && d.kaggle.held) {
+      rows.push("<p>Held by a <strong>" + esc(d.kaggle.kind) + "</strong> job since " +
+        esc(d.kaggle.since) + " (" + esc(ago(d.kaggle.age_s)) + ")" +
+        (d.kaggle.stale ? " \u2014 <strong>this looks stale</strong>" : "") + ".</p>");
+      rows.push('<p><button class="btn btn--small" type="button" id="kp-free">' +
+        "Free the GPU</button></p>");
+    } else {
+      rows.push("<p>Free. Nothing is holding the lock.</p>");
+    }
+
+    rows.push("<h4>The Colab pool</h4>");
+    if (d.workers && d.workers.length) {
+      rows.push("<ul class=\"keeper-list\">" + d.workers.map((w) =>
+        "<li><strong>" + esc(w.label) + "</strong> \u00b7 " + esc(w.gpu || "GPU") +
+        " \u00b7 " + esc(w.account || "no account given") +
+        " \u00b7 can do " + esc(w.caps) +
+        " \u00b7 <em>" + esc(w.state) + "</em>, " + esc(w.jobs) + " job(s) taken</li>").join("") + "</ul>");
+    } else {
+      rows.push("<p>No Colab worker is awake. Open colab/egregora-gpu.ipynb in a Google " +
+        "account to add one.</p>");
+    }
+
+    rows.push("<h4>Who asked for what</h4>");
+    if (d.jobs && d.jobs.length) {
+      rows.push("<table class=\"keeper-table\"><thead><tr><th>Who</th><th>Asked for</th>" +
+        "<th>Kind</th><th>State</th><th>When</th></tr></thead><tbody>" +
+        d.jobs.map((j) =>
+          "<tr><td>" + esc(j.who) + "</td><td>" + esc(j.asked) + "</td><td>" + esc(j.kind) +
+          "</td><td>" + esc(j.status) + (j.error ? " \u2014 " + esc(j.error) : "") +
+          "</td><td>" + esc(ago(j.age_s)) + "</td></tr>").join("") + "</tbody></table>");
+    } else {
+      rows.push("<p>Nothing has been queued yet.</p>");
+    }
+
+    if (d.drawings && d.drawings.length) {
+      rows.push("<h4>Quick drawings</h4>");
+      rows.push("<table class=\"keeper-table\"><thead><tr><th>Who</th><th>Asked for</th>" +
+        "<th>When</th></tr></thead><tbody>" +
+        d.drawings.map((j) =>
+          "<tr><td>" + esc(j.who) + "</td><td>" + esc(j.asked) + "</td><td>" +
+          esc(ago(j.age_s)) + "</td></tr>").join("") + "</tbody></table>");
+    }
+
+    out.innerHTML = rows.join("");
+    out.hidden = false;
+
+    const free = document.getElementById("kp-free");
+    if (free) free.addEventListener("click", async () => {
+      if (!window.confirm("Free the Kaggle GPU? Any job still running on it will be abandoned.")) return;
+      free.disabled = true;
+      try {
+        const r = await call("release");
+        say(r.message || "Freed.");
+        render(await call("open"));
+      } catch (err) {
+        say((err && err.message) || "It could not be freed.", true);
+        free.disabled = false;
+      }
+    });
+  };
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    say("Trying the key\u2026");
+    try {
+      const d = await call("open");
+      say("Open.");
+      render(d);
+    } catch (err) {
+      out.hidden = true;
+      say((err && err.message) || "That is not the key.", true);
+    }
+  });
 })();
 
 /* --------------------------------------------------------------- Filming

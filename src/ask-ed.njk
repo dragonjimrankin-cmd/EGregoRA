@@ -278,10 +278,115 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
 
       <div class="draw-out" id="film-out" aria-live="polite"></div>
 
+
+      <div class="keeper">
+        <button class="btn btn--ghost btn--small" type="button" id="kp-open"
+                aria-expanded="false" aria-controls="keeper-box">The keeper&rsquo;s key</button>
+        <div class="keeper-box" id="keeper-box" hidden>
+          <p class="muted xsmall">For whoever is minding the machines. The key opens a list of who asked
+          for what, and the state of every GPU the order can reach &mdash; and lets the Kaggle lock be
+          released when a job has died without saying so.</p>
+          <form class="ornate keeper-form" id="keeper-form">
+            <div class="keeper-row">
+              <div>
+                <label for="kp-pass">The key</label>
+                <input id="kp-pass" name="pass" type="password" inputmode="numeric"
+                       autocomplete="current-password" maxlength="40"
+                       placeholder="&#9679;&#9679;&#9679;&#9679;">
+              </div>
+              <button class="btn" type="submit" id="kp-go">Open</button>
+            </div>
+          </form>
+          <p class="auth-msg" id="kp-msg" role="status"></p>
+          <div class="keeper-out" id="kp-out" hidden></div>
+        </div>
+      </div>
+
       <p class="muted xsmall">Every clip is <strong>generated, not filmed</strong>: nothing here records a
       real event, and it should never be presented as though it did. Video needs a GPU somewhere even when
       the model is open — if no video key is connected to this project, Gink will say so rather than
       pretend.</p>
+    </div>
+
+<div class="draw-box model-box reveal" id="model-box">
+      <p class="kicker">THE TURNING SHOP</p>
+      <h3>Make a 3D Model</h3>
+      <p class="muted small">Build a thing out of solids. Add a box, a sphere, a cylinder, a cone or a
+      torus; move it, turn it, scale it, colour it, and the piece assembles in the window below. It is
+      deliberately simple &mdash; blocks and primitives, the way a model is roughed out before it is
+      sculpted. Nothing is sent anywhere: the whole shop runs in this page. When you are done, take the
+      model away as an <strong>OBJ</strong> file any 3D program will open, or hand the view to Gink and
+      let him render it as a photograph.</p>
+
+      <div class="model-stage" id="model-stage" role="img"
+           aria-label="A three-dimensional workspace showing the model being built"></div>
+
+      <div class="model-tools">
+        <div class="sketch-group" role="group" aria-label="Add a solid">
+          <button class="tool" type="button" data-add="box">Box</button>
+          <button class="tool" type="button" data-add="sphere">Sphere</button>
+          <button class="tool" type="button" data-add="cylinder">Cylinder</button>
+          <button class="tool" type="button" data-add="cone">Cone</button>
+          <button class="tool" type="button" data-add="torus">Torus</button>
+        </div>
+        <div class="sketch-group" role="group" aria-label="Colour">
+          <button class="swatch is-on" type="button" data-colour="#d7b05a" aria-label="Gold"></button>
+          <button class="swatch" type="button" data-colour="#b8c0cc" aria-label="Steel"></button>
+          <button class="swatch" type="button" data-colour="#8a5a33" aria-label="Wood"></button>
+          <button class="swatch" type="button" data-colour="#5f9e58" aria-label="Green"></button>
+          <button class="swatch" type="button" data-colour="#2f6fa8" aria-label="Blue"></button>
+          <button class="swatch" type="button" data-colour="#c8352f" aria-label="Red"></button>
+          <button class="swatch" type="button" data-colour="#1b1b1f" aria-label="Near black"></button>
+          <button class="swatch" type="button" data-colour="#efe3c8" aria-label="Bone"></button>
+        </div>
+        <div class="sketch-group" role="group" aria-label="The piece">
+          <button class="tool" type="button" id="md-duplicate">Duplicate</button>
+          <button class="tool" type="button" id="md-delete">Delete</button>
+          <button class="tool" type="button" id="md-clear">Clear all</button>
+          <button class="tool" type="button" id="md-grid" aria-pressed="true">Grid</button>
+        </div>
+      </div>
+
+      <div class="model-sliders" id="model-sliders" hidden>
+        <div class="model-slider">
+          <label for="md-x">Left &amp; right</label>
+          <input id="md-x" type="range" min="-6" max="6" step="0.05" value="0">
+        </div>
+        <div class="model-slider">
+          <label for="md-y">Up &amp; down</label>
+          <input id="md-y" type="range" min="-3" max="8" step="0.05" value="0">
+        </div>
+        <div class="model-slider">
+          <label for="md-z">Near &amp; far</label>
+          <input id="md-z" type="range" min="-6" max="6" step="0.05" value="0">
+        </div>
+        <div class="model-slider">
+          <label for="md-scale">Size</label>
+          <input id="md-scale" type="range" min="0.1" max="4" step="0.02" value="1">
+        </div>
+        <div class="model-slider">
+          <label for="md-turn">Turn</label>
+          <input id="md-turn" type="range" min="0" max="360" step="1" value="0">
+        </div>
+        <div class="model-slider">
+          <label for="md-tilt">Tilt</label>
+          <input id="md-tilt" type="range" min="-180" max="180" step="1" value="0">
+        </div>
+      </div>
+
+      <p class="muted xsmall" id="md-status">Add a solid to begin. Click a solid to select it; drag the
+      background to turn the view, and scroll to come closer.</p>
+
+      <div class="ask-actions">
+        <button class="btn" type="button" id="md-export">Take the model away (OBJ)</button>
+        <button class="btn btn--ghost" type="button" id="md-render">Render this view as a photograph</button>
+      </div>
+      <p class="auth-msg" id="md-msg" role="status"></p>
+
+      <p class="muted xsmall">The OBJ file carries the shapes and their positions; colours are written
+      alongside it in the same download as an MTL. Rendering hands the current view to the image
+      generator as a sketch, so the photograph follows the arrangement you built rather than a
+      description of it.</p>
     </div>
 
     <div class="draw-box montage-box reveal" id="montage-box">
@@ -434,3 +539,4 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
 </section>
 
 <script type="module" src="/assets/js/fox.js?v={{ build.id }}"></script>
+<script type="module" src="/assets/js/model.js?v={{ build.id }}"></script>
