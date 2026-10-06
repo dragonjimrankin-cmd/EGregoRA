@@ -640,6 +640,16 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
         <button class="btn" type="button" id="md-to-film">Send it to the video generator</button>
         <button class="btn btn--ghost" type="button" id="md-render">Attach the whole view as a sketch</button>
       </div>
+      <div class="ask-actions">
+        <button class="btn btn--ghost" type="button" id="md-words-image">Describe it to the image
+        generator</button>
+        <button class="btn btn--ghost" type="button" id="md-words-film">Describe it to the video
+        generator</button>
+        <button class="btn btn--ghost" type="button" id="md-vectors-image">Send exact vectors to the
+        image generator</button>
+        <button class="btn btn--ghost" type="button" id="md-vectors-film">Send exact vectors to the
+        video generator</button>
+      </div>
       <p class="auth-msg" id="md-msg" role="status"></p>
 
       <p class="muted xsmall">The OBJ file carries the shapes and their positions; colours are written
@@ -651,6 +661,14 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       clip&rsquo;s literal opening frame, so the camera starts on the arrangement you built.
       Attaching the whole view instead gives the image generator the entire window, grid and all,
       as a single sketch.</p>
+
+      <p class="muted xsmall">The four buttons above write the bench out as words instead of as a
+      picture. <strong>Describe it</strong> gives a model that answers to English the colours,
+      materials, sizes and where everything stands; <strong>exact vectors</strong> gives one that
+      answers to numbers every piece’s centre, turn, scale, bounds and colour, with the camera
+      written out at the end. Both are <em>added</em> to whatever is already in that prompt box —
+      nothing you have written is ever overwritten — joined on with a single full stop and a
+      space.</p>
     </div>
 
     <div class="draw-box montage-box reveal" id="montage-box">

@@ -1639,6 +1639,120 @@ function start() {
     }
   });
 
+  /* --- handing the arrangement over in words -------------------------------
+     Two kinds of writing about the same bench. The plain description is for
+     a model that answers to English: colours, materials, sizes and where
+     things stand in relation to each other. The vector listing is for one
+     that answers to numbers: every piece with its position, its turn, its
+     size and its colour, in a fixed order, with the camera written out at
+     the end. Either is added to whatever is already in the prompt box \u2014
+     nothing is ever overwritten \u2014 separated by a single full stop. */
+  const NAMED = [
+    ["gold", 0xd7b05a], ["brass", 0xc9a227], ["amber", 0xe0a060], ["red", 0xc8352f],
+    ["orange", 0xe07a2f], ["yellow", 0xe8d44d], ["green", 0x5f9e58], ["deep green", 0x2f6b3a],
+    ["blue", 0x2f6fa8], ["pale blue", 0x8fb6d8], ["violet", 0x7a4fa8], ["pink", 0xd98fb6],
+    ["brown", 0x8a5a33], ["dark brown", 0x5a3a20], ["bone", 0xefe3c8], ["white", 0xf5f2ea],
+    ["grey", 0x9a9a9a], ["steel", 0xb8c0cc], ["black", 0x1b1b1f]
+  ];
+  const colourName = (hex) => {
+    const c = new THREE.Color(hex);
+    let best = NAMED[0], score = Infinity;
+    NAMED.forEach((n) => {
+      const o = new THREE.Color(n[1]);
+      const d = (c.r - o.r) ** 2 + (c.g - o.g) ** 2 + (c.b - o.b) ** 2;
+      if (d < score) { score = d; best = n; }
+    });
+    return best[0];
+  };
+  const FINISH_WORD = {
+    matt: "matt", satin: "satin", metal: "polished metal", glass: "clear glass"
+  };
+  const round2 = (n) => Math.round(n * 100) / 100;
+  const degrees = (r) => Math.round((r * 180) / Math.PI);
+
+  function measure(o) {
+    o.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(o);
+    return {
+      mid: box.getCenter(new THREE.Vector3()),
+      span: box.getSize(new THREE.Vector3()),
+      low: box.min.y
+    };
+  }
+
+  function placeWords(mid, span) {
+    const bits = [];
+    if (mid.x < -0.6) bits.push("to the left");
+    else if (mid.x > 0.6) bits.push("to the right");
+    else bits.push("at the centre");
+    if (mid.z > 0.8) bits.push("near the front");
+    else if (mid.z < -0.8) bits.push("further back");
+    if (span.y > 4) bits.push("towering");
+    else if (span.y < 0.4) bits.push("small");
+    if (mid.y - span.y / 2 > 0.4) bits.push("raised off the ground");
+    return bits.join(", ");
+  }
+
+  function sceneInWords() {
+    if (!pieces.children.length) return "";
+    const lines = pieces.children.map((o) => {
+      const { mid, span } = measure(o);
+      const u = o.userData || {};
+      return "a " + colourName(u.colour || colour) + " " +
+        (FINISH_WORD[u.finish || finish] || "satin") + " " +
+        String(u.kind || "shape").toLowerCase() +
+        ", about " + round2(span.y) + " units tall, " + placeWords(mid, span);
+    });
+    const whole = measure(pieces);
+    return "The arrangement, built as a model and to be rendered as a photograph: " +
+      lines.join("; ") + ". The whole group is about " + round2(whole.span.x) + " units across and " +
+      round2(whole.span.y) + " units high, seen three-quarters on from slightly above, " +
+      "lit warm from the upper left with a cool rim from behind";
+  }
+
+  function sceneInVectors() {
+    if (!pieces.children.length) return "";
+    const rows = pieces.children.map((o, i) => {
+      const { mid, span } = measure(o);
+      const u = o.userData || {};
+      return (i + 1) + ". " + String(u.kind || "shape") +
+        " | colour " + (u.colour || colour) +
+        " | finish " + (u.finish || finish) +
+        " | centre (" + round2(mid.x) + ", " + round2(mid.y) + ", " + round2(mid.z) + ")" +
+        " | rotation (" + degrees(o.rotation.x) + ", " + degrees(o.rotation.y) + ", " + degrees(o.rotation.z) + ")" +
+        " | scale " + round2(o.scale.x) +
+        " | bounds " + round2(span.x) + " x " + round2(span.y) + " x " + round2(span.z);
+    });
+    const cam = camera.position;
+    return "Exact layout. Right-handed axes, Y up, one unit = one metre, ground plane at y=0. " +
+      pieces.children.length + " objects. " + rows.join(" ") +
+      " Camera: position (" + round2(cam.x) + ", " + round2(cam.y) + ", " + round2(cam.z) + ")" +
+      ", looking at (" + round2(aim.x) + ", " + round2(aim.y) + ", " + round2(aim.z) + ")" +
+      ", field of view " + camera.fov + " degrees";
+  }
+
+  /* Never overwrite: add to what is already written, with one full stop and
+     one space between the old text and the new. */
+  function appendPrompt(id, text, where) {
+    const el = document.getElementById(id);
+    if (!el) return note("That prompt box is not on this page.", true);
+    if (!text) return note("Build something first.", true);
+    const had = String(el.value || "").replace(/[\s.]+$/, "");
+    el.value = had ? had + ". " + text : text;
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    const anchor = document.getElementById(where);
+    if (anchor) anchor.scrollIntoView({ block: "start", behavior: "smooth" });
+    el.focus();
+    el.setSelectionRange(el.value.length, el.value.length);
+    note("Added to the " + (where === "draw-box" ? "picture" : "clip") +
+      " prompt above \\u2014 nothing that was already written has been touched.");
+  }
+
+  on("md-words-image", () => appendPrompt("d-prompt", sceneInWords(), "draw-box"));
+  on("md-words-film", () => appendPrompt("v-prompt", sceneInWords(), "film-box"));
+  on("md-vectors-image", () => appendPrompt("d-prompt", sceneInVectors(), "draw-box"));
+  on("md-vectors-film", () => appendPrompt("v-prompt", sceneInVectors(), "film-box"));
+
   /* --- taking it away ----------------------------------------------------- */
   function toObj() {
     const lines = ["# EGregoRA — the Turning Shop", "mtllib egregora-model.mtl"];
