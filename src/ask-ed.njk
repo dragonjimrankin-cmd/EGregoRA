@@ -426,9 +426,27 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
         <div class="sketch-group" role="group" aria-label="The piece">
           <button class="tool" type="button" id="md-duplicate">Duplicate</button>
           <button class="tool" type="button" id="md-delete">Delete</button>
+          <button class="tool" type="button" id="md-all">Select all</button>
+          <button class="tool" type="button" id="md-none">Select none</button>
+          <button class="tool" type="button" id="md-anim"
+                  aria-expanded="false" aria-controls="anim-box">Animate…</button>
           <button class="tool" type="button" id="md-clear">Clear all</button>
           <button class="tool" type="button" id="md-grid" aria-pressed="true">Grid</button>
         </div>
+      </div>
+
+      <div class="anim-box" id="anim-box" hidden>
+        <label for="md-anim-text">How would you like it to move?</label>
+        <textarea id="md-anim-text" rows="2" spellcheck="false"
+                  placeholder="Spin it slowly anticlockwise, and let it bob in the air."></textarea>
+        <div class="anim-actions">
+          <button class="btn btn--small" type="button" id="md-anim-go">Set it moving</button>
+          <button class="btn btn--small btn--ghost" type="button" id="md-anim-stop">Hold still</button>
+        </div>
+        <p class="muted xsmall" id="md-anim-read">Plain words are enough: spin, turn, orbit, bob, float,
+        swing, rock, pulse, breathe, drift, wobble, bounce — with slowly, quickly, gently, wildly,
+        clockwise or anticlockwise, and end over end for a tumble. Whatever is selected takes the
+        instruction, so several pieces can be set going at once.</p>
       </div>
 
       <div class="model-sliders" id="model-sliders" hidden>
@@ -459,7 +477,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       </div>
 
       <p class="muted xsmall" id="md-status">Add a solid to begin. Click a solid to select it; drag the
-      background to turn the view, and scroll to come closer.</p>
+      background to turn the view, and scroll to come closer. Hold Shift (or Ctrl) while clicking to pick
+      up more than one piece at a time.</p>
 
       <div class="ask-actions">
         <button class="btn" type="button" id="md-export">Take the model away (OBJ)</button>

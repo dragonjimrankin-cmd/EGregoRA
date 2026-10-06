@@ -117,7 +117,6 @@ function start() {
 
   let colour = "#d7b05a";
   let finish = "satin";
-  let chosen = null;
 
   /* How a surface behaves in the light. Four is enough to tell brass from
      oak from glass without turning the bench into a material editor. */
@@ -130,25 +129,51 @@ function start() {
   const skin = (c) => new THREE.MeshStandardMaterial(
     Object.assign({ color: new THREE.Color(c) }, FINISH[finish] || FINISH.satin));
 
-  const outline = new THREE.BoxHelper(new THREE.Object3D(), 0x7fae7a);
-  outline.visible = false;
-  scene.add(outline);
+  /* --- what is picked up ---------------------------------------------------
+     More than one piece can be held at once: Shift or Ctrl while clicking
+     adds to the handful, and every tool below — colour, finish, duplicate,
+     delete, the sliders, the animator — acts on all of them. The last one
+     touched is the primary: it is what the sliders read their numbers from. */
+  let picked = [];
+  let chosen = null;
+  const halos = new THREE.Group();
+  scene.add(halos);
 
-  function select(obj) {
-    chosen = obj || null;
-    outline.visible = Boolean(chosen);
-    if (chosen) {
-      outline.setFromObject(chosen);
-      if (sliders) sliders.hidden = false;
-      load();
-      say("Selected: " + (chosen.userData.kind || "a piece") +
-        ". Use the sliders to move, turn and size it, or recolour it with the swatches.");
-    } else {
-      if (sliders) sliders.hidden = true;
-      say(pieces.children.length
-        ? "Nothing selected. Click a piece to pick it up."
-        : "Add a solid to begin. Click a solid to select it; drag the background to turn the view.");
+  function drawHalos() {
+    while (halos.children.length) halos.remove(halos.children[0]);
+    picked.forEach((o) => {
+      const h = new THREE.BoxHelper(o, o === chosen ? 0x7fae7a : 0xd7b05a);
+      halos.add(h);
+    });
+  }
+  const refreshHalos = () => halos.children.forEach((h) => h.update());
+
+  function describe() {
+    if (!picked.length) {
+      return pieces.children.length
+        ? "Nothing selected. Click a piece to pick it up; hold Shift to pick up several."
+        : "Add a solid to begin. Click a solid to select it; drag the background to turn the view.";
     }
+    if (picked.length === 1) {
+      return "Selected: " + (chosen.userData.kind || "a piece") +
+        ". Use the sliders to move, turn and size it, recolour it with the swatches, " +
+        "or press Animate to set it going.";
+    }
+    return "Selected: " + picked.length + " pieces. Colour, finish, duplicate, delete and the " +
+      "animator act on all of them; the sliders move them together.";
+  }
+
+  function select(obj, additive) {
+    if (!obj) picked = [];
+    else if (additive) {
+      const i = picked.indexOf(obj);
+      if (i >= 0) picked.splice(i, 1); else picked.push(obj);
+    } else picked = [obj];
+    chosen = picked.length ? picked[picked.length - 1] : null;
+    drawHalos();
+    if (sliders) sliders.hidden = !chosen;
+    if (chosen) load();
+    say(describe());
   }
 
   function add(kind) {
@@ -238,11 +263,11 @@ function start() {
     );
     ray.setFromCamera(pt, camera);
     const hit = ray.intersectObjects(pieces.children, true)[0];
-    if (!hit) return select(null);
+    if (!hit) { if (!(e.shiftKey || e.ctrlKey || e.metaKey)) select(null); return; }
     /* Click any part of a ready-made piece and the whole piece is picked. */
     let obj = hit.object;
     while (obj.parent && obj.parent !== pieces) obj = obj.parent;
-    select(obj);
+    select(obj, e.shiftKey || e.ctrlKey || e.metaKey);
   }
 
   /* --- the sliders -------------------------------------------------------- */
@@ -267,12 +292,21 @@ function start() {
 
   function apply() {
     if (!chosen) return;
-    chosen.position.set(Number(S.x.value), Number(S.y.value), Number(S.z.value));
+    const dx = Number(S.x.value) - chosen.position.x;
+    const dy = Number(S.y.value) - chosen.position.y;
+    const dz = Number(S.z.value) - chosen.position.z;
     const sc = Number(S.scale.value) || 1;
-    chosen.scale.set(sc, sc, sc);
-    chosen.rotation.y = (Number(S.turn.value) * Math.PI) / 180;
-    chosen.rotation.x = (Number(S.tilt.value) * Math.PI) / 180;
-    outline.setFromObject(chosen);
+    const ry = (Number(S.turn.value) * Math.PI) / 180;
+    const rx = (Number(S.tilt.value) * Math.PI) / 180;
+    picked.forEach((o) => {
+      /* The primary lands exactly on the numbers; the rest come with it. */
+      o.position.set(o.position.x + dx, o.position.y + dy, o.position.z + dz);
+      o.scale.set(sc, sc, sc);
+      o.rotation.y = ry;
+      o.rotation.x = rx;
+      if (o.userData.anim) rebase(o);
+    });
+    refreshHalos();
   }
   Object.values(S).forEach((el) => el && el.addEventListener("input", apply));
 
@@ -295,7 +329,7 @@ function start() {
 
   /* Paint whatever is selected — one solid, or every part of a group. */
   function paint() {
-    if (!chosen) return;
+    if (!picked.length) return;
     const touch = (m) => {
       m.material.color = new THREE.Color(colour);
       const f = FINISH[finish] || FINISH.satin;
@@ -305,9 +339,11 @@ function start() {
       m.material.transparent = f.transparent;
       m.material.needsUpdate = true;
     };
-    if (chosen.isMesh) touch(chosen);
-    else chosen.traverse((o) => { if (o.isMesh) touch(o); });
-    chosen.userData.colour = colour;
+    picked.forEach((p) => {
+      if (p.isMesh) touch(p);
+      else p.traverse((o) => { if (o.isMesh) touch(o); });
+      p.userData.colour = colour;
+    });
   }
 
   /* Any colour at all, by wheel or by hex. */
@@ -333,15 +369,23 @@ function start() {
   };
 
   on("md-duplicate", () => {
-    if (!chosen) return note("Select a piece first.", true);
-    const copy = chosen.clone(true);
-    if (copy.isMesh) copy.material = chosen.material.clone();
-    else copy.traverse((o) => { if (o.isMesh) o.material = o.material.clone(); });
-    copy.position.x += 1.2;
-    copy.userData = Object.assign({}, chosen.userData);
-    pieces.add(copy);
-    select(copy);
-    note("");
+    if (!picked.length) return note("Select a piece first.", true);
+    const copies = picked.map((src) => {
+      const copy = src.clone(true);
+      if (copy.isMesh) copy.material = src.material.clone();
+      else copy.traverse((o) => { if (o.isMesh) o.material = o.material.clone(); });
+      copy.position.x += 1.2;
+      copy.userData = Object.assign({}, src.userData);
+      if (copy.userData.anim) copy.userData.anim = null;
+      pieces.add(copy);
+      return copy;
+    });
+    picked = copies;
+    chosen = copies[copies.length - 1];
+    drawHalos();
+    load();
+    say(describe());
+    note(copies.length > 1 ? copies.length + " copies made." : "");
   });
 
   const dispose = (obj) => {
@@ -350,11 +394,22 @@ function start() {
   };
 
   on("md-delete", () => {
-    if (!chosen) return note("Select a piece first.", true);
-    pieces.remove(chosen);
-    dispose(chosen);
+    if (!picked.length) return note("Select a piece first.", true);
+    picked.slice().forEach((o) => { pieces.remove(o); dispose(o); });
     select(null);
   });
+
+  on("md-all", () => {
+    if (!pieces.children.length) return note("There is nothing on the bench yet.", true);
+    picked = pieces.children.slice();
+    chosen = picked[picked.length - 1];
+    drawHalos();
+    load();
+    say(describe());
+    note("");
+  });
+
+  on("md-none", () => { select(null); note(""); });
 
   on("md-clear", () => {
     while (pieces.children.length) {
@@ -371,6 +426,161 @@ function start() {
     gridBtn.classList.toggle("is-on", grid.visible);
   });
   if (gridBtn) gridBtn.classList.add("is-on");
+
+
+  /* --- the animator --------------------------------------------------------
+     Press Animate and a box opens asking, in so many words, how you would
+     like the piece to move. The sentence is read here in the page — no model,
+     no service — and turned into a handful of motions laid over whatever
+     position the piece is already in. Say "hold still" and it returns to
+     exactly where it stood. */
+  const MOTIONS = [
+    { kind: "spin", test: /spin|rotat|revolv|whirl|twirl|turn(?!s? (into|to))|pirouett|gyrat/, name: "spin" },
+    { kind: "orbit", test: /orbit|circl|go(es)? round|goes around|fly round|flies round|round the centre|round the middle/, name: "orbit the centre" },
+    { kind: "bob", test: /bob|float|hover|rise and fall|up and down(?! the)|levitat/, name: "bob in the air" },
+    { kind: "swing", test: /swing|sway|rock|pendul|lean|tilt back/, name: "swing" },
+    { kind: "pulse", test: /puls|throb|heartbeat|beat|breath|grow and shrink|swell/, name: "pulse" },
+    { kind: "drift", test: /drift|slide|glide|shuttle|side to side|back and forth|to and fro|paces?/, name: "drift from side to side" },
+    { kind: "wobble", test: /wobbl|shak|shiver|judder|trembl|quiver|shudder|rattl/, name: "wobble" },
+    { kind: "bounce", test: /bounc|hop|jump|spring|skip/, name: "bounce" }
+  ];
+
+  function readMotion(text) {
+    const s = String(text || "").toLowerCase();
+    let speed = 1;
+    if (/\b(slow|slowly|gentl[ey]|lazy|lazily|softly|barely|calm)\b/.test(s)) speed = 0.45;
+    if (/\b(fast|quick|quickly|rapid|rapidly|briskly)\b/.test(s)) speed = 2.2;
+    if (/\b(wildly|violently|furious|frantic|very fast|like mad|madly)\b/.test(s)) speed = 3.6;
+    let size = 1;
+    if (/\b(small|slight|slightly|subtle|little|tiny|faint|a touch)\b/.test(s)) size = 0.45;
+    if (/\b(big|large|wide|wildly|high|huge|great|far)\b/.test(s)) size = 1.9;
+    const dir = /\b(anti-?clockwise|counter-?clockwise|widdershins|backwards?|the other way|left)\b/.test(s) ? -1 : 1;
+    let axis = "y";
+    if (/\b(end over end|tumbl|cartwheel|roll|sideways)\b/.test(s)) axis = "z";
+    if (/\b(somersault|forwards? roll|pitch|head over heels)\b/.test(s)) axis = "x";
+    const moves = [];
+    const names = [];
+    MOTIONS.forEach((m) => {
+      if (!m.test.test(s)) return;
+      moves.push({ kind: m.kind, speed, size, dir, axis });
+      names.push(m.name);
+    });
+    let guessed = false;
+    if (!moves.length) {
+      moves.push({ kind: "spin", speed, size, dir, axis });
+      names.push("turn on the spot");
+      guessed = true;
+    }
+    return { moves, names, guessed, speed, dir };
+  }
+
+  function rebase(o) {
+    const a = o.userData.anim;
+    if (!a) return;
+    a.base = {
+      px: o.position.x, py: o.position.y, pz: o.position.z,
+      rx: o.rotation.x, ry: o.rotation.y, rz: o.rotation.z,
+      sc: o.scale.x,
+      radius: Math.hypot(o.position.x, o.position.z),
+      angle: Math.atan2(o.position.z, o.position.x)
+    };
+  }
+
+  function runMotion(o, t) {
+    const a = o.userData.anim;
+    if (!a) return;
+    const b = a.base;
+    let px = b.px, py = b.py, pz = b.pz;
+    let rx = b.rx, ry = b.ry, rz = b.rz, sc = b.sc;
+    a.moves.forEach((m) => {
+      const w = m.speed, A = m.size;
+      if (m.kind === "spin") {
+        if (m.axis === "x") rx += t * w * m.dir;
+        else if (m.axis === "z") rz += t * w * m.dir;
+        else ry += t * w * m.dir;
+      } else if (m.kind === "orbit") {
+        const r = Math.max(2, b.radius) * (A > 1 ? 1.4 : 1);
+        const ang = b.angle + t * w * 0.6 * m.dir;
+        px = Math.cos(ang) * r;
+        pz = Math.sin(ang) * r;
+        ry = b.ry - ang;
+      } else if (m.kind === "bob") {
+        py += Math.sin(t * w * 1.4) * 0.6 * A;
+      } else if (m.kind === "swing") {
+        rz += Math.sin(t * w * 1.6) * 0.35 * A;
+      } else if (m.kind === "pulse") {
+        sc = b.sc * (1 + Math.sin(t * w * 2.2) * 0.16 * A);
+      } else if (m.kind === "drift") {
+        px += Math.sin(t * w) * 1.6 * A;
+      } else if (m.kind === "wobble") {
+        rx += Math.sin(t * w * 7) * 0.09 * A;
+        rz += Math.cos(t * w * 9) * 0.09 * A;
+      } else if (m.kind === "bounce") {
+        py += Math.abs(Math.sin(t * w * 2)) * 0.9 * A;
+      }
+    });
+    o.position.set(px, py, pz);
+    o.rotation.set(rx, ry, rz);
+    o.scale.set(sc, sc, sc);
+  }
+
+  const animBox = document.getElementById("anim-box");
+  const animText = document.getElementById("md-anim-text");
+  const animRead = document.getElementById("md-anim-read");
+  const animBtn = on("md-anim", () => {
+    if (!animBox) return;
+    animBox.hidden = !animBox.hidden;
+    animBtn.setAttribute("aria-expanded", String(!animBox.hidden));
+    animBtn.classList.toggle("is-on", !animBox.hidden);
+    if (!animBox.hidden) {
+      if (!picked.length) note("Nothing is selected \u2014 pick a piece and the instruction will land on it.", true);
+      if (animText) animText.focus();
+    }
+  });
+
+  const list = (names) => names.length < 2
+    ? names[0]
+    : names.slice(0, -1).join(", ") + " and " + names[names.length - 1];
+
+  on("md-anim-go", () => {
+    if (!picked.length) return note("Select a piece for the instruction to land on.", true);
+    const want = readMotion(animText ? animText.value : "");
+    picked.forEach((o) => {
+      o.userData.anim = { moves: want.moves, base: null };
+      rebase(o);
+    });
+    const how = (want.speed < 0.6 ? "slowly" : want.speed > 3 ? "wildly" : want.speed > 1.5 ? "quickly" : "steadily") +
+      (want.dir < 0 ? ", the other way round" : "");
+    if (animRead) {
+      animRead.textContent = want.guessed
+        ? "I could not find a motion in that, so " + (picked.length > 1 ? "they turn" : "it turns") +
+          " on the spot, " + how + ". Try: spin, orbit, bob, swing, pulse, drift, wobble or bounce."
+        : "Set going: " + list(want.names) + ", " + how + ". " +
+          (picked.length > 1 ? picked.length + " pieces are moving." : "");
+    }
+    note("");
+  });
+
+  on("md-anim-stop", () => {
+    const held = picked.length ? picked : pieces.children;
+    let n = 0;
+    held.slice().forEach((o) => {
+      const a = o.userData.anim;
+      if (!a) return;
+      n++;
+      o.position.set(a.base.px, a.base.py, a.base.pz);
+      o.rotation.set(a.base.rx, a.base.ry, a.base.rz);
+      o.scale.set(a.base.sc, a.base.sc, a.base.sc);
+      o.userData.anim = null;
+    });
+    refreshHalos();
+    load();
+    if (animRead) {
+      animRead.textContent = n
+        ? (n > 1 ? n + " pieces are" : "It is") + " holding still again, back where it stood."
+        : "Nothing selected was moving.";
+    }
+  });
 
   /* --- taking it away ----------------------------------------------------- */
   function toObj() {
@@ -433,7 +643,7 @@ function start() {
     const btn = document.getElementById("md-render");
     btn.disabled = true;
     note("Handing the view over\u2026");
-    const wasSelected = chosen;
+    const held = picked.slice();
     select(null);                        // no green outline in the render
     renderer.render(scene, camera);
     try {
@@ -451,14 +661,29 @@ function start() {
     } catch (err) {
       note("It could not be handed over: " + ((err && err.message) || "unknown error"), true);
     } finally {
-      if (wasSelected) select(wasSelected);
+      if (held.length) {
+        picked = held;
+        chosen = held[held.length - 1];
+        drawHalos();
+        load();
+        say(describe());
+      }
       btn.disabled = false;
     }
   });
 
   /* --- the loop ----------------------------------------------------------- */
+  const clock = new THREE.Clock();
   (function loop() {
     requestAnimationFrame(loop);
+    const t = clock.getElapsedTime();
+    let moving = false;
+    pieces.children.forEach((o) => {
+      if (!o.userData.anim) return;
+      moving = true;
+      runMotion(o, t);
+    });
+    if (moving && halos.children.length) refreshHalos();
     renderer.render(scene, camera);
   })();
 
