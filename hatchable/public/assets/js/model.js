@@ -49,10 +49,20 @@ function start() {
   rim.position.set(-7, 3, -6);
   scene.add(rim);
 
-  const grid = new THREE.GridHelper(20, 20, 0xd7b05a, 0x2a2740);
-  grid.material.transparent = true;
-  grid.material.opacity = 0.35;
-  scene.add(grid);
+  /* Two grids, either or both. The X grid is the floor the pieces stand on;
+     the Y grid stands upright behind them, for judging height and for
+     lining a wall up against something. */
+  const makeGrid = (upright) => {
+    const g = new THREE.GridHelper(20, 20, 0xd7b05a, 0x2a2740);
+    g.material.transparent = true;
+    g.material.opacity = upright ? 0.22 : 0.35;
+    if (upright) { g.rotation.x = Math.PI / 2; g.position.set(0, 10, -10); }
+    scene.add(g);
+    return g;
+  };
+  const grid = makeGrid(false);
+  const gridY = makeGrid(true);
+  gridY.visible = false;
 
   const pieces = new THREE.Group();
   scene.add(pieces);
@@ -96,6 +106,8 @@ function start() {
   let hovering = false;
 
   const modeOf = (e) => {
+    if (e.ctrlKey && e.shiftKey) return "size";
+    if (e.buttons === 3) return "size";              // both buttons down
     if (e.altKey && e.ctrlKey) return "pitch";
     if (e.altKey) return "yaw";
     if (e.ctrlKey) return "upright";
@@ -106,11 +118,32 @@ function start() {
     floor: "Dragging across the floor. Ctrl for up and down, Alt to turn, Ctrl+Alt to tip.",
     upright: "Ctrl: dragging up and down in the upright plane.",
     yaw: "Alt: turning in the floor plane.",
-    pitch: "Ctrl+Alt: tipping end over end."
+    pitch: "Ctrl+Alt: tipping end over end.",
+    size: "Both buttons, or Ctrl+Shift: resizing from the centre."
   };
 
   function work(mode, dx, dy) {
     if (!picked.length) return;
+    if (mode === "size") {
+      /* Growing and shrinking about the piece\u2019s own middle, so it swells
+         in place instead of crawling away from its origin. */
+      const f = Math.max(0.2, Math.min(5, 1 + (dx - dy) * 0.004));
+      picked.forEach((o) => {
+        const mid = new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3());
+        const next = Math.max(0.01, Math.min(60, o.scale.x * f));
+        const grew = next / o.scale.x;
+        o.scale.setScalar(next);
+        o.position.set(
+          mid.x + (o.position.x - mid.x) * grew,
+          mid.y + (o.position.y - mid.y) * grew,
+          mid.z + (o.position.z - mid.z) * grew
+        );
+        if (o.userData.anim) rebase(o);
+      });
+      refreshHalos();
+      load();
+      return;
+    }
     if (mode === "yaw" || mode === "pitch") {
       const turn = (mode === "yaw" ? dx : dy) * 0.012;
       picked.forEach((o) => {
@@ -161,7 +194,9 @@ function start() {
     moved = 0;
     lastX = e.clientX; lastY = e.clientY;
     /* The right button, or Shift, or an empty selection: turn the view. */
-    orbiting = e.button === 2 || e.shiftKey || !picked.length;
+    orbiting = picked.length
+      ? (e.button === 2 && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && !e.ctrlKey)
+      : true;
     if (!orbiting) remember();          // one undo step per drag, not per frame
     renderer.domElement.setPointerCapture(e.pointerId);
     stage.classList.toggle("is-nudging", !orbiting);
@@ -170,6 +205,7 @@ function start() {
 
   renderer.domElement.addEventListener("pointermove", (e) => {
     if (!dragging) return;
+    if (e.buttons === 3 && picked.length) orbiting = false;   // both buttons: resize
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY;
     moved += Math.abs(dx) + Math.abs(dy);
@@ -422,11 +458,11 @@ function start() {
       });
       shelf.appendChild(row);
     });
-    if (count) count.textContent = shown + " of " + LIBRARY.length + " pieces";
+    if (count) count.textContent = shown + " of " + LIBRARY.length + " objects";
     if (!shown) {
       const p = document.createElement("p");
       p.className = "muted small";
-      p.textContent = "Nothing in the book by that name.";
+      p.textContent = "Nothing among the objects by that name.";
       shelf.appendChild(p);
     }
   }
@@ -617,168 +653,16 @@ function start() {
     note("");
   });
 
-  const gridBtn = on("md-grid", () => {
-    grid.visible = !grid.visible;
-    gridBtn.setAttribute("aria-pressed", String(grid.visible));
-    gridBtn.classList.toggle("is-on", grid.visible);
-  });
-  if (gridBtn) gridBtn.classList.add("is-on");
-
-
-  /* --- the animator --------------------------------------------------------
-     Press Animate and a box opens asking, in so many words, how you would
-     like the piece to move. The sentence is read here in the page — no model,
-     no service — and turned into a handful of motions laid over whatever
-     position the piece is already in. Say "hold still" and it returns to
-     exactly where it stood. */
-  const MOTIONS = [
-    { kind: "spin", test: /spin|rotat|revolv|whirl|twirl|turn(?!s? (into|to))|pirouett|gyrat/, name: "spin" },
-    { kind: "orbit", test: /orbit|circl|go(es)? round|goes around|fly round|flies round|round the centre|round the middle/, name: "orbit the centre" },
-    { kind: "bob", test: /bob|float|hover|rise and fall|up and down(?! the)|levitat/, name: "bob in the air" },
-    { kind: "swing", test: /swing|sway|rock|pendul|lean|tilt back/, name: "swing" },
-    { kind: "pulse", test: /puls|throb|heartbeat|beat|breath|grow and shrink|swell/, name: "pulse" },
-    { kind: "drift", test: /drift|slide|glide|shuttle|side to side|back and forth|to and fro|paces?/, name: "drift from side to side" },
-    { kind: "wobble", test: /wobbl|shak|shiver|judder|trembl|quiver|shudder|rattl/, name: "wobble" },
-    { kind: "bounce", test: /bounc|hop|jump|spring|skip/, name: "bounce" }
-  ];
-
-  function readMotion(text) {
-    const s = String(text || "").toLowerCase();
-    let speed = 1;
-    if (/\b(slow|slowly|gentl[ey]|lazy|lazily|softly|barely|calm)\b/.test(s)) speed = 0.45;
-    if (/\b(fast|quick|quickly|rapid|rapidly|briskly)\b/.test(s)) speed = 2.2;
-    if (/\b(wildly|violently|furious|frantic|very fast|like mad|madly)\b/.test(s)) speed = 3.6;
-    let size = 1;
-    if (/\b(small|slight|slightly|subtle|little|tiny|faint|a touch)\b/.test(s)) size = 0.45;
-    if (/\b(big|large|wide|wildly|high|huge|great|far)\b/.test(s)) size = 1.9;
-    const dir = /\b(anti-?clockwise|counter-?clockwise|widdershins|backwards?|the other way|left)\b/.test(s) ? -1 : 1;
-    let axis = "y";
-    if (/\b(end over end|tumbl|cartwheel|roll|sideways)\b/.test(s)) axis = "z";
-    if (/\b(somersault|forwards? roll|pitch|head over heels)\b/.test(s)) axis = "x";
-    const moves = [];
-    const names = [];
-    MOTIONS.forEach((m) => {
-      if (!m.test.test(s)) return;
-      moves.push({ kind: m.kind, speed, size, dir, axis });
-      names.push(m.name);
+  const gridSwitch = (id, g) => {
+    const b = on(id, () => {
+      g.visible = !g.visible;
+      b.setAttribute("aria-pressed", String(g.visible));
+      b.classList.toggle("is-on", g.visible);
     });
-    let guessed = false;
-    if (!moves.length) {
-      moves.push({ kind: "spin", speed, size, dir, axis });
-      names.push("turn on the spot");
-      guessed = true;
-    }
-    return { moves, names, guessed, speed, dir };
-  }
-
-  function rebase(o) {
-    const a = o.userData.anim;
-    if (!a) return;
-    a.base = {
-      px: o.position.x, py: o.position.y, pz: o.position.z,
-      rx: o.rotation.x, ry: o.rotation.y, rz: o.rotation.z,
-      sc: o.scale.x,
-      radius: Math.hypot(o.position.x, o.position.z),
-      angle: Math.atan2(o.position.z, o.position.x)
-    };
-  }
-
-  function runMotion(o, t) {
-    const a = o.userData.anim;
-    if (!a) return;
-    const b = a.base;
-    let px = b.px, py = b.py, pz = b.pz;
-    let rx = b.rx, ry = b.ry, rz = b.rz, sc = b.sc;
-    a.moves.forEach((m) => {
-      const w = m.speed, A = m.size;
-      if (m.kind === "spin") {
-        if (m.axis === "x") rx += t * w * m.dir;
-        else if (m.axis === "z") rz += t * w * m.dir;
-        else ry += t * w * m.dir;
-      } else if (m.kind === "orbit") {
-        const r = Math.max(2, b.radius) * (A > 1 ? 1.4 : 1);
-        const ang = b.angle + t * w * 0.6 * m.dir;
-        px = Math.cos(ang) * r;
-        pz = Math.sin(ang) * r;
-        ry = b.ry - ang;
-      } else if (m.kind === "bob") {
-        py += Math.sin(t * w * 1.4) * 0.6 * A;
-      } else if (m.kind === "swing") {
-        rz += Math.sin(t * w * 1.6) * 0.35 * A;
-      } else if (m.kind === "pulse") {
-        sc = b.sc * (1 + Math.sin(t * w * 2.2) * 0.16 * A);
-      } else if (m.kind === "drift") {
-        px += Math.sin(t * w) * 1.6 * A;
-      } else if (m.kind === "wobble") {
-        rx += Math.sin(t * w * 7) * 0.09 * A;
-        rz += Math.cos(t * w * 9) * 0.09 * A;
-      } else if (m.kind === "bounce") {
-        py += Math.abs(Math.sin(t * w * 2)) * 0.9 * A;
-      }
-    });
-    o.position.set(px, py, pz);
-    o.rotation.set(rx, ry, rz);
-    o.scale.set(sc, sc, sc);
-  }
-
-  const animBox = document.getElementById("anim-box");
-  const animText = document.getElementById("md-anim-text");
-  const animRead = document.getElementById("md-anim-read");
-  const animBtn = on("md-anim", () => {
-    if (!animBox) return;
-    animBox.hidden = !animBox.hidden;
-    animBtn.setAttribute("aria-expanded", String(!animBox.hidden));
-    animBtn.classList.toggle("is-on", !animBox.hidden);
-    if (!animBox.hidden) {
-      if (!picked.length) note("Nothing is selected \u2014 pick a piece and the instruction will land on it.", true);
-      if (animText) animText.focus();
-    }
-  });
-
-  const list = (names) => names.length < 2
-    ? names[0]
-    : names.slice(0, -1).join(", ") + " and " + names[names.length - 1];
-
-  on("md-anim-go", () => {
-    if (!picked.length) return note("Select a piece for the instruction to land on.", true);
-    remember();
-    const want = readMotion(animText ? animText.value : "");
-    picked.forEach((o) => {
-      o.userData.anim = { moves: want.moves, base: null };
-      rebase(o);
-    });
-    const how = (want.speed < 0.6 ? "slowly" : want.speed > 3 ? "wildly" : want.speed > 1.5 ? "quickly" : "steadily") +
-      (want.dir < 0 ? ", the other way round" : "");
-    if (animRead) {
-      animRead.textContent = want.guessed
-        ? "I could not find a motion in that, so " + (picked.length > 1 ? "they turn" : "it turns") +
-          " on the spot, " + how + ". Try: spin, orbit, bob, swing, pulse, drift, wobble or bounce."
-        : "Set going: " + list(want.names) + ", " + how + ". " +
-          (picked.length > 1 ? picked.length + " pieces are moving." : "");
-    }
-    note("");
-  });
-
-  on("md-anim-stop", () => {
-    const held = picked.length ? picked : pieces.children;
-    let n = 0;
-    held.slice().forEach((o) => {
-      const a = o.userData.anim;
-      if (!a) return;
-      n++;
-      o.position.set(a.base.px, a.base.py, a.base.pz);
-      o.rotation.set(a.base.rx, a.base.ry, a.base.rz);
-      o.scale.set(a.base.sc, a.base.sc, a.base.sc);
-      o.userData.anim = null;
-    });
-    refreshHalos();
-    load();
-    if (animRead) {
-      animRead.textContent = n
-        ? (n > 1 ? n + " pieces are" : "It is") + " holding still again, back where it stood."
-        : "Nothing selected was moving.";
-    }
-  });
+    if (b) b.classList.toggle("is-on", g.visible);
+  };
+  gridSwitch("md-grid-x", grid);
+  gridSwitch("md-grid-y", gridY);
 
   /* --- the texture drawer --------------------------------------------------
      A picture brought in from the machine and laid on a surface. Each piece
@@ -1172,12 +1056,14 @@ function start() {
   function capture(cutout) {
     const held = picked.slice();
     const wasGrid = grid.visible;
+    const wasGridY = gridY.visible;
     const wasBg = scene.background;
     select(null);
-    if (cutout) { grid.visible = false; scene.background = null; }
+    if (cutout) { grid.visible = false; gridY.visible = false; scene.background = null; }
     renderer.render(scene, camera);
     const data = renderer.domElement.toDataURL("image/png").split(",")[1];
     grid.visible = wasGrid;
+    gridY.visible = wasGridY;
     scene.background = wasBg;
     renderer.render(scene, camera);
     if (held.length) {

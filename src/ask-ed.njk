@@ -382,23 +382,13 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       model away as an <strong>OBJ</strong> file any 3D program will open, or hand the view to Gink and
       let him render it as a photograph.</p>
 
-      <div class="pattern-book" id="pattern-book" hidden>
-        <div class="book-head">
-          <label for="pb-search">Search the book</label>
-          <input id="pb-search" type="search" autocomplete="off" spellcheck="false"
-                 placeholder="tree, column, chalice, gear&hellip;">
-          <span class="muted xsmall" id="pb-count"></span>
-        </div>
-        <div class="book-shelf" id="pb-shelf"></div>
-      </div>
-
       <div class="model-stage" id="model-stage" role="img"
            aria-label="A three-dimensional workspace showing the model being built"></div>
 
       <div class="model-tools">
         <div class="sketch-group" role="group" aria-label="Add a solid">
           <button class="tool" type="button" id="md-book"
-                  aria-expanded="false" aria-controls="pattern-book">The pattern book</button>
+                  aria-expanded="false" aria-controls="pattern-book">Objects</button>
           <button class="tool" type="button" data-add="box">Box</button>
           <button class="tool" type="button" data-add="sphere">Sphere</button>
           <button class="tool" type="button" data-add="cylinder">Cylinder</button>
@@ -441,9 +431,21 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           <button class="tool" type="button" id="md-anim"
                   aria-expanded="false" aria-controls="anim-box">Animate…</button>
           <button class="tool" type="button" id="md-clear">Clear all</button>
-          <button class="tool" type="button" id="md-grid" aria-pressed="true">Grid</button>
+          <button class="tool" type="button" id="md-grid-x" aria-pressed="true">X grid</button>
+          <button class="tool" type="button" id="md-grid-y" aria-pressed="false">Y grid</button>
         </div>
       </div>
+
+      <div class="pattern-book" id="pattern-book" hidden>
+        <div class="book-head">
+          <label for="pb-search">Search the objects</label>
+          <input id="pb-search" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="tree, column, chalice, gear&hellip;">
+          <span class="muted xsmall" id="pb-count"></span>
+        </div>
+        <div class="book-shelf" id="pb-shelf"></div>
+      </div>
+
 
       <div class="anim-box" id="anim-box" hidden>
         <label for="md-anim-text">How would you like it to move?</label>
@@ -546,8 +548,9 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       <p class="muted xsmall">With a piece held, the left button works the piece and not the camera:
       <strong>drag</strong> slides it across the floor, <strong>Ctrl&nbsp;+&nbsp;drag</strong> lifts and
       lowers it in the upright plane, <strong>Alt&nbsp;+&nbsp;drag</strong> turns it in the floor plane
-      and <strong>Ctrl&nbsp;+&nbsp;Alt</strong> tips it end over end. The arrow keys repeat all four in
-      steps. <strong>Right-drag</strong> — or Shift, or an empty selection — walks the camera
+      and <strong>Ctrl&nbsp;+&nbsp;Alt</strong> tips it end over end. Holding <strong>both buttons</strong>, or
+      <strong>Ctrl&nbsp;+&nbsp;Shift</strong>, resizes it from its own centre. The arrow keys repeat
+      all of them in steps. <strong>Right-drag</strong> — or Shift, or an empty selection — walks the camera
       round instead, and the wheel comes closer. Shift-click picks up more than one piece;
       <strong>Ctrl&nbsp;+&nbsp;Z</strong> and <strong>Ctrl&nbsp;+&nbsp;Y</strong> undo and redo.</p>
 

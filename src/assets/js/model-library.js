@@ -335,6 +335,117 @@ export function buildLibrary(THREE) {
     return g;
   });
 
+
+  /* ------------------------------------------------------------ the body
+     One figure, jointed, posed by angles rather than drawn twice. The parts
+     hang off each other the way they do on a person — forearm off upper arm,
+     shin off thigh — so a pose is a short list of rotations and the whole
+     thing follows. Degrees here, because nobody thinks in radians. */
+  const d = (deg) => (deg * Math.PI) / 180;
+  const CAP = (r, len) => new THREE.CapsuleGeometry(r, len, 6, 12);
+
+  /* A pose is: hip height, a lean, a spine bend, a head tilt, and for each
+     arm and leg [swing, spread, bend] in degrees. */
+  const human = (c, P) => {
+    const m = mat(c);
+    const g = new THREE.Group();
+    const pose = Object.assign({
+      hip: 1.9, lean: 0, turn: 0, roll: 0, spine: 0, bend: 0, head: 0,
+      armL: [10, 8, -10], armR: [10, -8, -10],
+      legL: [0, 3, 0], legR: [0, -3, 0]
+    }, P || {});
+
+    const root = new THREE.Group();
+    root.position.y = pose.hip;
+    root.rotation.set(d(pose.lean), d(pose.turn), d(pose.roll));
+    g.add(root);
+
+    put(root, CAP(0.26, 0.2), m, 0, 0.05, 0);              // pelvis
+
+    const torso = new THREE.Group();
+    torso.rotation.set(d(pose.spine), 0, d(pose.bend));
+    root.add(torso);
+    put(torso, CAP(0.3, 0.75), m, 0, 0.55, 0);             // chest
+
+    const neck = new THREE.Group();
+    neck.position.y = 1.0;
+    neck.rotation.x = d(pose.head);
+    torso.add(neck);
+    put(neck, CYL(0.1, 0.1, 0.16, 10), m, 0, 0.06, 0);
+    put(neck, SPH(0.28, 20, 16), m, 0, 0.36, 0);
+
+    [[-1, pose.armL], [1, pose.armR]].forEach(([side, A]) => {
+      const sh = new THREE.Group();
+      sh.position.set(side * 0.4, 0.9, 0);
+      sh.rotation.set(d(A[0]), 0, d(A[1]));
+      torso.add(sh);
+      put(sh, SPH(0.14, 14, 10), m, 0, 0, 0);
+      put(sh, CAP(0.11, 0.46), m, 0, -0.35, 0);
+      const el = new THREE.Group();
+      el.position.y = -0.68;
+      el.rotation.x = d(A[2] || 0);
+      sh.add(el);
+      put(el, CAP(0.1, 0.42), m, 0, -0.3, 0);
+      put(el, SPH(0.12, 14, 10), m, 0, -0.58, 0);          // hand
+    });
+
+    [[-1, pose.legL], [1, pose.legR]].forEach(([side, L]) => {
+      const hp = new THREE.Group();
+      hp.position.set(side * 0.18, 0, 0);
+      hp.rotation.set(d(L[0]), 0, d(L[1]));
+      root.add(hp);
+      put(hp, CAP(0.15, 0.56), m, 0, -0.42, 0);
+      const kn = new THREE.Group();
+      kn.position.y = -0.82;
+      kn.rotation.x = d(L[2] || 0);
+      hp.add(kn);
+      put(kn, CAP(0.13, 0.5), m, 0, -0.36, 0);
+      put(kn, BOX(0.24, 0.12, 0.46), m, 0, -0.68, 0.1);    // foot
+    });
+
+    return g;
+  };
+
+  /* Twenty-eight of them: the ones a scene actually asks for. */
+  const POSES = [
+    ['stand', 'Standing', {}],
+    ['attention', 'At attention', { armL: [0, 4, 0], armR: [0, -4, 0], legL: [0, 1, 0], legR: [0, -1, 0] }],
+    ['walk', 'Walking', { armL: [28, 8, -18], armR: [-28, -8, -12], legL: [-22, 3, 14], legR: [24, -3, -22], hip: 1.86 }],
+    ['stride', 'Striding out', { armL: [48, 8, -30], armR: [-44, -8, -14], legL: [-34, 3, 18], legR: [40, -3, -34], hip: 1.82, spine: 6 }],
+    ['run', 'Running', { armL: [76, 10, -92], armR: [-70, -10, -86], legL: [-46, 3, 62], legR: [58, -3, -70], hip: 1.84, spine: 14 }],
+    ['sprint', 'Sprinting', { armL: [96, 12, -104], armR: [-88, -12, -96], legL: [-58, 4, 96], legR: [74, -4, -88], hip: 1.8, spine: 22, head: -12 }],
+    ['jump', 'Jumping', { armL: [-152, 16, -10], armR: [-152, -16, -10], legL: [26, 6, -58], legR: [26, -6, -58], hip: 2.1, spine: -4 }],
+    ['crouch', 'Crouching', { hip: 1.1, spine: 16, armL: [40, 10, -60], armR: [40, -10, -60], legL: [62, 8, -104], legR: [62, -8, -104] }],
+    ['sit', 'Sitting on a chair', { hip: 1.15, armL: [18, 8, -46], armR: [18, -8, -46], legL: [84, 4, -84], legR: [84, -4, -84] }],
+    ['sit-ground', 'Sitting on the ground', { hip: 0.62, spine: -8, armL: [-24, 24, -14], armR: [-24, -24, -14], legL: [74, 16, -46], legR: [74, -16, -46] }],
+    ['lotus', 'Cross-legged', { hip: 0.58, armL: [36, 26, -58], armR: [36, -26, -58], legL: [84, 56, -118], legR: [84, -56, -118] }],
+    ['meditate', 'In meditation', { hip: 0.58, head: 8, armL: [44, 20, -72], armR: [44, -20, -72], legL: [86, 58, -120], legR: [86, -58, -120] }],
+    ['kneel', 'Kneeling', { hip: 1.0, legL: [8, 4, -142], legR: [8, -4, -142], armL: [14, 8, -16], armR: [14, -8, -16] }],
+    ['pray', 'Kneeling in prayer', { hip: 1.0, head: 16, spine: 8, legL: [8, 4, -142], legR: [8, -4, -142], armL: [62, -14, -96], armR: [62, 14, -96] }],
+    ['bow', 'Bowing', { spine: 58, head: -24, hip: 1.84, armL: [-34, 10, -14], armR: [-34, -10, -14], legL: [-10, 3, 10], legR: [-10, -3, 10] }],
+    ['invoke', 'Arms raised', { armL: [-160, 26, -8], armR: [-160, -26, -8], head: -18, spine: -8 }],
+    ['tpose', 'Arms straight out', { armL: [0, 88, 0], armR: [0, -88, 0] }],
+    ['reach', 'Reaching up', { armL: [-168, 6, -6], armR: [-120, -16, -24], spine: -10, head: -22 }],
+    ['point', 'Pointing', { armL: [8, 10, -14], armR: [-88, -10, 0], head: -6, turn: -8 }],
+    ['wave', 'Waving', { armL: [8, 10, -14], armR: [-126, -34, -46] }],
+    ['arms-crossed', 'Arms folded', { armL: [66, -24, -104], armR: [66, 24, -104] }],
+    ['hands-hips', 'Hands on hips', { armL: [24, 44, -96], armR: [24, -44, -96] }],
+    ['carry', 'Carrying a load', { armL: [78, 12, -62], armR: [78, -12, -62], spine: -10, hip: 1.88 }],
+    ['throw', 'Throwing', { armL: [-54, 22, -24], armR: [-148, -18, -62], spine: -14, turn: 18, legL: [-26, 4, 16], legR: [28, -4, -24] }],
+    ['fight', 'Fighting stance', { hip: 1.74, turn: 24, spine: 10, armL: [96, -16, -104], armR: [84, 12, -112], legL: [-28, 8, 34], legR: [30, -8, -38] }],
+    ['climb', 'Climbing', { hip: 1.8, spine: 8, armL: [-146, 16, -36], armR: [-72, -14, -58], legL: [68, 10, -92], legR: [-18, -6, 22] }],
+    ['dance', 'Dancing', { roll: 10, turn: -16, spine: -8, armL: [-148, 34, -40], armR: [48, -46, -74], legL: [-30, 6, 42], legR: [16, -14, -18] }],
+    ['lean', 'Leaning back', { lean: -22, hip: 1.86, head: -10, armL: [-28, 14, -18], armR: [-28, -14, -18], legL: [16, 4, -12], legR: [16, -4, -12] }],
+    ['stagger', 'Staggering', { roll: 16, turn: 12, spine: 14, head: 12, armL: [-96, 38, -34], armR: [-44, -42, -58], legL: [34, 12, -46], legR: [-26, -10, 28] }],
+    ['lie', 'Lying down', { hip: 0.3, lean: -90, armL: [-18, 34, -10], armR: [-18, -34, -10], legL: [6, 6, -6], legR: [6, -6, -6] }],
+    ['sleep', 'Sleeping on one side', { hip: 0.32, lean: -90, roll: 70, head: 10, armL: [-58, 18, -72], armR: [-34, -16, -84], legL: [42, 6, -64], legR: [24, -6, -48] }],
+    ['float', 'Floating', { hip: 1.5, lean: -70, armL: [-62, 46, -28], armR: [-62, -46, -28], legL: [-24, 14, 34], legR: [-10, -14, 22] }]
+  ];
+
+  POSES.forEach(([id, label, pose]) => {
+    entry('Human poses', 'pose-' + id, label, (c) => human(c, pose));
+  });
+
   /* ---------------------------------------------------- the order's things */
   entry('The order', 'chalice', 'Chalice', (c) => {
     const g = new THREE.Group(), m = mat(c, { metalness: 0.7, roughness: 0.25 });
