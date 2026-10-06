@@ -79,121 +79,127 @@ function start() {
   size();
   window.addEventListener("resize", size);
 
-  let dragging = false, lastX = 0, lastY = 0, moved = 0;
+  /* --- the hand on the bench -----------------------------------------------
+     The left button works the piece, not the camera:
 
-  /* --- shifting the piece with the mouse over the window -------------------
-     Hold Ctrl and the held pieces follow the mouse across the floor — left
-     and right, nearer and further. Hold Alt and they move in the upright
-     plane instead — left and right, up and down. No button is needed: the
-     hand hovers, the modifier is down, the piece moves. The arrow keys do
-     the same in steps for anyone who would rather not drag. */
-  let hovering = false, overX = 0, overY = 0, haveOver = false;
-  const nudging = { ctrl: false, alt: false };
-  const mode = () => (nudging.ctrl ? "floor" : nudging.alt ? "upright" : null);
+       drag             move the held pieces across the floor
+       Ctrl + drag      move them in the upright plane, up and down
+       Alt + drag       turn them in the floor plane
+       Ctrl + Alt       turn them in the upright plane, end over end
+       right-drag       walk the camera round (Shift + drag does the same)
+       wheel            closer and further
 
-  function shift(dx, dy) {
-    if (!picked.length || !mode()) return;
-    const k = dist * 0.0016;
-    const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
-    right.y = 0;
-    if (right.lengthSq() < 1e-6) right.set(1, 0, 0);
-    right.normalize();
-    const move = new THREE.Vector3();
-    if (mode() === "floor") {
-      const into = new THREE.Vector3(-right.z, 0, right.x);   /* away from the eye */
-      move.addScaledVector(right, dx * k).addScaledVector(into, dy * k);
+     With nothing selected a plain drag turns the view, so an empty bench
+     still behaves the way a 3D window is expected to. The arrow keys repeat
+     all four, in steps, whenever the pointer is over the window. */
+  let dragging = false, orbiting = false, lastX = 0, lastY = 0, moved = 0;
+  let hovering = false;
+
+  const modeOf = (e) => {
+    if (e.altKey && e.ctrlKey) return "pitch";
+    if (e.altKey) return "yaw";
+    if (e.ctrlKey) return "upright";
+    return "floor";
+  };
+
+  const LABEL = {
+    floor: "Dragging across the floor. Ctrl for up and down, Alt to turn, Ctrl+Alt to tip.",
+    upright: "Ctrl: dragging up and down in the upright plane.",
+    yaw: "Alt: turning in the floor plane.",
+    pitch: "Ctrl+Alt: tipping end over end."
+  };
+
+  function work(mode, dx, dy) {
+    if (!picked.length) return;
+    if (mode === "yaw" || mode === "pitch") {
+      const turn = (mode === "yaw" ? dx : dy) * 0.012;
+      picked.forEach((o) => {
+        if (mode === "yaw") o.rotation.y += turn;
+        else o.rotation.x += turn;
+        if (o.userData.anim) rebase(o);
+      });
     } else {
-      move.addScaledVector(right, dx * k).addScaledVector(new THREE.Vector3(0, 1, 0), -dy * k);
+      const k = dist * 0.0016;
+      const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
+      right.y = 0;
+      if (right.lengthSq() < 1e-6) right.set(1, 0, 0);
+      right.normalize();
+      const move = new THREE.Vector3();
+      if (mode === "floor") {
+        const into = new THREE.Vector3(-right.z, 0, right.x);   /* away from the eye */
+        move.addScaledVector(right, dx * k).addScaledVector(into, dy * k);
+      } else {
+        move.addScaledVector(right, dx * k).addScaledVector(new THREE.Vector3(0, 1, 0), -dy * k);
+      }
+      picked.forEach((o) => {
+        o.position.add(move);
+        if (o.userData.anim) rebase(o);
+      });
     }
-    picked.forEach((o) => {
-      o.position.add(move);
-      if (o.userData.anim) rebase(o);
-    });
     refreshHalos();
     load();
   }
 
-  function sayMode() {
-    const m = mode();
-    stage.classList.toggle("is-nudging", Boolean(m));
-    if (!m) { if (picked.length || pieces.children.length) say(describe()); return; }
-    if (!picked.length) { say("Nothing is held \u2014 click a piece first, then Ctrl or Alt will move it."); return; }
-    say(m === "floor"
-      ? "Ctrl: moving across the floor. Mouse or arrow keys \u2014 left and right, nearer and further."
-      : "Alt: moving in the upright plane. Mouse or arrow keys \u2014 left and right, up and down.");
-  }
-
-  stage.addEventListener("pointerenter", (e) => {
-    hovering = true; overX = e.clientX; overY = e.clientY; haveOver = true;
-  });
-  stage.addEventListener("pointerleave", () => {
-    hovering = false; haveOver = false;
-    nudging.ctrl = false; nudging.alt = false;
-    sayMode();
-  });
+  stage.addEventListener("pointerenter", () => { hovering = true; });
+  stage.addEventListener("pointerleave", () => { hovering = false; });
 
   window.addEventListener("keydown", (e) => {
-    if (!hovering) return;
-    if (e.key === "Control" || e.key === "Alt") {
-      const was = mode();
-      nudging.ctrl = e.ctrlKey || e.key === "Control";
-      nudging.alt = e.altKey || e.key === "Alt";
-      if (mode() !== was) sayMode();
-      e.preventDefault();
-      return;
-    }
-    if (!mode() || !picked.length) return;
+    if (!hovering || !picked.length) return;
     const step = e.shiftKey ? 48 : 18;
-    if (e.key === "ArrowLeft") shift(-step, 0);
-    else if (e.key === "ArrowRight") shift(step, 0);
-    else if (e.key === "ArrowUp") shift(0, -step);
-    else if (e.key === "ArrowDown") shift(0, step);
+    const mode = modeOf(e);
+    if (e.key === "ArrowLeft") work(mode, -step, 0);
+    else if (e.key === "ArrowRight") work(mode, step, 0);
+    else if (e.key === "ArrowUp") work(mode, 0, -step);
+    else if (e.key === "ArrowDown") work(mode, 0, step);
     else return;
     e.preventDefault();
-  });
-  window.addEventListener("keyup", (e) => {
-    if (e.key !== "Control" && e.key !== "Alt" && e.ctrlKey === nudging.ctrl && e.altKey === nudging.alt) return;
-    const was = mode();
-    nudging.ctrl = e.key === "Control" ? false : e.ctrlKey;
-    nudging.alt = e.key === "Alt" ? false : e.altKey;
-    if (mode() !== was) sayMode();
-  });
-  window.addEventListener("blur", () => {
-    nudging.ctrl = false; nudging.alt = false; sayMode();
+    stamp();
   });
 
   renderer.domElement.addEventListener("pointerdown", (e) => {
-    if (mode()) { e.preventDefault(); return; }    /* a modifier is held: no orbiting */
-    dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY;
+    dragging = true;
+    moved = 0;
+    lastX = e.clientX; lastY = e.clientY;
+    /* The right button, or Shift, or an empty selection: turn the view. */
+    orbiting = e.button === 2 || e.shiftKey || !picked.length;
+    if (!orbiting) remember();          // one undo step per drag, not per frame
     renderer.domElement.setPointerCapture(e.pointerId);
+    stage.classList.toggle("is-nudging", !orbiting);
+    if (!orbiting) say(LABEL[modeOf(e)]);
   });
+
   renderer.domElement.addEventListener("pointermove", (e) => {
-    const dx0 = haveOver ? e.clientX - overX : 0;
-    const dy0 = haveOver ? e.clientY - overY : 0;
-    overX = e.clientX; overY = e.clientY; haveOver = true;
-    if (mode()) {
-      /* The modifier wins: the piece follows the hand, the camera stays put. */
-      nudging.ctrl = e.ctrlKey; nudging.alt = e.altKey && !e.ctrlKey;
-      if (mode()) { shift(dx0, dy0); e.preventDefault(); return; }
-      sayMode();
-    }
     if (!dragging) return;
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY;
     moved += Math.abs(dx) + Math.abs(dy);
-    yaw -= dx * 0.006;
-    pitch = Math.max(-1.3, Math.min(1.4, pitch + dy * 0.006));
-    place();
+    if (orbiting) {
+      yaw -= dx * 0.006;
+      pitch = Math.max(-1.3, Math.min(1.4, pitch + dy * 0.006));
+      place();
+      return;
+    }
+    const mode = modeOf(e);
+    say(LABEL[mode]);
+    work(mode, dx, dy);
+    e.preventDefault();
   });
-  renderer.domElement.addEventListener("contextmenu", (e) => { if (mode()) e.preventDefault(); });
+
+  renderer.domElement.addEventListener("contextmenu", (e) => e.preventDefault());
+
   const release = (e) => {
     if (!dragging) return;
-    if (mode()) { dragging = false; return; }
+    const wasOrbiting = orbiting;
     dragging = false;
-    if (moved < 4) pick(e);       // a click, not a drag: try to select
+    stage.classList.remove("is-nudging");
+    if (moved < 4) { pick(e); return; }      // a click, not a drag: select
+    if (!wasOrbiting) { stamp(); say(describe()); }
   };
   renderer.domElement.addEventListener("pointerup", release);
-  renderer.domElement.addEventListener("pointercancel", () => { dragging = false; });
+  renderer.domElement.addEventListener("pointercancel", () => {
+    dragging = false;
+    stage.classList.remove("is-nudging");
+  });
   renderer.domElement.addEventListener("wheel", (e) => {
     e.preventDefault();
     dist = Math.max(4, Math.min(40, dist + Math.sign(e.deltaY) * 1.1));
@@ -220,8 +226,17 @@ function start() {
     metal: { roughness: 0.22, metalness: 0.9, opacity: 1, transparent: false },
     glass: { roughness: 0.08, metalness: 0.1, opacity: 0.42, transparent: true }
   };
-  const skin = (c) => new THREE.MeshStandardMaterial(
-    Object.assign({ color: new THREE.Color(c) }, FINISH[finish] || FINISH.satin));
+  const skin = (c, f) => new THREE.MeshStandardMaterial(
+    Object.assign({ color: new THREE.Color(c) }, FINISH[f || finish] || FINISH.satin));
+
+  /* Every mesh inside a piece, in a fixed order, so a surface can be named
+     by its number and still be the same surface after an undo. */
+  const meshesOf = (o) => {
+    const out = [];
+    if (o.isMesh) out.push(o);
+    else o.traverse((c) => { if (c.isMesh) out.push(c); });
+    return out;
+  };
 
   /* --- what is picked up ---------------------------------------------------
      More than one piece can be held at once: Shift or Ctrl while clicking
@@ -267,14 +282,22 @@ function start() {
     drawHalos();
     if (sliders) sliders.hidden = !chosen;
     if (chosen) load();
+    if (typeof listSurfaces === "function" && texBox && !texBox.hidden) listSurfaces();
     say(describe());
   }
 
+  /* A new piece arrives at a fifth of its drawn size: it is far easier to
+     grow something into a scene than to find the rest of the bench behind
+     it. The Size slider takes it back up. */
+  const ARRIVE = 0.2;
+
   function add(kind) {
+    remember();
     const geo = (SHAPES[kind] || SHAPES.box)();
     const mesh = new THREE.Mesh(geo, skin(colour));
-    mesh.position.set((Math.random() - 0.5) * 3, 1.4, (Math.random() - 0.5) * 3);
-    mesh.userData = { kind, colour };
+    mesh.position.set((Math.random() - 0.5) * 3, 0.4, (Math.random() - 0.5) * 3);
+    mesh.scale.setScalar(ARRIVE);
+    mesh.userData = { kind, colour, finish, solid: kind };
     pieces.add(mesh);
     select(mesh);
   }
@@ -286,8 +309,10 @@ function start() {
   const LIBRARY = buildLibrary(THREE);
 
   function addFromBook(item) {
+    remember();
     const g = item.make(colour);
-    g.userData = { kind: item.label, colour, fromBook: true };
+    g.userData = { kind: item.label, colour, finish, fromBook: true, bookId: item.id };
+    g.scale.setScalar(ARRIVE);
     g.position.set((Math.random() - 0.5) * 2.5, 0, (Math.random() - 0.5) * 2.5);
     pieces.add(g);
     select(g);
@@ -471,7 +496,12 @@ function start() {
     });
     refreshHalos();
   }
-  Object.values(S).forEach((el) => el && el.addEventListener("input", apply));
+  Object.values(S).forEach((el) => {
+    if (!el) return;
+    el.addEventListener("input", apply);
+    /* One undo step for a whole slider drag, taken as it starts. */
+    el.addEventListener("pointerdown", () => { if (picked.length) remember(); });
+  });
 
   /* --- the tool bar ------------------------------------------------------- */
   const box = document.getElementById("model-box");
@@ -480,32 +510,26 @@ function start() {
 
   box.querySelectorAll(".model-tools .swatch").forEach((b) => {
     b.style.background = b.dataset.colour;
-    b.addEventListener("click", () => setColour(b.dataset.colour));
+    b.addEventListener("click", () => { if (picked.length) remember(); setColour(b.dataset.colour); });
   });
 
   box.querySelectorAll("[data-finish]").forEach((b) =>
     b.addEventListener("click", () => {
+      if (picked.length) remember();
       finish = b.dataset.finish;
       box.querySelectorAll("[data-finish]").forEach((o) => o.classList.toggle("is-on", o === b));
       paint();
     }));
 
-  /* Paint whatever is selected — one solid, or every part of a group. */
+  /* Paint whatever is selected — one solid, or every part of a group. A
+     picture laid on a surface stays where it is; only the colour under it
+     and the way the light sits on it change. */
   function paint() {
     if (!picked.length) return;
-    const touch = (m) => {
-      m.material.color = new THREE.Color(colour);
-      const f = FINISH[finish] || FINISH.satin;
-      m.material.roughness = f.roughness;
-      m.material.metalness = f.metalness;
-      m.material.opacity = f.opacity;
-      m.material.transparent = f.transparent;
-      m.material.needsUpdate = true;
-    };
     picked.forEach((p) => {
-      if (p.isMesh) touch(p);
-      else p.traverse((o) => { if (o.isMesh) touch(o); });
+      paintObj(p, colour, finish);
       p.userData.colour = colour;
+      p.userData.finish = finish;
     });
   }
 
@@ -533,10 +557,14 @@ function start() {
 
   on("md-duplicate", () => {
     if (!picked.length) return note("Select a piece first.", true);
+    remember();
     const copies = picked.map((src) => {
       const copy = src.clone(true);
-      if (copy.isMesh) copy.material = src.material.clone();
-      else copy.traverse((o) => { if (o.isMesh) o.material = o.material.clone(); });
+      meshesOf(copy).forEach((o) => {
+        o.material = Array.isArray(o.material)
+          ? o.material.map((m) => m.clone())
+          : o.material.clone();
+      });
       copy.position.x += 1.2;
       copy.userData = Object.assign({}, src.userData);
       if (copy.userData.anim) copy.userData.anim = null;
@@ -551,13 +579,18 @@ function start() {
     note(copies.length > 1 ? copies.length + " copies made." : "");
   });
 
+  const letGo = (m) => {
+    if (Array.isArray(m)) { m.forEach(letGo); return; }
+    if (m.map) m.map.dispose();
+    m.dispose();
+  };
   const dispose = (obj) => {
-    if (obj.isMesh) { obj.geometry.dispose(); obj.material.dispose(); return; }
-    obj.traverse((o) => { if (o.isMesh) { o.geometry.dispose(); o.material.dispose(); } });
+    meshesOf(obj).forEach((o) => { o.geometry.dispose(); letGo(o.material); });
   };
 
   on("md-delete", () => {
     if (!picked.length) return note("Select a piece first.", true);
+    remember();
     picked.slice().forEach((o) => { pieces.remove(o); dispose(o); });
     select(null);
   });
@@ -575,6 +608,7 @@ function start() {
   on("md-none", () => { select(null); note(""); });
 
   on("md-clear", () => {
+    if (pieces.children.length) remember();
     while (pieces.children.length) {
       const m = pieces.children.pop();
       dispose(m);
@@ -707,6 +741,7 @@ function start() {
 
   on("md-anim-go", () => {
     if (!picked.length) return note("Select a piece for the instruction to land on.", true);
+    remember();
     const want = readMotion(animText ? animText.value : "");
     picked.forEach((o) => {
       o.userData.anim = { moves: want.moves, base: null };
@@ -745,6 +780,333 @@ function start() {
     }
   });
 
+  /* --- the texture drawer --------------------------------------------------
+     A picture brought in from the machine and laid on a surface. Each piece
+     remembers which of its surfaces wear it and how: where the picture sits,
+     which way up it is, and how big it is against the shape. The file never
+     leaves the page \u2014 it is read straight into a texture. */
+  const texStore = new Map();     // id -> { name, url, tex }
+  let texSeq = 0;
+  let activeTex = null;           // id of the picture being worked with
+
+  const FACES = ["Right", "Left", "Top", "Bottom", "Front", "Back"];
+  const isBox = (m) => Boolean(m && m.geometry && m.geometry.type === "BoxGeometry");
+
+  function dressOne(mesh, face, spec) {
+    const store = texStore.get(spec.id);
+    if (!store) return;
+    const tx = store.tex.clone();
+    tx.needsUpdate = true;
+    tx.wrapS = tx.wrapT = spec.tile ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+    tx.center.set(0.5, 0.5);
+    tx.rotation = (Number(spec.rot) || 0) * Math.PI / 180;
+    tx.repeat.set(1 / Math.max(0.05, spec.sw), 1 / Math.max(0.05, spec.sh));
+    tx.offset.set(Number(spec.x) || 0, Number(spec.y) || 0);
+    if (face == null) {
+      if (Array.isArray(mesh.material)) mesh.material = mesh.material[0];
+      mesh.material = mesh.material.clone();
+      mesh.material.map = tx;
+      mesh.material.needsUpdate = true;
+      return;
+    }
+    if (!Array.isArray(mesh.material)) {
+      const base = mesh.material;
+      mesh.material = [0, 1, 2, 3, 4, 5].map(() => base.clone());
+    }
+    const one = mesh.material[face].clone();
+    one.map = tx;
+    one.needsUpdate = true;
+    mesh.material[face] = one;
+  }
+
+  function dress(obj, spec) {
+    if (!spec || !spec.targets || !spec.targets.length) return;
+    const list = meshesOf(obj);
+    spec.targets.forEach((t) => {
+      const m = list[t.mesh];
+      if (m) dressOne(m, t.face == null ? null : Number(t.face), spec);
+    });
+    obj.userData.tex = spec;
+  }
+
+  function strip(obj) {
+    meshesOf(obj).forEach((m) => {
+      const bare = (mm) => { if (mm.map) { mm.map.dispose(); mm.map = null; mm.needsUpdate = true; } };
+      if (Array.isArray(m.material)) { m.material.forEach(bare); m.material = m.material[0]; }
+      else bare(m.material);
+    });
+    obj.userData.tex = null;
+  }
+
+  /* --- undo and redo -------------------------------------------------------
+     The bench is small enough to write down completely: what each piece is,
+     where it stands, what colour and finish it wears and which surfaces
+     carry a picture. Undo rebuilds the whole arrangement from that writing,
+     which keeps one honest list rather than thirty kinds of reversal. */
+  const recipeOf = (o) => {
+    const u = o.userData || {};
+    return {
+      book: u.fromBook ? u.bookId : null,
+      solid: u.fromBook ? null : (u.solid || "box"),
+      label: u.kind || "a piece",
+      colour: u.colour || colour,
+      finish: u.finish || finish,
+      p: [o.position.x, o.position.y, o.position.z],
+      r: [o.rotation.x, o.rotation.y, o.rotation.z],
+      s: o.scale.x,
+      tex: u.tex ? JSON.parse(JSON.stringify(u.tex)) : null
+    };
+  };
+
+  function paintObj(o, c, f) {
+    const touch = (m) => {
+      m.color = new THREE.Color(c);
+      const spec = FINISH[f] || FINISH.satin;
+      m.roughness = spec.roughness;
+      m.metalness = spec.metalness;
+      m.opacity = spec.opacity;
+      m.transparent = spec.transparent;
+      m.needsUpdate = true;
+    };
+    meshesOf(o).forEach((m) => {
+      if (Array.isArray(m.material)) m.material.forEach(touch);
+      else touch(m.material);
+    });
+  }
+
+  function buildFrom(rec) {
+    let o = null;
+    if (rec.book) {
+      const item = LIBRARY.find((i) => i.id === rec.book);
+      if (item) o = item.make(rec.colour);
+    }
+    if (!o) o = new THREE.Mesh((SHAPES[rec.solid] || SHAPES.box)(), skin(rec.colour, rec.finish));
+    o.position.fromArray(rec.p);
+    o.rotation.set(rec.r[0], rec.r[1], rec.r[2]);
+    o.scale.setScalar(rec.s);
+    o.userData = {
+      kind: rec.label, colour: rec.colour, finish: rec.finish,
+      fromBook: Boolean(rec.book), bookId: rec.book || null,
+      solid: rec.solid || null, tex: null
+    };
+    paintObj(o, rec.colour, rec.finish);
+    if (rec.tex) dress(o, rec.tex);
+    return o;
+  }
+
+  let past = [], future = [];
+  const scene_state = () => pieces.children.map(recipeOf);
+
+  function marks() {
+    const u = document.getElementById("md-undo");
+    const r = document.getElementById("md-redo");
+    if (u) u.disabled = !past.length;
+    if (r) r.disabled = !future.length;
+  }
+
+  /* Called before anything changes. */
+  function remember() {
+    past.push(scene_state());
+    if (past.length > 40) past.shift();
+    future = [];
+    marks();
+  }
+  /* Called after a change that was already remembered. */
+  function stamp() { marks(); }
+
+  function restore(state) {
+    while (pieces.children.length) {
+      const m = pieces.children.pop();
+      dispose(m);
+    }
+    state.forEach((rec) => pieces.add(buildFrom(rec)));
+    select(null);
+    marks();
+  }
+
+  /* --- undo, redo ---------------------------------------------------------- */
+  on("md-undo", () => {
+    if (!past.length) return note("Nothing to undo.", true);
+    future.push(scene_state());
+    restore(past.pop());
+    note("Undone.");
+  });
+  on("md-redo", () => {
+    if (!future.length) return note("Nothing to redo.", true);
+    past.push(scene_state());
+    restore(future.pop());
+    note("Redone.");
+  });
+  window.addEventListener("keydown", (e) => {
+    if (!hovering || !(e.ctrlKey || e.metaKey)) return;
+    const k = String(e.key).toLowerCase();
+    if (k !== "z" && k !== "y") return;
+    e.preventDefault();
+    const redo = k === "y" || e.shiftKey;
+    const btn = document.getElementById(redo ? "md-redo" : "md-undo");
+    if (btn) btn.click();
+  });
+  marks();
+
+  /* --- the texture studio --------------------------------------------------
+     It stays shut until there is a picture to lay on something. Then it
+     lists the surfaces of whatever is held \u2014 the six faces of a box, or
+     the separate parts of a ready-made piece \u2014 and gives the four things
+     a laid picture needs: where it sits, which way round it is, how big it
+     is, and whether it repeats across the surface or is placed once. */
+  const texBox = document.getElementById("texture-box");
+  const texFile = document.getElementById("md-texfile");
+  const texList = document.getElementById("tx-list");
+  const texSurf = document.getElementById("tx-surfaces");
+  const TX = {
+    x: document.getElementById("tx-x"),
+    y: document.getElementById("tx-y"),
+    rot: document.getElementById("tx-rot"),
+    sw: document.getElementById("tx-sw"),
+    sh: document.getElementById("tx-sh"),
+    tile: document.getElementById("tx-tile")
+  };
+
+  const specNow = () => ({
+    id: activeTex,
+    x: Number(TX.x && TX.x.value) || 0,
+    y: Number(TX.y && TX.y.value) || 0,
+    rot: Number(TX.rot && TX.rot.value) || 0,
+    sw: Number(TX.sw && TX.sw.value) || 1,
+    sh: Number(TX.sh && TX.sh.value) || 1,
+    tile: Boolean(TX.tile && TX.tile.checked),
+    targets: readSurfaces()
+  });
+
+  function readSurfaces() {
+    if (!texSurf) return [];
+    return Array.from(texSurf.querySelectorAll("input:checked")).map((i) => ({
+      mesh: Number(i.dataset.mesh),
+      face: i.dataset.face === "" ? null : Number(i.dataset.face)
+    }));
+  }
+
+  function listSurfaces() {
+    if (!texSurf) return;
+    texSurf.textContent = "";
+    if (!chosen) {
+      const p = document.createElement("p");
+      p.className = "muted xsmall";
+      p.textContent = "Hold a piece and its surfaces appear here.";
+      texSurf.appendChild(p);
+      return;
+    }
+    const list = meshesOf(chosen);
+    const row = (label, mesh, face, on) => {
+      const l = document.createElement("label");
+      l.className = "check";
+      const i = document.createElement("input");
+      i.type = "checkbox";
+      i.dataset.mesh = String(mesh);
+      i.dataset.face = face == null ? "" : String(face);
+      i.checked = Boolean(on);
+      const sp = document.createElement("span");
+      sp.textContent = label;
+      l.appendChild(i);
+      l.appendChild(sp);
+      texSurf.appendChild(l);
+    };
+    if (list.length === 1 && isBox(list[0])) {
+      row("The whole box", 0, null, true);
+      FACES.forEach((f, n) => row(f + " face", 0, n, false));
+    } else if (list.length === 1) {
+      row("The whole surface", 0, null, true);
+    } else {
+      list.forEach((m, n) => row(m.name || ("Part " + (n + 1)), n, null, n === 0));
+    }
+  }
+
+  function listTextures() {
+    if (!texList) return;
+    texList.textContent = "";
+    texStore.forEach((rec, id) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "tool tex-chip" + (id === activeTex ? " is-on" : "");
+      b.title = rec.name;
+      const img = document.createElement("img");
+      img.src = rec.url;
+      img.alt = rec.name;
+      b.appendChild(img);
+      b.addEventListener("click", () => { activeTex = id; listTextures(); });
+      texList.appendChild(b);
+    });
+  }
+
+  function openStudio() {
+    if (!texBox) return;
+    texBox.hidden = false;
+    listTextures();
+    listSurfaces();
+    texBox.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  if (texFile) texFile.addEventListener("change", () => {
+    const f = texFile.files && texFile.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const tex = new THREE.Texture(img);
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.needsUpdate = true;
+        texSeq++;
+        const id = "tex" + texSeq;
+        texStore.set(id, { name: f.name, url: String(reader.result), tex });
+        activeTex = id;
+        openStudio();
+        note("Picture brought in: " + f.name + ". Choose the surfaces and press Lay it on.");
+      };
+      img.onerror = () => note("That picture could not be read.", true);
+      img.src = String(reader.result);
+    };
+    reader.onerror = () => note("That file could not be read.", true);
+    reader.readAsDataURL(f);
+    texFile.value = "";
+  });
+
+  on("md-texture", () => {
+    if (texStore.size) { openStudio(); return; }
+    if (texFile) texFile.click();
+  });
+  on("tx-import", () => { if (texFile) texFile.click(); });
+  on("tx-close", () => { if (texBox) texBox.hidden = true; });
+
+  const relay = (live) => {
+    if (!activeTex || !picked.length) return;
+    if (!live) remember();
+    const spec = specNow();
+    if (!spec.targets.length) { note("Tick at least one surface.", true); return; }
+    picked.forEach((o) => dress(o, JSON.parse(JSON.stringify(spec))));
+    note("");
+  };
+
+  on("tx-apply", () => {
+    if (!picked.length) return note("Hold a piece first.", true);
+    if (!activeTex) return note("Bring a picture in first.", true);
+    relay(false);
+    note("Laid on. Move the sliders and it follows.");
+  });
+  on("tx-strip", () => {
+    if (!picked.length) return note("Hold a piece first.", true);
+    remember();
+    picked.forEach(strip);
+    note("The picture is off again.");
+  });
+  Object.values(TX).forEach((el) => {
+    if (!el) return;
+    el.addEventListener("input", () => {
+      if (!picked.length || !picked.some((o) => o.userData.tex)) return;
+      relay(true);          // already laid on: follow the slider
+    });
+  });
+
   /* --- taking it away ----------------------------------------------------- */
   function toObj() {
     const lines = ["# EGregoRA — the Turning Shop", "mtllib egregora-model.mtl"];
@@ -764,7 +1126,8 @@ function start() {
         String((mesh.userData && mesh.userData.kind) || mesh.parent.userData.kind || "part")
           .replace(/[^\w]+/g, "-");
       const matName = "colour" + (i + 1);
-      mats.push({ name: matName, colour: new THREE.Color(mesh.material.color) });
+      const face = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+      mats.push({ name: matName, colour: new THREE.Color(face.color) });
       lines.push("o " + name, "usemtl " + matName);
       for (let v = 0; v < pos.count; v++) {
         lines.push("v " + pos.getX(v).toFixed(5) + " " + pos.getY(v).toFixed(5) + " " + pos.getZ(v).toFixed(5));
