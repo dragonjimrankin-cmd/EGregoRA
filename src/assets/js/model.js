@@ -69,14 +69,34 @@ function start() {
 
   /* --- the camera on a leash --------------------------------------------- */
   let yaw = 0.7, pitch = 0.5, dist = 14;
+  const aim = new THREE.Vector3(0, 1, 0);      // what the camera looks at
   const place = () => {
     camera.position.set(
-      dist * Math.cos(pitch) * Math.sin(yaw),
-      dist * Math.sin(pitch),
-      dist * Math.cos(pitch) * Math.cos(yaw)
+      aim.x + dist * Math.cos(pitch) * Math.sin(yaw),
+      aim.y + dist * Math.sin(pitch),
+      aim.z + dist * Math.cos(pitch) * Math.cos(yaw)
     );
-    camera.lookAt(0, 1, 0);
+    camera.lookAt(aim);
   };
+
+  /* Walking the camera about without turning it: Alt+Shift across the floor,
+     Ctrl+Alt+Shift (or the wheel) up and down. */
+  function panCamera(mode, dx, dy) {
+    const k = dist * 0.0018;
+    const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
+    right.y = 0;
+    if (right.lengthSq() < 1e-6) right.set(1, 0, 0);
+    right.normalize();
+    if (mode === "panY") {
+      aim.y = Math.max(-20, Math.min(40, aim.y - dy * k));
+      aim.x -= right.x * dx * k;
+      aim.z -= right.z * dx * k;
+    } else {
+      const into = new THREE.Vector3(-right.z, 0, right.x);
+      aim.addScaledVector(right, -dx * k).addScaledVector(into, -dy * k);
+    }
+    place();
+  }
   place();
 
   const size = () => {
@@ -103,7 +123,18 @@ function start() {
      still behaves the way a 3D window is expected to. The arrow keys repeat
      all four, in steps, whenever the pointer is over the window. */
   let dragging = false, orbiting = false, lastX = 0, lastY = 0, moved = 0;
+  let camWork = null;
   let hovering = false;
+
+  /* The camera first: Alt+Shift walks it, Shift or the right button turns
+     it, and an empty bench turns it too. Otherwise the hand is on the piece. */
+  const cameraMode = (e) => {
+    if (e.altKey && e.shiftKey) return (e.ctrlKey || e.metaKey) ? "panY" : "panX";
+    if (!picked.length) return "orbit";
+    if (e.button === 2 && !e.ctrlKey && !e.shiftKey && !e.altKey) return "orbit";
+    if (e.shiftKey && !e.ctrlKey && !e.altKey) return "orbit";
+    return null;
+  };
 
   const modeOf = (e) => {
     if (e.ctrlKey && e.shiftKey) return "size";
@@ -176,8 +207,30 @@ function start() {
   stage.addEventListener("pointerenter", () => { hovering = true; });
   stage.addEventListener("pointerleave", () => { hovering = false; });
 
+  /* Tab walks the selection on. With several pieces held it moves the main
+     one \u2014 the piece the sliders answer to \u2014 round the handful; with one or
+     none it walks through everything on the bench. Shift+Tab goes back. */
+  function cycle(back) {
+    if (!pieces.children.length) return;
+    const step = back ? -1 : 1;
+    if (picked.length > 1) {
+      const at = picked.indexOf(chosen);
+      chosen = picked[(at + step + picked.length) % picked.length];
+      drawHalos();
+      load();
+      say("Main piece: " + (chosen.userData.kind || "a piece") + " \u2014 " +
+        (picked.indexOf(chosen) + 1) + " of " + picked.length + " held.");
+      return;
+    }
+    const all = pieces.children;
+    const at = chosen ? all.indexOf(chosen) : -1;
+    select(all[(at + step + all.length) % all.length]);
+  }
+
   window.addEventListener("keydown", (e) => {
-    if (!hovering || !picked.length) return;
+    if (!hovering) return;
+    if (e.key === "Tab") { e.preventDefault(); cycle(e.shiftKey); return; }
+    if (!picked.length) return;
     const step = e.shiftKey ? 48 : 18;
     const mode = modeOf(e);
     if (e.key === "ArrowLeft") work(mode, -step, 0);
@@ -194,9 +247,8 @@ function start() {
     moved = 0;
     lastX = e.clientX; lastY = e.clientY;
     /* The right button, or Shift, or an empty selection: turn the view. */
-    orbiting = picked.length
-      ? (e.button === 2 && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && !e.ctrlKey)
-      : true;
+    camWork = cameraMode(e);
+    orbiting = Boolean(camWork);
     if (!orbiting) remember();          // one undo step per drag, not per frame
     renderer.domElement.setPointerCapture(e.pointerId);
     stage.classList.toggle("is-nudging", !orbiting);
@@ -205,11 +257,19 @@ function start() {
 
   renderer.domElement.addEventListener("pointermove", (e) => {
     if (!dragging) return;
-    if (e.buttons === 3 && picked.length) orbiting = false;   // both buttons: resize
+    if (e.buttons === 3 && picked.length && !e.shiftKey) { orbiting = false; camWork = null; }
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY;
     moved += Math.abs(dx) + Math.abs(dy);
     if (orbiting) {
+      if (camWork === "panX" || camWork === "panY") {
+        camWork = (e.ctrlKey || e.metaKey) ? "panY" : (e.altKey && e.shiftKey ? "panX" : camWork);
+        panCamera(camWork, dx, dy);
+        say(camWork === "panY"
+          ? "Alt+Ctrl+Shift: walking the camera up and down."
+          : "Alt+Shift: walking the camera across the floor.");
+        return;
+      }
       yaw -= dx * 0.006;
       pitch = Math.max(-1.3, Math.min(1.4, pitch + dy * 0.006));
       place();
@@ -238,8 +298,12 @@ function start() {
   });
   renderer.domElement.addEventListener("wheel", (e) => {
     e.preventDefault();
-    dist = Math.max(4, Math.min(40, dist + Math.sign(e.deltaY) * 1.1));
-    place();
+    if (e.ctrlKey || e.metaKey) {
+      dist = Math.max(4, Math.min(80, dist + Math.sign(e.deltaY) * 1.1));
+      place();
+      return;
+    }
+    panCamera("panY", 0, Math.sign(e.deltaY) * 26);
   }, { passive: false });
 
   /* --- the solids --------------------------------------------------------- */
@@ -664,6 +728,61 @@ function start() {
   gridSwitch("md-grid-x", grid);
   gridSwitch("md-grid-y", gridY);
 
+  /* --- stitching -----------------------------------------------------------
+     Two or more pieces become one. The parts keep their own positions,
+     turns, colours and pictures; what changes is that from now on they are
+     moved, turned, sized, textured and exported as a single thing. Unpick
+     takes them apart again, back where they were. */
+  on("md-stitch", () => {
+    if (picked.length < 2) return note("Hold two or more pieces first \u2014 Shift-click to add one.", true);
+    remember();
+    const mid = new THREE.Vector3();
+    const box = new THREE.Box3();
+    picked.forEach((o) => box.expandByObject(o));
+    box.getCenter(mid);
+
+    const whole = new THREE.Group();
+    whole.position.copy(mid);
+    const parts = picked.slice();
+    parts.forEach((o) => {
+      pieces.remove(o);
+      o.position.sub(mid);
+      whole.add(o);
+    });
+    whole.userData = {
+      kind: parts.length + " pieces stitched",
+      colour: (parts[0].userData && parts[0].userData.colour) || colour,
+      finish: (parts[0].userData && parts[0].userData.finish) || finish,
+      stitched: true, tex: null
+    };
+    pieces.add(whole);
+    select(whole);
+    note(parts.length + " pieces are one piece now. Unpick takes them apart again.");
+  });
+
+  on("md-unstitch", () => {
+    const sewn = picked.filter((o) => o.userData && o.userData.stitched);
+    if (!sewn.length) return note("Hold a stitched piece first.", true);
+    remember();
+    const freed = [];
+    sewn.forEach((whole) => {
+      whole.updateMatrixWorld(true);
+      whole.children.slice().forEach((part) => {
+        part.applyMatrix4(whole.matrix);      // keep it exactly where it looks
+        whole.remove(part);
+        pieces.add(part);
+        freed.push(part);
+      });
+      pieces.remove(whole);
+    });
+    picked = freed;
+    chosen = freed[freed.length - 1] || null;
+    drawHalos();
+    if (chosen) load();
+    say(describe());
+    note(freed.length + " pieces are loose again.");
+  });
+
   /* --- the texture drawer --------------------------------------------------
      A picture brought in from the machine and laid on a surface. Each piece
      remembers which of its surfaces wear it and how: where the picture sits,
@@ -729,6 +848,17 @@ function start() {
      which keeps one honest list rather than thirty kinds of reversal. */
   const recipeOf = (o) => {
     const u = o.userData || {};
+    if (u.stitched) {
+      return {
+        stitch: o.children.map(recipeOf),
+        label: u.kind || "stitched piece",
+        colour: u.colour || colour, finish: u.finish || finish,
+        p: [o.position.x, o.position.y, o.position.z],
+        r: [o.rotation.x, o.rotation.y, o.rotation.z],
+        s: o.scale.x,
+        tex: u.tex ? JSON.parse(JSON.stringify(u.tex)) : null
+      };
+    }
     return {
       book: u.fromBook ? u.bookId : null,
       solid: u.fromBook ? null : (u.solid || "box"),
@@ -760,6 +890,19 @@ function start() {
 
   function buildFrom(rec) {
     let o = null;
+    if (rec.stitch) {
+      o = new THREE.Group();
+      rec.stitch.forEach((kid) => o.add(buildFrom(kid)));
+      o.position.fromArray(rec.p);
+      o.rotation.set(rec.r[0], rec.r[1], rec.r[2]);
+      o.scale.setScalar(rec.s);
+      o.userData = {
+        kind: rec.label, colour: rec.colour, finish: rec.finish,
+        stitched: true, tex: null
+      };
+      if (rec.tex) dress(o, rec.tex);
+      return o;
+    }
     if (rec.book) {
       const item = LIBRARY.find((i) => i.id === rec.book);
       if (item) o = item.make(rec.colour);
