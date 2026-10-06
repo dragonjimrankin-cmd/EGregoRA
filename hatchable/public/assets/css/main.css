@@ -1904,3 +1904,4 @@ img.shot-thumb { object-fit: cover; }
   margin: 0.55rem 0 0.4rem;
 }
 .anim-box p { margin: 0; }
+.model-stage.is-nudging canvas { cursor: move; }

@@ -80,11 +80,103 @@ function start() {
   window.addEventListener("resize", size);
 
   let dragging = false, lastX = 0, lastY = 0, moved = 0;
+
+  /* --- shifting the piece with the mouse over the window -------------------
+     Hold Ctrl and the held pieces follow the mouse across the floor — left
+     and right, nearer and further. Hold Alt and they move in the upright
+     plane instead — left and right, up and down. No button is needed: the
+     hand hovers, the modifier is down, the piece moves. The arrow keys do
+     the same in steps for anyone who would rather not drag. */
+  let hovering = false, overX = 0, overY = 0, haveOver = false;
+  const nudging = { ctrl: false, alt: false };
+  const mode = () => (nudging.ctrl ? "floor" : nudging.alt ? "upright" : null);
+
+  function shift(dx, dy) {
+    if (!picked.length || !mode()) return;
+    const k = dist * 0.0016;
+    const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
+    right.y = 0;
+    if (right.lengthSq() < 1e-6) right.set(1, 0, 0);
+    right.normalize();
+    const move = new THREE.Vector3();
+    if (mode() === "floor") {
+      const into = new THREE.Vector3(-right.z, 0, right.x);   /* away from the eye */
+      move.addScaledVector(right, dx * k).addScaledVector(into, dy * k);
+    } else {
+      move.addScaledVector(right, dx * k).addScaledVector(new THREE.Vector3(0, 1, 0), -dy * k);
+    }
+    picked.forEach((o) => {
+      o.position.add(move);
+      if (o.userData.anim) rebase(o);
+    });
+    refreshHalos();
+    load();
+  }
+
+  function sayMode() {
+    const m = mode();
+    stage.classList.toggle("is-nudging", Boolean(m));
+    if (!m) { if (picked.length || pieces.children.length) say(describe()); return; }
+    if (!picked.length) { say("Nothing is held \u2014 click a piece first, then Ctrl or Alt will move it."); return; }
+    say(m === "floor"
+      ? "Ctrl: moving across the floor. Mouse or arrow keys \u2014 left and right, nearer and further."
+      : "Alt: moving in the upright plane. Mouse or arrow keys \u2014 left and right, up and down.");
+  }
+
+  stage.addEventListener("pointerenter", (e) => {
+    hovering = true; overX = e.clientX; overY = e.clientY; haveOver = true;
+  });
+  stage.addEventListener("pointerleave", () => {
+    hovering = false; haveOver = false;
+    nudging.ctrl = false; nudging.alt = false;
+    sayMode();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (!hovering) return;
+    if (e.key === "Control" || e.key === "Alt") {
+      const was = mode();
+      nudging.ctrl = e.ctrlKey || e.key === "Control";
+      nudging.alt = e.altKey || e.key === "Alt";
+      if (mode() !== was) sayMode();
+      e.preventDefault();
+      return;
+    }
+    if (!mode() || !picked.length) return;
+    const step = e.shiftKey ? 48 : 18;
+    if (e.key === "ArrowLeft") shift(-step, 0);
+    else if (e.key === "ArrowRight") shift(step, 0);
+    else if (e.key === "ArrowUp") shift(0, -step);
+    else if (e.key === "ArrowDown") shift(0, step);
+    else return;
+    e.preventDefault();
+  });
+  window.addEventListener("keyup", (e) => {
+    if (e.key !== "Control" && e.key !== "Alt" && e.ctrlKey === nudging.ctrl && e.altKey === nudging.alt) return;
+    const was = mode();
+    nudging.ctrl = e.key === "Control" ? false : e.ctrlKey;
+    nudging.alt = e.key === "Alt" ? false : e.altKey;
+    if (mode() !== was) sayMode();
+  });
+  window.addEventListener("blur", () => {
+    nudging.ctrl = false; nudging.alt = false; sayMode();
+  });
+
   renderer.domElement.addEventListener("pointerdown", (e) => {
+    if (mode()) { e.preventDefault(); return; }    /* a modifier is held: no orbiting */
     dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY;
     renderer.domElement.setPointerCapture(e.pointerId);
   });
   renderer.domElement.addEventListener("pointermove", (e) => {
+    const dx0 = haveOver ? e.clientX - overX : 0;
+    const dy0 = haveOver ? e.clientY - overY : 0;
+    overX = e.clientX; overY = e.clientY; haveOver = true;
+    if (mode()) {
+      /* The modifier wins: the piece follows the hand, the camera stays put. */
+      nudging.ctrl = e.ctrlKey; nudging.alt = e.altKey && !e.ctrlKey;
+      if (mode()) { shift(dx0, dy0); e.preventDefault(); return; }
+      sayMode();
+    }
     if (!dragging) return;
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY;
@@ -93,8 +185,10 @@ function start() {
     pitch = Math.max(-1.3, Math.min(1.4, pitch + dy * 0.006));
     place();
   });
+  renderer.domElement.addEventListener("contextmenu", (e) => { if (mode()) e.preventDefault(); });
   const release = (e) => {
     if (!dragging) return;
+    if (mode()) { dragging = false; return; }
     dragging = false;
     if (moved < 4) pick(e);       // a click, not a drag: try to select
   };
@@ -263,11 +357,11 @@ function start() {
     );
     ray.setFromCamera(pt, camera);
     const hit = ray.intersectObjects(pieces.children, true)[0];
-    if (!hit) { if (!(e.shiftKey || e.ctrlKey || e.metaKey)) select(null); return; }
+    if (!hit) { if (!(e.shiftKey || e.metaKey)) select(null); return; }
     /* Click any part of a ready-made piece and the whole piece is picked. */
     let obj = hit.object;
     while (obj.parent && obj.parent !== pieces) obj = obj.parent;
-    select(obj, e.shiftKey || e.ctrlKey || e.metaKey);
+    select(obj, e.shiftKey || e.metaKey);
   }
 
   /* --- the sliders -------------------------------------------------------- */
