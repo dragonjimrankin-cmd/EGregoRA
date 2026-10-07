@@ -1,7 +1,4 @@
 {
-  "note": "The pool should now show the Hugging Face token. Check, then draw a picture on a Hugging Face engine.",
-  "calls": [
-    { "action": "accounts" },
-    { "action": "draw", "prompt": "A brass orrery on a cluttered desk by candlelight, shallow depth of field, warm highlights on worn metal" }
-  ]
+  "note": "v125: confirm the Hugging Face token is in the pool.",
+  "calls": [ { "action": "accounts" } ]
 }
