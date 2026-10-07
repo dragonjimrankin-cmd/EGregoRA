@@ -1,27 +1,19 @@
-# control run — 2026-10-07T07:51:44.555Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-07T08:05:27.624Z
+site: https://egregora.hatchable.site   calls: 2
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/media  {"action":"list","kind":"audio"}
-HTTP 200  (295 ms)
+POST /api/media  {"action":"shelf","kind":"audio","pass":"8===D"}
+HTTP 200  (78 ms)
 {
   "ok": true,
   "items": []
 }
 
 --------------------------------------------------------------------
-POST /api/media  {"action":"shelf","kind":"video","pass":"1133"}
-HTTP 200  (151 ms)
-{
-  "ok": true,
-  "items": []
-}
-
---------------------------------------------------------------------
-POST /api/media  {"action":"shelf","kind":"video","pass":"0000"}
-HTTP 401  (112 ms)
+POST /api/media  {"action":"shelf","kind":"audio","pass":"1133"}
+HTTP 401  (49 ms)
 {
   "error": "Not the key. 2 tries left."
 }
