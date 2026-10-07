@@ -1,7 +1,21 @@
-# control run — 2026-10-07T02:27:53.362Z
-site: https://egregora.hatchable.site   calls: 0
+# control run — 2026-10-07T02:31:35.395Z
+site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"Is the meaning of life 42 or chicken soup?"}
+HTTP 200  (361 ms)
+{
+  "answer": "Nobody has found one external to living things. The honest positions are: nihilism, that there is none; absurdism, that we should live fully in the gap between our demand for meaning and the universe's silence; and the constructivist view that meaning is made, in work, love, attention and what you leave. The order holds the third and respects the second. Our stance.",
+  "source": "written",
+  "limb": "history",
+  "followups": [
+    "What is the meaning of life?",
+    "Is life about competition or cooperation?",
+    "Why is the speed of light the limit?"
+  ]
+}
 
 done.
 exit=0
