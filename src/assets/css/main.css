@@ -3208,3 +3208,19 @@ body.only-check .frame { border: 0; padding: 0.2rem; }
 .freeai .am-fields { margin-top: 0.8rem; }
 .card-to-files { margin: 0.4rem 0.3rem 0 0; }
 .card-to-files.is-on { color: #7fae7a; border-color: rgba(127, 174, 122, 0.7); }
+
+/* ===========================================================================
+   The grading diamonds — one colour each, everywhere
+   ---------------------------------------------------------------------------
+   The four grades used to be coloured only inside a .frame, a .plate, a
+   .biblio or the legend, so a diamond that appeared in ordinary prose, in a
+   table, in a caption or inside a drawing inherited whatever colour its
+   paragraph happened to be — a mark that looks like a grade and is not one.
+   The classes now carry their own colour wherever they appear, and `fill`
+   is set alongside `color` so the same class works inside an SVG, where a
+   <tspan> is the diamond's host rather than a <span>.
+   ======================================================================== */
+.sci  { color: var(--verdant);  fill: var(--verdant); }
+.hist { color: var(--gold);     fill: var(--gold); }
+.spec { color: var(--amethyst); fill: var(--amethyst); }
+.myth { color: var(--rose);     fill: var(--rose); }

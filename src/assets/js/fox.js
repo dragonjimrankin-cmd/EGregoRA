@@ -1149,6 +1149,88 @@ import * as THREE from "./vendor/three.module.js";
     return out;
   };
 
+  /* ----------------------------------------------------------------------
+     Speaking the grades out loud
+     ----------------------------------------------------------------------
+     On the page a claim is graded by a coloured diamond, which is silent:
+     a listener gets the words and loses the order's judgement of them.
+     So when Gink meets a graded claim he reads the claim, leaves a beat,
+     and then says what it was graded as, in the legend's own wording.
+     The diamond itself is never pronounced.
+  ---------------------------------------------------------------------- */
+  const GRADE_SAID = {
+    sci:  "established science",
+    hist: "scholarship and history",
+    spec: "speculative and contested",
+    myth: "myth, tradition and primary esoteric text"
+  };
+  /* The label written after the diamond in prose, mapped to its grade. */
+  const GRADE_WORD = {
+    established: "sci", tested: "sci", proven: "sci", settled: "sci", science: "sci",
+    measured: "sci", provable: "sci", demonstrated: "sci", observed: "sci", verified: "sci",
+    scholarship: "hist", history: "hist", historical: "hist", documented: "hist",
+    attested: "hist", record: "hist", recorded: "hist",
+    speculative: "spec", speculation: "spec", contested: "spec", open: "spec",
+    unknown: "spec", conjecture: "spec", hypothesis: "spec", unproven: "spec",
+    unsettled: "spec", disputed: "spec",
+    myth: "myth", mythic: "myth", tradition: "myth", traditional: "myth",
+    symbol: "myth", symbolic: "myth", esoteric: "myth", legend: "myth"
+  };
+  const GRADE_PAUSE = 1000;     // the beat before the verdict, in milliseconds
+
+  /* A diamond, then any grading label that follows it, then the claim it
+     governs — which runs to the next diamond or the end of the passage. */
+  const MARK = /\u25c6\s*([A-Za-z]+)?/g;
+
+  /* Turn a passage into a running order: lines to say and beats to leave.
+     Text with no diamonds in it comes back as plain lines, exactly as
+     before, so the oracle's own answers are unaffected. */
+  const scriptFrom = (text) => {
+    const src = String(text || "");
+    if (src.indexOf("\u25c6") === -1) return chunk(src).map((line) => ({ line }));
+
+    const parts = [];               // { grade, body }
+    let at = 0, grade = null, m;
+    MARK.lastIndex = 0;
+    while ((m = MARK.exec(src))) {
+      parts.push({ grade, body: src.slice(at, m.index) });
+      const word = (m[1] || "").toLowerCase();
+      const known = Object.prototype.hasOwnProperty.call(GRADE_WORD, word);
+      grade = known ? GRADE_WORD[word] : null;
+      /* A recognised label is the grade's own name: it is spoken at the end
+         as the verdict, not read out in the middle of the sentence. */
+      at = known ? m.index + m[0].length : m.index + 1;
+    }
+    parts.push({ grade, body: src.slice(at) });
+
+    const out = [];
+    for (const part of parts) {
+      const body = part.body.replace(/^[\s:;,.\u2014-]+/, "").trim();
+      if (body) for (const line of chunk(body)) out.push({ line });
+      if (part.grade && body) {
+        out.push({ wait: GRADE_PAUSE });
+        out.push({ line: `This has been graded as ${GRADE_SAID[part.grade]}.` });
+      }
+    }
+    return out.length ? out : chunk(src).map((line) => ({ line }));
+  };
+
+  /* The same thing read straight off the page, where the grade is not a
+     label in the text but a class on the element holding the diamond. */
+  const textWithMarks = (node) => {
+    if (!node) return "";
+    const copy = node.cloneNode(true);
+    copy.querySelectorAll(".sci, .hist, .spec, .myth").forEach((el) => {
+      const key = ["sci", "hist", "spec", "myth"].find((k) => el.classList.contains(k));
+      const inner = el.textContent.replace(/\u25c6/g, " ").trim();
+      el.replaceWith(document.createTextNode(` \u25c6${key} ${inner} `));
+    });
+    return copy.textContent.replace(/\s+/g, " ").trim();
+  };
+  /* The class names are the grade words too, so the reader above finds them. */
+  GRADE_WORD.sci = "sci"; GRADE_WORD.hist = "hist";
+  GRADE_WORD.spec = "spec"; GRADE_WORD.myth = "myth";
+
   let queue = [], muted = false, lastText = "", silentTimer = null, paused = false;
   let mimeTimer = null;
   const RATE = 0.95;
@@ -1189,7 +1271,15 @@ import * as THREE from "./vendor/three.module.js";
       setStatus("Finished. Test everything kindly.");
       return;
     }
-    const line = queue.shift();
+    const item = queue.shift();
+    if (item && item.wait) {
+      /* A beat before the verdict. The mouth rests; the queue goes on. */
+      speaking = true;
+      mimeTimer = setTimeout(sayNext, item.wait);
+      return;
+    }
+    const line = typeof item === "string" ? item : item.line;
+    if (!line || !line.trim()) { sayNext(); return; }
     const u = new SpeechSynthesisUtterance(line);
     if (chosenVoice) { u.voice = chosenVoice; u.lang = chosenVoice.lang; } else u.lang = "en-GB";
     u.rate = RATE; u.pitch = 0.86; u.volume = 1;
@@ -1230,14 +1320,14 @@ import * as THREE from "./vendor/three.module.js";
       setStatus("Mouthing the answer — this device has no speech synthesiser.");
       clearTimeout(silentTimer);
       clearTimeout(mimeTimer); mimeTimer = null;
-      mimeText(text);
+      mimeText(scriptFrom(text).filter((i) => i.line).map((i) => i.line).join(" "));
       silentTimer = setTimeout(() => { speaking = false; setStatus(readyLine()); },
         Math.min(45000, 55 * text.length));
       return;
     }
     synth.cancel();
     if (!chosenVoice) pickVoice();
-    queue = chunk(text);
+    queue = scriptFrom(text);
     speaking = true;
     if (btnStop) btnStop.disabled = false;
     setStatus(chosenVoice ? `Speaking — ${chosenVoice.name}.` : "Speaking.");
@@ -1280,8 +1370,19 @@ import * as THREE from "./vendor/three.module.js";
     return true;
   };
 
+  /** Read an element of the page aloud, grades and all: the diamonds are
+      not pronounced, but after each graded claim he says how it is filed. */
+  const speakNode = (el) => {
+    const node = typeof el === "string" ? document.querySelector(el) : el;
+    if (!node) return false;
+    const text = textWithMarks(node);
+    if (!text) return false;
+    speak(text);
+    return true;
+  };
+
   window.EGFox = {
-    speak, stop, available: true,
+    speak, speakNode, available: true, stop,
     hold, resume, again,
     get paused() { return paused; },
     get speaking() { return speaking; },

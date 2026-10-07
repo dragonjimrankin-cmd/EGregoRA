@@ -49,7 +49,11 @@ def title_of(block):
         return "A plate"
     t = re.sub(r"<[^>]+>", " ", cap.group(1))
     t = html.unescape(re.sub(r"\s+", " ", t)).strip()
-    return t[:140]
+    # The caption carries the plate's grading diamond. Stripped of its span
+    # the mark would arrive here as a bare character in link text, where it
+    # has no class, no colour and no meaning — so it is dropped.
+    t = re.sub(r"\s*\u25c6+\s*", " ", t).strip()
+    return re.sub(r"\s+", " ", t)[:140]
 
 def prefix_ids(block, slug):
     """Rename every id defined inside this drawing so two copies cannot clash."""
