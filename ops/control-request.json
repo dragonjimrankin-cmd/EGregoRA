@@ -1,8 +1,7 @@
 {"calls":[
- {"raw":{"path":"/api/live","body":{"action":"people","pass":"8===D","feed":2}}},
- {"raw":{"path":"/api/live","body":{"action":"order-say","pass":"8===D","feed":2,"text":"A line from The Order."}}},
- {"raw":{"path":"/api/live","body":{"action":"people","pass":"8===D","feed":2}}},
- {"raw":{"path":"/api/media","body":{"action":"pin","pass":"8===D","id":999}}},
- {"raw":{"path":"/api/live","body":{"action":"close","pass":"8===D","feed":2}}},
- {"raw":{"path":"/api/live","body":{"action":"list"}}}
+ {"raw":{"path":"/api/live","body":{"action":"open","pass":"8===D","title":"Probe room","word":"gink"}}},
+ {"raw":{"path":"/api/live","body":{"action":"people","pass":"8===D","id":3}}},
+ {"raw":{"path":"/api/live","body":{"action":"order-say","pass":"8===D","id":3,"body":"A line from The Order."}}},
+ {"raw":{"path":"/api/live","body":{"action":"allow","pass":"8===D","id":3,"person":"nobody","field":"can_cam","value":false}}},
+ {"raw":{"path":"/api/live","body":{"action":"close","pass":"8===D","id":3}}}
 ]}
