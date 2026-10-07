@@ -2332,12 +2332,24 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
    the stage take the window. Everything is still there and still reachable
    by keyboard; it is dimmed and inert rather than removed, so Escape puts
    the page straight back as it was. */
-body.atlas-focused > *:not(#atlas-box) {
+/* #atlas-box lives inside <main>, so the dimming has to skip BOTH the box
+   and the element it sits in \u2014 dimming <main> would take the map down
+   with the page and leave every link in it inert. */
+body.atlas-focused > header,
+body.atlas-focused > footer,
+body.atlas-focused > .veil,
+body.atlas-focused > #starfield,
+body.atlas-focused > .scroll-rail,
+body.atlas-focused > .geo,
+body.atlas-focused > main > *:not(#atlas-box) {
   opacity: 0.04;
   filter: blur(2px);
   transition: opacity 0.35s ease, filter 0.35s ease;
   pointer-events: none;
 }
+body.atlas-focused > main { opacity: 1; filter: none; pointer-events: auto; }
+#atlas-box.is-focused,
+#atlas-box.is-focused * { pointer-events: auto; }
 body.atlas-focused { overflow: hidden; }
 #atlas-box.is-focused {
   position: fixed;

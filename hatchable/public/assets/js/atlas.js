@@ -496,6 +496,10 @@ function start(data) {
   const KIND = { root: "The trunk", limb: "A limb", sub: "A sub-limb", topic: "A section of the page" };
 
   function choose(n) {
+    /* Clicking the thing you already have in hand is how you go there \u2014
+       the reading panel's button says the same, but a second click on the
+       node itself is the gesture people reach for first. */
+    if (n === chosen && n.href) { window.location.href = n.href; return; }
     chosen = n;
     focus(true);
     if (n.children.length) {
@@ -534,6 +538,7 @@ function start(data) {
       "<h3>" + n.title + "</h3>" +
       (n.note ? "<p>" + n.note + "</p>" : "") +
       kids +
+      '<p class="muted xsmall">Click it on the map again to go there.</p>' +
       '<p><a class="btn" href="' + n.href + '">Go there &rarr;</a></p>';
   }
   paint(null);
