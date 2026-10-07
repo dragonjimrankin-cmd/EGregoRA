@@ -1,0 +1,126 @@
+---
+layout: layouts/base.njk
+title: Live Cam
+permalink: /live/
+description: "The order's camera, when it is running: a live feed for members who hold the watchword."
+---
+
+<section class="page-head">
+  <p class="kicker">The Open Window</p>
+  <h1>Live Cam</h1>
+  <p class="lede muted">When the order has something worth watching as it happens &mdash; a working, a
+  build, a conversation, a sky &mdash; it opens a window here. Members with the watchword for that
+  feed can look through it.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p><span class="drop">T</span>wo locks, and they are different locks. You need an account on this
+    site, because a feed is not for the street; and you need the <strong>watchword</strong> for that
+    particular feed, which is set fresh each time and given out by whoever is broadcasting. An account
+    is not an invitation, and a shared word is not an identity, so both are asked for.</p>
+    <p class="muted small">How it works, since you will notice: there is no media server behind this
+    site. The camera records two seconds at a time and your browser plays those segments as they land,
+    which puts you a handful of seconds behind the room. It is a real window, just a slightly slow
+    one &mdash; and it is honest about that rather than pretending to be a broadcast truck.</p>
+  </div>
+</section>
+
+<div class="divider">&#10022;</div>
+
+<section class="wrap narrow reveal" id="live-watch">
+  <div class="frame">
+    <p class="kicker">What is open now</p>
+    <ul class="live-list" data-lw="list">
+      <li class="muted small">Looking&hellip;</li>
+    </ul>
+
+    <div data-lw="gate" hidden>
+      <div class="divider">&#10022;</div>
+      <p class="kicker">The watchword for <span data-lw="chosen"></span></p>
+      <div class="admin-signin">
+        <label for="lw-word">Watchword</label>
+        <input type="password" id="lw-word" data-lw="word" autocomplete="one-time-code">
+        <button type="button" class="btn btn--small" data-lw="enter">Look through</button>
+      </div>
+      <p class="muted xsmall">You must be signed in as a member. Not one yet? <a href="/join/">Join the order</a>.</p>
+    </div>
+
+    <p class="auth-msg" data-lw="msg"></p>
+
+    <div data-lw="stage" hidden>
+      <video class="live-video" data-lw="video" controls playsinline
+             aria-label="The live feed" role="img"></video>
+      <p class="muted xsmall">Running a few seconds behind. If it stalls, the broadcaster's
+      connection hiccuped; it catches itself up.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">&#10022;</div>
+
+<section class="wrap narrow admin-media" id="live-admin">
+  <div class="btn-row">
+    <button type="button" class="btn btn--ghost" data-lv="open" aria-expanded="false">Admin Only</button>
+    <span class="muted xsmall">Open a feed from this machine's camera, with a watchword of your choosing.</span>
+  </div>
+
+  <div class="frame admin-panel" data-lv="panel" hidden>
+    <p class="kicker">The Order&rsquo;s Passcode</p>
+    <div class="admin-signin">
+      <label for="lv-pass">Passcode</label>
+      <input type="password" id="lv-pass" data-lv="pass" autocomplete="current-password">
+      <button type="button" class="btn btn--small" data-lv="signin">Open the door</button>
+    </div>
+    <p class="auth-msg" data-lv="msg"></p>
+
+    <div data-lv="work" hidden>
+      <div class="divider">&#10022;</div>
+      <div class="am-fields">
+        <div>
+          <label for="lv-title">What this feed is</label>
+          <input type="text" id="lv-title" data-lv="title" maxlength="160" placeholder="Cutting a rune set, start to finish">
+        </div>
+        <div>
+          <label for="lv-word">Watchword for this feed</label>
+          <input type="text" id="lv-word" data-lv="word" maxlength="120" autocomplete="off"
+                 placeholder="set it fresh every time">
+        </div>
+        <div>
+          <label for="lv-source">Camera or microphone</label>
+          <select id="lv-source" data-lv="source">
+            <option value="cam">Camera and microphone</option>
+            <option value="mic">Microphone only</option>
+          </select>
+        </div>
+        <div>
+          <label for="lv-quality">Quality</label>
+          <select id="lv-quality" data-lv="quality">
+            <option value="low">Low &mdash; kindest to a weak line</option>
+            <option value="mid" selected>Middling</option>
+            <option value="high">High &mdash; needs a good line both ends</option>
+          </select>
+        </div>
+      </div>
+      <label for="lv-note">A line about it, shown beside the title</label>
+      <input type="text" id="lv-note" data-lv="note" maxlength="400">
+
+      <div class="btn-row">
+        <button type="button" class="btn" data-lv="start">Start the feed &mdash; ten second countdown</button>
+        <button type="button" class="btn btn--ghost" data-lv="stop" disabled>End the feed</button>
+      </div>
+      <div class="countdown" data-lv="count" hidden></div>
+
+      <video class="live-mirror" data-lv="mirror" muted playsinline
+             aria-label="What the camera is seeing" role="img"></video>
+      <p class="muted xsmall">Ending a feed deletes its segments. Nothing of a live feed is kept
+      &mdash; if you want the recording, record it on the Videos page instead.</p>
+
+      <div class="divider">&#10022;</div>
+      <p class="kicker">Feeds</p>
+      <div data-lv="mine"></div>
+    </div>
+  </div>
+</section>
+
+<script type="module" src="/assets/js/live.js?v={{ build.id }}"></script>

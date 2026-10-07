@@ -19,6 +19,8 @@
    uploading the original untouched is always the first option.
    ======================================================================== */
 
+import { countdown } from "./live.js";
+
 const panels = document.querySelectorAll("[data-admin-media]");
 panels.forEach(setup);
 
@@ -326,6 +328,157 @@ function setup(root) {
     field.addEventListener("input", mark);
     mark();
     el.markTags = mark;
+  })();
+
+  /* ====================================================== recording in place
+     Not every episode starts as a file. This opens the machine's own
+     microphone (or camera, on the films page), gives you ten seconds to
+     settle \u2014 to sit down, clear your throat, look at the lens \u2014 and
+     then records straight into the page. What comes out is handed to
+     exactly the same enhancer, listing and publishing as an uploaded file,
+     because it is the same thing: a recording. */
+  (function recordHere() {
+    const open = root.querySelector("[data-am=rec-open]");
+    const box = root.querySelector("[data-am=rec]");
+    if (!open || !box) return;
+
+    const r = (n) => root.querySelector('[data-am="rec-' + n + '"]');
+    let stream = null, rec = null, bits = [], started = 0, tick = null, cancel = null, meter = null;
+
+    const state = (t) => { const n = r("state"); if (n) n.textContent = t || ""; };
+
+    open.addEventListener("click", () => {
+      const shut = box.hidden;
+      box.hidden = !shut;
+      open.textContent = shut ? "Hide the recorder" : "Record it here instead";
+    });
+
+    /* A level meter, because recording blind is how an hour gets lost to a
+       muted microphone. */
+    function watchLevel(src) {
+      const canvas = r("meter");
+      if (!canvas) return;
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const node = ctx.createMediaStreamSource(src);
+      const an = ctx.createAnalyser();
+      an.fftSize = 1024;
+      node.connect(an);
+      const data = new Uint8Array(an.frequencyBinCount);
+      const g = canvas.getContext("2d");
+      meter = { ctx, live: true };
+      const draw = () => {
+        if (!meter || !meter.live) return;
+        an.getByteTimeDomainData(data);
+        let peak = 0;
+        for (let i = 0; i < data.length; i++) peak = Math.max(peak, Math.abs(data[i] - 128) / 128);
+        g.clearRect(0, 0, canvas.width, canvas.height);
+        g.fillStyle = peak > 0.95 ? "#c98b6a" : "#d7b05a";
+        g.fillRect(0, 10, canvas.width * Math.min(1, peak * 1.6), canvas.height - 20);
+        g.strokeStyle = "rgba(215,176,90,0.3)";
+        g.strokeRect(0.5, 9.5, canvas.width - 1, canvas.height - 19);
+        requestAnimationFrame(draw);
+      };
+      draw();
+    }
+
+    r("start").addEventListener("click", async () => {
+      try {
+        const kind = KIND;
+        const how = r("source") ? r("source").value : "mic";
+        const q = r("quality") ? r("quality").value : "mid";
+        const size = q === "high" ? 1920 : q === "low" ? 854 : 1280;
+
+        if (kind === "video" && how === "screen") {
+          stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+          const mic = await navigator.mediaDevices.getUserMedia({ audio: true }).catch(() => null);
+          if (mic) mic.getAudioTracks().forEach((t) => stream.addTrack(t));
+        } else if (kind === "video") {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: size }, frameRate: { ideal: 30 } },
+            audio: { echoCancellation: true, noiseSuppression: true }
+          });
+        } else {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+          });
+        }
+
+        const mirror = r("mirror");
+        if (mirror) { mirror.srcObject = stream; mirror.play().catch(() => {}); }
+        if (KIND === "audio") watchLevel(stream);
+
+        state("Microphone open. Ten seconds \u2014 settle, and start when the count clears.");
+        r("start").disabled = true;
+        cancel = countdown(r("count"), 10, () => go(q));
+      } catch (err) {
+        state((err && err.message) || "The device would not open.");
+        r("start").disabled = false;
+      }
+    });
+
+    function go(q) {
+      const type = KIND === "audio"
+        ? (["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"]
+          .find((t) => MediaRecorder.isTypeSupported(t)) || "")
+        : (["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
+          .find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm");
+
+      bits = [];
+      rec = new MediaRecorder(stream, Object.assign({ mimeType: type || undefined },
+        KIND === "audio"
+          ? { audioBitsPerSecond: 128000 }
+          : { videoBitsPerSecond: q === "high" ? 6000000 : q === "low" ? 1500000 : 3000000 }));
+      rec.ondataavailable = (e) => { if (e.data && e.data.size) bits.push(e.data); };
+      rec.onstop = finish;
+      rec.start(1000);
+      started = Date.now();
+      r("stop").disabled = false;
+      root.classList.add("is-recording");
+      tick = setInterval(() => state("Recording \u2014 " + clock((Date.now() - started) / 1000)), 500);
+      say("Recording. Press stop when you are done; it goes straight to the enhancer.");
+    }
+
+    r("stop").addEventListener("click", () => {
+      if (rec && rec.state !== "inactive") rec.stop();
+      r("stop").disabled = true;
+    });
+
+    async function finish() {
+      clearInterval(tick);
+      root.classList.remove("is-recording");
+      if (stream) stream.getTracks().forEach((t) => t.stop());
+      if (meter) { meter.live = false; meter.ctx.close().catch(() => {}); meter = null; }
+      r("start").disabled = false;
+
+      const blob = new Blob(bits, { type: bits[0] ? bits[0].type : "audio/webm" });
+      state("Recorded " + clock((Date.now() - started) / 1000) + " \u2014 " + mb(blob.size) + ".");
+      /* Hand it to the same path a chosen file takes. */
+      source = blob;
+      ready = null;
+      if (el.title && !el.title.value) {
+        el.title.value = (KIND === "audio" ? "Recorded " : "Filmed ") +
+          new Date().toLocaleDateString([], { day: "numeric", month: "long", year: "numeric" });
+      }
+      try {
+        if (KIND === "audio") {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          fileBuf = await ctx.decodeAudioData(await blob.arrayBuffer());
+          ctx.close();
+          fileLook = inspect(fileBuf);
+          el.before.innerHTML = reading(fileLook, "As it was recorded");
+        } else {
+          fileLook = { seconds: (Date.now() - started) / 1000 };
+          el.before.innerHTML = '<p class="kicker">As it was recorded</p><ul class="am-read">' +
+            "<li>Length <strong>" + clock(fileLook.seconds) + "</strong></li>" +
+            "<li>Weight <strong>" + mb(blob.size) + "</strong></li></ul>";
+        }
+        if (el.meta) el.meta.hidden = false;
+        if (el.send) el.send.disabled = false;
+        say("Recorded. Enhance it, have it transcribed, then publish.");
+      } catch (err) {
+        say((err && err.message) || "The recording could not be read back.", true);
+      }
+    }
   })();
 
   /* ------------------------------------------------------------ the chooser */

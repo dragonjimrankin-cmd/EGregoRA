@@ -24,7 +24,49 @@
       <div class="divider">&#10022;</div>
 
       <p class="kicker">One &mdash; the recording</p>
-      <label for="{{ amKind }}-file">Choose {{ amNoun }}</label>
+      <div class="btn-row">
+        <button type="button" class="btn btn--small btn--ghost" data-am="rec-open">
+          Record it here instead</button>
+        <span class="muted xsmall">Straight into the browser, with ten seconds to settle first.</span>
+      </div>
+
+      <div class="am-rec" data-am="rec" hidden>
+        {% if amKind == "video" %}
+        <div class="am-fields">
+          <div>
+            <label for="{{ amKind }}-rec-source">What to record</label>
+            <select id="{{ amKind }}-rec-source" data-am="rec-source">
+              <option value="cam">Camera and microphone</option>
+              <option value="screen">This screen, with microphone</option>
+            </select>
+          </div>
+          <div>
+            <label for="{{ amKind }}-rec-quality">Quality</label>
+            <select id="{{ amKind }}-rec-quality" data-am="rec-quality">
+              <option value="low">Low</option>
+              <option value="mid" selected>Middling</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+        {% endif %}
+        <div class="btn-row">
+          <button type="button" class="btn btn--small" data-am="rec-start">
+            Start recording &mdash; ten second countdown</button>
+          <button type="button" class="btn btn--small btn--ghost" data-am="rec-stop" disabled>Stop</button>
+        </div>
+        <div class="countdown" data-am="rec-count" hidden></div>
+        <p class="am-rec-state muted small" data-am="rec-state"></p>
+        {% if amKind == "video" %}
+        <video class="live-mirror" data-am="rec-mirror" muted playsinline
+               aria-label="What the camera is seeing" role="img"></video>
+        {% else %}
+        <canvas class="am-meter" data-am="rec-meter" width="600" height="56"
+                aria-label="The level of what is being recorded" role="img"></canvas>
+        {% endif %}
+      </div>
+
+      <label for="{{ amKind }}-file">Or choose {{ amNoun }} already recorded</label>
       <input type="file" id="{{ amKind }}-file" data-am="file"
              accept="{{ amKind }}/*">
 
