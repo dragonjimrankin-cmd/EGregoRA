@@ -171,6 +171,20 @@
     thread.scrollTop = thread.scrollHeight;
   };
 
+  /* Bring the answer box itself into view. The transcript sits directly
+     under the question box, so on a long page the reply can begin below the
+     fold; this walks the page down to it once per asking. */
+  const scrollToAnswer = () => {
+    const room = thread.closest(".oracle-chat") || thread;
+    const top = room.getBoundingClientRect().top;
+    if (top > 80 || top < 0) {
+      room.scrollIntoView({
+        block: "start",
+        behavior: reduce ? "auto" : "smooth"
+      });
+    }
+  };
+
   const addMsg = (role, html, cls) => {
     const el = document.createElement("div");
     el.className = "oracle-msg oracle-msg--" + role + (cls ? " " + cls : "");
@@ -351,6 +365,7 @@
     box.style.height = "";
 
     const pending = thinking();
+    scrollToAnswer();
 
     try {
       const res = await fetch("/api/ask", {
@@ -386,8 +401,13 @@
         });
         history.push({ role: "oracle", text: data.answer });
         if (history.length > MAX_KEPT) history = history.slice(-MAX_KEPT);
-        if (window.EGFox && window.EGFox.available) window.EGFox.speak(data.answer);
-        else window.__EG_PENDING_SPEECH__ = data.answer;
+        if (window.EGVoiceMuted && window.EGVoiceMuted()) {
+          /* Gink's voice is off; the answer is read with the eyes. */
+        } else if (window.EGFox && window.EGFox.available) {
+          window.EGFox.speak(data.answer);
+        } else {
+          window.__EG_PENDING_SPEECH__ = data.answer;
+        }
       }
     } catch {
       pending.classList.remove("is-thinking");
@@ -3942,4 +3962,58 @@
       });
     });
   });
+})();
+
+/* ---------------------------------------------- Gink's voice, on and off
+   A switch in the corner of the answer box. The choice is remembered, and
+   it is applied to the fox as soon as he wakes — he may well be still
+   loading his three.js when the page settles. */
+(() => {
+  "use strict";
+  const btn = document.getElementById("o-mute");
+  const KEY = "eg-gink-muted";
+
+  let muted = false;
+  try { muted = localStorage.getItem(KEY) === "1"; } catch { muted = false; }
+
+  window.EGVoiceMuted = () => muted;
+
+  const applyToFox = () => {
+    if (window.EGFox) {
+      window.EGFox.muted = muted;
+      if (muted && window.EGFox.stop) window.EGFox.stop();
+      if (muted) window.__EG_PENDING_SPEECH__ = "";
+      return true;
+    }
+    return false;
+  };
+
+  /* He arrives late, so keep offering the setting for a little while. */
+  if (!applyToFox()) {
+    let tries = 0;
+    const t = setInterval(() => {
+      if (applyToFox() || ++tries > 40) clearInterval(t);
+    }, 500);
+  }
+
+  if (!btn) return;
+  const label = btn.querySelector(".mute-label");
+
+  const paint = () => {
+    btn.classList.toggle("is-muted", muted);
+    btn.setAttribute("aria-pressed", muted ? "true" : "false");
+    if (label) label.textContent = muted ? "Gink's voice is off" : "Gink's voice is on";
+    btn.setAttribute("aria-label", muted
+      ? "Gink's voice is off. Turn it on."
+      : "Gink's voice is on. Turn it off.");
+  };
+
+  btn.addEventListener("click", () => {
+    muted = !muted;
+    try { localStorage.setItem(KEY, muted ? "1" : "0"); } catch { /* private window */ }
+    applyToFox();
+    paint();
+  });
+
+  paint();
 })();

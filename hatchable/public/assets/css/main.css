@@ -858,6 +858,16 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   scrollbar-width: thin;
   scrollbar-color: rgba(215, 176, 90, 0.45) transparent;
 }
+/* Gink's voice, switched off and on from the corner of the answer box. */
+.oracle-mute-wrap { display: flex; justify-content: flex-end; margin: 0.5rem 0 0; }
+.oracle-mute { display: inline-flex; align-items: center; gap: 0.45rem; }
+.oracle-mute .mute-icon { display: inline-flex; width: 1.05rem; height: 1.05rem; }
+.oracle-mute .mute-icon svg { width: 100%; height: 100%; }
+.oracle-mute .mute-bar { display: none; }
+.oracle-mute.is-muted { color: var(--dim, #cbbb93); opacity: 0.82; }
+.oracle-mute.is-muted .mute-wave { display: none; }
+.oracle-mute.is-muted .mute-bar { display: inline; }
+
 .oracle-thread::-webkit-scrollbar { width: 8px; }
 .oracle-thread::-webkit-scrollbar-thumb {
   background: rgba(215, 176, 90, 0.4); border-radius: 4px;
@@ -1304,6 +1314,11 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 }
 .fox-panel--ask .fox-column { position: sticky; top: 1.2rem; }
 .fox-panel--ask + .oracle-chat { margin-top: 1.2rem; }
+/* The answer belongs directly under the question that asked for it, so the
+   transcript is a second row in the right-hand column and Gink keeps the
+   left. */
+.fox-panel--ask > .oracle-chat { grid-column: 2; margin: 1rem 0 0; min-width: 0; }
+.fox-panel--ask .fox-column { grid-row: 1 / span 2; }
 .fox-panel--ask .fox-stage { aspect-ratio: 4 / 5; }
 /* The writing sits above Gink now, so the gap belongs under it, not over. */
 .fox-panel--ask .fox-side { margin: 0 0 0.9rem; }
@@ -1312,7 +1327,8 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 .fox-ask .oracle-form textarea { min-height: 7.5rem; }
 @media (max-width: 900px) {
   .fox-panel--ask { grid-template-columns: 1fr; }
-  .fox-panel--ask .fox-column { position: static; display: grid; gap: 1rem; }
+  .fox-panel--ask > .oracle-chat { grid-column: 1; }
+  .fox-panel--ask .fox-column { position: static; display: grid; gap: 1rem; grid-row: auto; }
   .fox-panel--ask .fox-stage { max-width: 260px; margin: 0 auto; }
 }
 
