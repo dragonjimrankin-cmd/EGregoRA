@@ -39,17 +39,22 @@ const MAX_OPS = 60;
 
 /* The only operations that exist. Anything else is refused, which is what
    keeps "change the colour of that heading" from becoming "run this". */
-const OPS = ['text', 'colour', 'background', 'border', 'font-size', 'align', 'hide', 'show', 'style'];
+const OPS = ['text', 'colour', 'background', 'border', 'font-size', 'align', 'hide', 'show', 'style',
+  'span-text', 'span-style'];
 
 /* Styles an op may set, and nothing outside this list. No url(), no
    content, no position — a visual edit, not a redesign of the document. */
 const STYLE_OK = [
   'color', 'background-color', 'border-color', 'border-width', 'border-style',
-  'font-size', 'font-weight', 'font-style', 'text-align', 'letter-spacing',
-  'line-height', 'opacity', 'text-decoration', 'text-transform', 'padding', 'margin'
+  'font-family', 'font-size', 'font-weight', 'font-style', 'text-align',
+  'letter-spacing', 'word-spacing', 'line-height', 'opacity', 'text-decoration',
+  'text-transform', 'padding', 'margin'
 ];
 
-const SAFE_VALUE = /^[#a-zA-Z0-9 ,.()%+/-]{1,80}$/;
+/* Hex, rgb(), a length, a keyword, or a font stack with its quotes. No
+   url(), no semicolon: nothing that could close one declaration and open
+   another. */
+const SAFE_VALUE = /^[#a-zA-Z0-9 ,.()%'"+/-]{1,120}$/;
 
 function tidyOps(list, allowed) {
   const out = [];
@@ -60,6 +65,33 @@ function tidyOps(list, allowed) {
     if (!ref || allowed.indexOf(ref) < 0) continue;      /* outside the box */
     if (OPS.indexOf(op) < 0) continue;
     const entry = { ref, op };
+
+    /* A run of characters inside one text node: the node's index among its
+       parent's children, and a start and an end measured in characters.
+       Everything about it is a number, and every number is checked. */
+    if (op === 'span-text' || op === 'span-style') {
+      const node = Number(raw.node);
+      const start = Number(raw.start);
+      const end = Number(raw.end);
+      if (!Number.isInteger(node) || node < 0 || node > 500) continue;
+      if (!Number.isInteger(start) || start < 0) continue;
+      if (!Number.isInteger(end) || end < start || end > 100000) continue;
+      entry.node = node;
+      entry.start = start;
+      entry.end = end;
+      if (op === 'span-text') {
+        entry.value = String(raw.value == null ? '' : raw.value).slice(0, 4000);
+      } else {
+        const prop = clean(raw.prop, 40).toLowerCase();
+        const value = clean(raw.value, 120);
+        if (STYLE_OK.indexOf(prop) < 0 || !SAFE_VALUE.test(value)) continue;
+        entry.prop = prop;
+        entry.value = value;
+      }
+      out.push(entry);
+      continue;
+    }
+
     if (op === 'text') {
       entry.value = clean(raw.value, 2000);
       if (!entry.value) continue;
@@ -67,7 +99,7 @@ function tidyOps(list, allowed) {
       entry.value = '';
     } else if (op === 'style') {
       const prop = clean(raw.prop, 40).toLowerCase();
-      const value = clean(raw.value, 80);
+      const value = clean(raw.value, 120);
       if (STYLE_OK.indexOf(prop) < 0 || !SAFE_VALUE.test(value)) continue;
       entry.prop = prop;
       entry.value = value;
@@ -201,18 +233,23 @@ async function askTheStack(system, user) {
 
 async function byModel(prompt, nodes, page) {
   const brief = nodes.map((n) => ({
-    ref: n.ref, tag: n.tag, classes: n.classes || '',
+    ref: n.ref, kind: n.kind || 'element', tag: n.tag, classes: n.classes || '',
     text: String(n.text || '').slice(0, 240)
   }));
   const system = [
     'You are the editor inside an occult-themed website\'s admin tool.',
-    'You will be given the elements inside a rectangle the administrator drew on one page,',
-    'and an instruction. Reply with JSON only: {"ops":[...]} and nothing else.',
-    'Each op is {"ref":"<one of the given refs>","op":"text|style|hide|show","value":"...","prop":"<css property, for style only>"}.',
-    'Allowed style properties: ' + STYLE_OK.join(', ') + '.',
-    'Colours must be hex or rgb(). Never invent a ref. Never touch anything not listed.',
-    'Prefer the smallest change that does what was asked. If the instruction cannot be done',
-    'with these operations, reply {"ops":[]}.'
+    'The administrator has drawn a rectangle on one page. You are given only what is inside it,',
+    'as a list of items. An item with kind "words" is a run of text the administrator dragged',
+    'across; an item with kind "element" is a whole block, such as a panel or a figure.',
+    'You are also given an instruction. Reply with JSON only: {"ops":[...]} and nothing else.',
+    'Each op is {"ref":"<one of the given refs, copied exactly>","op":"text|style|hide|show",',
+    '"value":"...","prop":"<css property, for style only>"}.',
+    'Use op "text" to replace the words of an item, verbatim, with exactly the value given.',
+    'Use op "style" with a prop for anything visual. Allowed props: ' + STYLE_OK.join(', ') + '.',
+    'Colours must be hex or rgb(); sizes must carry a unit, usually px.',
+    'Items of kind "words" accept only text and style. hide and show are for elements.',
+    'Never invent a ref, never name anything not in the list, and prefer the smallest change',
+    'that does what was asked. If it cannot be done with these operations, reply {"ops":[]}.'
   ].join(' ');
   const user = 'Page: ' + page + '\nInstruction: ' + prompt + '\nElements: ' + JSON.stringify(brief);
   const said = await askTheStack(system, user);
@@ -262,6 +299,7 @@ export default async function (req, res) {
       if (!prompt) return res.status(400).json({ error: 'Say what should change inside the box.' });
       const nodes = (Array.isArray(body.nodes) ? body.nodes : []).slice(0, MAX_NODES).map((n) => ({
         ref: clean(n && n.ref, 60),
+        kind: clean(n && n.kind, 12) || 'element',
         tag: clean(n && n.tag, 20),
         classes: clean(n && n.classes, 120),
         text: clean(n && n.text, 400)

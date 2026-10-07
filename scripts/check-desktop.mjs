@@ -89,6 +89,13 @@ const TESTS = [
     await new Promise((r) => setTimeout(r, 30));
     const tool = doc.querySelector('.admin-edit-panel');
     t(tool && tool.querySelector('.ae-pick'), 'the selection tool opens once the door is open');
+    t(tool.querySelector('.ae-one'), 'or one element can be clicked instead of dragged');
+    t(tool.querySelectorAll('.ae-tab').length >= 3,
+      'the panel is in three parts: the words, the look, and the model');
+    t(tool.querySelector('.ae-verbatim'),
+      'the words can be rewritten verbatim, by hand');
+    t(tool.querySelector('.ae-look [data-prop="color"]') || tool.querySelector('.ae-look'),
+      'and the colour and the font can be set exactly');
     t(tool.querySelector('.ae-prompt'), 'there is somewhere to say what should change');
     t(tool.querySelector('.ae-undo') && tool.querySelector('.ae-redo'),
       'undo and redo for the prompts are both there');

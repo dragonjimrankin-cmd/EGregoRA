@@ -3405,6 +3405,27 @@ body { max-width: 100%; }
 .ae-table th, .ae-table td { text-align: left; padding: 0.25rem 0.4rem;
   border-bottom: 1px solid rgba(215,176,90,0.15); vertical-align: top; }
 
+/* The tabs: words, look, ask. */
+.ae-tabs { display: flex; gap: 0.25rem; margin: 0.6rem 0 0.4rem;
+  border-bottom: 1px solid rgba(215,176,90,0.2); }
+.ae-tab { background: none; border: 0; border-bottom: 2px solid transparent;
+  color: #9f947a; font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 0.3rem 0.5rem; cursor: pointer; }
+.ae-tab.is-on { color: #f3ddaa; border-bottom-color: #d7b05a; }
+.ae-pane { padding-top: 0.3rem; }
+
+/* The look controls, two to a row and never wider than the panel. */
+.ae-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 0.6rem; }
+.ae-grid label { display: flex; flex-direction: column; gap: 0.2rem;
+  font-size: 0.72rem; color: #9f947a; min-width: 0; }
+.ae-grid input, .ae-grid select { width: 100%; box-sizing: border-box;
+  background: #0e0c0a; color: #e7dcc4; border: 1px solid rgba(215,176,90,0.3);
+  border-radius: 3px; font-size: 1rem; padding: 0.2rem 0.3rem; }
+.ae-grid input[type="color"] { padding: 0; height: 1.6rem; }
+.ae-pair { display: flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; }
+.ae-pair input[type="checkbox"] { width: auto; }
+.ae-verbatim { font-size: 0.95rem; }
+
 /* The rectangle, and what it has caught. */
 .admin-edit-box {
   position: absolute; z-index: 1150; pointer-events: none;
@@ -3418,4 +3439,27 @@ body.is-picking * { cursor: crosshair !important; user-select: none; }
   .admin-edit-panel { left: 0.5rem; right: 0.5rem; width: auto; bottom: 0.5rem;
     max-height: 70vh; }
   .admin-edit-mount { padding: 0 0.8rem 0.6rem; }
+}
+
+/* What the box has caught, marked on the page itself: a wash under every
+   selected word and a thin edge round every selected block. Drawn in page
+   coordinates so they sit where the browser actually put the text. */
+.admin-edit-mark {
+  position: absolute; z-index: 1140; pointer-events: none;
+  background: rgba(215,176,90,0.22); border-radius: 2px;
+}
+.admin-edit-mark.is-block {
+  background: rgba(143,182,216,0.1); border: 1px solid rgba(143,182,216,0.5);
+}
+/* The outline that follows the pointer in click-one-element mode. */
+.admin-edit-hover {
+  position: absolute; z-index: 1145; pointer-events: none;
+  border: 1px solid rgba(207,127,141,0.8); background: rgba(207,127,141,0.08);
+}
+/* A run the editor has wrapped so that a few words can carry their own
+   colour or font. It is a span and nothing else: no box, no spacing. */
+.ae-run { all: unset; }
+
+@media (max-width: 640px) {
+  .ae-grid { grid-template-columns: 1fr; }
 }
