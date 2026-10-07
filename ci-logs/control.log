@@ -1,42 +1,67 @@
-# control run — 2026-10-07T09:33:15.525Z
-site: https://egregora.hatchable.site   calls: 5
+# control run — 2026-10-07T10:54:39.465Z
+site: https://egregora.hatchable.site   calls: 8
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"open","pass":"8===D","title":"Probe room","word":"gink"}
-HTTP 200  (212 ms)
+POST /api/live  {"action":"tapes","pass":"8===D"}
+HTTP 200  (149 ms)
 {
   "ok": true,
-  "id": 3,
-  "started": "2026-10-07T09:33:16.09826+00:00"
+  "tapes": []
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"people","pass":"8===D","id":3}
-HTTP 200  (54 ms)
+POST /api/live  {"action":"open","pass":"8===D","title":"Element probe","word":"gink"}
+HTTP 200  (74 ms)
+{
+  "ok": true,
+  "id": 4,
+  "started": "2026-10-07T10:54:40.002737+00:00"
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"people","pass":"8===D","id":4}
+HTTP 200  (56 ms)
 {
   "ok": true,
   "people": []
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"order-say","pass":"8===D","id":3,"body":"A line from The Order."}
-HTTP 200  (57 ms)
+POST /api/live  {"action":"allow","pass":"8===D","id":4,"element":"fire","field":"can_mic","value":true}
+HTTP 200  (48 ms)
 {
-  "ok": true
+  "ok": true,
+  "changed": 0
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"allow","pass":"8===D","id":3,"person":"nobody","field":"can_cam","value":false}
-HTTP 400  (41 ms)
+POST /api/live  {"action":"allow","pass":"8===D","id":4,"all":true,"field":"can_cam","value":false}
+HTTP 200  (51 ms)
 {
-  "error": "Which person, and which box?"
+  "ok": true,
+  "changed": 0
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"close","pass":"8===D","id":3}
-HTTP 200  (55 ms)
+POST /api/live  {"action":"allow","pass":"8===D","id":4,"element":"quintessence","field":"can_mic","value":true}
+HTTP 400  (48 ms)
+{
+  "error": "There is no such elemental phase."
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"join","id":4,"word":"gink"}
+HTTP 401  (35 ms)
+{
+  "error": "The studio is for members. Sign in or create an account at /join/, then come back.",
+  "gate": "signin"
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"close","pass":"8===D","id":4}
+HTTP 200  (58 ms)
 {
   "ok": true
 }
