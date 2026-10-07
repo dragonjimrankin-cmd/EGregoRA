@@ -1,4 +1,4 @@
 {
-  "note": "v125: confirm the Hugging Face token is in the pool.",
-  "calls": [ { "action": "accounts" } ]
+  "note": "Go and get a GPU. Kaggle is the one free accelerator with an API; ask it directly.",
+  "calls": [ { "action": "status" } ]
 }

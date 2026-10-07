@@ -83,7 +83,7 @@ export default async function (req, res) {
       'That link is incomplete',
       'The unsubscribe link did not carry its token, so we cannot tell whom to remove.',
       `<p class="small">Sign in and turn the list off from your account, or write to
-       <a href="mailto:info@shakra.co.uk" style="color:#d7b05a">info@shakra.co.uk</a> and we will do it by hand.</p>`
+       <a href="mailto:shakradragon@gmail.com" style="color:#d7b05a">shakradragon@gmail.com</a> and we will do it by hand.</p>`
     ));
   }
 
@@ -98,7 +98,7 @@ export default async function (req, res) {
         'That link is no longer valid',
         'We could not find anyone to remove with it — which usually means it has already been used, or the account has been erased.',
         `<p class="small">If list mail is still arriving, write to
-         <a href="mailto:info@shakra.co.uk" style="color:#d7b05a">info@shakra.co.uk</a> and it will stop.</p>`
+         <a href="mailto:shakradragon@gmail.com" style="color:#d7b05a">shakradragon@gmail.com</a> and it will stop.</p>`
       ));
     }
 
@@ -117,7 +117,7 @@ export default async function (req, res) {
     console.error('unsubscribe failed', err && err.message);
     return res.status(500).send(page(
       'Something went wrong',
-      'We could not take you off the list just now. Write to <a href="mailto:info@shakra.co.uk" style="color:#d7b05a">info@shakra.co.uk</a> and it will be done by hand, today.'
+      'We could not take you off the list just now. Write to <a href="mailto:shakradragon@gmail.com" style="color:#d7b05a">shakradragon@gmail.com</a> and it will be done by hand, today.'
     ));
   }
 }

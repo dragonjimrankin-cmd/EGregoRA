@@ -93,7 +93,7 @@ export async function sendCode(member, code, purpose) {
         Test everything kindly.</p>
       <p style="margin:0;font-size:12px;color:#6f6855">
         EGregoRA &middot; write to the order at
-        <a href="mailto:info@shakra.co.uk" style="color:#d7b05a">info@shakra.co.uk</a> &mdash;
+        <a href="mailto:shakradragon@gmail.com" style="color:#d7b05a">shakradragon@gmail.com</a> &mdash;
         that address reaches us, whatever this letter was sent from.</p>
     </div>`;
   await email.send({
@@ -101,7 +101,7 @@ export async function sendCode(member, code, purpose) {
     subject,
     html,
     text: `EGregoRA — your code is ${code}. It is good for ${CODE_MINUTES} minutes.\n` +
-      'Write to the order at info@shakra.co.uk.'
+      'Write to the order at shakradragon@gmail.com.'
   });
 }
 

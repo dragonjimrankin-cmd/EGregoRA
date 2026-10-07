@@ -9,6 +9,7 @@ on:
     branches: ["arena/01a10807-egregora"]
     paths:
       - "ops/control-request.json"
+      - "scripts/gpu-probe.mjs"
       - "scripts/control-run.mjs"
       - ".github/workflows/control.yml"
 
@@ -35,6 +36,18 @@ jobs:
           echo "exit=$?" >> ci-logs/control.log
           sed -i -E 's/jim1_[A-Za-z0-9]{8,}/jim1_***REDACTED***/g' ci-logs/control.log
           tail -80 ci-logs/control.log
+
+      - name: Go and get a GPU, if asked
+        if: ${{ hashFiles('ops/gpu-probe.on') != '' }}
+        continue-on-error: true
+        env:
+          HF_TOKEN: ${{ secrets.HUGGINGFACE_API_KEY || '' }}
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME || '' }}
+        run: |
+          set +e
+          node scripts/gpu-probe.mjs >> ci-logs/control.log 2>&1
+          echo "gpu-probe exit=$?" >> ci-logs/control.log
+          tail -60 ci-logs/control.log
 
       - name: Publish the log
         env:

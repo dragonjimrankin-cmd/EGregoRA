@@ -13,7 +13,7 @@ export const methods = ['POST'];
 
 /* Who may send to the whole list. The egregora.org addresses that used to sit
    here were never real mailboxes — the order's address is the Shakra one. */
-const KEEPERS = ['info@shakra.co.uk'];
+const KEEPERS = ['shakradragon@gmail.com'];
 
 export default async function (req, res) {
   const me = await whoAmI(req);

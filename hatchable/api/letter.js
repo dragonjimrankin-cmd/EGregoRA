@@ -19,7 +19,7 @@ export const methods = ['POST'];
 /* Letters are forwarded here, and this is the address every letter quotes.
    The platform's SMTP decides what the From line says; this decides what the
    order tells people to use. */
-const ED = 'info@shakra.co.uk';
+const ED = 'shakradragon@gmail.com';
 const ED_LINK = `<a href="mailto:${ED}" style="color:#d7b05a">${ED}</a>`;
 const LIMB_NOTE = {
   'Cosmic physics & astronomy': 'the first limb',
@@ -170,6 +170,6 @@ export default async function (req, res) {
     });
   } catch (err) {
     console.error('letter failed', err && err.message);
-    res.status(500).json({ error: 'The letter could not be stored. Try again, or email info@shakra.co.uk directly.' });
+    res.status(500).json({ error: 'The letter could not be stored. Try again, or email shakradragon@gmail.com directly.' });
   }
 }

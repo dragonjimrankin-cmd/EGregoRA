@@ -25,7 +25,7 @@ export const FROM_NAME = 'EGregoRA';
  * reader always knows where to write even if the From line shows the account
  * the project is hosted under.
  */
-export const CONTACT = 'info@shakra.co.uk';
+export const CONTACT = 'shakradragon@gmail.com';
 export const CONTACT_LINK =
   `<a href="mailto:${CONTACT}" style="color:#d7b05a">${CONTACT}</a>`;
 

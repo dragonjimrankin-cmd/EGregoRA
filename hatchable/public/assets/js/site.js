@@ -2193,7 +2193,7 @@
       })
       .catch(function () {
         if (btn) { btn.disabled = false; btn.textContent = 'Send the Question'; }
-        say('The post did not go through \u2014 email info@shakra.co.uk instead.', true);
+        say('The post did not go through \u2014 email shakradragon@gmail.com instead.', true);
       });
   });
 })();
@@ -3918,4 +3918,28 @@
   } catch { /* nothing kept */ }
 
   window.EGOwnMind = () => own;
+})();
+
+/* ------------------------------------------------------------------ *
+ *  One fold open at a time
+ *
+ *  Modern browsers do this themselves when several <details> share a
+ *  name, exactly as radio buttons do. Older ones ignore the attribute
+ *  entirely, so the same behaviour is enforced here for them. Nothing is
+ *  forced open: a group may be wholly shut, which is how it starts.
+ * ------------------------------------------------------------------ */
+(() => {
+  const folds = Array.from(document.querySelectorAll("details[name]"));
+  if (!folds.length) return;
+  /* If the browser understands the attribute, leave it alone. */
+  const probe = document.createElement("details");
+  if ("name" in probe) return;
+  folds.forEach((d) => {
+    d.addEventListener("toggle", () => {
+      if (!d.open) return;
+      folds.forEach((other) => {
+        if (other !== d && other.getAttribute("name") === d.getAttribute("name")) other.open = false;
+      });
+    });
+  });
 })();
