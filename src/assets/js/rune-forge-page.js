@@ -9,7 +9,7 @@
    Everything happens in the page. The rune book is kept in this browser and
    is never sent anywhere.
    ======================================================================== */
-import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+import * as THREE from "./vendor/three.module.js";
 import {
   FUTHARK, SUBSTANCES, GEMS, BLANKS, SETTINGS,
   buildRune, blankSpec, byId, sendToBench, BOOK_KEY

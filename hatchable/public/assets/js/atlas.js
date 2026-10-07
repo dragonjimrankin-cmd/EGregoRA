@@ -20,7 +20,7 @@
    almost nothing and gives the map the whole screen; Escape, or the button,
    gives the page back.
    ======================================================================== */
-import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+import * as THREE from "./vendor/three.module.js";
 
 const host = document.getElementById("atlas-stage");
 const feed = document.getElementById("atlas-data");

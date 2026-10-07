@@ -21,6 +21,21 @@
 
 import { countdown } from "./live.js";
 
+/* The MP3 encoder is served from this site, not from a CDN. It used to be
+   fetched from unpkg, which failed outright when that host was unreachable
+   and took the whole admin panel down with it — so the library now ships
+   with the site and is loaded once, lazily, the first time something needs
+   to encode. */
+let lamePromise = null;
+function lameJS() {
+  if (!lamePromise) {
+    lamePromise = import("./vendor/lamejs.js")
+      .then((mod) => (mod && mod.Mp3Encoder ? mod : (mod && mod.default) || mod))
+      .catch((err) => { lamePromise = null; throw err; });
+  }
+  return lamePromise;
+}
+
 const panels = document.querySelectorAll("[data-admin-media]");
 panels.forEach(setup);
 
@@ -638,8 +653,7 @@ function setup(root) {
      failing. */
   async function encode(buf) {
     try {
-      const mod = await import("https://unpkg.com/@breezystack/lamejs@1.2.7/src/js/index.js");
-      const lame = mod.Mp3Encoder ? mod : (mod.default || mod);
+      const lame = await lameJS();
       const chans = Math.min(2, buf.numberOfChannels);
       const enc = new lame.Mp3Encoder(chans, buf.sampleRate, 128);
       const L = buf.getChannelData(0);
@@ -807,8 +821,7 @@ function setup(root) {
     src.start(0, from, to - from);
     const done = await off.startRendering();
 
-    const mod = await import("https://unpkg.com/@breezystack/lamejs@1.2.7/src/js/index.js");
-    const lame = mod.Mp3Encoder ? mod : (mod.default || mod);
+    const lame = await lameJS();
     const enc = new lame.Mp3Encoder(1, rate, 32);
     const f = done.getChannelData(0);
     const pcm = new Int16Array(f.length);
@@ -1399,10 +1412,12 @@ function setup(root) {
       items.map((i) =>
         "<tr><td><strong>" + esc(i.title) + "</strong><br>" +
         '<span class="muted xsmall">' + esc(i.date) + " \u00b7 " + esc(i.length || "") + "</span></td>" +
-        "<td>" + esc(i.state) + "</td>" +
+        "<td>" + esc(i.state) + (i.pinned ? ' <span class="pin-mark">pinned</span>' : "") + "</td>" +
         "<td>" + (i.bytes ? mb(i.bytes) : "\u2014") + "</td>" +
         '<td class="muted xsmall">' + esc(i.treatment) + "</td>" +
         '<td><button class="btn btn--small" type="button" data-edit="' + i.id + '">Edit</button> ' +
+        '<button class="btn btn--small btn--ghost" type="button" data-pin="' + i.id + '">' +
+        (i.pinned ? "Unpin" : "Pin to the top") + "</button> " +
         '<button class="btn btn--small btn--ghost" type="button" data-flip="' + i.id + '">' +
         (i.state === "published" ? "Take down" : "Publish") + "</button> " +
         '<button class="btn btn--small btn--ghost" type="button" data-drop="' + i.id + '">Delete</button></td></tr>'
@@ -1410,6 +1425,20 @@ function setup(root) {
     byId = new Map(items.map((i) => [i.id, i]));
     el.shelf.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () =>
       openEditor(byId.get(Number(b.getAttribute("data-edit"))))));
+
+    el.shelf.querySelectorAll("[data-pin]").forEach((b) => b.addEventListener("click", async () => {
+      const id = Number(b.getAttribute("data-pin"));
+      const want = b.textContent.trim() === "Unpin" ? "unpin" : "pin";
+      b.disabled = true;
+      try {
+        const d = await post({ action: want, id });
+        drawShelf(d.items || []);
+        if (window.EGMediaRefresh) window.EGMediaRefresh();
+      } catch (err) {
+        say((err && err.message) || "That could not be pinned.", true);
+        b.disabled = false;
+      }
+    }));
 
     el.shelf.querySelectorAll("[data-flip]").forEach((b) => b.addEventListener("click", async () => {
       const id = Number(b.getAttribute("data-flip"));
@@ -1463,7 +1492,8 @@ function setup(root) {
         ? '<details class="frame media ep"><summary>' +
           '<span class="num">' + esc(i.number || "\u2726") + "</span>" +
           '<span class="ep-head"><span class="meta">' + esc(i.date) +
-          (i.length ? " \u00b7 " + esc(i.length) : "") + "</span>" +
+          (i.length ? " \u00b7 " + esc(i.length) : "") +
+          (i.pinned ? ' \u00b7 <span class="pin-mark">pinned</span>' : "") + "</span>" +
           '<span class="ep-title">' + esc(i.title) + "</span>" +
           (i.tags.length ? '<span class="muted xsmall">' + esc(i.tags.join(" \u00b7 ")) + "</span>" : "") +
           "</span></summary><div class=\"ep-body\">" +
@@ -1486,7 +1516,8 @@ function setup(root) {
           (i.url ? '<audio class="player" controls preload="none" src="' + esc(i.url) +
             '" data-for="' + i.id + '"></audio>' : "") +
           "</div></details>"
-        : '<article class="frame card">' +
+        : '<article class="frame card' + (i.pinned ? " is-pinned" : "") + '">' +
+          (i.pinned ? '<p class="pin-mark">pinned</p>' : "") +
           (i.url ? '<video class="am-film" controls preload="metadata" src="' + esc(i.url) + '"></video>' : "") +
           '<p class="tag mt-1">' + esc(i.date) + (i.length ? " \u00b7 " + esc(i.length) : "") + "</p>" +
           "<h3>" + esc(i.title) + "</h3>" +

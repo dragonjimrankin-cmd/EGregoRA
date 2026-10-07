@@ -1,7 +1,7 @@
 {
   "name": "egregora",
   "version": "1.0.0",
-  "description": "EGregoRA — Life, Love, Magic",
+  "description": "EGregoRA \u2014 Life, Love, Magic",
   "main": "index.js",
   "scripts": {
     "build": "eleventy",
@@ -11,7 +11,8 @@
     "build:hatchable": "npm run build && rm -rf hatchable/public && mkdir -p hatchable/public && cp -r _site/* hatchable/public/",
     "zip:hatchable": "npm run build:hatchable && rm -f egregora-hatchable.zip && cd hatchable && zip -qr ../egregora-hatchable.zip . && cd ..",
     "deploy:hatchable": "npm run build:hatchable && node scripts/hatchable-deploy.mjs",
-    "audit": "node scripts/meta-audit.mjs"
+    "audit": "node scripts/meta-audit.mjs && python3 scripts/check-site.py",
+    "check": "python3 scripts/check-site.py"
   },
   "repository": {
     "type": "git",
@@ -30,5 +31,8 @@
     "html-validate": "^11.16.2",
     "luxon": "^3.7.2"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@breezystack/lamejs": "^1.2.7"
+  }
 }

@@ -1,5 +1,12 @@
 export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
+
+  /* Trigonometry in the templates, so a mark made of eleven evenly spaced
+     points can be drawn from the number eleven rather than from eleven
+     hand-typed coordinates that nobody can check. */
+  eleventyConfig.addFilter("sin", (n) => Math.round(Math.sin(Number(n)) * 1000) / 1000);
+  eleventyConfig.addFilter("cos", (n) => Math.round(Math.cos(Number(n)) * 1000) / 1000);
+  eleventyConfig.addFilter("round2", (n) => Math.round(Number(n) * 100) / 100);
   eleventyConfig.addPassthroughCopy({ "src/static": "." });
   eleventyConfig.addWatchTarget("src/assets/");
 

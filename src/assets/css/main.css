@@ -2593,3 +2593,109 @@ details.ep > summary:hover .ep-title { color: #f3ddaa; }
 .live-list { list-style: none; padding: 0; margin: 0.4rem 0; }
 .live-list li { padding: 0.35rem 0; border-bottom: 1px solid rgba(215, 176, 90, 0.12); }
 #live-admin.is-live .admin-panel { border-color: #c98b6a; }
+
+/* Pinned work, held at the top of its page. */
+.pin-mark {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0e0c0a;
+  background: #d7b05a;
+  border-radius: 2px;
+  padding: 0.05rem 0.4rem;
+  margin: 0 0 0.2rem;
+}
+.frame.card.is-pinned,
+details.ep:has(.pin-mark) { border-color: rgba(215, 176, 90, 0.55); }
+
+/* The live room: the wall of cameras, and the chat beside it. */
+.cam-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+.cam-cell { margin: 0; }
+.cam-cell video {
+  width: 100%;
+  background: #000;
+  border: 1px solid rgba(215, 176, 90, 0.26);
+  border-radius: 3px;
+  display: block;
+}
+.cam-cell figcaption {
+  font-size: 0.8rem;
+  color: #9f947a;
+  padding-top: 0.2rem;
+}
+.room-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(200px, 1fr);
+  gap: 1rem;
+}
+.chat-log {
+  height: 16rem;
+  overflow: auto;
+  border: 1px solid rgba(215, 176, 90, 0.2);
+  border-radius: 3px;
+  padding: 0.5rem 0.7rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+.chat-lines { list-style: none; padding: 0; margin: 0; }
+.chat-lines li { padding: 0.15rem 0; color: #cbbb93; font-size: 0.94rem; }
+.chat-who { color: #d7b05a; font-weight: 600; }
+.chat-lines li.chat-order { color: #f3ddaa; }
+.chat-lines li.chat-order .chat-who { color: #7fae7a; }
+.chat-say { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+.chat-say input { flex: 1; }
+.room-side { display: flex; flex-direction: column; gap: 0.4rem; }
+@media (max-width: 760px) {
+  .room-grid { grid-template-columns: 1fr; }
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The marks, and the lines we print. */
+.mark-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.3rem;
+  margin-top: 1rem;
+}
+.mark { margin: 0; text-align: center; }
+.mark svg {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  display: block;
+  margin: 0 auto 0.5rem;
+}
+.mark figcaption { font-size: 0.88rem; color: #9f947a; text-align: left; }
+.mark figcaption strong { color: #d7b05a; }
+.quote-list { list-style: none; padding: 0; margin: 0.6rem 0 0; }
+.quote-list li {
+  font-family: "EB Garamond", serif;
+  font-size: 1.08rem;
+  color: #f3ddaa;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(215, 176, 90, 0.14);
+}
+.quote-list span {
+  display: block;
+  font-family: Cinzel, serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9f947a;
+  margin-top: 0.15rem;
+}

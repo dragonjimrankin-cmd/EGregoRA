@@ -4,97 +4,191 @@
     "price": "£38",
     "kind": "Hardback, 288pp",
     "desc": "The founding text: the ten limbs, the charter, the geometry plates and the full annotated reading list.",
-    "img": "/assets/img/product-codex.jpg"
+    "img": "/assets/img/product-codex.jpg",
+    "group": "The Press"
   },
   {
     "name": "The Wheel of the Year Chart",
     "price": "£24",
     "kind": "Giclée print, 50×70cm",
     "desc": "The eight stations, their trees, their stars and their astronomy, drawn as a single gold-leafed dial.",
-    "img": "/assets/img/product-wheel.jpg"
+    "img": "/assets/img/product-wheel.jpg",
+    "group": "The Press"
   },
   {
     "name": "Ogham Tree Deck",
     "price": "£29",
     "kind": "40 cards + booklet",
     "desc": "One card per tree: botany on one face, lore and ogham stave on the other. A field guide that happens to shuffle.",
-    "img": "/assets/img/product-deck.jpg"
+    "img": "/assets/img/product-deck.jpg",
+    "group": "The Press"
   },
   {
     "name": "Grove Journal",
     "price": "£19",
     "kind": "Linen-bound, 160pp",
     "desc": "Dated for phenology: a page per week for recording bud-burst, bird return, weather, dream and mood.",
-    "img": "/assets/img/product-journal.jpg"
+    "img": "/assets/img/product-journal.jpg",
+    "group": "The Press"
   },
   {
     "name": "Sacred Solids Set",
     "price": "£64",
     "kind": "Five turned beech forms",
     "desc": "The Platonic solids in English beech, for handling while thinking. Sold with the Euclidean proof of why there are only five.",
-    "img": "/assets/img/product-solids.jpg"
+    "img": "/assets/img/product-solids.jpg",
+    "group": "The Press"
   },
   {
     "name": "Order Membership",
     "price": "£6 / month",
     "kind": "Digital",
     "desc": "Early episodes, the monthly letter, the members' seminar and voting rights on the next field of enquiry.",
-    "img": "/assets/img/product-member.jpg"
+    "img": "/assets/img/product-member.jpg",
+    "group": "The Press"
   },
   {
     "name": "The Orrery of the Inner Planets",
     "price": "£180",
     "kind": "Brass & walnut, turned by hand",
     "desc": "Mercury to Mars on a geared brass train, built to the real orbital ratios rather than the pretty ones. Turn the handle and watch a retrograde happen in your own hands — the cheapest cure there is for thinking the sky moves backwards.",
-    "img": "/assets/img/product-orrery.jpg"
+    "img": "/assets/img/product-orrery.jpg",
+    "group": "The Press"
   },
   {
     "name": "The Pocket Astrolabe",
     "price": "£46",
     "kind": "Engraved brass, 70mm, with cord",
     "desc": "The oldest working computer, small enough to carry. Sight a star, read your latitude, find the hour without a clock. Supplied with a plate cut for 52°N and a sheet explaining what it genuinely measures — and what it does not.",
-    "img": "/assets/img/product-astrolabe.jpg"
+    "img": "/assets/img/product-astrolabe.jpg",
+    "group": "The Press"
   },
   {
     "name": "Metatron's Cube Window Panel",
     "price": "£120",
     "kind": "Stained glass, 30×30cm, leaded",
     "desc": "Thirteen circles, seventy-eight lines, amber and violet glass in blackened lead. Hang it east and the figure walks across the floor through the morning. The construction proof comes with it, because a pattern you can derive is worth more than one you are told to revere.",
-    "img": "/assets/img/product-glass.jpg"
+    "img": "/assets/img/product-glass.jpg",
+    "group": "The Press"
   },
   {
     "name": "Bog Oak Rune Set",
     "price": "£54",
     "kind": "24 staves, gold-leafed, linen bag",
     "desc": "The Elder Futhark cut into oak lifted from peat, timber that stopped growing before the alphabet was carved. Each stave carries its name, its attested meaning, and — where the meaning is a Victorian invention — a note saying so.",
-    "img": "/assets/img/product-runes.jpg"
+    "img": "/assets/img/product-runes.jpg",
+    "group": "The Press"
   },
   {
     "name": "The Elemental Table",
     "price": "£26",
     "kind": "Letterpress print, 42×59cm",
     "desc": "Earth, water, air and fire as the first classification of matter, set beside what each turned out to be. Two columns, honestly ruled: the symbol the alchemists used, and the chemistry that replaced it without making them fools for trying.",
-    "img": "/assets/img/product-elements.jpg"
+    "img": "/assets/img/product-elements.jpg",
+    "group": "The Press"
   },
   {
     "name": "The Cytoskeleton Model",
     "price": "£78",
     "kind": "Brass & smoked glass, 220mm, on marble",
     "desc": "Thirteen protofilaments in a hollow tube, the lattice every cell in you is scaffolded by and the one Orch OR stakes its claim on. Desk-sized, accurate to the helix, and sold with the argument from both sides — see Limb XI·i.",
-    "img": "/assets/img/product-cytoskeleton.jpg"
+    "img": "/assets/img/product-cytoskeleton.jpg",
+    "group": "The Press"
   },
   {
     "name": "The Black Tribunal — a Monograph",
     "price": "£16",
     "kind": "Paperback, 148pp, plain cover",
     "desc": "How the occult was stolen, by whom, and what was done with it. The Ahnenerbe, the runes taken off the stones, and the industrial atrocity they were dressed over. Deliberately unornamented: nothing in this book is allowed to look glamorous.",
-    "img": "/assets/img/product-tribunal.jpg"
+    "img": "/assets/img/product-tribunal.jpg",
+    "group": "The Press"
   },
   {
     "name": "Gink — the Fox at the Desk",
     "price": "£48",
     "kind": "Cold-cast bronze, oak plinth, 130mm",
     "desc": "A cast of the skull that sits on Ed's desk, taken from a museum reference rather than an animal. No bone is sold here. What it does is Ed's testimony and is filed as such; what it is, is a beautiful object to think beside.",
-    "img": "/assets/img/product-skull.jpg"
+    "img": "/assets/img/product-skull.jpg",
+    "group": "The Press"
+  },
+  {
+    "name": "The Order's Hoodie",
+    "price": "£62",
+    "kind": "Heavyweight cotton, embroidered",
+    "desc": "The order's mark worked in antique gold thread: the mirrored tree, the eleven markers, the star above the crown. Brushed inside, unbranded elsewhere — nothing on the back, because a coat is not a billboard.",
+    "img": "/assets/img/product-hoodie.jpg",
+    "group": "Attire"
+  },
+  {
+    "name": "Five Solids Tee",
+    "price": "£28",
+    "kind": "Heavyweight cotton, screen printed",
+    "desc": "The nested platonic solids as an engraver would have plated them, construction lines and annotations left in. Under it, the creed: Life, Love, Magic.",
+    "img": "/assets/img/product-tee.jpg",
+    "group": "Attire"
+  },
+  {
+    "name": "The Grove Cloak",
+    "price": "£180",
+    "kind": "Wool, hand-finished, bronze clasp",
+    "desc": "Deep black-green wool with an oak-and-star band at hood and hem, and two interlocking crescents at the throat. Made for standing still outdoors at four in the morning, which is most of the work.",
+    "img": "/assets/img/product-cloak.jpg",
+    "group": "Attire"
+  },
+  {
+    "name": "Crescent Cap",
+    "price": "£24",
+    "kind": "Unstructured cotton, embroidered",
+    "desc": "A crescent cradling one star, over three bars. Small enough that only someone who knows will know.",
+    "img": "/assets/img/product-cap.jpg",
+    "group": "Attire"
+  },
+  {
+    "name": "Celestial Atlas Scarf",
+    "price": "£48",
+    "kind": "Fine wool, 180×65cm",
+    "desc": "A working star chart printed edge to edge in gold on midnight: constellations joined by hairline rules, zodiac glyphs along one border, corner diagrams that are actually correct.",
+    "img": "/assets/img/product-scarf.jpg",
+    "group": "Attire"
+  },
+  {
+    "name": "The Eleven-Point Pendant",
+    "price": "£145",
+    "kind": "Brass and enamel, labradorite",
+    "desc": "Eleven points for eleven limbs, a labradorite at the centre for the one thing none of them has explained, and the tree cut into the reverse where only the wearer sees it.",
+    "img": "/assets/img/product-pendant.jpg",
+    "group": "Jewellery"
+  },
+  {
+    "name": "The Stave Signet",
+    "price": "£210",
+    "kind": "Solid brass, hand-engraved",
+    "desc": "One vertical stave crossed by three bars — the order's shorthand for a question held open. Deep enough to seal wax with, which is the point of a signet.",
+    "img": "/assets/img/product-signet.jpg",
+    "group": "Jewellery"
+  },
+  {
+    "name": "Tourmaline Stave Earrings",
+    "price": "£78",
+    "kind": "Antique brass, green tourmaline",
+    "desc": "A hoop, a green stone, and a disc bearing a single stave. Light enough to forget you are wearing them.",
+    "img": "/assets/img/product-earrings.jpg",
+    "group": "Jewellery"
+  },
+  {
+    "name": "Test Everything Kindly Mug",
+    "price": "£18",
+    "kind": "Matte stoneware, 400ml",
+    "desc": "The house rule, where you will read it every morning, under a band of alchemical and astronomical marks.",
+    "img": "/assets/img/product-mug.jpg",
+    "group": "Merchandise"
+  },
+  {
+    "name": "Order of Enquiry Tote",
+    "price": "£22",
+    "kind": "Heavy canvas, screen printed",
+    "desc": "An oak whose branches become constellation lines and whose roots become mycelium — the same diagram twice, which is the whole argument of this house in one image.",
+    "img": "/assets/img/product-tote.jpg",
+    "group": "Merchandise"
   }
 ]

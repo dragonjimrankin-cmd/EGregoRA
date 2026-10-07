@@ -8,7 +8,7 @@
    open, or the current view can be handed to the image generator as a sketch
    so a photograph is rendered from the arrangement you actually built.
    ======================================================================== */
-import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+import * as THREE from "./vendor/three.module.js";
 import { buildLibrary } from "./model-library.js";
 import { buildRune, takeFromBench, FUTHARK, byId } from "./rune-forge.js";
 

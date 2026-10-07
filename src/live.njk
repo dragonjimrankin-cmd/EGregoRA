@@ -57,6 +57,38 @@ description: "The order's camera, when it is running: a live feed for members wh
   </div>
 </section>
 
+<section class="wrap narrow reveal" id="live-room" hidden>
+  <div class="frame">
+    <p class="kicker">The Room</p>
+    <div class="cam-wall" data-lr="wall"></div>
+
+    <div class="room-grid">
+      <div class="room-chat">
+        <div class="chat-log" data-lr="log">
+          <ul class="chat-lines" data-lr="lines"></ul>
+        </div>
+        <form class="chat-say">
+          <label for="lr-say" class="sr-only">Say something to the room</label>
+          <input type="text" id="lr-say" data-lr="saybox" maxlength="600" autocomplete="off"
+                 placeholder="Say something to the room">
+          <button type="submit" class="btn btn--small" data-lr="send">Say it</button>
+        </form>
+        <p class="muted xsmall">In the room: <span data-lr="people">&mdash;</span></p>
+      </div>
+
+      <div class="room-side">
+        <button type="button" class="btn btn--small btn--ghost" data-lr="camera">Put my camera up</button>
+        <div class="countdown" data-lr="count" hidden></div>
+        <video class="live-mirror" data-lr="own" muted playsinline hidden
+               aria-label="Your own camera" role="img"></video>
+        <p class="muted xsmall">Your camera and microphone only go up if the broadcaster has opened
+        the floor to you, and they can lower them again at any moment. Everything here is live and
+        nothing is kept.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div class="divider">&#10022;</div>
 
 <section class="wrap narrow admin-media" id="live-admin">
@@ -115,6 +147,19 @@ description: "The order's camera, when it is running: a live feed for members wh
              aria-label="What the camera is seeing" role="img"></video>
       <p class="muted xsmall">Ending a feed deletes its segments. Nothing of a live feed is kept
       &mdash; if you want the recording, record it on the Videos page instead.</p>
+
+      <div class="divider">&#10022;</div>
+      <p class="kicker">Who is in the room</p>
+      <p class="muted xsmall">Tick what each person may do. Blocking takes the chat, the camera and
+      the room away at once, so a nuisance is one click rather than three.</p>
+      <div data-lv="people"></div>
+
+      <label for="lv-order-line">A line from The Order</label>
+      <div class="admin-signin">
+        <input type="text" id="lv-order-line" data-lv="order-line" maxlength="600"
+               placeholder="spoken into the chat as The Order">
+        <button type="button" class="btn btn--small" data-lv="order-say">Say it</button>
+      </div>
 
       <div class="divider">&#10022;</div>
       <p class="kicker">Feeds</p>

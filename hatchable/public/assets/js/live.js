@@ -203,6 +203,45 @@ export function countdown(host, seconds, go) {
     drawMine((await post({ action: "mine" })).feeds || []);
   });
 
+  /* The override table. One tickbox per power, per person, and a block that
+     takes everything at once — a broadcaster dealing with a nuisance
+     should not have to untick three boxes in a row. */
+  async function drawPeople() {
+    if (!feedId) return;
+    const n = $("people");
+    if (!n) return;
+    try {
+      const d = await post({ action: "people", id: feedId });
+      const folk = d.people || [];
+      n.innerHTML = folk.length
+        ? '<table class="keeper-table"><thead><tr><th>Who</th><th>Chat</th><th>Camera</th>' +
+          "<th>Blocked</th><th>On air</th></tr></thead><tbody>" + folk.map((p) =>
+            "<tr><td>" + esc(p.who) + "</td>" +
+            ["can_chat", "can_cam", "blocked"].map((f) =>
+              '<td><input type="checkbox" data-person="' + p.id + '" data-field="' + f + '"' +
+              (p[f] ? " checked" : "") + ' aria-label="' + f.replace("_", " ") + ' for ' +
+              esc(p.who) + '"></td>').join("") +
+            "<td>" + (p.on_camera ? "yes" : "\u2014") + "</td></tr>").join("") + "</tbody></table>"
+        : '<p class="muted small">Nobody is in the room yet.</p>';
+      n.querySelectorAll("[data-person]").forEach((b) => b.addEventListener("change", async () => {
+        await post({ action: "allow", person: Number(b.getAttribute("data-person")),
+          field: b.getAttribute("data-field"), value: b.checked }).catch(() => {});
+        drawPeople();
+      }));
+    } catch { /* the table will be there next beat */ }
+  }
+
+  const orderSay = $("order-say");
+  if (orderSay) orderSay.addEventListener("click", async () => {
+    const box = $("order-line");
+    const body = box.value.trim();
+    if (!body || !feedId) return;
+    box.value = "";
+    await post({ action: "order-say", id: feedId, body }).catch(() => {});
+  });
+
+  setInterval(drawPeople, 4000);
+
   addEventListener("beforeunload", () => {
     if (feedId) navigator.sendBeacon && navigator.sendBeacon("/api/live",
       new Blob([JSON.stringify({ action: "close", pass, id: feedId })], { type: "application/json" }));
@@ -268,8 +307,9 @@ export function countdown(host, seconds, go) {
     if (!word) return say("The watchword, please.", true);
     try {
       const d = await post({ action: "join", id: picked.id, word });
-      say("In. " + esc(d.title) + " \u2014 running a few seconds behind the room.");
+      say("In. " + d.title + " \u2014 running a few seconds behind the room.");
       start(picked.id, word, d.mime || "video/webm");
+      room(picked.id, word);
     } catch (err) {
       say((err && err.message) || "That did not let you in.", true);
     }
@@ -330,6 +370,189 @@ export function countdown(host, seconds, go) {
         say((err && err.message) || "The feed dropped.", true);
       }
     }
+  }
+
+
+  /* ------------------------------------------------------------- the room
+     Chat, the people in it, and any member who has been given the floor
+     with a camera of their own. All of it is polled on the same clock as
+     the feed, because a second connection would buy nothing here. */
+  function room(id, word) {
+    const box = document.getElementById("live-room");
+    if (!box) return;
+    box.hidden = false;
+    const $$ = (n) => box.querySelector('[data-lr="' + n + '"]');
+    let since = 0, mine = null, myRec = null, myStream = null, mySeq = 0;
+    const seen = new Set();
+
+    const line = (l) =>
+      '<li class="' + (l.order ? "chat-order" : "") + '"><span class="chat-who">' +
+      esc(l.who) + "</span> " + esc(l.body) + "</li>";
+
+    async function beat() {
+      try {
+        const d = await post({ action: "room", id, word, since });
+        (d.lines || []).forEach((l) => {
+          if (seen.has(l.id)) return;
+          seen.add(l.id);
+          since = Math.max(since, l.id);
+          $$("lines").insertAdjacentHTML("beforeend", line(l));
+        });
+        if (d.lines && d.lines.length) {
+          const log = $$("log");
+          log.scrollTop = log.scrollHeight;
+        }
+        $$("people").textContent = (d.people || []).map((p) => p.who).join(" \u00b7 ") ||
+          "nobody else, yet";
+        $$("send").disabled = !(d.you && d.you.can_chat);
+        $$("saybox").placeholder = d.you && d.you.can_chat
+          ? "Say something to the room"
+          : "The broadcaster has turned your voice off";
+        const camBtn = $$("camera");
+        camBtn.disabled = !(d.you && d.you.can_cam) && !mine;
+        camBtn.title = d.you && d.you.can_cam
+          ? "" : "The broadcaster has to open the floor to you first";
+        drawCams(d.cams || [], word);
+        if (d.state !== "live") { clearInterval(beatTimer); dropCam(); }
+      } catch (err) {
+        /* A dropped beat is not worth shouting about; the next one usually
+           lands. Only a refusal is worth saying out loud. */
+        if (err && /watchword|member|room to you/i.test(err.message)) say(err.message, true);
+      }
+    }
+
+    /* Other people's cameras, each its own little window. */
+    const windows = new Map();
+    function drawCams(cams, pass) {
+      const wall = $$("wall");
+      cams.forEach((c) => {
+        if (windows.has(c.id) || (mine && c.id === mine)) return;
+        const cell = document.createElement("figure");
+        cell.className = "cam-cell";
+        cell.innerHTML = '<video playsinline autoplay muted></video><figcaption>' + esc(c.who) + "</figcaption>";
+        wall.appendChild(cell);
+        const v = cell.querySelector("video");
+        v.muted = false;
+        windows.set(c.id, { cell, stop: playInto(v, c.id, pass) });
+      });
+      windows.forEach((w, id) => {
+        if (!cams.some((c) => c.id === id)) {
+          w.stop();
+          w.cell.remove();
+          windows.delete(id);
+        }
+      });
+    }
+
+    /* The same segment-by-segment playback the main feed uses. */
+    function playInto(video, feedId, pass) {
+      let from = -1, timer = null, buf = null;
+      const q = [];
+      const mime = "video/webm";
+      if (!window.MediaSource || !MediaSource.isTypeSupported(mime)) return () => {};
+      const src = new MediaSource();
+      video.src = URL.createObjectURL(src);
+      src.addEventListener("sourceopen", () => {
+        buf = src.addSourceBuffer(mime);
+        buf.mode = "sequence";
+        buf.addEventListener("updateend", pump);
+        tick();
+        timer = setInterval(tick, POLL);
+      });
+      function pump() {
+        if (!buf || buf.updating || !q.length) return;
+        try { buf.appendBuffer(q.shift()); } catch { /* the window moved on */ }
+      }
+      async function tick() {
+        try {
+          const d = await post({ action: "pull", id: feedId, word: pass, since: from });
+          (d.parts || []).forEach((p) => {
+            from = Math.max(from, p.seq);
+            const bin = atob(p.part);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            q.push(bytes);
+          });
+          pump();
+          if (video.paused) video.play().catch(() => {});
+        } catch { /* the camera went down */ }
+      }
+      return () => { if (timer) clearInterval(timer); };
+    }
+
+    $$("send").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const body = $$("saybox").value.trim();
+      if (!body) return;
+      $$("saybox").value = "";
+      try { await post({ action: "say", id, word, body }); await beat(); }
+      catch (err) { say((err && err.message) || "That did not go through.", true); }
+    });
+    $$("saybox").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $$("send").click(); }
+    });
+
+    /* Your own camera in the room, with the same ten-second countdown the
+       broadcaster gets. */
+    $$("camera").addEventListener("click", async () => {
+      if (mine) { dropCam(); return; }
+      try {
+        myStream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, frameRate: { ideal: 20 } },
+          audio: { echoCancellation: true, noiseSuppression: true }
+        });
+        const own = $$("own");
+        own.hidden = false;
+        own.srcObject = myStream;
+        own.muted = true;
+        own.play().catch(() => {});
+        $$("camera").textContent = "Lower my camera";
+        countdown($$("count"), 10, () => raise(id, word));
+      } catch (err) {
+        say((err && err.message) || "Your camera would not open.", true);
+      }
+    });
+
+    async function raise(feedId, pass) {
+      try {
+        const type = ["video/webm;codecs=vp8,opus", "video/webm"]
+          .find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm";
+        const d = await post({ action: "cam", id: feedId, word: pass, on: true, mime: type });
+        mine = d.cam;
+        mySeq = 0;
+        myRec = new MediaRecorder(myStream, { mimeType: type, videoBitsPerSecond: 600000, audioBitsPerSecond: 48000 });
+        myRec.ondataavailable = async (e) => {
+          if (!e.data || !e.data.size || !mine) return;
+          const bytes = new Uint8Array(await e.data.arrayBuffer());
+          let bin = "";
+          for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+          const n = mySeq++;
+          await post({ action: "cam-push", id: feedId, word: pass, cam: mine, seq: n,
+            head: n === 0, part: btoa(bin) }).catch(() => {});
+        };
+        myRec.start(SEGMENT);
+        say("Your camera is up in the room.");
+      } catch (err) {
+        say((err && err.message) || "The floor is not open to you yet.", true);
+        dropCam();
+      }
+    }
+
+    function dropCam() {
+      if (myRec && myRec.state !== "inactive") myRec.stop();
+      myRec = null;
+      if (myStream) myStream.getTracks().forEach((t) => t.stop());
+      myStream = null;
+      const own = $$("own");
+      if (own) { own.hidden = true; own.srcObject = null; }
+      $$("camera").textContent = "Put my camera up";
+      if (mine) post({ action: "cam", id, word, on: false }).catch(() => {});
+      mine = null;
+    }
+
+    beat();
+    const beatTimer = setInterval(beat, 2500);
+    addEventListener("beforeunload", dropCam);
   }
 
   refresh();

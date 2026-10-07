@@ -31,6 +31,8 @@
  *                                                  to a moment in the sound
  *   { action: 'cue'|'drop-image', pass, image_id } move or remove a plate
  *   { action: 'one', pass, id }                    one item, freshly signed
+ *   { action: 'pin'|'unpin', pass, id }            hold it at the top of the
+ *                                                  page — three at most
  */
 import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
@@ -104,6 +106,7 @@ async function dress(row) {
     original_bytes: Number(row.original_bytes) || null,
     mime: row.mime || '',
     state: row.state,
+    pinned: Number(row.pinned) || 0,
     date: row.created_at ? new Date(row.created_at).toISOString().slice(0, 10) : '',
     url
   };
@@ -138,7 +141,7 @@ export default async function (req, res) {
       case 'shelf': {
         const kind = clean(body.kind, 8) === 'video' ? 'video' : 'audio';
         const { rows } = await db.query(
-          'SELECT * FROM media WHERE kind = $1 ORDER BY created_at DESC LIMIT 200', [kind]);
+          'SELECT * FROM media WHERE kind = $1 ORDER BY pinned DESC, created_at DESC LIMIT 200', [kind]);
         const items = [];
         for (const r of rows || []) items.push(await dress(r));
         return res.json({ ok: true, items });
@@ -226,6 +229,40 @@ export default async function (req, res) {
         await db.query('UPDATE media SET state = $1, updated_at = NOW() WHERE id = $2',
           [action === 'publish' ? 'published' : 'draft', id]);
         return res.json({ ok: true });
+      }
+
+      /* Up to three held at the top of the page. A fourth pin pushes the
+         oldest pin off rather than refusing \u2014 the limit is the point of
+         the feature, and an error message would just be in the way. */
+      case 'pin':
+      case 'unpin': {
+        const id = Number(body.id);
+        if (!id) return res.status(400).json({ error: 'Which one?' });
+        const { rows: found } = await db.query('SELECT kind FROM media WHERE id = $1', [id]);
+        if (!found || !found[0]) return res.status(404).json({ error: 'There is no such item.' });
+        const kind = found[0].kind;
+
+        if (action === 'unpin') {
+          await db.query('UPDATE media SET pinned = 0, updated_at = NOW() WHERE id = $1', [id]);
+        } else {
+          const { rows: pins } = await db.query(
+            'SELECT id FROM media WHERE kind = $1 AND pinned > 0 AND id <> $2 ORDER BY pinned DESC',
+            [kind, id]);
+          const keep = (pins || []).slice(0, 2).map((r) => Number(r.id));
+          const drop = (pins || []).slice(2).map((r) => Number(r.id));
+          for (const old of drop) {
+            await db.query('UPDATE media SET pinned = 0 WHERE id = $1', [old]);
+          }
+          /* Newest pin on top, the two it keeps below it. */
+          await db.query('UPDATE media SET pinned = 3, updated_at = NOW() WHERE id = $1', [id]);
+          if (keep[0]) await db.query('UPDATE media SET pinned = 2 WHERE id = $1', [keep[0]]);
+          if (keep[1]) await db.query('UPDATE media SET pinned = 1 WHERE id = $1', [keep[1]]);
+        }
+        const { rows } = await db.query(
+          'SELECT * FROM media WHERE kind = $1 ORDER BY pinned DESC, created_at DESC LIMIT 200', [kind]);
+        const items = [];
+        for (const r of rows || []) items.push(await dress(r));
+        return res.json({ ok: true, items });
       }
 
       case 'next-number':
