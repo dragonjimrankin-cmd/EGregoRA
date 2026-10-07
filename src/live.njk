@@ -295,10 +295,24 @@ Casimir, 1948 | the vacuum pushes, so it is not nothing</textarea>
       <div class="plate-shop">
         <div class="plate-view" data-lv="p-preview"></div>
         <div class="btn-row">
-          <button type="button" class="btn btn--small" data-lv="p-air">Put this on air</button>
-          <button type="button" class="btn btn--small btn--ghost" data-lv="p-save">Keep it in the deck</button>
-          <button type="button" class="btn btn--small btn--ghost" data-lv="deck-clear">Empty the deck</button>
+          <button type="button" class="btn btn--small" data-lv="p-air">Put this on air now</button>
+          <button type="button" class="btn btn--small btn--ghost" data-lv="p-save">Add this page</button>
+          <button type="button" class="btn btn--small btn--ghost" data-lv="p-replace">Replace the page showing</button>
+          <button type="button" class="btn btn--small btn--ghost" data-lv="deck-clear">Throw the deck away</button>
         </div>
+      </div>
+
+      <p class="kicker xsmall">The presentation</p>
+      <p class="muted xsmall">Pages run in the order below and can be flicked through while you are
+      live &mdash; forwards, back, or straight to one by pressing its card. The deck is kept in this
+      machine, so it survives the broadcast and is still there next time.</p>
+      <div class="btn-row deck-bar">
+        <button type="button" class="btn btn--small btn--ghost" data-lv="deck-first" aria-label="First page">&#124;&larr;</button>
+        <button type="button" class="btn btn--small" data-lv="deck-prev" aria-label="Previous page">&larr; Back</button>
+        <button type="button" class="btn btn--small" data-lv="deck-next" aria-label="Next page">Next &rarr;</button>
+        <button type="button" class="btn btn--small btn--ghost" data-lv="deck-end">Leave the presentation</button>
+        <strong class="muted xsmall" data-lv="deck-count">no pages yet</strong>
+        <label class="switch"><input type="checkbox" data-lv="deck-keys" checked> Arrow keys turn the page</label>
       </div>
       <div class="deck" data-lv="deck"></div>
 
@@ -335,8 +349,10 @@ Casimir, 1948 | the vacuum pushes, so it is not nothing</textarea>
 
       <div class="divider">&#10022;</div>
       <p class="kicker">Who is in the room</p>
-      <p class="muted xsmall">Tick what each person may do. Blocking takes the chat, the camera and
-      the room away at once, so a nuisance is one click rather than three.</p>
+      <p class="muted xsmall">A row for every person, a column for the elemental phase they declared
+      at the door, and a switch for each power they hold. It refreshes every two and a half seconds,
+      and keeps six rows standing when the room is empty so the controls never move under your hand.
+      Blocking takes chat, camera and microphone at once, so a nuisance is one press rather than three.</p>
       <div data-lv="people"></div>
 
       <label for="lv-order-line">A line from The Order</label>

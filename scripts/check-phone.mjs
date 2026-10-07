@@ -246,6 +246,32 @@ TESTS.push(['/live/', async ({ doc }, t) => {
   await new Promise((r) => setTimeout(r, 80));
   t(doc.querySelector('[data-lv="folders"]').textContent.indexOf('2026-10-07') >= 0,
     'the archive lists its folders when the door opens');
+
+  /* The live table stands even when the room is empty. */
+  const table = doc.querySelector('[data-lv="people"] table');
+  t(table, 'the table of the room is drawn before anyone arrives');
+  t(table.querySelectorAll('thead th').length === 7,
+    'it has a column for the element and one for each power');
+  t(table.querySelectorAll('tbody tr').length >= 6, 'and six rows stand when the room is empty');
+  t(doc.querySelectorAll('[data-lv="people"] .phase-strip').length === 6,
+    'every elemental phase has its own camera and microphone controls');
+
+  /* The presentation: add two pages, then flick through them. */
+  const press = doc.querySelector('[data-lv="p-save"]');
+  doc.querySelector('[data-lv="p-title"]').value = 'Page one';
+  tap(press);
+  doc.querySelector('[data-lv="p-title"]').value = 'Page two';
+  tap(press);
+  const cards = doc.querySelectorAll('[data-lv="deck"] .deck-card');
+  t(cards.length >= 2, 'pages can be added to the deck like a slide deck');
+  t(/of 2$/.test(doc.querySelector('[data-lv="deck-count"]').textContent) ||
+    /2/.test(doc.querySelector('[data-lv="deck-count"]').textContent), 'the page count keeps up');
+  tap(doc.querySelector('[data-lv="deck-next"]'));
+  t(/camera first/i.test(doc.querySelector('[data-lv="msg"]').textContent),
+    'flicking with a dark gallery says so rather than failing quietly');
+  t(doc.querySelector('[data-lv="deck-keys"]').checked, 'the arrow keys are armed by default');
+  const nums = [...doc.querySelectorAll('[data-lv="deck"] .deck-num')].map((n) => n.textContent);
+  t(nums.join() === '1,2', 'the pages are numbered in the order they will run');
 }]);
 
 for (const [page, run] of TESTS) {

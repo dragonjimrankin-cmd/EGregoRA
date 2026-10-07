@@ -167,26 +167,80 @@ export function countdown(host, seconds, go) {
       if (n && mixer) n.textContent = mixer.state.mode;
     }
 
+    /* The deck is a presentation: an ordered run of pages that can be
+       flicked through while the feed is live, forwards, back, or straight
+       to a page by pressing its card. The page showing is remembered, so
+       coming back to the desk mid-broadcast does not lose your place. */
+    let at = -1;
+
+    function keep() {
+      localStorage.setItem(deckKey, JSON.stringify(deck));
+    }
+
+    function showPage(i, fade) {
+      if (!deck.length) return say("There are no pages in the deck yet.", true);
+      if (!mixer) return say("Open the camera first \u2014 the desk needs to be lit.", true);
+      at = (i + deck.length) % deck.length;
+      mixer.setPlate(plateCanvas(deck[at], 1280, 720));
+      mixer.take("plate", fade === undefined ? !!(d("fade") || {}).checked : fade).then(mark);
+      drawDeck();
+      say("Page " + (at + 1) + " of " + deck.length +
+        (deck[at].title ? " \u2014 " + deck[at].title : "") + ".");
+    }
+
+    function counter() {
+      const n = d("deck-count");
+      if (n) n.textContent = deck.length ? (at < 0 ? "page \u2014 of " + deck.length
+        : "page " + (at + 1) + " of " + deck.length) : "no pages yet";
+    }
+
     function drawDeck() {
       const host = d("deck");
       if (!host) return;
-      host.innerHTML = deck.length ? "" : '<p class="muted small">The deck is empty. Compose a plate and keep it.</p>';
+      counter();
+      host.innerHTML = deck.length ? "" : '<p class="muted small">No pages yet. Compose one above and ' +
+        "press Add this page; they run in the order you add them.</p>";
       deck.forEach((sp, i) => {
         const card = document.createElement("figure");
-        card.className = "deck-card";
+        card.className = "deck-card" + (i === at ? " is-showing" : "");
         const shot = plateCanvas(sp, 640, 360);
         shot.className = "plate-shot";
         card.appendChild(shot);
         const cap = document.createElement("figcaption");
-        cap.innerHTML = '<span>' + esc(sp.title || sp.kind) + "</span>" +
-          '<button type="button" class="btn btn--small" data-deck-air="' + i + '">To air</button>' +
+        cap.innerHTML = '<span><em class="deck-num">' + (i + 1) + "</em> " +
+          esc(sp.title || sp.kind) + (i === at ? ' <strong class="deck-now">showing</strong>' : "") + "</span>" +
+          '<button type="button" class="btn btn--small" data-deck-air="' + i + '">Show</button>' +
           '<button type="button" class="btn btn--small btn--ghost" data-deck-edit="' + i + '">Edit</button>' +
+          '<button type="button" class="btn btn--small btn--ghost" data-deck-up="' + i + '" ' +
+          (i === 0 ? "disabled" : "") + ' aria-label="Move earlier">&uarr;</button>' +
+          '<button type="button" class="btn btn--small btn--ghost" data-deck-down="' + i + '" ' +
+          (i === deck.length - 1 ? "disabled" : "") + ' aria-label="Move later">&darr;</button>' +
           '<button type="button" class="btn btn--small btn--ghost" data-deck-drop="' + i + '">Drop</button>';
         card.appendChild(cap);
         host.appendChild(card);
       });
       host.querySelectorAll("[data-deck-air]").forEach((b) => b.addEventListener("click", () => {
-        toAir(deck[Number(b.getAttribute("data-deck-air"))], "plate");
+        showPage(Number(b.getAttribute("data-deck-air")));
+      }));
+      host.querySelectorAll("[data-deck-up]").forEach((b) => b.addEventListener("click", () => {
+        const i = Number(b.getAttribute("data-deck-up"));
+        const held = deck[i];
+        deck[i] = deck[i - 1];
+        deck[i - 1] = held;
+        if (at === i) at = i - 1;
+        else if (at === i - 1) at = i;
+        keep();
+        drawDeck();
+      }));
+      host.querySelectorAll("[data-deck-down]").forEach((b) => b.addEventListener("click", () => {
+        const i = Number(b.getAttribute("data-deck-down"));
+        const held = deck[i];
+        deck[i] = deck[i + 1];
+        deck[i + 1] = held;
+        if (at === i) at = i + 1;
+        else if (at === i + 1) at = i;
+        keep();
+        drawDeck();
       }));
       host.querySelectorAll("[data-deck-edit]").forEach((b) => b.addEventListener("click", () => {
         const sp = deck[Number(b.getAttribute("data-deck-edit"))];
@@ -199,8 +253,10 @@ export function countdown(host, seconds, go) {
         preview();
       }));
       host.querySelectorAll("[data-deck-drop]").forEach((b) => b.addEventListener("click", () => {
-        deck.splice(Number(b.getAttribute("data-deck-drop")), 1);
-        localStorage.setItem(deckKey, JSON.stringify(deck));
+        const i = Number(b.getAttribute("data-deck-drop"));
+        deck.splice(i, 1);
+        if (at >= deck.length) at = deck.length - 1;
+        keep();
         drawDeck();
       }));
     }
@@ -230,15 +286,43 @@ export function countdown(host, seconds, go) {
       if (d("p-air")) d("p-air").addEventListener("click", () => toAir(spec(), "plate"));
       if (d("p-save")) d("p-save").addEventListener("click", () => {
         deck.push(spec());
-        if (deck.length > 40) deck.shift();
-        localStorage.setItem(deckKey, JSON.stringify(deck));
+        if (deck.length > 60) deck.shift();
+        keep();
         drawDeck();
-        say("Plate kept in the deck \u2014 " + deck.length + " there now.");
+        say("Added as page " + deck.length + ".");
+      });
+      if (d("p-replace")) d("p-replace").addEventListener("click", () => {
+        if (at < 0) return say("No page is showing, so there is none to replace.", true);
+        deck[at] = spec();
+        keep();
+        showPage(at, false);
+        say("Page " + (at + 1) + " replaced with what is in the composer.");
       });
       if (d("deck-clear")) d("deck-clear").addEventListener("click", () => {
+        if (!confirm("Throw away the whole presentation?")) return;
         deck = [];
-        localStorage.setItem(deckKey, "[]");
+        at = -1;
+        keep();
         drawDeck();
+      });
+
+      /* The flicker. Three buttons and the arrow keys, which is what a
+         person presenting actually reaches for. */
+      if (d("deck-first")) d("deck-first").addEventListener("click", () => showPage(0));
+      if (d("deck-prev")) d("deck-prev").addEventListener("click", () => showPage(at < 0 ? 0 : at - 1));
+      if (d("deck-next")) d("deck-next").addEventListener("click", () => showPage(at < 0 ? 0 : at + 1));
+      if (d("deck-end")) d("deck-end").addEventListener("click", () => {
+        at = -1;
+        drawDeck();
+        if (mixer) mixer.take("camera", true).then(mark);
+        say("Out of the presentation, back to the camera.");
+      });
+      addEventListener("keydown", (e) => {
+        const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target && e.target.tagName) || "");
+        if (typing || !mixer || !deck.length) return;
+        if (!(d("deck-keys") || {}).checked) return;
+        if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); showPage(at < 0 ? 0 : at + 1); }
+        if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); showPage(at < 0 ? 0 : at - 1); }
       });
 
       /* Drag a picture onto the programme and it goes out. The file is read
@@ -644,68 +728,95 @@ export function countdown(host, seconds, go) {
   const PHASES = [
     { id: "earth", glyph: "\u25bd", note: "body, ground, the slow proof" },
     { id: "fire", glyph: "\u25b3", note: "will, drive, the fast proof" },
-    { id: "water", glyph: "\u25bd\u0335", note: "feeling, memory, the deep proof" },
-    { id: "air", glyph: "\u25b3\u0335", note: "thought, speech, the clear proof" },
+    { id: "water", glyph: "\u25bf", note: "feeling, memory, the deep proof" },
+    { id: "air", glyph: "\u25b5", note: "thought, speech, the clear proof" },
     { id: "aether", glyph: "\u2b21", note: "the field the other four stand in" },
     { id: "unsaid", glyph: "\u00b7", note: "came in before the question, or would not answer" }
   ];
 
   function tick(p, f) {
-    return '<td><input type="checkbox" data-person="' + p.id + '" data-field="' + f + '"' +
-      (p[f] ? " checked" : "") + ' aria-label="' + f.replace("_", " ") + " for " + esc(p.who) + '"></td>';
+    return '<td class="tick-cell"><input type="checkbox" data-person="' + p.id + '" data-field="' + f +
+      '"' + (p[f] ? " checked" : "") + ' aria-label="' + f.replace("_", " ") + " for " + esc(p.who) +
+      '"></td>';
   }
 
-  function phaseRow(ph, folk) {
-    const n = folk.length;
-    const onCam = folk.filter((p) => p.can_cam).length;
-    const onMic = folk.filter((p) => p.can_mic).length;
-    return '<tr class="phase-row"><th colspan="6"><span class="phase-glyph">' + ph.glyph +
-      "</span> " + ph.id.toUpperCase() + ' <span class="muted xsmall">' + ph.note + " \u00b7 " +
-      n + (n === 1 ? " person" : " people") + " \u00b7 " + onCam + " on camera \u00b7 " + onMic +
-      ' with a microphone</span><span class="phase-acts">' +
-      '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id + '" data-field="can_cam" data-on="1">Cameras on</button>' +
-      '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id + '" data-field="can_cam" data-on="0">off</button>' +
-      '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id + '" data-field="can_mic" data-on="1">Mics on</button>' +
-      '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id + '" data-field="can_mic" data-on="0">off</button>' +
-      "</span></th></tr>";
+  const glyphOf = (id) => (PHASES.find((x) => x.id === id) || { glyph: "\u00b7" }).glyph;
+
+  /* Six empty rows when the room is empty. A table that collapses to a
+     sentence makes the desk jump about as people come and go, and a
+     broadcaster glancing down mid-sentence should find the controls in the
+     same place they were a moment ago. */
+  function blankRows(n) {
+    let out = "";
+    for (let i = 0; i < n; i++) {
+      out += '<tr class="empty-row"><td><span class="muted">\u2014</span></td><td>\u2014</td>' +
+        '<td class="tick-cell">\u00b7</td><td class="tick-cell">\u00b7</td>' +
+        '<td class="tick-cell">\u00b7</td><td class="tick-cell">\u00b7</td><td>\u2014</td></tr>';
+    }
+    return out;
+  }
+
+  function elementStrip(folk) {
+    return PHASES.map((ph) => {
+      const got = folk.filter((p) => (p.element || "unsaid") === ph.id);
+      return '<div class="phase-strip"><span class="phase-glyph">' + ph.glyph + "</span>" +
+        '<span class="phase-name">' + ph.id + "</span>" +
+        '<span class="muted xsmall">' + got.length + "</span>" +
+        '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id +
+        '" data-field="can_cam" data-on="1" title="Cameras on for ' + ph.id + '">Cam on</button>' +
+        '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id +
+        '" data-field="can_cam" data-on="0">off</button>' +
+        '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id +
+        '" data-field="can_mic" data-on="1" title="Microphones on for ' + ph.id + '">Mic on</button>' +
+        '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id +
+        '" data-field="can_mic" data-on="0">off</button></div>';
+    }).join("");
+  }
+
+  /* The live table. Every person in the room is a row; the phase they
+     declared at the door is a column, and so is each power, so the whole
+     state of the room is one glance and every switch is under a thumb.
+     It redraws every two and a half seconds. */
+  function paintPeople(folk) {
+    const n = $("people");
+    if (!n) return;
+    const rows = folk.map((p) =>
+      '<tr class="' + ((p.element || "unsaid")) + '-row">' +
+      "<td>" + esc(p.who) + "</td>" +
+      '<td class="el-cell"><span class="phase-glyph">' + glyphOf(p.element || "unsaid") +
+      "</span> " + esc(p.element || "unsaid") + "</td>" +
+      tick(p, "can_chat") + tick(p, "can_cam") + tick(p, "can_mic") + tick(p, "blocked") +
+      "<td>" + (p.on_camera ? '<span class="on-air-dot"></span> on air' : "\u2014") + "</td></tr>")
+      .join("");
+
+    n.innerHTML = '<div class="phase-strips">' + elementStrip(folk) + "</div>" +
+      '<table class="keeper-table people-table"><thead><tr><th>Who</th><th>Element</th>' +
+      "<th>Chat</th><th>Camera</th><th>Mic</th><th>Blocked</th><th>Picture</th></tr></thead><tbody>" +
+      rows + blankRows(Math.max(0, 6 - folk.length)) + "</tbody></table>" +
+      '<p class="muted xsmall">' + (folk.length
+        ? folk.length + (folk.length === 1 ? " person" : " people") + " in the room \u00b7 updating every 2.5 seconds"
+        : "Nobody is in the room yet. They are asked for their elemental phase at the door and appear here under it.") +
+      "</p>";
+
+    n.querySelectorAll("[data-person]").forEach((b) => b.addEventListener("change", async () => {
+      await post({ action: "allow", id: feedId, person: Number(b.getAttribute("data-person")),
+        field: b.getAttribute("data-field"), value: b.checked }).catch(() => {});
+      drawPeople();
+    }));
+    n.querySelectorAll("[data-el]").forEach((b) => b.addEventListener("click", async () => {
+      if (!feedId) return say("No feed is running.", true);
+      await post({ action: "allow", id: feedId, element: b.getAttribute("data-el"),
+        field: b.getAttribute("data-field"), value: b.getAttribute("data-on") === "1" }).catch(() => {});
+      drawPeople();
+    }));
   }
 
   async function drawPeople() {
-    if (!feedId) return;
-    const n = $("people");
-    if (!n) return;
+    if (!$("people")) return;
+    if (!feedId) { paintPeople([]); return; }
     try {
       const d = await post({ action: "people", id: feedId });
-      const folk = d.people || [];
-      if (!folk.length) {
-        n.innerHTML = '<p class="muted small">Nobody is in the room yet. They are asked for their ' +
-          "elemental phase at the door, and appear here under it.</p>";
-        return;
-      }
-      let html = '<table class="keeper-table people-table"><thead><tr><th>Who</th><th>Chat</th>' +
-        "<th>Camera</th><th>Microphone</th><th>Blocked</th><th>On air</th></tr></thead><tbody>";
-      PHASES.forEach((ph) => {
-        const got = folk.filter((p) => (p.element || "unsaid") === ph.id);
-        if (!got.length) return;
-        html += phaseRow(ph, got);
-        html += got.map((p) =>
-          "<tr><td>" + esc(p.who) + "</td>" +
-          tick(p, "can_chat") + tick(p, "can_cam") + tick(p, "can_mic") + tick(p, "blocked") +
-          "<td>" + (p.on_camera ? "yes" : "\u2014") + "</td></tr>").join("");
-      });
-      html += "</tbody></table>";
-      n.innerHTML = html;
-
-      n.querySelectorAll("[data-person]").forEach((b) => b.addEventListener("change", async () => {
-        await post({ action: "allow", id: feedId, person: Number(b.getAttribute("data-person")),
-          field: b.getAttribute("data-field"), value: b.checked }).catch(() => {});
-        drawPeople();
-      }));
-      n.querySelectorAll("[data-el]").forEach((b) => b.addEventListener("click", async () => {
-        await post({ action: "allow", id: feedId, element: b.getAttribute("data-el"),
-          field: b.getAttribute("data-field"), value: b.getAttribute("data-on") === "1" }).catch(() => {});
-        drawPeople();
-      }));
+      paintPeople(d.people || []);
     } catch { /* the table will be there next beat */ }
   }
 
@@ -729,7 +840,8 @@ export function countdown(host, seconds, go) {
     await post({ action: "order-say", id: feedId, body }).catch(() => {});
   });
 
-  setInterval(drawPeople, 4000);
+  paintPeople([]);
+  setInterval(drawPeople, 2500);
 
   addEventListener("beforeunload", () => {
     if (feedId) navigator.sendBeacon && navigator.sendBeacon("/api/live",
