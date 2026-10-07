@@ -1,31 +1,29 @@
-# control run — 2026-10-07T06:44:47.600Z
-site: https://egregora.hatchable.site   calls: 1
+# control run — 2026-10-07T07:51:44.555Z
+site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/keeper  {"action":"gpus","pass":"1133"}
-HTTP 200  (364 ms)
+POST /api/media  {"action":"list","kind":"audio"}
+HTTP 200  (295 ms)
 {
   "ok": true,
-  "gpus": [
-    {
-      "id": "kaggle:shakradragon",
-      "kind": "Kaggle",
-      "label": "shakradragon (bundled)",
-      "user": "shakradragon",
-      "gpu": "Nvidia Tesla T4 (when the account is verified)",
-      "state": "ready",
-      "busy": false,
-      "stale": false,
-      "fails": 0,
-      "successes": 11,
-      "last_error": null,
-      "can_reset": true,
-      "note": "Resetting frees this account’s lock and cancels anything still marked live."
-    }
-  ],
-  "secret_set": false
+  "items": []
+}
+
+--------------------------------------------------------------------
+POST /api/media  {"action":"shelf","kind":"video","pass":"1133"}
+HTTP 200  (151 ms)
+{
+  "ok": true,
+  "items": []
+}
+
+--------------------------------------------------------------------
+POST /api/media  {"action":"shelf","kind":"video","pass":"0000"}
+HTTP 401  (112 ms)
+{
+  "error": "Not the key. 2 tries left."
 }
 
 done.
