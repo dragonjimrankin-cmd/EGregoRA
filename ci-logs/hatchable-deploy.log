@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-07T11:09:23Z
+# Hatchable deploy — 2026-10-07T11:16:52Z
 
 token present: 43 chars, prefix hb_
 
@@ -66,14 +66,14 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 157,
+  "version": 158,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v156.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v157.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v157.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v158.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
   "files_deployed": 170,
   "functions_deployed": 22,
