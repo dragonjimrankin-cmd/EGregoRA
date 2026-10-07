@@ -27,6 +27,7 @@ import { adminDoor } from '../lib/door.js';
 import { openaiKey } from '../lib/openai.js';
 import { openChat } from '../lib/openchat.js';
 import { SECTIONS, SECTION_LINES } from '../lib/site-map.js';
+import { storedHuggingFaceKey } from '../lib/key-store.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -59,10 +60,7 @@ async function hearWithOpenAI(bytes, mime) {
 
 async function hearWithHF(bytes, mime) {
   let key = null;
-  try {
-    const { storedHuggingFaceKey } = await import('../lib/key-store.js');
-    key = storedHuggingFaceKey ? storedHuggingFaceKey() : null;
-  } catch { key = null; }
+  try { key = storedHuggingFaceKey(); } catch { key = null; }
   if (!key) return { error: 'no Hugging Face token' };
   for (const repo of ['openai/whisper-large-v3-turbo', 'openai/whisper-large-v3']) {
     const r = await fetch('https://router.huggingface.co/hf-inference/models/' + repo, {
