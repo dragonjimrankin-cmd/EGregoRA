@@ -221,6 +221,26 @@ For the owner (nothing here can be done from the sandbox):
 
 ## 11. The last few deploys, for orientation
 
+- **v172 every grading diamond coloured everywhere, and Gink speaking the
+  grades aloud** (`scripts/check-diamonds.mjs`; `.sci/.hist/.spec/.myth` now
+  set `color` *and* SVG `fill`; `fox.js` queues `{line}` / `{wait}` items and
+  says “This has been graded as …” after each graded claim;
+  `EGFox.speakNode(el)` reads grades off the DOM).
+- **v173 the Moebius Seam named under the cosmos skin of the atlas**
+  (`atlas.js`, label + synopsis panel; the same passage written out at
+  `/#moebius-seam`).
+- **v174 the written-out map turned into the site's table of contents**
+  (`#contents` on the front page) with `scripts/check-links.mjs` enforcing
+  that every internal link lands, every anchor exists, and the contents
+  reaches every indexable page. Both new checks run inside `npm run audit`.
+- **v175 `/astronomy/` — Limb I·i.** Stars, solar systems, galaxies and the
+  four classes of black hole, four new plates, and the Ladder of Scale:
+  `src/assets/js/sky.js`, a logarithmic canvas map of seventeen rungs from a
+  twenty-kilometre London to the outer edge of the Local Group, driven by
+  drag, wheel, slider, presets, arrow keys and the written ladder beneath it.
+- **v176 oracle corpus volume XXIII** (`hatchable/lib/oracle-corpus-xxiii.js`,
+  nineteen astronomy answers, registered in `oracle-corpus.js`; 1,364 written
+  answers in total).
 - v160 presentation deck + live people table · v161 room as a gallery wall ·
   v162 OAuth doors + `EGNeedCheck` · v163 busy-device box, ON AIR sign,
   off-air holding card · v164 record-on-your-device studio, mobile sign-in
