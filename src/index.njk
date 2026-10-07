@@ -60,6 +60,69 @@ description: EGregoRA — the house of enquiry co-founded by Edward Gregory and 
 
 <div class="divider">✦</div>
 
+<section class="wrap reveal" id="atlas-box">
+  <div class="page-head">
+    <p class="kicker">The Atlas</p>
+    <h2>The Whole Figure, Turned in the Hand</h2>
+    <p class="lede muted">Every room in this house, drawn as one branching body: the trunk, the eleven
+    limbs, the sub-limbs hung beneath them, and under each the sections of the page itself. Drag to turn
+    it, wheel to come closer, click a limb to open it.</p>
+  </div>
+
+  <div class="frame atlas">
+    <div class="atlas-grid">
+      <div class="atlas-stage-wrap">
+        <div id="atlas-stage" class="atlas-stage" role="img"
+             aria-label="A three-dimensional branching map of the site: a trunk, eleven limbs, their sub-limbs and the sections of every page"></div>
+        <div id="atlas-labels" class="atlas-labels"></div>
+      </div>
+
+      <div class="atlas-side">
+        <div class="atlas-tools">
+          <button type="button" class="btn btn--small" id="at-spin" aria-pressed="true">Hold Still</button>
+          <button type="button" class="btn btn--small" id="at-open">Open All</button>
+          <button type="button" class="btn btn--small" id="at-fold">Fold Away</button>
+          <button type="button" class="btn btn--small" id="at-home">Whole Figure</button>
+        </div>
+        <label class="atlas-find" for="at-find">Find a subject</label>
+        <input type="search" id="at-find" placeholder="phyllotaxis, ogham, decoherence…" autocomplete="off">
+        <p class="atlas-status muted small" id="atlas-status" role="status"></p>
+        <div class="atlas-read" id="atlas-read"></div>
+      </div>
+    </div>
+
+    <details class="scroll mt-1">
+      <summary>The same map, written out as a list</summary>
+      <ul class="atlas-list">
+        {%- for limb in atlasTree.limbs %}
+        <li>
+          <a href="{{ limb.href }}"><strong>Limb {{ limb.num }} &middot; {{ limb.title }}</strong></a>
+          {%- if limb.subs.length or limb.topics.length %}
+          <ul>
+            {%- for sub in limb.subs %}
+            <li><a href="{{ sub.href }}">Limb {{ sub.num }} &middot; {{ sub.title }}</a>
+              {%- if sub.topics.length %}
+              <ul>
+                {%- for t in sub.topics %}<li><a href="{{ t.href }}">{{ t.title }}</a></li>{% endfor %}
+              </ul>
+              {%- endif %}
+            </li>
+            {%- endfor %}
+            {%- for t in limb.topics %}<li><a href="{{ t.href }}">{{ t.title }}</a></li>{% endfor %}
+          </ul>
+          {%- endif %}
+        </li>
+        {%- endfor %}
+      </ul>
+    </details>
+  </div>
+</section>
+
+<script type="application/json" id="atlas-data">{{ atlasTree | dump | safe }}</script>
+<script type="module" src="/assets/js/atlas.js?v={{ build.id }}"></script>
+
+<div class="divider">✦</div>
+
 <section class="wrap">
   <div class="page-head">
     <p class="kicker">The Eleven Limbs</p>

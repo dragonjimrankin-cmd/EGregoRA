@@ -2167,3 +2167,95 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 }
 .plate-card .plate-link a { color: var(--gold); }
 .plate-card > figure { margin-bottom: 0; }
+
+/* --------------------------------------------------- The Atlas (index page)
+   The branching map of the whole site. The stage keeps a fixed ratio so the
+   figure is never squeezed; the labels are ordinary buttons floated over the
+   canvas, so the map is reachable by keyboard and reads to a screen reader as
+   a list of links rather than a picture of one. */
+.atlas-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: stretch;
+}
+.atlas-stage-wrap { position: relative; min-height: 420px; }
+.atlas-stage {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(215, 176, 90, 0.28);
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(143, 182, 216, 0.08), transparent 62%),
+    #0b0a09;
+  cursor: grab;
+  touch-action: none;
+  overflow: hidden;
+}
+.atlas-stage canvas { display: block; width: 100%; height: 100%; }
+.atlas-labels { position: absolute; inset: 0; pointer-events: none; }
+.atlas-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+  max-width: 15ch;
+  padding: 0.1rem 0.3rem;
+  border: 0;
+  border-radius: 2px;
+  background: rgba(11, 10, 9, 0.62);
+  color: #cbbb93;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.atlas-label.is-root { color: #f3ddaa; font-size: 0.82rem; letter-spacing: 0.1em; }
+.atlas-label.is-limb { color: #d7b05a; font-size: 0.7rem; }
+.atlas-label.is-sub { color: #7fae7a; }
+.atlas-label.is-topic { color: #9f947a; font-size: 0.58rem; max-width: 13ch; }
+.atlas-label:hover,
+.atlas-label:focus-visible,
+.atlas-label.is-on { color: #f3ddaa; background: rgba(11, 10, 9, 0.9); }
+
+.atlas-side { display: flex; flex-direction: column; gap: 0.55rem; }
+.atlas-tools { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.atlas-find {
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9f947a;
+}
+#at-find {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid rgba(215, 176, 90, 0.3);
+  border-radius: 2px;
+  background: rgba(11, 10, 9, 0.6);
+  color: #e8dcc0;
+  font-family: "EB Garamond", Georgia, serif;
+}
+.atlas-status { min-height: 1.2em; margin: 0; }
+.atlas-read {
+  flex: 1;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(215, 176, 90, 0.22);
+  border-radius: 3px;
+  background: rgba(215, 176, 90, 0.04);
+}
+.atlas-read h3 { margin: 0.2rem 0 0.4rem; font-size: 1.05rem; }
+.atlas-read p { margin: 0 0 0.5rem; }
+.atlas-list { line-height: 1.7; }
+.atlas-list ul { margin: 0.2rem 0 0.5rem 1.1rem; }
+.atlas--off .atlas-stage-wrap,
+.atlas--off .atlas-side { display: none; }
+
+@media (max-width: 860px) {
+  .atlas-grid { grid-template-columns: 1fr; }
+  .atlas-stage-wrap { min-height: 320px; }
+  .atlas-label.is-topic { display: none; }
+}
