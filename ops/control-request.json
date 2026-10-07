@@ -1,4 +1,4 @@
 { "calls": [
   { "action": "accounts" },
-  { "action": "draw", "prompt": "A single rowan branch heavy with red berries against a slate sky, cold October light" }
+  { "action": "draw", "prompt": "A rowan branch heavy with red berries against a slate sky, cold October light, shallow depth of field" }
 ] }
