@@ -181,6 +181,65 @@ function setup(root) {
     return node;
   };
 
+  /* --------------------------------------------------- the speechless parts
+     Every recording has them: the pause while a page is turned, the long
+     think, the forty seconds the kettle took. Finding them is a matter of
+     measuring the sound in short windows, calling anything near the noise
+     floor speechless, and joining neighbouring windows into runs.
+
+     A run is only cut if it is longer than the patience you set, and even
+     then a breath of it is left behind \u2014 silence removed completely
+     sounds wrong, because a conversation has rhythm and an abrupt join
+     reads as a mistake. */
+  function findGaps(buf, holdFor, leave, floor) {
+    const rate = buf.sampleRate;
+    const win = Math.floor(rate * 0.04);                 /* forty milliseconds */
+    const chans = Math.min(2, buf.numberOfChannels);
+    const data = [];
+    for (let c = 0; c < chans; c++) data.push(buf.getChannelData(c));
+
+    /* Speech sits well above the floor; three times it, with a sensible
+       minimum, keeps room tone from counting as talking. */
+    const quietUnder = Math.max(floor * 3, 0.004);
+
+    const loud = [];
+    for (let i = 0; i < buf.length; i += win) {
+      let sum = 0, n = 0;
+      for (let j = i; j < Math.min(buf.length, i + win); j++) {
+        let v = 0;
+        for (let c = 0; c < chans; c++) v += data[c][j];
+        sum += (v / chans) * (v / chans); n++;
+      }
+      loud.push(Math.sqrt(sum / Math.max(1, n)) > quietUnder);
+    }
+
+    const gaps = [];
+    let from = -1;
+    for (let i = 0; i <= loud.length; i++) {
+      const speechless = i < loud.length ? !loud[i] : false;
+      if (speechless && from < 0) from = i;
+      if (!speechless && from >= 0) {
+        const a = (from * win) / rate, b = (i * win) / rate;
+        if (b - a >= holdFor) gaps.push({ from: a, to: b });
+        from = -1;
+      }
+    }
+
+    /* What is kept: everything either side of each gap, plus the breath
+       left in the middle of it. */
+    const keep = [];
+    let at = 0;
+    gaps.forEach((g) => {
+      const half = leave / 2;
+      keep.push({ from: at, to: Math.min(buf.duration, g.from + half) });
+      at = Math.max(0, g.to - half);
+    });
+    keep.push({ from: at, to: buf.duration });
+
+    const saved = gaps.reduce((n, g) => n + (g.to - g.from) - leave, 0);
+    return { gaps, keep: keep.filter((k) => k.to - k.from > 0.02), saved: Math.max(0, saved) };
+  }
+
   /* What is actually in the file: peak, loudness, noise floor, silence at
      each end. Measured on a single downmixed pass. */
   function inspect(buf) {
@@ -234,10 +293,40 @@ function setup(root) {
     return {
       rumble: on("rumble"), gate: on("gate"), tone: on("tone"), deess: on("deess"),
       level: on("level"), loud: on("loud"), trim: on("trim"), fade: on("fade"),
+      gaps: on("gaps"),
+      gapHold: Number((root.querySelector("[data-am=gaphold]") || {}).value || 1.5),
+      gapLeave: Number((root.querySelector("[data-am=gapleave]") || {}).value || 0.45),
       target: el.loud ? Number(el.loud.value) : -18,
       grade: on("grade"), shrink: on("shrink")
     };
   };
+
+  /* ---------------------------------------------------------- the vocabulary
+     The house's own subject words, as chips. Tapping one adds it to the
+     tag field; tapping it again takes it off. The field stays editable \u2014
+     the chips are a shortcut, not a cage. */
+  (function tagChips() {
+    const field = el.tags;
+    if (!field) return;
+    const read = () => field.value.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+    const write = (list) => {
+      field.value = list.filter((t, i, all) => all.indexOf(t) === i).join(", ");
+      mark();
+    };
+    const mark = () => {
+      const have = new Set(read());
+      root.querySelectorAll(".am-chip").forEach((c) =>
+        c.setAttribute("aria-pressed", String(have.has(c.getAttribute("data-tag")))));
+    };
+    root.querySelectorAll(".am-chip").forEach((c) => c.addEventListener("click", () => {
+      const tag = c.getAttribute("data-tag");
+      const have = read();
+      write(have.indexOf(tag) >= 0 ? have.filter((t) => t !== tag) : have.concat([tag]));
+    }));
+    field.addEventListener("input", mark);
+    mark();
+    el.markTags = mark;
+  })();
 
   /* ------------------------------------------------------------ the chooser */
   let fileBuf = null, fileLook = null;
@@ -302,19 +391,54 @@ function setup(root) {
   async function enhanceAudio(want) {
     if (!fileBuf) return say("Choose a file first.", true);
     step("Rendering\u2026", 0.1);
-
-    let from = 0, to = fileBuf.duration;
-    if (want.trim) {
-      from = Math.max(0, fileLook.head - 0.25);
-      to = Math.min(fileBuf.duration, fileLook.tail + 0.4);
-    }
     const rate = fileBuf.sampleRate;
+
+    /* The speechless stretches, if they are to come out. The kept pieces
+       are laid end to end into one buffer first and the chain runs over the
+       result, so a join cannot be heard as a change in tone. */
+    let working = fileBuf, workLook = fileLook, cutNote = "";
+    if (want.gaps) {
+      step("Finding the speechless stretches\u2026", 0.18);
+      const found = findGaps(fileBuf, want.gapHold, want.gapLeave, fileLook.floor);
+      if (found.gaps.length) {
+        const total = found.keep.reduce((n, k) => n + (k.to - k.from), 0);
+        const join = new OfflineAudioContext(Math.min(2, fileBuf.numberOfChannels),
+          Math.max(1, Math.floor(total * rate)), rate);
+        let at = 0;
+        found.keep.forEach((k) => {
+          const piece = join.createBufferSource();
+          piece.buffer = fileBuf;
+          const g = join.createGain();
+          const len = k.to - k.from;
+          g.gain.setValueAtTime(0, at);
+          g.gain.linearRampToValueAtTime(1, at + 0.01);
+          g.gain.setValueAtTime(1, at + Math.max(0.02, len - 0.01));
+          g.gain.linearRampToValueAtTime(0, at + len);
+          piece.connect(g); g.connect(join.destination);
+          piece.start(at, k.from, len);
+          at += len;
+        });
+        step("Closing " + found.gaps.length + " speechless stretch(es)\u2026", 0.3);
+        working = await join.startRendering();
+        workLook = inspect(working);
+        cutNote = found.gaps.length + " speechless stretch" + (found.gaps.length === 1 ? "" : "es") +
+          " shortened, " + clock(found.saved) + " saved";
+      } else {
+        cutNote = "no speechless stretch ran longer than " + want.gapHold + "s";
+      }
+    }
+
+    let from = 0, to = working.duration;
+    if (want.trim) {
+      from = Math.max(0, workLook.head - 0.25);
+      to = Math.min(working.duration, workLook.tail + 0.4);
+    }
     const frames = Math.max(1, Math.floor((to - from) * rate));
-    const off = new OfflineAudioContext(Math.min(2, fileBuf.numberOfChannels), frames, rate);
+    const off = new OfflineAudioContext(Math.min(2, working.numberOfChannels), frames, rate);
 
     const src = off.createBufferSource();
-    src.buffer = fileBuf;
-    const out = CHAIN(off, src, fileLook, want);
+    src.buffer = working;
+    const out = CHAIN(off, src, workLook, want);
 
     if (want.fade) {
       const f = off.createGain();
@@ -332,7 +456,8 @@ function setup(root) {
     const done = await off.startRendering();
     step("Measuring\u2026", 0.7);
     const look = inspect(done);
-    el.after.innerHTML = reading(look, "After the work");
+    el.after.innerHTML = reading(look, "After the work") +
+      (cutNote ? '<p class="muted xsmall">' + cutNote + ".</p>" : "");
 
     step("Encoding\u2026", 0.85);
     const made = await encode(done);
@@ -343,6 +468,7 @@ function setup(root) {
       want.deess && "de-essed",
       want.level && "levelled",
       want.loud && ("matched to " + want.target + " dB RMS"),
+      want.gaps && cutNote,
       want.trim && "silence trimmed from both ends",
       want.fade && "faded in and out"
     ].filter(Boolean).join(", ") || "left as it was";
@@ -597,7 +723,7 @@ function setup(root) {
     };
     if (el.title) el.title.value = d.title || el.title.value;
     if (el.summary) el.summary.value = d.summary || el.summary.value;
-    if (el.tags) el.tags.value = (d.tags || []).join(", ");
+    if (el.tags) { el.tags.value = (d.tags || []).join(", "); if (el.markTags) el.markTags(); }
     if (el.meta) el.meta.hidden = false;
 
     const n = root.querySelector("[data-am=listing]");

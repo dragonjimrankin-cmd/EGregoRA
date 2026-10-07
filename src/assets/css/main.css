@@ -2526,3 +2526,27 @@ details.ep > summary:hover .ep-title { color: #f3ddaa; }
   border-bottom: 1px solid rgba(215, 176, 90, 0.12);
 }
 .am-script { max-height: 20rem; overflow: auto; white-space: pre-wrap; }
+
+/* The house vocabulary, as chips. */
+.am-tagbook { margin: 0.6rem 0; }
+.am-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.2rem 0 0.7rem; }
+.am-chip {
+  font: inherit;
+  font-size: 0.82rem;
+  color: #cbbb93;
+  background: rgba(215, 176, 90, 0.05);
+  border: 1px solid rgba(215, 176, 90, 0.22);
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.am-chip:hover { color: #f3ddaa; border-color: rgba(215, 176, 90, 0.5); }
+.am-chip[aria-pressed="true"] {
+  background: rgba(215, 176, 90, 0.2);
+  border-color: #d7b05a;
+  color: #f3ddaa;
+}
+.oracle-disclaimer { border-color: rgba(201, 139, 106, 0.3); }
+.oracle-disclaimer p { color: #9f947a; font-size: 0.95rem; }
+.oracle-disclaimer strong { color: #cbbb93; }

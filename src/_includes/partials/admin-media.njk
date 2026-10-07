@@ -63,12 +63,29 @@
         <label><input type="checkbox" data-want="loud" checked> Match the loudness, then limit the peaks</label>
         {% if amKind == "audio" %}
         <label><input type="checkbox" data-want="trim" checked> Trim the silence from both ends</label>
+        <label><input type="checkbox" data-want="gaps" checked> Close the long speechless stretches</label>
         <label><input type="checkbox" data-want="fade" checked> Fade in and out</label>
         {% else %}
         <label><input type="checkbox" data-want="grade" checked> Grade the picture &mdash; a touch of brightness, contrast and colour</label>
         <label><input type="checkbox" data-want="shrink" checked> Reduce to 720p-class width</label>
         {% endif %}
       </div>
+
+      {% if amKind == "audio" %}
+      <div class="am-fields">
+        <div>
+          <label for="{{ amKind }}-gaphold">Count it a gap after (seconds)</label>
+          <input type="number" id="{{ amKind }}-gaphold" data-am="gaphold" min="0.6" max="20" step="0.1" value="1.5">
+        </div>
+        <div>
+          <label for="{{ amKind }}-gapleave">Leave this much of it (seconds)</label>
+          <input type="number" id="{{ amKind }}-gapleave" data-am="gapleave" min="0" max="3" step="0.05" value="0.45">
+        </div>
+      </div>
+      <p class="muted xsmall">A pause is not a fault &mdash; silence removed completely sounds wrong,
+      because conversation has rhythm. Long stretches are shortened to the breath you leave here,
+      not deleted.</p>
+      {% endif %}
 
       <label for="{{ amKind }}-loud">Target loudness (dB RMS)</label>
       <input type="range" id="{{ amKind }}-loud" data-am="loud" min="-28" max="-10" step="1" value="-18">
@@ -95,11 +112,26 @@
                    placeholder="taken automatically">
           </div>
           {% endif %}
-          <div>
+          <div class="am-tagfield">
             <label for="{{ amKind }}-tags">Tags, comma separated</label>
-            <input type="text" id="{{ amKind }}-tags" data-am="tags" maxlength="300" placeholder="astronomy, druids">
+            <input type="text" id="{{ amKind }}-tags" data-am="tags" maxlength="300" placeholder="astronomy, druidry">
           </div>
         </div>
+        <details class="scroll am-tagbook">
+          <summary>The house vocabulary &mdash; tap a subject to add it</summary>
+          <p class="muted xsmall">Everything this house is about, grouped. The archivist already
+          prefers these words when it writes the tags itself; these are here for the ones it missed,
+          and for an upload you are listing by hand. Tap again to take one off.</p>
+          {%- for group, words in subjects %}
+          <p class="kicker">{{ group }}</p>
+          <div class="am-chips">
+            {%- for w in words %}
+            <button type="button" class="am-chip" data-tag="{{ w }}">{{ w }}</button>
+            {%- endfor %}
+          </div>
+          {%- endfor %}
+        </details>
+
         <label for="{{ amKind }}-summary">Summary</label>
         <textarea id="{{ amKind }}-summary" data-am="summary" rows="3" maxlength="2000"></textarea>
 

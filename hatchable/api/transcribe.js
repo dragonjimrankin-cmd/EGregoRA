@@ -26,7 +26,7 @@ import { db } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { openaiKey } from '../lib/openai.js';
 import { openChat } from '../lib/openchat.js';
-import { SECTIONS, SECTION_LINES } from '../lib/site-map.js';
+import { SECTIONS, SECTION_LINES, PRESET_TAGS } from '../lib/site-map.js';
 import { storedHuggingFaceKey } from '../lib/key-store.js';
 
 export const access = 'public';

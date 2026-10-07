@@ -32,5 +32,19 @@ lines.append("];")
 lines.append("")
 lines.append("export const SECTION_LINES = SECTIONS.map((s) => s.title + ' => ' + s.href).join('\\n');")
 lines.append("")
+lines.append("/* The subjects this house is actually about. The archivist prefers these")
+lines.append("   where they are true, so that episodes shelve together rather than each")
+lines.append("   inventing its own vocabulary; it may add others the recording earns. */")
+lines.append("export const PRESET_TAGS = [")
+groups = json.load(open("src/_data/subjects.json"))
+seen = set()
+for name, items in groups.items():
+    for t in items:
+        if t in seen:
+            continue
+        seen.add(t)
+        lines.append("  %s," % json.dumps(t))
+lines.append("];")
+lines.append("")
 open("hatchable/lib/site-map.js", "w").write("\n".join(lines))
 print("site-map.js:", len(rows), "sections")
