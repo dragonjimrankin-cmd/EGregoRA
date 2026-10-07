@@ -87,6 +87,19 @@ description: "The order's camera, when it is running: a live feed for members wh
 <section class="wrap narrow reveal" id="live-room" hidden>
   <div class="frame">
     <p class="kicker">The Room</p>
+
+    <div class="spotlight" data-lr="spot" hidden>
+      <div class="spot-stage" data-lr="spot-stage"></div>
+      <div class="btn-row">
+        <strong class="muted xsmall" data-lr="spot-who"></strong>
+        <button type="button" class="btn btn--small btn--ghost" data-lr="spot-full">Full screen</button>
+        <button type="button" class="btn btn--small btn--ghost" data-lr="spot-close">Back to the wall</button>
+      </div>
+    </div>
+
+    <p class="muted xsmall">Everyone in the room is below, their camera if they have one up and their
+    elemental phase if they have not. Press any of them to bring them up large; press again, or
+    &ldquo;back to the wall&rdquo;, to let them go.</p>
     <div class="cam-wall" data-lr="wall"></div>
 
     <div class="room-grid">
@@ -106,8 +119,20 @@ description: "The order's camera, when it is running: a live feed for members wh
       <div class="room-side">
         <button type="button" class="btn btn--small btn--ghost" data-lr="camera">Put my camera up</button>
         <div class="countdown" data-lr="count" hidden></div>
-        <video class="live-mirror" data-lr="own" muted playsinline hidden
-               aria-label="Your own camera" role="img"></video>
+
+        <div class="float-cam" data-lr="float" hidden>
+          <div class="float-bar" data-lr="float-bar">
+            <span class="float-title">You</span>
+            <button type="button" class="float-btn" data-lr="float-dock" title="Put it back in the panel">&#9723;</button>
+            <button type="button" class="float-btn" data-lr="float-hide" title="Hide your own picture">&times;</button>
+          </div>
+          <video class="live-mirror" data-lr="own" muted playsinline
+                 aria-label="Your own camera" role="img"></video>
+          <button type="button" class="float-grip" data-lr="float-grip"
+                  aria-label="Drag to resize your own picture"></button>
+        </div>
+        <p class="muted xsmall">Your own picture floats: drag its bar to put it anywhere on the
+        screen, drag the corner to size it, and dock it back into this panel when it is in the way.</p>
         <p class="muted xsmall">Your camera and microphone only go up if the broadcaster has opened
         the floor to you, and they can lower them again at any moment. Everything here is live and
         nothing is kept.</p>

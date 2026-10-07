@@ -86,6 +86,18 @@ function stub(win) {
       reply.tapes = [{ id: 1, folder: '2026-10-07', name: 'a.webm', title: 'A test recording',
         mime: 'video/webm', bytes: 4096, seconds: 61, at: new Date().toISOString(), url: 'blob:test' }];
     }
+    if (body.action === 'room') {
+      reply.state = 'live';
+      reply.you = { who: 'You', element: 'aether', can_chat: true, can_cam: true, can_mic: false };
+      reply.lines = [{ id: 1, who: 'The Order', body: 'Welcome in.', order: true, at: new Date().toISOString() }];
+      reply.people = [
+        { who: 'You', element: 'aether', can_chat: true, can_cam: true, can_mic: false, blocked: false },
+        { who: 'A quiet one', element: 'earth', can_chat: true, can_cam: false, can_mic: false, blocked: false },
+        { who: 'A loud one', element: 'fire', can_chat: false, can_cam: true, can_mic: true, blocked: false }
+      ];
+      reply.cams = [{ id: 9, who: 'A loud one' }];
+    }
+    if (body.action === 'pull') reply.parts = [];
     if (body.action === 'people') {
       reply.people = [
         { id: 1, who: 'A member', element: 'fire', can_chat: true, can_cam: false, can_mic: false, blocked: false, on_camera: false },
@@ -239,6 +251,41 @@ TESTS.push(['/live/', async ({ doc }, t) => {
   await new Promise((r) => setTimeout(r, 60));
   t(!/elemental phase/i.test(doc.querySelector('[data-lw="msg"]').textContent),
     'and lets you through once it is answered');
+
+  /* Inside the room: the wall of everyone, the spotlight, the float. */
+  await new Promise((r) => setTimeout(r, 120));
+  const room = doc.getElementById('live-room');
+  t(!room.hidden, 'the room opens once you are through the door');
+  const tiles = room.querySelectorAll('.cam-cell');
+  t(tiles.length === 3, 'everyone in the room has a tile, camera or not');
+  t(room.querySelectorAll('.cam-cell--quiet').length === 2,
+    'the ones without a camera show their elemental phase instead of being left out');
+  const camTile = room.querySelector('.cam-cell[data-cam]');
+  t(camTile, 'a live camera has its own tile');
+  tap(camTile);
+  t(!room.querySelector('[data-lr="spot"]').hidden, 'pressing a tile brings it up large');
+  t(room.querySelector('[data-lr="spot-stage"] video'), 'and the picture itself moves to the big stage');
+  t(room.querySelector('[data-lr="spot-who"]').textContent === 'A loud one', 'named, so you know who you are watching');
+  tap(camTile);
+  t(room.querySelector('[data-lr="spot"]').hidden, 'pressing it again lets them go');
+
+  const float = room.querySelector('[data-lr="float"]') || doc.querySelector('[data-lr="float"]');
+  t(float, 'your own picture has a window of its own');
+  t(float.querySelector('[data-lr="float-grip"]'), 'with a grip to size it');
+  const bar = float.querySelector('[data-lr="float-bar"]');
+  const down = new win.Event('pointerdown', { bubbles: true });
+  down.clientX = 100; down.clientY = 100; down.pointerId = 1;
+  bar.setPointerCapture = () => {};
+  bar.dispatchEvent(down);
+  t(float.classList.contains('is-floating'), 'dragging its bar lifts it out of the panel');
+  const move = new win.Event('pointermove', { bubbles: true });
+  move.clientX = 160; move.clientY = 220;
+  bar.dispatchEvent(move);
+  t(parseInt(float.style.top, 10) > 0 || parseInt(float.style.left, 10) > 0,
+    'and it follows the finger');
+  bar.dispatchEvent(new win.Event('pointerup', { bubbles: true }));
+  tap(float.querySelector('[data-lr="float-dock"]'));
+  t(!float.classList.contains('is-floating'), 'and docks back into the panel when told');
 
   /* The broadcaster's table, with people in it. */
   doc.querySelector('[data-lv="pass"]').value = '8===D';

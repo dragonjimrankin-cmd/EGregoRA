@@ -1012,8 +1012,9 @@ export function countdown(host, seconds, go) {
           const log = $$("log");
           log.scrollTop = log.scrollHeight;
         }
-        $$("people").textContent = (d.people || []).map((p) => p.who).join(" \u00b7 ") ||
-          "nobody else, yet";
+        $$("people").textContent = (d.people || []).length +
+          ((d.people || []).length === 1 ? " person here" : " people here");
+        folkNow = d.people || [];
         $$("send").disabled = !(d.you && d.you.can_chat);
         $$("saybox").placeholder = d.you && d.you.can_chat
           ? "Say something to the room"
@@ -1022,7 +1023,7 @@ export function countdown(host, seconds, go) {
         camBtn.disabled = !(d.you && d.you.can_cam) && !mine;
         camBtn.title = d.you && d.you.can_cam
           ? "" : "The broadcaster has to open the floor to you first";
-        drawCams(d.cams || [], word);
+        drawWall(d.cams || [], folkNow, word);
         if (d.state !== "live") { clearInterval(beatTimer); dropCam(); }
       } catch (err) {
         /* A dropped beat is not worth shouting about; the next one usually
@@ -1031,27 +1032,119 @@ export function countdown(host, seconds, go) {
       }
     }
 
-    /* Other people's cameras, each its own little window. */
-    const windows = new Map();
-    function drawCams(cams, pass) {
+    /* The wall: everybody in the room, whether or not they have a camera
+       up. A face if there is one, their elemental phase if not \u2014 because
+       a room where only the cameras show makes the quiet people invisible,
+       and they are still in it. Press a tile to bring it up large. */
+    const windows = new Map();   /* cam id -> { cell, video, stop } */
+    let folkNow = [];
+    let spotOn = null;
+
+    const GLYPH = { earth: "\u25bd", fire: "\u25b3", water: "\u25bf", air: "\u25b5", aether: "\u2b21" };
+
+    function spotlight(camId, who) {
+      const stage = $$("spot-stage");
+      const panel = $$("spot");
+      if (!stage || !panel) return;
+      if (spotOn === camId) { unspot(); return; }
+      unspot();
+      const w = windows.get(camId);
+      if (!w) return;
+      spotOn = camId;
+      stage.appendChild(w.video);          /* the same element: playback carries on */
+      w.cell.classList.add("is-spotted");
+      panel.hidden = false;
+      const name = $$("spot-who");
+      if (name) name.textContent = who || "";
+    }
+
+    function unspot() {
+      if (spotOn == null) return;
+      const w = windows.get(spotOn);
+      if (w) {
+        w.cell.insertBefore(w.video, w.cell.firstChild);
+        w.cell.classList.remove("is-spotted");
+      }
+      spotOn = null;
+      const panel = $$("spot");
+      if (panel) panel.hidden = true;
+    }
+
+    if ($$("spot-close")) $$("spot-close").addEventListener("click", unspot);
+    if ($$("spot-full")) $$("spot-full").addEventListener("click", () => {
+      const stage = $$("spot-stage");
+      if (!stage) return;
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (stage.requestFullscreen) stage.requestFullscreen().catch(() => {});
+    });
+
+    function drawWall(cams, folk, pass) {
       const wall = $$("wall");
+      if (!wall) return;
+
+      /* Cameras first: a tile per live child feed, created once and then
+         left alone so its MediaSource is never torn down. */
       cams.forEach((c) => {
-        if (windows.has(c.id) || (mine && c.id === mine)) return;
+        if (windows.has(c.id)) return;
         const cell = document.createElement("figure");
         cell.className = "cam-cell";
-        cell.innerHTML = '<video playsinline autoplay muted></video><figcaption>' + esc(c.who) + "</figcaption>";
+        const v = document.createElement("video");
+        v.playsInline = true;
+        v.autoplay = true;
+        v.muted = mine && c.id === mine;      /* never hear yourself */
+        cell.appendChild(v);
+        const cap = document.createElement("figcaption");
+        cap.textContent = c.who;
+        cell.appendChild(cap);
+        cell.setAttribute("data-cam", String(c.id));
+        cell.setAttribute("role", "button");
+        cell.setAttribute("tabindex", "0");
+        cell.title = "Press to bring " + c.who + " up large";
+        cell.addEventListener("click", () => spotlight(c.id, c.who));
+        cell.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); spotlight(c.id, c.who); }
+        });
         wall.appendChild(cell);
-        const v = cell.querySelector("video");
-        v.muted = false;
-        windows.set(c.id, { cell, stop: playInto(v, c.id, pass) });
+        windows.set(c.id, { cell, video: v, stop: playInto(v, c.id, pass) });
       });
+
       windows.forEach((w, id) => {
         if (!cams.some((c) => c.id === id)) {
+          if (spotOn === id) unspot();
           w.stop();
           w.cell.remove();
           windows.delete(id);
         }
       });
+
+      /* Then everyone without a camera, drawn as a plate rather than left
+         out of the room. */
+      const withCam = cams.map((c) => c.who);
+      const quiet = (folk || []).filter((p) => withCam.indexOf(p.who) < 0);
+      wall.querySelectorAll(".cam-cell--quiet").forEach((n) => n.remove());
+      quiet.forEach((p) => {
+        const cell = document.createElement("figure");
+        cell.className = "cam-cell cam-cell--quiet " + ((p.element || "unsaid") + "-tile");
+        cell.innerHTML = '<div class="quiet-face"><span class="quiet-glyph">' +
+          (GLYPH[p.element] || "\u00b7") + "</span><span class=\"quiet-el\">" +
+          esc(p.element || "unsaid") + "</span></div><figcaption>" + esc(p.who) +
+          (p.can_chat ? "" : ' <span class="muted" title="chat turned off">\u00d7</span>') +
+          "</figcaption>";
+        wall.appendChild(cell);
+      });
+
+      const none = !cams.length && !quiet.length;
+      wall.classList.toggle("is-empty", none);
+      if (none && !wall.querySelector(".wall-empty")) {
+        const p = document.createElement("p");
+        p.className = "muted small wall-empty";
+        p.textContent = "Nobody else is in the room yet.";
+        wall.appendChild(p);
+      }
+      if (!none) {
+        const e = wall.querySelector(".wall-empty");
+        if (e) e.remove();
+      }
     }
 
     /* The same segment-by-segment playback the main feed uses. */
@@ -1112,7 +1205,8 @@ export function countdown(host, seconds, go) {
           audio: { echoCancellation: true, noiseSuppression: true }
         });
         const own = $$("own");
-        own.hidden = false;
+        const float = $$("float");
+        if (float) float.hidden = false;
         own.srcObject = myStream;
         own.muted = true;
         own.play().catch(() => {});
@@ -1154,11 +1248,121 @@ export function countdown(host, seconds, go) {
       if (myStream) myStream.getTracks().forEach((t) => t.stop());
       myStream = null;
       const own = $$("own");
-      if (own) { own.hidden = true; own.srcObject = null; }
+      if (own) own.srcObject = null;
+      const float = $$("float");
+      if (float) float.hidden = true;
       $$("camera").textContent = "Put my camera up";
       if (mine) post({ action: "cam", id, word, on: false }).catch(() => {});
       mine = null;
     }
+
+    /* Your own picture, floating. It is dragged by its bar and sized by the
+       grip in its corner; where you leave it is remembered, because a thing
+       you have moved out of the way should stay out of the way. Everything
+       is clamped to the window, so it can never be dragged off the edge and
+       lost. */
+    (function floater() {
+      const box = $$("float");
+      const bar = $$("float-bar");
+      const grip = $$("float-grip");
+      if (!box || !bar) return;
+      const KEY = "eg-float-cam";
+      /* It begins life inside the side panel; the first drag lifts it out. */
+      let docked = true;
+
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+      function place(x, y, w) {
+        const wide = clamp(w, 140, Math.min(640, innerWidth - 20));
+        box.style.width = wide + "px";
+        box.style.left = clamp(x, 0, Math.max(0, innerWidth - wide)) + "px";
+        box.style.top = clamp(y, 0, Math.max(0, innerHeight - 90)) + "px";
+      }
+
+      function remember() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify({
+            x: parseInt(box.style.left, 10) || 0,
+            y: parseInt(box.style.top, 10) || 0,
+            w: parseInt(box.style.width, 10) || 240,
+            docked: docked
+          }));
+        } catch (e) { /* a full disk is not worth a broken room */ }
+      }
+
+      function float() {
+        docked = false;
+        box.classList.add("is-floating");
+        document.body.appendChild(box);
+      }
+
+      function dock() {
+        docked = true;
+        box.classList.remove("is-floating");
+        box.style.left = box.style.top = box.style.width = "";
+        const side = box.closest(".room-side") || document.querySelector(".room-side");
+        if (side) side.appendChild(box);
+        remember();
+      }
+
+      let held = null;
+      bar.addEventListener("pointerdown", (e) => {
+        if (e.target.classList.contains("float-btn")) return;
+        if (docked) float();
+        const r = box.getBoundingClientRect();
+        if (!box.style.left) place(r.left, r.top, r.width);
+        held = { dx: e.clientX - parseInt(box.style.left, 10), dy: e.clientY - parseInt(box.style.top, 10) };
+        bar.setPointerCapture(e.pointerId);
+        box.classList.add("is-held");
+      });
+      bar.addEventListener("pointermove", (e) => {
+        if (!held) return;
+        place(e.clientX - held.dx, e.clientY - held.dy, parseInt(box.style.width, 10) || 240);
+      });
+      ["pointerup", "pointercancel"].forEach((n) => bar.addEventListener(n, () => {
+        if (!held) return;
+        held = null;
+        box.classList.remove("is-held");
+        remember();
+      }));
+
+      if (grip) {
+        let sizing = null;
+        grip.addEventListener("pointerdown", (e) => {
+          e.preventDefault();
+          if (docked) {
+            float();
+            const r = box.getBoundingClientRect();
+            place(r.left, r.top, r.width);
+          }
+          sizing = { x: e.clientX, w: parseInt(box.style.width, 10) || box.offsetWidth };
+          grip.setPointerCapture(e.pointerId);
+        });
+        grip.addEventListener("pointermove", (e) => {
+          if (!sizing) return;
+          place(parseInt(box.style.left, 10) || 0, parseInt(box.style.top, 10) || 0,
+            sizing.w + (e.clientX - sizing.x));
+        });
+        ["pointerup", "pointercancel"].forEach((n) => grip.addEventListener(n, () => {
+          if (!sizing) return;
+          sizing = null;
+          remember();
+        }));
+      }
+
+      if ($$("float-dock")) $$("float-dock").addEventListener("click", () => (docked ? float() : dock()));
+      if ($$("float-hide")) $$("float-hide").addEventListener("click", () => { box.hidden = true; });
+
+      addEventListener("resize", () => {
+        if (docked || !box.style.left) return;
+        place(parseInt(box.style.left, 10), parseInt(box.style.top, 10), parseInt(box.style.width, 10));
+      });
+
+      try {
+        const was = JSON.parse(localStorage.getItem(KEY) || "null");
+        if (was && !was.docked) { float(); place(was.x, was.y, was.w); }
+      } catch (e) { /* first time out */ }
+    }());
 
     beat();
     const beatTimer = setInterval(beat, 2500);
