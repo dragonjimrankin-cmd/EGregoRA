@@ -1,9 +1,8 @@
 {
-  "note": "With the Hugging Face token in the project: does the router answer, and can the oracle now think?",
+  "note": "v124 is live. Probe Hugging Face, then ask and draw.",
   "calls": [
     { "action": "chat-probe" },
     { "action": "accounts" },
-    { "action": "ask", "question": "In plain words: what did Bell's theorem actually prove, and what does it not prove?" },
-    { "action": "draw", "prompt": "A brass orrery on a cluttered desk by candlelight, shallow depth of field" }
+    { "action": "ask", "question": "In plain words: what did Bell's theorem actually prove, and what does it not prove?" }
   ]
 }
