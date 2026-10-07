@@ -421,9 +421,13 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   .brand { gap: 0.55rem; }
   .brand-sigil { width: 40px; height: 40px; }
   .brand-tag { letter-spacing: 0.26em; font-size: 0.55rem; margin-top: 0.25rem; }
-  .brand-line { gap: 0.5rem; }
-  .brand-order-text { letter-spacing: 0.22em; }
-  .brand-rule { width: 10px; }
+  /* On a phone the order's name drops under the logotype rather than
+     fighting it for the same line; the rules come off, since a hairline
+     that short reads as a stray mark. */
+  .brand-line { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+  .brand-order { padding-bottom: 0; }
+  .brand-order-text { letter-spacing: 0.2em; font-size: 0.52rem; }
+  .brand-rule { display: none; }
   .nav-toggle { padding: 0.5rem 0.8rem; gap: 0; }
   .nav-toggle span { display: none; }
   .nav-toggle em { font-size: 0.72rem; margin-left: 0; }
@@ -2833,3 +2837,47 @@ details.ep:has(.pin-mark) { border-color: rgba(215, 176, 90, 0.55); }
 }
 .desk-controls .kicker.xsmall { font-size: 0.68rem; margin-bottom: 0.2rem; }
 .screen-mirror { max-width: 240px; margin-top: 0.5rem; }
+
+/* ---------- The phone ----------------------------------------------------
+   Everything below is about small screens specifically: tables that are
+   built by script and cannot be wrapped in the markup, and the 16px floor
+   that stops iOS Safari zooming the page the moment a field is touched. */
+[data-lv="people"],
+[data-lv="mine"],
+[data-am="shelf"],
+[data-am="listing"],
+.file-pane,
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 760px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="number"],
+  input[type="url"],
+  textarea,
+  select,
+  .shot-trim input,
+  .colour-any input[type="text"],
+  .anim-box textarea,
+  .sketch-group select {
+    font-size: 16px;
+  }
+  .keeper-table { font-size: 0.8rem; min-width: 30rem; }
+  .phase-acts { display: flex; margin: 0.3rem 0 0; }
+  .air-row .btn, .phase-acts .btn { flex: 0 0 auto; }
+  .desk-controls { grid-template-columns: 1fr; }
+  .deck { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .element-choice { grid-template-columns: 1fr 1fr; }
+  .mark-grid { grid-template-columns: 1fr; }
+  .tape-deck, .screen-mirror, .plate-view { max-width: 100%; }
+  .quote-list li { font-size: 1rem; }
+}
+
+@media (max-width: 420px) {
+  .element-choice { grid-template-columns: 1fr; }
+}
