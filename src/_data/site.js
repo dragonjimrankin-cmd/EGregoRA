@@ -24,6 +24,8 @@ export default {
     { url: "/infographics/", label: "Infographics", glyph: "metatron" },
     { url: "/astronomy/", label: "Astronomy", glyph: "star" },
     { url: "/cosmic-aether/", label: "Cosmic Aether", glyph: "spiral" },
+    { url: "/moebius-seam/", label: "The Moebius Seam", glyph: "metatron" },
+    { url: "/entropy/", label: "Entropy", glyph: "spiral" },
     { url: "/druids/", label: "Druids", glyph: "tree" },
     { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },
     { url: "/astrology/", label: "Astrology", glyph: "star" },

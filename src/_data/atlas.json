@@ -103,6 +103,82 @@
       "href": "/astronomy/#t-the-words"
     }
   ],
+  "/moebius-seam/": [
+    {
+      "title": "What This Page Is, and Is Not",
+      "href": "/moebius-seam/#t-what-this-page-is-and-is-not"
+    },
+    {
+      "title": "The Seam Itself",
+      "href": "/moebius-seam/#t-the-seam-itself"
+    },
+    {
+      "title": "The Riemann Hypothesis, Stated Properly",
+      "href": "/moebius-seam/#t-the-riemann-hypothesis-stated-properly"
+    },
+    {
+      "title": "The Seam and the Hypothesis as One Statement",
+      "href": "/moebius-seam/#t-the-seam-and-the-hypothesis-as-one-statement"
+    },
+    {
+      "title": "Five Ways This Is Probably Wrong",
+      "href": "/moebius-seam/#t-five-ways-this-is-probably-wrong"
+    },
+    {
+      "title": "The Serious Versions of This Idea",
+      "href": "/moebius-seam/#t-the-serious-versions-of-this-idea"
+    },
+    {
+      "title": "What Holds Up, and What Does Not",
+      "href": "/moebius-seam/#t-what-holds-up-and-what-does-not"
+    },
+    {
+      "title": "A Line Through the Subject",
+      "href": "/moebius-seam/#t-a-line-through-the-subject"
+    },
+    {
+      "title": "The Words",
+      "href": "/moebius-seam/#t-the-words"
+    }
+  ],
+  "/entropy/": [
+    {
+      "title": "Two Registers, One Page",
+      "href": "/entropy/#t-two-registers-one-page"
+    },
+    {
+      "title": "What Entropy Actually Is",
+      "href": "/entropy/#t-what-entropy-actually-is"
+    },
+    {
+      "title": "Phases as Levels of Integration",
+      "href": "/entropy/#t-phases-as-levels-of-integration"
+    },
+    {
+      "title": "The Poles at 101, 333, 666 and 999",
+      "href": "/entropy/#t-the-poles-at-101-333-666-and-999"
+    },
+    {
+      "title": "The Real Physics Standing Nearest to This",
+      "href": "/entropy/#t-the-real-physics-standing-nearest-to-this"
+    },
+    {
+      "title": "Five Ways This Doctrine Is Probably Wrong",
+      "href": "/entropy/#t-five-ways-this-doctrine-is-probably-wrong"
+    },
+    {
+      "title": "What Holds Up, and What Does Not",
+      "href": "/entropy/#t-what-holds-up-and-what-does-not"
+    },
+    {
+      "title": "A Line Through the Subject",
+      "href": "/entropy/#t-a-line-through-the-subject"
+    },
+    {
+      "title": "The Words",
+      "href": "/entropy/#t-the-words"
+    }
+  ],
   "/druids/": [
     {
       "title": "The Evidence Problem, Stated Plainly",
