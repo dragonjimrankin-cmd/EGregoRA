@@ -2990,3 +2990,57 @@ details.ep:has(.pin-mark) { border-color: rgba(215, 176, 90, 0.55); }
   background: linear-gradient(135deg, transparent 50%, rgba(215, 176, 90, 0.75) 50%);
   border: 0; cursor: nwse-resize; touch-action: none;
 }
+
+/* Coming in with an account you already have, and the check brought up. */
+.social-door { margin: 0 0 1.1rem; }
+.social-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.45rem; margin: 0.6rem 0 0.3rem; }
+.social-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 0.7rem; text-decoration: none;
+  border: 1px solid rgba(215, 176, 90, 0.35); border-radius: 3px;
+  background: rgba(215, 176, 90, 0.05); color: #f3ddaa;
+  font-family: Cinzel, serif; font-size: 0.74rem; letter-spacing: 0.06em;
+}
+.social-btn:hover { border-color: #d7b05a; background: rgba(215, 176, 90, 0.12); }
+.social-btn svg { width: 18px; height: 18px; flex: none; }
+.social-btn--google svg { color: #e8e2d4; }
+.social-btn--apple svg { color: #f3f1ea; }
+.social-btn--x svg { color: #f3f1ea; }
+.social-btn--facebook svg { color: #8fb6d8; }
+.social-btn--github svg { color: #e8e2d4; }
+.social-btn--discord svg { color: #a6b2f0; }
+
+.is-wanted {
+  animation: wanted 2.4s ease;
+  border-radius: 3px;
+}
+@keyframes wanted {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(215, 176, 90, 0); }
+  20%, 60% { box-shadow: 0 0 0 3px rgba(215, 176, 90, 0.55); }
+}
+
+.check-sheet {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(8, 7, 5, 0.82);
+  display: grid; place-items: center; padding: 1rem;
+}
+.check-pane {
+  background: #0e0c0a; border: 1px solid rgba(215, 176, 90, 0.45); border-radius: 4px;
+  width: min(680px, 100%); max-height: 92vh; display: flex; flex-direction: column;
+  padding: 0.8rem 0.9rem; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+}
+.check-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.check-head strong { font-family: Cinzel, serif; color: #d7b05a; letter-spacing: 0.1em; font-size: 0.92rem; }
+.check-shut { background: none; border: 0; color: #cbbb93; font-size: 1.3rem; cursor: pointer; line-height: 1; }
+.check-shut:hover { color: #f3ddaa; }
+.check-why { margin: 0.2rem 0 0.5rem; }
+.check-frame { flex: 1; width: 100%; min-height: 54vh; border: 1px solid rgba(215, 176, 90, 0.2); border-radius: 3px; background: #0b0906; }
+
+/* The Join page, opened inside that sheet: the door, and nothing else. */
+body.only-check .site-header,
+body.only-check .site-footer,
+body.only-check .page-head,
+body.only-check .backdrop,
+body.only-check .wrap:not(#gate) { display: none !important; }
+body.only-check #gate { margin: 0; }
+body.only-check .frame { border: 0; padding: 0.2rem; }

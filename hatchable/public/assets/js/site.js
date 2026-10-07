@@ -2921,12 +2921,17 @@
       '<p class="gate-mark" aria-hidden="true">&#9737;</p>' +
       '<h4>' + w.head + '</h4>' +
       '<p class="muted small">' + w.body + '</p>' +
-      '<p><a class="btn" href="/join/">' + w.cta + '</a></p>' +
+      '<p><button type="button" class="btn gate-go">' + w.cta + '</button></p>' +
       '<p class="muted xsmall">' + panel.noun + ' is gated because a generator can be made to produce ' +
       'things a person should be accountable for. The check puts a name behind every prompt. ' +
       'Nothing is checked, and no account is needed, to talk to the oracle.</p>';
     var anchor = form || out || panel.el.lastElementChild;
     panel.el.insertBefore(gate, anchor);
+    var go = gate.querySelector('.gate-go');
+    if (go) go.addEventListener('click', function () {
+      if (window.EGNeedCheck) window.EGNeedCheck(state);
+      else location.href = '/join/';
+    });
   }
 
   function open(panel) {
@@ -2961,6 +2966,10 @@
 (function () {
   var form = document.getElementById('id-form');
   if (!form) return;
+  /* Opened inside the sheet: show the door and nothing else, and tell the
+     page that opened us the moment it is passed. */
+  var only = /[?&]only=check\b/.test(location.search);
+  if (only) document.body.classList.add('only-check');
   var msg = document.getElementById('i-msg');
   var state = document.getElementById('a-id-state');
   var btn = document.getElementById('i-send');
@@ -2976,6 +2985,9 @@
 
   function passed(member) {
     form.hidden = true;
+    if (only && parent !== window) {
+      try { parent.postMessage('eg-check-passed', location.origin); } catch (e) { /* no parent */ }
+    }
     if (state) {
       state.innerHTML = '<strong class="gate-open">The studio is open to you.</strong> ' +
         'Checked' + (member && member.legal_name ? ' as ' + member.legal_name : '') +
@@ -4758,3 +4770,125 @@
     if (!ok) e.preventDefault();
   }, true);
 })();
+
+/* ------------------------------------------------------------------ *
+ * When the age and identity check is what stands in the way, bring the
+ * check itself up rather than pointing at a page and hoping. On the Join
+ * page it scrolls to the section and lights it; anywhere else it opens
+ * the same section in a sheet over the page, camera and all, so nobody
+ * loses what they were doing in order to prove how old they are.
+ * ------------------------------------------------------------------ */
+(function () {
+  var WHY = {
+    signin: ['Sign in to go on', 'This needs an account. It takes one address and one six-digit code.'],
+    verify: ['Confirm your address', 'The code we emailed has not been entered yet.'],
+    identity: ['The age and identity check', 'This part of the house is kept behind a check of age. ' +
+      'Let the camera look at your face, which takes seconds and keeps nothing, or show a document.']
+  };
+
+  function light(el) {
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('is-wanted');
+    setTimeout(function () { el.classList.remove('is-wanted'); }, 2600);
+  }
+
+  function sheet(reason) {
+    var had = document.getElementById('check-sheet');
+    if (had) { had.hidden = false; return; }
+    var words = WHY[reason] || WHY.identity;
+    var wrap = document.createElement('div');
+    wrap.className = 'check-sheet';
+    wrap.id = 'check-sheet';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-label', words[0]);
+    wrap.innerHTML =
+      '<div class="check-pane">' +
+      '<div class="check-head"><strong>' + words[0] + '</strong>' +
+      '<button type="button" class="check-shut" aria-label="Close">&times;</button></div>' +
+      '<p class="muted xsmall check-why">' + words[1] + '</p>' +
+      '<iframe class="check-frame" title="Age and identity check" allow="camera; microphone" ' +
+      'src="/join/?only=check#gate"></iframe>' +
+      '<p class="muted xsmall">Nothing you were doing on this page has been lost; close this when ' +
+      'you are through and carry on.</p></div>';
+    document.body.appendChild(wrap);
+    wrap.addEventListener('click', function (e) {
+      if (e.target === wrap || e.target.classList.contains('check-shut')) close();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  }
+
+  function close() {
+    var el = document.getElementById('check-sheet');
+    if (el) el.remove();
+  }
+
+  window.EGNeedCheck = function (reason) {
+    var onJoin = /^\/join\//.test(location.pathname);
+    if (onJoin) {
+      var block = document.getElementById(reason === 'identity' ? 'a-id-block' : 'auth-box');
+      light(block || document.getElementById('gate'));
+      return;
+    }
+    sheet(reason || 'identity');
+  };
+
+  /* The sheet tells us when the check has been passed inside it. */
+  addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data) return;
+    if (e.data === 'eg-check-passed' || e.data.eg === 'check-passed') {
+      close();
+      location.reload();
+    }
+  });
+
+  /* Any refusal that arrives with a gate on it brings the right thing up. */
+  window.EGGate = function (err) {
+    var g = err && (err.gate || (err.body && err.body.gate));
+    if (!g) return false;
+    window.EGNeedCheck(g);
+    return true;
+  };
+})();
+
+/* ------------------------------------------------------------------ *
+ * Coming in with an account you already have.
+ * ------------------------------------------------------------------ */
+(function () {
+  var row = document.getElementById('social-row');
+  if (!row) return;
+  var door = document.getElementById('social-door');
+  var msg = document.getElementById('social-msg');
+
+  var MARK = {
+    google: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"/><path fill="currentColor" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z"/><path fill="currentColor" d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z"/><path fill="currentColor" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.6 9.4 5.9 12 5.9z"/></svg>',
+    apple: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.5-.2-2.8.8-3.5.8s-1.9-.8-3.1-.8c-1.6 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.3 1.3-2.6 1.3-2.7 0 0-2.4-.9-2.4-3.7zM14.1 5.4c.6-.8 1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-.9 2.9 1 .1 2-.5 2.7-1.3z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.5 3h3.1l-6.8 7.8L21.8 21h-6.3l-4.9-6.4L4.9 21H1.8l7.3-8.3L2.4 3h6.4l4.4 5.9zm-1.1 16.1h1.7L7.7 4.8H5.9z"/></svg>',
+    facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>',
+    github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>',
+    discord: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.3 5.4A16 16 0 0 0 15.4 4l-.3.5c1.4.3 2.6.9 3.7 1.6a13 13 0 0 0-11.6 0C8.3 5.4 9.6 4.8 11 4.5L10.6 4a16 16 0 0 0-3.9 1.4C4.2 9.1 3.5 12.7 3.8 16.3a16 16 0 0 0 4.9 2.5l.9-1.5c-.8-.3-1.6-.7-2.3-1.2l.6-.4a11.4 11.4 0 0 0 10.2 0l.6.4c-.7.5-1.5.9-2.3 1.2l.9 1.5a16 16 0 0 0 4.9-2.5c.4-4.2-.7-7.8-2.9-10.9zM9.7 14.3c-1 0-1.7-.9-1.7-1.9s.8-1.9 1.7-1.9 1.8.9 1.7 1.9c0 1-.8 1.9-1.7 1.9zm4.6 0c-1 0-1.7-.9-1.7-1.9s.8-1.9 1.7-1.9 1.8.9 1.7 1.9c0 1-.7 1.9-1.7 1.9z"/></svg>'
+  };
+
+  fetch('/api/oauth', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action: 'ready' })
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var open = (d.providers || []).filter(function (p) { return p.ready; });
+      if (!open.length) return;            /* no keys pasted: no empty row */
+      door.hidden = false;
+      row.innerHTML = open.map(function (p) {
+        return '<a class="social-btn social-btn--' + p.id + '" href="/api/oauth?go=' + p.id +
+          '&back_to=' + encodeURIComponent(location.pathname + location.hash) + '">' +
+          (MARK[p.id] || '') + '<span>Continue with ' + p.label + '</span></a>';
+      }).join('');
+      if (open.some(function (p) { return p.id === 'x'; })) {
+        msg.textContent = 'X does not hand over an email address, so an account made that way ' +
+          'cannot receive letters until you add one.';
+      }
+    })
+    .catch(function () { /* the emailed code is always there */ });
+})();
+

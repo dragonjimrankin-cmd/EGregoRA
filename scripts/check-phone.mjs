@@ -86,6 +86,13 @@ function stub(win) {
       reply.tapes = [{ id: 1, folder: '2026-10-07', name: 'a.webm', title: 'A test recording',
         mime: 'video/webm', bytes: 4096, seconds: 61, at: new Date().toISOString(), url: 'blob:test' }];
     }
+    if (body.action === 'ready') {
+      reply.providers = [
+        { id: 'google', label: 'Google', ready: true },
+        { id: 'github', label: 'GitHub', ready: true },
+        { id: 'apple', label: 'Apple', ready: false }
+      ];
+    }
     if (body.action === 'room') {
       reply.state = 'live';
       reply.you = { who: 'You', element: 'aether', can_chat: true, can_cam: true, can_mic: false };
@@ -202,9 +209,21 @@ const TESTS = [
     t(doc.querySelector('meta[http-equiv="refresh"]'), 'the old address redirects');
     t(/noindex/.test(doc.querySelector('meta[name="robots"]')?.content || ''), 'and is noindex');
   }],
-  ['/ask-ed/', async ({ doc }, t) => {
+  ['/join/', async ({ doc, dom }, t) => {
+    t(doc.getElementById('social-door'), 'the door for outside accounts is on the page');
+    t(doc.getElementById('a-id-block'), 'and the age and identity check has a home of its own');
+    t(dom.window.EGNeedCheck, 'the site knows how to bring the check up');
+  }],
+  ['/ask-ed/', async ({ doc, dom }, t) => {
     t(doc.querySelector('.fox-panel, #gink, [data-fox]'), 'Gink has a home on the page');
     t(doc.querySelector('textarea, input[type="text"]'), 'a question can be typed');
+    /* A refusal that carries a gate must bring the check up, not a sentence. */
+    dom.window.EGNeedCheck('identity');
+    const sheet = doc.getElementById('check-sheet');
+    t(sheet, 'asking for the check opens it over the page');
+    t(sheet.querySelector('iframe[allow*="camera"]'), 'with the camera allowed through to it');
+    sheet.querySelector('.check-shut').dispatchEvent(new dom.window.Event('click', { bubbles: true }));
+    t(!doc.getElementById('check-sheet'), 'and it closes again without losing the page');
   }],
   ['/podcast/', async ({ doc }, t) => {
     const open = doc.querySelector('[data-am="open"]');

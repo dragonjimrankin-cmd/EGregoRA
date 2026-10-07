@@ -69,7 +69,15 @@ export function countdown(host, seconds, go) {
     body: JSON.stringify(Object.assign({ pass }, payload))
   }).then(async (r) => {
     const d = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(d.error || "the feed refused that");
+    if (!r.ok) {
+      /* Signing in, confirming an address, proving an age: whichever of
+         the three is in the way, bring that thing up here rather than
+         leaving a sentence about it on the page. */
+      if (d.gate && window.EGNeedCheck) window.EGNeedCheck(d.gate);
+      const err = new Error(d.error || "the feed refused that");
+      err.gate = d.gate;
+      throw err;
+    }
     return d;
   });
 
@@ -870,7 +878,15 @@ export function countdown(host, seconds, go) {
     body: JSON.stringify(payload)
   }).then(async (r) => {
     const d = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(d.error || "the feed refused that");
+    if (!r.ok) {
+      /* Signing in, confirming an address, proving an age: whichever of
+         the three is in the way, bring that thing up here rather than
+         leaving a sentence about it on the page. */
+      if (d.gate && window.EGNeedCheck) window.EGNeedCheck(d.gate);
+      const err = new Error(d.error || "the feed refused that");
+      err.gate = d.gate;
+      throw err;
+    }
     return d;
   });
 

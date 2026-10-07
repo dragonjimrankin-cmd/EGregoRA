@@ -56,3 +56,68 @@ required = false
 name = "KAGGLE_USERNAME"
 description = "Kaggle username, if the token's owner cannot be worked out automatically."
 required = false
+
+# ---------------------------------------------------------------------------
+# Signing in with an account you already have. Each pair is optional: a door
+# with no key behind it is simply not shown. The redirect URL to register
+# with every provider is https://egregora.hatchable.site/api/oauth?back=<name>
+
+[[secret]]
+key         = "GOOGLE_CLIENT_ID"
+required    = false
+description = "Google sign-in: the client id. console.cloud.google.com → APIs & Services → Credentials → OAuth client ID (Web)."
+
+[[secret]]
+key         = "GOOGLE_CLIENT_SECRET"
+required    = false
+description = "Google sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "APPLE_CLIENT_ID"
+required    = false
+description = "Apple sign-in: the client id. developer.apple.com → Services ID; the secret is the signed client-secret JWT."
+
+[[secret]]
+key         = "APPLE_CLIENT_SECRET"
+required    = false
+description = "Apple sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "X_CLIENT_ID"
+required    = false
+description = "X sign-in: the client id. developer.x.com → OAuth 2.0, confidential client, PKCE."
+
+[[secret]]
+key         = "X_CLIENT_SECRET"
+required    = false
+description = "X sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "FACEBOOK_CLIENT_ID"
+required    = false
+description = "Facebook sign-in: the client id. developers.facebook.com → Facebook Login → App ID and App Secret."
+
+[[secret]]
+key         = "FACEBOOK_CLIENT_SECRET"
+required    = false
+description = "Facebook sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "GITHUB_CLIENT_ID"
+required    = false
+description = "GitHub sign-in: the client id. github.com/settings/developers → New OAuth App."
+
+[[secret]]
+key         = "GITHUB_CLIENT_SECRET"
+required    = false
+description = "GitHub sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "DISCORD_CLIENT_ID"
+required    = false
+description = "Discord sign-in: the client id. discord.com/developers → OAuth2 → Client ID and Secret."
+
+[[secret]]
+key         = "DISCORD_CLIENT_SECRET"
+required    = false
+description = "Discord sign-in: the client secret that goes with it."

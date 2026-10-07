@@ -25,6 +25,15 @@ description: "Create an EGregoRA account or sign in — a verified email address
         you are signed back in. Either way a six-digit code goes to the inbox and nothing is created until
         you enter it.</p>
 
+        <div class="social-door" id="social-door" hidden>
+          <p class="muted xsmall">Or come in with an account you already have. It signs you in if we
+          know the address and makes the account if we do not. We take the address and the name, and
+          nothing else; no password is ever seen here. Proving a Google account is not proof of age,
+          so the studio check below is still asked for separately.</p>
+          <div class="social-row" id="social-row"></div>
+          <p class="auth-msg xsmall" id="social-msg"></p>
+        </div>
+
         <form class="ornate" id="auth-start-form">
           <div>
             <label for="a-email">Email address</label>
