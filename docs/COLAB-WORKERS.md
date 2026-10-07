@@ -97,6 +97,38 @@ Repeat in as many Google accounts as you have. Each one is a separate free GPU,
 the pool prefers whichever is idle, and a worker that disappears when Colab
 reclaims its runtime simply drops out of the list.
 
+## What was tried on 7 October 2026, and what came back
+
+Rather than assert that the free GPUs are out of reach, the order went and
+asked. `scripts/gpu-probe.mjs` runs from CI, where there is real egress, and
+drives Kaggle through its own API with the order's token.
+
+* **The token is good.** `oauth2/introspect` returns `shakradragon`.
+* **The push was accepted with a GPU requested.** Kernel
+  `shakradragon/egregora-gpu-check-muxgitio`, `enableGpu: true`,
+  `kernelExecutionType: SaveAndRunAll`, no error.
+* **The kernel ran and finished.** And what it found was:
+
+  ```json
+  { "torch": "2.11.0+cpu", "cuda_available": false, "device": null,
+    "smi_error": "[Errno 2] No such file or directory: 'nvidia-smi'" }
+  ```
+
+So Kaggle accepts the request for an accelerator and quietly allocates a CPU
+machine. That is the phone-verification wall, now measured rather than
+assumed: **an unverified Kaggle account can push GPU kernels all day and never
+receive a card.** This is also why five video jobs sat at "running" for ever
+and why the GPU lock kept wedging.
+
+Hugging Face was asked the same question in the same run: its router has no
+text-to-video route at all (404 on every model tried), so the order's Hugging
+Face token buys pictures and thinking but not film.
+
+**The single highest-value human action, therefore, is not Colab — it is
+phone-verifying `shakradragon` on Kaggle.** It takes under a minute, and once
+it is done the order can drive the whole thing through the API without anyone
+opening a browser again: push, poll, fetch the file, release the lock.
+
 ## Why this cannot be done from the agent's side
 
 Recorded so that it is not attempted again: the sandbox can reach only
