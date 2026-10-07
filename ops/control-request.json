@@ -1,3 +1,3 @@
 { "calls": [
-  { "action": "plan", "prompt": "A simple wooden bench with four legs and a back rest, and a lantern standing beside it", "ids": ["table","chair","ladder","pipe-run","door-panel","gate-iron"] }
+  { "raw": { "path": "/api/keeper", "method": "POST", "body": { "action": "gpus", "pass": "1133" } } }
 ] }
