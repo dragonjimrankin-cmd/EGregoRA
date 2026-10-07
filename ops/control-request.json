@@ -1,6 +1,10 @@
 {
-  "note": "Now that v119 is live: does the stale Kaggle claim get let go, and what does a film attempt say?",
+  "note": "Knock on the keeper's door four times with the wrong key. The third should spend the last try and the fourth should be refused outright for twenty minutes.",
   "calls": [
-    { "action": "film", "prompt": "A single candle flame guttering in a draught, close, dark background" }
+    { "raw": { "path": "/api/keeper", "body": { "action": "open", "pass": "0000" } } },
+    { "raw": { "path": "/api/keeper", "body": { "action": "open", "pass": "0001" } } },
+    { "raw": { "path": "/api/keeper", "body": { "action": "open", "pass": "0002" } } },
+    { "raw": { "path": "/api/keeper", "body": { "action": "open", "pass": "0003" } } },
+    { "raw": { "path": "/api/draw?engines=1" } }
   ]
 }

@@ -40,6 +40,28 @@ const post = async (body) => {
   }
 };
 
+/* A plain call to any endpoint on the site, for the times when the thing
+   being checked is not a control action at all \u2014 whether a door locks, say,
+   or what an error actually reads like from outside. No token is sent. */
+const raw = async (spec) => {
+  const started = Date.now();
+  const url = SITE + String(spec.path || '/');
+  try {
+    const r = await fetch(url, {
+      method: spec.method || (spec.body ? 'POST' : 'GET'),
+      headers: spec.body ? { 'content-type': 'application/json' } : undefined,
+      body: spec.body ? JSON.stringify(spec.body) : undefined,
+      signal: AbortSignal.timeout(60000)
+    });
+    const text = await r.text();
+    let json = null;
+    try { json = JSON.parse(text); } catch { /* not json */ }
+    return { status: r.status, ms: Date.now() - started, json, text: json ? null : text.slice(0, 500) };
+  } catch (err) {
+    return { status: 0, ms: Date.now() - started, error: (err && err.message) || 'network error' };
+  }
+};
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const plan = JSON.parse(readFileSync(FILE, 'utf8'));
@@ -57,6 +79,15 @@ try {
 }
 
 for (const call of calls) {
+  if (call.raw) {
+    console.log('\n' + '-'.repeat(68));
+    console.log((call.raw.method || (call.raw.body ? 'POST' : 'GET')) + ' ' + call.raw.path +
+      (call.raw.body ? '  ' + JSON.stringify(call.raw.body) : ''));
+    const out = await raw(call.raw);
+    console.log('HTTP ' + out.status + '  (' + out.ms + ' ms)');
+    console.log(JSON.stringify(out.json ?? out.text ?? out.error, null, 2).slice(0, 2000));
+    continue;
+  }
   const { poll, ...body } = call;
   console.log('\n' + '-'.repeat(68));
   console.log('POST ' + JSON.stringify(body));
