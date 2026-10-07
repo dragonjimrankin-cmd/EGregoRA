@@ -23,7 +23,7 @@
  * Nothing in here throws. A pool with no usable account simply returns an
  * empty list, and the caller moves on to the next route.
  */
-import { storedHuggingFaceKey } from './key-store.js';
+import { storedKaggleToken, storedHuggingFaceKey } from './key-store.js';
 import { config, db } from 'hatchable';
 
 const COOLDOWN_MINUTES = 12;   // how long a failed account is stepped over
@@ -214,9 +214,17 @@ export const openAiAccounts = (fallbacks) => credentials('openai', {
 });
 
 /** A plain report of the pool, for the control endpoint. */
+const bundledKaggle = () => {
+  const secret = storedKaggleToken();
+  return secret ? [{ id: 'shakradragon', label: 'shakradragon (bundled)', user: 'shakradragon', secret }] : [];
+};
+
 export async function poolReport() {
   const names = [
-    ['kaggle', await kaggleAccounts()],
+    /* The bundled token counts: kaggleAccounts() on its own only reports what
+       has been pasted into the setup page, which made the pool look empty when
+       it was not. */
+    ['kaggle', await kaggleAccounts(bundledKaggle())],
     ['huggingface', await huggingFaceAccounts()],
     ['fal', await falAccounts()],
     ['replicate', await replicateAccounts()],

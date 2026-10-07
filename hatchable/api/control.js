@@ -29,6 +29,7 @@ import { checkToken } from '../lib/tokens.js';
 import { ANSWERS } from '../lib/oracle-corpus.js';
 import { readSheet, extendSheet, composePrompt, describeSheet, seedFor } from '../lib/continuity.js';
 import { submitVideo, pollVideo, VIDEO_MODELS } from '../lib/videogen.js';
+import { submitKaggleImage } from '../lib/videogen.js';
 import { generateImage } from '../lib/imagegen.js';
 import { poolReport } from '../lib/pool.js';
 import { liveWorkers } from '../lib/colab.js';
@@ -164,7 +165,18 @@ export default async function (req, res) {
         const prompt = String(body.prompt || '').trim();
         if (prompt.length < 3) return res.status(400).json({ error: 'Say what to draw.' });
         const out = await generateImage(prompt);
-        if (out.error) return res.status(503).json({ error: out.error });
+        if (out.error) {
+          /* Exactly what /api/draw does when the quick routes fail: the
+             picture becomes a Kaggle kernel job rather than a refusal. */
+          const job = await submitKaggleImage(prompt);
+          if (!job.error) {
+            return res.json({
+              status: 'queued', kind: 'image', model: job.model,
+              hardware: job.hardware || null, request: job.requestId
+            });
+          }
+          return res.status(503).json({ error: out.error, gpu: job.error });
+        }
         if (out.id) return res.json({ id: out.id, status: 'queued', kind: 'image' });
         return res.json({ status: 'ready', url: out.url, provider: out.provider,
           hardware: out.hardware || null, prompt: out.prompt });
