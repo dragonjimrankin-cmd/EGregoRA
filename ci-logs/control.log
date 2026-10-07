@@ -1,70 +1,57 @@
-# control run — 2026-10-07T10:54:39.465Z
-site: https://egregora.hatchable.site   calls: 8
+# control run — 2026-10-07T12:51:48.466Z
+site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"tapes","pass":"8===D"}
-HTTP 200  (149 ms)
+POST /api/oauth  {"action":"ready"}
+HTTP 200  (281 ms)
 {
   "ok": true,
-  "tapes": []
+  "providers": [
+    {
+      "id": "google",
+      "label": "Google",
+      "ready": false
+    },
+    {
+      "id": "apple",
+      "label": "Apple",
+      "ready": false
+    },
+    {
+      "id": "x",
+      "label": "X",
+      "ready": false
+    },
+    {
+      "id": "facebook",
+      "label": "Facebook",
+      "ready": false
+    },
+    {
+      "id": "github",
+      "label": "GitHub",
+      "ready": false
+    },
+    {
+      "id": "discord",
+      "label": "Discord",
+      "ready": false
+    }
+  ],
+  "redirect": "https://egregora.hatchable.site/api/oauth?back=<provider>"
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"open","pass":"8===D","title":"Element probe","word":"gink"}
-HTTP 200  (74 ms)
-{
-  "ok": true,
-  "id": 4,
-  "started": "2026-10-07T10:54:40.002737+00:00"
-}
+GET /api/oauth?go=google
+HTTP 503  (90 ms)
+"<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"robots\" content=\"noindex\">\n<title>Google is not wired up yet — EGregoRA</title>\n<style>\n body{background:#0e0c0a;color:#cbbb93;font-family:Georgia,serif;display:grid;place-items:center;\n      min-height:100vh;margin:0;text-align:center;padding:1.5rem}\n h1{font-family:Cinzel,Georgia,serif;color:#d7b05a;font-weight:600;font-size:1.4rem;letter-spacing:.08em}\n "
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"people","pass":"8===D","id":4}
-HTTP 200  (56 ms)
-{
-  "ok": true,
-  "people": []
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"allow","pass":"8===D","id":4,"element":"fire","field":"can_mic","value":true}
-HTTP 200  (48 ms)
-{
-  "ok": true,
-  "changed": 0
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"allow","pass":"8===D","id":4,"all":true,"field":"can_cam","value":false}
-HTTP 200  (51 ms)
-{
-  "ok": true,
-  "changed": 0
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"allow","pass":"8===D","id":4,"element":"quintessence","field":"can_mic","value":true}
-HTTP 400  (48 ms)
-{
-  "error": "There is no such elemental phase."
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"join","id":4,"word":"gink"}
-HTTP 401  (35 ms)
-{
-  "error": "The studio is for members. Sign in or create an account at /join/, then come back.",
-  "gate": "signin"
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"close","pass":"8===D","id":4}
-HTTP 200  (58 ms)
-{
-  "ok": true
-}
+GET /api/oauth?back=google&code=nonsense&state=nonsense
+HTTP 400  (87 ms)
+"<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"robots\" content=\"noindex\">\n<title>That sign-in has gone stale — EGregoRA</title>\n<style>\n body{background:#0e0c0a;color:#cbbb93;font-family:Georgia,serif;display:grid;place-items:center;\n      min-height:100vh;margin:0;text-align:center;padding:1.5rem}\n h1{font-family:Cinzel,Georgia,serif;color:#d7b05a;font-weight:600;font-size:1.4rem;letter-spacing:.08em}\n"
 
 done.
 exit=0
