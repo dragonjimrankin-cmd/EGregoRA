@@ -1,29 +1,91 @@
-# control run — 2026-10-07T01:44:28.787Z
+# control run — 2026-10-07T01:51:21.904Z
 site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"accounts"}
-HTTP 200  (557 ms)
+POST {"action":"status"}
+HTTP 200  (356 ms)
 {
-  "pool": {
-    "kaggle": [],
-    "huggingface": [
-      {
-        "account": "the order's own Hugging Face token",
-        "state": "ready",
-        "fails": 0,
-        "successes": 0,
-        "last_error": null,
-        "cooldown_until": null
-      }
-    ],
-    "fal": [],
-    "replicate": [],
-    "openai": []
-  }
+  "site": "https://egregora.hatchable.site",
+  "limbs": 11,
+  "corpus": 1344,
+  "questions": 19,
+  "jobs": {
+    "failed": 2,
+    "running": 4
+  },
+  "gpu_pool": [],
+  "token": "JIM1"
 }
 
 done.
 exit=0
+# gpu probe — 2026-10-07T01:51:22.841Z
+
+----------------------------------------------------------------------
+kernels/list (does the token work)
+[
+  {
+    "id": 0,
+    "ref": "anhadmahajan06/s6e10-are-you-satisfied",
+    "title": "S6E10 | Are You Satisfied",
+    "author": "Anhad Mahajan",
+    "slug": "",
+    "lastRunTime": "2026-10-06T18:34:58.84Z",
+    "language": "",
+    "hasLanguage": false,
+    "kernelType": "",
+    "hasKernelType": false,
+    "isPrivate": false,
+    "hasIsPrivate": false,
+    "enableGpu": false,
+    "hasEnableGpu": false,
+    "enableTpu": false,
+    "hasEnableTpu": false,
+    "enableInternet": false,
+    "hasEnableInternet": false,
+    "categoryIds": [],
+    "datasetDataSources": [],
+    "kernelDataSources": [],
+    "competitionDataSources": [],
+    "modelDataSources": [],
+    "totalVotes": 33,
+    "currentVersionNumber": 0,
+    "hasCurrentVersionNumber": false,
+    "dockerImage": "",
+    "hasDockerImage": false,
+    "machineShape": "",
+    "hasMachineShape": false
+  }
+]
+
+----------------------------------------------------------------------
+owner guessed from the token
+anhadmahajan06
+
+----------------------------------------------------------------------
+kernels/push with enable_gpu
+{
+  "code": 400,
+  "message": "Could not convert string to integer: anhadmahajan06/egregora-gpu-check-muxgbosf. Path 'id', line 1, position 50."
+}
+
+----------------------------------------------------------------------
+hf router video · Lightricks/LTX-Video · HTTP 404
+Not Found
+
+----------------------------------------------------------------------
+hf router video · Wan-AI/Wan2.1-T2V-1.3B · HTTP 404
+Not Found
+
+----------------------------------------------------------------------
+hf router video · tencent/HunyuanVideo · HTTP 404
+Not Found
+
+----------------------------------------------------------------------
+hf whoami
+{"type":"user","id":"6aabb87e37b113e93d97094d","name":"ShakRaDragon","fullname":"Shakra","email":"shakradragon@gmail.com","emailVerified":true,"canPay":false,"billingMode":"prepaid","periodEnd":1793491200,"isPro":false,"avatarUrl":"/avatars/81fb2ab36ec54e9e6f96a49129c749e4.svg","orgs":[],"auth":{"type":"access_token","accessToken":{"displayName":"EGregoRA 1","role":"read","createdAt":"2026-10-07T01:25:57.581Z"}}}
+
+done.
+gpu-probe exit=0
