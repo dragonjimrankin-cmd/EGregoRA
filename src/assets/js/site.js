@@ -127,6 +127,7 @@
   const box = document.getElementById("o-question");
   const btn = document.getElementById("o-submit");
   const reset = document.getElementById("o-reset");
+  const wipe = document.getElementById("o-wipe");
   const nameEl = document.getElementById("o-name");
   const limbEl = document.getElementById("o-limb");
   if (!thread || !box || !btn) return;
@@ -352,7 +353,6 @@
     btn.disabled = true;
     const label = btn.textContent;
     btn.textContent = "Consulting\u2026";
-    if (reset) reset.hidden = false;
     setChips([]);
 
     const ready = attachments.filter((f) => f.id);
@@ -458,8 +458,21 @@
     if (b) ask(b.textContent);
   });
 
+  /* Clear Prompt empties the box you are typing in and nothing else — the
+     conversation above it is left exactly where it was. */
   if (reset) reset.addEventListener("click", () => {
+    box.value = "";
+    box.style.height = "";
+    box.focus();
+  });
+
+  /* Full Reset is the old "begin again": the thread is forgotten, the
+     opening chips come back, Gink stops talking and the box is emptied. */
+  if (wipe) wipe.addEventListener("click", () => {
     history = [];
+    attachments = [];
+    if (fileList) fileList.innerHTML = "";
+    if (fileInput) fileInput.value = "";
     thread.querySelectorAll(".oracle-msg:not(.oracle-greet)").forEach((n) => n.remove());
     const waiting = document.getElementById("oracle-waiting");
     if (waiting) waiting.hidden = false;
@@ -467,11 +480,13 @@
       "Is the meaning of life 42 or chicken soup?",
       "Why 137.5 degrees and not 120?",
       "Is the Law of One testable?",
+      "Did the druids really build Stonehenge?",
+      "What does a psychedelic actually do to a brain?",
       "Is magic real, in one paragraph?"
     ]);
-    reset.hidden = true;
     if (window.EGFox) window.EGFox.stop();
     box.value = "";
+    box.style.height = "";
     box.focus();
   });
 })();
