@@ -2380,3 +2380,68 @@ body.atlas-focused { overflow: hidden; }
 @media (max-width: 860px) {
   #atlas-box.is-focused .atlas-grid { grid-template-columns: 1fr; grid-template-rows: 60% auto; }
 }
+
+/* ------------------------------------------------- The Admin Only doors
+   On /podcast/ and /videos/: a passcode, an enhancer that runs in the
+   browser, and the shelf of what has come through. */
+.admin-media { margin-top: 1.5rem; }
+.admin-panel { margin-top: 0.8rem; }
+.admin-signin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: end;
+}
+.admin-signin label { width: 100%; margin: 0; }
+.admin-signin input { max-width: 10rem; }
+.am-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 0.8rem 0;
+}
+.am-read { list-style: none; padding: 0; margin: 0.3rem 0 0; font-size: 0.92rem; }
+.am-read li { color: #9f947a; padding: 0.12rem 0; }
+.am-read strong { color: #f3ddaa; font-weight: 600; }
+.am-opts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.35rem 1rem;
+  margin: 0.6rem 0 0.9rem;
+}
+.am-opts label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: start;
+  font-size: 0.92rem;
+  color: #cbbb93;
+  margin: 0;
+}
+.am-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.5rem 1rem;
+}
+.am-fields input { width: 100%; }
+.am-bar {
+  position: relative;
+  margin: 0.6rem 0;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(215, 176, 90, 0.3);
+  border-radius: 3px;
+  font-size: 0.88rem;
+  color: #f3ddaa;
+  overflow: hidden;
+}
+.am-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--done, 0%);
+  background: rgba(215, 176, 90, 0.16);
+  transition: width 0.2s linear;
+}
+.am-film { width: 100%; border-radius: 3px; background: #000; display: block; }
+@media (max-width: 700px) {
+  .am-pair { grid-template-columns: 1fr; }
+}

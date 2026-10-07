@@ -1,0 +1,104 @@
+{#- The Admin Only publishing door. Used on /podcast/ (kind = audio) and
+    /videos/ (kind = video). Everything inside is addressed by data-am,
+    so the two copies cannot collide; the handful of real ids are prefixed
+    with the kind. -#}
+<section class="wrap narrow admin-media" data-admin-media="{{ amKind }}">
+  <div class="btn-row">
+    <button type="button" class="btn btn--ghost" data-am="open" aria-expanded="false">Admin Only</button>
+    <span class="muted xsmall">Upload {{ amNoun }}, clean {{ amIt }} up, publish {{ amIt }} &mdash; no laptop, no commit.</span>
+  </div>
+
+  <div class="frame admin-panel" data-am="panel" hidden>
+    <p class="kicker">The Order&rsquo;s Passcode</p>
+    <div class="admin-signin">
+      <label for="{{ amKind }}-pass">Passcode</label>
+      <input type="password" id="{{ amKind }}-pass" data-am="pass" autocomplete="current-password"
+             inputmode="numeric" placeholder="&bull;&bull;&bull;&bull;">
+      <button type="button" class="btn btn--small" data-am="signin">Open the door</button>
+    </div>
+    <p class="auth-msg" data-am="msg"></p>
+
+    <div data-am="work" hidden>
+      <div class="divider">&#10022;</div>
+
+      <p class="kicker">One &mdash; the recording</p>
+      <label for="{{ amKind }}-file">Choose {{ amNoun }}</label>
+      <input type="file" id="{{ amKind }}-file" data-am="file"
+             accept="{{ amKind }}/*">
+
+      <div class="am-pair">
+        <div data-am="before"></div>
+        <div data-am="after"></div>
+      </div>
+
+      <p class="kicker">Two &mdash; the work</p>
+      {% if amKind == "audio" %}
+      <p class="muted small">All of this happens in this browser, on this machine, before anything is
+      sent. The file is decoded, run through the chain below and rendered offline &mdash; usually faster
+      than real time &mdash; then encoded to MP3. Nothing is uploaded until you have listened to it.</p>
+      {% else %}
+      <p class="muted small">A browser has no transcoder, so a graded film is <em>re-recorded</em>
+      through a canvas at playback speed: twenty minutes of film takes about twenty minutes, and the
+      result is WebM. If that is not what you want, leave every box unticked and press publish &mdash;
+      the original is uploaded untouched.</p>
+      {% endif %}
+
+      <div class="am-opts" data-am="opts">
+        <label><input type="checkbox" data-want="rumble" checked> Filter the rumble below 72&nbsp;Hz</label>
+        <label><input type="checkbox" data-want="gate" checked> Shelve the hiss</label>
+        <label><input type="checkbox" data-want="tone" checked> Shape the tone &mdash; mud down, presence and air up</label>
+        <label><input type="checkbox" data-want="deess"> De-ess the sibilance</label>
+        <label><input type="checkbox" data-want="level" checked> Level it &mdash; gentle compression</label>
+        <label><input type="checkbox" data-want="loud" checked> Match the loudness, then limit the peaks</label>
+        {% if amKind == "audio" %}
+        <label><input type="checkbox" data-want="trim" checked> Trim the silence from both ends</label>
+        <label><input type="checkbox" data-want="fade" checked> Fade in and out</label>
+        {% else %}
+        <label><input type="checkbox" data-want="grade" checked> Grade the picture &mdash; a touch of brightness, contrast and colour</label>
+        <label><input type="checkbox" data-want="shrink" checked> Reduce to 720p-class width</label>
+        {% endif %}
+      </div>
+
+      <label for="{{ amKind }}-loud">Target loudness (dB RMS)</label>
+      <input type="range" id="{{ amKind }}-loud" data-am="loud" min="-28" max="-10" step="1" value="-18">
+
+      <div class="btn-row">
+        <button type="button" class="btn btn--small" data-am="run">
+          {% if amKind == "audio" %}Enhance it{% else %}Grade it{% endif %}
+        </button>
+      </div>
+      <p class="am-bar" data-am="bar" hidden></p>
+      <div data-am="preview"></div>
+
+      <div data-am="meta" hidden>
+        <p class="kicker">Three &mdash; what goes beside it</p>
+        <div class="am-fields">
+          <div>
+            <label for="{{ amKind }}-title">Title</label>
+            <input type="text" id="{{ amKind }}-title" data-am="title" maxlength="200">
+          </div>
+          {% if amKind == "audio" %}
+          <div>
+            <label for="{{ amKind }}-number">Episode number</label>
+            <input type="text" id="{{ amKind }}-number" data-am="number" maxlength="12" placeholder="004">
+          </div>
+          {% endif %}
+          <div>
+            <label for="{{ amKind }}-tags">Tags, comma separated</label>
+            <input type="text" id="{{ amKind }}-tags" data-am="tags" maxlength="300" placeholder="astronomy, druids">
+          </div>
+        </div>
+        <label for="{{ amKind }}-summary">Summary</label>
+        <textarea id="{{ amKind }}-summary" data-am="summary" rows="3" maxlength="2000"></textarea>
+
+        <div class="btn-row">
+          <button type="button" class="btn" data-am="send" disabled>Publish to the site</button>
+        </div>
+      </div>
+
+      <div class="divider">&#10022;</div>
+      <p class="kicker">What has come through this door</p>
+      <div data-am="shelf"></div>
+    </div>
+  </div>
+</section>

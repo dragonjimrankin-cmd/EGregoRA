@@ -11,7 +11,13 @@ description: Visual essays, grove walks and whiteboard cosmology from EGregoRA.
   <p class="lede muted">Visual essays, grove walks, star charts and whiteboard cosmology.</p>
 </section>
 
+{% set amKind = "video" %}{% set amNoun = "a film" %}{% set amIt = "it" %}
+{% include "partials/admin-media.njk" %}
+
+<div class="divider">✦</div>
+
 <section class="wrap">
+  <div class="grid two" id="uploaded-media" data-kind="video" hidden></div>
   <div class="grid two">
     {% for v in videos %}
     <article class="frame card reveal">
@@ -45,3 +51,5 @@ description: Visual essays, grove walks and whiteboard cosmology from EGregoRA.
     </div>
   </div>
 </section>
+
+<script type="module" src="/assets/js/media-admin.js?v={{ build.id }}"></script>

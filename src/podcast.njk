@@ -25,7 +25,13 @@ description: Long-form conversation from EGregoRA — cosmology, druidry, neuros
 
 <div class="divider">✦</div>
 
+{% set amKind = "audio" %}{% set amNoun = "an episode" %}{% set amIt = "it" %}
+{% include "partials/admin-media.njk" %}
+
+<div class="divider">✦</div>
+
 <section class="wrap" id="episodes">
+  <div class="media-list" id="uploaded-media" data-kind="audio" hidden></div>
   <div class="media-list">
     {% for ep in episodes | reverse %}
     <article class="frame media reveal">
@@ -56,3 +62,5 @@ description: Long-form conversation from EGregoRA — cosmology, druidry, neuros
     </div>
   </div>
 </section>
+
+<script type="module" src="/assets/js/media-admin.js?v={{ build.id }}"></script>
