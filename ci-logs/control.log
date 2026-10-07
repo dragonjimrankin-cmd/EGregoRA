@@ -1,21 +1,51 @@
-# control run — 2026-10-07T08:05:27.624Z
+# control run — 2026-10-07T08:35:26.769Z
 site: https://egregora.hatchable.site   calls: 2
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/media  {"action":"shelf","kind":"audio","pass":"8===D"}
-HTTP 200  (78 ms)
+POST /api/media  {"action":"next-number","pass":"8===D","after":3}
+HTTP 200  (268 ms)
 {
   "ok": true,
-  "items": []
+  "number": "004"
 }
 
 --------------------------------------------------------------------
-POST /api/media  {"action":"shelf","kind":"audio","pass":"1133"}
-HTTP 401  (49 ms)
+POST /api/transcribe  {"action":"describe","pass":"8===D","kind":"audio","text":"[0:00] Edward: tonight we are talking about sleep, and specifically about what the brain does with its waste while you are unconscious. The glymphatic system was described by Iliff and Nedergaard in 2013: cerebrospinal fluid moving along paravascular channels, the interstitial space opening by about sixty per cent in deep non-REM sleep, amyloid beta being carried out. Then in 2024 a paper in Nature Neuroscience from Franks and colleagues claimed the opposite, that clearance fell by thirty per cent in sleep. Nedergaard filed a Matters Arising. We go through the methods, the needle damage objection, and what a norepinephrine driven vasomotion result in Cell in 2025 does to the argument. Then we talk about oak trees, about mycorrhizal exchange, and about why seasonal attention changes a nervous system."}
+HTTP 200  (9359 ms)
 {
-  "error": "Not the key. 2 tries left."
+  "ok": true,
+  "by": "meta-llama/Llama-3.3-70B-Instruct",
+  "title": "Sleep and Waste",
+  "summary": "The discussion revolves around the brain's waste management during sleep, focusing on the glymphatic system and its role in clearing amyloid beta. The conversation delves into the conflicting findings of Iliff and Nedergaard's 2013 study and Franks and colleagues' 2024 paper, as well as the subsequent debate. The topic then shifts to oak trees, mycorrhizal exchange, and how seasonal changes affect the nervous system. Listeners can expect to gain insight into the intricacies of sleep, brain function, and the interconnectedness of natural systems. The episode also touches on the importance of understanding the methods and findings of scientific studies, as well as the potential implications of these findings on our understanding of the natural world.",
+  "tags": [
+    "sleep",
+    "glymphatic system",
+    "amyloid beta",
+    "neuroscience",
+    "oak trees",
+    "mycorrhizal exchange",
+    "nervous system",
+    "seasonal changes",
+    "iliff",
+    "nedergaard",
+    "franks"
+  ],
+  "links": [
+    {
+      "href": "/neurobiology/#t-the-instrument-problem",
+      "title": "The Instrument Problem",
+      "why": "discussion of brain function and waste management"
+    }
+  ],
+  "topics": [
+    {
+      "at": 0,
+      "heading": "Introduction to the glymphatic system"
+    }
+  ],
+  "kind": "audio"
 }
 
 done.
