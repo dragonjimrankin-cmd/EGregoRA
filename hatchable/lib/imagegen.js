@@ -157,12 +157,23 @@ async function viaHuggingFace(prompt, opts = {}) {
   const won = await acrossAccounts('huggingface', accounts, async (account) => {
     let last = 'no model answered';
     for (const repo of (opts.repo ? [opts.repo] : HF_MODELS)) {
-      const r = await fetch('https://api-inference.huggingface.co/models/' + repo, {
-        method: 'POST',
-        headers: { authorization: 'Bearer ' + account.secret, 'content-type': 'application/json', accept: 'image/png' },
-        body: JSON.stringify({ inputs: prompt.slice(0, 1800), options: { wait_for_model: true } })
-      });
-      if (!r || !r.ok) { last = 'HTTP ' + (r && r.status) + ' from ' + repo; continue; }
+      /* Hugging Face moved inference behind the router in 2025 and the old
+         api-inference host is a redirect at best; try the router first and
+         keep the legacy path as a second chance. */
+      let r = null;
+      for (const base of [
+        'https://router.huggingface.co/hf-inference/models/',
+        'https://api-inference.huggingface.co/models/'
+      ]) {
+        r = await fetch(base + repo, {
+          method: 'POST',
+          headers: { authorization: 'Bearer ' + account.secret, 'content-type': 'application/json', accept: 'image/png' },
+          body: JSON.stringify({ inputs: prompt.slice(0, 1800), options: { wait_for_model: true } })
+        }).catch(() => null);
+        if (r && r.ok) break;
+        last = 'HTTP ' + (r && r.status) + ' from ' + repo;
+      }
+      if (!r || !r.ok) continue;
       const type = (r.headers && r.headers.get && r.headers.get('content-type')) || 'image/png';
       if (!/^image\//i.test(type)) { last = repo + ' returned ' + type; continue; }
       const buf = new Uint8Array(await r.arrayBuffer());
