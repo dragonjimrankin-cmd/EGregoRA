@@ -1,57 +1,65 @@
-# control run — 2026-10-07T12:51:48.466Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-07T13:06:40.081Z
+site: https://egregora.hatchable.site   calls: 5
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/oauth  {"action":"ready"}
-HTTP 200  (281 ms)
+POST /api/live  {"action":"list"}
+HTTP 200  (296 ms)
 {
   "ok": true,
-  "providers": [
-    {
-      "id": "google",
-      "label": "Google",
-      "ready": false
-    },
-    {
-      "id": "apple",
-      "label": "Apple",
-      "ready": false
-    },
-    {
-      "id": "x",
-      "label": "X",
-      "ready": false
-    },
-    {
-      "id": "facebook",
-      "label": "Facebook",
-      "ready": false
-    },
-    {
-      "id": "github",
-      "label": "GitHub",
-      "ready": false
-    },
-    {
-      "id": "discord",
-      "label": "Discord",
-      "ready": false
-    }
-  ],
-  "redirect": "https://egregora.hatchable.site/api/oauth?back=<provider>"
+  "air": {
+    "on": false,
+    "note": "",
+    "back_at": "",
+    "at": "2026-10-07T13:01:59.96531+00:00"
+  },
+  "feeds": []
 }
 
 --------------------------------------------------------------------
-GET /api/oauth?go=google
-HTTP 503  (90 ms)
-"<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"robots\" content=\"noindex\">\n<title>Google is not wired up yet — EGregoRA</title>\n<style>\n body{background:#0e0c0a;color:#cbbb93;font-family:Georgia,serif;display:grid;place-items:center;\n      min-height:100vh;margin:0;text-align:center;padding:1.5rem}\n h1{font-family:Cinzel,Georgia,serif;color:#d7b05a;font-weight:600;font-size:1.4rem;letter-spacing:.08em}\n "
+POST /api/live  {"action":"air","pass":"8===D","on":true,"note":"Testing the sign.","back_at":"shortly"}
+HTTP 200  (124 ms)
+{
+  "ok": true,
+  "on": true
+}
 
 --------------------------------------------------------------------
-GET /api/oauth?back=google&code=nonsense&state=nonsense
-HTTP 400  (87 ms)
-"<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"robots\" content=\"noindex\">\n<title>That sign-in has gone stale — EGregoRA</title>\n<style>\n body{background:#0e0c0a;color:#cbbb93;font-family:Georgia,serif;display:grid;place-items:center;\n      min-height:100vh;margin:0;text-align:center;padding:1.5rem}\n h1{font-family:Cinzel,Georgia,serif;color:#d7b05a;font-weight:600;font-size:1.4rem;letter-spacing:.08em}\n"
+POST /api/live  {"action":"list"}
+HTTP 200  (165 ms)
+{
+  "ok": true,
+  "air": {
+    "on": true,
+    "note": "Testing the sign.",
+    "back_at": "shortly",
+    "at": "2026-10-07T13:06:40.900159+00:00"
+  },
+  "feeds": []
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"air","pass":"8===D","on":false,"note":"Cutting runes all week; the next broadcast is on the new moon.","back_at":"the new moon"}
+HTTP 200  (121 ms)
+{
+  "ok": true,
+  "on": false
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"list"}
+HTTP 200  (126 ms)
+{
+  "ok": true,
+  "air": {
+    "on": false,
+    "note": "Cutting runes all week; the next broadcast is on the new moon.",
+    "back_at": "the new moon",
+    "at": "2026-10-07T13:06:41.186321+00:00"
+  },
+  "feeds": []
+}
 
 done.
 exit=0
