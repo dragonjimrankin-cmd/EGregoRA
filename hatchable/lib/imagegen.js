@@ -265,12 +265,12 @@ export async function storeImage(out) {
  */
 export const IMAGE_ENGINES = [
   { key: 'auto', label: 'Let the order choose', note: 'Own GPU first, then the keyless open-weights routes.', keyless: true },
-  { key: 'flux', label: 'FLUX.1-schnell', note: 'Black Forest Labs, open weights. The house default: the best all-round free model.', keyless: true },
+  { key: 'sd35', label: 'Stable Diffusion 3.5 Large', note: 'Stability AI, open weights, on the order\u2019s own Hugging Face token. The house default.', keyless: true },
+  { key: 'flux', label: 'FLUX.1-schnell', note: 'Black Forest Labs, open weights. The best all-round keyless model.', keyless: true },
   { key: 'turbo', label: 'SDXL-Turbo', note: 'Fast and keyless. Rougher, but seconds rather than half a minute.', keyless: true },
   { key: 'kontext', label: 'FLUX.1 Kontext', note: 'Image to image. The one that actually follows a sketch.', keyless: true },
   { key: 'flux-dev', label: 'FLUX.1-dev', note: 'Slower and more careful than schnell, and better at writing and hands.', keyless: true },
   { key: 'colab', label: 'The order\u2019s own GPU', note: 'FLUX on whichever Colab notebook is awake. Nothing borrowed, no queue but its own.', keyless: true },
-  { key: 'sd35', label: 'Stable Diffusion 3.5 Large', note: 'Stability AI, through Hugging Face. Needs a free Hugging Face token to be configured.', keyless: false },
   { key: 'sd35turbo', label: 'SD 3.5 Large Turbo', note: 'Four steps instead of thirty. Hugging Face token needed.', keyless: false },
   { key: 'sdxl', label: 'Stable Diffusion XL', note: 'The old reliable, and the best understood by prompt guides. Hugging Face token needed.', keyless: false },
   { key: 'flux-hf', label: 'FLUX.1-schnell on Hugging Face', note: 'The same weights as above on different hardware. Hugging Face token needed.', keyless: false },
@@ -312,7 +312,10 @@ export async function generateImage(subject, opts = {}) {
 
   /* A generator the member picked goes to the front. It is a preference and
      not a demand: if it will not answer, the queue behind it still runs. */
-  const chosen = ENGINE_ROUTE[String(opts.engine || 'auto')];
+  /* Stable Diffusion 3.5 Large is the house default now that the order has a
+   Hugging Face token of its own; anything else is a preference the member
+   states. It is still only a place in the queue, not a demand. */
+const chosen = ENGINE_ROUTE[String(opts.engine || 'sd35')];
   if (chosen) {
     const first = chosen.kind === 'colab'
       ? (p, o) => viaColab(p, o)

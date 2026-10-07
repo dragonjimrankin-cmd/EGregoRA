@@ -464,6 +464,7 @@
     const waiting = document.getElementById("oracle-waiting");
     if (waiting) waiting.hidden = false;
     setChips([
+      "Is the meaning of life 42 or chicken soup?",
       "Why 137.5 degrees and not 120?",
       "Is the Law of One testable?",
       "Is magic real, in one paragraph?"
@@ -807,7 +808,7 @@
           prompt: p,
           name: (nameEl && nameEl.value || "").trim(),
           sketch: window.EGSketchUrl ? window.EGSketchUrl() : null,
-          engine: (document.getElementById("d-engine") || {}).value || "auto",
+          engine: (document.getElementById("d-engine") || {}).value || "sd35",
           byok: window.EGOwnKey ? window.EGOwnKey() : null
         })
       });

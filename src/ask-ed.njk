@@ -143,6 +143,7 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
     </p>
 
     <div class="oracle-chips" id="oracle-chips">
+      <button class="chip" type="button">Is the meaning of life 42 or chicken soup?</button>
       <button class="chip" type="button">Why 137.5 degrees and not 120?</button>
       <button class="chip" type="button">Is the Law of One testable?</button>
       <button class="chip" type="button">Did the druids really build Stonehenge?</button>
@@ -172,12 +173,12 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             <label for="d-engine">Which generator</label>
             <select id="d-engine" name="engine">
               <option value="auto">Let the order choose</option>
-              <option value="flux" selected>FLUX.1-schnell &middot; free, no key</option>
+              <option value="sd35" selected>Stable Diffusion 3.5 Large &middot; the house default</option>
+              <option value="flux">FLUX.1-schnell &middot; free, no key</option>
               <option value="flux-dev">FLUX.1-dev &middot; free, no key</option>
               <option value="turbo">SDXL-Turbo &middot; free, no key</option>
               <option value="kontext">FLUX.1 Kontext &middot; follows a sketch</option>
               <option value="colab">The order&rsquo;s own GPU</option>
-              <option value="sd35">Stable Diffusion 3.5 Large</option>
               <option value="sd35turbo">SD 3.5 Large Turbo</option>
               <option value="sdxl">Stable Diffusion XL</option>
               <option value="flux-hf">FLUX.1-schnell on Hugging Face</option>
@@ -185,8 +186,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             </select>
           </div>
         </div>
-        <p class="muted xsmall" id="d-engine-note">Black Forest Labs, open weights. The house default:
-        the best all-round free model, and it needs nobody&rsquo;s key.</p>
+        <p class="muted xsmall" id="d-engine-note">Stability AI, open weights, drawn on the order&rsquo;s own
+        Hugging Face token. The house default. If it is busy the queue behind it still draws.</p>
         <div class="draw-examples" id="draw-examples">
           <button class="chip" type="button">A dew-covered spider's web at dawn, each drop holding an inverted hedgerow</button>
           <button class="chip" type="button">An oak in a Somerset field under a full moon, long exposure, stars wheeling</button>

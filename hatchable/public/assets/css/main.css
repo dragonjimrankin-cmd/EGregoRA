@@ -1110,7 +1110,12 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 }
 .oracle-bar-note { margin: 0; font-size: 0.82rem; color: var(--vellum-dim); max-width: 60ch; }
 .btn--small { padding: 0.35rem 0.8rem; font-size: 0.7rem; }
-body.oracle-tall .oracle-thread { min-height: min(84vh, 1000px); max-height: min(88vh, 1100px); }
+/* Four times the reading room: the expanded box is quadruple the height of
+   the ordinary one, and it is the page that scrolls rather than the box. */
+body.oracle-tall .oracle-thread {
+  min-height: calc(4 * clamp(320px, 46vh, 520px));
+  max-height: none;
+}
 body.oracle-tall .oracle-msg { max-width: 92%; }
 .oracle-wrap .oracle-msg { max-width: 86%; }
 .oracle-wrap #o-question { min-height: 110px; font-size: 1rem; }
@@ -1572,7 +1577,7 @@ img.shot-thumb { object-fit: cover; }
   /* The conversation: full-width bubbles, and a thread tall enough to
      read in without being so tall the page below it disappears. */
   .oracle-wrap .oracle-msg, body.oracle-tall .oracle-msg { max-width: 100%; }
-  body.oracle-tall .oracle-thread { min-height: 70vh; max-height: 78vh; }
+  body.oracle-tall .oracle-thread { min-height: calc(4 * 46vh); max-height: none; }
   .oracle-bar { gap: 0.5rem; }
   .oracle-bar .btn { align-self: flex-start; }
 
