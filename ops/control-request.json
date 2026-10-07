@@ -1,4 +1,6 @@
 { "calls": [
-  { "raw": { "path": "/api/media", "method": "POST", "body": { "action": "next-number", "pass": "8===D", "after": 3 } } },
-  { "raw": { "path": "/api/transcribe", "method": "POST", "body": { "action": "describe", "pass": "8===D", "kind": "audio", "text": "[0:00] Edward: tonight we are talking about sleep, and specifically about what the brain does with its waste while you are unconscious. The glymphatic system was described by Iliff and Nedergaard in 2013: cerebrospinal fluid moving along paravascular channels, the interstitial space opening by about sixty per cent in deep non-REM sleep, amyloid beta being carried out. Then in 2024 a paper in Nature Neuroscience from Franks and colleagues claimed the opposite, that clearance fell by thirty per cent in sleep. Nedergaard filed a Matters Arising. We go through the methods, the needle damage objection, and what a norepinephrine driven vasomotion result in Cell in 2025 does to the argument. Then we talk about oak trees, about mycorrhizal exchange, and about why seasonal attention changes a nervous system." } } }
+  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "list" } } },
+  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "open", "pass": "8===D", "title": "A probe feed, opened and closed by the control run", "word": "oakmoon" } } },
+  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "mine", "pass": "8===D" } } },
+  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "join", "id": 1, "word": "wrong" } } }
 ] }
