@@ -3354,3 +3354,66 @@ body { max-width: 100%; }
   .btn, .chip { white-space: normal; }
   .btn-row { flex-wrap: wrap; }
 }
+
+/* =======================================================================
+   ADMIN EDIT MODE
+   The button sits bottom-left, just above the footer, on every page. It is
+   quiet until it is wanted: a thin outline that only an administrator has
+   any reason to press.
+   ======================================================================= */
+.admin-edit-mount { display: flex; justify-content: flex-start;
+  padding: 0 1.2rem 0.8rem; }
+.admin-edit-open {
+  font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6f6652; background: transparent; border: 1px solid rgba(215,176,90,0.25);
+  border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.admin-edit-open:hover, .admin-edit-open:focus-visible {
+  color: #d7b05a; border-color: rgba(215,176,90,0.7);
+}
+
+.admin-edit-panel {
+  position: fixed; left: 1rem; bottom: 1rem; z-index: 1200;
+  width: min(26rem, calc(100vw - 2rem)); max-height: 80vh; overflow: auto;
+  padding: 1rem 1.1rem; border: 1px solid rgba(215,176,90,0.45); border-radius: 4px;
+  background: #15120d; box-shadow: 0 18px 50px rgba(0,0,0,0.6);
+  font-size: 0.92rem;
+}
+.ae-head { display: flex; justify-content: space-between; align-items: center;
+  gap: 0.6rem; margin-bottom: 0.5rem; }
+.ae-head strong { font-family: 'Cinzel', serif; letter-spacing: 0.1em; color: #f3ddaa;
+  font-size: 0.82rem; text-transform: uppercase; }
+.ae-x { background: none; border: 0; color: #9f947a; font-size: 1.3rem; line-height: 1;
+  cursor: pointer; }
+.ae-note { color: #cbbb93; font-size: 0.82rem; margin: 0 0 0.7rem; }
+.ae-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0; }
+.ae-count { margin: 0.2rem 0; }
+.ae-label { display: block; font-size: 0.8rem; color: #9f947a; margin-top: 0.5rem; }
+.ae-prompt { width: 100%; box-sizing: border-box; font-family: 'EB Garamond', serif;
+  font-size: 1rem; background: #0e0c0a; color: #e7dcc4;
+  border: 1px solid rgba(215,176,90,0.3); border-radius: 3px; padding: 0.5rem; }
+.ae-draft { border-top: 1px solid rgba(215,176,90,0.2); margin-top: 0.6rem; padding-top: 0.5rem; }
+.ae-ops { margin: 0.3rem 0 0; padding-left: 1.1rem; font-size: 0.82rem; color: #cbbb93; }
+.ae-ops code { color: #d7b05a; }
+.ae-msg { font-size: 0.85rem; color: #9f947a; margin: 0.5rem 0 0; min-height: 1.2em; }
+.ae-msg.is-bad { color: #cf7f8d; }
+.ae-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.ae-table th, .ae-table td { text-align: left; padding: 0.25rem 0.4rem;
+  border-bottom: 1px solid rgba(215,176,90,0.15); vertical-align: top; }
+
+/* The rectangle, and what it has caught. */
+.admin-edit-box {
+  position: absolute; z-index: 1150; pointer-events: none;
+  border: 1px dashed #d7b05a; background: rgba(215,176,90,0.08);
+}
+body.is-picking { cursor: crosshair; }
+body.is-picking * { cursor: crosshair !important; user-select: none; }
+.ae-touched { outline: 1px dashed #cf7f8d; outline-offset: 2px; }
+
+@media (max-width: 640px) {
+  .admin-edit-panel { left: 0.5rem; right: 0.5rem; width: auto; bottom: 0.5rem;
+    max-height: 70vh; }
+  .admin-edit-mount { padding: 0 0.8rem 0.6rem; }
+}

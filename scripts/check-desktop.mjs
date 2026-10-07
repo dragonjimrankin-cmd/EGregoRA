@@ -66,6 +66,42 @@ const TESTS = [
     t(/Join the order/i.test(doc.body.textContent), 'the door points a non-member at /join/');
   }],
 
+  ['/entropy/', async ({ dom, doc }, t) => {
+    /* Admin Edit Mode: present on an ordinary page, locked, and bottom-left
+       of the document just above the footer. */
+    const open = doc.querySelector('.admin-edit-open');
+    t(open, 'the Admin Edit Mode button is on the page');
+    const mount = doc.querySelector('.admin-edit-mount');
+    t(mount && mount.nextElementSibling && mount.nextElementSibling.matches('footer.site-foot'),
+      'it sits immediately above the footer');
+    open.dispatchEvent(new dom.window.Event('click', { bubbles: true }));
+    const panel = doc.querySelector('.admin-edit-panel');
+    t(panel, 'pressing it opens the door');
+    t(panel.classList.contains('admin-edit-locked'), 'and the door asks for the passcode first');
+    t(panel.querySelector('input[type="password"]'), 'with a password field, not a browser prompt');
+    t(!doc.querySelector('.ae-pick'), 'the selection tool stays shut until the passcode is given');
+
+    /* And with the word given (the harness's stand-in API accepts it), the
+       tool itself: a rectangle, a prompt, undo and redo, and two separate
+       confirmations that are not shown until there is something to confirm. */
+    panel.querySelector('input[type="password"]').value = '8===D';
+    panel.querySelector('.ae-unlock').dispatchEvent(new dom.window.Event('click', { bubbles: true }));
+    await new Promise((r) => setTimeout(r, 30));
+    const tool = doc.querySelector('.admin-edit-panel');
+    t(tool && tool.querySelector('.ae-pick'), 'the selection tool opens once the door is open');
+    t(tool.querySelector('.ae-prompt'), 'there is somewhere to say what should change');
+    t(tool.querySelector('.ae-undo') && tool.querySelector('.ae-redo'),
+      'undo and redo for the prompts are both there');
+    t(tool.querySelector('.ae-arm') && tool.querySelector('.ae-publish'),
+      'the two confirmations exist');
+    t(tool.querySelector('.ae-confirm').hidden, 'and stay hidden until something is proposed');
+    t(tool.querySelector('.ae-publish').disabled,
+      'the publish button cannot be pressed before the first confirmation');
+    t(/confirmed twice/i.test(tool.textContent), 'the panel says changes need confirming twice');
+    t(/logged/i.test(tool.textContent), 'and that every change is logged');
+    t(tool.querySelector('.ae-log'), 'the log can be opened from the panel');
+  }],
+
   ['/cosmic-ledger/', async ({ doc }, t) => {
     const plates = [...doc.querySelectorAll('figure.plate')];
     t(plates.length >= 14, 'the compendium carries its fourteen plates');

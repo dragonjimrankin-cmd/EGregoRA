@@ -33,6 +33,13 @@ const TESTS = [
     toggle.dispatchEvent(new doc.defaultView.Event('click', { bubbles: true }));
     t(doc.querySelector('.site-nav')?.classList.contains('open'), 'the menu opens when tapped');
   }],
+  ['/druids/', async ({ dom, doc }, t) => {
+    const open = doc.querySelector('.admin-edit-open');
+    t(open, 'Admin Edit Mode is reachable on a phone too');
+    open.dispatchEvent(new dom.window.Event('click', { bubbles: true }));
+    t(doc.querySelector('.admin-edit-panel.admin-edit-locked'),
+      'and it asks for the passcode before anything else');
+  }],
   ['/live/', async ({ doc }, t) => {
     t(doc.querySelector('[data-lw="list"]'), 'the feed list is on the page');
     t(doc.querySelectorAll('input[name="lw-element"]').length === 5,
