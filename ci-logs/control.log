@@ -1,30 +1,28 @@
-# control run — 2026-10-07T01:39:25.547Z
-site: https://egregora.hatchable.site   calls: 2
+# control run — 2026-10-07T01:44:28.787Z
+site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"accounts"}
-HTTP 200  (371 ms)
+HTTP 200  (557 ms)
 {
   "pool": {
     "kaggle": [],
-    "huggingface": [],
+    "huggingface": [
+      {
+        "account": "the order's own Hugging Face token",
+        "state": "ready",
+        "fails": 0,
+        "successes": 0,
+        "last_error": null,
+        "cooldown_until": null
+      }
+    ],
     "fal": [],
     "replicate": [],
     "openai": []
   }
-}
-
---------------------------------------------------------------------
-POST {"action":"draw","prompt":"A brass orrery on a cluttered desk by candlelight, shallow depth of field, warm highlights on worn metal"}
-HTTP 200  (2896 ms)
-{
-  "status": "ready",
-  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791337169033-iwpct25q.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261007%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261007T013929Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=3e051c00330fc3a568373c76d6e6f352b988aa2c7172006307ed0a4c02e15527",
-  "provider": "flux-schnell (open weights)",
-  "hardware": "Pollinations hosted GPU · FLUX.1-schnell, open weights — the card is not disclosed",
-  "prompt": "A brass orrery on a cluttered desk by candlelight, shallow depth of field, warm highlights on worn metal"
 }
 
 done.
