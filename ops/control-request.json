@@ -1,7 +1,9 @@
 {
-  "note": "List the register, then set the display name on the Shakra account so the header chip greets a person rather than an address.",
+  "note": "Why will no clip film? Ask the live site what GPUs and keys it can actually reach, and try one short clip to see the exact refusal.",
   "calls": [
-    { "action": "members", "limit": 10 },
-    { "action": "member-name", "email": "shakradragon@gmail.com", "name": "ShakRa" }
+    { "action": "status" },
+    { "action": "workers" },
+    { "action": "accounts" },
+    { "action": "film", "prompt": "A single candle flame guttering in a draught, close, dark background" }
   ]
 }
