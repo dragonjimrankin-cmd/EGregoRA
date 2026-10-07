@@ -74,7 +74,7 @@ export function release() {
 
 /* Which device is actually the problem. Labels are only given out once a
    permission has been granted, so this says what it knows and no more. */
-async function nameTheDevice(want) {
+export async function nameTheDevice(want) {
   try {
     const all = await navigator.mediaDevices.enumerateDevices();
     const kind = want === "audio" ? "audioinput" : "videoinput";
@@ -91,7 +91,7 @@ async function nameTheDevice(want) {
 }
 
 /* The box that comes up instead of a shrug. */
-function busyBox(host, detail, again) {
+export function busyBox(host, detail, again) {
   if (!host) return;
   const box = document.createElement("div");
   box.className = "busy-box";
@@ -123,7 +123,7 @@ function busyBox(host, detail, again) {
 }
 
 /* Is this the particular failure that means "something else has it"? */
-function busyError(err) {
+export function busyError(err) {
   const n = (err && err.name) || "";
   return n === "NotReadableError" || n === "TrackStartError" || n === "AbortError" ||
     /in use|already|busy|could not start/i.test((err && err.message) || "");

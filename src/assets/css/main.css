@@ -3083,3 +3083,100 @@ body.only-check .frame { border: 0; padding: 0.2rem; }
 }
 .holding-canvas:focus-visible { outline: 2px solid #d7b05a; outline-offset: 2px; }
 .holding-cap { text-align: center; margin-top: 0.35rem; }
+
+/* ===========================================================================
+   The sign-in chip on a phone — a bar of its own, under the head
+   ---------------------------------------------------------------------------
+   Signed in, the chip carries two lines of writing and a name of unknown
+   length, which on a narrow screen crowded the logotype and sat on top of
+   the order's name. So when the page is narrow the script lifts it out of
+   the brand row and drops it into a bar directly beneath the header, where
+   it has the full width to itself and nothing to overlap.
+   ======================================================================== */
+.head-you-bar {
+  position: relative; z-index: 4;
+  border-bottom: 1px solid rgba(127, 174, 122, 0.25);
+  background: linear-gradient(180deg, rgba(127, 174, 122, 0.10), rgba(13, 13, 26, 0.0));
+  padding: 0.4rem 0.75rem;
+  display: flex; justify-content: flex-start;
+}
+.head-you-bar .head-join {
+  margin: 0; width: 100%; justify-content: flex-start;
+}
+.head-you-bar .head-join-text { display: inline-flex; }
+
+/* The order's name: centred against the logotype, and hard to the left. */
+.brand-line { align-items: center; }
+.brand-order { justify-content: flex-start; }
+.brand-order-text { text-align: left; }
+@media (max-width: 600px) {
+  .brand-line { align-items: flex-start; }
+  .brand-order { width: 100%; justify-content: flex-start; align-items: center; min-height: 1.1em; }
+}
+
+/* ===========================================================================
+   Record now on your device — /podcast/ and /videos/
+   ======================================================================== */
+.device-studio { margin: 1.6rem auto; }
+.ds-big { letter-spacing: 0.16em; }
+.ds-panel { margin-top: 0.9rem; }
+.ds-note { margin: 0 0 0.9rem; }
+.ds-clock { font-family: Cinzel, serif; color: #d7b05a; letter-spacing: 0.12em; }
+.ds-state { min-height: 1.2em; }
+
+.ds-keep {
+  border: 1px solid rgba(215, 176, 90, 0.45);
+  background: rgba(215, 176, 90, 0.06);
+  border-radius: 3px; padding: 0.7rem 0.8rem; margin: 0.9rem 0;
+}
+.ds-keep-head {
+  font-family: Cinzel, serif; color: #f3ddaa; letter-spacing: 0.1em;
+  margin: 0 0 0.25rem; font-size: 0.95rem;
+}
+
+.ds-stage { margin: 0.8rem 0 0.4rem; }
+.ds-video { width: 100%; display: block; border: 1px solid rgba(215, 176, 90, 0.3); border-radius: 3px; background: #080705; }
+.ds-audio { width: 100%; display: block; }
+.ds-transport { margin: 0.2rem 0 0.9rem; }
+.ds-keys { gap: 0.4rem; flex-wrap: wrap; }
+.ds-seek-label {
+  display: block; font-family: Cinzel, serif; font-size: 0.6rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #9f947a; margin: 0.5rem 0 0.2rem;
+}
+.ds-seek { width: 100%; }
+.ds-time { font-family: Cinzel, serif; font-size: 0.74rem; letter-spacing: 0.1em; color: #cbbb93; margin: 0.25rem 0 0; }
+.ds-tools { flex-wrap: wrap; gap: 0.4rem; }
+.ds-insert { margin: 0.9rem 0; }
+.ds-bar { font-family: Cinzel, serif; font-size: 0.72rem; letter-spacing: 0.12em; color: #7fae7a; }
+.ds-msg { min-height: 1.3em; font-family: 'EB Garamond', serif; color: #cbbb93; }
+.ds-msg.is-bad { color: #c98b6a; }
+
+/* The archive, laid out as a table of cells rather than a list of cards —
+   every file on one line, every line openable. */
+.ds-files { overflow-x: auto; }
+.cell-table {
+  width: 100%; border-collapse: collapse; margin: 0.6rem 0;
+  font-family: 'EB Garamond', serif; font-size: 0.92rem;
+}
+.cell-table caption {
+  caption-side: top; text-align: left; color: #9f947a;
+  font-size: 0.78rem; margin-bottom: 0.4rem;
+}
+.cell-table th, .cell-table td {
+  border: 1px solid rgba(215, 176, 90, 0.22);
+  padding: 0.45rem 0.6rem; text-align: left; vertical-align: middle;
+}
+.cell-table thead th {
+  font-family: Cinzel, serif; font-size: 0.62rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #9f947a; background: rgba(215, 176, 90, 0.05);
+}
+.cell-table tbody th { font-weight: 400; color: #f3ddaa; }
+.cell-table tbody tr.is-open { background: rgba(127, 174, 122, 0.08); }
+.cell-do { white-space: nowrap; }
+.cell-do .btn { margin: 0.1rem 0.25rem 0.1rem 0; }
+.btn--tiny { padding: 0.22rem 0.55rem; font-size: 0.62rem; letter-spacing: 0.12em; }
+.btn--tiny.is-elsewhere { opacity: 0.6; }
+@media (max-width: 600px) {
+  .cell-table { font-size: 0.86rem; }
+  .cell-table th, .cell-table td { padding: 0.35rem 0.4rem; }
+}

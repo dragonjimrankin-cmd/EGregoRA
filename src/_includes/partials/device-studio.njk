@@ -1,0 +1,148 @@
+{#- Record now on your device. Used on /podcast/ (kind = audio) and
+    /videos/ (kind = video). Everything is addressed by data-ds so the two
+    copies cannot collide; the few real ids are prefixed with the kind.
+    Nothing here touches the server: the recording, the editing and the
+    archive all live on the machine in front of you. -#}
+<section class="wrap narrow device-studio" data-device-studio="{{ dsKind }}">
+  <div class="btn-row">
+    <button type="button" class="btn ds-big" data-ds="open" aria-expanded="false">
+      Record now on your device</button>
+    <span class="muted xsmall">No account, no upload. {% if dsKind == "video" %}Camera or screen{% else %}Microphone{% endif %}
+    straight into this page &mdash; then play it back, cut it about, and keep it in this
+    device&rsquo;s archive.</span>
+  </div>
+
+  <div class="frame ds-panel" data-ds="panel" hidden>
+    <p class="ds-note muted small">Everything below happens in this browser, on this machine. The recording is
+    never sent anywhere by this panel, and the archive is this device&rsquo;s own storage &mdash;
+    clear the browser&rsquo;s data and it goes with it. To publish something to the site, use the
+    Admin Only door.</p>
+
+    <p class="kicker">One &mdash; the recording</p>
+    {% if dsKind == "video" %}
+    <div class="am-fields">
+      <div>
+        <label for="ds-{{ dsKind }}-source">What to record</label>
+        <select id="ds-{{ dsKind }}-source" data-ds="source">
+          <option value="cam">Camera and microphone</option>
+          <option value="screen">This screen, with microphone</option>
+        </select>
+      </div>
+    </div>
+    {% endif %}
+    <div class="btn-row">
+      <button type="button" class="btn btn--small" data-ds="start">Start recording</button>
+      <button type="button" class="btn btn--small btn--ghost" data-ds="stop" disabled>Stop</button>
+      <span class="ds-clock" data-ds="clock">0:00</span>
+    </div>
+    <p class="ds-state muted small" data-ds="state"></p>
+    {% if dsKind == "video" %}
+    <video class="live-mirror" data-ds="mirror" muted playsinline
+           aria-label="What the camera is seeing" role="img"></video>
+    {% else %}
+    <canvas class="am-meter" data-ds="meter" width="600" height="56"
+            aria-label="The level of what is being recorded" role="img"></canvas>
+    {% endif %}
+
+    <div class="ds-keep" data-ds="keep" hidden>
+      <p class="ds-keep-head">Keep this recording?</p>
+      <p class="muted small" data-ds="keep-what"></p>
+      <div class="btn-row">
+        <button type="button" class="btn btn--small" data-ds="keep-yes">Keep it</button>
+        <button type="button" class="btn btn--small btn--ghost" data-ds="keep-no">Throw it away</button>
+      </div>
+    </div>
+
+    <div class="ds-editor" data-ds="editor" hidden>
+      <div class="divider">&#10022;</div>
+      <p class="kicker">Two &mdash; play it back and cut it about</p>
+
+      <div class="ds-stage" data-ds="stage"></div>
+
+      <div class="ds-transport">
+        <div class="btn-row ds-keys">
+          <button type="button" class="btn btn--small btn--ghost" data-ds="rew"
+                  aria-label="Rewind ten seconds">&#9664;&#9664; 10s</button>
+          <button type="button" class="btn btn--small" data-ds="play" aria-label="Play">&#9654; Play</button>
+          <button type="button" class="btn btn--small btn--ghost" data-ds="pause" aria-label="Pause">&#10074;&#10074; Pause</button>
+          <button type="button" class="btn btn--small btn--ghost" data-ds="ff"
+                  aria-label="Fast forward ten seconds">10s &#9654;&#9654;</button>
+        </div>
+        <label class="ds-seek-label" for="ds-{{ dsKind }}-seek">Position</label>
+        <input type="range" class="ds-seek" id="ds-{{ dsKind }}-seek" data-ds="seek"
+               min="0" max="1000" step="1" value="0">
+        <p class="ds-time" data-ds="time">0:00 / 0:00</p>
+      </div>
+
+      <p class="kicker">The marks</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn--small btn--ghost" data-ds="mark-in">Mark in, here</button>
+        <button type="button" class="btn btn--small btn--ghost" data-ds="mark-out">Mark out, here</button>
+        <button type="button" class="btn btn--small btn--ghost" data-ds="mark-clear">Clear the marks</button>
+        <span class="muted xsmall" data-ds="marks">No marks set &mdash; the whole recording.</span>
+      </div>
+
+      <p class="kicker">The work</p>
+      <div class="btn-row ds-tools">
+        <button type="button" class="btn btn--small" data-ds="crop">Crop to the marks</button>
+        <button type="button" class="btn btn--small" data-ds="mute-range">Remove the sound between the marks</button>
+        <button type="button" class="btn btn--small btn--ghost" data-ds="undo" disabled>Undo the last change</button>
+      </div>
+
+      <div class="ds-insert">
+        <label for="ds-{{ dsKind }}-ins">Insert audio at the playhead</label>
+        <input type="file" id="ds-{{ dsKind }}-ins" data-ds="ins-file" accept="audio/*">
+        <div class="btn-row">
+          <button type="button" class="btn btn--small" data-ds="insert" disabled>Insert it</button>
+          <span class="muted xsmall">{% if dsKind == "video" %}Laid over the film from the playhead
+          onwards, mixed with the sound already there.{% else %}Spliced in at the playhead &mdash; what
+          follows is pushed later, nothing is lost.{% endif %}</span>
+        </div>
+      </div>
+
+      {% if dsKind == "video" %}
+      <p class="muted xsmall">A browser has no transcoder, so every cut to a film is made by
+      <em>re-recording</em> it at playback speed: a ten minute cut takes about ten minutes, and the
+      result is WebM. Sound-only edits to a podcast are rendered offline instead, far faster than
+      real time.</p>
+      {% endif %}
+
+      <p class="ds-bar" data-ds="bar" hidden></p>
+      <p class="ds-msg" data-ds="msg"></p>
+
+      <p class="kicker">Three &mdash; keep it</p>
+      <div class="am-fields">
+        <div>
+          <label for="ds-{{ dsKind }}-name">Call it</label>
+          <input type="text" id="ds-{{ dsKind }}-name" data-ds="name" maxlength="120"
+                 placeholder="A name you will recognise">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn" data-ds="archive">Archive it on this device</button>
+        <button type="button" class="btn btn--small btn--ghost" data-ds="download">Download the file</button>
+      </div>
+    </div>
+
+    <div class="divider">&#10022;</div>
+    <p class="kicker">The archive on this device</p>
+    <div class="ds-files table-wrap">
+      <table class="cell-table" data-ds="table">
+        <caption class="ds-cap">Everything this device is holding. Edit opens a file back up in the
+        panel above; the original stays in the archive until you save over it.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Kind</th>
+            <th scope="col">Length</th>
+            <th scope="col">Size</th>
+            <th scope="col">Made</th>
+            <th scope="col">What you can do</th>
+          </tr>
+        </thead>
+        <tbody data-ds="rows"></tbody>
+      </table>
+      <p class="muted small" data-ds="empty">Nothing archived on this device yet.</p>
+    </div>
+  </div>
+</section>

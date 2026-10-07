@@ -3402,6 +3402,35 @@
       text.appendChild(lead);
       text.appendChild(who);
     }
+
+    /* On a phone the signed-in chip is too wide for the brand row: it
+       crowded the logotype and overlapped the order's name. So below 860px
+       it is lifted out of the head and set down in a bar of its own,
+       directly underneath, where it has the width to itself. It goes back
+       where it belongs the moment the window is wide again. */
+    var head = document.querySelector('.site-head');
+    var slot = link.parentNode;
+    var bar = null;
+    var narrow = window.matchMedia('(max-width: 860px)');
+    function place() {
+      if (!head || !slot) return;
+      if (narrow.matches) {
+        if (!bar) {
+          bar = document.createElement('div');
+          bar.className = 'head-you-bar';
+        }
+        if (bar.parentNode !== head.parentNode) {
+          head.parentNode.insertBefore(bar, head.nextSibling);
+        }
+        if (link.parentNode !== bar) bar.appendChild(link);
+      } else {
+        if (link.parentNode !== slot) slot.insertBefore(link, slot.querySelector('.nav-toggle'));
+        if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
+      }
+    }
+    place();
+    if (narrow.addEventListener) narrow.addEventListener('change', place);
+    else if (narrow.addListener) narrow.addListener(place);
   }).catch(function () {});
 })();
 

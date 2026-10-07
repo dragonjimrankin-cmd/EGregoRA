@@ -237,6 +237,36 @@ const TESTS = [
   }]
 ];
 
+/* The device studio — this turn's work, on both media pages. */
+for (const [page, kind] of [['/podcast/', 'audio'], ['/videos/', 'video']]) {
+  TESTS.push([page, async ({ doc }, t) => {
+    const root = doc.querySelector('[data-device-studio]');
+    t(root, 'the device studio is on the page');
+    t(root.getAttribute('data-device-studio') === kind, 'and it knows it is ' + kind);
+    const open = root.querySelector('[data-ds="open"]');
+    t(/record now on your device/i.test(open.textContent), 'the offer is plainly worded');
+    open.dispatchEvent(new doc.defaultView.Event('click', { bubbles: true }));
+    t(!root.querySelector('[data-ds="panel"]').hidden, 'and it opens to a thumb');
+    t(root.querySelector('[data-ds="start"]') && root.querySelector('[data-ds="stop"]'),
+      'it can be started and stopped');
+    t(root.querySelector('[data-ds="keep"]'), 'it asks whether to keep what was recorded');
+    for (const key of ['play', 'pause', 'rew', 'ff', 'seek']) {
+      t(root.querySelector('[data-ds="' + key + '"]'), 'the transport has its ' + key);
+    }
+    t(root.querySelector('[data-ds="seek"]').getAttribute('type') === 'range',
+      'the position is a slider a thumb can drag');
+    t(root.querySelector('[data-ds="crop"]') && root.querySelector('[data-ds="mute-range"]'),
+      'it can crop, and strip the sound from a marked stretch');
+    t(root.querySelector('[data-ds="ins-file"]')?.getAttribute('accept') === 'audio/*',
+      'audio can be inserted');
+    t(root.querySelector('[data-ds="archive"]'), 'and the result archived on this device');
+    const table = root.querySelector('table.cell-table');
+    t(table, 'the files are listed in a table of cells');
+    t(table.querySelectorAll('thead th').length === 6, 'with a column for each thing worth knowing');
+    t(root.querySelector('.table-wrap'), 'and the table can be scrolled sideways on a phone');
+  }]);
+}
+
 /* The live page is where this turn's work lives, so it gets its thumb
    pressed properly rather than only inspected. */
 /* Off air: the holding card, and the sign. */
