@@ -3284,3 +3284,73 @@ button.rung:hover, button.rung:focus-visible { color: #f3ddaa; border-bottom-col
   .sky-stage { min-height: 300px; }
   .sky-where { min-height: 0; }
 }
+
+
+/* ------------------------------------------------- the live invite card --
+   Handed to the broadcaster the moment a feed opens, so that getting other
+   people into the room is one copy rather than a conversation. */
+.invite-card { margin-top: 1rem; padding: 0.9rem 1rem; border: 1px solid rgba(215,176,90,0.35);
+  border-radius: 4px; background: rgba(215,176,90,0.05); }
+.invite-card .kicker { margin: 0 0 0.5rem; }
+.invite-link { width: 100%; max-width: 100%; box-sizing: border-box; margin-bottom: 0.6rem;
+  font-family: "EB Garamond", serif; font-size: 0.95rem; overflow-wrap: anywhere; }
+
+/* =======================================================================
+   WRAPPING, EVERYWHERE — the last word on text that will not fit
+
+   One pass over the whole site and its apps. Long words, long URLs, email
+   addresses, hashes, watchwords, table cells, chat lines, oracle answers
+   and the admin panels all break rather than push the page sideways. The
+   rules are deliberately broad and deliberately last in the file: nothing
+   here changes a layout, it only decides what happens at the edge.
+   ======================================================================= */
+
+/* 1. Prose and every control that holds words. `break-word` keeps ordinary
+      sentences looking normal and only breaks a word that cannot fit. */
+p, li, dd, dt, td, th, figcaption, blockquote, label, legend, summary,
+h1, h2, h3, h4, h5, h6, .kicker, .lede, .muted, .auth-msg, .chip,
+.btn, button, a, strong, em, span.plate-num {
+  overflow-wrap: break-word;
+}
+
+/* 2. The things that are routinely one unbroken string: addresses, keys,
+      links, code, chat lines, file names. These may break anywhere. */
+code, kbd, samp, .acct-email, .invite-link, .mono, .tape-name, .file-name,
+.chat-who, .chat-list li, .oracle-answer a, .biblio a, a[href^="mailto:"], a[href^="http"] {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* 3. Flex and grid children default to min-width:auto, which is the single
+      most common cause of a page that scrolls sideways on a phone. */
+.grid > *, .btn-row > *, .film-row > *, .cards > *, .live-list > *,
+.fox-panel > *, .oracle-wrap > *, .admin-panel > * { min-width: 0; }
+
+/* 4. Nothing may be wider than the column it sits in. */
+img, svg, video, canvas, iframe, table, input, select, textarea {
+  max-width: 100%;
+}
+input, select, textarea { box-sizing: border-box; }
+textarea { resize: vertical; }
+
+/* 5. Tables: wrap long cells, and let a genuinely wide one scroll inside
+      its own box rather than taking the page with it. */
+table { table-layout: auto; }
+th, td { overflow-wrap: break-word; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* 6. A last guard on the document itself. Content is fixed at the source
+      above; this only stops a stray wide child from offering the whole page
+      a horizontal scrollbar. */
+html { overflow-x: hidden; }
+body { max-width: 100%; }
+
+@media (max-width: 640px) {
+  /* On a phone, hyphenate the long prose rather than leaving rivers. */
+  .frame p, .lede, .biblio li, .glossary dd, .timeline li { hyphens: auto; }
+  /* Buttons and chips wrap their label instead of growing past the screen. */
+  .btn, .chip { white-space: normal; }
+  .btn-row { flex-wrap: wrap; }
+}

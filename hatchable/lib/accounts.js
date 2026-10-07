@@ -247,6 +247,31 @@ export function parseClientData(clientDataJSON) {
  * identity check. This returns either { ok: true, member } or a refusal
  * ready to be handed back to the browser.
  */
+/**
+ * The door for watching and talking in the live room.
+ *
+ * Deliberately lighter than requireStudio: a signed-in member with a
+ * confirmed address, and nothing else. Watching a camera is not generating
+ * media, and demanding an identity check of every guest was why nobody but
+ * the broadcaster could ever get in.
+ */
+export async function requireViewer(req) {
+  const me = await whoAmI(req);
+  if (!me) {
+    return {
+      ok: false, status: 401, reason: 'signin',
+      error: 'The live room is for members. Sign in, or create an account at /join/, then come back to this page.'
+    };
+  }
+  if (!me.verified) {
+    return {
+      ok: false, status: 403, reason: 'verify',
+      error: 'Your address is not confirmed yet. Enter the six-digit code we emailed you at /join/, then come back.'
+    };
+  }
+  return { ok: true, member: me };
+}
+
 export async function requireStudio(req) {
   const me = await whoAmI(req);
   if (!me) {

@@ -39,7 +39,7 @@
  */
 import { ai, db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
-import { requireStudio } from '../lib/accounts.js';
+import { requireStudio, requireViewer } from '../lib/accounts.js';
 import { openChat } from '../lib/openchat.js';
 
 export const access = 'public';
@@ -213,8 +213,10 @@ export default async function (req, res) {
 
     if (action === 'join' || action === 'pull') {
       /* Both locks. The member check first, because it is the one that
-         carries a name. */
-      const door = await requireStudio(req);
+         carries a name \u2014 and it is the *viewer* door, not the studio
+         door: a guest needs an account and a confirmed address, not an
+         identity check. */
+      const door = await requireViewer(req);
       if (!door.ok) return res.status(door.status).json({ error: door.error, gate: door.reason });
 
       const id = Number(body.id);
@@ -277,8 +279,18 @@ export default async function (req, res) {
        their own. Every one of these needs a member account and the
        watchword, exactly as watching does. */
     if (action === 'say' || action === 'room' || action === 'cam' || action === 'cam-push') {
-      const door = await requireStudio(req);
+      /* Chat and the room: the viewer door. Raising a camera of your own is
+         the one thing in here that puts a face on the wall for everyone
+         else, so that alone also wants an age check \u2014 but never the full
+         identity check, which belongs to the generators. */
+      const door = await requireViewer(req);
       if (!door.ok) return res.status(door.status).json({ error: door.error, gate: door.reason });
+      if ((action === 'cam' || action === 'cam-push') && body.on !== false && !door.member.age_verified) {
+        return res.status(403).json({
+          gate: 'age',
+          error: 'Raising your own camera in the room needs the age check first. It takes a minute, at /join/. You can keep watching and talking meanwhile.'
+        });
+      }
 
       const id = Number(body.id);
       const word = clean(body.word, 120);

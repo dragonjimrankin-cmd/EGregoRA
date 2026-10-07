@@ -25,7 +25,8 @@ export default [
       { num: 'I\u00b7i', title: 'Astronomy &amp; the Survey of the Sky', href: '/astronomy/' },
       { num: 'I\u00b7ii', title: 'The Cosmic Aether', href: '/cosmic-aether/' },
       { num: 'I\u00b7iii', title: 'The Moebius Seam', href: '/moebius-seam/' },
-      { num: 'I\u00b7iv', title: 'Entropy &amp; the Phases of Integration', href: '/entropy/' }
+      { num: 'I\u00b7iv', title: 'Entropy &amp; the Phases of Integration', href: '/entropy/' },
+      { num: 'I\u00b7v', title: 'The Cosmic Ledger &amp; Phased Integration', href: '/cosmic-ledger/' }
     ]
   },
   {

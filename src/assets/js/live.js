@@ -690,11 +690,53 @@ export function busyError(err) {
       rec.start(SEGMENT);
       root.classList.add("is-live");
       say("Live. Watchers need an account here and the watchword \u201c" + word + "\u201d.");
+      showInvite(d.id, word);
       drawMine((await post({ action: "mine" })).feeds || []);
     } catch (err) {
       say((err && err.message) || "The feed would not start.", true);
       stopAll();
     }
+  }
+
+  /* The invite link, written out and copyable. Handing someone a URL is
+     the difference between a room with people in it and a room with one
+     person in it wondering why nobody came. */
+  function showInvite(id, word) {
+    const host = $("invite");
+    if (!host) return;
+    const url = location.origin + "/live/?feed=" + encodeURIComponent(id) +
+      "&word=" + encodeURIComponent(word);
+    host.hidden = false;
+    host.innerHTML = "";
+    const label = document.createElement("p");
+    label.className = "kicker";
+    label.textContent = "Invite link \u2014 send this to whoever should be in the room";
+    const field = document.createElement("input");
+    field.type = "text";
+    field.readOnly = true;
+    field.className = "invite-link";
+    field.value = url;
+    field.addEventListener("focus", () => field.select());
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "btn btn--small";
+    copy.textContent = "Copy the link";
+    copy.addEventListener("click", async () => {
+      try {
+        if (navigator.clipboard) await navigator.clipboard.writeText(url);
+        else { field.select(); document.execCommand("copy"); }
+        copy.textContent = "Copied";
+        setTimeout(() => { copy.textContent = "Copy the link"; }, 2000);
+      } catch (e) { field.select(); }
+    });
+    const note = document.createElement("p");
+    note.className = "muted xsmall";
+    note.textContent = "They still need a member account with a confirmed address \u2014 the link " +
+      "carries the watchword, not an identity. No identity check is asked of anyone just to watch.";
+    host.appendChild(label);
+    host.appendChild(field);
+    host.appendChild(copy);
+    host.appendChild(note);
   }
 
   function stopAll() {
@@ -1003,6 +1045,22 @@ export function busyError(err) {
   let feeds = [], picked = null, since = -1, timer = null, src = null, buffer = null;
   const queue = [];
 
+  /* An invite link carries the feed and the watchword, because asking a
+     guest to type a word they were sent in a message is how guests give up.
+     /live/?feed=12&word=whatever — the word never reaches our logs as part
+     of a GET, because the page reads it and strips it from the address bar
+     before anything else happens. */
+  const invite = (function readInvite() {
+    try {
+      const q = new URLSearchParams(location.search);
+      const id = Number(q.get("feed") || q.get("id") || 0);
+      const word = String(q.get("word") || q.get("w") || "");
+      if (!id && !word) return null;
+      if (history.replaceState) history.replaceState(null, "", location.pathname + location.hash);
+      return { id: id || 0, word: word };
+    } catch (e) { return null; }
+  })();
+
   const say = (t, bad) => {
     const n = $("msg");
     if (n) { n.textContent = t || ""; n.className = "auth-msg" + (bad ? " is-bad" : ""); }
@@ -1071,13 +1129,35 @@ export function busyError(err) {
           : "Nothing is live at the moment. The order broadcasts rarely and without warning; " +
             "this page is where it appears when it does.") + "</li>";
       n.querySelectorAll("[data-feed]").forEach((b) => b.addEventListener("click", () => {
-        picked = feeds.find((f) => String(f.id) === b.getAttribute("data-feed"));
-        $("chosen").textContent = picked ? picked.title : "";
-        $("gate").hidden = false;
-        $("word").focus();
+        choose(feeds.find((f) => String(f.id) === b.getAttribute("data-feed")));
       }));
+
+      /* A guest who arrived on an invite should find the door already open
+         with the word in it, and only the element left to answer. */
+      if (invite && !picked && feeds.length) {
+        const want = invite.id
+          ? feeds.find((f) => Number(f.id) === invite.id)
+          : feeds[0];
+        if (want) {
+          choose(want);
+          if (invite.word) $("word").value = invite.word;
+          say("You were invited to " + want.title +
+            ". Answer the one question below and look through.");
+        }
+      }
     } catch {
       say("The list of feeds could not be read.", true);
+    }
+  }
+
+  function choose(f) {
+    picked = f || null;
+    $("chosen").textContent = picked ? picked.title : "";
+    $("gate").hidden = !picked;
+    if (picked) {
+      const w = $("word");
+      if (w) w.focus();
+      if ($("gate").scrollIntoView) $("gate").scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }
 
@@ -1099,7 +1179,19 @@ export function busyError(err) {
       start(picked.id, word, d.mime || "video/webm");
       room(picked.id, word);
     } catch (err) {
-      say((err && err.message) || "That did not let you in.", true);
+      const gate = err && err.gate;
+      if (gate === "signin" || gate === "verify") {
+        say((err && err.message) || "That did not let you in.", true);
+        const box = $("msg");
+        if (box) {
+          const a = document.createElement("a");
+          a.href = "/join/";
+          a.textContent = gate === "signin" ? " Join or sign in \u2192" : " Finish joining \u2192";
+          box.appendChild(a);
+        }
+      } else {
+        say((err && err.message) || "That did not let you in.", true);
+      }
     }
   });
 

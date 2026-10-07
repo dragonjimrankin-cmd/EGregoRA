@@ -26,6 +26,7 @@ export default {
     { url: "/cosmic-aether/", label: "Cosmic Aether", glyph: "spiral" },
     { url: "/moebius-seam/", label: "The Moebius Seam", glyph: "metatron" },
     { url: "/entropy/", label: "Entropy", glyph: "spiral" },
+    { url: "/cosmic-ledger/", label: "The Cosmic Ledger", glyph: "metatron" },
     { url: "/druids/", label: "Druids", glyph: "tree" },
     { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },
     { url: "/astrology/", label: "Astrology", glyph: "star" },

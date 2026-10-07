@@ -72,7 +72,10 @@ description: "The order's camera, when it is running: a live feed for members wh
       <div class="btn-row">
         <button type="button" class="btn btn--small" data-lw="enter">Look through</button>
       </div>
-      <p class="muted xsmall">You must be signed in as a member. Not one yet? <a href="/join/">Join the order</a>.</p>
+      <p class="muted xsmall">Two locks, and only two: a member account with a confirmed email
+      address, and the watchword above. <strong>No identity or age check is asked of anyone just to
+      watch or to talk</strong> &mdash; that is only for raising a camera of your own. Not a member yet?
+      <a href="/join/">Join the order</a>; it takes a minute.</p>
     </div>
 
     <p class="auth-msg" data-lw="msg"></p>
@@ -216,6 +219,8 @@ description: "The order's camera, when it is running: a live feed for members wh
         <button type="button" class="btn btn--ghost" data-lv="stop" disabled>End the feed</button>
       </div>
       <div class="countdown" data-lv="count" hidden></div>
+
+      <div class="invite-card" data-lv="invite" hidden></div>
       <div class="switch-row">
         <label class="switch"><input type="checkbox" data-lv="keep" checked>
           Record this broadcast to the archive</label>

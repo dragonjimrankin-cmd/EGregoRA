@@ -12,7 +12,7 @@
     "zip:hatchable": "npm run build:hatchable && rm -f egregora-hatchable.zip && cd hatchable && zip -qr ../egregora-hatchable.zip . && cd ..",
     "deploy:hatchable": "npm run build:hatchable && node scripts/hatchable-deploy.mjs",
     "cards": "node scripts/make-cards.mjs",
-    "audit": "node scripts/meta-audit.mjs && python3 scripts/check-site.py && python3 scripts/check-mobile.py && node scripts/check-phone.mjs && node scripts/check-diamonds.mjs && node scripts/check-links.mjs",
+    "audit": "node scripts/meta-audit.mjs && python3 scripts/check-site.py && python3 scripts/check-mobile.py && node scripts/check-phone.mjs && node scripts/check-desktop.mjs && node scripts/check-diamonds.mjs && node scripts/check-links.mjs",
     "check": "python3 scripts/check-site.py",
     "check:phone": "node scripts/check-phone.mjs",
     "check:mobile": "python3 scripts/check-mobile.py"
