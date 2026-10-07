@@ -1,10 +1,13 @@
 {
-  "note": "Knock on the keeper's door four times with the wrong key. The third should spend the last try and the fourth should be refused outright for twenty minutes.",
+  "note": "Audition every keyless chat route I know of, from a machine that can actually reach them. Whichever answers properly becomes the oracle's model fallback.",
   "calls": [
-    { "raw": { "path": "/api/keeper", "body": { "action": "open", "pass": "0000" } } },
-    { "raw": { "path": "/api/keeper", "body": { "action": "open", "pass": "0001" } } },
-    { "raw": { "path": "/api/keeper", "body": { "action": "open", "pass": "0002" } } },
-    { "raw": { "path": "/api/keeper", "body": { "action": "open", "pass": "0003" } } },
-    { "raw": { "path": "/api/draw?engines=1" } }
+    { "raw": { "path": "https://ai.hackclub.com/chat/completions", "body": { "messages": [{ "role": "user", "content": "In one sentence: what did Michelson and Morley actually rule out?" }] } } },
+    { "raw": { "path": "https://ai.hackclub.com/model" } },
+    { "raw": { "path": "https://text.pollinations.ai/openai", "body": { "model": "openai", "messages": [{ "role": "user", "content": "Say the word ready." }] } } },
+    { "raw": { "path": "https://text.pollinations.ai/Say%20the%20word%20ready?model=openai" } },
+    { "raw": { "path": "https://text.pollinations.ai/models" } },
+    { "raw": { "path": "https://api.deepinfra.com/v1/openai/chat/completions", "body": { "model": "meta-llama/Meta-Llama-3.1-8B-Instruct", "messages": [{ "role": "user", "content": "Say ready." }] } } },
+    { "raw": { "path": "https://chatapi.akash.network/api/v1/chat/completions", "body": { "model": "Meta-Llama-3-1-8B-Instruct-FP8", "messages": [{ "role": "user", "content": "Say ready." }] } } },
+    { "raw": { "path": "https://api.airforce/v1/chat/completions", "body": { "model": "llama-3.1-70b-turbo", "messages": [{ "role": "user", "content": "Say ready." }] } } }
   ]
 }

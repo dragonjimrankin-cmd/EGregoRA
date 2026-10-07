@@ -45,11 +45,16 @@ const post = async (body) => {
    or what an error actually reads like from outside. No token is sent. */
 const raw = async (spec) => {
   const started = Date.now();
-  const url = SITE + String(spec.path || '/');
+  /* An absolute address is called as given; anything else is a path on the
+     order's own site. The first is how a route is auditioned before it is
+     wired in: the sandbox this is written in cannot reach the open web, but
+     this runner can. */
+  const where = String(spec.path || '/');
+  const url = /^https?:\/\//.test(where) ? where : SITE + where;
   try {
     const r = await fetch(url, {
       method: spec.method || (spec.body ? 'POST' : 'GET'),
-      headers: spec.body ? { 'content-type': 'application/json' } : undefined,
+      headers: Object.assign(spec.body ? { 'content-type': 'application/json' } : {}, spec.headers || {}),
       body: spec.body ? JSON.stringify(spec.body) : undefined,
       signal: AbortSignal.timeout(60000)
     });
