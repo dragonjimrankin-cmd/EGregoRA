@@ -1752,6 +1752,33 @@
   window.addEventListener("keydown", (e) => { if (e.key === "Escape") dropPlacing(); });
 
   /* Called by the Turning Shop: a transparent cut-out of the bench. */
+  /* A scan arrives from the camera as a cut-out with a transparent
+     background. It is put straight into the float, which is the pad's
+     movable selection: drag it, scroll to size it, turn or mirror it, and
+     press Enter when it belongs where it is. */
+  window.EGSketchFloat = (url) => {
+    const img = new Image();
+    if (!/^data:/.test(String(url))) img.crossOrigin = "anonymous";
+    img.onload = () => {
+      toggle(true);
+      const fit = Math.min((canvas.width * 0.55) / img.width,
+        (canvas.height * 0.55) / img.height, 2);
+      const w = Math.max(16, img.width * fit), h = Math.max(16, img.height * fit);
+      const cv = document.createElement("canvas");
+      cv.width = img.width; cv.height = img.height;
+      cv.getContext("2d").drawImage(img, 0, 0);
+      toFloat(cv, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+      const room = document.getElementById("draw-box");
+      if (room) room.scrollIntoView({ block: "start", behavior: "smooth" });
+      pad.scrollIntoView({ block: "center", behavior: "smooth" });
+      canvas.focus();
+      say("The scan is on the paper and held \u2014 drag it where you want it, scroll to size it, " +
+        "Enter to put it down.");
+    };
+    img.onerror = () => say("That scan could not be put on the paper.", true);
+    img.src = url;
+  };
+
   window.EGModelPlace = (url) => {
     const img = new Image();
     /* A picture handed straight over as data needs no CORS dance; one

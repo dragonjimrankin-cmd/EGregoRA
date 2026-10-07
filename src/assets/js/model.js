@@ -1935,6 +1935,213 @@ function start() {
      the same code that drew them there, and laid out in a row on the
      bench; the hand-over is cleared as it is read, so a reload does not
      place them twice. */
+  /* --- the scanner's harvest ----------------------------------------------
+     A spec from scan.js: one row of numbers per slice of the photograph,
+     saying how wide that slice is and (if a second view was taken) how deep.
+     Sweeping an ellipse down the two profiles gives a visual hull, and the
+     cut-out photograph is laid over the front of it by a flat projection,
+     which is the right projection because the photograph was taken flat on.
+
+     A face gets two extras: a deeper default section, because a head is
+     nearly as deep as it is wide, and a small push outward where the
+     photograph is bright, which puts a nose on it. */
+  function scanMesh(spec) {
+    const rows = spec.rows || [];
+    const n = rows.length;
+    if (n < 4) return null;
+    const SEG = 44;
+    const head = spec.kind === "head";
+    const H = head ? 2.6 : 3;
+    const W = H / Math.max(0.2, spec.aspect || 1.4);
+    const DEEP = head ? 1.1 : 0.78;
+    const BUMP = head ? 0.42 : 0;
+
+    const grid = spec.shading || null;
+    const lumAt = (u, v) => {
+      if (!grid || !grid.length) return 0;
+      const gy = Math.min(grid.length - 1, Math.max(0, Math.round(v * (grid.length - 1))));
+      const line = grid[gy];
+      const gx = Math.min(line.length - 1, Math.max(0, Math.round(u * (line.length - 1))));
+      return line[gx] || 0;
+    };
+
+    const pos = [], uv = [], idx = [];
+    for (let i = 0; i < n; i++) {
+      const cx = rows[i][0] * W;
+      const halfW = Math.max(0.004, rows[i][1] * W);
+      const halfD = Math.max(0.004, (spec.depth ? spec.depth[i] * W : rows[i][1] * W * DEEP));
+      const y = H * (1 - i / (n - 1));
+      const v = i / (n - 1);
+      for (let sgm = 0; sgm <= SEG; sgm++) {
+        const a = (sgm / SEG) * Math.PI * 2;
+        const x = cx + halfW * Math.cos(a);
+        let z = halfD * Math.sin(a);
+        if (BUMP && Math.sin(a) > 0) {
+          const u = Math.min(1, Math.max(0, (x / W) + 0.5));
+          z += lumAt(u, v) * BUMP * halfD * Math.sin(a);
+        }
+        pos.push(x, y, z);
+        uv.push(Math.min(1, Math.max(0, (x / W) + 0.5)), 1 - v);
+      }
+    }
+    const ring = SEG + 1;
+    for (let i = 0; i < n - 1; i++) {
+      for (let sgm = 0; sgm < SEG; sgm++) {
+        const a = i * ring + sgm, b = a + 1, c = a + ring, d = c + 1;
+        idx.push(a, c, b, b, c, d);
+      }
+    }
+    /* Caps, so the solid is closed and the OBJ writer is happy. */
+    const capAt = (i, up) => {
+      const centre = pos.length / 3;
+      let cx = 0, cy = 0, cz = 0;
+      for (let sgm = 0; sgm < SEG; sgm++) {
+        const k = (i * ring + sgm) * 3;
+        cx += pos[k]; cy += pos[k + 1]; cz += pos[k + 2];
+      }
+      pos.push(cx / SEG, cy / SEG, cz / SEG);
+      uv.push(0.5, up ? 1 : 0);
+      for (let sgm = 0; sgm < SEG; sgm++) {
+        const a = i * ring + sgm, b = a + 1;
+        if (up) idx.push(centre, a, b); else idx.push(centre, b, a);
+      }
+    };
+    capAt(0, true);
+    capAt(n - 1, false);
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(idx);
+    geo.computeVertexNormals();
+
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xffffff, roughness: 0.72, metalness: 0.04, side: THREE.DoubleSide
+    });
+    const mesh = new THREE.Mesh(geo, material);
+
+    /* The photograph itself. It arrives as a data URL, so there is no
+       network and no CORS to think about. */
+    if (spec.texture) {
+      const img = new Image();
+      img.onload = () => {
+        const tex = new THREE.Texture(img);
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.needsUpdate = true;
+        material.map = tex;
+        material.needsUpdate = true;
+      };
+      img.src = spec.texture;
+    }
+    return mesh;
+  }
+
+  window.EGScanToBench = (spec) => {
+    if (!spec) return;
+    const mesh = scanMesh(spec);
+    if (!mesh) { note("That scan had too little in it to carve.", true); return; }
+    remember();
+    const g = new THREE.Group();
+    g.add(mesh);
+    g.userData = {
+      kind: spec.name || (spec.kind === "head" ? "a scanned head" : "a scanned object"),
+      colour, finish, scanned: true
+    };
+    g.scale.setScalar(ARRIVE);
+    g.position.set((Math.random() - 0.5) * 2.5, 0, (Math.random() - 0.5) * 2.5);
+    pieces.add(g);
+    select(g);
+    showBench();
+    say("Placed: " + g.userData.kind +
+      (spec.guessedDepth ? ". There was only one view, so its depth is a guess from its width." : ".") +
+      " Drag it to move it.");
+  };
+
+  /* --- the lasso -----------------------------------------------------------
+     Shift-clicking pieces one at a time is fine for three and tiresome for
+     thirty. With the lasso on, a drag across the window draws a rectangle
+     and everything whose middle falls inside it is picked up together —
+     then the lasso turns itself off, because what you almost always want
+     next is to drag the handful you have just gathered. */
+  let lasso = false;
+  let lassoFrom = null;
+  const lassoBox = document.createElement("div");
+  lassoBox.className = "md-lasso";
+  lassoBox.hidden = true;
+  stage.appendChild(lassoBox);
+
+  const lassoBtn = document.getElementById("md-lasso");
+  const setLasso = (on_) => {
+    lasso = on_;
+    if (lassoBtn) {
+      lassoBtn.setAttribute("aria-pressed", String(lasso));
+      lassoBtn.classList.toggle("is-on", lasso);
+    }
+    stage.classList.toggle("is-lassoing", lasso);
+    if (lasso) say("Lasso: drag a box round the pieces you want. Hold Shift to add them to what is already picked up.");
+  };
+  if (lassoBtn) lassoBtn.addEventListener("click", () => setLasso(!lasso));
+
+  const screenOf = (obj) => {
+    const centre = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
+    centre.project(camera);
+    const r = renderer.domElement.getBoundingClientRect();
+    return {
+      x: r.left + (centre.x * 0.5 + 0.5) * r.width,
+      y: r.top + (-centre.y * 0.5 + 0.5) * r.height,
+      z: centre.z
+    };
+  };
+
+  renderer.domElement.addEventListener("pointerdown", (e) => {
+    if (!lasso || e.button !== 0) return;
+    e.stopPropagation();
+    e.preventDefault();
+    lassoFrom = { x: e.clientX, y: e.clientY, shift: e.shiftKey || e.metaKey };
+    lassoBox.hidden = false;
+    renderer.domElement.setPointerCapture(e.pointerId);
+  }, true);
+
+  renderer.domElement.addEventListener("pointermove", (e) => {
+    if (!lassoFrom) return;
+    e.stopPropagation();
+    const r = stage.getBoundingClientRect();
+    const x1 = Math.min(lassoFrom.x, e.clientX) - r.left;
+    const y1 = Math.min(lassoFrom.y, e.clientY) - r.top;
+    lassoBox.style.left = x1 + "px";
+    lassoBox.style.top = y1 + "px";
+    lassoBox.style.width = Math.abs(e.clientX - lassoFrom.x) + "px";
+    lassoBox.style.height = Math.abs(e.clientY - lassoFrom.y) + "px";
+  }, true);
+
+  const lassoEnd = (e) => {
+    if (!lassoFrom) return;
+    e.stopPropagation();
+    const x1 = Math.min(lassoFrom.x, e.clientX), x2 = Math.max(lassoFrom.x, e.clientX);
+    const y1 = Math.min(lassoFrom.y, e.clientY), y2 = Math.max(lassoFrom.y, e.clientY);
+    const keep = lassoFrom.shift ? picked.slice() : [];
+    lassoFrom = null;
+    lassoBox.hidden = true;
+
+    if (x2 - x1 < 6 && y2 - y1 < 6) { setLasso(false); return; }
+    const caught = pieces.children.filter((o) => {
+      const p = screenOf(o);
+      return p.z < 1 && p.x >= x1 && p.x <= x2 && p.y >= y1 && p.y <= y2;
+    });
+    picked = keep.slice();
+    caught.forEach((o) => { if (picked.indexOf(o) < 0) picked.push(o); });
+    chosen = picked.length ? picked[picked.length - 1] : null;
+    drawHalos();
+    if (sliders) sliders.hidden = !chosen;
+    if (chosen) load();
+    setLasso(false);
+    say(caught.length
+      ? "Lassoed " + caught.length + (caught.length === 1 ? " piece" : " pieces") +
+        ", " + picked.length + " held in all. Drag any of them and they all move."
+      : "Nothing was inside the box.");
+  };
+  renderer.domElement.addEventListener("pointerup", lassoEnd, true);
+
   (function collectRunes() {
     const specs = takeFromBench();
     if (!specs.length) return;

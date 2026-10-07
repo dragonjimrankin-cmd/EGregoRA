@@ -2259,3 +2259,55 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
   .atlas-stage-wrap { min-height: 320px; }
   .atlas-label.is-topic { display: none; }
 }
+
+/* ------------------------------------------------- The scanner and the lasso
+   The camera panel sits inside the Turning Shop as a drawer, so the bench is
+   not crowded by a camera nobody is using. The lasso is a plain rectangle
+   drawn over the stage while the pointer is down. */
+.scan-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  margin-top: 0.75rem;
+}
+.scan-video {
+  width: 100%;
+  max-height: 300px;
+  border: 1px solid rgba(215, 176, 90, 0.3);
+  border-radius: 3px;
+  background: #0b0a09;
+  object-fit: cover;
+}
+.scan-shots { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.scan-thumb {
+  width: 68px;
+  height: auto;
+  border: 1px solid rgba(215, 176, 90, 0.35);
+  border-radius: 2px;
+}
+.scan-steps { margin: 0; padding-left: 1.1rem; }
+.scan-step { margin-bottom: 0.5rem; color: #9f947a; }
+.scan-step.is-now { color: #f3ddaa; }
+.scan-step.is-done { color: #7fae7a; }
+.scan-preview {
+  display: block;
+  max-width: 100%;
+  margin: 0.6rem 0;
+  border: 1px solid rgba(215, 176, 90, 0.3);
+  border-radius: 3px;
+  background:
+    repeating-conic-gradient(rgba(255, 255, 255, 0.05) 0% 25%, transparent 0% 50%) 50% / 18px 18px;
+}
+.md-lasso {
+  position: absolute;
+  border: 1px dashed #d7b05a;
+  background: rgba(215, 176, 90, 0.12);
+  pointer-events: none;
+  z-index: 3;
+}
+.model-stage.is-lassoing { cursor: crosshair; }
+
+@media (max-width: 760px) {
+  .scan-grid { grid-template-columns: 1fr; }
+}

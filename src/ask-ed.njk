@@ -537,6 +537,49 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       <div class="model-stage" id="model-stage" role="img"
            aria-label="A three-dimensional workspace showing the model being built"></div>
 
+      <details class="scroll scan" id="scan-box">
+        <summary>Scan something real with the camera</summary>
+        <p class="muted small">Two photographs make a solid. The outline of the first gives the width of
+        every slice of the thing; the outline of the second, taken a quarter turn round, gives the depth of
+        the same slice. Sweep those two profiles together and you have a shape with the photograph wrapped
+        over the front of it. One photograph still works &mdash; the depth is then guessed from the width,
+        which is right for a mug and wrong for a book, and the page will say so. <strong>Nothing leaves
+        this page:</strong> the camera stream, the frames and the finished mesh are all made and kept in
+        your own browser.</p>
+
+        <div class="sketch-group" role="group" aria-label="What to scan">
+          <button class="tool" type="button" data-scan-mode="object" aria-pressed="true">An object</button>
+          <button class="tool" type="button" data-scan-mode="face" aria-pressed="false">Your face</button>
+        </div>
+
+        <div class="scan-grid">
+          <div>
+            <video id="scan-video" class="scan-video" playsinline muted hidden></video>
+            <div class="sketch-group">
+              <button class="btn btn--small" type="button" id="scan-start">Turn the camera on</button>
+              <button class="btn btn--small btn--ghost" type="button" id="scan-stop" hidden>Camera off</button>
+              <button class="btn btn--small" type="button" id="scan-capture" hidden>Take the photograph</button>
+              <button class="btn btn--small btn--ghost" type="button" id="scan-skip" hidden>Skip this one</button>
+            </div>
+            <p class="muted xsmall">No camera, or a better photograph already taken?
+              <input type="file" id="scan-file" accept="image/*" class="sound-file"></p>
+            <div class="scan-shots" id="scan-shots"></div>
+          </div>
+
+          <div>
+            <ol class="scan-steps" id="scan-steps"></ol>
+            <canvas id="scan-preview" class="scan-preview" width="300" height="300" hidden
+                    role="img" aria-label="The cut-out made from your photographs"></canvas>
+            <p class="auth-msg" id="scan-status"></p>
+            <div class="sketch-group" id="scan-done" hidden>
+              <button class="btn btn--small" type="button" id="scan-to-bench">Put it on the bench</button>
+              <button class="btn btn--small" type="button" id="scan-to-pad">Send it to the sketch pad</button>
+              <button class="btn btn--small btn--ghost" type="button" id="scan-redo">Start again</button>
+            </div>
+          </div>
+        </div>
+      </details>
+
       <div class="model-tools">
         <div class="sketch-group" role="group" aria-label="Add a solid">
           <button class="tool" type="button" id="md-book"
@@ -579,6 +622,7 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           <button class="tool" type="button" id="md-duplicate">Duplicate</button>
           <button class="tool" type="button" id="md-delete">Delete</button>
           <button class="tool" type="button" id="md-all">Select all</button>
+          <button class="tool" type="button" id="md-lasso" aria-pressed="false">Lasso several</button>
           <button class="tool" type="button" id="md-stitch">Stitch together</button>
           <button class="tool" type="button" id="md-unstitch">Unstitch</button>
           <button class="tool" type="button" id="md-split">Split by hand…</button>
@@ -739,7 +783,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       For the camera: <strong>right-drag</strong>, or Shift, or an empty selection turns the view;
       <strong>Alt&nbsp;+&nbsp;Shift</strong> walks it across the floor,
       <strong>Ctrl&nbsp;+&nbsp;Alt&nbsp;+&nbsp;Shift</strong> or the <strong>wheel</strong> walks it up
-      and down, and <strong>Ctrl&nbsp;+&nbsp;wheel</strong> comes closer. Shift-click picks up more than one piece;
+      and down, and <strong>Ctrl&nbsp;+&nbsp;wheel</strong> comes closer. Shift-click picks up more than one piece, and <strong>Lasso several</strong>
+      draws a box round a whole handful at once;
       <strong>Ctrl&nbsp;+&nbsp;Z</strong> and <strong>Ctrl&nbsp;+&nbsp;Y</strong> undo and redo.</p>
 
       <div class="ask-actions">
@@ -1006,3 +1051,4 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
 
 <script type="module" src="/assets/js/fox.js?v={{ build.id }}"></script>
 <script type="module" src="/assets/js/model.js?v={{ build.id }}"></script>
+<script type="module" src="/assets/js/scan.js?v={{ build.id }}"></script>

@@ -1296,5 +1296,357 @@ export function buildLibrary(THREE) {
     return g;
   });
 
+  /* ------------------------------------------------------------------ pipes
+     A pipe is the one shape a bench always wants and never has: a run of it,
+     a bend of the right angle, and a fitting to join them. Everything here
+     shares one bore so the pieces meet properly when they are stood end to
+     end — 0.42 outside, 0.3 inside — and every bend is swept from a torus so
+     the wall thickness carries round the corner instead of mitring. The long
+     runs are built from the same cylinder at different lengths, because that
+     is what a pipe rack actually is. */
+  const PIPE_R = 0.42;          /* outside radius */
+  const BORE = 0.3;             /* inside radius  */
+  const pipeMat = (c) => mat(c, { metalness: 0.65, roughness: 0.34 });
+
+  /* An open-ended tube: outer wall, inner wall, and a ring at each end so the
+     cut face reads as a wall thickness rather than a hole in the world. */
+  const TUBE = (g, m, len, x, y, z, rx, ry, rz, ro, ri) => {
+    const outer = ro || PIPE_R, inner = ri === undefined ? BORE : ri;
+    const hub = new THREE.Group();
+    hub.add(new THREE.Mesh(new THREE.CylinderGeometry(outer, outer, len, 24, 1, true), m));
+    hub.add(new THREE.Mesh(new THREE.CylinderGeometry(inner, inner, len, 24, 1, true), m));
+    [-1, 1].forEach((s) => {
+      const ring = new THREE.Mesh(new THREE.RingGeometry(inner, outer, 24), m);
+      ring.rotation.x = -Math.PI / 2 * s;
+      ring.position.y = (len / 2) * s;
+      hub.add(ring);
+    });
+    hub.position.set(x || 0, y || 0, z || 0);
+    hub.rotation.set(rx || 0, ry || 0, rz || 0);
+    g.add(hub);
+    return hub;
+  };
+
+  /* A swept bend of any angle, standing on its end, turning towards +Z. */
+  const BEND = (g, m, deg, radius) => {
+    const a = (deg * Math.PI) / 180;
+    const r = radius || 1.1;
+    const geo = new THREE.TorusGeometry(r, PIPE_R, 16, 40, a);
+    const t = put(g, geo, m, 0, 0, 0);
+    /* The torus is drawn in the XY plane from +X; stand it up so the first
+       mouth faces down and the second leans over by the angle asked for. */
+    t.rotation.set(Math.PI / 2, 0, 0);
+    t.position.set(-r, 0, 0);
+    return t;
+  };
+
+  const flange = (g, m, y, rot) => {
+    const f = put(g, new THREE.CylinderGeometry(0.72, 0.72, 0.12, 24), m, 0, y, 0, rot || 0);
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      put(g, CYL(0.07, 0.07, 0.2, 8), m, Math.cos(a) * 0.56, y, Math.sin(a) * 0.56, rot || 0);
+    }
+    return f;
+  };
+
+  [['short', 1.4], ['stub', 2.4], ['run', 4], ['long run', 6.5], ['mains', 9]].forEach(([name, len]) => {
+    entry('Pipes', 'pipe-' + name.replace(/\s+/g, '-'), 'Pipe \u2014 ' + name + ' (' + len + ')', (c) => {
+      const g = new THREE.Group();
+      TUBE(g, pipeMat(c), len, 0, len / 2, 0);
+      return g;
+    });
+  });
+
+  entry('Pipes', 'pipe-wide', 'Pipe \u2014 wide bore', (c) => {
+    const g = new THREE.Group();
+    TUBE(g, pipeMat(c), 4, 0, 2, 0, 0, 0, 0, 0.8, 0.62);
+    return g;
+  });
+  entry('Pipes', 'pipe-narrow', 'Pipe \u2014 narrow bore', (c) => {
+    const g = new THREE.Group();
+    TUBE(g, pipeMat(c), 4, 0, 2, 0, 0, 0, 0, 0.2, 0.12);
+    return g;
+  });
+  entry('Pipes', 'pipe-lying', 'Pipe \u2014 lying down', (c) => {
+    const g = new THREE.Group();
+    TUBE(g, pipeMat(c), 5, 0, 0.42, 0, Math.PI / 2, 0, 0);
+    return g;
+  });
+
+  [15, 22.5, 30, 45, 60, 90, 120, 135, 180].forEach((deg) => {
+    entry('Pipes', 'elbow-' + deg, 'Bend \u2014 ' + deg + '\u00b0', (c) => {
+      const g = new THREE.Group();
+      BEND(g, pipeMat(c), deg);
+      return g;
+    });
+  });
+  entry('Pipes', 'elbow-tight', 'Bend \u2014 90\u00b0, tight', (c) => {
+    const g = new THREE.Group();
+    BEND(g, pipeMat(c), 90, 0.62);
+    return g;
+  });
+  entry('Pipes', 'pipe-u', 'U-bend', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    BEND(g, m, 180, 0.9);
+    TUBE(g, m, 1.6, 0, -0.8, 0);
+    TUBE(g, m, 1.6, -1.8, -0.8, 0);
+    return g;
+  });
+  entry('Pipes', 'pipe-s', 'S-bend', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    const a = new THREE.Group(); BEND(a, m, 90, 0.9); g.add(a);
+    const b = new THREE.Group(); BEND(b, m, 90, 0.9);
+    b.rotation.y = Math.PI; b.position.set(-1.8, 0.9, 0.9); g.add(b);
+    return g;
+  });
+  entry('Pipes', 'pipe-tee', 'Tee', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 3, 0, 1.5, 0);
+    TUBE(g, m, 1.6, 0.8, 1.5, 0, 0, 0, Math.PI / 2);
+    return g;
+  });
+  entry('Pipes', 'pipe-cross', 'Cross', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 3, 0, 1.5, 0);
+    TUBE(g, m, 3, 0, 1.5, 0, 0, 0, Math.PI / 2);
+    return g;
+  });
+  entry('Pipes', 'pipe-wye', 'Wye branch', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 3, 0, 1.5, 0);
+    TUBE(g, m, 2, 0.6, 2.4, 0, 0, 0, -Math.PI / 4);
+    return g;
+  });
+  entry('Pipes', 'pipe-flanged', 'Pipe \u2014 flanged both ends', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 3.4, 0, 1.9, 0);
+    flange(g, m, 0.26); flange(g, m, 3.54);
+    return g;
+  });
+  entry('Pipes', 'pipe-valve', 'Valve', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 3, 0, 1.5, 0);
+    put(g, SPH(0.72), m, 0, 1.5, 0);
+    put(g, CYL(0.1, 0.1, 0.7, 10), m, 0.5, 2, 0, 0, 0, -Math.PI / 4);
+    put(g, TOR(0.42, 0.08, 24), m, 0.85, 2.35, 0, Math.PI / 4, 0, -Math.PI / 4);
+    return g;
+  });
+  entry('Pipes', 'pipe-reducer', 'Reducer', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 1.4, 0, 0.7, 0, 0, 0, 0, 0.8, 0.62);
+    put(g, CYL(0.42, 0.8, 0.9, 24), m, 0, 1.85, 0);
+    TUBE(g, m, 1.4, 0, 3, 0);
+    return g;
+  });
+  entry('Pipes', 'pipe-cap', 'End cap', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 1, 0, 0.5, 0);
+    put(g, new THREE.SphereGeometry(0.42, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2), m, 0, 1, 0);
+    return g;
+  });
+  entry('Pipes', 'pipe-bracket', 'Pipe on a bracket', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 6, 0, 2.4, 0, 0, 0, Math.PI / 2);
+    [-2, 0, 2].forEach((x) => {
+      put(g, BOX(0.16, 2.4, 0.16), m, x, 1.2, -0.5);
+      put(g, TOR(0.55, 0.08, 20), m, x, 2.4, 0, 0, Math.PI / 2);
+    });
+    return g;
+  });
+  entry('Pipes', 'pipe-rack', 'Pipe run \u2014 three high', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    [1, 2, 3].forEach((y) => TUBE(g, m, 7, 0, y, 0, 0, 0, Math.PI / 2));
+    [-3, 3].forEach((x) => put(g, BOX(0.2, 3.6, 0.2), m, x, 1.8, 0));
+    return g;
+  });
+  entry('Pipes', 'pipe-manifold', 'Manifold', (c) => {
+    const g = new THREE.Group(), m = pipeMat(c);
+    TUBE(g, m, 6, 0, 0.9, 0, 0, 0, Math.PI / 2);
+    [-2, -0.7, 0.7, 2].forEach((x) => TUBE(g, m, 2.2, x, 2, 0, 0, 0, 0, 0.28, 0.18));
+    return g;
+  });
+
+  /* --------------------------------------------------------- doors & gates
+     A door is a frame, a leaf and a way of knowing which side opens. Every
+     one of these stands on the floor with its sill at y = 0, so a door
+     dropped next to a wall meets it, and every leaf is hung slightly ajar
+     where it opens, because a shut door is a rectangle and tells you
+     nothing about what it is. */
+  const iron = (c) => mat(c, { metalness: 0.7, roughness: 0.42 });
+  const timber = (c) => mat(c, { roughness: 0.78, metalness: 0.05 });
+
+  /* The posts and lintel every opening shares. */
+  const doorFrame = (g, m, w, h, d) => {
+    const t = 0.26;
+    [-1, 1].forEach((s) => put(g, BOX(t, h, d), m, (s * (w + t)) / 2, h / 2, 0));
+    put(g, BOX(w + t * 2, t, d), m, 0, h + t / 2, 0);
+  };
+
+  const handle = (g, m, x, y, z) => {
+    put(g, SPH(0.1), m, x, y, z + 0.09);
+    put(g, CYL(0.05, 0.05, 0.1, 10), m, x, y, z + 0.05, Math.PI / 2);
+  };
+
+  entry('Doors & gates', 'door-panel', 'Door \u2014 panelled', (c) => {
+    const g = new THREE.Group(), m = timber(c);
+    doorFrame(g, m, 2, 4.2, 0.4);
+    const leaf = new THREE.Group();
+    put(leaf, BOX(1.9, 4.1, 0.14), m, 0, 2.05, 0);
+    [[0, 3], [0, 1.1]].forEach(([x, y]) => put(leaf, BOX(1.2, 1.4, 0.2), mat(c, { roughness: 0.9 }), x, y, 0));
+    handle(leaf, iron('#2a2a30'), 0.72, 2, 0.07);
+    leaf.position.x = -0.95;
+    leaf.rotation.y = -0.5;
+    leaf.children.forEach((ch) => { ch.position.x += 0.95; });
+    g.add(leaf);
+    return g;
+  });
+  entry('Doors & gates', 'door-arched', 'Door \u2014 arched', (c) => {
+    const g = new THREE.Group(), m = timber(c);
+    [-1, 1].forEach((s) => put(g, BOX(0.26, 3.2, 0.4), m, s * 1.13, 1.6, 0));
+    put(g, TOR(1.13, 0.17, 28), m, 0, 3.2, 0, 0, 0, 0);
+    const leaf = put(g, BOX(2, 3.1, 0.14), m, 0, 1.55, 0);
+    leaf.rotation.y = 0;
+    const top = put(g, new THREE.CylinderGeometry(1, 1, 0.14, 24, 1, false, 0, Math.PI), m, 0, 3.1, 0, Math.PI / 2, 0, 0);
+    top.rotation.set(Math.PI / 2, 0, 0);
+    handle(g, iron('#2a2a30'), 0.75, 1.6, 0.07);
+    for (let i = 0; i < 5; i++) put(g, CYL(0.07, 0.07, 0.04, 8), iron('#2a2a30'), -0.7, 0.6 + i * 0.6, 0.08, Math.PI / 2);
+    return g;
+  });
+  entry('Doors & gates', 'door-double', 'Doors \u2014 double, ajar', (c) => {
+    const g = new THREE.Group(), m = timber(c);
+    doorFrame(g, m, 4, 4.4, 0.4);
+    [-1, 1].forEach((s) => {
+      const leaf = new THREE.Group();
+      put(leaf, BOX(1.95, 4.3, 0.14), m, (s * 1.95) / 2, 2.15, 0);
+      handle(leaf, iron('#2a2a30'), s * 0.2, 2.1, 0.07);
+      leaf.position.x = s * 2;
+      leaf.rotation.y = s * 0.55;
+      g.add(leaf);
+    });
+    return g;
+  });
+  entry('Doors & gates', 'door-barn', 'Barn door \u2014 sliding', (c) => {
+    const g = new THREE.Group(), m = timber(c);
+    put(g, BOX(6, 0.16, 0.2), iron('#3a3a42'), 0, 4.5, -0.2);
+    const leaf = new THREE.Group();
+    put(leaf, BOX(2.8, 4.3, 0.16), m, 0, 2.15, 0);
+    put(leaf, BOX(3, 0.18, 0.2), m, 0, 4.1, 0.08);
+    put(leaf, BOX(3, 0.18, 0.2), m, 0, 0.3, 0.08);
+    put(leaf, BOX(0.18, 4.6, 0.2), m, 0, 2.2, 0.08, 0, 0, 0.62);
+    [-1, 1].forEach((s) => put(leaf, CYL(0.18, 0.18, 0.1, 14), iron('#3a3a42'), s * 1.1, 4.45, -0.1, Math.PI / 2));
+    leaf.position.x = -1;
+    g.add(leaf);
+    return g;
+  });
+  entry('Doors & gates', 'door-stable', 'Stable door', (c) => {
+    const g = new THREE.Group(), m = timber(c);
+    doorFrame(g, m, 2, 4.2, 0.4);
+    const top = put(g, BOX(1.9, 1.9, 0.14), m, -0.6, 3.1, 0.5, 0, -0.9, 0);
+    top.position.set(-1.6, 3.15, 0.7);
+    put(g, BOX(1.9, 2, 0.14), m, 0, 1.05, 0);
+    put(g, BOX(1.9, 0.18, 0.24), m, 0, 2.1, 0.06);
+    handle(g, iron('#2a2a30'), 0.7, 1.5, 0.07);
+    return g;
+  });
+  entry('Doors & gates', 'door-vault', 'Vault door', (c) => {
+    const g = new THREE.Group(), m = mat(c, { metalness: 0.85, roughness: 0.28 });
+    put(g, TOR(1.9, 0.3, 40), m, 0, 2.2, 0);
+    put(g, CYL(1.85, 1.85, 0.5, 40), m, 0, 2.2, 0, Math.PI / 2);
+    put(g, TOR(0.75, 0.12, 28), m, 0, 2.2, 0.32);
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2 + 0.4;
+      put(g, BOX(1.4, 0.14, 0.14), m, Math.cos(a) * 0.1, 2.2 + Math.sin(a) * 0.1, 0.34, 0, 0, a);
+    }
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      put(g, CYL(0.12, 0.12, 0.6, 10), m, Math.cos(a) * 1.85, 2.2 + Math.sin(a) * 1.85, 0, Math.PI / 2);
+    }
+    return g;
+  });
+  entry('Doors & gates', 'gate-five-bar', 'Five-bar field gate', (c) => {
+    const g = new THREE.Group(), m = timber(c);
+    put(g, BOX(0.24, 3.4, 0.24), m, -2.1, 1.7, 0);
+    put(g, BOX(0.24, 3.4, 0.24), m, 2.1, 1.7, 0);
+    for (let i = 0; i < 5; i++) put(g, BOX(4.2, 0.18, 0.14), m, 0, 0.6 + i * 0.6, 0);
+    put(g, BOX(4.9, 0.16, 0.12), m, 0, 1.8, 0.08, 0, 0, 0.6);
+    put(g, CYL(0.09, 0.09, 3.6, 10), iron('#2f2f36'), -2.35, 1.8, 0);
+    return g;
+  });
+  entry('Doors & gates', 'gate-iron', 'Wrought-iron gate', (c) => {
+    const g = new THREE.Group(), m = iron(c);
+    [-1, 1].forEach((s) => put(g, CYL(0.14, 0.16, 4.4, 14), m, s * 2.2, 2.2, 0));
+    [-1, 1].forEach((s) => put(g, SPH(0.22), m, s * 2.2, 4.5, 0));
+    for (let i = -3; i <= 3; i++) {
+      put(g, CYL(0.06, 0.06, 3.6, 10), m, i * 0.6, 1.8, 0);
+      put(g, CONE(0.11, 0.3, 10), m, i * 0.6, 3.75, 0);
+    }
+    [1.1, 3.3].forEach((y) => put(g, BOX(4.2, 0.12, 0.1), m, 0, y, 0));
+    for (let i = -1; i <= 1; i++) put(g, TOR(0.42, 0.05, 20), m, i * 1.2, 2.2, 0);
+    return g;
+  });
+  entry('Doors & gates', 'gate-garden', 'Garden gate', (c) => {
+    const g = new THREE.Group(), m = timber(c);
+    [-1, 1].forEach((s) => put(g, BOX(0.2, 2.6, 0.2), m, s * 1.3, 1.3, 0));
+    for (let i = -2; i <= 2; i++) {
+      const h = 2.1 - Math.abs(i) * 0.12;
+      put(g, BOX(0.18, h, 0.1), m, i * 0.5, h / 2 + 0.2, 0);
+      put(g, CONE(0.14, 0.2, 4), m, i * 0.5, h + 0.3, 0);
+    }
+    [0.7, 1.9].forEach((y) => put(g, BOX(2.4, 0.14, 0.1), m, 0, y, 0.05));
+    return g;
+  });
+  entry('Doors & gates', 'gate-portcullis', 'Portcullis', (c) => {
+    const g = new THREE.Group(), m = iron(c);
+    for (let i = -3; i <= 3; i++) put(g, BOX(0.18, 5, 0.18), m, i * 0.7, 2.7, 0);
+    for (let j = 0; j < 5; j++) put(g, BOX(4.6, 0.16, 0.16), m, 0, 0.8 + j * 1.1, 0);
+    for (let i = -3; i <= 3; i++) put(g, CONE(0.14, 0.4, 4), m, i * 0.7, 0, 0, Math.PI);
+    put(g, BOX(5.6, 0.5, 0.6), mat('#6b6459'), 0, 5.4, 0);
+    return g;
+  });
+  entry('Doors & gates', 'gate-torii', 'Torii gate', (c) => {
+    const g = new THREE.Group(), m = mat(c, { roughness: 0.6 });
+    [-1, 1].forEach((s) => put(g, CYL(0.22, 0.28, 4.4, 18), m, s * 1.9, 2.2, 0, 0, 0, -s * 0.03));
+    const top = put(g, BOX(5.6, 0.26, 0.5), m, 0, 4.7, 0);
+    top.rotation.z = 0;
+    put(g, BOX(6, 0.2, 0.4), m, 0, 4.95, 0);
+    put(g, BOX(4.4, 0.24, 0.34), m, 0, 3.9, 0);
+    put(g, BOX(0.3, 0.9, 0.3), m, 0, 4.3, 0);
+    return g;
+  });
+  entry('Doors & gates', 'gate-lych', 'Lych gate', (c) => {
+    const g = new THREE.Group(), m = timber(c);
+    [[-1.6, -1], [1.6, -1], [-1.6, 1], [1.6, 1]].forEach(([x, z]) => put(g, BOX(0.26, 3, 0.26), m, x, 1.5, z));
+    [-1, 1].forEach((s) => {
+      const r = put(g, BOX(3.8, 0.16, 2.4), mat('#6d5a46'), 0, 3.7, s * 0.72);
+      r.rotation.x = s * 0.5;
+    });
+    put(g, BOX(3.8, 0.2, 0.2), m, 0, 4.25, 0);
+    for (let i = -1; i <= 1; i++) put(g, BOX(0.14, 1.4, 0.1), m, i * 0.6, 0.7, 0);
+    put(g, BOX(2.2, 0.14, 0.1), m, 0, 1.3, 0);
+    return g;
+  });
+  entry('Doors & gates', 'gate-temple', 'Temple gate', (c) => {
+    const g = new THREE.Group(), m = mat(c, { roughness: 0.7 });
+    [-1, 1].forEach((s) => put(g, BOX(0.9, 5, 0.9), m, s * 2.4, 2.5, 0));
+    [-1, 1].forEach((s) => put(g, BOX(1.2, 0.3, 1.2), m, s * 2.4, 5.15, 0));
+    put(g, BOX(6.4, 0.5, 1), m, 0, 5.6, 0);
+    put(g, BOX(5.4, 0.4, 0.8), m, 0, 6.1, 0);
+    for (let i = -2; i <= 2; i++) put(g, CYL(0.1, 0.1, 0.5, 8), m, i * 0.8, 5.95, 0.5);
+    return g;
+  });
+  entry('Doors & gates', 'gate-sliding', 'Sliding yard gate', (c) => {
+    const g = new THREE.Group(), m = iron(c);
+    put(g, BOX(7, 0.2, 0.3), m, 0, 0.1, 0);
+    const leaf = new THREE.Group();
+    put(leaf, BOX(5, 0.18, 0.14), m, 0, 0.5, 0);
+    put(leaf, BOX(5, 0.18, 0.14), m, 0, 2.9, 0);
+    for (let i = -4; i <= 4; i++) put(leaf, BOX(0.12, 2.5, 0.12), m, i * 0.55, 1.7, 0);
+    put(leaf, BOX(5.1, 0.16, 0.1), m, 0, 1.7, 0.06, 0, 0, 0.46);
+    [-1, 1].forEach((s) => put(leaf, CYL(0.22, 0.22, 0.12, 14), m, s * 2, 0.22, 0, Math.PI / 2));
+    leaf.position.x = 1.2;
+    g.add(leaf);
+    return g;
+  });
+
   return library;
 }
