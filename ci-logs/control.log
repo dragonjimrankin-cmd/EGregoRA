@@ -1,29 +1,13 @@
-# control run — 2026-10-07T00:10:01.246Z
-site: https://egregora.hatchable.site   calls: 2
+# control run — 2026-10-07T00:14:43.817Z
+site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"status"}
-HTTP 200  (420 ms)
-{
-  "site": "https://egregora.hatchable.site",
-  "limbs": 11,
-  "corpus": 1344,
-  "questions": 18,
-  "jobs": {
-    "failed": 1,
-    "running": 5
-  },
-  "gpu_pool": [],
-  "token": "JIM1"
-}
-
---------------------------------------------------------------------
 POST {"action":"film","prompt":"A single candle flame guttering in a draught, close, dark background"}
-HTTP 503  (246 ms)
+HTTP 503  (277 ms)
 {
-  "error": "Every GPU the order can reach is busy — the Kaggle notebook is filming and no Colab account has a free runtime. Try again in a few minutes, or open colab/egregora-gpu.ipynb in another Google account to add one."
+  "error": "Every GPU the order can reach is busy — the Kaggle notebook has been working for 17 minutes and no Colab account has a free runtime. Either wait, or press “Use your own API” under this box and film it through your own fal.ai, Replicate, Luma or other account."
 }
 
 done.
