@@ -323,6 +323,12 @@ const chosen = ENGINE_ROUTE[String(opts.engine || 'sd35')];
         ? (p, o) => viaHuggingFace(p, Object.assign({ repo: chosen.repo }, o))
         : (p, o) => viaOpenSource(p, Object.assign({ model: chosen.model }, o));
     attempts.unshift(first);
+    /* If Stable Diffusion was asked for and Hugging Face will not serve it
+       on a free token, keep the brush in the family: SDXL-Turbo is Stability
+       AI's own model and runs keyless, so it tries before anything else. */
+    if (/^sd/.test(String(opts.engine || 'sd35')) && chosen.kind === 'hf') {
+      attempts.splice(1, 0, (p2, o2) => viaOpenSource(p2, Object.assign({ model: 'turbo' }, o2)));
+    }
   }
   let lastErr = '';
 

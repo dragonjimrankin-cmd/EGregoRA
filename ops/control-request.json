@@ -1,1 +1,1 @@
-{ "calls": [ { "action": "ask", "question": "Is the meaning of life 42 or chicken soup?" }, { "action": "draw", "prompt": "A bowl of chicken soup on an oak table, steam rising, winter light" } ] }
+{ "calls": [ { "action": "draw", "prompt": "A bowl of chicken soup on an oak table, steam rising, winter light" } ] }
