@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-07T06:29:48Z
+# Hatchable deploy — 2026-10-07T06:35:29Z
 
 token present: 43 chars, prefix hb_
 
@@ -45,8 +45,6 @@ hatchable.com/mcp -> HTTP 200
 ▸ dry_run_deploy
   {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."}],"would_deploy":{"public_files":66,"api
 ▸ openai key probe: HTTP 429 — You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.
-▸ vision probe pollinations [openai]: HTTP 400 — ERR "400 Bad Request"
-▸ vision probe pollinations-ref [openai-fast]: HTTP 400 — ERR "400 Bad Request"
 ▸ vision probe hf-router [Qwen/Qwen2.5-VL-7B-Instruct]: HTTP 401 — <!DOCTYPE html> <html class="" lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, ini
 ▸ vision probe openai [gpt-4o-mini]: HTTP 429 — ERR {"message":"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billin
 ▸ kaggle token: HTTP 200 — {"active":true,"username":"shakradragon","userId":36890995,"user_id":36890995,"scope":"resources.admin:*"}
@@ -57,14 +55,14 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 145,
+  "version": 146,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v144.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v145.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v145.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v146.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
   "files_deployed": 142,
   "functions_deployed": 19,
