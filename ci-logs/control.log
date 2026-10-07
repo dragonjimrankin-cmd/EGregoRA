@@ -1,25 +1,11 @@
-# control run — 2026-10-07T05:48:46.886Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-07T05:53:23.546Z
+site: https://egregora.hatchable.site   calls: 2
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"draw","prompt":"A single rowan branch heavy with red berries against a slate sky, cold October light"}
-HTTP 503  (1394 ms)
-{
-  "error": "The drawing failed: gateway internal/ai/fetch 412: No openai key configured for this project or account. Paste a key in the Setup page (the same key works for ai.generateText). Say so plainly rather than describing a picture that was never made."
-}
-
---------------------------------------------------------------------
-POST {"action":"workers"}
-HTTP 200  (99 ms)
-{
-  "workers": []
-}
-
---------------------------------------------------------------------
 POST {"action":"accounts"}
-HTTP 200  (314 ms)
+HTTP 200  (597 ms)
 {
   "pool": {
     "kaggle": [],
@@ -37,6 +23,13 @@ HTTP 200  (314 ms)
     "replicate": [],
     "openai": []
   }
+}
+
+--------------------------------------------------------------------
+POST {"action":"draw","prompt":"A single rowan branch heavy with red berries against a slate sky, cold October light"}
+HTTP 503  (490 ms)
+{
+  "error": "The drawing failed: gateway internal/ai/fetch 412: No openai key configured for this project or account. Paste a key in the Setup page (the same key works for ai.generateText). Say so plainly rather than describing a picture that was never made."
 }
 
 done.
