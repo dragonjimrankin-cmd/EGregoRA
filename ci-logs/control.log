@@ -1,44 +1,177 @@
-# control run — 2026-10-07T06:35:28.658Z
+# control run — 2026-10-07T06:40:29.599Z
 site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"plan","prompt":"A simple wooden bench with four legs and a back rest","ids":["table","chair","ladder"]}
-HTTP 400  (353 ms)
+POST {"action":"plan","prompt":"A simple wooden bench with four legs and a back rest, and a lantern standing beside it","ids":["table","chair","ladder","pipe-run","door-panel","gate-iron"]}
+HTTP 200  (6367 ms)
 {
-  "error": "Unknown action: plan",
-  "manual": {
-    "endpoint": "https://egregora.hatchable.site/api/control",
-    "auth": "Authorization: Bearer <token>",
-    "actions": {
-      "status": {},
-      "ask": {
-        "question": "string",
-        "history": "optional [{role,content}]"
-      },
-      "draw": {
-        "prompt": "string"
-      },
-      "chat-probe": "which keyless thinking routes answer from the server",
-      "film": {
-        "prompt": "string",
-        "aspect": "16:9 | 9:16",
-        "model": "see action: models"
-      },
-      "job": {
-        "id": "number from draw or film"
-      },
-      "mailbag": {
-        "limit": "optional 1-50"
-      },
-      "models": {},
-      "workers": {},
-      "accounts": {},
-      "whoami": {}
+  "name": "bench and lantern",
+  "note": "a simple wooden bench with a lantern",
+  "parts": [
+    {
+      "book": null,
+      "solid": "box",
+      "colour": "#8a6b40",
+      "p": [
+        0,
+        0.2,
+        0
+      ],
+      "r": [
+        0,
+        0,
+        0
+      ],
+      "s": [
+        1.6,
+        0.05,
+        0.9
+      ]
     },
-    "example": "curl -s https://egregora.hatchable.site/api/control -H \"authorization: Bearer <token>\" -H \"content-type: application/json\" -d '{\"action\":\"ask\",\"question\":\"Why 137.5 degrees?\"}'"
-  }
+    {
+      "book": null,
+      "solid": "box",
+      "colour": "#8a6b40",
+      "p": [
+        -0.7,
+        0.45,
+        0.4
+      ],
+      "r": [
+        0,
+        0,
+        0
+      ],
+      "s": [
+        0.05,
+        0.25,
+        0.05
+      ]
+    },
+    {
+      "book": null,
+      "solid": "box",
+      "colour": "#8a6b40",
+      "p": [
+        -0.7,
+        0.45,
+        -0.4
+      ],
+      "r": [
+        0,
+        0,
+        0
+      ],
+      "s": [
+        0.05,
+        0.25,
+        0.05
+      ]
+    },
+    {
+      "book": null,
+      "solid": "box",
+      "colour": "#8a6b40",
+      "p": [
+        0.7,
+        0.45,
+        0.4
+      ],
+      "r": [
+        0,
+        0,
+        0
+      ],
+      "s": [
+        0.05,
+        0.25,
+        0.05
+      ]
+    },
+    {
+      "book": null,
+      "solid": "box",
+      "colour": "#8a6b40",
+      "p": [
+        0.7,
+        0.45,
+        -0.4
+      ],
+      "r": [
+        0,
+        0,
+        0
+      ],
+      "s": [
+        0.05,
+        0.25,
+        0.05
+      ]
+    },
+    {
+      "book": null,
+      "solid": "box",
+      "colour": "#8a6b40",
+      "p": [
+        0,
+        0.7,
+        0
+      ],
+      "r": [
+        0,
+        0,
+        0
+      ],
+      "s": [
+        1.6,
+        0.05,
+        0.2
+      ]
+    },
+    {
+      "book": null,
+      "solid": "sphere",
+      "colour": "#ffff00",
+      "p": [
+        1.2,
+        0.5,
+        0
+      ],
+      "r": [
+        0,
+        0,
+        0
+      ],
+      "s": [
+        0.2,
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "book": null,
+      "solid": "cylinder",
+      "colour": "#aaaaaa",
+      "p": [
+        1.2,
+        0.1,
+        0
+      ],
+      "r": [
+        0,
+        0,
+        0
+      ],
+      "s": [
+        0.05,
+        0.4,
+        0.05
+      ]
+    }
+  ],
+  "by": "meta-llama/Llama-3.3-70B-Instruct"
 }
 
 done.
