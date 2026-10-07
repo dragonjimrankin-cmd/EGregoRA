@@ -3231,3 +3231,14 @@ body.only-check .frame { border: 0; padding: 0.2rem; }
 .hist { color: var(--gold);     fill: var(--gold); }
 .spec { color: var(--amethyst); fill: var(--amethyst); }
 .myth { color: var(--rose);     fill: var(--rose); }
+
+/* ---------------------------------------------------------------------------
+   The table of contents beneath the atlas. It is a reading list, not a menu:
+   the limbs are numbered as the canon numbers them, each carries its one-line
+   note, and the sections sit under the page they belong to.
+   ------------------------------------------------------------------------ */
+.toc-limbs { counter-reset: none; }
+.toc-limbs > li { margin-bottom: 0.9rem; }
+.toc-limbs > li > ul { margin-top: 0.3rem; }
+.toc-note { margin: 0.15rem 0 0.2rem; max-width: 62ch; }
+.toc-rooms li { margin-bottom: 0.3rem; }

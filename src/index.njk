@@ -100,12 +100,24 @@ description: EGregoRA — the house of enquiry co-founded by Edward Gregory and 
       </div>
     </div>
 
-    <details class="scroll mt-1">
-      <summary>The same map, written out as a list</summary>
-      <ul class="atlas-list">
+    <details class="scroll mt-1" id="contents">
+      <summary>The same map, written out &mdash; the table of contents</summary>
+
+      <p class="muted small">Everything the order publishes, in order: the eleven limbs with the
+      sub-limbs hung beneath them, every section of every page beneath those, and the rooms that
+      are not limbs. Each line goes straight to the thing it names. Nothing here is typed out by
+      hand &mdash; the limbs come from the canon and the sections are read out of the pages
+      themselves, so this list cannot drift out of step with the site.</p>
+
+      <p class="kicker">The eleven limbs</p>
+      <ol class="atlas-list toc-limbs">
         {%- for limb in atlasTree.limbs %}
         <li>
           <a href="{{ limb.href }}"><strong>Limb {{ limb.num }} &middot; {{ limb.title }}</strong></a>
+          {%- if not limb.page %}
+          <span class="muted xsmall">&mdash; no page of its own; kept at <a href="{{ limb.href }}">{{ limb.href }}</a></span>
+          {%- endif %}
+          <p class="muted xsmall toc-note">{{ limb.note }}</p>
           {%- if limb.subs.length or limb.topics.length %}
           <ul>
             {%- for sub in limb.subs %}
@@ -122,6 +134,20 @@ description: EGregoRA — the house of enquiry co-founded by Edward Gregory and 
           {%- endif %}
         </li>
         {%- endfor %}
+      </ol>
+
+      <p class="kicker">The rooms that are not limbs</p>
+      <ul class="atlas-list toc-rooms">
+        <li><a href="/">Introduction</a> &mdash; the creed, the ten standing questions, this atlas.</li>
+        <li><a href="/#moebius-seam">The Moebius Seam</a> &mdash; the band the cosmos strings its limbs on.</li>
+        <li><a href="/ask-ed/">Ask Ed</a> &mdash; the oracle, and Gink who reads its answers aloud.</li>
+        <li><a href="/infographics/">Infographics</a> &mdash; every plate drawn anywhere on the site, gathered in one place.</li>
+        <li><a href="/podcast/">Podcasts</a> &mdash; the spoken editions.</li>
+        <li><a href="/videos/">Videos</a> &mdash; the filmed ones.</li>
+        <li><a href="/live/">Live Cam</a> &mdash; the room when it is open.</li>
+        <li><a href="/products/">Products</a> &mdash; what the order makes with its hands.</li>
+        <li><a href="/join/">Join</a> &mdash; how to stand in it.</li>
+        <li><a href="/account/">Your Account</a> &mdash; your standing, once you have joined.</li>
       </ul>
     </details>
 
