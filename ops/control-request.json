@@ -1,5 +1,6 @@
 {"calls":[
- {"raw":{"path":"/api/live","body":{"action":"sky-name","stars":4,"shape":"a closed loop of 4 stars, much wider than tall, low on the horizon, spare"}}},
- {"raw":{"path":"/api/live","body":{"action":"sky-name","stars":10,"shape":"a closed loop of 10 stars, tall and narrow, high in the sky, rambling"}}},
- {"raw":{"path":"/api/live","body":{"action":"sky-name","stars":6,"shape":"a closed loop of 6 stars, roughly square, mid-sky"}}}
+ {"raw":{"path":"/api/freeai","body":{"action":"status"}}},
+ {"raw":{"path":"/api/freeai","body":{"action":"status","pass":"8===D"}}},
+ {"raw":{"path":"/api/freeai","body":{"action":"chat","pass":"8===D","system":"You are terse.","messages":[{"role":"user","content":"Name one tree sacred to druids. Two words maximum."}],"max_tokens":24}}},
+ {"raw":{"path":"/api/freeai","body":{"action":"probe","pass":"8===D","path":"/v1/models"}}}
 ]}
