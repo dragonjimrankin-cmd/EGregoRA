@@ -1903,6 +1903,36 @@
       rows.push("<p>Free. Nothing is holding the lock.</p>");
     }
 
+    rows.push("<h4>Every machine the order can reach</h4>");
+    if (d.gpus && d.gpus.length) {
+      rows.push("<table class=\"keeper-table keeper-gpus\"><thead><tr><th>Machine</th><th>Card</th>" +
+        "<th>State</th><th>Record</th><th></th></tr></thead><tbody>" +
+        d.gpus.map((g) =>
+          "<tr><td><strong>" + esc(g.kind) + "</strong> \u00b7 " + esc(g.label) +
+          (g.user ? " <span class=\"muted\">(" + esc(g.user) + ")</span>" : "") +
+          (g.caps ? "<br><span class=\"muted xsmall\">can do " + esc(g.caps) + "</span>" : "") +
+          "</td><td>" + esc(g.gpu || "\u2014") + "</td>" +
+          "<td class=\"" + (g.busy ? "is-busy" : "") + "\">" + esc(g.state) +
+          (g.stale ? " \u2014 <strong>stale</strong>" : "") +
+          (g.last_error ? "<br><span class=\"muted xsmall\">" + esc(g.last_error) + "</span>" : "") +
+          "</td><td class=\"muted xsmall\">" +
+          (g.successes || g.fails
+            ? esc(g.successes || 0) + " done, " + esc(g.fails || 0) + " refused"
+            : (g.jobs != null ? esc(g.jobs) + " job(s) taken" : "\u2014")) +
+          "</td><td>" +
+          (g.can_reset
+            ? '<button class="btn btn--small btn--ghost kp-reset" type="button" data-gpu="' +
+              esc(g.id) + '" title="' + esc(g.note || "") + '">Reset</button>'
+            : "") +
+          "</td></tr>").join("") + "</tbody></table>");
+      rows.push('<p><button class="btn btn--small btn--ghost" type="button" id="kp-reset-all">' +
+        "Reset every machine</button> <span class=\"muted xsmall\">Frees the Kaggle lock, cancels " +
+        "anything still marked live, clears the cooldowns and drops every Colab worker so each " +
+        "notebook re-registers.</span></p>");
+    } else {
+      rows.push("<p>No machine answered the census.</p>");
+    }
+
     rows.push("<h4>The Colab pool</h4>");
     if (d.workers && d.workers.length) {
       rows.push("<ul class=\"keeper-list\">" + d.workers.map((w) =>
@@ -1938,6 +1968,34 @@
 
     out.innerHTML = rows.join("");
     out.hidden = false;
+
+    out.querySelectorAll(".kp-reset").forEach((b) => b.addEventListener("click", async () => {
+      const id = b.getAttribute("data-gpu");
+      if (!window.confirm("Reset " + id + "? Anything running on it will be abandoned.")) return;
+      b.disabled = true;
+      try {
+        const r = await call("reset", { gpu: id });
+        say(r.message || "Reset.");
+        render(Object.assign(await call("open"), r.gpus ? { gpus: r.gpus } : {}));
+      } catch (err) {
+        say((err && err.message) || "It could not be reset.", true);
+        b.disabled = false;
+      }
+    }));
+
+    const all = document.getElementById("kp-reset-all");
+    if (all) all.addEventListener("click", async () => {
+      if (!window.confirm("Reset every machine the order can reach?")) return;
+      all.disabled = true;
+      try {
+        const r = await call("reset", { gpu: "all" });
+        say(r.message || "Reset.");
+        render(await call("open"));
+      } catch (err) {
+        say((err && err.message) || "They could not be reset.", true);
+        all.disabled = false;
+      }
+    });
 
     const free = document.getElementById("kp-free");
     if (free) free.addEventListener("click", async () => {

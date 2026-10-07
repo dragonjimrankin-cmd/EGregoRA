@@ -1935,6 +1935,134 @@ function start() {
      the same code that drew them there, and laid out in a row on the
      bench; the hand-over is cleared as it is read, so a reload does not
      place them twice. */
+  /* --- a model from a sentence --------------------------------------------
+     The server asks a model for a *plan* rather than a mesh: which pieces,
+     at what size, turned which way, standing where. The plan is then built
+     here out of the same primitives and the same pattern book a person
+     would have dragged into place, so what arrives can be moved, recoloured,
+     split, stitched and exported like anything else on the bench.
+
+     The plan speaks in metres and the shop's primitives are two units
+     across, so every part is scaled by the size asked for over the size the
+     geometry actually is. */
+  const DIM = {
+    box: [2, 2, 2],
+    sphere: [2.4, 2.4, 2.4],
+    cylinder: [2, 2.4, 2],
+    cone: [2.4, 2.6, 2.4],
+    torus: [3.24, 3.24, 0.84]
+  };
+  const RAD = Math.PI / 180;
+
+  function buildPlan(plan) {
+    const whole = new THREE.Group();
+    let made = 0;
+
+    (plan.parts || []).forEach((part) => {
+      let o = null;
+      let dim = null;
+
+      if (part.book) {
+        const item = LIBRARY.find((i) => i.id === part.book);
+        if (item) {
+          o = item.make(part.colour);
+          const bb = new THREE.Box3().setFromObject(o);
+          const size = bb.getSize(new THREE.Vector3());
+          /* A book piece is drawn at whatever size suited the drawer; stand
+             it on its own floor and scale it to the size the plan asked for. */
+          o.position.y -= bb.min.y;
+          dim = [Math.max(0.01, size.x), Math.max(0.01, size.y), Math.max(0.01, size.z)];
+        }
+      }
+      if (!o) {
+        const kind = part.solid && SHAPES[part.solid] ? part.solid : "box";
+        o = new THREE.Mesh(SHAPES[kind](), skin(part.colour, finish));
+        dim = DIM[kind] || DIM.box;
+        o.userData.solid = kind;
+      }
+
+      const holder = new THREE.Group();
+      o.scale.set(part.s[0] / dim[0], part.s[1] / dim[1], part.s[2] / dim[2]);
+      holder.add(o);
+      holder.position.set(part.p[0], part.p[1], part.p[2]);
+      holder.rotation.set(part.r[0] * RAD, part.r[1] * RAD, part.r[2] * RAD);
+      holder.userData = { kind: part.book || part.solid || "part", colour: part.colour, finish };
+      whole.add(holder);
+      made++;
+    });
+
+    if (!made) return null;
+
+    /* Centre it over the origin and stand it on the floor, so a plan that
+       drifted sideways still arrives in front of the camera. */
+    const bb = new THREE.Box3().setFromObject(whole);
+    const mid = bb.getCenter(new THREE.Vector3());
+    whole.children.forEach((c) => { c.position.x -= mid.x; c.position.z -= mid.z; c.position.y -= bb.min.y; });
+    return whole;
+  }
+
+  window.EGModelFromPlan = (plan) => {
+    if (!plan || !plan.parts || !plan.parts.length) return false;
+    const whole = buildPlan(plan);
+    if (!whole) return false;
+    remember();
+    whole.userData = {
+      kind: plan.name || "a written model",
+      colour, finish, stitched: true, written: true
+    };
+    whole.scale.setScalar(ARRIVE);
+    pieces.add(whole);
+    select(whole);
+    showBench();
+    say("Built: " + (plan.name || "a model") + " \u2014 " + plan.parts.length +
+      " parts, stitched into one piece. Unstitch takes it apart to work on the parts.");
+    return true;
+  };
+
+  /* The catalogue, so the server can tell the model what this shop can
+     actually build rather than guessing at names. */
+  window.EGModelCatalogue = () => LIBRARY.map((i) => i.id);
+
+  /* --- the written-model box ---------------------------------------------- */
+  (function writtenModels() {
+    const form = document.getElementById("md-write-form");
+    const box = document.getElementById("md-write");
+    const out = document.getElementById("md-write-msg");
+    if (!form || !box) return;
+    const tell = (t, bad) => {
+      if (!out) return;
+      out.textContent = t || "";
+      out.className = "auth-msg" + (bad ? " is-bad" : "");
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const want = box.value.trim();
+      if (want.length < 3) return tell("Say what to build.", true);
+      const go = document.getElementById("md-write-go");
+      if (go) go.disabled = true;
+      const job = window.EGWork ? window.EGWork.start("a model is being drawn up") : null;
+      tell("Drawing up a plan\u2026 this takes a few seconds.");
+      try {
+        const r = await fetch("/api/model3d", {
+          method: "POST",
+          headers: Object.assign({ "content-type": "application/json" },
+            window.EGAuthHeaders ? window.EGAuthHeaders() : {}),
+          body: JSON.stringify({ prompt: want, ids: window.EGModelCatalogue() })
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || "the plan could not be drawn up");
+        if (!window.EGModelFromPlan(data)) throw new Error("the plan came back empty");
+        tell((data.note || "Built.") + (data.by ? " \u2014 drawn up by " + data.by + "." : ""));
+      } catch (err) {
+        tell((err && err.message) || "That could not be built.", true);
+      } finally {
+        if (window.EGWork) window.EGWork.end(job);
+        if (go) go.disabled = false;
+      }
+    });
+  })();
+
   /* --- the scanner's harvest ----------------------------------------------
      A spec from scan.js: one row of numbers per slice of the photograph,
      saying how wide that slice is and (if a second view was taken) how deep.

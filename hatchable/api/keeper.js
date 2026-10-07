@@ -15,10 +15,17 @@
  *                                         of every GPU the order can reach
  *   { action: 'release', pass, id? }      free the Kaggle lock: one job by
  *                                         id, or whatever is holding it
+ *   { action: 'gpus',    pass }           every machine the order can reach,
+ *                                         one row each, with its state
+ *   { action: 'reset',   pass, gpu }      reset one machine by its id: a
+ *                                         Kaggle account's lock and stuck
+ *                                         jobs, or a Colab worker dropped
+ *                                         from the pool so it re-registers
  */
 import { db, config } from 'hatchable';
-import { gpuBusy, releaseGpu } from '../lib/kaggle.js';
-import { liveWorkers, sortByFree } from '../lib/colab.js';
+import { gpuBusy, releaseGpu, kaggleAccountList, whoAmI } from '../lib/kaggle.js';
+import { liveWorkers, sortByFree, retireWorker, colabSecret } from '../lib/colab.js';
+import { poolReport } from '../lib/pool.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -148,6 +155,142 @@ async function drawings(limit) {
   }
 }
 
+/* ------------------------------------------------------------- the machines
+ *
+ * Every GPU the order can reach, as one flat list the keeper can read down.
+ * A Kaggle account is a machine even when it is asleep, because its weekly
+ * quota and its lock are the things that go wrong; a Colab worker only
+ * exists while a notebook is running, so a worker that has stopped
+ * answering is shown as silent rather than quietly dropped.
+ */
+async function machines() {
+  const out = [];
+
+  const held = await gpuBusy();
+  let health = {};
+  try { health = await poolReport(); } catch { health = {}; }
+  const kHealth = new Map((health.kaggle || []).map((a) => [String(a.account), a]));
+
+  let accounts = [];
+  try { accounts = await kaggleAccountList(); } catch { accounts = []; }
+
+  for (const a of accounts) {
+    const label = a.label || a.id;
+    const h = kHealth.get(String(label)) || kHealth.get(String(a.id)) || {};
+    const mine = held && (!held.slug || !a.user || String(held.slug).startsWith(a.user + '/'));
+    /* Confirm the account is alive, cheaply, and name the user it belongs
+       to — a token that has been revoked looks exactly like a quiet one
+       until something asks. */
+    let user = a.user || null;
+    let reachable = null;
+    try {
+      const me = await whoAmI(a);
+      user = (me && (me.user || me.userName)) || user;
+      reachable = Boolean(me && !me.error);
+    } catch { reachable = false; }
+
+    out.push({
+      id: 'kaggle:' + (a.id || label),
+      kind: 'Kaggle',
+      label,
+      user,
+      gpu: 'Nvidia Tesla T4 (when the account is verified)',
+      state: !reachable ? 'token refused'
+        : mine && held ? 'busy \u2014 ' + (held.kind || 'a job') + ' since ' + when(held.started_at)
+          : (h.state || 'ready'),
+      busy: Boolean(mine && held),
+      stale: Boolean(mine && held && ago(held.started_at) > 2700),
+      fails: Number(h.fails) || 0,
+      successes: Number(h.successes) || 0,
+      last_error: h.last_error || null,
+      can_reset: true,
+      note: 'Resetting frees this account\u2019s lock and cancels anything still marked live.'
+    });
+  }
+
+  let live = [];
+  try { live = await liveWorkers(); } catch { live = []; }
+  let free = [], rest = live;
+  try { ({ free, rest } = await sortByFree(live, { timeout: 3500 })); } catch { /* keep the raw list */ }
+  const freeSet = new Set(free.map((w) => w.endpoint));
+
+  for (const w of live) {
+    out.push({
+      id: 'colab:' + w.endpoint,
+      kind: 'Colab',
+      label: w.label || w.account || 'a notebook',
+      user: w.account || null,
+      gpu: w.gpu || 'GPU',
+      state: freeSet.has(w.endpoint) ? 'free' : 'busy or silent',
+      busy: !freeSet.has(w.endpoint),
+      caps: w.caps || 'video',
+      jobs: w.jobs,
+      can_reset: true,
+      note: 'Resetting drops this worker from the pool. The notebook puts itself back within a minute if it is still running.'
+    });
+  }
+
+  if (!out.length) {
+    out.push({
+      id: 'none', kind: '\u2014', label: 'No machine is configured or awake',
+      gpu: '\u2014', state: 'nothing to show', busy: false, can_reset: false,
+      note: 'Paste a Kaggle token on the setup page, or run colab/egregora-gpu.ipynb in a Google account.'
+    });
+  }
+  return out;
+}
+
+/** Reset one machine, named by the id the census gave it. */
+async function resetMachine(id) {
+  const target = String(id || '');
+
+  if (target.startsWith('colab:')) {
+    const endpoint = target.slice(6);
+    try {
+      await retireWorker(endpoint);
+      return { ok: true, message: 'That worker is out of the pool. If its notebook is still running it ' +
+        'will register itself again within the minute.' };
+    } catch (err) {
+      return { ok: false, message: 'It could not be dropped: ' + ((err && err.message) || 'unknown') };
+    }
+  }
+
+  if (target.startsWith('kaggle:')) {
+    try {
+      const held = await gpuBusy();
+      if (held) await releaseGpu(held.slug, 'cancelled');
+      const { rows } = await db.query(
+        "UPDATE gpu_jobs SET status = 'cancelled', finished_at = NOW() " +
+        "WHERE status IN ('queued','running') RETURNING id");
+      /* A token on a cooldown after a run of failures is given its name
+         back, so a machine that has been fixed is tried again at once
+         rather than after the pool's own timer. */
+      await db.query("UPDATE provider_health SET fails = 0, cooldown_until = NULL WHERE provider = 'kaggle'")
+        .catch(() => {});
+      return {
+        ok: true,
+        message: 'Kaggle reset: the lock is free, ' + ((rows && rows.length) || 0) +
+          ' live job(s) cancelled, and the cooldown on the account cleared.'
+      };
+    } catch (err) {
+      return { ok: false, message: 'It could not be reset: ' + ((err && err.message) || 'unknown') };
+    }
+  }
+
+  if (target === 'all') {
+    const a = await resetMachine('kaggle:all');
+    let dropped = 0;
+    try {
+      const live = await liveWorkers();
+      for (const w of live) { await retireWorker(w.endpoint); dropped++; }
+    } catch { /* the pool may be empty */ }
+    return { ok: a.ok, message: a.message + ' ' + dropped + ' Colab worker(s) dropped.' };
+  }
+
+  return { ok: false, message: 'There is no machine with that name.' };
+}
+
+
 export default async function (req, res) {
   const body = req.body || {};
   const given = String(body.pass || '').trim();
@@ -181,6 +324,16 @@ export default async function (req, res) {
   await rightKey(who);
 
   const action = String(body.action || 'open');
+
+  if (action === 'gpus') {
+    return res.json({ ok: true, gpus: await machines(), secret_set: Boolean(await colabSecret()) });
+  }
+
+  if (action === 'reset') {
+    const out = await resetMachine(body.gpu);
+    const gpus = await machines();
+    return res.status(out.ok ? 200 : 500).json({ ok: out.ok, message: out.message, gpus });
+  }
 
   if (action === 'release') {
     const held = await gpuBusy();
@@ -228,6 +381,7 @@ export default async function (req, res) {
 
   res.json({
     ok: true,
+    gpus: await machines(),
     kaggle: held
       ? {
           held: true, kind: held.kind, slug: held.slug,

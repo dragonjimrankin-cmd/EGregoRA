@@ -2311,3 +2311,18 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 @media (max-width: 760px) {
   .scan-grid { grid-template-columns: 1fr; }
 }
+
+/* ----------------------------------------------- Models written into being
+   The text-to-model box sits under the bench, and the keeper's machine
+   census is a plain table with a reset on every row. */
+.write-model {
+  margin: 0.9rem 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(215, 176, 90, 0.24);
+  border-radius: 3px;
+  background: rgba(215, 176, 90, 0.04);
+}
+.write-model textarea { width: 100%; }
+.keeper-gpus td { vertical-align: top; }
+.keeper-gpus .is-busy { color: #c98b6a; }
+.keeper-gpus .btn { white-space: nowrap; }
