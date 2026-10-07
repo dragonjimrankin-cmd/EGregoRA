@@ -313,6 +313,7 @@ export function holdingCard(host, words) {
     skyEl("says").textContent = "Asking the order for a name\u2026";
     let name = "";
     let by = "";
+    let lexicon = false;
     try {
       const r = await fetch("/api/live", {
         method: "POST",
@@ -320,21 +321,23 @@ export function holdingCard(host, words) {
         body: JSON.stringify({ action: "sky-name", stars: joined.length, shape: shapeWords() })
       });
       const d = await r.json();
-      if (d && d.ok && d.name) { name = d.name; by = d.by || ""; }
+      if (d && d.ok && d.name) { name = d.name; by = d.by || ""; lexicon = d.lexicon === true; }
     } catch (err) {
       name = "";
     }
     if (!name) {
-      /* No model answered. The order keeps its own list for exactly this,
-         and says which it used rather than pretending. */
+      /* The naming endpoint could not be reached at all. The page keeps its
+         own list for exactly that, and says so rather than pretending. */
       name = NAMES[Math.floor(Math.random() * NAMES.length)];
-      by = "";
       skyEl("field").value = name;
-      settle(name, "No model answered, so this came from the order's own list. " +
-        "Press again for another, or type your own.");
+      settle(name, "The order could not be reached, so this came from the list this page " +
+        "carries. Press again for another, or type your own.");
     } else {
       skyEl("field").value = name;
-      settle(name, "Named by " + (by || "the order") + ". Press again for another.");
+      settle(name, lexicon
+        ? "Named from the order's own lexicon \u2014 no model has credit today. " +
+          "Press again for another, or type your own."
+        : "Named by " + (by || "the order") + ". Press again for another.");
     }
     btn.disabled = false;
     btn.textContent = was;

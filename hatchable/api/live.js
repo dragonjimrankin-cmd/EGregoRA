@@ -39,8 +39,7 @@
 import { ai, db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { requireStudio } from '../lib/accounts.js';
-import { openChat, HF_CHAT_URL, HF_CHAT_MODELS } from '../lib/openchat.js';
-import { storedHuggingFaceKey } from '../lib/key-store.js';
+import { openChat } from '../lib/openchat.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -133,11 +132,8 @@ export default async function (req, res) {
         'never grand, never Latin, never a real constellation, no quotation marks, no full stop, ' +
         'no explanation.';
 
-      let heard = '';
-      const trail = [];
       const tidy = (raw) => {
         let name = String(raw || '').trim();
-        if (name) heard = name.slice(0, 120);
         /* Models like to answer with a label, a preamble or a flourish. Take
            the last non-empty line, drop any "Name:" in front of it, and keep
            only the letters, spaces, hyphens and apostrophes a name can have. */
@@ -159,14 +155,11 @@ export default async function (req, res) {
         try {
           const out = await ai.generateText({
             model, system, messages: [{ role: 'user', content: ask }],
-            maxTokens: 32, temperature: 1,
-            purpose: 'constellation'
+            maxTokens: 32, temperature: 1, purpose: 'constellation'
           });
           const name = tidy(out && out.text);
           if (name) return res.json({ ok: true, name, by: (out && out.model) || model });
-          trail.push(model + ': ' + JSON.stringify(String((out && out.text) || '').slice(0, 60)));
         } catch (err) {
-          trail.push(model + ' threw: ' + ((err && err.message) || 'no reason'));
           console.error('live: sky-name ' + model + ' failed', err && err.message);
         }
       }
@@ -176,43 +169,45 @@ export default async function (req, res) {
         });
         const name = tidy(out && out.text);
         if (name) return res.json({ ok: true, name, by: (out && out.model) || 'open weights' });
-        trail.push('open: ' + JSON.stringify(String((out && out.text) || '').slice(0, 60)));
       } catch (err) {
-        trail.push('open threw: ' + ((err && err.message) || 'no reason'));
         console.error('live: sky-name open route failed', err && err.message);
       }
-      /* Last route: the order's own Hugging Face token, called directly, so
-         that a refusal from that side is reported rather than swallowed. */
-      const hf = storedHuggingFaceKey();
-      if (hf) {
-        for (const model of HF_CHAT_MODELS) {
-          try {
-            const r = await fetch(HF_CHAT_URL, {
-              method: 'POST',
-              headers: { 'content-type': 'application/json', authorization: 'Bearer ' + hf },
-              body: JSON.stringify({
-                model,
-                messages: [{ role: 'system', content: system }, { role: 'user', content: ask }],
-                max_tokens: 32, temperature: 1
-              })
-            });
-            if (!r.ok) {
-              trail.push('hf ' + model + ': HTTP ' + r.status + ' ' + (await r.text()).slice(0, 90));
-              continue;
-            }
-            const data = await r.json();
-            const said = data && data.choices && data.choices[0] && data.choices[0].message &&
-              data.choices[0].message.content;
-            const name = tidy(said);
-            if (name) return res.json({ ok: true, name, by: model });
-            trail.push('hf ' + model + ': ' + JSON.stringify(String(said || '').slice(0, 60)));
-          } catch (err) {
-            trail.push('hf ' + model + ' threw: ' + ((err && err.message) || 'no reason'));
-          }
-        }
-      }
 
-      return res.json({ ok: false, reason: 'no model would name it', heard, trail });
+      /* Every model route is a bill somebody has to pay, and on the day this
+         was written all three said so: Anthropic out of credit, no OpenAI
+         key, Hugging Face inference credits spent. A dead button would be
+         the wrong answer to that, so the order names the figure itself,
+         from its own vocabulary, shaped by what was actually drawn. The
+         model chain above stays first in the queue: the moment a key has
+         credit again this falls back to being the fallback. */
+      const pick = (list) => list[Math.floor(Math.random() * list.length)];
+      const wide = /wider than tall/.test(shape);
+      const tall = /tall and narrow/.test(shape);
+      const high = /high in the sky/.test(shape);
+      const low = /low on the horizon/.test(shape);
+
+      const size = stars >= 9 ? ['Greater', 'Rambling', 'Long', 'Unfinished']
+        : stars <= 4 ? ['Lesser', 'Spare', 'Little', 'Quiet'] : ['Middling', 'Plain', 'Second'];
+      const lean = wide ? ['Flattened', 'Reclining', 'Spilled', 'Low-Slung']
+        : tall ? ['Upright', 'Standing', 'Tall', 'Leaning'] : ['Turning', 'Folded', 'Even'];
+      const where = high ? ['High', 'Upper', 'Overhead'] : low ? ['Sunken', 'Setting', 'Low'] : [];
+      const nouns = [
+        'Kettle', 'Lamp', 'Fox', 'Compass', 'Vowel', 'Druid', 'Limb', 'Argument', 'Rune',
+        'Thought', 'Cup', 'Proof', 'Lantern', 'Hare', 'Ladle', 'Yew', 'Ferryman', 'Candle',
+        'Hinge', 'Shepherd', 'Bellows', 'Acorn', 'Orchard', 'Wren', 'Anvil', 'Thimble',
+        'Heron', 'Scribe', 'Beekeeper', 'Milestone', 'Weathervane', 'Spindle'
+      ];
+      const mood = [
+        'Patient', 'Unlit', 'Broken', 'Sleeping', 'Borrowed', 'Upturned', 'Slow', 'Honest',
+        'Doubtful', 'Half-Mended', 'Stubborn', 'Reluctant', 'Watchful', 'Forgetful', 'Tidy'
+      ];
+
+      const shapes = [size, lean, where].filter((l) => l.length);
+      const first = pick(shapes[Math.floor(Math.random() * shapes.length)]);
+      const name = Math.random() < 0.45
+        ? 'The ' + first + ' ' + pick(nouns)
+        : 'The ' + pick(mood) + ' ' + pick(nouns);
+      return res.json({ ok: true, name, by: "the order's own lexicon", lexicon: true });
     }
 
     if (action === 'join' || action === 'pull') {
