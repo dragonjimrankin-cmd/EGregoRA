@@ -1,35 +1,71 @@
-# control run — 2026-10-07T00:58:34.765Z
+# control run — 2026-10-07T01:03:36.490Z
 site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"chat-probe"}
-HTTP 200  (2119 ms)
+HTTP 200  (3237 ms)
 {
   "probe": [
     {
-      "route": "pollinations POST, anonymous, openai-fast",
+      "route": "pollinations GET with a referrer named",
       "status": 500,
-      "ms": 1172,
+      "ms": 822,
       "said": "{\"error\":\"ENOSPC: no space left on device, write\",\"status\":500,\"deprecation_notice\":\"NOTE: The Pollinations legacy text API is being deprecated for authenticated users. Please migrate to https://enter.pollinations.ai for better performance and access to all the latest models. Anonymous requests to t"
+    },
+    {
+      "route": "pollinations POST with a referrer in the body",
+      "status": 402,
+      "ms": 694,
+      "said": "{}"
+    },
+    {
+      "route": "hack club ai, v1 path",
+      "status": 404,
+      "ms": 152,
+      "said": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"text-scale\" content=\"scale\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"../../favicon.svg\" />\n    <link rel=\"icon\" type=\"image/png\""
+    },
+    {
+      "route": "duckduckgo duckchat, token step",
+      "status": 200,
+      "ms": 47,
+      "said": "{\"status\":\"0\",\"secondaryStatus\":\"0\",\"statusV2\":0,\"grant\":null}"
+    },
+    {
+      "route": "openrouter free model with no key",
+      "status": 401,
+      "ms": 35,
+      "said": "{\"error\":{\"message\":\"No cookie auth credentials found\",\"code\":401}}"
+    },
+    {
+      "route": "github models with no token",
+      "status": 502,
+      "ms": 14,
+      "said": "{\"code\":\"proxy_error\",\"error\":\"fetch failed | Request was cancelled. | Proxy response (502) !== 200 when HTTP Tunneling\"}"
+    },
+    {
+      "route": "pollinations POST, anonymous, openai-fast",
+      "status": 402,
+      "ms": 658,
+      "said": "{}"
     },
     {
       "route": "pollinations GET, anonymous, openai-fast",
       "status": 402,
-      "ms": 247,
+      "ms": 264,
       "said": "{}"
     },
     {
       "route": "pollinations GET, anonymous, no model named",
       "status": 402,
-      "ms": 241,
+      "ms": 250,
       "said": "{}"
     },
     {
       "route": "pollinations models list",
       "status": 200,
-      "ms": 108,
+      "ms": 105,
       "said": "[{\"name\":\"openai-fast\",\"description\":\"GPT-OSS 20B Reasoning LLM (OVH)\",\"reasoning\":true,\"tier\":\"anonymous\",\"community\":false,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"openai\",\"gpt-oss\",\"gpt-oss-20b\",\"ovh-reasoning\"],\"vision\":false,\"audio\":false}]"
     }
   ]
