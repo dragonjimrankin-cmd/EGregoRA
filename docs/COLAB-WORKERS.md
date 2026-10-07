@@ -124,6 +124,19 @@ Hugging Face was asked the same question in the same run: its router has no
 text-to-video route at all (404 on every model tried), so the order's Hugging
 Face token buys pictures and thinking but not film.
 
+**Asked again on the Shakra account, naming the card outright.** The order's
+Kaggle token belongs to `shakradragon` (confirmed by `oauth2/introspect`), so
+that account *is* the one the site already uses for GPU work — `KNOWN_USER`
+in `hatchable/lib/kaggle.js`. The probe was re-run against it with
+`enableGpu: true` **and** `machineShape: "NvidiaTeslaT4"` so there could be no
+ambiguity about what was being asked for. Kernel
+`shakradragon/egregora-gpu-check-muxk3kn9` was accepted, ran, and reported
+`torch 2.11.0+cpu`, `cuda_available: false`, no `nvidia-smi`. The account
+choice is not the blocker; the entitlement is. Kaggle grants accelerators only
+to phone-verified accounts, at kaggle.com/settings → Phone verification.
+Once that is done nothing needs changing in the code: the same probe will come
+back with a T4 and the video and image routes will start landing on it.
+
 **The single highest-value human action, therefore, is not Colab — it is
 phone-verifying `shakradragon` on Kaggle.** It takes under a minute, and once
 it is done the order can drive the whole thing through the API without anyone
