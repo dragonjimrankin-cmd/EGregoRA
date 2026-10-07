@@ -1,49 +1,21 @@
-# control run — 2026-10-07T08:59:44.146Z
-site: https://egregora.hatchable.site   calls: 4
+# control run — 2026-10-07T09:04:01.976Z
+site: https://egregora.hatchable.site   calls: 2
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
+POST /api/live  {"action":"close","pass":"8===D","id":1}
+HTTP 200  (239 ms)
+{
+  "ok": true
+}
+
+--------------------------------------------------------------------
 POST /api/live  {"action":"list"}
-HTTP 200  (229 ms)
+HTTP 200  (108 ms)
 {
   "ok": true,
   "feeds": []
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"open","pass":"8===D","title":"A probe feed, opened and closed by the control run","word":"oakmoon"}
-HTTP 200  (109 ms)
-{
-  "ok": true,
-  "id": 1,
-  "started": "2026-10-07T08:59:44.819046+00:00"
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"mine","pass":"8===D"}
-HTTP 200  (87 ms)
-{
-  "ok": true,
-  "feeds": [
-    {
-      "id": 1,
-      "title": "A probe feed, opened and closed by the control run",
-      "state": "live",
-      "watchers": 0,
-      "segments": 0,
-      "since": "2026-10-07T08:59:44.819046+00:00",
-      "until": null
-    }
-  ]
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"join","id":1,"word":"wrong"}
-HTTP 401  (50 ms)
-{
-  "error": "The studio is for members. Sign in or create an account at /join/, then come back.",
-  "gate": "signin"
 }
 
 done.
