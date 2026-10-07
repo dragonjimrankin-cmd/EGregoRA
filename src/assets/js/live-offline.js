@@ -53,8 +53,28 @@ export function holdingCard(host, words) {
 
   const cap = document.createElement("p");
   cap.className = "holding-cap muted xsmall";
-  cap.textContent = "Press three stars or more to draw a constellation. It will be named for you.";
+  cap.textContent = "Press three stars or more to draw a constellation. Press the first one again to close the loop.";
   host.appendChild(cap);
+
+  /* The naming box. It only appears once a loop has been closed, so it is
+     built now and kept out of the way until then. */
+  const box = document.createElement("div");
+  box.className = "sky-name";
+  box.hidden = true;
+  box.innerHTML =
+    '<p class="sky-name-head">Name your constellation</p>' +
+    '<p class="muted xsmall" data-sky="says">You closed the loop. It is yours to name.</p>' +
+    '<div class="sky-name-row">' +
+    '<label class="sr-only" for="sky-name-field">The name</label>' +
+    '<input type="text" id="sky-name-field" data-sky="field" maxlength="40" ' +
+    'placeholder="The Lesser Kettle" autocomplete="off">' +
+    '<button type="button" class="btn btn--small" data-sky="keep">Name it</button>' +
+    '<button type="button" class="btn btn--small btn--ghost" data-sky="regen">' +
+    "Let the order name it</button>" +
+    '<button type="button" class="btn btn--small btn--ghost" data-sky="again">Start again</button>' +
+    "</div>";
+  host.appendChild(box);
+  const skyEl = (n) => box.querySelector('[data-sky="' + n + '"]');
 
   const c = canvas.getContext("2d");
   let W = 0;
@@ -62,6 +82,7 @@ export function holdingCard(host, words) {
   let stars = [];
   let joined = [];
   let named = "";
+  let closed = false;
   let fade = 0;
   let t = 0;
   let alive = true;
@@ -149,9 +170,16 @@ export function holdingCard(host, words) {
       c.beginPath();
       c.moveTo(joined[0].x, joined[0].y);
       for (let i = 1; i < joined.length; i++) c.lineTo(joined[i].x, joined[i].y);
-      c.strokeStyle = "rgba(215,176,90," + (0.3 + 0.35 * Math.sin(t * 2)).toFixed(2) + ")";
-      c.lineWidth = 1.2;
+      if (closed) c.closePath();
+      c.strokeStyle = closed
+        ? "rgba(127,174,122," + (0.45 + 0.3 * Math.sin(t * 2)).toFixed(2) + ")"
+        : "rgba(215,176,90," + (0.3 + 0.35 * Math.sin(t * 2)).toFixed(2) + ")";
+      c.lineWidth = closed ? 1.6 : 1.2;
       c.stroke();
+      if (closed) {
+        c.fillStyle = "rgba(127,174,122,0.07)";
+        c.fill();
+      }
     }
 
     sigil(W / 2, H * 0.47, Math.min(W, H) * 0.19, t * 0.08);
@@ -193,7 +221,50 @@ export function holdingCard(host, words) {
     requestAnimationFrame(draw);
   }
 
+  /* How the figure looks, in words, so that whatever names it has something
+     to go on besides a count. */
+  function shapeWords() {
+    if (joined.length < 3) return "";
+    const xs = joined.map((s) => s.x);
+    const ys = joined.map((s) => s.y);
+    const w = Math.max.apply(null, xs) - Math.min.apply(null, xs);
+    const h = Math.max.apply(null, ys) - Math.min.apply(null, ys);
+    const mid = ys.reduce((a, b) => a + b, 0) / ys.length;
+    const bits = ["a closed loop of " + joined.length + " stars"];
+    if (w > h * 1.6) bits.push("much wider than tall");
+    else if (h > w * 1.6) bits.push("tall and narrow");
+    else bits.push("roughly square");
+    bits.push(mid < H * 0.4 ? "high in the sky" : mid > H * 0.6 ? "low on the horizon" : "mid-sky");
+    if (joined.length >= 7) bits.push("rambling");
+    else if (joined.length <= 4) bits.push("spare");
+    return bits.join(", ");
+  }
+
+  function sweepSky(words) {
+    joined.forEach((s) => { s.lit = false; });
+    joined = [];
+    named = "";
+    closed = false;
+    box.hidden = true;
+    if (skyEl("field")) skyEl("field").value = "";
+    cap.textContent = words ||
+      "Press three stars or more to draw a constellation. Press the first one again to close the loop.";
+  }
+
+  function closeLoop() {
+    closed = true;
+    named = "";
+    fade = 0;
+    box.hidden = false;
+    skyEl("says").textContent = "A closed figure of " + joined.length +
+      " stars. Give it a name, or ask the order for one.";
+    cap.textContent = "The loop is closed. Name it below.";
+    const field = skyEl("field");
+    if (field) { field.value = ""; field.focus(); }
+  }
+
   function press(x, y) {
+    if (closed) return;
     let near = null;
     let best = 26;
     stars.forEach((s) => {
@@ -201,23 +272,75 @@ export function holdingCard(host, words) {
       if (d < best) { best = d; near = s; }
     });
     if (!near) return;
+    /* Pressing the first star again closes the figure \u2014 the one gesture
+       everyone tries, and now the one that matters. */
+    if (near === joined[0] && joined.length >= 3) { closeLoop(); return; }
     if (near.lit) return;
     near.lit = true;
     joined.push(near);
     if (joined.length === 3) {
-      named = NAMES[Math.floor(Math.random() * NAMES.length)];
-      fade = 0;
-      cap.textContent = "You have drawn " + named + ". Keep going, or let it fade.";
+      cap.textContent = "Three stars. Press the first one again to close the loop, or keep going.";
     } else if (joined.length > 3) {
-      cap.textContent = named + ", now of " + joined.length + " stars.";
+      cap.textContent = joined.length + " stars. Close the loop on the first one when it looks right.";
     }
     if (joined.length > 11) {
-      joined.forEach((s) => { s.lit = false; });
-      joined = [];
-      named = "";
-      cap.textContent = "Eleven stars is a limb's worth. The sky has been swept; start again.";
+      sweepSky("Eleven stars is a limb's worth. The sky has been swept; start again.");
     }
   }
+
+  /* ---------------------------------------------------------- the naming */
+  function settle(name, how) {
+    named = name;
+    fade = 0;
+    skyEl("says").textContent = how || ("Named " + name + ".");
+    cap.textContent = name + " \u2014 " + joined.length + " stars, closed.";
+  }
+
+  if (skyEl("keep")) skyEl("keep").addEventListener("click", () => {
+    const want = (skyEl("field").value || "").trim().slice(0, 40);
+    if (!want) {
+      skyEl("says").textContent = "Type a name, or let the order find one.";
+      return;
+    }
+    settle(want, "Named by you. It will hold until the sky is swept.");
+  });
+
+  if (skyEl("regen")) skyEl("regen").addEventListener("click", async () => {
+    const btn = skyEl("regen");
+    btn.disabled = true;
+    const was = btn.textContent;
+    btn.textContent = "Consulting\u2026";
+    skyEl("says").textContent = "Asking the order for a name\u2026";
+    let name = "";
+    let by = "";
+    try {
+      const r = await fetch("/api/live", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "sky-name", stars: joined.length, shape: shapeWords() })
+      });
+      const d = await r.json();
+      if (d && d.ok && d.name) { name = d.name; by = d.by || ""; }
+    } catch (err) {
+      name = "";
+    }
+    if (!name) {
+      /* No model answered. The order keeps its own list for exactly this,
+         and says which it used rather than pretending. */
+      name = NAMES[Math.floor(Math.random() * NAMES.length)];
+      by = "";
+      skyEl("field").value = name;
+      settle(name, "No model answered, so this came from the order's own list. " +
+        "Press again for another, or type your own.");
+    } else {
+      skyEl("field").value = name;
+      settle(name, "Named by " + (by || "the order") + ". Press again for another.");
+    }
+    btn.disabled = false;
+    btn.textContent = was;
+  });
+
+  if (skyEl("again")) skyEl("again").addEventListener("click", () => sweepSky());
 
   canvas.addEventListener("pointerdown", (e) => {
     const r = canvas.getBoundingClientRect();

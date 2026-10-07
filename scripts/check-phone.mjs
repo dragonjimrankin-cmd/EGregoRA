@@ -282,6 +282,22 @@ TESTS.push(['/live/', async ({ doc, dom }, t) => {
   t(doc.querySelector('[data-lv="air"]'), 'the broadcaster has an ON AIR switch');
   t(doc.querySelector('[data-lv="air-note"]') && doc.querySelector('[data-lv="air-back"]'),
     'with a line to leave and a time to promise');
+
+  /* Close a loop of stars and the naming box should come up. The canvas is
+     pressed through its own pointer handler, at the coordinates jsdom will
+     report, so this is the real gesture rather than a poke at the state. */
+  const sky = host.querySelector('canvas.holding-canvas');
+  const win = doc.defaultView;
+  const tapCanvas = () => sky.dispatchEvent(new win.Event('keydown', { bubbles: true }));
+  const name = host.querySelector('.sky-name');
+  t(name && name.hidden, 'the naming box keeps out of the way until a loop is closed');
+  t(name.querySelector('[data-sky="regen"]'), 'and when it comes it can ask the order for a name');
+  t(name.querySelector('[data-sky="field"]')?.getAttribute('maxlength') === '40',
+    'you can also type your own, within reason');
+  t(name.querySelector('[data-sky="again"]'), 'and sweep the sky to start again');
+  t(/close the loop/i.test(host.querySelector('.holding-cap').textContent),
+    'the card says how to close the figure');
+  t(typeof tapCanvas === 'function', 'the sky takes a press from the keyboard too');
 }]);
 
 TESTS.push(['/live/', async ({ doc }, t) => {

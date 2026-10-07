@@ -19,6 +19,7 @@
  *   { action: 'close',  pass, id }                   end it
  *   { action: 'mine',   pass }                       the broadcaster's view
  *   { action: 'list' }                               what is live, titles only
+ *   { action: 'sky-name', stars, shape }             name a drawn constellation
  *   { action: 'air',    pass, on, note?, back_at? }  on air, or off
  *   { action: 'join',   id, word }                   members: may I watch?
  *   { action: 'pull',   id, word, since }            the next segments
@@ -35,9 +36,10 @@
  *   { action: 'tapes',  pass }                       the archive, as folders
  *   { action: 'tape-drop', pass, tape }              burn one
  */
-import { db, storage } from 'hatchable';
+import { ai, db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { requireStudio } from '../lib/accounts.js';
+import { openChat } from '../lib/openchat.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -113,6 +115,54 @@ export default async function (req, res) {
           watchers: r.watchers || 0
         }))
       });
+    }
+
+    /* The off-air sky: a visitor has closed a loop of stars and wants the
+       order to name it. Public, tiny, and never a blocker \u2014 if no model
+       answers, the page has its own list of names and uses that instead. */
+    if (action === 'sky-name') {
+      const stars = Math.max(3, Math.min(40, Number(body.stars) || 3));
+      const shape = clean(body.shape, 200);
+      const ask = 'A visitor to an order of natural philosophy has joined ' + stars +
+        ' stars into a closed figure on an off-air holding card. The figure is ' +
+        (shape || 'an irregular closed loop') + '. Name that constellation.';
+      const system = 'You name constellations for EGregoRA, an order of natural enquiry. ' +
+        'Reply with the name alone: two to four words, beginning with "The", in the manner of ' +
+        '"The Lesser Kettle", "The Unlit Lamp", "The Patient Fox" \u2014 homely, slightly wry, ' +
+        'never grand, never Latin, never a real constellation, no quotation marks, no full stop, ' +
+        'no explanation.';
+
+      const tidy = (raw) => {
+        let name = String(raw || '').split('\n')[0].replace(/["'*.]+/g, ' ').trim();
+        name = name.replace(/\s+/g, ' ').slice(0, 40).trim();
+        if (!/^[A-Za-z][A-Za-z '-]+$/.test(name)) return '';
+        if (name.split(' ').length > 5) return '';
+        if (!/^the\b/i.test(name)) name = 'The ' + name;
+        return name.replace(/\b([a-z])/g, (m, c) => c.toUpperCase());
+      };
+
+      for (const model of ['flash', 'haiku', 'gpt-4o']) {
+        try {
+          const out = await ai.generateText({
+            model, system, messages: [{ role: 'user', content: ask }],
+            maxTokens: 24, temperature: 1.1, purpose: 'constellation'
+          });
+          const name = tidy(out && out.text);
+          if (name) return res.json({ ok: true, name, by: (out && out.model) || model });
+        } catch (err) {
+          console.error('live: sky-name ' + model + ' failed', err && err.message);
+        }
+      }
+      try {
+        const out = await openChat({
+          system, messages: [{ role: 'user', content: ask }], maxTokens: 24, temperature: 1.1
+        });
+        const name = tidy(out && out.text);
+        if (name) return res.json({ ok: true, name, by: (out && out.model) || 'open weights' });
+      } catch (err) {
+        console.error('live: sky-name open route failed', err && err.message);
+      }
+      return res.json({ ok: false, reason: 'no model would name it' });
     }
 
     if (action === 'join' || action === 'pull') {

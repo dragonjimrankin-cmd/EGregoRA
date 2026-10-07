@@ -3180,3 +3180,22 @@ body.only-check .frame { border: 0; padding: 0.2rem; }
   .cell-table { font-size: 0.86rem; }
   .cell-table th, .cell-table td { padding: 0.35rem 0.4rem; }
 }
+
+/* The naming box on the off-air card — only once a loop has been closed. */
+.sky-name {
+  border: 1px solid rgba(127, 174, 122, 0.45);
+  background: rgba(127, 174, 122, 0.07);
+  border-radius: 3px; padding: 0.7rem 0.8rem; margin: 0.5rem 0 0;
+}
+.sky-name-head {
+  font-family: Cinzel, serif; color: #7fae7a; font-size: 0.86rem;
+  letter-spacing: 0.1em; margin: 0 0 0.25rem;
+}
+.sky-name-row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.5rem; }
+.sky-name-row input[type="text"] {
+  flex: 1 1 12rem; min-width: 0; font-family: 'EB Garamond', serif; font-size: 1rem;
+}
+@media (max-width: 600px) {
+  .sky-name-row { flex-direction: column; align-items: stretch; }
+  .sky-name-row input[type="text"] { font-size: 16px; }
+}
