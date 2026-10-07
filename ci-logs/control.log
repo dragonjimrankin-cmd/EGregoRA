@@ -1,53 +1,38 @@
-# control run — 2026-10-07T00:54:54.521Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-07T00:58:34.765Z
+site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"chat-probe"}
-HTTP 200  (2197 ms)
+HTTP 200  (2119 ms)
 {
   "probe": [
     {
       "route": "pollinations POST, anonymous, openai-fast",
       "status": 500,
-      "ms": 1304,
+      "ms": 1172,
       "said": "{\"error\":\"ENOSPC: no space left on device, write\",\"status\":500,\"deprecation_notice\":\"NOTE: The Pollinations legacy text API is being deprecated for authenticated users. Please migrate to https://enter.pollinations.ai for better performance and access to all the latest models. Anonymous requests to t"
     },
     {
       "route": "pollinations GET, anonymous, openai-fast",
       "status": 402,
-      "ms": 234,
+      "ms": 247,
       "said": "{}"
     },
     {
       "route": "pollinations GET, anonymous, no model named",
       "status": 402,
-      "ms": 234,
+      "ms": 241,
       "said": "{}"
     },
     {
       "route": "pollinations models list",
       "status": 200,
-      "ms": 98,
+      "ms": 108,
       "said": "[{\"name\":\"openai-fast\",\"description\":\"GPT-OSS 20B Reasoning LLM (OVH)\",\"reasoning\":true,\"tier\":\"anonymous\",\"community\":false,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"openai\",\"gpt-oss\",\"gpt-oss-20b\",\"ovh-reasoning\"],\"vision\":false,\"audio\":false}]"
     }
   ]
-}
-
---------------------------------------------------------------------
-POST {"action":"workers"}
-HTTP 200  (102 ms)
-{
-  "workers": []
-}
-
---------------------------------------------------------------------
-POST {"action":"ask","question":"In plain words: what did Bell's theorem actually prove, and what does it not prove?"}
-HTTP 200  (21507 ms)
-{
-  "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
-  "source": "none"
 }
 
 done.
