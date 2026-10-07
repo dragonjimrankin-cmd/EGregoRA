@@ -1,0 +1,728 @@
+---
+layout: layouts/base.njk
+title: Astronomy
+permalink: /astronomy/
+description: "The survey of the sky, drawn properly: an interactive map from a London street to the edge of the Local Group, the spectral classes, how stars live and end, the kinds of solar system, the Hubble sequence, and the four classes of black hole."
+---
+
+<section class="page-head">
+  <p class="kicker">Limb I &middot; i &mdash; a sub-limb of Cosmic Physics</p>
+  <h1>Astronomy: The Survey of the Sky</h1>
+  <p class="lede muted">The oldest science and the only one whose laboratory cannot be entered. Everything
+  on this page was worked out by sitting still, looking up, and being extremely careful about light.</p>
+</section>
+
+<!-- ============================== THE PREMISE ============================= -->
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">Begin Here</p>
+    <h2 id="t-the-discipline-of-looking-up">The Discipline of Looking Up</h2>
+    <p class="lede">Astronomy is the order's oldest limb and its strictest. It is where the mystical and the
+    measurable have the longest shared border, and where the border is best policed.</p>
+
+    <p>No astronomer has ever touched a star. Everything known about the composition, the mass, the age,
+    the motion and the fate of every object beyond the solar system was extracted from light that arrived
+    here on its own, was split into a spectrum, and was counted. That this works at all is one of the
+    genuinely astonishing facts about the universe: matter everywhere emits and absorbs at the same
+    frequencies as matter here, so a dark line in a star's spectrum names an element across ten billion
+    years and ten billion light years. <span class="sci">&#9670;</span> established science.</p>
+
+    <p>The order keeps astronomy and astrology in separate rooms on purpose. <a href="/astrology/">Astrology</a>
+    is studied here as a symbolic technology with a real history and no predictive power over the physical;
+    astronomy is the measurement. Both are honest work; confusing them is not.</p>
+
+    <p class="muted small">Grading throughout: <span class="sci">&#9670; established science</span> &middot;
+    <span class="hist">&#9670; scholarship and history</span> &middot;
+    <span class="spec">&#9670; speculative and contested</span> &middot;
+    <span class="myth">&#9670; myth, tradition and primary esoteric text</span>.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- =============================== THE MAP ================================ -->
+<section class="wrap reveal" id="ladder">
+  <div class="page-head tight">
+    <p class="kicker">The Instrument</p>
+    <h2 id="t-the-ladder-of-scale">The Ladder of Scale</h2>
+    <p class="lede muted">One map, seventeen rungs, nineteen powers of ten: from twenty kilometres of
+    London to the far side of the Local Group. Drag it, wheel it, or use the slider; the arrow keys work
+    once the map has focus.</p>
+  </div>
+
+  <div class="frame sky">
+    <div class="sky-grid">
+      <div id="sky-stage" class="sky-stage" role="img"
+           aria-label="A logarithmic map of the observable neighbourhood: concentric rings from the city of London out to the edge of the Local Group of galaxies"
+           aria-describedby="sky-status"></div>
+
+      <div class="sky-side">
+        <p class="kicker" id="sky-read">Across the view</p>
+        <div class="sky-where" id="sky-where"></div>
+        <label class="sky-label" for="sky-slider">Zoom &mdash; in at the left, out at the right</label>
+        <input type="range" id="sky-slider" min="4" max="24" step="0.01" value="24"
+               aria-label="Zoom the map of the universe">
+        <div class="sky-tools" role="group" aria-label="Jump to a scale">
+          <button type="button" class="btn btn--small btn--ghost" data-sky="4.65">London</button>
+          <button type="button" class="btn btn--small btn--ghost" data-sky="7.2">Earth</button>
+          <button type="button" class="btn btn--small btn--ghost" data-sky="11.5">Our Star</button>
+          <button type="button" class="btn btn--small btn--ghost" data-sky="13.0">The Planets</button>
+          <button type="button" class="btn btn--small btn--ghost" data-sky="17.0">Nearest Stars</button>
+          <button type="button" class="btn btn--small btn--ghost" data-sky="21.0">The Milky Way</button>
+          <button type="button" class="btn btn--small btn--ghost" data-sky="23.3">The Local Group</button>
+        </div>
+        <p class="sky-status muted small" id="sky-status" role="status"></p>
+      </div>
+    </div>
+
+    <p class="muted xsmall mt-1"><strong>How it cheats, and why.</strong> Screen radius is the logarithm of
+    real radius: one ring out is ten times further, not ten pixels further. Drawn truthfully, with the Earth
+    one pixel across, the Local Group would be sixteen billion pixels wide. Every distance quoted in the
+    readout and in the ladder below is real; only the spacing on the glass is compressed.
+    <span class="sci">&#9670;</span> established science, logarithmically drawn.</p>
+  </div>
+
+  <div class="wrap narrow mt-2">
+    <h3 id="t-the-ladder-written-out">The Ladder, Written Out</h3>
+    <p class="muted small">The same seventeen rungs in plain numbers &mdash; and the list is live: click a
+    rung and the map goes there.</p>
+    <ol class="rungs">
+      <li><button type="button" class="rung" data-rung><strong>London, England</strong> &mdash; 20 km radius. Light crosses it in 70 microseconds.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>Britain</strong> &mdash; 1,000 km end to end.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The Earth</strong> &mdash; 6,371 km mean radius; 40,075 km round the equator.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The Moon's orbit</strong> &mdash; 384,400 km. 1.3 light seconds. Receding 3.8 cm a year.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>One astronomical unit</strong> &mdash; 149,597,870,700 m exactly. 8 minutes 20 seconds of sunlight.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>Neptune's orbit</strong> &mdash; 30.1 AU, 4.5 billion km, one circuit every 165 years.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The heliopause</strong> &mdash; 121 AU. Crossed by Voyager 1 in August 2012.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The Oort cloud</strong> &mdash; a comet shell from a few thousand to ~100,000 AU; the Sun's grip ends near 2 light years.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>Proxima Centauri</strong> &mdash; 4.25 light years. A red dwarf with a temperate-zone planet.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The nearest stars</strong> &mdash; 10 parsecs, 32.6 light years, some 400 stars, mostly red dwarfs.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The Local Bubble</strong> &mdash; a supernova-blown cavity ~1,000 light years across.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The Orion Arm</strong> &mdash; our spur: 3,500 light years wide, 10,000 long.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The Milky Way</strong> &mdash; a barred spiral ~100,000 light years across; the Sun orbits in 230 million years.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The Magellanic Clouds</strong> &mdash; satellites at 160,000 and 200,000 light years.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>Andromeda</strong> &mdash; M31 at 2.5 million light years, closing at 110 km/s.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The Local Group</strong> &mdash; 80-odd galaxies inside ~5 million light years, gravitationally bound.</button></li>
+      <li><button type="button" class="rung" data-rung><strong>The edge of the Local Group</strong> &mdash; and beyond it Sculptor and M81 at 12 million light years, Virgo at 54 million.</button></li>
+    </ol>
+    <p class="muted xsmall">Beyond this map the observable universe runs to a co-moving radius of 46.5
+    billion light years &mdash; larger than its 13.8-billion-year age because space expanded while the light
+    was in transit. <span class="sci">&#9670;</span> established science.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================== THE STARS =============================== -->
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">Limb I &middot; i &mdash; First Subject</p>
+    <h2 id="t-what-a-star-is-and-which-kinds-there-are">What a Star Is, and Which Kinds There Are</h2>
+    <p class="lede muted">A star is a ball of plasma in which gravity pulling in and radiation pushing out
+    have agreed to a truce. The whole of stellar astronomy is the study of how that truce is kept, and how
+    it ends.</p>
+  </div>
+
+  <figure id="fig-hr" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The Hertzsprung&ndash;Russell Diagram
+      <span class="sci">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 560 330" role="img" aria-label="A Hertzsprung-Russell diagram: temperature falling to the right, luminosity rising upward, with the main sequence running diagonally, giants above right and white dwarfs below left">
+        <g stroke="#d7b05a" stroke-width="0.8" opacity="0.5" fill="none">
+          <path d="M70 290 H520"/>
+          <path d="M70 290 V30"/>
+        </g>
+        <g font-family="Cinzel, serif" font-size="10" fill="#cbbb93" letter-spacing="2">
+          <text x="295" y="318" text-anchor="middle">SURFACE TEMPERATURE &#8212; HOTTER TO THE LEFT</text>
+          <text x="26" y="160" text-anchor="middle" transform="rotate(-90 26 160)">LUMINOSITY</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="10" fill="#9f947a" text-anchor="middle">
+          <text x="100" y="304">O 30,000K</text>
+          <text x="170" y="304">B</text>
+          <text x="240" y="304">A</text>
+          <text x="310" y="304">F</text>
+          <text x="370" y="304">G 5,800K</text>
+          <text x="440" y="304">K</text>
+          <text x="505" y="304">M 3,000K</text>
+        </g>
+        <path d="M95 60 C180 110 280 170 370 210 C430 236 480 255 515 268"
+              fill="none" stroke="#f3ddaa" stroke-width="10" stroke-linecap="round" opacity="0.22"/>
+        <path d="M95 60 C180 110 280 170 370 210 C430 236 480 255 515 268"
+              fill="none" stroke="#f3ddaa" stroke-width="1.6"/>
+        <g fill="#c98b6a" opacity="0.85">
+          <ellipse cx="455" cy="105" rx="58" ry="30"/>
+        </g>
+        <g fill="#8fb6d8" opacity="0.8">
+          <ellipse cx="175" cy="248" rx="42" ry="18"/>
+        </g>
+        <circle cx="370" cy="210" r="5" fill="#d7b05a"/>
+        <g font-family="EB Garamond, serif" font-size="11" fill="#f3ddaa">
+          <text x="300" y="150">The Main Sequence</text>
+          <text x="455" y="109" text-anchor="middle" fill="#0e0c0a">RED GIANTS</text>
+          <text x="175" y="252" text-anchor="middle" fill="#0e0c0a">WHITE DWARFS</text>
+          <text x="382" y="214">the Sun</text>
+          <text x="455" y="58" text-anchor="middle" fill="#c98b6a">supergiants &#8212; Betelgeuse, Antares</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">Plot a hundred thousand stars by temperature and brightness and they do not
+    scatter: ninety per cent of them fall on one diagonal band. That band is not a kind of star, it is a
+    <em>stage</em> &mdash; every star fusing hydrogen in its core sits on it, and leaves it when the
+    hydrogen runs out. Hertzsprung and Russell found this independently, 1911 and 1913, and it remains the
+    single most useful diagram in astronomy. <span class="sci">&#9670;</span> established science.</p>
+  </figure>
+
+  <div class="grid two">
+    <article class="frame card reveal">
+      <p class="tag">Spectral Classes <span class="sci">&#9670;</span></p>
+      <h3>O, B, A, F, G, K, M</h3>
+      <p>The sequence is by surface temperature, from roughly 40,000 K down to 2,400 K, and it is an accident
+      of history that the letters are not alphabetical: Annie Jump Cannon reordered Pickering's hydrogen-line
+      classes at Harvard around 1901 when it became clear that temperature, not hydrogen strength, was the
+      real variable.</p>
+      <ul class="tight">
+        <li><strong>O</strong> &mdash; blue, 30,000 K and up, a hundred thousand times the Sun's output, dead within a few million years. Perhaps one star in three million.</li>
+        <li><strong>B</strong> &mdash; blue-white; Rigel, Spica.</li>
+        <li><strong>A</strong> &mdash; white; Sirius, Vega, Deneb.</li>
+        <li><strong>F</strong> &mdash; yellow-white; Procyon, Polaris.</li>
+        <li><strong>G</strong> &mdash; yellow; the Sun, 5,772 K, Alpha Centauri A. About 7% of stars.</li>
+        <li><strong>K</strong> &mdash; orange; Arcturus, Epsilon Eridani. Long-lived and increasingly the favourite place to look for life.</li>
+        <li><strong>M</strong> &mdash; red dwarfs, under 3,700 K; <em>three quarters of every star in the galaxy</em>, and not one of them visible to the naked eye.</li>
+      </ul>
+      <p class="muted small">Below M run the brown dwarfs &mdash; classes L, T and Y &mdash; which never
+      reached the 0.08 solar masses needed to fuse hydrogen. A Y dwarf can be cooler than a cup of tea.
+      <span class="sci">&#9670;</span></p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">Lives <span class="sci">&#9670;</span></p>
+      <h3>How Long a Star Gets</h3>
+      <p>Lifetime goes roughly as mass divided by luminosity, and luminosity goes as something near the
+      3.5th power of mass. The arithmetic is merciless: doubling the mass of a star cuts its life by a
+      factor of about ten.</p>
+      <ul class="tight">
+        <li>A 60-solar-mass O star: three million years.</li>
+        <li>The Sun, one solar mass: ten billion years, of which 4.6 are gone.</li>
+        <li>A 0.1-solar-mass red dwarf: trillions of years &mdash; longer than the present age of the universe by two orders of magnitude, so <em>not one has ever died</em>.</li>
+      </ul>
+      <p>That last fact has a consequence worth sitting with. The universe is 13.8 billion years old and the
+      most common kind of star in it is still in its infancy. If life is a thing that takes time, the
+      universe has barely started. <span class="spec">&#9670;</span> speculative and contested &mdash; a
+      reasonable inference, not a result.</p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">Ends <span class="sci">&#9670;</span></p>
+      <h3>Three Doors Out</h3>
+      <p>What a star leaves behind is set almost entirely by the mass of its core when fusion stops.</p>
+      <ul class="tight">
+        <li><strong>Under ~8 solar masses</strong> &mdash; it swells to a red giant, sheds its outer layers as a planetary nebula (named by Herschel, nothing to do with planets) and leaves a <strong>white dwarf</strong>: a carbon-oxygen cinder the size of the Earth, held up by electron degeneracy pressure, cooling for the rest of time. Limit 1.4 solar masses, Chandrasekhar, 1930 &mdash; worked out at nineteen, on the boat to England.</li>
+        <li><strong>8 to ~25 solar masses</strong> &mdash; core collapse, a type II supernova, and a <strong>neutron star</strong>: 1.4 to 2.2 solar masses inside a ball 20 km across, spinning up to 716 times a second. A sugar cube of it weighs as much as a mountain.</li>
+        <li><strong>Above that</strong> &mdash; nothing stops the collapse. A <strong>black hole</strong>, treated in its own section below.</li>
+      </ul>
+      <p class="muted small">Every atom in you heavier than helium was made inside one of these objects or
+      in the collision of two of them. That is not a metaphor; it is nucleosynthesis.
+      <span class="sci">&#9670;</span></p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">Variables and Pairs <span class="sci">&#9670;</span></p>
+      <h3>Stars That Change, and Stars in Company</h3>
+      <p>Most stars are not alone. Something like half of Sun-like stars are in binaries or higher
+      multiples, and the figure rises with mass; among O stars, nearly all.</p>
+      <ul class="tight">
+        <li><strong>Cepheid variables</strong> pulse with a period set by their luminosity &mdash; Henrietta Swan Leavitt, 1908, from 1,777 variables in the Magellanic Clouds. This is the rung of the distance ladder that let Hubble measure Andromeda and end the Great Debate.</li>
+        <li><strong>RR Lyrae</strong> stars do the same job for older populations.</li>
+        <li><strong>Eclipsing binaries</strong> give masses and radii directly, which is where the whole mass scale is anchored.</li>
+        <li><strong>Novae</strong> are a white dwarf stealing hydrogen from a companion until the stolen layer detonates. The dwarf survives and does it again.</li>
+        <li><strong>Type Ia supernovae</strong> are the same theft taken to the Chandrasekhar limit. They go off at nearly the same brightness every time, which makes them standard candles &mdash; and which is how the acceleration of the expansion was found in 1998.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================ SOLAR SYSTEMS ============================= -->
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">Second Subject</p>
+    <h2 id="t-solar-systems-ours-and-the-others">Solar Systems, Ours and the Others</h2>
+    <p class="lede muted">For the whole of human history we had one example. Since 1995 we have had nearly
+    six thousand, and almost nothing about our own arrangement turns out to be typical.</p>
+  </div>
+
+  <figure id="fig-system" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate II</span> How a System Condenses
+      <span class="sci">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 560 230" role="img" aria-label="Four stages: a collapsing cloud, a flattened disc, planetesimals accreting in the disc, and a cleared system of planets">
+        <g font-family="Cinzel, serif" font-size="9" fill="#cbbb93" letter-spacing="2" text-anchor="middle">
+          <text x="80" y="205">CLOUD</text>
+          <text x="223" y="205">DISC</text>
+          <text x="366" y="205">ACCRETION</text>
+          <text x="500" y="205">CLEARING</text>
+        </g>
+        <g fill="#8fb6d8" opacity="0.25">
+          <circle cx="80" cy="110" r="52"/>
+        </g>
+        <g fill="#f3ddaa">
+          <circle cx="80" cy="110" r="4"/>
+          <circle cx="223" cy="110" r="7"/>
+          <circle cx="366" cy="110" r="8"/>
+          <circle cx="500" cy="110" r="9"/>
+        </g>
+        <g stroke="#d7b05a" fill="none" opacity="0.7">
+          <ellipse cx="223" cy="110" rx="58" ry="14"/>
+          <ellipse cx="223" cy="110" rx="40" ry="9"/>
+          <ellipse cx="366" cy="110" rx="58" ry="14"/>
+          <ellipse cx="500" cy="110" rx="58" ry="12"/>
+          <ellipse cx="500" cy="110" rx="34" ry="7"/>
+        </g>
+        <g fill="#7fae7a">
+          <circle cx="318" cy="112" r="3"/><circle cx="340" cy="105" r="2.4"/>
+          <circle cx="398" cy="116" r="3.4"/><circle cx="418" cy="107" r="2.2"/>
+          <circle cx="466" cy="112" r="4"/><circle cx="534" cy="109" r="5"/>
+          <circle cx="531" cy="112" r="2.6"/>
+        </g>
+        <g stroke="#9f947a" stroke-width="0.8" opacity="0.6">
+          <path d="M136 110 L160 110" marker-end=""/>
+          <path d="M283 110 L302 110"/>
+          <path d="M426 110 L444 110"/>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">A cold cloud of gas and dust collapses, spins up because angular momentum is
+    conserved, flattens into a disc because that is what spinning collapse does, and lights a star at the
+    centre. Dust grains stick, become pebbles, become planetesimals, become worlds; what is left is swept
+    up or thrown out. The discs were predicted long before they were photographed &mdash; and then ALMA
+    photographed HL Tauri's in 2014, gaps and all. <span class="sci">&#9670;</span> established science.</p>
+  </figure>
+
+  <div class="grid two">
+    <article class="frame card reveal">
+      <p class="tag">Our Own <span class="sci">&#9670;</span></p>
+      <h3>One Star, Eight Planets, a Great Deal of Rubble</h3>
+      <p>Four small rocky worlds inside the frost line; four giants outside it &mdash; two gas (Jupiter,
+      Saturn) and two ice (Uranus, Neptune, which are mostly water, ammonia and methane under crushing
+      pressure, and should never have been called gas giants). Between and beyond: the asteroid belt, the
+      Kuiper belt, the scattered disc, the Oort cloud.</p>
+      <p>The Sun is 99.86% of the mass. Jupiter is most of the rest, and its position has shaped
+      everything &mdash; probably including the delivery of water to the Earth and the architecture of the
+      inner system. Pluto was reclassified in 2006 not out of spite but because Eris was found and the
+      choice was to have eight planets or an indefinite number.</p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">The Census <span class="sci">&#9670;</span></p>
+      <h3>Nearly Six Thousand Others</h3>
+      <p>51 Pegasi b, 1995: a Jupiter-mass planet four days from its star. Nobody had a theory that allowed
+      it, and the first response of the field was to doubt the measurement. Kepler, launched 2009, then
+      found thousands by watching for the 0.01% dip as a planet crossed its star's face; TESS and the radial
+      velocity surveys continue, and JWST is now reading the chemistry of their atmospheres.</p>
+      <ul class="tight">
+        <li><strong>Hot Jupiters</strong> &mdash; giants in days-long orbits; rare in truth, over-represented early because they are the easiest to see.</li>
+        <li><strong>Super-Earths and sub-Neptunes</strong> &mdash; between Earth and Neptune in size, the <em>most common kind of planet in the galaxy</em>, and we have none.</li>
+        <li><strong>Compact multiples</strong> &mdash; TRAPPIST-1: seven Earth-sized worlds round a red dwarf, all of them inside Mercury's orbit.</li>
+        <li><strong>Rogue planets</strong> &mdash; thrown out of their systems, drifting unlit between the stars, and possibly outnumbering the bound ones.</li>
+      </ul>
+      <p class="muted small">Best current estimate: most stars have planets, and something like one in five
+      Sun-like stars has a roughly Earth-sized planet in the temperate zone. The error bars on that figure
+      are large and honest. <span class="spec">&#9670;</span> speculative and contested.</p>
+    </article>
+  </div>
+
+  <div class="wrap narrow">
+    <div class="frame caution mt-2">
+      <p><strong>On the habitable zone.</strong> It means only that liquid water could persist on a surface
+      at that distance, given an atmosphere we have assumed. It is a crude first filter, not a verdict:
+      Venus is in the Sun's zone. The order files "a planet in the habitable zone" as
+      <span class="spec">&#9670;</span> interesting, and "a planet where something lives" as
+      <span class="spec">&#9670;</span> unestablished, until a biosignature survives peer review.
+      The contact question itself is held at <a href="/extraterrestrials/">Limb VII</a>.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================== GALAXIES ================================ -->
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">Third Subject</p>
+    <h2 id="t-galaxies-and-what-they-are-made-of">Galaxies, and What They Are Made Of</h2>
+    <p class="lede muted">A hundred years ago it was an open question whether anything existed outside the
+    Milky Way. The answer arrived in 1924 and was the largest single expansion of the known world in the
+    history of the species.</p>
+  </div>
+
+  <figure id="fig-fork" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate III</span> The Hubble Sequence
+      <span class="hist">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 560 280" role="img" aria-label="The Hubble tuning-fork diagram: ellipticals at the handle, lenticulars at the join, and two branches of spirals, barred and unbarred">
+        <g stroke="#d7b05a" stroke-width="1" fill="none" opacity="0.55">
+          <path d="M60 140 H250"/>
+          <path d="M250 140 C300 140 310 80 360 70 H520"/>
+          <path d="M250 140 C300 140 310 200 360 210 H520"/>
+        </g>
+        <g fill="none" stroke="#f3ddaa" stroke-width="1.3">
+          <circle cx="78" cy="140" r="9"/>
+          <ellipse cx="128" cy="140" rx="15" ry="10"/>
+          <ellipse cx="190" cy="140" rx="22" ry="8"/>
+          <ellipse cx="250" cy="140" rx="24" ry="7"/>
+        </g>
+        <g fill="none" stroke="#7fae7a" stroke-width="1.2">
+          <circle cx="380" cy="70" r="11"/>
+          <path d="M380 59 C404 59 410 80 391 86"/>
+          <path d="M380 81 C356 81 350 60 369 54"/>
+          <circle cx="450" cy="70" r="11"/>
+          <path d="M450 59 C480 55 486 84 455 84"/>
+          <path d="M450 81 C420 85 414 56 445 56"/>
+          <circle cx="516" cy="70" r="10"/>
+          <path d="M516 60 C546 48 552 92 512 82"/>
+        </g>
+        <g fill="none" stroke="#8fb6d8" stroke-width="1.2">
+          <ellipse cx="380" cy="210" rx="14" ry="5"/>
+          <path d="M394 210 C414 206 416 226 396 224"/>
+          <path d="M366 210 C346 214 344 194 364 196"/>
+          <ellipse cx="450" cy="210" rx="14" ry="5"/>
+          <path d="M464 210 C492 202 492 232 458 226"/>
+          <path d="M436 210 C408 218 408 188 442 194"/>
+          <ellipse cx="516" cy="210" rx="13" ry="5"/>
+          <path d="M529 210 C556 196 556 236 512 224"/>
+        </g>
+        <g font-family="Cinzel, serif" font-size="9" fill="#cbbb93" letter-spacing="2">
+          <text x="78" y="168" text-anchor="middle">E0</text>
+          <text x="190" y="168" text-anchor="middle">E6</text>
+          <text x="250" y="120" text-anchor="middle">S0</text>
+          <text x="380" y="40" text-anchor="middle" fill="#7fae7a">Sa</text>
+          <text x="450" y="40" text-anchor="middle" fill="#7fae7a">Sb</text>
+          <text x="516" y="40" text-anchor="middle" fill="#7fae7a">Sc</text>
+          <text x="380" y="248" text-anchor="middle" fill="#8fb6d8">SBa</text>
+          <text x="450" y="248" text-anchor="middle" fill="#8fb6d8">SBb</text>
+          <text x="516" y="248" text-anchor="middle" fill="#8fb6d8">SBc</text>
+          <text x="140" y="110" text-anchor="middle">ELLIPTICALS</text>
+          <text x="300" y="268" text-anchor="middle">BARRED SPIRALS &#8212; THE MILKY WAY IS SBbc</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">Hubble's 1926 classification, drawn as the tuning fork of 1936. It is a
+    description of shape and nothing more: he thought galaxies evolved along it from left to right, and
+    they do not &mdash; if anything the arrow runs the other way, with ellipticals built by mergers of
+    spirals. A good taxonomy that outlived its own wrong theory, which is the ordinary fate of good
+    taxonomies. <span class="hist">&#9670;</span> scholarship and history.</p>
+  </figure>
+
+  <div class="grid two">
+    <article class="frame card reveal">
+      <p class="tag">Kinds <span class="sci">&#9670;</span></p>
+      <h3>Four Shapes and Their Habits</h3>
+      <ul class="tight">
+        <li><strong>Spirals</strong> &mdash; a rotating disc of gas, dust and young blue stars with a bulge of old ones; arms are density waves, not solid structures, so stars drift through them like traffic through a jam. Still making stars.</li>
+        <li><strong>Barred spirals</strong> &mdash; about two thirds of spirals, ours among them; the bar funnels gas inward and feeds the centre.</li>
+        <li><strong>Ellipticals</strong> &mdash; from dwarfs to the monsters at cluster cores; little gas, little dust, almost no new stars, orbits pointing every which way. Built by merger.</li>
+        <li><strong>Lenticulars and irregulars</strong> &mdash; the discs that have run out of gas, and the small torn things like the Magellanic Clouds.</li>
+      </ul>
+      <p class="muted small">Scale: a dwarf spheroidal may hold a thousand stars; IC 1101 holds perhaps a
+      hundred trillion. "Galaxy" covers eleven orders of magnitude of mass.</p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">The Active Ones <span class="sci">&#9670;</span></p>
+      <h3>Quasars, Seyferts, Blazars, Radio Galaxies</h3>
+      <p>In a few per cent of galaxies the central black hole is eating, and the infalling matter outshines
+      every star in the host combined. These were catalogued as four different kinds of object before it
+      was realised they are mostly <em>the same object seen from different angles</em> &mdash; the
+      unification model: looking down the jet gives a blazar, looking across the torus gives a Seyfert 2,
+      looking past it gives a quasar.</p>
+      <p>3C 273, the first quasar recognised as such (Schmidt, 1963), sits 2.4 billion light years away and
+      is still magnitude 12.9. Because they are visible across the universe, quasars are how the early
+      universe is surveyed at all.</p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">The Missing Mass <span class="sci">&#9670;</span></p>
+      <h3>Rotation Curves, and the Argument They Started</h3>
+      <p>Vera Rubin and Kent Ford, through the 1970s, measured how fast the outskirts of spiral galaxies
+      turn. By Kepler the speed should fall off with distance from the mass. It does not: it flattens.
+      Either there is five times more mass than we can see, arranged in a halo, or gravity itself is not
+      what we think at low accelerations.</p>
+      <p>The evidence has gone heavily one way. Gravitational lensing, the acoustic peaks in the cosmic
+      microwave background, and above all the Bullet Cluster &mdash; where the lensing mass walked straight
+      through the collision while the visible gas stalled &mdash; are hard to answer with modified gravity.
+      But no dark matter particle has been detected in sixty years of looking, and that is not nothing.
+      <span class="sci">&#9670;</span> the observations. <span class="spec">&#9670;</span> speculative and
+      contested &mdash; what the missing mass <em>is</em>.</p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">The Larger Pattern <span class="sci">&#9670;</span></p>
+      <h3>Groups, Clusters, Filaments, Voids</h3>
+      <p>Galaxies are not scattered evenly. They sit in groups of dozens and clusters of thousands; the
+      clusters sit on filaments of dark matter and hot gas; the filaments wall off voids hundreds of
+      millions of light years across with almost nothing in them. The whole is called the cosmic web, and
+      it grew from density ripples of one part in a hundred thousand, which are visible, directly, in the
+      microwave background.</p>
+      <p>Our address: the Milky Way, in the Local Group, falling towards the Virgo Cluster, in the
+      Laniakea Supercluster &mdash; defined in 2014 by Tully and colleagues not by where things are but by
+      which way they are flowing.</p>
+    </article>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================ BLACK HOLES =============================== -->
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">Fourth Subject</p>
+    <h2 id="t-the-four-classes-of-black-hole">The Four Classes of Black Hole</h2>
+    <p class="lede muted">Not a hole and not made of anything. A region where the escape velocity exceeds
+    the speed of light, which is to say a region whose future points inward.</p>
+  </div>
+
+  <figure id="fig-bh" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate IV</span> The Anatomy of a Black Hole
+      <span class="sci">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 560 300" role="img" aria-label="Cross-section of a rotating black hole: singularity, event horizon, ergosphere, photon sphere, innermost stable circular orbit, accretion disc and polar jets">
+        <g stroke="#8fb6d8" stroke-width="1" fill="none" opacity="0.7">
+          <ellipse cx="280" cy="150" rx="210" ry="26"/>
+          <ellipse cx="280" cy="150" rx="150" ry="19"/>
+        </g>
+        <path d="M274 120 L268 20 L292 20 L286 120 Z" fill="#7fae7a" opacity="0.35"/>
+        <path d="M274 180 L268 280 L292 280 L286 180 Z" fill="#7fae7a" opacity="0.35"/>
+        <circle cx="280" cy="150" r="96" fill="none" stroke="#9f947a" stroke-width="0.8" stroke-dasharray="4 5"/>
+        <circle cx="280" cy="150" r="68" fill="none" stroke="#c98b6a" stroke-width="0.9" stroke-dasharray="2 4"/>
+        <ellipse cx="280" cy="150" rx="56" ry="44" fill="none" stroke="#d7b05a" stroke-width="1"/>
+        <circle cx="280" cy="150" r="38" fill="#0e0c0a" stroke="#f3ddaa" stroke-width="1.6"/>
+        <circle cx="280" cy="150" r="2.5" fill="#f3ddaa"/>
+        <g font-family="EB Garamond, serif" font-size="10" fill="#cbbb93">
+          <text x="286" y="146">singularity</text>
+          <text x="330" y="196" fill="#f3ddaa">event horizon</text>
+          <text x="352" y="214" fill="#d7b05a">ergosphere</text>
+          <text x="372" y="96" fill="#c98b6a">photon sphere &#8212; 1.5 r&#8347;</text>
+          <text x="392" y="66" fill="#9f947a">innermost stable orbit &#8212; 3 r&#8347;</text>
+          <text x="470" y="140" fill="#8fb6d8" text-anchor="middle">accretion disc</text>
+          <text x="280" y="16" fill="#7fae7a" text-anchor="middle">RELATIVISTIC JET</text>
+        </g>
+        <g stroke="#9f947a" stroke-width="0.6" opacity="0.8">
+          <path d="M318 190 L298 168"/>
+          <path d="M348 208 L306 176"/>
+          <path d="M368 92 L322 124"/>
+          <path d="M388 62 L330 112"/>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">The horizon is not a surface; nothing is there. It is the last place from which
+    light can still get out, at the Schwarzschild radius &mdash; 3 km per solar mass. Inside a rotating
+    hole the ergosphere drags spacetime round with it so hard that standing still is impossible, and
+    Penrose showed in 1969 that energy can be stolen from that rotation. The photon sphere at 1.5 radii is
+    where light orbits; it is the bright ring the Event Horizon Telescope photographed round M87* in 2019
+    and Sgr A* in 2022. <span class="sci">&#9670;</span> established science.</p>
+  </figure>
+
+  <div class="grid two">
+    <article class="frame card reveal">
+      <p class="tag">Class I <span class="sci">&#9670;</span></p>
+      <h3>Stellar-Mass &mdash; 3 to 150 Suns</h3>
+      <p>The remnant of a massive star whose core could not be held up. Cygnus X-1, identified in 1971, was
+      the first that convinced people &mdash; and the subject of a bet Hawking placed against himself and
+      lost in 1990. A handful of dozens are known in our galaxy by their X-rays; a hundred million are
+      expected to exist here, almost all of them dark and undetectable.</p>
+      <p>Since 2015 they are also <em>heard</em>: LIGO's detection of GW150914, two holes of 36 and 29 solar
+      masses merging 1.3 billion light years away, released three solar masses as pure spacetime ripple in a
+      fifth of a second. Over two hundred mergers are now catalogued.</p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">Class II <span class="spec">&#9670;</span></p>
+      <h3>Intermediate &mdash; 100 to 100,000 Suns</h3>
+      <p>The awkward middle, long suspected and poorly evidenced. Candidates appear as ultraluminous X-ray
+      sources in other galaxies and at the centres of some globular clusters, and GW190521 &mdash; a merger
+      producing a 142-solar-mass remnant &mdash; is the cleanest case yet, because that mass falls in the
+      range core collapse is not supposed to produce.</p>
+      <p>Why it matters: if the supermassive holes grew from stellar ones, this is the rung they climbed.
+      If there is no rung, they had to start large. <span class="spec">&#9670;</span> speculative and
+      contested &mdash; real objects, uncertain population.</p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">Class III <span class="sci">&#9670;</span></p>
+      <h3>Supermassive &mdash; Millions to Tens of Billions</h3>
+      <p>One at the centre of essentially every large galaxy. Sagittarius A* is 4.3 million solar masses,
+      a fact established by watching individual stars orbit an invisible point for thirty years &mdash;
+      Ghez and Genzel, Nobel 2020. S2 passes within 120 AU at 3% of light speed, and its orbit precesses by
+      exactly the amount general relativity demands.</p>
+      <p>M87* is 6.5 billion solar masses, larger across than Neptune's orbit, and was the first ever
+      photographed. The galaxy-black hole mass relation (M&ndash;&sigma;) is tight enough that the two must
+      have grown together &mdash; <span class="spec">&#9670;</span> how, exactly, is unsettled, and JWST
+      finding quasars already a billion suns heavy at 700 million years after the Big Bang has made it
+      sharply worse.</p>
+    </article>
+
+    <article class="frame card reveal">
+      <p class="tag">Class IV <span class="spec">&#9670;</span></p>
+      <h3>Primordial &mdash; Hypothetical</h3>
+      <p>Hawking and Zel'dovich proposed that density fluctuations in the first second could have collapsed
+      directly into holes of any mass at all, from a mountain to a star. None has been observed. Most of the
+      mass window has been closed by microlensing surveys and by the absence of the gamma-ray burst a small
+      one would give as it finished evaporating.</p>
+      <p>A narrow window remains open, which is why they are still discussed as a dark matter candidate.
+      <span class="spec">&#9670;</span> speculative and contested &mdash; a respectable hypothesis with no
+      detection behind it.</p>
+    </article>
+  </div>
+
+  <div class="wrap narrow">
+    <div class="frame mt-2">
+      <h3 id="t-evaporation-and-the-information-question">Evaporation, and the Information Question</h3>
+      <p>Hawking, 1974: quantum field theory near a horizon makes a black hole glow, faintly, at a
+      temperature inversely proportional to its mass. A solar-mass hole radiates at 60 nanokelvin &mdash;
+      colder than the microwave background, so in this era it absorbs more than it emits and grows. Left in
+      an empty universe it would take 10<sup>67</sup> years to evaporate. <span class="sci">&#9670;</span>
+      established theory; never observed, and not plausibly observable.</p>
+      <p>The paradox that follows is the hardest open problem in physics: if the hole evaporates into
+      thermal radiation, the information that fell in is destroyed, and quantum mechanics forbids that.
+      The current best answer &mdash; that the entropy of the radiation follows a curve that turns over
+      (the Page curve), recovered since 2019 from the "island" calculations &mdash; is genuine progress and
+      is not a resolution. <span class="spec">&#9670;</span> speculative and contested. The order's
+      <a href="/decoherence/">Limb XI&middot;i</a> takes up what this means for identity; nothing on this
+      page licenses that reading.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================ HOW WE KNOW =============================== -->
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-how-any-of-this-is-known">How Any of This Is Known</h2>
+    <p>Every distance in this page rests on a ladder, and each rung is calibrated by the one below it. Kick
+    out a rung and everything above it moves.</p>
+    <ol class="tight">
+      <li><strong>Radar and spacecraft</strong> fix the astronomical unit to the metre.</li>
+      <li><strong>Parallax</strong> &mdash; the shift of a nearby star against the far ones as the Earth crosses its orbit. Bessel got 61 Cygni in 1838; Gaia has now done it for nearly two billion stars.</li>
+      <li><strong>Spectroscopic and cluster fitting</strong> &mdash; put a star on the main sequence, compare apparent with absolute brightness.</li>
+      <li><strong>Cepheids and RR Lyrae</strong> &mdash; period gives luminosity, out to about 100 million light years.</li>
+      <li><strong>Type Ia supernovae</strong> &mdash; standard candles to billions.</li>
+      <li><strong>Redshift</strong> &mdash; and Hubble's law, for everything beyond.</li>
+    </ol>
+    <p class="mt-1">There is an open crack in it. The expansion rate measured locally up the ladder
+    (~73 km/s/Mpc) disagrees with the rate inferred from the microwave background (~67) by far more than
+    either side's error bars allow. This is the <strong>Hubble tension</strong>, it has not gone away with
+    better data, and it is the most likely place for the next real surprise.
+    <span class="sci">&#9670;</span> the measurements. <span class="spec">&#9670;</span> the explanation.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================== THE LEDGER ============================== -->
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">The Ledger</p>
+    <h2 id="t-what-holds-up-and-what-does-not">What Holds Up, and What Does Not</h2>
+  </div>
+  <div class="grid two">
+    <div class="frame card">
+      <h3>Survives</h3>
+      <ul class="biblio">
+        <li><span class="sci">&#9670;</span> <strong>Stellar nucleosynthesis.</strong> The heavy elements in your body were assembled in stars and in neutron-star collisions. Measured in spectra, in meteorites and in the 2017 kilonova GW170817, which made gold in front of us.</li>
+        <li><span class="sci">&#9670;</span> <strong>The expansion of space, and its acceleration.</strong> Redshift, supernovae, the microwave background and baryon acoustic oscillations all agree.</li>
+        <li><span class="sci">&#9670;</span> <strong>Black holes as real objects.</strong> Orbits, X-ray binaries, gravitational waves and two photographs.</li>
+        <li><span class="sci">&#9670;</span> <strong>Planets are ordinary.</strong> Nearly six thousand confirmed; most stars have them.</li>
+        <li><span class="hist">&#9670;</span> <strong>Ancient astronomy was real astronomy.</strong> Babylonian ephemerides, the Antikythera mechanism, Mayan Venus tables, Newgrange and Stonehenge aligned to the solstices. Precise, predictive, and done without a telescope.</li>
+      </ul>
+    </div>
+    <div class="frame card">
+      <h3>Does Not Survive</h3>
+      <ul class="biblio">
+        <li><span class="spec">&#9670;</span> <strong>"Astronomers have found a planet exactly like Earth."</strong> They have not. They have found planets of similar radius in similar orbits, with unknown atmospheres.</li>
+        <li><span class="spec">&#9670;</span> <strong>Planetary alignments causing anything on Earth.</strong> The tidal pull of Jupiter at closest approach is smaller than that of the building you are in.</li>
+        <li><span class="myth">&#9670;</span> <strong>The dark side of the Moon.</strong> There is a far side. Every part of it gets sunlight; it is tidal locking, not shadow.</li>
+        <li><span class="myth">&#9670;</span> <strong>Stars that "are already dead".</strong> Almost every naked-eye star is within a few thousand light years and alive. The line is poetry, not astronomy.</li>
+        <li><span class="spec">&#9670;</span> <strong>Nibiru, Planet X as catastrophe.</strong> A genuine ninth-planet hypothesis exists for a distant body perturbing Kuiper belt orbits &mdash; and it is an ordinary, cold, far-off world, not an arrival.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================== TIMELINE ================================ -->
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-a-line-through-the-subject">A Line Through the Subject</h2>
+    <ul class="timeline">
+      <li><strong>c. 1600 BCE</strong> &mdash; the Nebra sky disc; Babylonian records begin in earnest, and run unbroken for a millennium. <span class="hist">&#9670;</span></li>
+      <li><strong>c. 240 BCE</strong> &mdash; Eratosthenes measures the Earth with a stick and a well, to within a few per cent. <span class="hist">&#9670;</span></li>
+      <li><strong>c. 150 CE</strong> &mdash; Ptolemy's <em>Almagest</em>: wrong model, superb data, authoritative for 1,400 years. <span class="hist">&#9670;</span></li>
+      <li><strong>1543</strong> &mdash; Copernicus moves the centre. <strong>1609</strong> &mdash; Kepler's ellipses; Galileo's telescope finds Jupiter's moons. <span class="hist">&#9670;</span></li>
+      <li><strong>1687</strong> &mdash; Newton explains all of it with one law. <span class="sci">&#9670;</span></li>
+      <li><strong>1838</strong> &mdash; Bessel measures the first stellar parallax. The stars acquire distances. <span class="sci">&#9670;</span></li>
+      <li><strong>1908</strong> &mdash; Leavitt's period&ndash;luminosity law. <strong>1924</strong> &mdash; Hubble resolves Cepheids in Andromeda: other galaxies exist. <span class="sci">&#9670;</span></li>
+      <li><strong>1929</strong> &mdash; recession proportional to distance. <strong>1931</strong> &mdash; Lemaître's primeval atom. <span class="sci">&#9670;</span></li>
+      <li><strong>1964</strong> &mdash; Penzias and Wilson find the microwave background while cleaning pigeon droppings out of a horn antenna. <span class="sci">&#9670;</span></li>
+      <li><strong>1967</strong> &mdash; Jocelyn Bell Burnell finds pulsars. The Nobel went to her supervisor. <span class="hist">&#9670;</span></li>
+      <li><strong>1995</strong> &mdash; 51 Pegasi b. <strong>1998</strong> &mdash; the expansion is accelerating. <span class="sci">&#9670;</span></li>
+      <li><strong>2015</strong> &mdash; LIGO hears two black holes merge. <strong>2019</strong> &mdash; M87* is photographed. <strong>2022</strong> &mdash; so is Sgr A*, and JWST opens its eye. <span class="sci">&#9670;</span></li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- ============================== GLOSSARY ================================ -->
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-the-words">The Words</h2>
+    <dl class="glossary">
+      <dt>Light year</dt><dd>The distance light travels in a year: 9.46 trillion km. A distance, never a time.</dd>
+      <dt>Parsec</dt><dd>3.26 light years &mdash; the distance at which one astronomical unit subtends one arcsecond. The professional's unit, because it falls straight out of a parallax measurement.</dd>
+      <dt>Magnitude</dt><dd>Brightness on a backwards logarithmic scale inherited from Hipparchus: smaller is brighter, five magnitudes is a factor of a hundred. <em>Apparent</em> is how bright it looks; <em>absolute</em> is how bright it would look at 10 parsecs.</dd>
+      <dt>Metallicity</dt><dd>To an astronomer, every element heavier than helium is a metal. A star's metallicity tells you which generation it belongs to.</dd>
+      <dt>Schwarzschild radius</dt><dd>The horizon radius of a non-rotating black hole: about 3 km per solar mass. The Earth's would be 9 mm.</dd>
+      <dt>Redshift (z)</dt><dd>The stretching of light by the expansion of space. z&nbsp;=&nbsp;1 means the universe has doubled in size since that light set out.</dd>
+      <dt>Standard candle</dt><dd>An object whose true brightness is known, so its distance follows from how faint it looks. Cepheids and type Ia supernovae.</dd>
+      <dt>Accretion disc</dt><dd>Matter spiralling in, shedding angular momentum, and heating by friction until it shines &mdash; the most efficient energy source known, up to 40% of rest mass against hydrogen fusion's 0.7%.</dd>
+    </dl>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<!-- =============================== READING ================================ -->
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-the-reading-list">The Reading List</h2>
+    <ul class="biblio">
+      <li><span class="sci">&#9670;</span> <strong>Carl Sagan</strong>, <em>Cosmos</em> (1980) &mdash; still the best first book, and honest about what was unknown when it was written.</li>
+      <li><span class="sci">&#9670;</span> <strong>Kip Thorne</strong>, <em>Black Holes and Time Warps</em> (1994) &mdash; the history and the physics from someone who did both.</li>
+      <li><span class="sci">&#9670;</span> <strong>Bradley Carroll &amp; Dale Ostlie</strong>, <em>An Introduction to Modern Astrophysics</em> &mdash; the standard undergraduate text if you want the equations.</li>
+      <li><span class="sci">&#9670;</span> <strong>Katie Mack</strong>, <em>The End of Everything</em> (2020) &mdash; cosmology told through its endings, and very funny about it.</li>
+      <li><span class="hist">&#9670;</span> <strong>Dava Sobel</strong>, <em>The Glass Universe</em> (2016) &mdash; Cannon, Leavitt and the women who built the classification the whole field still uses.</li>
+      <li><span class="hist">&#9670;</span> <strong>Owen Gingerich</strong>, <em>The Book Nobody Read</em> (2004) &mdash; what actually happened to Copernicus.</li>
+      <li><span class="sci">&#9670;</span> <strong>Gaia DR3, the NASA Exoplanet Archive, the EHT papers</strong> &mdash; all free, all primary, all more interesting than anything written about them.</li>
+    </ul>
+    <p class="mt-1"><a class="btn" href="/cosmic-aether/">Limb I &middot; the Cosmic Aether</a>
+    <a class="btn btn--ghost" href="/infographics/">Every plate, gathered</a>
+    <a class="btn btn--ghost" href="/ask-ed/">Put a question to Ed</a></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <p class="kicker">A Closing Stance</p>
+    <p>The sky is the one place where the order's rule on evidence costs nothing and gains everything. There
+    is no need to embellish a universe that contains a star spinning 716 times a second, a hole the size of
+    a solar system photographed by a telescope the size of the Earth, and a number of galaxies that nobody
+    can write down honestly without saying "about".</p>
+    <p>Wonder does not require the claims to be loose. It requires looking up often, and for long enough
+    that the slow things become visible. Test everything kindly.</p>
+  </div>
+</section>
+
+<script src="/assets/js/sky.js?v={{ build.id }}" defer></script>

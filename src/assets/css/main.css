@@ -3242,3 +3242,45 @@ body.only-check .frame { border: 0; padding: 0.2rem; }
 .toc-limbs > li > ul { margin-top: 0.3rem; }
 .toc-note { margin: 0.15rem 0 0.2rem; max-width: 62ch; }
 .toc-rooms li { margin-bottom: 0.3rem; }
+
+/* ===========================================================================
+   The Ladder of Scale — the astronomy page's zoom map
+   ---------------------------------------------------------------------------
+   Canvas on the left, the readout and the controls on the right, stacking on
+   a phone with the map first so a thumb lands on it. The canvas is given a
+   fixed aspect rather than a fixed height so it keeps its circles round.
+   ======================================================================== */
+.sky-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.2rem; align-items: stretch; }
+.sky-stage {
+  position: relative; min-height: 340px; aspect-ratio: 1 / 1;
+  border: 1px solid rgba(215, 176, 90, 0.22); border-radius: 3px;
+  background: radial-gradient(circle at 50% 50%, #12100d 0%, #0b0a09 70%);
+  cursor: grab; touch-action: none; overflow: hidden;
+}
+.sky-stage:active { cursor: grabbing; }
+.sky-stage:focus-visible { outline: 2px solid #d7b05a; outline-offset: 2px; }
+.sky-canvas { display: block; width: 100%; height: 100%; }
+.sky-side { display: flex; flex-direction: column; gap: 0.6rem; }
+.sky-where { min-height: 9.5rem; }
+.sky-where h3 { margin: 0 0 0.3rem; }
+.sky-where p { margin: 0 0 0.4rem; }
+.sky-label { font-family: var(--caps); letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.6rem; color: #9f947a; }
+.sky-tools { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.sky-status { min-height: 2.4em; }
+#sky-slider { width: 100%; accent-color: #d7b05a; }
+
+/* The written ladder doubles as the control for the map, so each rung is a
+   button — styled as the line of prose it is, not as a widget. */
+.rungs { padding-left: 1.3rem; }
+.rungs li { margin-bottom: 0.35rem; }
+button.rung {
+  background: none; border: 0; padding: 0; margin: 0; text-align: left;
+  font: inherit; color: inherit; cursor: pointer; border-bottom: 1px dotted rgba(215, 176, 90, 0.3);
+}
+button.rung:hover, button.rung:focus-visible { color: #f3ddaa; border-bottom-color: #d7b05a; }
+
+@media (max-width: 760px) {
+  .sky-grid { grid-template-columns: 1fr; }
+  .sky-stage { min-height: 300px; }
+  .sky-where { min-height: 0; }
+}

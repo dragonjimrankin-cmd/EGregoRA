@@ -22,6 +22,7 @@ export default {
     { url: "/live/", label: "Live Cam", glyph: "eye" },
     { url: "/ask-ed/", label: "Ask Ed", glyph: "star" },
     { url: "/infographics/", label: "Infographics", glyph: "metatron" },
+    { url: "/astronomy/", label: "Astronomy", glyph: "star" },
     { url: "/cosmic-aether/", label: "Cosmic Aether", glyph: "spiral" },
     { url: "/druids/", label: "Druids", glyph: "tree" },
     { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },

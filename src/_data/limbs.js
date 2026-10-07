@@ -22,6 +22,7 @@ export default [
       'account of what the whole thing is doing and what that implies about us. Entropy, horizons, ' +
       'information, the arrow of time.',
     subs: [
+      { num: 'I\u00b7i', title: 'Astronomy &amp; the Survey of the Sky', href: '/astronomy/' },
       { num: 'I\u00b7ii', title: 'The Cosmic Aether', href: '/cosmic-aether/' }
     ]
   },
