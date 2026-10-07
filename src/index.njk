@@ -150,10 +150,11 @@ description: EGregoRA — the house of enquiry co-founded by Edward Gregory and 
       {%- if limb.subs.length %}
       <p class="mt-1">
         {%- for sub in limb.subs %}
-        <a href="{{ sub.href }}">Limb {{ sub.num }} &middot; {{ sub.title | safe }} &rarr;</a>{% if not loop.last %}<br>{% endif %}
+        <a href="{{ sub.href }}">{{ sub.title | safe }} &rarr;</a>{% if not loop.last %}<br>{% endif %}
         {%- endfor %}
       </p>
       {%- endif %}
+      <p class="tag tag--foot">Limb {{ limb.num }}</p>
     </article>
     {%- endfor %}
   </div>

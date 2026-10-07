@@ -278,6 +278,15 @@ h3 { font-size: 1.15rem; color: var(--gold-bright); margin: 0 0 0.4rem; letter-s
   font-family: var(--caps); font-size: 0.64rem; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--verdant);
 }
+/* The number again at the foot of the card, closing it the way it opened:
+   pushed to the bottom so every card in a row ends on the same line. */
+.card { display: flex; flex-direction: column; }
+.card .tag--foot {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(127, 174, 122, 0.22);
+  text-align: right;
+}
 
 /* illuminated first letter */
 .illuminated > p:first-of-type::first-letter {
