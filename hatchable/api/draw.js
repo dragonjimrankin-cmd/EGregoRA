@@ -8,17 +8,20 @@
  * the full order of generators.
  */
 import { db } from 'hatchable';
-import { generateImage, storeImage } from '../lib/imagegen.js';
+import { generateImage, storeImage, IMAGE_ENGINES } from '../lib/imagegen.js';
 import { drawWithOwnKey } from '../lib/byok.js';
 import { requireStudio } from '../lib/accounts.js';
 import { submitKaggleImage } from '../lib/videogen.js';
 
 export const access = 'public';
-export const methods = ['POST'];
+export const methods = ['GET', 'POST'];
 
 const MAX_PROMPT = 1200;
 
 export default async function (req, res) {
+  if (req.method === 'GET' && req.query && (req.query.engines === '1' || req.query.engines === 'true')) {
+    return res.json({ engines: IMAGE_ENGINES });
+  }
   /* The studio is closed to the street: members only, age and identity checked. */
   const door = await requireStudio(req);
   if (!door.ok) return res.status(door.status).json({ error: door.error, gate: door.reason });
@@ -61,7 +64,7 @@ export default async function (req, res) {
     });
   }
 
-  const out = await generateImage(prompt, { initUrl: sketchUrl });
+  const out = await generateImage(prompt, { initUrl: sketchUrl, engine: body.engine || 'auto' });
 
   if (!out.url) {
     /* Every quick route failed. The order's own GPU can draw it, but a

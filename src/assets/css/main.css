@@ -2011,3 +2011,19 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 .split-row:hover { border-color: rgba(215,176,90,0.5); color: var(--vellum); }
 .split-dot { width: 0.8rem; height: 0.8rem; border-radius: 50%; flex: 0 0 auto; }
 @media (max-width: 720px) { .split-cols { grid-template-columns: 1fr; } }
+
+/* --- on a small screen, the button sits under the words it belongs to ----
+   On a wide screen the examples and the pickers can stand between the
+   prompt and the button without anyone losing the thread. On a telephone
+   that same gap is half a screen of scrolling, so the actions are pulled
+   up to sit directly beneath the box they act on. */
+@media (max-width: 720px) {
+  .draw-form, .film-form, .oracle-form { display: flex; flex-direction: column; }
+  .draw-form > *, .film-form > *, .oracle-form > * { order: 3; }
+  .draw-form > div:first-child,
+  .film-form > div:first-child,
+  .oracle-form > .ask-box { order: 1; }
+  .draw-form > .ask-actions,
+  .film-form > .ask-actions,
+  .oracle-form > .ask-actions { order: 2; margin-top: 0.7rem; }
+}

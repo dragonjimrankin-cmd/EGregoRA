@@ -768,7 +768,7 @@
     busy = true;
     btn.disabled = true;
     const label = btn.textContent;
-    btn.textContent = "Drawing\u2026";
+    btn.textContent = "Generating\u2026";
     if (clear) clear.hidden = false;
 
     const card = document.createElement("figure");
@@ -786,6 +786,7 @@
           prompt: p,
           name: (nameEl && nameEl.value || "").trim(),
           sketch: window.EGSketchUrl ? window.EGSketchUrl() : null,
+          engine: (document.getElementById("d-engine") || {}).value || "auto",
           byok: window.EGOwnKey ? window.EGOwnKey() : null
         })
       });
@@ -1262,14 +1263,38 @@
     return Math.round(n / 3600) + " h ago";
   };
 
+  /* The door's own memory of being knocked on. The server is what actually
+     counts the tries \u2014 this is only so the page can say how long is left
+     without asking, and so the button goes quiet while it is shut. */
+  const LOCK = "eg-keeper-shut";
+  const shutFor = () => {
+    try {
+      const until = Number(window.localStorage.getItem(LOCK) || 0);
+      const left = until - Date.now();
+      return left > 0 ? Math.ceil(left / 60000) : 0;
+    } catch { return 0; }
+  };
+  const shutDown = (mins) => {
+    try { window.localStorage.setItem(LOCK, String(Date.now() + mins * 60000)); } catch { /* no store */ }
+  };
+
   const call = async (action, extra) => {
+    const left = shutFor();
+    if (left > 0) {
+      throw new Error("Three wrong keys. This browser cannot try again for " + left +
+        (left === 1 ? " more minute." : " more minutes."));
+    }
     const res = await fetch("/api/keeper", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(Object.assign({ action, pass: (pass && pass.value) || "" }, extra || {}))
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || "the door did not open");
+    if (!res.ok) {
+      if (data.wait_minutes) shutDown(Number(data.wait_minutes));
+      throw new Error(data.error || "the door did not open");
+    }
+    try { window.localStorage.removeItem(LOCK); } catch { /* no store */ }
     return data;
   };
 

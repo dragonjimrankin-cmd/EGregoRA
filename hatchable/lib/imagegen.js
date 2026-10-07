@@ -86,8 +86,9 @@ function fullPrompt(subject) {
  */
 async function viaOpenSource(prompt, opts = {}) {
   const init = opts.initUrl || null;
+  const wanted = opts.model || (init ? OPEN_I2I_MODEL : OPEN_MODEL);
   const url = OPEN_ENDPOINT + encodeURIComponent(prompt.slice(0, 1800)) +
-    '?width=1024&height=1024&nologo=true&safe=true&model=' + (init ? OPEN_I2I_MODEL : OPEN_MODEL) +
+    '?width=1024&height=1024&nologo=true&safe=true&model=' + wanted +
     (init ? '&image=' + encodeURIComponent(init) : '') +
     '&seed=' + Math.floor(Math.random() * 1e9);
   const ctrl = new AbortController();
@@ -102,7 +103,8 @@ async function viaOpenSource(prompt, opts = {}) {
     return {
       bytes: buf, contentType: type,
       usedSketch: Boolean(init),
-      provider: init ? 'flux-kontext, image to image (open weights)' : 'flux-schnell (open weights)'
+      provider: (opts.model && opts.model !== OPEN_MODEL ? opts.model : (init ? 'flux-kontext, image to image' : 'flux-schnell')) +
+        ' (open weights)'
     };
   } catch (err) {
     console.error('imagegen: open-source route failed', err && err.message);
@@ -143,7 +145,7 @@ async function viaColab(prompt, opts = {}) {
  * A token that has just been refused is put on a short cooldown by the pool
  * and skipped next time rather than retried into the same wall.
  */
-async function viaHuggingFace(prompt) {
+async function viaHuggingFace(prompt, opts = {}) {
   let accounts = await huggingFaceAccounts();
   if (!accounts.length) {
     let token = null;
@@ -154,7 +156,7 @@ async function viaHuggingFace(prompt) {
 
   const won = await acrossAccounts('huggingface', accounts, async (account) => {
     let last = 'no model answered';
-    for (const repo of HF_MODELS) {
+    for (const repo of (opts.repo ? [opts.repo] : HF_MODELS)) {
       const r = await fetch('https://api-inference.huggingface.co/models/' + repo, {
         method: 'POST',
         headers: { authorization: 'Bearer ' + account.secret, 'content-type': 'application/json', accept: 'image/png' },
@@ -251,6 +253,43 @@ export async function storeImage(out) {
  * @param {string} subject what to draw, in plain words
  * @returns {Promise<{url?:string, prompt:string, provider?:string, error?:string}>}
  */
+
+/* ----------------------------------------------------------- the choice
+ *
+ * Every generator here is free to use. Some are keyless and will always
+ * answer; some run on the order's own borrowed GPU; some need a Hugging
+ * Face token, which is free to get but has to be configured. The page
+ * offers them all and says which is which, and whatever is chosen is only
+ * put at the front of the queue \u2014 if it refuses, the rest still try, and
+ * the finished picture always says which one actually drew it.
+ */
+export const IMAGE_ENGINES = [
+  { key: 'auto', label: 'Let the order choose', note: 'Own GPU first, then the keyless open-weights routes.', keyless: true },
+  { key: 'flux', label: 'FLUX.1-schnell', note: 'Black Forest Labs, open weights. The house default: the best all-round free model.', keyless: true },
+  { key: 'turbo', label: 'SDXL-Turbo', note: 'Fast and keyless. Rougher, but seconds rather than half a minute.', keyless: true },
+  { key: 'kontext', label: 'FLUX.1 Kontext', note: 'Image to image. The one that actually follows a sketch.', keyless: true },
+  { key: 'flux-dev', label: 'FLUX.1-dev', note: 'Slower and more careful than schnell, and better at writing and hands.', keyless: true },
+  { key: 'colab', label: 'The order\u2019s own GPU', note: 'FLUX on whichever Colab notebook is awake. Nothing borrowed, no queue but its own.', keyless: true },
+  { key: 'sd35', label: 'Stable Diffusion 3.5 Large', note: 'Stability AI, through Hugging Face. Needs a free Hugging Face token to be configured.', keyless: false },
+  { key: 'sd35turbo', label: 'SD 3.5 Large Turbo', note: 'Four steps instead of thirty. Hugging Face token needed.', keyless: false },
+  { key: 'sdxl', label: 'Stable Diffusion XL', note: 'The old reliable, and the best understood by prompt guides. Hugging Face token needed.', keyless: false },
+  { key: 'flux-hf', label: 'FLUX.1-schnell on Hugging Face', note: 'The same weights as above on different hardware. Hugging Face token needed.', keyless: false },
+  { key: 'playground', label: 'Playground v2.5', note: 'Strong on colour and composition for posters and covers. Hugging Face token needed.', keyless: false }
+];
+
+const ENGINE_ROUTE = {
+  flux: { kind: 'open', model: 'flux' },
+  turbo: { kind: 'open', model: 'turbo' },
+  kontext: { kind: 'open', model: 'kontext' },
+  'flux-dev': { kind: 'open', model: 'flux-dev' },
+  colab: { kind: 'colab' },
+  sd35: { kind: 'hf', repo: 'stabilityai/stable-diffusion-3.5-large' },
+  sd35turbo: { kind: 'hf', repo: 'stabilityai/stable-diffusion-3.5-large-turbo' },
+  sdxl: { kind: 'hf', repo: 'stabilityai/stable-diffusion-xl-base-1.0' },
+  'flux-hf': { kind: 'hf', repo: 'black-forest-labs/FLUX.1-schnell' },
+  playground: { kind: 'hf', repo: 'playgroundai/playground-v2.5-1024px-aesthetic' }
+};
+
 export async function generateImage(subject, opts = {}) {
   const subj = String(subject || '').trim().slice(0, 1200);
   if (subj.length < 3) return { prompt: subj, error: 'Nothing to draw — say what the picture should show.' };
@@ -270,6 +309,18 @@ export async function generateImage(subject, opts = {}) {
        and will draw from the words alone. */
     ? [viaColab, viaOpenSource, viaColab, viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI]
     : [viaColab, viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI];
+
+  /* A generator the member picked goes to the front. It is a preference and
+     not a demand: if it will not answer, the queue behind it still runs. */
+  const chosen = ENGINE_ROUTE[String(opts.engine || 'auto')];
+  if (chosen) {
+    const first = chosen.kind === 'colab'
+      ? (p, o) => viaColab(p, o)
+      : chosen.kind === 'hf'
+        ? (p, o) => viaHuggingFace(p, Object.assign({ repo: chosen.repo }, o))
+        : (p, o) => viaOpenSource(p, Object.assign({ model: chosen.model }, o));
+    attempts.unshift(first);
+  }
   let lastErr = '';
 
   let sketchTried = 0;

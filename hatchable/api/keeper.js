@@ -25,6 +25,71 @@ export const methods = ['POST'];
 
 const FALLBACK = '1133';
 
+/* --------------------------------------------------------- the three tries
+ *
+ * A four-figure passcode is ten thousand guesses, which a script gets
+ * through in a minute. Three wrong keys from one browser and the door stays
+ * shut for twenty minutes, counted on the server where the guesser cannot
+ * reach it. The browser is recognised by its address together with the
+ * signature it sends, hashed, so that nothing identifying is written down
+ * and one person's guessing cannot shut another person out.
+ */
+const TRIES = 3;
+const LOCKOUT_MIN = 20;
+
+async function whoIsKnocking(req) {
+  const h = req.headers || {};
+  const ip = String(h['x-forwarded-for'] || h['x-real-ip'] || (req.socket && req.socket.remoteAddress) || '?')
+    .split(',')[0].trim();
+  const agent = String(h['user-agent'] || '');
+  const raw = ip + '|' + agent;
+  let sum = 5381;
+  for (let i = 0; i < raw.length; i++) sum = ((sum * 33) ^ raw.charCodeAt(i)) >>> 0;
+  return 'k' + sum.toString(36) + '-' + raw.length;
+}
+
+async function doorState(who) {
+  try {
+    const { rows } = await db.query(
+      'SELECT fails, locked_at FROM keeper_tries WHERE who = $1', [who]);
+    const row = rows && rows[0];
+    if (!row) return { fails: 0, wait: 0 };
+    const held = row.locked_at
+      ? LOCKOUT_MIN - (Date.now() - new Date(row.locked_at).getTime()) / 60000
+      : 0;
+    if (held > 0) return { fails: row.fails, wait: Math.ceil(held) };
+    /* The lockout has run out: the slate is clean again. */
+    if (row.locked_at) {
+      await db.query('UPDATE keeper_tries SET fails = 0, locked_at = NULL WHERE who = $1', [who]).catch(() => {});
+      return { fails: 0, wait: 0 };
+    }
+    return { fails: row.fails, wait: 0 };
+  } catch {
+    return { fails: 0, wait: 0 };
+  }
+}
+
+async function wrongKey(who) {
+  try {
+    const { rows } = await db.query(
+      `INSERT INTO keeper_tries (who, fails, last_at) VALUES ($1, 1, NOW())
+       ON CONFLICT (who) DO UPDATE SET fails = keeper_tries.fails + 1, last_at = NOW()
+       RETURNING fails`, [who]);
+    const fails = (rows && rows[0] && rows[0].fails) || 1;
+    if (fails >= TRIES) {
+      await db.query('UPDATE keeper_tries SET locked_at = NOW() WHERE who = $1', [who]).catch(() => {});
+      return { left: 0, wait: LOCKOUT_MIN };
+    }
+    return { left: TRIES - fails, wait: 0 };
+  } catch {
+    return { left: TRIES - 1, wait: 0 };
+  }
+}
+
+async function rightKey(who) {
+  await db.query('DELETE FROM keeper_tries WHERE who = $1', [who]).catch(() => {});
+}
+
 async function passcode() {
   try {
     const set = await config.get('KEEPER_PASSCODE');
@@ -88,12 +153,32 @@ export default async function (req, res) {
   const given = String(body.pass || '').trim();
   const want = await passcode();
 
+  const who = await whoIsKnocking(req);
+  const door = await doorState(who);
+  if (door.wait > 0) {
+    return res.status(429).json({
+      error: 'Three wrong keys. This browser cannot try again for ' + door.wait +
+        ' more ' + (door.wait === 1 ? 'minute' : 'minutes') + '.',
+      wait_minutes: door.wait
+    });
+  }
+
   if (!given) return res.status(400).json({ error: 'The key is needed.' });
   if (given !== want) {
     /* Slow a guesser down a little without locking the keeper out. */
     await new Promise((go) => setTimeout(go, 900));
-    return res.status(403).json({ error: 'That is not the key.' });
+    const bad = await wrongKey(who);
+    return res.status(403).json({
+      error: bad.wait
+        ? 'That is not the key, and that was the third try. This browser is shut out for ' +
+          bad.wait + ' minutes.'
+        : 'That is not the key. ' + bad.left + (bad.left === 1 ? ' try' : ' tries') +
+          ' left before this browser is shut out for ' + LOCKOUT_MIN + ' minutes.',
+      tries_left: bad.left,
+      wait_minutes: bad.wait || 0
+    });
   }
+  await rightKey(who);
 
   const action = String(body.action || 'open');
 
