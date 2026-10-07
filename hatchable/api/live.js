@@ -132,12 +132,24 @@ export default async function (req, res) {
         'never grand, never Latin, never a real constellation, no quotation marks, no full stop, ' +
         'no explanation.';
 
+      let heard = '';
       const tidy = (raw) => {
-        let name = String(raw || '').split('\n')[0].replace(/["'*.]+/g, ' ').trim();
-        name = name.replace(/\s+/g, ' ').slice(0, 40).trim();
-        if (!/^[A-Za-z][A-Za-z '-]+$/.test(name)) return '';
-        if (name.split(' ').length > 5) return '';
-        if (!/^the\b/i.test(name)) name = 'The ' + name;
+        let name = String(raw || '').trim();
+        if (name) heard = name.slice(0, 120);
+        /* Models like to answer with a label, a preamble or a flourish. Take
+           the last non-empty line, drop any "Name:" in front of it, and keep
+           only the letters, spaces, hyphens and apostrophes a name can have. */
+        const lines = name.split('\n').map((l) => l.trim()).filter(Boolean);
+        name = lines.length ? lines[lines.length - 1] : '';
+        name = name.replace(/^[^A-Za-z]*(?:name|constellation|answer)\s*[:\u2014-]\s*/i, '');
+        name = name.replace(/["'`*_.!?]+/g, ' ').replace(/\([^)]*\)/g, ' ');
+        name = name.replace(/[^A-Za-z '-]+/g, ' ').replace(/\s+/g, ' ').trim();
+        const words = name.split(' ').filter(Boolean);
+        if (!words.length) return '';
+        if (words.length > 5) return '';
+        name = words.join(' ').slice(0, 40).trim();
+        if (name.length < 3) return '';
+        if (!/^the$/i.test(words[0])) name = 'The ' + name;
         return name.replace(/\b([a-z])/g, (m, c) => c.toUpperCase());
       };
 
@@ -145,7 +157,8 @@ export default async function (req, res) {
         try {
           const out = await ai.generateText({
             model, system, messages: [{ role: 'user', content: ask }],
-            maxTokens: 24, temperature: 1.1, purpose: 'constellation'
+            maxTokens: 32, temperature: 1,
+            purpose: 'constellation'
           });
           const name = tidy(out && out.text);
           if (name) return res.json({ ok: true, name, by: (out && out.model) || model });
@@ -155,14 +168,14 @@ export default async function (req, res) {
       }
       try {
         const out = await openChat({
-          system, messages: [{ role: 'user', content: ask }], maxTokens: 24, temperature: 1.1
+          system, messages: [{ role: 'user', content: ask }], maxTokens: 32, temperature: 1
         });
         const name = tidy(out && out.text);
         if (name) return res.json({ ok: true, name, by: (out && out.model) || 'open weights' });
       } catch (err) {
         console.error('live: sky-name open route failed', err && err.message);
       }
-      return res.json({ ok: false, reason: 'no model would name it' });
+      return res.json({ ok: false, reason: 'no model would name it', heard });
     }
 
     if (action === 'join' || action === 'pull') {
