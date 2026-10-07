@@ -41,6 +41,33 @@ description: "The order's camera, when it is running: a live feed for members wh
       <div class="admin-signin">
         <label for="lw-word">Watchword</label>
         <input type="password" id="lw-word" data-lw="word" autocomplete="one-time-code">
+      </div>
+
+      <fieldset class="element-door">
+        <legend>Which elemental phase is your integral aligned with?</legend>
+        <p class="muted xsmall">Asked of everyone at the door. It is not a test and there is no wrong
+        answer &mdash; it is how the room is read, and how the broadcaster sees who is in it. Answer
+        as you are today, not as you were.</p>
+        <div class="element-choice">
+          <label class="element-pick"><input type="radio" name="lw-element" value="earth">
+            <span class="element-glyph">&#9661;</span><strong>Earth</strong>
+            <span class="muted xsmall">body, ground, the slow proof</span></label>
+          <label class="element-pick"><input type="radio" name="lw-element" value="fire">
+            <span class="element-glyph">&#9651;</span><strong>Fire</strong>
+            <span class="muted xsmall">will, drive, the fast proof</span></label>
+          <label class="element-pick"><input type="radio" name="lw-element" value="water">
+            <span class="element-glyph">&#9663;</span><strong>Water</strong>
+            <span class="muted xsmall">feeling, memory, the deep proof</span></label>
+          <label class="element-pick"><input type="radio" name="lw-element" value="air">
+            <span class="element-glyph">&#9653;</span><strong>Air</strong>
+            <span class="muted xsmall">thought, speech, the clear proof</span></label>
+          <label class="element-pick"><input type="radio" name="lw-element" value="ether">
+            <span class="element-glyph">&#11041;</span><strong>Ether</strong>
+            <span class="muted xsmall">the field the other four stand in</span></label>
+        </div>
+      </fieldset>
+
+      <div class="btn-row">
         <button type="button" class="btn btn--small" data-lw="enter">Look through</button>
       </div>
       <p class="muted xsmall">You must be signed in as a member. Not one yet? <a href="/join/">Join the order</a>.</p>
@@ -142,6 +169,10 @@ description: "The order's camera, when it is running: a live feed for members wh
         <button type="button" class="btn btn--ghost" data-lv="stop" disabled>End the feed</button>
       </div>
       <div class="countdown" data-lv="count" hidden></div>
+      <div class="switch-row">
+        <label class="switch"><input type="checkbox" data-lv="keep" checked>
+          Record this broadcast to the archive</label>
+      </div>
 
       <video class="live-mirror" data-lv="mirror" muted playsinline
              aria-label="What the camera is seeing" role="img"></video>
@@ -281,6 +312,33 @@ Casimir, 1948 | the vacuum pushes, so it is not nothing</textarea>
                placeholder="spoken into the chat as The Order">
         <button type="button" class="btn btn--small" data-lv="order-say">Say it</button>
       </div>
+
+      <div class="switch-row all-row">
+        <span class="muted xsmall">Everyone in the room, at once:</span>
+        <button type="button" class="btn btn--small btn--ghost" data-all="can_cam" data-on="1">All cameras on</button>
+        <button type="button" class="btn btn--small btn--ghost" data-all="can_cam" data-on="0">All cameras off</button>
+        <button type="button" class="btn btn--small btn--ghost" data-all="can_mic" data-on="1">All mics on</button>
+        <button type="button" class="btn btn--small btn--ghost" data-all="can_mic" data-on="0">All mics off</button>
+        <button type="button" class="btn btn--small btn--ghost" data-all="can_chat" data-on="0">Silence the chat</button>
+        <button type="button" class="btn btn--small btn--ghost" data-all="can_chat" data-on="1">Open the chat</button>
+      </div>
+      <p class="muted xsmall">These powers reach every non-admin in the room. The broadcaster is not in
+      the table, so there is no press here that can lock you out of your own feed.</p>
+
+      <div class="divider">&#10022;</div>
+      <p class="kicker">The Archive</p>
+      <p class="muted xsmall">Every broadcast recorded with the switch above is filed here, in a folder
+      named for the day it went out. The live segments are still deleted the moment a feed ends &mdash;
+      they are a way of carrying pictures, not a recording. This is the recording.</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn--small btn--ghost" data-lv="files-load">Refresh the archive</button>
+      </div>
+      <div class="file-browser">
+        <ul class="folder-list" data-lv="folders"></ul>
+        <div class="file-pane" data-lv="filelist"></div>
+      </div>
+      <video class="archive-player" data-lv="player" controls playsinline hidden
+             aria-label="The recording being played back"></video>
 
       <div class="divider">&#10022;</div>
       <p class="kicker">Feeds</p>

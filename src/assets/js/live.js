@@ -56,6 +56,7 @@ export function countdown(host, seconds, go) {
   const $ = (n) => root.querySelector('[data-lv="' + n + '"]');
   let pass = "";
   let feedId = null, rec = null, stream = null, seq = 0, cancel = null;
+  let tapeParts = [], tapeType = "video/webm", tapeFrom = 0;
 
   const say = (t, bad) => {
     const n = $("msg");
@@ -89,6 +90,7 @@ export function countdown(host, seconds, go) {
       $("pass").value = "";
       say("Open.");
       drawMine(d.feeds || []);
+      drawFiles();
     } catch (err) {
       pass = "";
       say((err && err.message) || "That did not open it.", true);
@@ -388,6 +390,10 @@ export function countdown(host, seconds, go) {
       });
       rec.ondataavailable = async (e) => {
         if (!e.data || !e.data.size || feedId == null) return;
+        /* The same segments that go out are kept in memory for the archive.
+           They are the broadcast, in order, head first, so concatenating
+           them is the whole recording with no re-encoding. */
+        if (keeping()) tapeParts.push(e.data);
         const bytes = new Uint8Array(await e.data.arrayBuffer());
         let bin = "";
         for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
@@ -399,6 +405,9 @@ export function countdown(host, seconds, go) {
           say("A segment did not get through: " + ((err && err.message) || "unknown"), true);
         }
       };
+      tapeParts = [];
+      tapeType = type;
+      tapeFrom = Date.now();
       rec.start(SEGMENT);
       root.classList.add("is-live");
       say("Live. Watchers need an account here and the watchword \u201c" + word + "\u201d.");
@@ -421,18 +430,156 @@ export function countdown(host, seconds, go) {
     if (cancel) { cancel(); cancel = null; }
   }
 
+  const keeping = () => !!($("keep") || {}).checked;
+
+  /* Filing the recording. The broadcast is already in memory as a list of
+     segments; this glues them into one file and sends it up in pieces, with
+     the count said out loud so a long upload does not look like a hang. */
+  async function fileTheTape(id, title) {
+    if (!tapeParts.length) return;
+    const whole = new Blob(tapeParts, { type: tapeType });
+    const seconds = Math.round((Date.now() - tapeFrom) / 1000);
+    tapeParts = [];
+    const upload = "live-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+    try {
+      const begun = await post({ action: "keep-begin", upload });
+      const raw = Math.floor((begun.chunk_max || 1400000) * 0.7);
+      const buf = new Uint8Array(await whole.arrayBuffer());
+      const pieces = Math.ceil(buf.length / raw);
+      say("Filing the recording \u2014 " + Math.round(buf.length / 1048576) + " MB in " + pieces + " pieces\u2026");
+      for (let i = 0; i < pieces; i++) {
+        const slice = buf.subarray(i * raw, Math.min(buf.length, (i + 1) * raw));
+        let bin = "";
+        for (let j = 0; j < slice.length; j++) bin += String.fromCharCode(slice[j]);
+        await post({ action: "keep-chunk", upload, seq: i, part: btoa(bin) });
+        say("Filing the recording \u2014 piece " + (i + 1) + " of " + pieces + "\u2026");
+      }
+      const done = await post({ action: "keep", upload, id, title, mime: tapeType, seconds });
+      say("Filed as " + done.folder + "/" + done.name + ". It is in the archive below.");
+      drawFiles();
+    } catch (err) {
+      say("The recording could not be filed: " + ((err && err.message) || "unknown") +
+        ". The broadcast itself went out fine.", true);
+    }
+  }
+
   $("stop").addEventListener("click", async () => {
     const id = feedId;
+    const title = $("title").value.trim() || "An unnamed broadcast";
+    const keep = keeping();
     feedId = null;
     stopAll();
     if (id) await post({ action: "close", id }).catch(() => {});
-    say("The feed is ended and its segments are deleted.");
+    say(keep ? "The feed is ended. Its live segments are deleted; the recording is being filed."
+      : "The feed is ended and its segments are deleted. Nothing was kept.");
     drawMine((await post({ action: "mine" })).feeds || []);
+    if (keep) await fileTheTape(id, title);
   });
 
-  /* The override table. One tickbox per power, per person, and a block that
-     takes everything at once — a broadcaster dealing with a nuisance
-     should not have to untick three boxes in a row. */
+  /* ------------------------------------------------------- the archive */
+  /* A file browser, in the plain sense: folders on the left, what is in the
+     chosen folder on the right, and a player underneath. Folders are days,
+     because that is how anyone looking for a broadcast actually searches. */
+  let tapes = [];
+  let folderNow = "";
+
+  const size = (b) => (b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.round(b / 1024) + " KB");
+  const span = (sec) => Math.floor(sec / 60) + "m " + String(sec % 60).padStart(2, "0") + "s";
+
+  function drawFolders() {
+    const host = $("folders");
+    if (!host) return;
+    const names = [];
+    tapes.forEach((t) => { if (names.indexOf(t.folder) < 0) names.push(t.folder); });
+    if (!folderNow || names.indexOf(folderNow) < 0) folderNow = names[0] || "";
+    host.innerHTML = names.length
+      ? names.map((f) => '<li><button type="button" class="folder' +
+        (f === folderNow ? " is-on" : "") + '" data-folder="' + esc(f) + '">' +
+        '<span class="folder-mark">\u25b8</span> ' + esc(f) + ' <span class="muted xsmall">' +
+        tapes.filter((t) => t.folder === f).length + "</span></button></li>").join("")
+      : '<li class="muted small">No folders yet.</li>';
+    host.querySelectorAll("[data-folder]").forEach((b) => b.addEventListener("click", () => {
+      folderNow = b.getAttribute("data-folder");
+      drawFolders();
+      drawInFolder();
+    }));
+  }
+
+  function drawInFolder() {
+    const host = $("filelist");
+    if (!host) return;
+    const got = tapes.filter((t) => t.folder === folderNow);
+    host.innerHTML = got.length
+      ? '<table class="keeper-table"><thead><tr><th>File</th><th>Length</th><th>Size</th>' +
+        "<th></th></tr></thead><tbody>" + got.map((t) =>
+          "<tr><td>" + esc(t.name) + '<br><span class="muted xsmall">' + esc(t.title) +
+          "</span></td><td>" + span(t.seconds) + "</td><td>" + size(t.bytes) + "</td><td>" +
+          '<button type="button" class="btn btn--small" data-play="' + t.id + '">Play</button> ' +
+          '<a class="btn btn--small btn--ghost" href="' + t.url + '" download="' + esc(t.name) +
+          '">Download</a> ' +
+          '<button type="button" class="btn btn--small btn--ghost" data-burn="' + t.id + '">Delete</button>' +
+          "</td></tr>").join("") + "</tbody></table>"
+      : '<p class="muted small">This folder is empty.</p>';
+    host.querySelectorAll("[data-play]").forEach((b) => b.addEventListener("click", () => {
+      const t = tapes.find((x) => String(x.id) === b.getAttribute("data-play"));
+      const v = $("player");
+      if (t && v) { v.src = t.url; v.hidden = false; v.play().catch(() => {}); }
+    }));
+    host.querySelectorAll("[data-burn]").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("Delete this recording? There is no copy.")) return;
+      await post({ action: "tape-drop", tape: Number(b.getAttribute("data-burn")) }).catch(() => {});
+      drawFiles();
+    }));
+  }
+
+  async function drawFiles() {
+    if (!$("folders")) return;
+    try {
+      const d = await post({ action: "tapes" });
+      tapes = d.tapes || [];
+      drawFolders();
+      drawInFolder();
+    } catch (err) {
+      say((err && err.message) || "The archive would not open.", true);
+    }
+  }
+
+  if ($("files-load")) $("files-load").addEventListener("click", drawFiles);
+
+  /* The live table. Everyone who has come through the door, grouped by the
+     elemental phase they declared, with the overrides at three levels:
+     one person, one whole phase, or every non-admin in the room. The
+     element is how the order reads a room, so it is how the table is
+     ordered rather than an afterthought in a column. */
+  const PHASES = [
+    { id: "earth", glyph: "\u25bd", note: "body, ground, the slow proof" },
+    { id: "fire", glyph: "\u25b3", note: "will, drive, the fast proof" },
+    { id: "water", glyph: "\u25bd\u0335", note: "feeling, memory, the deep proof" },
+    { id: "air", glyph: "\u25b3\u0335", note: "thought, speech, the clear proof" },
+    { id: "ether", glyph: "\u2b21", note: "the field the other four stand in" },
+    { id: "unsaid", glyph: "\u00b7", note: "came in before the question, or would not answer" }
+  ];
+
+  function tick(p, f) {
+    return '<td><input type="checkbox" data-person="' + p.id + '" data-field="' + f + '"' +
+      (p[f] ? " checked" : "") + ' aria-label="' + f.replace("_", " ") + " for " + esc(p.who) + '"></td>';
+  }
+
+  function phaseRow(ph, folk) {
+    const n = folk.length;
+    const onCam = folk.filter((p) => p.can_cam).length;
+    const onMic = folk.filter((p) => p.can_mic).length;
+    return '<tr class="phase-row"><th colspan="6"><span class="phase-glyph">' + ph.glyph +
+      "</span> " + ph.id.toUpperCase() + ' <span class="muted xsmall">' + ph.note + " \u00b7 " +
+      n + (n === 1 ? " person" : " people") + " \u00b7 " + onCam + " on camera \u00b7 " + onMic +
+      ' with a microphone</span><span class="phase-acts">' +
+      '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id + '" data-field="can_cam" data-on="1">Cameras on</button>' +
+      '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id + '" data-field="can_cam" data-on="0">off</button>' +
+      '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id + '" data-field="can_mic" data-on="1">Mics on</button>' +
+      '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id + '" data-field="can_mic" data-on="0">off</button>' +
+      "</span></th></tr>";
+  }
+
   async function drawPeople() {
     if (!feedId) return;
     const n = $("people");
@@ -440,23 +587,48 @@ export function countdown(host, seconds, go) {
     try {
       const d = await post({ action: "people", id: feedId });
       const folk = d.people || [];
-      n.innerHTML = folk.length
-        ? '<table class="keeper-table"><thead><tr><th>Who</th><th>Chat</th><th>Camera</th>' +
-          "<th>Blocked</th><th>On air</th></tr></thead><tbody>" + folk.map((p) =>
-            "<tr><td>" + esc(p.who) + "</td>" +
-            ["can_chat", "can_cam", "blocked"].map((f) =>
-              '<td><input type="checkbox" data-person="' + p.id + '" data-field="' + f + '"' +
-              (p[f] ? " checked" : "") + ' aria-label="' + f.replace("_", " ") + ' for ' +
-              esc(p.who) + '"></td>').join("") +
-            "<td>" + (p.on_camera ? "yes" : "\u2014") + "</td></tr>").join("") + "</tbody></table>"
-        : '<p class="muted small">Nobody is in the room yet.</p>';
+      if (!folk.length) {
+        n.innerHTML = '<p class="muted small">Nobody is in the room yet. They are asked for their ' +
+          "elemental phase at the door, and appear here under it.</p>";
+        return;
+      }
+      let html = '<table class="keeper-table people-table"><thead><tr><th>Who</th><th>Chat</th>' +
+        "<th>Camera</th><th>Microphone</th><th>Blocked</th><th>On air</th></tr></thead><tbody>";
+      PHASES.forEach((ph) => {
+        const got = folk.filter((p) => (p.element || "unsaid") === ph.id);
+        if (!got.length) return;
+        html += phaseRow(ph, got);
+        html += got.map((p) =>
+          "<tr><td>" + esc(p.who) + "</td>" +
+          tick(p, "can_chat") + tick(p, "can_cam") + tick(p, "can_mic") + tick(p, "blocked") +
+          "<td>" + (p.on_camera ? "yes" : "\u2014") + "</td></tr>").join("");
+      });
+      html += "</tbody></table>";
+      n.innerHTML = html;
+
       n.querySelectorAll("[data-person]").forEach((b) => b.addEventListener("change", async () => {
-        await post({ action: "allow", person: Number(b.getAttribute("data-person")),
+        await post({ action: "allow", id: feedId, person: Number(b.getAttribute("data-person")),
           field: b.getAttribute("data-field"), value: b.checked }).catch(() => {});
+        drawPeople();
+      }));
+      n.querySelectorAll("[data-el]").forEach((b) => b.addEventListener("click", async () => {
+        await post({ action: "allow", id: feedId, element: b.getAttribute("data-el"),
+          field: b.getAttribute("data-field"), value: b.getAttribute("data-on") === "1" }).catch(() => {});
         drawPeople();
       }));
     } catch { /* the table will be there next beat */ }
   }
+
+  /* Everyone at once. The admin is not in this table, so "all" can never
+     lock the broadcaster out of their own room. */
+  root.querySelectorAll("[data-all]").forEach((b) => b.addEventListener("click", async () => {
+    if (!feedId) return say("No feed is running.", true);
+    await post({ action: "allow", id: feedId, all: true,
+      field: b.getAttribute("data-all"), value: b.getAttribute("data-on") === "1" })
+      .then((d) => say("Changed for " + d.changed + " in the room."))
+      .catch((e) => say((e && e.message) || "That did not take.", true));
+    drawPeople();
+  }));
 
   const orderSay = $("order-say");
   if (orderSay) orderSay.addEventListener("click", async () => {
@@ -480,6 +652,7 @@ export function countdown(host, seconds, go) {
   const root = document.getElementById("live-watch");
   if (!root) return;
   const $ = (n) => root.querySelector('[data-lw="' + n + '"]');
+  const mine = { element: "" };
   let feeds = [], picked = null, since = -1, timer = null, src = null, buffer = null;
   const queue = [];
 
@@ -532,9 +705,17 @@ export function countdown(host, seconds, go) {
     if (!picked) return say("Choose a feed first.", true);
     const word = $("word").value.trim();
     if (!word) return say("The watchword, please.", true);
+    const chose = root.querySelector('input[name="lw-element"]:checked');
+    const element = chose ? chose.value : "";
+    if (!element) {
+      return say("Before you come in: which elemental phase is your integral aligned with \u2014 " +
+        "earth, fire, water, air or ether?", true);
+    }
     try {
-      const d = await post({ action: "join", id: picked.id, word });
-      say("In. " + d.title + " \u2014 running a few seconds behind the room.");
+      const d = await post({ action: "join", id: picked.id, word, element });
+      mine.element = d.element || element;
+      say("In, as " + (d.element || element) + ". " + d.title +
+        " \u2014 running a few seconds behind the room.");
       start(picked.id, word, d.mime || "video/webm");
       room(picked.id, word);
     } catch (err) {

@@ -27,9 +27,14 @@
  *                                                    camera in the room
  *   { action: 'cam-push', id, word, cam, seq, part } your camera's segments
  *   { action: 'people', pass, id }                   the broadcaster's table
- *   { action: 'allow',  pass, person, field, value } tick a box in it
+ *   { action: 'allow',  pass, person|element|all, field, value } tick a box,
+ *                                                    a whole element, or
+ *                                                    everyone at once
+ *   { action: 'keep-begin'|'keep-chunk'|'keep', pass, … } file the recording
+ *   { action: 'tapes',  pass }                       the archive, as folders
+ *   { action: 'tape-drop', pass, tape }              burn one
  */
-import { db } from 'hatchable';
+import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { requireStudio } from '../lib/accounts.js';
 
@@ -38,6 +43,7 @@ export const methods = ['POST'];
 
 const KEEP_SECONDS = 180;      /* how far back a late watcher can reach */
 const MAX_PART = 2.2 * 1024 * 1024;
+const ARCHIVE_MAX = 400 * 1024 * 1024;  /* one recording, filed whole */
 const STALE_MIN = 3;           /* no segment for this long and it is over */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
@@ -65,12 +71,20 @@ async function sweep() {
 
 /* Who this member is in this room, and what they are allowed to do. A row
    is made the first time they look in. */
-async function person(feedId, me) {
+const ELEMENTS = ['earth', 'fire', 'water', 'air', 'ether'];
+
+async function person(feedId, me, element) {
   const name = (me && (me.display_name || me.name || me.email)) || 'a member';
+  const el = ELEMENTS.indexOf(String(element || '').toLowerCase()) >= 0
+    ? String(element).toLowerCase() : null;
+  /* The declared element is written once and then only overwritten by a
+     fresh declaration, so an ordinary poll does not quietly wipe it. */
   const { rows } = await db.query(
-    `INSERT INTO live_people (feed_id, member_id, who) VALUES ($1, $2, $3)
-     ON CONFLICT (feed_id, member_id) DO UPDATE SET last_seen = NOW(), who = EXCLUDED.who
-     RETURNING *`, [feedId, me && me.id ? me.id : null, String(name).slice(0, 80)]);
+    `INSERT INTO live_people (feed_id, member_id, who, element) VALUES ($1, $2, $3, $4)
+     ON CONFLICT (feed_id, member_id) DO UPDATE
+       SET last_seen = NOW(), who = EXCLUDED.who,
+           element = COALESCE(EXCLUDED.element, live_people.element)
+     RETURNING *`, [feedId, me && me.id ? me.id : null, String(name).slice(0, 80), el]);
   return rows && rows[0];
 }
 
@@ -115,11 +129,25 @@ export default async function (req, res) {
       }
 
       if (action === 'join') {
+        /* The door asks one question of its own: which elemental phase your
+           integral is aligned with. It is not a gate — an answer is taken
+           and recorded, never graded — but it is what the broadcaster's
+           table is grouped by, so it is asked before you come in rather
+           than guessed at afterwards. */
+        const el = clean(body.element, 10).toLowerCase();
+        if (ELEMENTS.indexOf(el) < 0) {
+          return res.status(400).json({
+            error: 'Name the elemental phase your integral is aligned with: earth, fire, water, air or ether.',
+            gate: 'element', elements: ELEMENTS
+          });
+        }
+        const me = await person(id, door.member, el);
         await db.query('UPDATE live_feeds SET watchers = watchers + 1 WHERE id = $1', [id]).catch(() => {});
         return res.json({
           ok: true,
           title: feed.title, note: feed.note || '', mime: feed.mime || 'video/webm',
-          state: feed.state, since: feed.started_at
+          state: feed.state, since: feed.started_at,
+          element: me.element, you: { who: me.who, can_chat: me.can_chat, can_cam: me.can_cam, can_mic: me.can_mic }
         });
       }
 
@@ -161,7 +189,7 @@ export default async function (req, res) {
         return res.status(401).json({ error: 'That is not the watchword for this feed.' });
       }
 
-      const me = await person(id, door.member);
+      const me = await person(id, door.member, body.element);
       if (me.blocked) {
         return res.status(403).json({ error: 'The broadcaster has closed this room to you.' });
       }
@@ -218,7 +246,7 @@ export default async function (req, res) {
         `SELECT id, who, body, is_order, at FROM live_chat
           WHERE feed_id = $1 AND id > $2 AND hidden = FALSE ORDER BY id ASC LIMIT 80`, [id, since]);
       const { rows: folk } = await db.query(
-        `SELECT who, can_chat, can_cam, blocked FROM live_people
+        `SELECT who, element, can_chat, can_cam, can_mic, blocked FROM live_people
           WHERE feed_id = $1 AND last_seen > NOW() - INTERVAL '2 minutes' ORDER BY joined_at ASC LIMIT 100`,
         [id]);
       const { rows: cams } = await db.query(
@@ -227,7 +255,7 @@ export default async function (req, res) {
       return res.json({
         ok: true,
         state: feed.state,
-        you: { who: me.who, can_chat: me.can_chat, can_cam: me.can_cam },
+        you: { who: me.who, element: me.element, can_chat: me.can_chat, can_cam: me.can_cam, can_mic: me.can_mic },
         lines: (lines || []).map((l) => ({
           id: Number(l.id), who: l.who, body: l.body, order: l.is_order, at: l.at
         })),
@@ -281,48 +309,159 @@ export default async function (req, res) {
       const id = Number(body.id);
       if (!id) return res.status(400).json({ error: 'Which feed?' });
       const { rows } = await db.query(
-        `SELECT id, who, can_chat, can_cam, blocked, last_seen FROM live_people
+        `SELECT id, who, element, can_chat, can_cam, can_mic, blocked, last_seen FROM live_people
           WHERE feed_id = $1 ORDER BY joined_at ASC LIMIT 200`, [id]);
       const { rows: cams } = await db.query(
         "SELECT id, who FROM live_feeds WHERE parent_id = $1 AND state = 'live'", [id]);
       return res.json({
         ok: true,
         people: (rows || []).map((r) => ({
-          id: Number(r.id), who: r.who, can_chat: r.can_chat, can_cam: r.can_cam,
+          id: Number(r.id), who: r.who, element: r.element || 'unsaid',
+          can_chat: r.can_chat, can_cam: r.can_cam, can_mic: r.can_mic,
           blocked: r.blocked, seen: r.last_seen,
           on_camera: (cams || []).some((c) => c.who === r.who)
         }))
       });
     }
 
-    /* One tickbox at a time, which is how the table is actually used. */
+    /* The supervisory powers. One person, one whole elemental phase, or
+       every non-admin in the room at once \u2014 a broadcaster dealing with
+       feedback from six open microphones should be able to shut all six
+       with one press, and reopen one of them afterwards. */
     if (action === 'allow') {
-      const who = Number(body.person);
       const field = clean(body.field, 10);
-      if (!who || ['can_chat', 'can_cam', 'blocked'].indexOf(field) < 0) {
-        return res.status(400).json({ error: 'Which person, and which box?' });
+      if (['can_chat', 'can_cam', 'can_mic', 'blocked'].indexOf(field) < 0) {
+        return res.status(400).json({ error: 'Which box? can_chat, can_cam, can_mic or blocked.' });
       }
-      await db.query('UPDATE live_people SET ' + field + ' = $2 WHERE id = $1', [who, body.value === true]);
-      /* Taking the camera away takes the picture down with it. */
-      if (field === 'can_cam' && body.value !== true) {
-        const { rows } = await db.query('SELECT feed_id, who FROM live_people WHERE id = $1', [who]);
-        const row = rows && rows[0];
-        if (row) {
+      const on = body.value === true;
+      const feed = Number(body.id);
+      const who = Number(body.person);
+      const element = clean(body.element, 10).toLowerCase();
+      const all = body.all === true;
+
+      let rows = [];
+      if (who) {
+        const r = await db.query(
+          'UPDATE live_people SET ' + field + ' = $2 WHERE id = $1 RETURNING feed_id, who', [who, on]);
+        rows = r.rows || [];
+      } else if (all && feed) {
+        const r = await db.query(
+          'UPDATE live_people SET ' + field + ' = $2 WHERE feed_id = $1 RETURNING feed_id, who', [feed, on]);
+        rows = r.rows || [];
+      } else if (element && feed) {
+        if (ELEMENTS.indexOf(element) < 0 && element !== 'unsaid') {
+          return res.status(400).json({ error: 'There is no such elemental phase.' });
+        }
+        const r = element === 'unsaid'
+          ? await db.query(
+            'UPDATE live_people SET ' + field + ' = $2 WHERE feed_id = $1 AND element IS NULL RETURNING feed_id, who',
+            [feed, on])
+          : await db.query(
+            'UPDATE live_people SET ' + field + ' = $2 WHERE feed_id = $1 AND element = $3 RETURNING feed_id, who',
+            [feed, on, element]);
+        rows = r.rows || [];
+      } else {
+        return res.status(400).json({ error: 'Which person, which element, or all of them?' });
+      }
+
+      /* Taking a camera away takes the picture down with it; a block takes
+         everything at once, because a nuisance should be one press and not
+         four. */
+      const close = async (list) => {
+        for (const r of list) {
           await db.query(
             "UPDATE live_feeds SET state = 'ended', ended_at = NOW() WHERE parent_id = $1 AND who = $2",
-            [row.feed_id, row.who]);
+            [r.feed_id, r.who]);
         }
-      }
-      if (field === 'blocked' && body.value === true) {
-        const { rows } = await db.query('SELECT feed_id, who FROM live_people WHERE id = $1', [who]);
-        const row = rows && rows[0];
-        if (row) {
-          await db.query('UPDATE live_people SET can_cam = FALSE, can_chat = FALSE WHERE id = $1', [who]);
+      };
+      if (field === 'can_cam' && !on) await close(rows);
+      if (field === 'blocked' && on) {
+        for (const r of rows) {
           await db.query(
-            "UPDATE live_feeds SET state = 'ended', ended_at = NOW() WHERE parent_id = $1 AND who = $2",
-            [row.feed_id, row.who]);
+            'UPDATE live_people SET can_cam = FALSE, can_chat = FALSE, can_mic = FALSE WHERE feed_id = $1 AND who = $2',
+            [r.feed_id, r.who]);
         }
+        await close(rows);
       }
+      return res.json({ ok: true, changed: rows.length });
+    }
+
+    /* ----------------------------------------------------------- the archive
+       A feed's segments are a transport format and are still deleted when it
+       ends. The recording is a separate thing: the browser records the same
+       programme to a file and sends it here when the feed stops, and it is
+       filed in a folder named for the day. Nothing is kept that the
+       broadcaster did not record on purpose. */
+    if (action === 'keep-begin') {
+      const upload = clean(body.upload, 64);
+      if (!upload) return res.status(400).json({ error: 'No name for the recording.' });
+      await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]);
+      await db.query("DELETE FROM media_chunks WHERE at < NOW() - INTERVAL '2 hours'").catch(() => {});
+      return res.json({ ok: true, upload, chunk_max: Math.floor(MAX_PART) });
+    }
+
+    if (action === 'keep-chunk') {
+      const upload = clean(body.upload, 64);
+      const seq = Number(body.seq);
+      const part = String(body.part || '');
+      if (!upload || !Number.isFinite(seq)) return res.status(400).json({ error: 'A piece with no place.' });
+      if (part.length > MAX_PART * 1.1) return res.status(413).json({ error: 'That piece is too large.' });
+      await db.query(
+        `INSERT INTO media_chunks (upload_id, seq, part) VALUES ($1, $2, $3)
+         ON CONFLICT (upload_id, seq) DO UPDATE SET part = EXCLUDED.part`, [upload, seq, part]);
+      return res.json({ ok: true, seq });
+    }
+
+    if (action === 'keep') {
+      const upload = clean(body.upload, 64);
+      const title = clean(body.title, 200) || 'An unnamed broadcast';
+      if (!upload) return res.status(400).json({ error: 'No name for the recording.' });
+      const { rows } = await db.query(
+        'SELECT seq, part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
+      if (!rows || !rows.length) return res.status(400).json({ error: 'Nothing arrived.' });
+      const whole = Buffer.concat(rows.map((r) => Buffer.from(r.part, 'base64')));
+      await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]);
+      if (!whole.length) return res.status(400).json({ error: 'The recording came through empty.' });
+      if (whole.length > ARCHIVE_MAX) {
+        return res.status(413).json({ error: 'That recording is larger than the ' +
+          Math.round(ARCHIVE_MAX / 1048576) + ' MB the archive will take in one piece.' });
+      }
+
+      const mime = clean(body.mime, 80) || 'video/webm';
+      const ext = mime.indexOf('mp4') >= 0 ? 'mp4' : mime.indexOf('audio') >= 0 ? 'webm' : 'webm';
+      const stamp = new Date();
+      const folder = clean(body.folder, 60) || stamp.toISOString().slice(0, 10);
+      const name = stamp.toISOString().replace(/[:.]/g, '-') + '.' + ext;
+      const key = 'live-archive/' + folder + '/' + name;
+      await storage.put(key, whole, mime);
+      const { rows: made } = await db.query(
+        `INSERT INTO live_tapes (feed_id, folder, name, title, store, mime, bytes, seconds)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`,
+        [Number(body.id) || null, folder, name, title, key, mime, whole.length,
+          Math.max(0, Math.round(Number(body.seconds) || 0))]);
+      return res.json({ ok: true, id: Number(made[0].id), folder, name, bytes: whole.length });
+    }
+
+    if (action === 'tapes') {
+      const { rows } = await db.query(
+        'SELECT * FROM live_tapes ORDER BY at DESC LIMIT 400');
+      const out = [];
+      for (const r of rows || []) {
+        out.push({
+          id: Number(r.id), folder: r.folder, name: r.name, title: r.title,
+          mime: r.mime, bytes: Number(r.bytes), seconds: Number(r.seconds), at: r.at,
+          url: await storage.url(r.store, { ttl: 21600 })
+        });
+      }
+      return res.json({ ok: true, tapes: out });
+    }
+
+    if (action === 'tape-drop') {
+      const tape = Number(body.tape);
+      if (!tape) return res.status(400).json({ error: 'Which recording?' });
+      const { rows } = await db.query('SELECT store FROM live_tapes WHERE id = $1', [tape]);
+      if (rows && rows[0] && storage.delete) await storage.delete(rows[0].store).catch(() => {});
+      await db.query('DELETE FROM live_tapes WHERE id = $1', [tape]);
       return res.json({ ok: true });
     }
 
