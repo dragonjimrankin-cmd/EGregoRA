@@ -226,6 +226,9 @@ description: "The order's camera, when it is running: a live feed for members wh
       <p class="muted xsmall">Ending a feed deletes its segments. Nothing of a live feed is kept
       &mdash; if you want the recording, record it on the Videos page instead.</p>
 
+      {% set faWhere = "live" %}
+      {% include "partials/freeai-doors.njk" %}
+
       <div class="divider">&#10022;</div>
       <p class="kicker">The Director&rsquo;s Desk</p>
       <p class="muted xsmall">What the watchers receive is the <em>programme</em> below, not the raw
@@ -443,4 +446,5 @@ Casimir, 1948 | the vacuum pushes, so it is not nothing</textarea>
   </div>
 </section>
 
+<script type="module" src="/assets/js/freeai-admin.js?v={{ build.id }}"></script>
 <script type="module" src="/assets/js/live.js?v={{ build.id }}"></script>

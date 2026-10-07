@@ -970,6 +970,31 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
 
 <div class="divider">✦ ✦ ✦</div>
 
+{#- The order's own door on this page. Open it and two things appear: the
+    five Free.ai doors, and an "export to the live files" button under every
+    generation on the page. Nothing here is visible to a visitor. -#}
+<section class="wrap narrow admin-media" id="ask-admin">
+  <div class="btn-row">
+    <button type="button" class="btn btn--ghost" data-aa="open" aria-expanded="false">Admin Only</button>
+    <span class="muted xsmall">The order&rsquo;s own models, and a way to send what Gink makes
+    into the live files folder.</span>
+  </div>
+  <div class="frame admin-panel" data-aa="panel" hidden>
+    <p class="kicker">The Order&rsquo;s Passcode</p>
+    <div class="admin-signin">
+      <label for="ask-admin-pass">Passcode</label>
+      <input type="password" id="ask-admin-pass" data-aa="pass" autocomplete="current-password"
+             placeholder="&bull;&bull;&bull;&bull;&bull;">
+      <button type="button" class="btn btn--small" data-aa="signin">Open the door</button>
+    </div>
+    <p class="auth-msg" data-aa="msg" role="status"></p>
+    {% set faWhere = "ask" %}
+    {% include "partials/freeai-doors.njk" %}
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
 <section class="wrap">
   <div class="grid two">
     <div class="frame reveal">
@@ -1089,6 +1114,7 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
   </div>
 </section>
 
+<script type="module" src="/assets/js/freeai-admin.js?v={{ build.id }}"></script>
 <script type="module" src="/assets/js/fox.js?v={{ build.id }}"></script>
 <script type="module" src="/assets/js/model.js?v={{ build.id }}"></script>
 <script type="module" src="/assets/js/scan.js?v={{ build.id }}"></script>

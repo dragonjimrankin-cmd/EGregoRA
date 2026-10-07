@@ -377,7 +377,13 @@
           limb: (limbEl && limbEl.value) || "",
           history: history.slice(0, -1).slice(-MAX_KEPT),
           attachments: attachments.filter((f) => f.id).map((f) => f.id),
-          byok: window.EGOwnMind ? window.EGOwnMind() : null
+          byok: window.EGOwnMind ? window.EGOwnMind() : null,
+          /* An administrator with the door open on this page also opens the
+             order's own Free.ai keys, with whichever model was chosen in
+             the Free.ai panel. Nobody else sends any of this. */
+          pass: (window.EGAdminPass && window.EGAdminPass()) || undefined,
+          free_model: (window.EGFreeWants && window.EGFreeWants().chat) || undefined,
+          free_slot: (window.EGFreeWants && window.EGFreeWants().slot) || undefined
         })
       });
       const data = await res.json().catch(() => ({}));
@@ -857,6 +863,7 @@
           (data.note ? '<br>' + esc(data.note) : "") +
           " \u00b7 open in a new tab for the full size</span></figcaption>";
         if (window.EGMontageAdd) window.EGMontageAdd(data.url, p, "image");
+        if (window.EGFileButton) window.EGFileButton(card, data.url, p, "image");
         if (window.EGArrived) window.EGArrived("image", card);
       }
     } catch {
@@ -2115,6 +2122,7 @@
       settle();
       card.appendChild(cut);
     }
+    if (window.EGFileButton) window.EGFileButton(card, data.url, prompt, isImage ? "image" : "video");
     if (window.EGArrived) window.EGArrived(card.dataset.origin === "oracle" ? "oracle-video" : "video", card);
   };
 
@@ -4921,3 +4929,108 @@
     .catch(function () { /* the emailed code is always there */ });
 })();
 
+
+
+/* ------------------------------------------------------------------ *
+ * The order's door on /ask-ed/, and sending a generation to the live
+ * files folder.
+ *
+ * Opening the door is one call to /api/freeai with the passcode: if the
+ * doors answer, the pass was right. It is kept for this tab only. Once it
+ * is held, every finished generation on the page grows an extra button that
+ * files the picture or the film into the live archive's folders, where the
+ * Director's Desk can put it straight on air.
+ * ------------------------------------------------------------------ */
+(function () {
+  var root = document.getElementById('ask-admin');
+
+  window.EGToLiveFiles = function (url, title, mime) {
+    var pass = (window.EGAdminPass && window.EGAdminPass()) || '';
+    if (!pass) return Promise.reject(new Error('The order\u2019s door is not open on this page.'));
+    return fetch('/api/live', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'file-add', pass: pass, url: url, title: title || 'A generation',
+        mime: mime || '', folder: 'generations'
+      })
+    }).then(function (r) {
+      return r.json().then(function (d) {
+        if (!r.ok || !d.ok) throw new Error((d && d.error) || 'The archive refused it.');
+        return d;
+      });
+    });
+  };
+
+  /* The button itself, hung under a finished card. */
+  window.EGFileButton = function (card, url, title, kind) {
+    if (!card || !url) return;
+    if (!(window.EGAdminIn && window.EGAdminIn())) return;
+    if (card.querySelector('.card-to-files')) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn btn--ghost btn--small card-to-files';
+    b.textContent = 'Send to the live files';
+    b.addEventListener('click', function () {
+      b.disabled = true;
+      b.textContent = 'Filing\u2026';
+      window.EGToLiveFiles(url, title, kind === 'image' ? 'image/png' : 'video/webm')
+        .then(function (d) {
+          b.textContent = 'In the live files \u00b7 ' + d.folder;
+          b.classList.add('is-on');
+        })
+        .catch(function (err) {
+          b.disabled = false;
+          b.textContent = 'Would not file: ' + err.message;
+        });
+    });
+    card.appendChild(b);
+  };
+
+  /* When the door opens, every card already on the page gets one too. */
+  window.addEventListener('eg-admin-in', function () {
+    document.querySelectorAll('.draw-card').forEach(function (card) {
+      var media = card.querySelector('img, video');
+      if (!media || !media.src) return;
+      var cap = card.querySelector('figcaption');
+      window.EGFileButton(card, media.src,
+        (cap && cap.textContent.slice(0, 160)) || 'A generation',
+        media.tagName === 'IMG' ? 'image' : 'video');
+    });
+  });
+
+  if (!root) return;
+  var aa = function (n) { return root.querySelector('[data-aa=' + n + ']'); };
+  var msg = aa('msg');
+  var say = function (t, bad) {
+    if (!msg) return;
+    msg.textContent = t || '';
+    msg.className = 'auth-msg' + (t ? (bad ? ' is-bad' : ' is-good') : '');
+  };
+
+  aa('open').addEventListener('click', function () {
+    var shut = aa('panel').hidden;
+    aa('panel').hidden = !shut;
+    aa('open').setAttribute('aria-expanded', shut ? 'true' : 'false');
+    aa('open').textContent = shut ? 'Close the admin door' : 'Admin Only';
+    if (shut && aa('pass')) aa('pass').focus();
+  });
+
+  aa('signin').addEventListener('click', function () {
+    var pass = (aa('pass') && aa('pass').value) || '';
+    if (!pass) { say('The passcode, please.', true); return; }
+    say('Opening\u2026');
+    fetch('/api/freeai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'status', pass: pass })
+    }).then(function (r) {
+      return r.json().then(function (d) {
+        if (!r.ok) throw new Error((d && d.error) || 'That did not open it.');
+        if (aa('pass')) aa('pass').value = '';
+        if (window.EGAdminKeep) window.EGAdminKeep(pass);
+        say('Open. The passcode is kept for this tab only.');
+      });
+    }).catch(function (err) { say(err.message, true); });
+  });
+})();

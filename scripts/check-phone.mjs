@@ -237,6 +237,39 @@ const TESTS = [
   }]
 ];
 
+/* The Free.ai doors: present in every admin panel, and shut to everyone who
+   has not opened the order's door in this tab. */
+for (const page of ['/podcast/', '/videos/', '/live/', '/ask-ed/']) {
+  TESTS.push([page, async ({ doc }, t) => {
+    const fa = doc.querySelector('[data-fa="root"]');
+    t(fa, 'the Free.ai panel is in the admin section');
+    t(fa.hidden, 'and it stays shut until the order\u2019s passcode has been typed');
+    const heads = [...fa.querySelectorAll('thead th')].map((h) => h.textContent.trim());
+    t(heads.length === 7, 'the doors table has a column for each thing asked for');
+    t(/tokens left/i.test(heads.join(' ')) && /resets in/i.test(heads.join(' ')),
+      'tokens left and the time to reset are both columns');
+    t(/films left/i.test(heads.join(' ')), 'and the films left, with their own reset');
+    t(['model-chat', 'model-image', 'model-video'].every((n) => fa.querySelector('[data-fa="' + n + '"]')),
+      'there is a model dropdown for chat, pictures and film');
+    const doorPick = [...fa.querySelectorAll('[data-fa="door"] option')].map((o) => o.textContent.trim());
+    t(doorPick.filter((d) => /^Free\.ai [1-5]$/.test(d)).length === 5,
+      'the five doors are named Free.ai 1 to 5 and nothing else');
+    t(!/shakradragon|cervixen|pellegrin|jim\.rankin/i.test(fa.innerHTML),
+      'no account behind a door is named in the panel');
+    t(!/sk-free-/.test(doc.body.innerHTML), 'and no key is anywhere in the page');
+  }]);
+}
+
+TESTS.push(['/ask-ed/', async ({ doc }, t) => {
+  t(doc.querySelector('#ask-admin [data-aa="signin"]'), 'the oracle page has the order\u2019s own door');
+  t(doc.querySelector('#ask-admin [data-aa="panel"]').hidden, 'which is shut to begin with');
+  t(typeof doc.defaultView.EGToLiveFiles === 'function',
+    'and a way to send a generation to the live files folder');
+  t(typeof doc.defaultView.EGFileButton === 'function', 'hung on the cards as a button');
+  t(!doc.querySelector('.card-to-files'),
+    'but no such button exists while nobody is signed in as an administrator');
+}]);
+
 /* The device studio — this turn's work, on both media pages. */
 for (const [page, kind] of [['/podcast/', 'audio'], ['/videos/', 'video']]) {
   TESTS.push([page, async ({ doc }, t) => {

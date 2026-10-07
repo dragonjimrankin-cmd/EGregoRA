@@ -35,6 +35,7 @@
  *   { action: 'keep-begin'|'keep-chunk'|'keep', pass, … } file the recording
  *   { action: 'tapes',  pass }                       the archive, as folders
  *   { action: 'tape-drop', pass, tape }              burn one
+ *   { action: 'file-add', pass, url, title, mime }   file a generation
  */
 import { ai, db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
@@ -568,6 +569,43 @@ export default async function (req, res) {
         });
       }
       return res.json({ ok: true, tapes: out });
+    }
+
+    /* Something made elsewhere on the site \u2014 a picture Gink drew, a film it
+       cut \u2014 filed into the same folders the Director's Desk browses. The
+       file is fetched server-side and stored by the order, so the archive
+       does not fill up with links that expire. */
+    if (action === 'file-add') {
+      const from = clean(body.url, 1000);
+      if (!from) return res.status(400).json({ error: 'Nothing to file.' });
+      if (!/^https?:\/\//i.test(from)) return res.status(400).json({ error: 'That is not a fetchable address.' });
+
+      const r = await fetch(from);
+      if (!r.ok) return res.status(502).json({ error: 'That file would not come down (HTTP ' + r.status + ').' });
+      const bytes = new Uint8Array(await r.arrayBuffer());
+      if (!bytes.length) return res.status(400).json({ error: 'That file came down empty.' });
+      if (bytes.length > ARCHIVE_MAX) {
+        return res.status(413).json({ error: 'That file is larger than the ' +
+          Math.round(ARCHIVE_MAX / 1048576) + ' MB the archive will take in one piece.' });
+      }
+
+      const mime = clean(body.mime, 80) || r.headers.get('content-type') || 'application/octet-stream';
+      const ext = /mp4/.test(mime) ? 'mp4' : /webm/.test(mime) ? 'webm' : /png/.test(mime) ? 'png'
+        : /jpe?g/.test(mime) ? 'jpg' : /gif/.test(mime) ? 'gif' : /mpeg|mp3/.test(mime) ? 'mp3'
+          : /wav/.test(mime) ? 'wav' : 'bin';
+      const stamp = new Date();
+      const folder = clean(body.folder, 60) || 'generations';
+      const name = stamp.toISOString().replace(/[:.]/g, '-') + '.' + ext;
+      const key = 'live-archive/' + folder + '/' + name;
+      await storage.put(key, bytes, mime);
+      const { rows: made } = await db.query(
+        `INSERT INTO live_tapes (feed_id, folder, name, title, store, mime, bytes, seconds)
+         VALUES (NULL,$1,$2,$3,$4,$5,$6,0) RETURNING id`,
+        [folder, name, clean(body.title, 200) || 'A generation', key, mime, bytes.length]);
+      return res.json({
+        ok: true, id: Number(made[0].id), folder, name, bytes: bytes.length,
+        url: await storage.url(key, { ttl: 21600 })
+      });
     }
 
     if (action === 'tape-drop') {

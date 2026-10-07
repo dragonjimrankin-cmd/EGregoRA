@@ -3199,3 +3199,12 @@ body.only-check .frame { border: 0; padding: 0.2rem; }
   .sky-name-row { flex-direction: column; align-items: stretch; }
   .sky-name-row input[type="text"] { font-size: 16px; }
 }
+
+/* ===========================================================================
+   The five Free.ai doors — inside every admin panel, admins only
+   ======================================================================== */
+.freeai { margin: 1rem 0 0; }
+.freeai .cell-table td.is-spent { color: #c98b6a; }
+.freeai .am-fields { margin-top: 0.8rem; }
+.card-to-files { margin: 0.4rem 0.3rem 0 0; }
+.card-to-files.is-on { color: #7fae7a; border-color: rgba(127, 174, 122, 0.7); }

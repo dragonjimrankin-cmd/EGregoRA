@@ -120,6 +120,9 @@ function setup(root) {
       const d = await post({ action: "shelf", kind: KIND });
       el.work.hidden = false;
       if (el.pass) el.pass.value = "";
+      /* The Free.ai panel inside this one needs to know an administrator is
+         present. The pass is kept for this tab only, never written to disk. */
+      if (window.EGAdminKeep) window.EGAdminKeep(pass);
       say("Open. The passcode is not kept \u2014 closing the page locks it again.");
       drawShelf(d.items || []);
       fillNumber();

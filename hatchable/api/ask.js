@@ -24,6 +24,8 @@ import { ginkSystem, PRELUDE, isReturnRequest, RETURN_REPLY } from '../lib/gink-
 import { openaiChat } from '../lib/openai.js';
 import { submitVideo } from '../lib/videogen.js';
 import { requireStudio } from '../lib/accounts.js';
+import { adminDoor } from '../lib/door.js';
+import { freeChat } from '../lib/freeai.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -386,6 +388,34 @@ export default async function (req, res) {
       }
     } catch (err) {
       console.error('ask: own-key route failed', err && err.message);
+    }
+  }
+
+  /* 6·0 ── the order's own Free.ai doors, for an administrator only.
+     Five accounts, each with a free pool of 30,000 tokens a day, on the
+     order's own keys. It runs before everything else because on the day
+     this was written it was the only route with any credit at all — but
+     only when the asker has typed the order's passcode. A member or a
+     visitor never reaches these keys, and the model used is whichever one
+     the administrator chose in the Free.ai panel. */
+  if (!answer && body.pass) {
+    try {
+      const door = await adminDoor(req, String(body.pass));
+      if (door.ok) {
+        const free = await freeChat({
+          system: ginkSystem({ tier: 'compact', adult: true, grounding, tools: false }),
+          messages: messages.slice(PRELUDE.length),
+          model: String(body.free_model || '').trim() || undefined,
+          slot: Number(body.free_slot) || undefined,
+          maxTokens: 1200
+        });
+        if (free && free.text) {
+          answer = free.text;
+          usedModel = free.model + ' (' + free.label + ')';
+        }
+      }
+    } catch (err) {
+      console.error('ask: free.ai route failed', err && err.message);
     }
   }
 

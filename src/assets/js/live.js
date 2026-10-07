@@ -176,6 +176,7 @@ export function busyError(err) {
       const d = await post({ action: "mine" });
       $("work").hidden = false;
       $("pass").value = "";
+      if (window.EGAdminKeep) window.EGAdminKeep(pass);
       say("Open.");
       drawMine(d.feeds || []);
       drawFiles();
