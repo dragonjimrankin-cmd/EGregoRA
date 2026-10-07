@@ -1,11 +1,11 @@
-# control run — 2026-10-07T01:51:21.904Z
+# control run — 2026-10-07T01:56:54.503Z
 site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"status"}
-HTTP 200  (356 ms)
+HTTP 200  (236 ms)
 {
   "site": "https://egregora.hatchable.site",
   "limbs": 11,
@@ -21,7 +21,7 @@ HTTP 200  (356 ms)
 
 done.
 exit=0
-# gpu probe — 2026-10-07T01:51:22.841Z
+# gpu probe — 2026-10-07T01:56:55.562Z
 
 ----------------------------------------------------------------------
 kernels/list (does the token work)
@@ -61,15 +61,45 @@ kernels/list (does the token work)
 ]
 
 ----------------------------------------------------------------------
+oauth2/introspect
+{
+  "active": true,
+  "username": "shakradragon",
+  "userId": 36890995,
+  "user_id": 36890995,
+  "scope": "resources.admin:*"
+}
+
+----------------------------------------------------------------------
 owner guessed from the token
-anhadmahajan06
+shakradragon
 
 ----------------------------------------------------------------------
 kernels/push with enable_gpu
 {
-  "code": 400,
-  "message": "Could not convert string to integer: anhadmahajan06/egregora-gpu-check-muxgbosf. Path 'id', line 1, position 50."
+  "versionNumberNullable": 1,
+  "ref": "/code/shakradragon/egregora-gpu-check-muxgitio",
+  "url": "https://www.kaggle.com/code/shakradragon/egregora-gpu-check-muxgitio",
+  "versionNumber": 1,
+  "hasVersionNumber": true,
+  "error": "",
+  "hasError": false,
+  "invalidTags": [],
+  "invalidDatasetSources": [],
+  "invalidCompetitionSources": [],
+  "invalidKernelSources": [],
+  "invalidModelSources": [],
+  "kernelId": 137415634
 }
+  [1] complete 
+
+----------------------------------------------------------------------
+kernel output
+{
+  "logNullable": "[{\"stream_name\":\"stdout\",\"time\":5.215074776,\"data\":\"{\\\"torch\\\": \\\"2.11.0+cpu\\\", \\\"cuda_available\\\": false, \\\"device\\\": null, \\\"smi_error\\\": \\\"[Errno 2] No such file or directory: 'nvidia-smi'\\\"}\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":8.300221928,\"data\":\"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\\\|'\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":8.300262767,\"data\":\"  cells[i][c] = re.sub('\\\\\\\\\\\\\\\\\\\\|', '|', cell)\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":8.645049928,\"data\":\"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\\\_'\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":8.645083248,\"data\":\"  text = re.sub(r'_', '\\\\_', text) # Escape underscores in display text\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":9.593147712,\"data\":\"[NbConvertApp] Converting notebook __script__.ipynb to html\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":10.844991884,\"data\":\"[NbConvertApp] Writing 276306 bytes to __results__.html\\n\"}\n]",
+  "files": [
+    {
+      "urlNullable": "https://www.ka
 
 ----------------------------------------------------------------------
 hf router video · Lightricks/LTX-Video · HTTP 404
