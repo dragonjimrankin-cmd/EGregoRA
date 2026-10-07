@@ -1,33 +1,21 @@
-# control run — 2026-10-07T13:45:38.343Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-07T13:55:41.715Z
+site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST /api/live  {"action":"sky-name","stars":5,"shape":"a closed loop of 5 stars, much wider than tall, low on the horizon, spare"}
-HTTP 200  (1010 ms)
+HTTP 200  (1352 ms)
 {
   "ok": false,
   "reason": "no model would name it",
-  "heard": ""
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"sky-name","stars":7,"shape":"a closed loop of 7 stars, roughly square, mid-sky, rambling"}
-HTTP 200  (598 ms)
-{
-  "ok": false,
-  "reason": "no model would name it",
-  "heard": ""
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"sky-name","stars":3,"shape":"a closed loop of 3 stars, tall and narrow, high in the sky, spare"}
-HTTP 200  (609 ms)
-{
-  "ok": false,
-  "reason": "no model would name it",
-  "heard": ""
+  "heard": "",
+  "trail": [
+    "flash threw: gateway internal/ai/complete 400: Anthropic returned 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CfnzTpxByr44bJ286an9f\"}",
+    "haiku threw: gateway internal/ai/complete 400: Anthropic returned 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CfnzTtCeZ4A6GdtJ9RZSn\"}",
+    "gpt-4o threw: gateway internal/ai/complete 412: hatchable.ai: this project has no OpenAI API key. Declare `[ai] required = true` in `hatchable.toml` (or `[ai] providers = [\"openai\"]` to pin this provider) and redeploy; the key is then pasted via the platform setup gate. With your own key the bill goes to that key's provider account; alternatively the project owner can enable Builder + AI in console Settings and Hatchable serves calls on platform keys from monthly AI credit.",
+    "open: \"\""
+  ]
 }
 
 done.
