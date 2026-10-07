@@ -1,49 +1,44 @@
-# control run — 2026-10-07T09:28:51.949Z
-site: https://egregora.hatchable.site   calls: 6
+# control run — 2026-10-07T09:33:15.525Z
+site: https://egregora.hatchable.site   calls: 5
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"people","pass":"8===D","feed":2}
-HTTP 400  (265 ms)
-{
-  "error": "Which feed?"
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"order-say","pass":"8===D","feed":2,"text":"A line from The Order."}
-HTTP 400  (116 ms)
-{
-  "error": "Which feed, and what?"
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"people","pass":"8===D","feed":2}
-HTTP 400  (78 ms)
-{
-  "error": "Which feed?"
-}
-
---------------------------------------------------------------------
-POST /api/media  {"action":"pin","pass":"8===D","id":999}
-HTTP 404  (130 ms)
-{
-  "error": "There is no such item."
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"close","pass":"8===D","feed":2}
-HTTP 400  (87 ms)
-{
-  "error": "Which feed?"
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"list"}
-HTTP 200  (93 ms)
+POST /api/live  {"action":"open","pass":"8===D","title":"Probe room","word":"gink"}
+HTTP 200  (212 ms)
 {
   "ok": true,
-  "feeds": []
+  "id": 3,
+  "started": "2026-10-07T09:33:16.09826+00:00"
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"people","pass":"8===D","id":3}
+HTTP 200  (54 ms)
+{
+  "ok": true,
+  "people": []
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"order-say","pass":"8===D","id":3,"body":"A line from The Order."}
+HTTP 200  (57 ms)
+{
+  "ok": true
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"allow","pass":"8===D","id":3,"person":"nobody","field":"can_cam","value":false}
+HTTP 400  (41 ms)
+{
+  "error": "Which person, and which box?"
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"close","pass":"8===D","id":3}
+HTTP 200  (55 ms)
+{
+  "ok": true
 }
 
 done.
