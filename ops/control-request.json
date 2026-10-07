@@ -1,6 +1,4 @@
 { "calls": [
-  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "list" } } },
-  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "open", "pass": "8===D", "title": "A probe feed, opened and closed by the control run", "word": "oakmoon" } } },
-  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "mine", "pass": "8===D" } } },
-  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "join", "id": 1, "word": "wrong" } } }
+  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "close", "pass": "8===D", "id": 1 } } },
+  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "list" } } }
 ] }
