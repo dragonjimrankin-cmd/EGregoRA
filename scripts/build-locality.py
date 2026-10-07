@@ -239,7 +239,7 @@ def plate_ring():
         ("MEMORY", "the kept difference", ROSE),
         ("POLARITY", "the two-sidedness that makes a difference a difference", GREEN),
         ("CYMATICS", "standing pattern in a medium", BLUE),
-        ("THE ETHER", "the field that carries the standing pattern", GOLD),
+        ("THE AETHER", "the field that carries the standing pattern", GOLD),
         ("COLLAPSE", "one outcome, kept", BRIGHT),
     ]
     pts = []
@@ -265,7 +265,7 @@ def plate_ring():
     p += wrapped(cx, 438, "Read it in either direction. That reversibility is the claim, and it is "
                  "the part no experiment has yet tested.", 520, 9.5, MUTED, 12)
     return svg("0 0 640 460",
-               "A ring of six nodes - consciousness, memory, polarity, cymatics, the ether and "
+               "A ring of six nodes - consciousness, memory, polarity, cymatics, the aether and "
                "collapse - each feeding the next, with one world at the centre.", p)
 
 
@@ -480,7 +480,7 @@ def plate_ether():
                  "the page standing.", 250, 9.5, DIM)
     return svg("0 0 640 430",
                "A lattice of field points with a localised excitation, labelled as a particle, "
-               "above two panels: what survived of the ether, and the single clause that was "
+               "above two panels: what survived of the aether, and the single clause that was "
                "struck out.", p)
 
 

@@ -37,6 +37,16 @@ for (const file of files) {
   const warn = (m) => warnings.push(`${rel}  ${m}`);
   const meta = (sel) => $(sel).attr('content');
 
+  /* A page that exists only to send a reader somewhere else is held to a
+     different standard: it should be noindex and it should say where it is
+     going. Asking it for Open Graph art would be asking it to be shared. */
+  if (/noindex/i.test(meta('meta[name="robots"]') || '')) {
+    if (!$('meta[http-equiv="refresh"]').length && !$('link[rel="canonical"]').length) {
+      err('noindex with neither a redirect nor a canonical');
+    }
+    continue;
+  }
+
   if (!$('html').attr('lang')) err('no lang on <html>');
 
   const title = $('title').text().trim();

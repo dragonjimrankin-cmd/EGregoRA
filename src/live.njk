@@ -61,8 +61,8 @@ description: "The order's camera, when it is running: a live feed for members wh
           <label class="element-pick"><input type="radio" name="lw-element" value="air">
             <span class="element-glyph">&#9653;</span><strong>Air</strong>
             <span class="muted xsmall">thought, speech, the clear proof</span></label>
-          <label class="element-pick"><input type="radio" name="lw-element" value="ether">
-            <span class="element-glyph">&#11041;</span><strong>Ether</strong>
+          <label class="element-pick"><input type="radio" name="lw-element" value="aether">
+            <span class="element-glyph">&#11041;</span><strong>Aether</strong>
             <span class="muted xsmall">the field the other four stand in</span></label>
         </div>
       </fieldset>
@@ -194,9 +194,42 @@ description: "The order's camera, when it is running: a live feed for members wh
         <button type="button" class="btn btn--small" data-air="camera">Camera</button>
         <button type="button" class="btn btn--small" data-air="plate">Plate</button>
         <button type="button" class="btn btn--small" data-air="tape">Tape</button>
+        <button type="button" class="btn btn--small" data-air="still">Picture</button>
+        <button type="button" class="btn btn--small" data-air="screen">Screen</button>
+        <button type="button" class="btn btn--small" data-air="stack">Camera over screen</button>
         <button type="button" class="btn btn--small" data-air="split">Split</button>
         <button type="button" class="btn btn--small" data-air="inset">Plate + inset</button>
         <span class="muted xsmall">On air: <strong data-lv="on-air">camera</strong></span>
+      </div>
+
+      <div class="desk-controls">
+        <div>
+          <p class="kicker xsmall">A picture, straight out</p>
+          <p class="muted xsmall">Drag an image file onto the monitor above and it goes out at once,
+          letterboxed rather than cropped, and stays up until you take it down. It is read in this
+          browser; nothing is uploaded.</p>
+          <label for="lv-still-file" class="sr-only">Choose a picture</label>
+          <input type="file" id="lv-still-file" data-lv="still-file" accept="image/*">
+          <p class="muted xsmall" data-lv="still-name"></p>
+          <button type="button" class="btn btn--small btn--ghost" data-lv="still-off">Take the picture down</button>
+        </div>
+        <div>
+          <p class="kicker xsmall">A second screen</p>
+          <p class="muted xsmall">Share another screen or window from this machine &mdash; a slide
+          deck, a telescope capture, a notebook &mdash; and choose where it goes.</p>
+          <div class="btn-row">
+            <button type="button" class="btn btn--small" data-lv="screen-share">Share a screen</button>
+            <button type="button" class="btn btn--small btn--ghost" data-lv="screen-stop">Stop sharing</button>
+          </div>
+          <label for="lv-screen-mode">Where it goes</label>
+          <select id="lv-screen-mode" data-lv="screen-mode">
+            <option value="off">Not at all &mdash; camera only</option>
+            <option value="instead">Instead of the camera</option>
+            <option value="under">Underneath the camera, both at once</option>
+          </select>
+          <video class="live-mirror screen-mirror" data-lv="screen" muted playsinline
+                 aria-label="The screen being shared" role="img"></video>
+        </div>
       </div>
       <div class="switch-row">
         <label class="switch"><input type="checkbox" data-lv="fade" checked> Fade between cuts</label>
@@ -248,7 +281,7 @@ description: "The order's camera, when it is running: a live feed for members wh
         </div>
         <div>
           <label for="lv-ptitle">Title</label>
-          <input type="text" id="lv-ptitle" data-lv="p-title" maxlength="90" value="What the ether is">
+          <input type="text" id="lv-ptitle" data-lv="p-title" maxlength="90" value="What the aether is">
         </div>
       </div>
       <label for="lv-psub">Line under the title</label>

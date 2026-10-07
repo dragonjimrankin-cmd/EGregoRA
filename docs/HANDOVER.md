@@ -182,7 +182,7 @@ Full reference: `docs/CONTROL-API.md`.
 ## 7. Conventions that must be kept
 
 **The limbs.** `src/_data/limbs.js` is the single source. Eleven limbs,
-I–XI, with six sub-limbs: I·ii Cosmic Ether, II·ix Runes, III·iii Music,
+I–XI, with six sub-limbs: I·ii Cosmic Aether, II·ix Runes, III·iii Music,
 IX·i Occult, IX·ii Qabalah, XI·i Decoherence, XI·ii Locality. Limb VIII is
 **The Black Tribunal** (never "The Shadow Cabinet") and its material lives at
 `/occult/#black-tribunal`. Limbs I and VI have no page of their own yet.
@@ -268,8 +268,8 @@ were corrections of work that had gone the other way.
   dressed in stolen runes.
 - **The tagline stays "Life, Love, Magic."** The longer creed was tried and
   rejected.
-- **Do not say the ether was wrong, disproved, renamed, or that it "survived
-  under a better name".** The ether *is* the better name. Michelson–Morley
+- **Do not say the aether was wrong, disproved, renamed, or that it "survived
+  under a better name".** The aether *is* the better name. Michelson–Morley
   struck out one clause — the mechanical rest frame — and the substrate
   stands as the quantum field.
 - **The oracle speaks from the written corpus first.** A model is a fallback,

@@ -241,6 +241,96 @@ export function countdown(host, seconds, go) {
         drawDeck();
       });
 
+      /* Drag a picture onto the programme and it goes out. The file is read
+         in this browser and never uploaded; the monitor is also a drop
+         target so there is somewhere obvious to aim at, and the picture
+         stays up until the director takes it down. */
+      const drop = d("programme");
+      let lastStill = "";
+      const takeImage = (file) => {
+        if (!file || file.type.indexOf("image/") !== 0) {
+          return say("That is not a picture the browser can read.", true);
+        }
+        if (!mixer) return say("Open the camera first \u2014 the desk needs to be lit.", true);
+        const img = new Image();
+        img.onload = () => {
+          mixer.setStill(img, file.name);
+          lastStill = file.name;
+          const n = d("still-name");
+          if (n) n.textContent = file.name + " \u2014 " + img.naturalWidth + "\u00d7" + img.naturalHeight;
+          mixer.take("still", !!(d("fade") || {}).checked).then(mark);
+          say("Showing " + file.name + ". Press Camera, or the button under the monitor, to take it down.");
+        };
+        img.onerror = () => say("That picture would not open.", true);
+        img.src = URL.createObjectURL(file);
+      };
+      if (drop) {
+        ["dragenter", "dragover"].forEach((e) => drop.addEventListener(e, (ev) => {
+          ev.preventDefault();
+          drop.classList.add("is-dropping");
+        }));
+        ["dragleave", "drop"].forEach((e) => drop.addEventListener(e, () => drop.classList.remove("is-dropping")));
+        drop.addEventListener("drop", (ev) => {
+          ev.preventDefault();
+          const f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+          takeImage(f);
+        });
+      }
+      if (d("still-file")) d("still-file").addEventListener("change", (e) => {
+        takeImage(e.target.files && e.target.files[0]);
+      });
+      if (d("still-off")) d("still-off").addEventListener("click", () => {
+        if (mixer) mixer.take("camera", true).then(mark);
+        say(lastStill ? lastStill + " taken down. Back to the camera." : "Back to the camera.");
+      });
+
+      /* The second screen. A browser will only share a screen when a person
+         asks for it, so this is a button and not a setting; where it goes
+         once shared is the setting. */
+      let screenStream = null;
+      const screenEl = d("screen");
+      const screenWhere = () => (d("screen-mode") || { value: "off" }).value;
+      if (d("screen-share")) d("screen-share").addEventListener("click", async () => {
+        if (!mixer) return say("Open the camera first.", true);
+        try {
+          screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { frameRate: { ideal: 15 } }, audio: false
+          });
+          screenEl.srcObject = screenStream;
+          screenEl.muted = true;
+          await screenEl.play().catch(() => {});
+          mixer.setScreen(screenEl);
+          const stop = screenStream.getVideoTracks()[0];
+          if (stop) stop.addEventListener("ended", () => {
+            screenStream = null;
+            if (d("screen-mode")) d("screen-mode").value = "off";
+            if (mixer) mixer.take("camera", true).then(mark);
+            say("The screen share ended. Back to the camera.");
+          });
+          if (screenWhere() === "off" && d("screen-mode")) d("screen-mode").value = "instead";
+          applyScreen();
+          say("Screen shared. It is going out " +
+            (screenWhere() === "under" ? "underneath the camera." : "in place of the camera."));
+        } catch (err) {
+          say((err && err.message) || "The screen would not share.", true);
+        }
+      });
+      function applyScreen() {
+        if (!mixer) return;
+        const where = screenWhere();
+        if (where === "off") { mixer.take("camera", true).then(mark); return; }
+        if (!screenStream) return say("Share a screen first.", true);
+        mixer.take(where === "under" ? "stack" : "screen", !!(d("fade") || {}).checked).then(mark);
+      }
+      if (d("screen-mode")) d("screen-mode").addEventListener("change", applyScreen);
+      if (d("screen-stop")) d("screen-stop").addEventListener("click", () => {
+        if (screenStream) screenStream.getTracks().forEach((t) => t.stop());
+        screenStream = null;
+        if (d("screen-mode")) d("screen-mode").value = "off";
+        if (mixer) mixer.take("camera", true).then(mark);
+        say("The screen share is stopped.");
+      });
+
       root.querySelectorAll("[data-air]").forEach((b) => b.addEventListener("click", () => {
         if (!mixer) return say("Open the camera first \u2014 the desk needs a picture to cut with.", true);
         mixer.take(b.getAttribute("data-air"), !!(d("fade") || {}).checked).then(mark);
@@ -556,7 +646,7 @@ export function countdown(host, seconds, go) {
     { id: "fire", glyph: "\u25b3", note: "will, drive, the fast proof" },
     { id: "water", glyph: "\u25bd\u0335", note: "feeling, memory, the deep proof" },
     { id: "air", glyph: "\u25b3\u0335", note: "thought, speech, the clear proof" },
-    { id: "ether", glyph: "\u2b21", note: "the field the other four stand in" },
+    { id: "aether", glyph: "\u2b21", note: "the field the other four stand in" },
     { id: "unsaid", glyph: "\u00b7", note: "came in before the question, or would not answer" }
   ];
 
@@ -709,7 +799,7 @@ export function countdown(host, seconds, go) {
     const element = chose ? chose.value : "";
     if (!element) {
       return say("Before you come in: which elemental phase is your integral aligned with \u2014 " +
-        "earth, fire, water, air or ether?", true);
+        "earth, fire, water, air or aether?", true);
     }
     try {
       const d = await post({ action: "join", id: picked.id, word, element });

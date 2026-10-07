@@ -2810,3 +2810,17 @@ details.ep:has(.pin-mark) { border-color: rgba(215, 176, 90, 0.55); }
 .folder-mark { color: #d7b05a; }
 .archive-player { width: 100%; max-width: 560px; margin-top: 0.8rem; border: 1px solid rgba(215, 176, 90, 0.3); }
 @media (max-width: 680px) { .file-browser { grid-template-columns: 1fr; } }
+
+/* Dropping a picture on the programme, and the second screen. */
+.programme.is-dropping {
+  border-color: #d7b05a;
+  box-shadow: inset 0 0 0 2px rgba(215, 176, 90, 0.5);
+}
+.desk-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 0.9rem 0;
+}
+.desk-controls .kicker.xsmall { font-size: 0.68rem; margin-bottom: 0.2rem; }
+.screen-mirror { max-width: 240px; margin-top: 0.5rem; }

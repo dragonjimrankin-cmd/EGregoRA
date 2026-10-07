@@ -20,8 +20,8 @@ await probe('GET + system param', B + enc('What is the golden angle? Two sentenc
 await probe('GET + json=true', B + enc('Say hello in five words.') + '?model=openai&json=true');
 
 await probe('GET long prompt (~3500 chars)', B +
-  enc('Here is grounding material.\n\n' + 'The order has written: the ether was never disproved; only the mechanical rest frame was struck out. '.repeat(40) +
-      '\n\nQuestion: did Michelson-Morley disprove the ether? Answer in 60 words.') + '?model=openai');
+  enc('Here is grounding material.\n\n' + 'The order has written: the aether was never disproved; only the mechanical rest frame was struck out. '.repeat(40) +
+      '\n\nQuestion: did Michelson-Morley disprove the aether? Answer in 60 words.') + '?model=openai');
 
 await probe('GET conversation flattened', B +
   enc('[user] My name is Jim.\n[assistant] Hello Jim.\n[user] What is my name?') + '?model=openai&system=' + enc('Continue the conversation.'));

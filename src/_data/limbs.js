@@ -16,13 +16,13 @@ export default [
     num: 'I',
     glyph: 'star',
     title: 'Cosmic Physics',
-    href: '/cosmic-ether/',
+    href: '/cosmic-aether/',
     page: false,
     body: 'Relativity, quantum field theory, thermodynamics and cosmology read as cosmology once was: an ' +
       'account of what the whole thing is doing and what that implies about us. Entropy, horizons, ' +
       'information, the arrow of time.',
     subs: [
-      { num: 'I\u00b7ii', title: 'The Cosmic Ether', href: '/cosmic-ether/' }
+      { num: 'I\u00b7ii', title: 'The Cosmic Aether', href: '/cosmic-aether/' }
     ]
   },
   {

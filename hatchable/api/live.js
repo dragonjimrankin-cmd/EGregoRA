@@ -71,7 +71,7 @@ async function sweep() {
 
 /* Who this member is in this room, and what they are allowed to do. A row
    is made the first time they look in. */
-const ELEMENTS = ['earth', 'fire', 'water', 'air', 'ether'];
+const ELEMENTS = ['earth', 'fire', 'water', 'air', 'aether'];
 
 async function person(feedId, me, element) {
   const name = (me && (me.display_name || me.name || me.email)) || 'a member';
@@ -137,7 +137,7 @@ export default async function (req, res) {
         const el = clean(body.element, 10).toLowerCase();
         if (ELEMENTS.indexOf(el) < 0) {
           return res.status(400).json({
-            error: 'Name the elemental phase your integral is aligned with: earth, fire, water, air or ether.',
+            error: 'Name the elemental phase your integral is aligned with: earth, fire, water, air or aether.',
             gate: 'element', elements: ELEMENTS
           });
         }

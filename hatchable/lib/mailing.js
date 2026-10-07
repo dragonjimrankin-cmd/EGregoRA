@@ -117,8 +117,8 @@ export async function sendWelcome(member) {
       1,280 written answers, graded by how well they are evidenced, and a fox who reads them aloud.</li>
       <li style="margin-bottom:6px"><a href="${SITE}/infographics/" style="color:#d7b05a">The plates</a>
       &mdash; one idea to a page, drawn as live vector art.</li>
-      <li style="margin-bottom:6px"><a href="${SITE}/cosmic-ether/" style="color:#d7b05a">The cosmic
-      ether</a> &mdash; why only one clause of the old idea was struck out, and the rest stands.</li>
+      <li style="margin-bottom:6px"><a href="${SITE}/cosmic-aether/" style="color:#d7b05a">The cosmic
+      aether</a> &mdash; why only one clause of the old idea was struck out, and the rest stands.</li>
       <li><a href="${SITE}/occult/" style="color:#d7b05a">The Occult</a> &mdash; including the part most
       orders will not print about stolen runes and industrial atrocity.</li>
     </ul>

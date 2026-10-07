@@ -1,4 +1,4 @@
-/** Oracle corpus, volume XVII — the Cosmic Ether page, part one:
+/** Oracle corpus, volume XVII — the Cosmic Aether page, part one:
  * fields and excitation, bosons and baryons, electromagnetism,
  * colour and the octave, polarisation, harmonics and cymatics. */
 const E = (id, limb, keys, q, a) => ({ id, limb, keys, q, a });
@@ -6,13 +6,13 @@ const C = 'cosmos';
 const G = 'geometry';
 
 export const VOL17 = [
- E('ce-what-is-page', C, ['cosmic ether page', 'what is cosmic ether', 'ether page'], 'What is the Cosmic Ether page about?',
- `Limb I · ii. It follows one thread: the Victorian question "what does light wave in?" was never retired, and neither was the word. One clause was struck from the answer — the mechanical jelly became a relativistic quantum field, and the order goes on calling it the ether, because that word names the everywhere-ness that "field" leaves out. From there it runs through excitation, bosons and baryons, electromagnetism, the visible octave, polarisation, harmonics, cymatics, curvature, causality and the measurement problem. Our page.`),
- E('ce-ether-relabelled', C, ['is there an ether', 'is there an aether', 'was the ether wrong', 'ether relabelled', 'does the ether exist', 'aether'], 'Was the ether disproved?',
- `One clause of it was. Michelson and Morley in 1887 falsified a *mechanical substance with a rest frame* — something you could be moving relative to. They did not falsify the substrate. Einstein removed the frame; quantum field theory reinstated the medium in full. The word itself was never the problem — ether remains the better name for what is actually there. Established, and the distinction is the whole of our page's opening.`),
- E('ce-dirac-aether', C, ['dirac aether', 'dirac 1951 nature', 'dirac substratum'], 'Did Dirac believe in the ether?',
+ E('ce-what-is-page', C, ['cosmic aether page', 'what is cosmic aether', 'aether page'], 'What is the Cosmic Aether page about?',
+ `Limb I · ii. It follows one thread: the Victorian question "what does light wave in?" was never retired, and neither was the word. One clause was struck from the answer — the mechanical jelly became a relativistic quantum field, and the order goes on calling it the aether, because that word names the everywhere-ness that "field" leaves out. From there it runs through excitation, bosons and baryons, electromagnetism, the visible octave, polarisation, harmonics, cymatics, curvature, causality and the measurement problem. Our page.`),
+ E('ce-aether-relabelled', C, ['is there an aether', 'is there an aether', 'was the aether wrong', 'aether relabelled', 'does the aether exist', 'aether'], 'Was the aether disproved?',
+ `One clause of it was. Michelson and Morley in 1887 falsified a *mechanical substance with a rest frame* — something you could be moving relative to. They did not falsify the substrate. Einstein removed the frame; quantum field theory reinstated the medium in full. The word itself was never the problem — aether remains the better name for what is actually there. Established, and the distinction is the whole of our page's opening.`),
+ E('ce-dirac-aether', C, ['dirac aether', 'dirac 1951 nature', 'dirac substratum'], 'Did Dirac believe in the aether?',
  `In 1951 he published a letter in *Nature* titled "Is There an Aether?" arguing that the new electrodynamics compels us to a substratum, and that relativity is no objection provided it has no preferred frame. It is the cleanest historical statement that the question was relabelled rather than closed. Scholarship.`),
- E('ce-michelson-precision', C, ['michelson morley precision', 'ether drift experiment'], 'How well has the ether-drift null result been confirmed?',
+ E('ce-michelson-precision', C, ['michelson morley precision', 'aether drift experiment'], 'How well has the aether-drift null result been confirmed?',
  `Modern optical and microwave cavity experiments constrain any directional dependence of the speed of light to parts in 10¹⁷ — around ten orders of magnitude better than 1887. Whatever the vacuum is, it has no frame you can move through. Established.`),
  E('ce-field-definition', C, ['what is a field physics', 'define field'], 'What exactly is a field?',
  `A quantity defined at every point in space and time, with its own dynamics. Not a property of something else — the field is the primary object, and what we call particles are the smallest permitted disturbances in it. There are about seventeen in the Standard Model, and they overlap everywhere at once. Established.`),
@@ -196,8 +196,8 @@ export const VOL17 = [
  `No. Reich proposed a universal life energy in the 1930s and built accumulators to concentrate it; no instrument has registered it in ninety years, and the thermal anomalies he reported are explicable by convection. His imprisonment and the burning of his books by the US government were a genuine injustice that did not make the physics correct. Tested, negative.`),
  E('ce-field-vs-aura', C, ['human energy field', 'aura physics', 'biofield'], 'Do humans have an energy field?',
  `You emit infrared from body heat, a measurable magnetic field from heart and brain currents in the picotesla range, and ultraweak photon emission of a few photons per square centimetre per second from metabolism. All real, all mundane, all instrumented. None of it matches the claims made for auras, and the one blinded test of practitioners detecting it failed. Established physics, unsupported interpretation.`),
- E('ce-why-fields-not-ether', C, ['field versus ether', 'how is a field different'], 'How is a field different from the old ether?',
- `Three ways. It has no rest frame, so no drift to detect. It is not made of anything — it is not a substance in which waves occur, it is the thing itself. And its disturbances are quantised, which the mechanical ether never predicted. What survives from the old picture is the intuition that there is a something, everywhere. Established.`),
+ E('ce-why-fields-not-aether', C, ['field versus aether', 'how is a field different'], 'How is a field different from the old aether?',
+ `Three ways. It has no rest frame, so no drift to detect. It is not made of anything — it is not a substance in which waves occur, it is the thing itself. And its disturbances are quantised, which the mechanical aether never predicted. What survives from the old picture is the intuition that there is a something, everywhere. Established.`),
  E('ce-how-many-fields', C, ['how many fields are there', 'standard model fields'], 'How many fields are there?',
  `Around seventeen in the Standard Model, depending how you count: twelve matter fields, four gauge fields, and the Higgs. Add gravity, which is not yet a quantum field, and whatever dark matter is. They all overlap at every point in space, which is the picture the first plate of our page is trying to convey. Established.`),
  E('ce-do-fields-exist', C, ['are fields real', 'field ontology'], 'Are fields real, or just mathematics?',

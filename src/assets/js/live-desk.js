@@ -339,10 +339,14 @@ export function createMixer(opts) {
   const c = canvas.getContext("2d", { alpha: false });
 
   const state = {
-    mode: "camera",        /* camera | plate | tape | split | inset */
+    /* camera | plate | tape | split | inset | still | screen | stack */
+    mode: "camera",
     plate: null,           /* a canvas */
     cam: null,             /* a <video> playing the camera */
     tape: null,            /* a <video> playing a file */
+    still: null,           /* an <img> dropped onto the programme */
+    stillName: "",
+    screen: null,          /* a <video> playing a shared screen */
     caption: "",
     captionOn: false,
     badge: "",
@@ -379,6 +383,27 @@ export function createMixer(opts) {
       return;
     }
     c.drawImage(state.plate, x, y, w, h);
+  }
+
+  /* A still is letterboxed, never cropped: a diagram someone dropped in is
+     usually the wrong shape for the frame, and cutting its edges off is
+     worse than showing ink either side of it. */
+  function paintStill(x, y, w, h) {
+    const im = state.still;
+    c.fillStyle = INK;
+    c.fillRect(x, y, w, h);
+    if (!im || !im.naturalWidth) {
+      c.fillStyle = MUTED;
+      c.font = '26px ' + SERIF;
+      c.textAlign = "center";
+      c.fillText("drop a picture here", x + w / 2, y + h / 2);
+      c.textAlign = "left";
+      return;
+    }
+    const r = Math.min(w / im.naturalWidth, h / im.naturalHeight);
+    const dw = im.naturalWidth * r;
+    const dh = im.naturalHeight * r;
+    c.drawImage(im, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
   }
 
   function lowerThird() {
@@ -435,6 +460,22 @@ export function createMixer(opts) {
       c.moveTo(W / 2, 0);
       c.lineTo(W / 2, H);
       c.stroke();
+    } else if (state.mode === "still") {
+      paintStill(0, 0, W, H);
+    } else if (state.mode === "screen") {
+      paintVideo(state.screen, 0, 0, W, H);
+    } else if (state.mode === "stack") {
+      /* The camera above, the shared screen below, a rule between them:
+         the shape a demonstration wants, where the face and the thing being
+         shown are both worth half the frame. */
+      paintVideo(state.cam, 0, 0, W, H / 2);
+      paintVideo(state.screen, 0, H / 2, W, H / 2);
+      c.strokeStyle = GOLD;
+      c.lineWidth = 2;
+      c.beginPath();
+      c.moveTo(0, H / 2);
+      c.lineTo(W, H / 2);
+      c.stroke();
     } else if (state.mode === "inset") {
       paintPlate(0, 0, W, H);
       const iw = Math.round(W * 0.26);
@@ -486,6 +527,8 @@ export function createMixer(opts) {
     setCamera(el) { state.cam = el; },
     setTape(el) { state.tape = el; },
     setPlate(el) { state.plate = el; },
+    setStill(img, name) { state.still = img; state.stillName = name || ""; },
+    setScreen(el) { state.screen = el; },
     setCaption(text, on) { state.caption = text || ""; state.captionOn = !!on; },
     setBadge(text) { state.badge = text || ""; },
 

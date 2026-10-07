@@ -31,7 +31,7 @@ schemaType: Article
 ogType: article
 section: Consciousness
 published: "2026-10-07"
-keywords: "non-locality, Bell theorem, entanglement, no-signalling, light cone, causality, quantum field, cosmic ether, wavefunction collapse, measurement problem, decoherence, delayed-choice quantum eraser, cymatics, Chladni figures, polarity, memory, block universe, growing block, Law of One"
+keywords: "non-locality, Bell theorem, entanglement, no-signalling, light cone, causality, quantum field, cosmic aether, wavefunction collapse, measurement problem, decoherence, delayed-choice quantum eraser, cymatics, Chladni figures, polarity, memory, block universe, growing block, Law of One"
 description: "What locality means, what Bell's theorem actually proved, why entanglement cannot carry a message, and how the order joins consciousness, memory, polarity and cymatics to the collapse of a waveform - with every join marked for what it is."
 faq:
   - "@type": Question
@@ -50,10 +50,10 @@ faq:
       "@type": Answer
       text: "Standard physics does not say so and does not need it. Decoherence explains why interference disappears without anything collapsing at all. What remains unexplained is why one outcome is found rather than many, which is the measurement problem proper. The order's own position is that an outcome becomes definite when a record is made and read - memory meeting attention - and we mark that as our own reasoning rather than as physics, because it is."
   - "@type": Question
-    name: "Was the ether disproved?"
+    name: "Was the aether disproved?"
     acceptedAnswer:
       "@type": Answer
-      text: "One clause of it was struck out. Michelson and Morley showed in 1887 that there is no rest frame you can measure your motion against. Everything else the ether was proposed to do - a universal medium filling space, whose excitations are the particles, with structure at every point and a lowest state that is not nothing - is the modern quantum field, in Dirac's own words of 1951. The ether is the better name. One line was deleted; the page still stands."
+      text: "One clause of it was struck out. Michelson and Morley showed in 1887 that there is no rest frame you can measure your motion against. Everything else the aether was proposed to do - a universal medium filling space, whose excitations are the particles, with structure at every point and a lowest state that is not nothing - is the modern quantum field, in Dirac's own words of 1951. The aether is the better name. One line was deleted; the page still stands."
 ---
 
 <section class="page-head">
@@ -209,7 +209,7 @@ w('''</section>
   <h2>III &middot; The Substrate</h2>
 
   <p>''' + HIST + ''' The nineteenth century asked a reasonable question: if light is a wave, what is waving?
-  The answer was the luminiferous ether, and it was given a property that turned out to be fatal &mdash; a
+  The answer was the luminiferous aether, and it was given a property that turned out to be fatal &mdash; a
   state of rest you could measure your own motion against. In 1887 Michelson and Morley went looking for that
   motion with the most sensitive instrument then built, and found nothing.</p>
 
@@ -218,8 +218,8 @@ w('''</section>
   foundation of physics. A universal medium that fills all of space; whose excitations are what we call
   particles; with structure at every point; with a lowest state that is emphatically not nothing, as the Lamb
   shift and the Casimir force both testify. Dirac said it himself in <em>Nature</em> in 1951, in an article
-  titled &ldquo;Is there an &AElig;ther?&rdquo;, and his answer was yes. We do not say the ether survived under
-  a better name. <strong>The ether <em>is</em> the better name.</strong> One line was deleted and the page
+  titled &ldquo;Is there an &AElig;ther?&rdquo;, and his answer was yes. We do not say the aether survived under
+  a better name. <strong>The aether <em>is</em> the better name.</strong> One line was deleted and the page
   still stands.</p>
 ''')
 
@@ -378,7 +378,7 @@ w('''
 ''')
 
 w(plate("V", 'Consciousness attends; attention makes a memory; memory requires a polarity to be kept in; the '
-    'polarity sets the boundaries; the boundaries select which standing patterns the ether can hold; the '
+    'polarity sets the boundaries; the boundaries select which standing patterns the aether can hold; the '
     'pattern that holds is the outcome that happened; the outcome is what there is to attend to. Six nodes, '
     'one world, and no first term &mdash; which is the point of drawing it as a ring and not as a ladder.'))
 
@@ -444,11 +444,11 @@ w('''
   <h2>VIII &middot; The Thread, in Order</h2>
   <ul class="timeline">
     <li><span class="when">1787</span> Chladni draws sound. A bowed plate sorts sand into discrete figures; a continuous input yields a quantised set of outputs.</li>
-    <li><span class="when">1887</span> Michelson &amp; Morley find no motion against the medium. One clause of the ether is struck out.</li>
+    <li><span class="when">1887</span> Michelson &amp; Morley find no motion against the medium. One clause of the aether is struck out.</li>
     <li><span class="when">1905 &amp; 1915</span> Einstein makes the light cone the structure of spacetime itself. Locality acquires a precise meaning.</li>
     <li><span class="when">1926</span> Born gives the rule for the probabilities and no mechanism for the singling-out. The gap opens.</li>
     <li><span class="when">1935</span> Einstein, Podolsky &amp; Rosen argue from locality that the theory is incomplete. Schr&ouml;dinger names entanglement and calls it <em>the</em> characteristic trait of quantum mechanics.</li>
-    <li><span class="when">1951</span> Dirac asks in <em>Nature</em> whether there is an ether, and answers that there is.</li>
+    <li><span class="when">1951</span> Dirac asks in <em>Nature</em> whether there is an aether, and answers that there is.</li>
     <li><span class="when">1964</span> Bell turns the argument into an inequality. Philosophy becomes apparatus.</li>
     <li><span class="when">1972</span> Freedman &amp; Clauser measure a violation.</li>
     <li><span class="when">1982</span> Aspect switches the settings while the light is in flight.</li>
@@ -476,7 +476,7 @@ w('''
     <dt>Polarity</dt><dd>Here, the minimum condition for a record: two distinguishable states that do not spontaneously become each other.</dd>
     <dt>Cymatics</dt><dd>The study of visible standing patterns in a driven medium. In this order, the working picture for why anything at all comes in steps.</dd>
     <dt>Memory</dt><dd>A kept difference, held alongside the state it differs from.</dd>
-    <dt>The ether</dt><dd>The substrate. The medium whose excitations are the particles. One clause of the nineteenth-century version &mdash; the rest frame &mdash; was struck out, and no more than that.</dd>
+    <dt>The aether</dt><dd>The substrate. The medium whose excitations are the particles. One clause of the nineteenth-century version &mdash; the rest frame &mdash; was struck out, and no more than that.</dd>
   </dl>
 </section>
 
@@ -518,7 +518,7 @@ w('''
     not quietly rewrite it to survive. Holding a position you would be willing to lose is the only kind of
     holding that is worth anything.</p>
     <p class="mt-1"><a href="/consciousness/">Return to Limb XI &rarr;</a> &middot;
-    <a href="/cosmic-ether/">The Cosmic Ether &rarr;</a> &middot;
+    <a href="/cosmic-aether/">The Cosmic Aether &rarr;</a> &middot;
     <a href="/decoherence/">Decoherence &amp; the Remembered Self &rarr;</a> &middot;
     <a href="/">The index &rarr;</a></p>
   </div>
