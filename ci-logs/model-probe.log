@@ -1,0 +1,108 @@
+
+### models (full)  HTTP 200  (440 ms)  286 chars
+[{"name":"openai-fast","description":"GPT-OSS 20B Reasoning LLM (OVH)","reasoning":true,"tier":"anonymous","community":false,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"aliases":["openai","gpt-oss","gpt-oss-20b","ovh-reasoning"],"vision":false,"audio":false}]
+
+### GET + system param  HTTP 200  (354 ms)  328 chars
+The golden angle is the smaller of the two angles into which the circle is divided when a circle is partitioned according to the golden ratio, measuring approximately 137.5 degrees. It is obtained by subtracting the golden ratio fraction (about 61.5 %) from 360°, yielding a precise angle used in plant phyllotaxis and art. GINK
+
+### GET + json=true  HTTP 200  (28815 ms)  5914 chars
+{"Hey there, how are you? (5 words){"
+
+ 
+  					
+                               
+                         
+
+ 
+  					
+                       
+
+ 
+ 					
+                               
+
+ 
+ 					
+                        
+                				                 
+
+ 					
+                      					
+
+ 
+ 					
+                         
+                                        
+
+ 
+ 					
+                           
+                     
+               
+
+ 					
+                       
+                        
+					                        
+
+ 					
+ 						  
+
+
+
+
+
+
+ 				 	        
+
+ 				 	       
+
+ 		 		          
+
+ 			 		    	    	  
+				    		    
+		
+
+
+
+
+
+  
+
+  
+
+  				
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+ 			 			
+				  
+
+
+
+### GET long prompt (~3500 chars)  HTTP 402  (284 ms)  2 chars
+{}
+
+### GET conversation flattened  HTTP 402  (298 ms)  2 chars
+{}
+
+### GET temperature + seed  HTTP 402  (261 ms)  2 chars
+{}
+
+### GET gpt-oss alias  HTTP 402  (264 ms)  2 chars
+{}
+
+### POST /openai with referrer  HTTP 200  (8283 ms)  1541 chars
+{"id":"pllns_416ee46dbe48d71f66b069a57451fde8","choices":[{"index":0,"message":{"role":"assistant","content":"Sure thing—here’s a quick greeting that fits the bill:\n\n**Hey there, buddy!**\n\nIf you’re looking for other options that stay to three words, try:\n\n- **Hello, friend!**  \n- **Hey, how’s it?**  \n- **Sup, good vibes?**  \n\nFeel free to pick whichever one hits the right tone for you!","reasoning":"User says: \"Hi in 3 words\". Likely they want a greeting in 3 words? They say \"Hi in 3 words\". Maybe they want \"Hello, how are you?\" That's 4 words though. \"Hey there, friend!\" That's 3 words. But maybe they want \"Hello. How are you?\" but that's 3? Actually \"Hello. How are yo
