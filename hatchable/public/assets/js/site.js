@@ -1658,6 +1658,7 @@
   if (use) use.addEventListener("click", async () => {
     if (float_) dropFloat();
     use.disabled = true;
+    const job = window.EGWork ? window.EGWork.start("the sketch is being handed over") : null;
     say("Handing the sketch over\u2026");
     try {
       const data = canvas.toDataURL("image/png").split(",")[1];
@@ -1675,6 +1676,7 @@
     } catch (err) {
       say("The sketch could not be handed over: " + ((err && err.message) || "unknown error"), true);
     } finally {
+      if (window.EGWork) window.EGWork.end(job);
       use.disabled = false;
     }
   });
@@ -4584,4 +4586,90 @@
 
   paint();
   paintHold();
+})();
+
+/* ---------------------------------------------------- Don't lose the work
+   A picture takes half a minute, a clip takes several, and an oracle answer
+   can take a few seconds of thinking: all of them die if the page is
+   reloaded or left. So while anything is actually running, the browser is
+   asked to confirm before unloading, and a link clicked inside the site
+   asks the same question in plain words first.
+
+   What counts as running is read from the page itself rather than from a
+   flag somebody has to remember to clear: a working card, a thinking
+   bubble, or a job registered by hand through EGWork. That way a card that
+   finishes or errors stops the warning without any further bookkeeping. */
+(() => {
+  "use strict";
+
+  const held = new Map();
+  let seq = 0;
+
+  /* Anything with one of these on the page means work is in flight. */
+  const MARKS = [
+    ".draw-card.is-working",
+    ".oracle-msg.is-thinking",
+    "[data-eg-working]",
+    ".is-generating"
+  ];
+
+  const running = () => {
+    for (const sel of MARKS) {
+      if (document.querySelector(sel)) return true;
+    }
+    return held.size > 0;
+  };
+
+  const what = () => {
+    const bits = [];
+    const pics = document.querySelectorAll(".draw-card.is-working").length;
+    if (pics) bits.push(pics === 1 ? "a picture is being made" : pics + " pictures are being made");
+    if (document.querySelector(".oracle-msg.is-thinking")) bits.push("the oracle is still answering");
+    held.forEach((label) => bits.push(label));
+    if (!bits.length) return "Something is still being generated";
+    const last = bits.pop();
+    return (bits.length ? bits.join(", ") + " and " + last : last);
+  };
+
+  /* For anything that is not a card — an upload, a long export. */
+  window.EGWork = {
+    start(label) {
+      const id = "w" + (++seq);
+      held.set(id, String(label || "a job is running"));
+      return id;
+    },
+    end(id) { if (id) held.delete(id); },
+    busy: running,
+    describe: what
+  };
+
+  window.addEventListener("beforeunload", (e) => {
+    if (!running()) return;
+    /* Browsers show their own wording; the string is required all the same. */
+    e.preventDefault();
+    e.returnValue = what() + ". Leave the page and it will be lost.";
+    return e.returnValue;
+  });
+
+  /* A link inside the site never reaches beforeunload in some browsers'
+     bfcache paths, and a plain confirm says more than the browser's
+     boilerplate anyway. */
+  document.addEventListener("click", (e) => {
+    if (!running()) return;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!a) return;
+    const href = a.getAttribute("href") || "";
+    if (!href || href.startsWith("#") || a.target === "_blank" || /^(mailto:|tel:)/.test(href)) return;
+    let url;
+    try { url = new URL(a.href, location.href); } catch { return; }
+    if (url.origin !== location.origin) return;
+    if (url.pathname === location.pathname && url.search === location.search) return;
+    const ok = window.confirm(
+      what().charAt(0).toUpperCase() + what().slice(1) + ".\n\n" +
+      "Leaving this page will abandon it \u2014 the work is not saved anywhere until it finishes. " +
+      "Leave anyway?"
+    );
+    if (!ok) e.preventDefault();
+  }, true);
 })();
