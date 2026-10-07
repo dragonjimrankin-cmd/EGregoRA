@@ -1,64 +1,22 @@
-# control run — 2026-10-07T13:06:40.081Z
-site: https://egregora.hatchable.site   calls: 5
+# control run — 2026-10-07T13:35:32.823Z
+site: https://egregora.hatchable.site   calls: 2
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"list"}
-HTTP 200  (296 ms)
+POST /api/live  {"action":"sky-name","stars":5,"shape":"a closed loop of 5 stars, much wider than tall, low on the horizon, spare"}
+HTTP 200  (1076 ms)
 {
-  "ok": true,
-  "air": {
-    "on": false,
-    "note": "",
-    "back_at": "",
-    "at": "2026-10-07T13:01:59.96531+00:00"
-  },
-  "feeds": []
+  "ok": false,
+  "reason": "no model would name it"
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"air","pass":"8===D","on":true,"note":"Testing the sign.","back_at":"shortly"}
-HTTP 200  (124 ms)
+POST /api/live  {"action":"sky-name","stars":9,"shape":"a closed loop of 9 stars, tall and narrow, high in the sky, rambling"}
+HTTP 200  (632 ms)
 {
-  "ok": true,
-  "on": true
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"list"}
-HTTP 200  (165 ms)
-{
-  "ok": true,
-  "air": {
-    "on": true,
-    "note": "Testing the sign.",
-    "back_at": "shortly",
-    "at": "2026-10-07T13:06:40.900159+00:00"
-  },
-  "feeds": []
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"air","pass":"8===D","on":false,"note":"Cutting runes all week; the next broadcast is on the new moon.","back_at":"the new moon"}
-HTTP 200  (121 ms)
-{
-  "ok": true,
-  "on": false
-}
-
---------------------------------------------------------------------
-POST /api/live  {"action":"list"}
-HTTP 200  (126 ms)
-{
-  "ok": true,
-  "air": {
-    "on": false,
-    "note": "Cutting runes all week; the next broadcast is on the new moon.",
-    "back_at": "the new moon",
-    "at": "2026-10-07T13:06:41.186321+00:00"
-  },
-  "feeds": []
+  "ok": false,
+  "reason": "no model would name it"
 }
 
 done.
