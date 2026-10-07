@@ -1,14 +1,112 @@
-# control run — 2026-10-07T00:14:43.817Z
-site: https://egregora.hatchable.site   calls: 1
+# control run — 2026-10-07T00:31:54.547Z
+site: https://egregora.hatchable.site   calls: 5
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"film","prompt":"A single candle flame guttering in a draught, close, dark background"}
-HTTP 503  (277 ms)
+POST /api/keeper  {"action":"open","pass":"0000"}
+HTTP 403  (1302 ms)
 {
-  "error": "Every GPU the order can reach is busy — the Kaggle notebook has been working for 17 minutes and no Colab account has a free runtime. Either wait, or press “Use your own API” under this box and film it through your own fal.ai, Replicate, Luma or other account."
+  "error": "That is not the key. 2 tries left before this browser is shut out for 20 minutes.",
+  "tries_left": 2,
+  "wait_minutes": 0
 }
+
+--------------------------------------------------------------------
+POST /api/keeper  {"action":"open","pass":"0001"}
+HTTP 403  (1018 ms)
+{
+  "error": "That is not the key. 1 try left before this browser is shut out for 20 minutes.",
+  "tries_left": 1,
+  "wait_minutes": 0
+}
+
+--------------------------------------------------------------------
+POST /api/keeper  {"action":"open","pass":"0002"}
+HTTP 403  (1021 ms)
+{
+  "error": "That is not the key, and that was the third try. This browser is shut out for 20 minutes.",
+  "tries_left": 0,
+  "wait_minutes": 20
+}
+
+--------------------------------------------------------------------
+POST /api/keeper  {"action":"open","pass":"0003"}
+HTTP 429  (105 ms)
+{
+  "error": "Three wrong keys. This browser cannot try again for 20 more minutes.",
+  "wait_minutes": 20
+}
+
+--------------------------------------------------------------------
+GET /api/draw?engines=1
+HTTP 200  (103 ms)
+{
+  "engines": [
+    {
+      "key": "auto",
+      "label": "Let the order choose",
+      "note": "Own GPU first, then the keyless open-weights routes.",
+      "keyless": true
+    },
+    {
+      "key": "flux",
+      "label": "FLUX.1-schnell",
+      "note": "Black Forest Labs, open weights. The house default: the best all-round free model.",
+      "keyless": true
+    },
+    {
+      "key": "turbo",
+      "label": "SDXL-Turbo",
+      "note": "Fast and keyless. Rougher, but seconds rather than half a minute.",
+      "keyless": true
+    },
+    {
+      "key": "kontext",
+      "label": "FLUX.1 Kontext",
+      "note": "Image to image. The one that actually follows a sketch.",
+      "keyless": true
+    },
+    {
+      "key": "flux-dev",
+      "label": "FLUX.1-dev",
+      "note": "Slower and more careful than schnell, and better at writing and hands.",
+      "keyless": true
+    },
+    {
+      "key": "colab",
+      "label": "The order’s own GPU",
+      "note": "FLUX on whichever Colab notebook is awake. Nothing borrowed, no queue but its own.",
+      "keyless": true
+    },
+    {
+      "key": "sd35",
+      "label": "Stable Diffusion 3.5 Large",
+      "note": "Stability AI, through Hugging Face. Needs a free Hugging Face token to be configured.",
+      "keyless": false
+    },
+    {
+      "key": "sd35turbo",
+      "label": "SD 3.5 Large Turbo",
+      "note": "Four steps instead of thirty. Hugging Face token needed.",
+      "keyless": false
+    },
+    {
+      "key": "sdxl",
+      "label": "Stable Diffusion XL",
+      "note": "The old reliable, and the best understood by prompt guides. Hugging Face token needed.",
+      "keyless": false
+    },
+    {
+      "key": "flux-hf",
+      "label": "FLUX.1-schnell on Hugging Face",
+      "note": "The same weights as above on different hardware. Hugging Face token needed.",
+      "keyless": false
+    },
+    {
+      "key": "playground",
+      "label": "Playground v2.5",
+      "note": "Strong on colour and composition for posters and covers. Huggi
 
 done.
 exit=0
