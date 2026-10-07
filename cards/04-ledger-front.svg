@@ -8,20 +8,39 @@
      letter-spacing="1.2" text-anchor="start">EGREGORA</text>
         <text x="7" y="20" font-family="Cinzel, Georgia, serif" font-size="1.5" fill="#9f947a"
      letter-spacing="0.5" text-anchor="start">EVERY CLAIM, GRADED WHERE IT STANDS</text>
-        <g font-family="EB Garamond, serif" font-size="2.3">
-          
-          <text x="7" y="26" fill="#7fae7a">◆</text>
-          <text x="10.6" y="26" fill="#ddd2b9">established science</text>
-          <text x="7" y="30" fill="#d7b05a">◆</text>
-          <text x="10.6" y="30" fill="#ddd2b9">scholarship and history</text>
-          <text x="7" y="34" fill="#9b7ddb">◆</text>
-          <text x="10.6" y="34" fill="#ddd2b9">speculative and contested</text>
-          <text x="7" y="38" fill="#c98b6a">◆</text>
-          <text x="10.6" y="38" fill="#ddd2b9">myth, tradition, primary text</text>
+        <g font-family="EB Garamond, serif" font-size="2"><text x="12.00" y="26.00" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">I</text>
+      <text x="13.00" y="26.00" fill="#cdc2a8">Cosmic Physics</text><text x="12.00" y="28.90" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">II</text>
+      <text x="13.00" y="28.90" fill="#cdc2a8">Druidry &amp; Trees</text><text x="12.00" y="31.80" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">III</text>
+      <text x="13.00" y="31.80" fill="#cdc2a8">Sacred Geometry</text><text x="12.00" y="34.70" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">IV</text>
+      <text x="13.00" y="34.70" fill="#cdc2a8">Astrology</text><text x="12.00" y="37.60" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">V</text>
+      <text x="13.00" y="37.60" fill="#cdc2a8">Neuroscience</text><text x="12.00" y="40.50" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">VI</text>
+      <text x="13.00" y="40.50" fill="#cdc2a8">Biology</text><text x="39.00" y="26.00" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">VII</text>
+      <text x="40.00" y="26.00" fill="#cdc2a8">The Law of One</text><text x="39.00" y="28.90" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">VIII</text>
+      <text x="40.00" y="28.90" fill="#cdc2a8">The Black Tribunal</text><text x="39.00" y="31.80" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">IX</text>
+      <text x="40.00" y="31.80" fill="#cdc2a8">Magic</text><text x="39.00" y="34.70" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">X</text>
+      <text x="40.00" y="34.70" fill="#cdc2a8">Alchemy</text><text x="39.00" y="37.60" fill="#d7b05a"
+      text-anchor="end" font-size="1.70">XI</text>
+      <text x="40.00" y="37.60" fill="#cdc2a8">Consciousness</text></g>
+        <path d="M7 42 H59" stroke="#3a3122" stroke-width="0.25"/>
+        <g font-family="EB Garamond, serif" font-size="1.85">
+          <text x="7" y="46.5" fill="#7fae7a">◆</text>
+              <text x="9.6" y="46.5" fill="#bdb299">established science</text><text x="37" y="46.5" fill="#d7b05a">◆</text>
+              <text x="39.6" y="46.5" fill="#bdb299">scholarship and history</text><text x="7" y="49.9" fill="#9b7ddb">◆</text>
+              <text x="9.6" y="49.9" fill="#bdb299">speculative and contested</text><text x="37" y="49.9" fill="#c98b6a">◆</text>
+              <text x="39.6" y="49.9" fill="#bdb299">myth and primary text</text>
         </g>
-        <path d="M7 44 H41" stroke="#3a3122" stroke-width="0.25"/>
-        <text x="7" y="49" font-family="EB Garamond, serif" font-size="2.1" fill="#9f947a">Eleven limbs, one subject.</text>
-        <text x="7" y="52.5" font-family="EB Garamond, serif" font-size="2.1" fill="#9f947a">Test everything kindly.</text>
+        <text x="7" y="53.8" font-family="EB Garamond, serif" font-size="1.9"
+          fill="#9f947a">Test everything kindly. Nothing is sold as more than it is.</text>
         
     <rect x="68" y="14" width="16" height="16" rx="1.2" fill="#f4ecd8"/>
     <g transform="translate(70.2 16.2) scale(0.39999999999999997)" fill="#0e0c0a" shape-rendering="crispEdges">

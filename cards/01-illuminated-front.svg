@@ -27,14 +27,31 @@
         <text x="7" y="22" font-family="Cinzel, Georgia, serif" font-size="1.9" fill="#d7b05a"
      letter-spacing="0.9" text-anchor="start">AN ORDER OF ENQUIRY</text>
         <path d="M7 25 H84" stroke="#d7b05a" stroke-width="0.2" opacity="0.7"/>
-        <g font-family="EB Garamond, Georgia, serif" font-size="2" fill="#e7dcc4"
-    text-anchor="start" font-weight="normal">
-    <text x="7" y="29.00">Eleven limbs, one subject: cosmic physics, druidry,</text>
-    <text x="7" y="31.80">geometry, astrology, neuroscience, magic, alchemy,</text>
-    <text x="7" y="34.60">consciousness.</text>
-    <text x="7" y="37.40"></text>
-    <text x="7" y="40.20">Every claim graded where it stands. Nothing oversold.</text>
-  </g>
+        <text x="7" y="29.5" font-family="EB Garamond, serif" font-size="2.0"
+          fill="#e7dcc4">Eleven limbs, one subject. Every claim graded where it stands.</text>
+        <g font-family="EB Garamond, serif" font-size="1.9"><text x="12.00" y="35.00" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">I</text>
+      <text x="13.00" y="35.00" fill="#cdc2a8">Cosmic Physics</text><text x="12.00" y="37.70" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">II</text>
+      <text x="13.00" y="37.70" fill="#cdc2a8">Druidry &amp; Trees</text><text x="12.00" y="40.40" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">III</text>
+      <text x="13.00" y="40.40" fill="#cdc2a8">Sacred Geometry</text><text x="12.00" y="43.10" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">IV</text>
+      <text x="13.00" y="43.10" fill="#cdc2a8">Astrology</text><text x="12.00" y="45.80" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">V</text>
+      <text x="13.00" y="45.80" fill="#cdc2a8">Neuroscience</text><text x="12.00" y="48.50" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">VI</text>
+      <text x="13.00" y="48.50" fill="#cdc2a8">Biology</text><text x="39.00" y="35.00" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">VII</text>
+      <text x="40.00" y="35.00" fill="#cdc2a8">The Law of One</text><text x="39.00" y="37.70" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">VIII</text>
+      <text x="40.00" y="37.70" fill="#cdc2a8">The Black Tribunal</text><text x="39.00" y="40.40" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">IX</text>
+      <text x="40.00" y="40.40" fill="#cdc2a8">Magic</text><text x="39.00" y="43.10" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">X</text>
+      <text x="40.00" y="43.10" fill="#cdc2a8">Alchemy</text><text x="39.00" y="45.80" fill="#d7b05a"
+      text-anchor="end" font-size="1.61">XI</text>
+      <text x="40.00" y="45.80" fill="#cdc2a8">Consciousness</text></g>
         <text x="7" y="53" font-family="Cinzel, Georgia, serif" font-size="2.1" fill="#d7b05a"
      letter-spacing="1" text-anchor="start">LIFE, LOVE, MAGIC.</text>
         

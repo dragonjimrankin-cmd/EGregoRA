@@ -146,6 +146,22 @@ const MEDIA = [
   "Ask Ed, the oracle, answers in writing at any hour."
 ];
 
+/* The eleven limbs, in their proper order and short enough to set on a
+   card. The numerals are the ones used site-wide. */
+const LIMBS = [
+  ["I", "Cosmic Physics"],
+  ["II", "Druidry & Trees"],
+  ["III", "Sacred Geometry"],
+  ["IV", "Astrology"],
+  ["V", "Neuroscience"],
+  ["VI", "Biology"],
+  ["VII", "The Law of One"],
+  ["VIII", "The Black Tribunal"],
+  ["IX", "Magic"],
+  ["X", "Alchemy"],
+  ["XI", "Consciousness"]
+];
+
 /* ------------------------------------------------- fitting the type ----
    There is no font metric engine here, so type is measured the way a
    typesetter estimates it: EB Garamond sets at roughly 0.46 of its size
@@ -186,6 +202,22 @@ const caps = (t, x, y, size, colour, spacing = 0.9, anchor = "start") =>
   `<text x="${x}" y="${y}" font-family="Cinzel, Georgia, serif" font-size="${size}" fill="${colour}"
      letter-spacing="${spacing}" text-anchor="${anchor}">${t}</text>`;
 
+/** The roll of eleven limbs, set in two columns: six, then five.
+    `x` is the left edge, `gap` the distance to the second column. */
+function limbRoll(x, y, { size = 1.9, lh = 2.7, gap = 26, numColour = GOLD, colour = "#cdc2a8" } = {}) {
+  const rows = [];
+  LIMBS.forEach(([num, title], i) => {
+    const col = i < 6 ? 0 : 1;
+    const row = i < 6 ? i : i - 6;
+    const cx = x + col * gap;
+    const cy = y + row * lh;
+    rows.push(`<text x="${cx.toFixed(2)}" y="${cy.toFixed(2)}" fill="${numColour}"
+      text-anchor="end" font-size="${(size * 0.85).toFixed(2)}">${num}</text>
+      <text x="${(cx + 1).toFixed(2)}" y="${cy.toFixed(2)}" fill="${colour}">${title.replace("&", "&amp;")}</text>`);
+  });
+  return `<g font-family="EB Garamond, serif" font-size="${size}">${rows.join("")}</g>`;
+}
+
 /* ===================================================================== */
 /* The five designs. Each returns { front, back } as SVG source.          */
 /* Every block is wrapped to a measured column, so no line can reach the  */
@@ -203,7 +235,7 @@ function designs(qrIntro, qrJoin) {
 
   /* ---- 1. The Illuminated — dark, gold rule, sigil, formal ------------ */
   {
-    const body = flow(ORDER_SHORT, TEXTCOL, 2.0);
+    
     const media = MEDIA_SHORT;
     out.push({
       slug: "01-illuminated",
@@ -216,7 +248,9 @@ function designs(qrIntro, qrJoin) {
         ${caps("EGREGORA", L, BLEED + 14, 5.0, BRIGHT, 1.3)}
         ${caps("AN ORDER OF ENQUIRY", L, BLEED + 19, 1.9, GOLD, 0.9)}
         <path d="M${L} ${BLEED + 22} H${R}" stroke="${GOLD}" stroke-width="0.2" opacity="0.7"/>
-        ${textBlock(body, L, BLEED + 26, 2.8, 2.0, "#e7dcc4")}
+        <text x="${L}" y="${BLEED + 26.5}" font-family="EB Garamond, serif" font-size="2.0"
+          fill="#e7dcc4">Eleven limbs, one subject. Every claim graded where it stands.</text>
+        ${limbRoll(L + 5, BLEED + 32, { gap: 27 })}
         ${caps("LIFE, LOVE, MAGIC.", L, BLEED + TRIM_H - 5, 2.1, GOLD, 1.0)}
         ${qrBlock(qrIntro, QRX, BLEED + TRIM_H - QR - 9.5, QR, { light: PARCH })}
         <text x="${QRX + QR / 2}" y="${BLEED + TRIM_H - 6.8}" font-family="EB Garamond, serif"
@@ -239,7 +273,7 @@ function designs(qrIntro, qrJoin) {
   /* ---- 2. The Parchment — light stock, ink on cream ------------------- */
   {
     const ink = "#1a140c", rule = "#b99a46", soft = "#6b5a3a";
-    const body = flow(ORDER_SHORT, COL - 4, 2.1);
+
     const media = flow(MEDIA, COL - 4, 2.05);
     out.push({
       slug: "02-parchment",
@@ -250,13 +284,14 @@ function designs(qrIntro, qrJoin) {
         ${caps("EGREGORA", W / 2, BLEED + 13, 5.0, ink, 1.3, "middle")}
         ${caps("AN ORDER OF ENQUIRY", W / 2, BLEED + 18, 1.8, soft, 0.9, "middle")}
         <path d="M${L + 14} ${BLEED + 21} H${R - 14}" stroke="${rule}" stroke-width="0.18"/>
-        ${textBlock(body, W / 2, BLEED + 25.5, 2.9, 2.1, "#2b231a", "middle")}
-        ${sigil(L + 7, BLEED + TRIM_H - 11, 5.4, rule, 0.24)}
-        ${qrBlock(qrIntro, QRX, BLEED + TRIM_H - QR - 6, QR, { dark: ink, light: PARCH, plate: false })}
-        <text x="${W / 2 - 2}" y="${BLEED + TRIM_H - 11}" font-family="EB Garamond, serif" font-size="2.1"
-          fill="${soft}" text-anchor="middle">Scan the square for the introduction</text>
-        <text x="${W / 2 - 2}" y="${BLEED + TRIM_H - 7.6}" font-family="EB Garamond, serif" font-size="2.1"
-          fill="${ink}" text-anchor="middle">Life, Love, Magic.</text>`, PARCH),
+        <text x="${W / 2}" y="${BLEED + 25}" font-family="EB Garamond, serif" font-size="2.0"
+          fill="#2b231a" text-anchor="middle">Eleven limbs, one subject. Every claim graded where it stands.</text>
+        ${limbRoll(W / 2 - 26, BLEED + 29, { gap: 26, lh: 2.4, size: 1.85, numColour: rule, colour: "#2b231a" })}
+        ${qrBlock(qrIntro, QRX, BLEED + TRIM_H - QR - 5, QR, { dark: ink, light: PARCH, plate: false })}
+        <text x="${L}" y="${BLEED + TRIM_H - 10.5}" font-family="EB Garamond, serif" font-size="2.0"
+          fill="${soft}">Scan the square for the introduction</text>
+        <text x="${L}" y="${BLEED + TRIM_H - 6.6}" font-family="EB Garamond, serif" font-size="2.2"
+          fill="${ink}">Life, Love, Magic.</text>`, PARCH),
       back: doc(`
         ${frame(3.4, rule, 0.3)}
         ${caps("PODCASTS \u00B7 FILMS \u00B7 THE LIVE ROOM", W / 2, BLEED + 12, 2.1, ink, 0.8, "middle")}
@@ -273,18 +308,19 @@ function designs(qrIntro, qrJoin) {
 
   /* ---- 3. The Seam — the emblem large, minimal type ------------------- */
   {
-    const body = flow([ORDER_SHORT[0], "Each claim graded where it stands \u2014 science, scholarship, " +
-      "speculation or myth \u2014 and nothing oversold."], TEXTCOL, 2.1);
+
     out.push({
       slug: "03-seam",
       name: "The Seam",
       note: "The Moebius emblem at full width, type pushed to the edges. The one to hand to a stranger.",
       front: doc(`
-        ${seam(W / 2, H / 2 + 6, 24, "#6b5628", 0.35)}
-        ${seam(W / 2, H / 2 + 6, 18, "#4a3b1b", 0.25)}
+        ${seam(W / 2, H / 2 + 12, 22, "#3f3318", 0.3)}
+        
         ${caps("EGREGORA", L, BLEED + 12, 5.0, BRIGHT, 1.3)}
         <path d="M${L} ${BLEED + 15} H${R}" stroke="${GOLD}" stroke-width="0.18" opacity="0.6"/>
-        ${textBlock(body, L, BLEED + 19.5, 2.9, 2.1, "#d8cdb4")}
+        <text x="${L}" y="${BLEED + 20}" font-family="EB Garamond, serif" font-size="2.0"
+          fill="#d8cdb4">Eleven limbs, one subject. Nothing oversold.</text>
+        ${limbRoll(L + 5, BLEED + 25.5, { gap: 27, lh: 2.9, size: 2.0 })}
         ${caps("LIFE, LOVE, MAGIC.", L, BLEED + TRIM_H - 5, 2.1, GOLD, 1.0)}
         ${qrBlock(qrIntro, QRX, BLEED + TRIM_H - QR - 9.5, QR, { light: PARCH })}
         <text x="${QRX + QR / 2}" y="${BLEED + TRIM_H - 6.8}" font-family="EB Garamond, serif"
@@ -311,7 +347,7 @@ function designs(qrIntro, qrJoin) {
       [VERDANT, "established science"],
       [GOLD, "scholarship and history"],
       ["#9b7ddb", "speculative and contested"],
-      [ROSE, "myth, tradition, primary text"]
+      [ROSE, "myth and primary text"]
     ];
     out.push({
       slug: "04-ledger",
@@ -321,14 +357,17 @@ function designs(qrIntro, qrJoin) {
         ${frame(3, "#2a2218", 0.4)}
         ${caps("EGREGORA", L, BLEED + 12.5, 4.8, BRIGHT, 1.2)}
         ${caps("EVERY CLAIM, GRADED WHERE IT STANDS", L, BLEED + 17, 1.5, DIM, 0.5)}
-        <g font-family="EB Garamond, serif" font-size="2.3">
-          ${key.map(([c, t], i) => `
-          <text x="${L}" y="${BLEED + 23 + i * 4}" fill="${c}">\u25C6</text>
-          <text x="${L + 3.6}" y="${BLEED + 23 + i * 4}" fill="#ddd2b9">${t}</text>`).join("")}
+        ${limbRoll(L + 5, BLEED + 23, { gap: 27, lh: 2.9, size: 2.0 })}
+        <path d="M${L} ${BLEED + 39} H${L + 52}" stroke="#3a3122" stroke-width="0.25"/>
+        <g font-family="EB Garamond, serif" font-size="1.85">
+          ${key.map(([c, t], i) => {
+            const cx = L + (i % 2) * 30, cy = BLEED + 43.5 + Math.floor(i / 2) * 3.4;
+            return `<text x="${cx}" y="${cy}" fill="${c}">\u25C6</text>
+              <text x="${cx + 2.6}" y="${cy}" fill="#bdb299">${t}</text>`;
+          }).join("")}
         </g>
-        <path d="M${L} ${BLEED + 41} H${L + 34}" stroke="#3a3122" stroke-width="0.25"/>
-        <text x="${L}" y="${BLEED + 46}" font-family="EB Garamond, serif" font-size="2.1" fill="${DIM}">Eleven limbs, one subject.</text>
-        <text x="${L}" y="${BLEED + 49.5}" font-family="EB Garamond, serif" font-size="2.1" fill="${DIM}">Test everything kindly.</text>
+        <text x="${L}" y="${BLEED + 50.8}" font-family="EB Garamond, serif" font-size="1.9"
+          fill="${DIM}">Test everything kindly. Nothing is sold as more than it is.</text>
         ${qrBlock(qrIntro, QRX, BLEED + 11, QR, { light: PARCH })}
         <text x="${QRX + QR / 2}" y="${BLEED + 30.5}" font-family="EB Garamond, serif" font-size="1.9"
           fill="${DIM}" text-anchor="middle">the introduction</text>`, "#131009"),
@@ -367,16 +406,15 @@ function designs(qrIntro, qrJoin) {
       front: doc(`
         ${sky}
         ${frame(3, "#54452a", 0.3)}
-        ${sigil(W / 2, BLEED + 14, 6.4, GOLD, 0.26)}
-        ${caps("EGREGORA", W / 2, BLEED + 27, 5.0, BRIGHT, 1.3, "middle")}
-        ${caps("CO-FOUNDED BY EDWARD GREGORY &amp; JIM RANKIN", W / 2, BLEED + 31.5, 1.25, DIM, 0.28, "middle")}
-        ${textBlock(flow(["An order of enquiry: eleven limbs, one subject, every claim graded " +
-          "where it stands and nothing oversold."], 44, 2.0), W / 2 + 9, BLEED + 36.5, 2.8, 2.0, "#cdc2a8", "middle")}
-        ${qrBlock(qrIntro, L, BLEED + TRIM_H - QR - 5.5, QR, { light: PARCH })}
-        <text x="${W / 2 + 8}" y="${BLEED + TRIM_H - 9}" font-family="EB Garamond, serif" font-size="2.1"
-          fill="${DIM}" text-anchor="middle">Scan for the introduction</text>
-        <text x="${W / 2 + 8}" y="${BLEED + TRIM_H - 5.4}" font-family="EB Garamond, serif" font-size="2.1"
-          fill="${GOLD}" text-anchor="middle">Life, Love, Magic.</text>`, "#0d0c10"),
+        ${sigil(W / 2, BLEED + 11.5, 4.8, GOLD, 0.24)}
+        ${caps("EGREGORA", W / 2, BLEED + 21, 4.6, BRIGHT, 1.2, "middle")}
+        ${caps("CO-FOUNDED BY EDWARD GREGORY &amp; JIM RANKIN", W / 2, BLEED + 25, 1.25, DIM, 0.28, "middle")}
+        ${limbRoll(W / 2 - 16, BLEED + 29.5, { gap: 27, lh: 2.5 })}
+        ${qrBlock(qrIntro, L, BLEED + TRIM_H - QR - 4, QR, { light: PARCH })}
+        <text x="${L + QR + 4}" y="${BLEED + TRIM_H - 9}" font-family="EB Garamond, serif" font-size="2.0"
+          fill="${DIM}">Scan for the introduction</text>
+        <text x="${L + QR + 4}" y="${BLEED + TRIM_H - 5}" font-family="EB Garamond, serif" font-size="2.2"
+          fill="${GOLD}">Life, Love, Magic.</text>`, "#0d0c10"),
       back: doc(`
         ${sky}
         ${frame(3, "#54452a", 0.3)}
