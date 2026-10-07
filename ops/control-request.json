@@ -1,5 +1,5 @@
 {
-  "note": "After this deploy: which keyless thinking routes answer from the server, who is in the worker pool, and does the oracle now give a real answer?",
+  "note": "v121 is live. Probe the thinking routes, list the workers, and ask a real question.",
   "calls": [
     { "action": "chat-probe" },
     { "action": "workers" },
