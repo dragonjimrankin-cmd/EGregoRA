@@ -1,7 +1,4 @@
 {"calls":[
- {"raw":{"path":"/api/live","body":{"action":"list"}}},
- {"raw":{"path":"/api/live","body":{"action":"air","pass":"8===D","on":true,"note":"Testing the sign.","back_at":"shortly"}}},
- {"raw":{"path":"/api/live","body":{"action":"list"}}},
- {"raw":{"path":"/api/live","body":{"action":"air","pass":"8===D","on":false,"note":"Cutting runes all week; the next broadcast is on the new moon.","back_at":"the new moon"}}},
- {"raw":{"path":"/api/live","body":{"action":"list"}}}
+ {"raw":{"path":"/api/live","body":{"action":"sky-name","stars":5,"shape":"a closed loop of 5 stars, much wider than tall, low on the horizon, spare"}}},
+ {"raw":{"path":"/api/live","body":{"action":"sky-name","stars":9,"shape":"a closed loop of 9 stars, tall and narrow, high in the sky, rambling"}}}
 ]}
