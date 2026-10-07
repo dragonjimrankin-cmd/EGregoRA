@@ -1,22 +1,33 @@
-# control run — 2026-10-07T13:35:32.823Z
-site: https://egregora.hatchable.site   calls: 2
+# control run — 2026-10-07T13:45:38.343Z
+site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST /api/live  {"action":"sky-name","stars":5,"shape":"a closed loop of 5 stars, much wider than tall, low on the horizon, spare"}
-HTTP 200  (1076 ms)
+HTTP 200  (1010 ms)
 {
   "ok": false,
-  "reason": "no model would name it"
+  "reason": "no model would name it",
+  "heard": ""
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"sky-name","stars":9,"shape":"a closed loop of 9 stars, tall and narrow, high in the sky, rambling"}
-HTTP 200  (632 ms)
+POST /api/live  {"action":"sky-name","stars":7,"shape":"a closed loop of 7 stars, roughly square, mid-sky, rambling"}
+HTTP 200  (598 ms)
 {
   "ok": false,
-  "reason": "no model would name it"
+  "reason": "no model would name it",
+  "heard": ""
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"sky-name","stars":3,"shape":"a closed loop of 3 stars, tall and narrow, high in the sky, spare"}
+HTTP 200  (609 ms)
+{
+  "ok": false,
+  "reason": "no model would name it",
+  "heard": ""
 }
 
 done.
