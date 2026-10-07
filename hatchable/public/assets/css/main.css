@@ -2155,3 +2155,15 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
   .rune-kept { grid-template-columns: 2rem minmax(0, 1fr); }
   .rune-kept-acts { grid-column: 1 / -1; }
 }
+
+/* Each gathered plate is a card, and the card says at the top where the
+   drawing came from, before you look at it rather than after. */
+.plate-card { margin: 0 0 0.4rem; }
+.plate-card .plate-link {
+  margin: 0 0 0.9rem; padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(215, 176, 90, 0.18);
+  font-family: var(--caps); letter-spacing: 0.12em; text-transform: uppercase;
+  font-size: 0.68rem;
+}
+.plate-card .plate-link a { color: var(--gold); }
+.plate-card > figure { margin-bottom: 0; }

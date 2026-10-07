@@ -129,17 +129,19 @@ for pagename in sorted(by_page):
 <section class="wrap narrow reveal">
   <details class="scroll info-fold">
     <summary>%s &mdash; %d %s</summary>
-    <p class="muted small">Drawn for <a href="%s" target="_blank" rel="noopener">%s</a>. Every title
-    below opens that page in a new tab, at the figure itself.</p>
+    <p class="muted small">Drawn for <a href="%s" target="_blank" rel="noopener">%s</a>. Each card carries its link at the
+    top: it opens that page in a new tab, at the figure itself.</p>
 """ % (html.escape(pagename), len(items), "drawing" if len(items) == 1 else "drawings",
        link, html.escape(pagename)))
     for g in items:
         art = prefix_ids(g["html"], g["slug"] + "-" + g["anchor"])
         body.write("""
-    %s
-    <p class="plate-note"><em><a href="%s#%s" target="_blank" rel="noopener">%s &mdash; on %s, in a new
-    tab</a>.</em></p>
-""" % (art, g["link"], g["anchor"], html.escape(g["title"]), html.escape(pagename)))
+    <div class="frame plate-card">
+      <p class="plate-link"><a href="%s#%s" target="_blank" rel="noopener">%s &mdash; on %s, in a new
+      tab</a></p>
+      %s
+    </div>
+""" % (g["link"], g["anchor"], html.escape(g["title"]), html.escape(pagename), art))
     body.write("""  </details>
 </section>
 
