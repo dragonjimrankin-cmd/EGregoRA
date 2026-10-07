@@ -2113,3 +2113,45 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 /* Gathered plates, folded by the page they came from. */
 .info-fold > summary { font-size: 0.95rem; }
 .info-fold .plate, .info-fold figure { margin-inline: auto; }
+
+
+/* ======================================================================
+   The Rune Forge
+   ====================================================================== */
+.forge-grid {
+  display: grid; gap: 1.4rem;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: start;
+}
+.forge-stage {
+  width: 100%; min-height: 260px; border: 1px solid rgba(215,176,90,0.28);
+  border-radius: 3px; overflow: hidden; background: #0b0a12; touch-action: none;
+}
+.forge-stage canvas { display: block; width: 100%; height: auto; }
+.forge-row { margin: 0 0 0.75rem; }
+.forge-row select, .forge-row textarea { width: 100%; }
+.forge-row input[type="range"] { width: calc(100% - 4rem); vertical-align: middle; }
+.forge-row output { font-family: var(--caps); font-size: 0.72rem; color: var(--gold); margin-left: 0.5rem; }
+.forge-row--wide { margin-top: 1.2rem; }
+.forge-reading {
+  margin-top: 1rem; padding: 0.9rem 1rem;
+  border: 1px solid rgba(215,176,90,0.2); border-radius: 3px;
+  background: linear-gradient(180deg, rgba(243,221,156,0.03), rgba(0,0,0,0.25));
+}
+.forge-reading p { margin: 0 0 0.5rem; }
+.forge-reading .rune-char {
+  font-size: 2.6rem; line-height: 1; color: var(--gold-bright); text-align: center; margin: 0 0 0.4rem;
+}
+.rune-book { list-style: none; margin: 0.8rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
+.rune-kept {
+  display: grid; grid-template-columns: 2.2rem minmax(0, 1fr) auto; gap: 0.8rem;
+  align-items: center; padding: 0.6rem 0.7rem;
+  border: 1px solid rgba(215,176,90,0.18); border-radius: 3px;
+}
+.rune-kept-char { font-size: 1.6rem; color: var(--gold-bright); text-align: center; }
+.rune-kept-acts { display: flex; gap: 0.4rem; }
+@media (max-width: 900px) {
+  .forge-grid { grid-template-columns: 1fr; }
+  .rune-kept { grid-template-columns: 2rem minmax(0, 1fr); }
+  .rune-kept-acts { grid-column: 1 / -1; }
+}

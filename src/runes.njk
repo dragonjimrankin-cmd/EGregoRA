@@ -660,6 +660,93 @@ description: Limb II·ix — the Elder Futhark drawn and read honestly, the gram
 
 <div class="divider">✦ ✦ ✦</div>
 
+<section class="wrap reveal" id="rune-forge">
+  <div class="page-head">
+    <p class="kicker">The Rune Forge</p>
+    <h2>Cut Your Own, in Three Dimensions</h2>
+    <p class="lede muted">Choose a stave, choose what it is cut into, set a stone in it, and say what it
+    is going to mean to you. The rune is built here in your browser as a real solid — turn it with the
+    mouse, keep it in your own rune book, and send it to the Turning Shop on the Ask Ed page, where it can
+    be arranged with anything else, exported as an OBJ or handed to the image generator.</p>
+  </div>
+
+  <div class="frame">
+    <div class="forge-grid">
+      <div class="forge-stage" id="forge-stage" role="img"
+           aria-label="A three-dimensional rune on a turning bench"></div>
+
+      <div class="forge-panel">
+        <div class="forge-row">
+          <label for="rf-rune">The stave</label>
+          <select id="rf-rune"></select>
+        </div>
+        <div class="forge-row">
+          <label for="rf-blank">The blank</label>
+          <select id="rf-blank"></select>
+        </div>
+        <div class="forge-row">
+          <label for="rf-substance">Cut into</label>
+          <select id="rf-substance"></select>
+        </div>
+        <div class="forge-row">
+          <label for="rf-gem">The stone</label>
+          <select id="rf-gem"></select>
+        </div>
+        <div class="forge-row">
+          <label for="rf-setting">How it is set</label>
+          <select id="rf-setting"></select>
+        </div>
+        <div class="forge-row">
+          <label for="rf-depth">Depth of the cut</label>
+          <input id="rf-depth" type="range" min="10" max="100" step="5" value="50">
+          <output id="rf-depth-out" for="rf-depth">50%</output>
+        </div>
+        <p class="ask-actions">
+          <button class="btn btn--ghost btn--small" type="button" id="rf-spin"
+                  aria-pressed="true">Hold it still</button>
+        </p>
+        <div class="forge-reading" id="rf-reading"></div>
+      </div>
+    </div>
+
+    <div class="forge-row forge-row--wide">
+      <label for="rf-meaning">What it means to you</label>
+      <textarea id="rf-meaning" rows="3" maxlength="400"
+        placeholder="Mine is for the thing I keep not starting. Cut on a Tuesday, carried until it is done."></textarea>
+      <p class="muted xsmall">Kept with the rune and carried to the bench with it. The inherited meaning is
+      shown above and is never overwritten by yours — the order keeps the two apart on purpose, because
+      what a stave meant in the second century and what it means to you are different kinds of claim.</p>
+    </div>
+
+    <div class="ask-actions">
+      <button class="btn" type="button" id="rf-keep">Keep this rune</button>
+      <button class="btn btn--ghost" type="button" id="rf-send">Send this one to the Turning Shop</button>
+      <button class="btn btn--ghost" type="button" id="rf-send-all" disabled>Send the whole book</button>
+    </div>
+    <p class="auth-msg" id="forge-msg" role="status"></p>
+  </div>
+
+  <div class="frame mt-2">
+    <h3>Your rune book <span class="muted small">(<span id="rf-count">0</span> kept)</span></h3>
+    <p class="muted xsmall">Held in this browser only. Nothing is uploaded, nothing is seen by the order,
+    and clearing your site data clears the book.</p>
+    <ul class="rune-book" id="rf-book"></ul>
+    <p class="ask-actions">
+      <button class="btn btn--ghost btn--small" type="button" id="rf-forget">Empty the book</button>
+    </p>
+  </div>
+
+  <div class="frame frame--creed mt-2">
+    <p class="muted small">Said plainly, because this page says it everywhere else: a rune you cut and
+    assign a meaning to is a <strong>mnemonic and a focus</strong>, not a mechanism. What it reliably does
+    is sit in your pocket and keep one intention in the front of a mind that would otherwise drop it. That
+    is a real effect on a real nervous system, and it needs no field, no energy and no ancient authority
+    — which is lucky, because the sources for rune divination are late and thin, as set out above.</p>
+  </div>
+</section>
+
+<div class="divider">✦ ✦ ✦</div>
+
 <section class="wrap narrow reveal">
   <div class="frame frame--creed">
     <div class="creed-glyph">{% glyph "tree" %}</div>
@@ -674,3 +761,5 @@ description: Limb II·ix — the Elder Futhark drawn and read honestly, the gram
     <a class="btn btn--ghost" href="/druids/">Druidry &amp; Trees</a></p>
   </div>
 </section>
+
+<script type="module" src="/assets/js/rune-forge-page.js?v={{ build.id }}"></script>

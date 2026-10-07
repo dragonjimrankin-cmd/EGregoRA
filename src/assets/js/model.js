@@ -10,6 +10,7 @@
    ======================================================================== */
 import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 import { buildLibrary } from "./model-library.js";
+import { buildRune, takeFromBench, FUTHARK, byId } from "./rune-forge.js";
 
 const stage = document.getElementById("model-stage");
 if (stage) start();
@@ -1927,6 +1928,38 @@ function start() {
     done: "The whole view is attached to the image box above as a sketch. Write what it is made of \u2014 " +
       "brass, oak, stone, flesh \u2014 and press Generate."
   });
+
+  /* --- runes carried in from the forge -------------------------------------
+     The Rune Forge on the Runes page writes its specifications into this
+     browser and sends the maker here. They are picked up once, built with
+     the same code that drew them there, and laid out in a row on the
+     bench; the hand-over is cleared as it is read, so a reload does not
+     place them twice. */
+  (function collectRunes() {
+    const specs = takeFromBench();
+    if (!specs.length) return;
+    remember();
+    const span = 2.6;
+    specs.forEach((spec, i) => {
+      let g;
+      try { g = buildRune(THREE, spec); } catch { return; }
+      g.position.set((i - (specs.length - 1) / 2) * span, 0, 0);
+      g.userData.kind = g.userData.kind || "Rune";
+      g.userData.colour = colour;
+      g.userData.finish = finish;
+      pieces.add(g);
+      if (i === specs.length - 1) select(g);
+    });
+    showBench();
+    const named = specs.map((x) => byId(FUTHARK, x.rune).name).join(", ");
+    say((specs.length === 1 ? "Your rune is on the bench: " : "Your runes are on the bench: ") + named +
+      ". Move them, add to them, export the lot as an OBJ, or hand the view to the image generator.");
+    note(specs.length === 1
+      ? "One rune arrived from the forge on the Runes page."
+      : specs.length + " runes arrived from the forge on the Runes page.");
+    const room = document.getElementById("model-box");
+    if (room) setTimeout(() => room.scrollIntoView({ block: "start", behavior: "smooth" }), 120);
+  })();
 
   /* --- the loop ----------------------------------------------------------- */
   const clock = new THREE.Clock();
