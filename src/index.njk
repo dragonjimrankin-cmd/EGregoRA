@@ -64,142 +64,26 @@ description: EGregoRA — the house of enquiry co-founded by Edward Gregory and 
   <div class="page-head">
     <p class="kicker">The Eleven Limbs</p>
     <h2>Fields of Enquiry</h2>
-    <p class="lede muted">Eleven doorways into one room. Every card is a door — follow it.</p>
+    <p class="lede muted">Eleven doorways into one room, numbered I to XI, each with its sub-limbs
+    hung beneath it. Every card is a door — follow it.</p>
   </div>
 
   <div class="grid three">
+    {%- for limb in limbs %}
     <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "star" %}</div>
-      <p class="tag">Limb I</p>
-      <h3><a class="card-link" href="/cosmic-ether/">Cosmic Physics</a></h3>
-      <p>Relativity, quantum field theory, thermodynamics and cosmology read as cosmology once was: an account
-      of what the whole thing is doing and what that implies about us. Entropy, horizons, information, the
-      arrow of time.</p>
+      <div class="card-glyph">{% glyph limb.glyph %}</div>
+      <p class="tag">Limb {{ limb.num }}</p>
+      <h3><a class="card-link" href="{{ limb.href }}">{{ limb.title | safe }}</a></h3>
+      <p>{{ limb.body | safe }}</p>
+      {%- if limb.subs.length %}
+      <p class="mt-1">
+        {%- for sub in limb.subs %}
+        <a href="{{ sub.href }}">Limb {{ sub.num }} &middot; {{ sub.title | safe }} &rarr;</a>{% if not loop.last %}<br>{% endif %}
+        {%- endfor %}
+      </p>
+      {%- endif %}
     </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "tree" %}</div>
-      <p class="tag">Limb II</p>
-      <h3><a class="card-link" href="/druids/">Druidry, Trees &amp; the Living Earth</a></h3>
-      <p>The grove as a laboratory. Phenology, mycorrhizal networks, the ogham tree alphabet, the eight stations
-      of the solar year, and what it does to a nervous system to keep seasonal time for a decade.</p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "metatron" %}</div>
-      <p class="tag">Limb III</p>
-      <h3><a class="card-link" href="/sacred-geometry/">Sacred Geometry &amp; Natural Form</a></h3>
-      <p>Phyllotaxis, the Fibonacci spiral, close-packing, minimal surfaces, Platonic and Archimedean solids —
-      why pattern recurs across scales, and where the honest mathematics ends and the wishful numerology begins.</p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "spiral" %}</div>
-      <p class="tag">Limb IV</p>
-      <h3><a class="card-link" href="/astrology/">Astrology as Symbolic Technology</a></h3>
-      <p>Not as a prediction engine but as humanity's oldest symbolic operating system: a 4,000-year archive of
-      how we map character, time and meaning onto the sky. Studied historically, used reflectively, tested honestly.</p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "eye" %}</div>
-      <p class="tag">Limb V</p>
-      <h3><a class="card-link" href="/neurobiology/">Neuroscience, Psychology &amp; the Visionary State</a></h3>
-      <p>Predictive processing, the default mode network, entropic brain theory; meditation, breath, fasting and
-      the serotonergic psychedelics as instruments that alter the observer rather than the observed.</p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "seed" %}</div>
-      <p class="tag">Limb VI</p>
-      <h3><a class="card-link" href="/neurobiology/#hallucinogens">Biology &amp; the Stubbornness of Life</a></h3>
-      <p>Autopoiesis, symbiogenesis, morphogenesis, bioelectricity. How matter learned to hold a shape against the
-      current, and why every cell is already solving problems we have no good language for.</p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "star" %}</div>
-      <p class="tag">Limb VII</p>
-      <h3><a class="card-link" href="/extraterrestrials/">God, the Law of One &amp; the Contact Question</a></h3>
-      <p>Non-duality across traditions; the Ra material read as a philosophical text rather than scripture;
-      Fermi, Drake, Avi Loeb, the UAP record and the discipline of holding a question open without filling it.</p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "spiral" %}</div>
-      <p class="tag">Limb XI &middot; i</p>
-      <h3><a class="card-link" href="/decoherence/">Decoherence &amp; the Remembered Self</a></h3>
-      <p>Why the quantum world stops looking quantum; the microtubule evidence of 2022&ndash;2026 weighed rather
-      than cheered; the glymphatic tide that washes the brain's scaffolding every night and carries off the
-      protein that falls from it; and an honest account of what physics permits when a tradition says a life is
-      eventually gathered up and read.</p>
-      <p class="mt-1"><a href="/decoherence/">Enter Limb XI&middot;i →</a></p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "metatron" %}</div>
-      <p class="tag">Limb XI &middot; ii</p>
-      <h3><a class="card-link" href="/locality/">Local &amp; Non-Local Reality</a></h3>
-      <p>Light cones and causality; what Bell's theorem proved and the four things it did not; why
-      entanglement cannot carry a message and ruins philosophy anyway; the substrate that carries all of it;
-      and the order's own account of how a possibility becomes a fact &mdash; memory meeting attention across
-      a polarity, in a medium that can hold a standing pattern.</p>
-      <p class="mt-1"><a href="/locality/">Enter Limb XI&middot;ii →</a></p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "eye" %}</div>
-      <p class="tag">Limb VIII</p>
-      <h3><a class="card-link" href="/occult/">The Black Tribunal</a></h3>
-      <p>How esoteric ideas get captured by tyranny — the Thule and Ahnenerbe occultism of the Nazi regime, the
-      theft of ancient symbols, the pseudo-science of race. Studied as pathology, named as atrocity, and never
-      as inspiration.</p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "metatron" %}</div>
-      <p class="tag">Limb IX</p>
-      <h3><a class="card-link" href="/wizardry/">Magic &amp; the Wizard's Craft</a></h3>
-      <p>Magic defined operationally: the deliberate use of symbol, attention and ritual to reconfigure a mind,
-      and through that mind, a life. Ceremony, sigil, memory palace, intention. The wizard as applied psychologist
-      with better robes.</p>
-      <p class="mt-1"><a href="/wizardry/">Enter Limb IX →</a><br><a href="/runes/">Runes, charms &amp; natural energies →</a><br><a href="/qabalah/">The Hermetic Qabalah →</a></p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "tree" %}</div>
-      <p class="tag">Limb IX &middot; ii</p>
-      <h3><a class="card-link" href="/qabalah/">The Hermetic Qabalah &amp; the Tree of Life</a></h3>
-      <p>Ten spheres, twenty-two paths, four worlds. The deep history from the <em>Sefer Yetzirah</em> to Luria
-      to the Golden Dawn; the fables that carry the doctrine; the sky hung on the diagram; densities, chakras and
-      where that seam was really stitched; the octave, the comma and the honest truth about the spiral; and
-      creation as an utterance still being spoken.</p>
-      <p class="mt-1"><a href="/qabalah/">Enter Limb IX&middot;ii →</a></p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "spiral" %}</div>
-      <p class="tag">Limb X</p>
-      <h3><a class="card-link" href="/elemental-alchemy/">Alchemy &amp; the Elemental Forces</a></h3>
-      <p>Earth, water, air and fire were never a failed chemistry — they were a working taxonomy of
-      <em>states and tendencies</em>: the solid, the flowing, the volatile, the transforming. We follow that
-      language forward into phase, plasma and thermodynamics, and inward into the <em>opus</em> itself —
-      nigredo, albedo, citrinitas, rubedo — the blackening, whitening, yellowing and reddening that Jung read
-      as a map of the psyche long before anyone read it as a map of metals. Salt, sulphur and mercury;
-      solve et coagula; the quintessence that the other four are said to turn around.</p>
-      <p class="mt-1"><a href="/elemental-alchemy/">Enter Limb X →</a></p>
-    </article>
-
-    <article class="frame card reveal">
-      <div class="card-glyph">{% glyph "eye" %}</div>
-      <p class="tag">Limb XI</p>
-      <h3><a class="card-link" href="/consciousness/">Consciousness &amp; the Hard Problem</a></h3>
-      <p>The newest limb and the one most likely to be wrong. Why there is something it is like to be you;
-      Chalmers' hard problem, integrated information, global workspace, and the Penrose–Hameroff claim that
-      the answer is quantum and sits in the microtubule. Held as a live question, graded honestly, and kept
-      in the speculative column until the physics obliges us to move it.</p>
-      <p class="mt-1"><a href="/consciousness/">Enter Limb XI →</a></p>
-    </article>
+    {%- endfor %}
   </div>
 </section>
 
@@ -317,13 +201,14 @@ description: EGregoRA — the house of enquiry co-founded by Edward Gregory and 
         <li><a href="/locality/">Local &amp; Non-Local Reality</a> — Limb XI·ii, Bell's theorem, the no-signalling fence, the substrate, and how a possibility becomes a fact.</li>
         <li><a href="/consciousness/">Consciousness</a> — Limb XI, Orch OR and the cosmic microtubule.</li>
         <li><a href="/extraterrestrials/">Extraterrestrials</a> — Limb VII, the contact question without the swoon.</li>
-        <li><a href="/artwork/">Artwork</a> — the order's plates and illuminations.</li>
+        <li><a href="/artwork/">Artwork</a> — the order's plates and illuminations, drawn for the limbs they name.</li>
         <li><a href="/astrology/">Astrology</a> — Limb IV, the sky as calendar, symbol and failed physics.</li>
-        <li><a href="/music/">Sound, Music and the Cosmic Brainwave</a> — tuning, rhythm and the entrained nervous system.</li>
+        <li><a href="/music/">Sound, Music and the Cosmic Brainwave</a> — Limb III·iii, tuning, rhythm and the entrained nervous system.</li>
+        <li><a href="/occult/#black-tribunal">The Black Tribunal</a> — Limb VIII, occult fascism named as atrocity, and the enforced integration the order asks of itself.</li>
         <li><a href="/occult/">The Occult</a> — Limb IX·i, what the word means, a dated history, and where we stand.</li>
         <li><a href="/cosmic-ether/">The Cosmic Ether</a> — Limb I·ii, fields, light, causality, harmonics and the weave they make.</li>
         <li><a href="/wizardry/">Wizardry &amp; Rituals</a> — Limb IX, the circle, the implements and the measured effects of ceremony.</li>
-        <li><a href="/runes/">Runes, Charms &amp; Natural Energies</a> — the Elder Futhark cut honestly, and the theft of the staves named.</li>
+        <li><a href="/runes/">Runes, Charms &amp; Natural Energies</a> — Limb II·ix, the Elder Futhark cut honestly, and the theft of the staves named.</li>
         <li><a href="/qabalah/">The Hermetic Qabalah</a> — Limb IX·ii, the Tree of Life in full, with the history dated and the numerology checked.</li>
         <li><a href="/elemental-alchemy/">Elemental Alchemy</a> — Limb X, four elements carried forward into phase, plasma and the periodic table.</li>
         <li><a href="/products/">Products</a> — the printed and physical instruments of the order.</li>
