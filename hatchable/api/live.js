@@ -39,7 +39,8 @@
 import { ai, db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { requireStudio } from '../lib/accounts.js';
-import { openChat } from '../lib/openchat.js';
+import { openChat, HF_CHAT_URL, HF_CHAT_MODELS } from '../lib/openchat.js';
+import { storedHuggingFaceKey } from '../lib/key-store.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -180,6 +181,37 @@ export default async function (req, res) {
         trail.push('open threw: ' + ((err && err.message) || 'no reason'));
         console.error('live: sky-name open route failed', err && err.message);
       }
+      /* Last route: the order's own Hugging Face token, called directly, so
+         that a refusal from that side is reported rather than swallowed. */
+      const hf = storedHuggingFaceKey();
+      if (hf) {
+        for (const model of HF_CHAT_MODELS) {
+          try {
+            const r = await fetch(HF_CHAT_URL, {
+              method: 'POST',
+              headers: { 'content-type': 'application/json', authorization: 'Bearer ' + hf },
+              body: JSON.stringify({
+                model,
+                messages: [{ role: 'system', content: system }, { role: 'user', content: ask }],
+                max_tokens: 32, temperature: 1
+              })
+            });
+            if (!r.ok) {
+              trail.push('hf ' + model + ': HTTP ' + r.status + ' ' + (await r.text()).slice(0, 90));
+              continue;
+            }
+            const data = await r.json();
+            const said = data && data.choices && data.choices[0] && data.choices[0].message &&
+              data.choices[0].message.content;
+            const name = tidy(said);
+            if (name) return res.json({ ok: true, name, by: model });
+            trail.push('hf ' + model + ': ' + JSON.stringify(String(said || '').slice(0, 60)));
+          } catch (err) {
+            trail.push('hf ' + model + ' threw: ' + ((err && err.message) || 'no reason'));
+          }
+        }
+      }
+
       return res.json({ ok: false, reason: 'no model would name it', heard, trail });
     }
 
