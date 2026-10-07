@@ -1,4 +1,3 @@
 { "calls": [
-  { "action": "accounts" },
-  { "action": "draw", "prompt": "A rowan branch heavy with red berries against a slate sky, cold October light, shallow depth of field" }
+  { "action": "plan", "prompt": "A simple wooden bench with four legs and a back rest", "ids": ["table","chair","ladder"] }
 ] }

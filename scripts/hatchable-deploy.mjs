@@ -324,8 +324,8 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
       }
     };
 
-    await tryRoute('pollinations', 'https://text.pollinations.ai/openai', {}, 'openai');
-    await tryRoute('pollinations-ref', 'https://text.pollinations.ai/openai?referrer=egregora.hatchable.site', {}, 'openai-fast');
+    /* Pollinations was taken out of the order's stack entirely; it is not
+       probed any more. */
     await tryRoute('hf-router', 'https://router.huggingface.co/v1/chat/completions',
       process.env.HUGGINGFACE_API_KEY ? { authorization: 'Bearer ' + process.env.HUGGINGFACE_API_KEY } : {},
       'Qwen/Qwen2.5-VL-7B-Instruct');

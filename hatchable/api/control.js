@@ -182,6 +182,25 @@ export default async function (req, res) {
           hardware: out.hardware || null, prompt: out.prompt });
       }
 
+      /* A plan for a 3D model, exactly as the Turning Shop asks for one.
+         Useful on its own and, more to the point, the only way to test the
+         route from here \u2014 /api/model3d is behind the studio door. */
+      case 'plan': {
+        const want = String(body.prompt || '').trim();
+        if (want.length < 3) return res.status(400).json({ error: 'Say what to build.' });
+        const r = await fetch('https://' + (req.headers.host || 'egregora.hatchable.site') + '/api/model3d', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            authorization: String((req.headers && req.headers.authorization) || '')
+          },
+          body: JSON.stringify({ prompt: want, ids: Array.isArray(body.ids) ? body.ids : [] })
+        }).catch(() => null);
+        if (!r) return res.status(502).json({ error: 'The plan route did not answer.' });
+        const data = await r.json().catch(() => ({}));
+        return res.status(r.status).json(data);
+      }
+
       case 'film': {
         const prompt = String(body.prompt || '').trim();
         if (prompt.length < 3) return res.status(400).json({ error: 'Say what the clip should show.' });

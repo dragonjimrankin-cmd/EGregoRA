@@ -17,6 +17,7 @@
  */
 import { openaiKey, CHAT_MODELS } from '../lib/openai.js';
 import { requireStudio } from '../lib/accounts.js';
+import { checkToken } from '../lib/tokens.js';
 import { openChat } from '../lib/openchat.js';
 
 export const access = 'public';
@@ -90,8 +91,14 @@ function parsePlan(text, ids) {
 }
 
 export default async function (req, res) {
-  const door = await requireStudio(req);
-  if (!door.ok) return res.status(door.status).json({ error: door.error, gate: door.reason });
+  /* The studio door, unless this is the control API calling with a token of
+     its own \u2014 which is how the route is tested from the outside, there
+     being no member session in a workflow run. */
+  const byToken = await checkToken(req, 'plan').catch(() => ({ ok: false }));
+  if (!byToken.ok) {
+    const door = await requireStudio(req);
+    if (!door.ok) return res.status(door.status).json({ error: door.error, gate: door.reason });
+  }
 
   const body = req.body || {};
   const prompt = String(body.prompt || '').trim().slice(0, 600);
