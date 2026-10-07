@@ -1,7 +1,6 @@
 {
-  "note": "After the fix: the stale Kaggle claim should be let go on the next attempt. Ask again, and try one clip.",
+  "note": "Now that v119 is live: does the stale Kaggle claim get let go, and what does a film attempt say?",
   "calls": [
-    { "action": "status" },
     { "action": "film", "prompt": "A single candle flame guttering in a draught, close, dark background" }
   ]
 }
