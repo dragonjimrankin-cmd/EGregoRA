@@ -1,8 +1,7 @@
 {
-  "note": "v124 is live. Probe Hugging Face, then ask and draw.",
+  "note": "The pool should now show the Hugging Face token. Check, then draw a picture on a Hugging Face engine.",
   "calls": [
-    { "action": "chat-probe" },
     { "action": "accounts" },
-    { "action": "ask", "question": "In plain words: what did Bell's theorem actually prove, and what does it not prove?" }
+    { "action": "draw", "prompt": "A brass orrery on a cluttered desk by candlelight, shallow depth of field, warm highlights on worn metal" }
   ]
 }

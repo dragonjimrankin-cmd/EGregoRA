@@ -201,7 +201,9 @@ export const huggingFaceAccounts = () => credentials('huggingface', {
   /* The owner's own token, carried in the project so the Hugging Face
      routes work without anything being pasted into the setup page. A token
      configured there wins over this one. */
-  fallbacks: [storedHuggingFaceKey()].filter(Boolean)
+  fallbacks: [storedHuggingFaceKey()].filter(Boolean).map((secret) => ({
+    id: 'shakra', label: 'the order\'s own Hugging Face token', secret
+  }))
 });
 export const falAccounts = () => credentials('fal', { base: 'FAL_KEY', bundle: 'FAL_ACCOUNTS' });
 export const replicateAccounts = () => credentials('replicate', {
