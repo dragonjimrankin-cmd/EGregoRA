@@ -1,5 +1,7 @@
 {"calls":[
- {"raw":{"path":"/api/oauth","body":{"action":"ready"}}},
- {"raw":{"path":"/api/oauth?go=google","method":"GET"}},
- {"raw":{"path":"/api/oauth?back=google&code=nonsense&state=nonsense","method":"GET"}}
+ {"raw":{"path":"/api/live","body":{"action":"list"}}},
+ {"raw":{"path":"/api/live","body":{"action":"air","pass":"8===D","on":true,"note":"Testing the sign.","back_at":"shortly"}}},
+ {"raw":{"path":"/api/live","body":{"action":"list"}}},
+ {"raw":{"path":"/api/live","body":{"action":"air","pass":"8===D","on":false,"note":"Cutting runes all week; the next broadcast is on the new moon.","back_at":"the new moon"}}},
+ {"raw":{"path":"/api/live","body":{"action":"list"}}}
 ]}
