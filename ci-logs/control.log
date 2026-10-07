@@ -1,74 +1,106 @@
-# control run — 2026-10-07T01:03:36.490Z
-site: https://egregora.hatchable.site   calls: 1
+# control run — 2026-10-07T01:30:51.376Z
+site: https://egregora.hatchable.site   calls: 4
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
 POST {"action":"chat-probe"}
-HTTP 200  (3237 ms)
+HTTP 200  (3636 ms)
 {
   "probe": [
     {
       "route": "pollinations GET with a referrer named",
       "status": 500,
-      "ms": 822,
+      "ms": 760,
       "said": "{\"error\":\"ENOSPC: no space left on device, write\",\"status\":500,\"deprecation_notice\":\"NOTE: The Pollinations legacy text API is being deprecated for authenticated users. Please migrate to https://enter.pollinations.ai for better performance and access to all the latest models. Anonymous requests to t"
     },
     {
       "route": "pollinations POST with a referrer in the body",
       "status": 402,
-      "ms": 694,
+      "ms": 703,
       "said": "{}"
     },
     {
       "route": "hack club ai, v1 path",
       "status": 404,
-      "ms": 152,
+      "ms": 376,
       "said": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"text-scale\" content=\"scale\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"../../favicon.svg\" />\n    <link rel=\"icon\" type=\"image/png\""
     },
     {
       "route": "duckduckgo duckchat, token step",
       "status": 200,
-      "ms": 47,
+      "ms": 39,
       "said": "{\"status\":\"0\",\"secondaryStatus\":\"0\",\"statusV2\":0,\"grant\":null}"
     },
     {
       "route": "openrouter free model with no key",
       "status": 401,
-      "ms": 35,
+      "ms": 34,
       "said": "{\"error\":{\"message\":\"No cookie auth credentials found\",\"code\":401}}"
     },
     {
       "route": "github models with no token",
       "status": 502,
-      "ms": 14,
+      "ms": 17,
       "said": "{\"code\":\"proxy_error\",\"error\":\"fetch failed | Request was cancelled. | Proxy response (502) !== 200 when HTTP Tunneling\"}"
     },
     {
       "route": "pollinations POST, anonymous, openai-fast",
       "status": 402,
-      "ms": 658,
+      "ms": 737,
       "said": "{}"
     },
     {
       "route": "pollinations GET, anonymous, openai-fast",
       "status": 402,
-      "ms": 264,
+      "ms": 237,
       "said": "{}"
     },
     {
       "route": "pollinations GET, anonymous, no model named",
       "status": 402,
-      "ms": 250,
+      "ms": 239,
       "said": "{}"
     },
     {
       "route": "pollinations models list",
       "status": 200,
-      "ms": 105,
+      "ms": 108,
       "said": "[{\"name\":\"openai-fast\",\"description\":\"GPT-OSS 20B Reasoning LLM (OVH)\",\"reasoning\":true,\"tier\":\"anonymous\",\"community\":false,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"openai\",\"gpt-oss\",\"gpt-oss-20b\",\"ovh-reasoning\"],\"vision\":false,\"audio\":false}]"
     }
   ]
+}
+
+--------------------------------------------------------------------
+POST {"action":"accounts"}
+HTTP 200  (369 ms)
+{
+  "pool": {
+    "kaggle": [],
+    "huggingface": [],
+    "fal": [],
+    "replicate": [],
+    "openai": []
+  }
+}
+
+--------------------------------------------------------------------
+POST {"action":"ask","question":"In plain words: what did Bell's theorem actually prove, and what does it not prove?"}
+HTTP 200  (21949 ms)
+{
+  "answer": "Nothing here matches that, and no model is reachable to think about it properly. Ask it again with different words, or ask something inside the eleven limbs.",
+  "source": "none"
+}
+
+--------------------------------------------------------------------
+POST {"action":"draw","prompt":"A brass orrery on a cluttered desk by candlelight, shallow depth of field"}
+HTTP 200  (3892 ms)
+{
+  "status": "ready",
+  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791336681487-0t4ndohj.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261007%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261007T013121Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=97ce69ed3945ba2ddc1e8f3794e5a56fad63919898414a755d28de29d055447b",
+  "provider": "flux-schnell (open weights)",
+  "hardware": "Pollinations hosted GPU · FLUX.1-schnell, open weights — the card is not disclosed",
+  "prompt": "A brass orrery on a cluttered desk by candlelight, shallow depth of field"
 }
 
 done.
