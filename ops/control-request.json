@@ -1,3 +1,5 @@
 { "calls": [
-  { "raw": { "path": "/api/keeper", "method": "POST", "body": { "action": "gpus", "pass": "1133" } } }
+  { "raw": { "path": "/api/media", "method": "POST", "body": { "action": "list", "kind": "audio" } } },
+  { "raw": { "path": "/api/media", "method": "POST", "body": { "action": "shelf", "kind": "video", "pass": "1133" } } },
+  { "raw": { "path": "/api/media", "method": "POST", "body": { "action": "shelf", "kind": "video", "pass": "0000" } } }
 ] }
