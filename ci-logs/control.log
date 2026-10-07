@@ -1,177 +1,31 @@
-# control run — 2026-10-07T06:40:29.599Z
+# control run — 2026-10-07T06:44:47.600Z
 site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"plan","prompt":"A simple wooden bench with four legs and a back rest, and a lantern standing beside it","ids":["table","chair","ladder","pipe-run","door-panel","gate-iron"]}
-HTTP 200  (6367 ms)
+POST /api/keeper  {"action":"gpus","pass":"1133"}
+HTTP 200  (364 ms)
 {
-  "name": "bench and lantern",
-  "note": "a simple wooden bench with a lantern",
-  "parts": [
+  "ok": true,
+  "gpus": [
     {
-      "book": null,
-      "solid": "box",
-      "colour": "#8a6b40",
-      "p": [
-        0,
-        0.2,
-        0
-      ],
-      "r": [
-        0,
-        0,
-        0
-      ],
-      "s": [
-        1.6,
-        0.05,
-        0.9
-      ]
-    },
-    {
-      "book": null,
-      "solid": "box",
-      "colour": "#8a6b40",
-      "p": [
-        -0.7,
-        0.45,
-        0.4
-      ],
-      "r": [
-        0,
-        0,
-        0
-      ],
-      "s": [
-        0.05,
-        0.25,
-        0.05
-      ]
-    },
-    {
-      "book": null,
-      "solid": "box",
-      "colour": "#8a6b40",
-      "p": [
-        -0.7,
-        0.45,
-        -0.4
-      ],
-      "r": [
-        0,
-        0,
-        0
-      ],
-      "s": [
-        0.05,
-        0.25,
-        0.05
-      ]
-    },
-    {
-      "book": null,
-      "solid": "box",
-      "colour": "#8a6b40",
-      "p": [
-        0.7,
-        0.45,
-        0.4
-      ],
-      "r": [
-        0,
-        0,
-        0
-      ],
-      "s": [
-        0.05,
-        0.25,
-        0.05
-      ]
-    },
-    {
-      "book": null,
-      "solid": "box",
-      "colour": "#8a6b40",
-      "p": [
-        0.7,
-        0.45,
-        -0.4
-      ],
-      "r": [
-        0,
-        0,
-        0
-      ],
-      "s": [
-        0.05,
-        0.25,
-        0.05
-      ]
-    },
-    {
-      "book": null,
-      "solid": "box",
-      "colour": "#8a6b40",
-      "p": [
-        0,
-        0.7,
-        0
-      ],
-      "r": [
-        0,
-        0,
-        0
-      ],
-      "s": [
-        1.6,
-        0.05,
-        0.2
-      ]
-    },
-    {
-      "book": null,
-      "solid": "sphere",
-      "colour": "#ffff00",
-      "p": [
-        1.2,
-        0.5,
-        0
-      ],
-      "r": [
-        0,
-        0,
-        0
-      ],
-      "s": [
-        0.2,
-        0.2,
-        0.2
-      ]
-    },
-    {
-      "book": null,
-      "solid": "cylinder",
-      "colour": "#aaaaaa",
-      "p": [
-        1.2,
-        0.1,
-        0
-      ],
-      "r": [
-        0,
-        0,
-        0
-      ],
-      "s": [
-        0.05,
-        0.4,
-        0.05
-      ]
+      "id": "kaggle:shakradragon",
+      "kind": "Kaggle",
+      "label": "shakradragon (bundled)",
+      "user": "shakradragon",
+      "gpu": "Nvidia Tesla T4 (when the account is verified)",
+      "state": "ready",
+      "busy": false,
+      "stale": false,
+      "fails": 0,
+      "successes": 11,
+      "last_error": null,
+      "can_reset": true,
+      "note": "Resetting frees this account’s lock and cancels anything still marked live."
     }
   ],
-  "by": "meta-llama/Llama-3.3-70B-Instruct"
+  "secret_set": false
 }
 
 done.
