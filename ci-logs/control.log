@@ -1,25 +1,36 @@
-# control run — 2026-10-07T14:05:45.760Z
-site: https://egregora.hatchable.site   calls: 1
+# control run — 2026-10-07T14:16:38.551Z
+site: https://egregora.hatchable.site   calls: 3
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"sky-name","stars":6,"shape":"a closed loop of 6 stars, roughly square, mid-sky, spare"}
-HTTP 200  (951 ms)
+POST /api/live  {"action":"sky-name","stars":4,"shape":"a closed loop of 4 stars, much wider than tall, low on the horizon, spare"}
+HTTP 200  (1003 ms)
 {
-  "ok": false,
-  "reason": "no model would name it",
-  "heard": "",
-  "trail": [
-    "flash threw: gateway internal/ai/complete 400: Anthropic returned 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfo1EMNGDciQD5czBkKEk\"}",
-    "haiku threw: gateway internal/ai/complete 400: Anthropic returned 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfo1ENcRSkJmfHBd6pD5V\"}",
-    "gpt-4o threw: gateway internal/ai/complete 412: hatchable.ai: this project has no OpenAI API key. Declare `[ai] required = true` in `hatchable.toml` (or `[ai] providers = [\"openai\"]` to pin this provider) and redeploy; the key is then pasted via the platform setup gate. With your own key the bill goes to that key's provider account; alternatively the project owner can enable Builder + AI in console Settings and Hatchable serves calls on platform keys from monthly AI credit.",
-    "open: \"\"",
-    "hf meta-llama/Llama-3.3-70B-Instruct: HTTP 402 {\"error\":\"You have no remaining credits. Purchase pre-paid credits to continue using Infer",
-    "hf Qwen/Qwen2.5-72B-Instruct: HTTP 402 {\"error\":\"You have no remaining credits. Purchase pre-paid credits to continue using Infer",
-    "hf deepseek-ai/DeepSeek-V3-0324: HTTP 402 {\"error\":\"You have no remaining credits. Purchase pre-paid credits to continue using Infer",
-    "hf mistralai/Mistral-Small-24B-Instruct-2501: HTTP 400 {\"error\":{\"message\":\"The requested model 'mistralai/Mistral-Small-24B-Instruct-2501' is no"
-  ]
+  "ok": true,
+  "name": "The Borrowed Limb",
+  "by": "the order's own lexicon",
+  "lexicon": true
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"sky-name","stars":10,"shape":"a closed loop of 10 stars, tall and narrow, high in the sky, rambling"}
+HTTP 200  (729 ms)
+{
+  "ok": true,
+  "name": "The Rambling Kettle",
+  "by": "the order's own lexicon",
+  "lexicon": true
+}
+
+--------------------------------------------------------------------
+POST /api/live  {"action":"sky-name","stars":6,"shape":"a closed loop of 6 stars, roughly square, mid-sky"}
+HTTP 200  (705 ms)
+{
+  "ok": true,
+  "name": "The Folded Ferryman",
+  "by": "the order's own lexicon",
+  "lexicon": true
 }
 
 done.
