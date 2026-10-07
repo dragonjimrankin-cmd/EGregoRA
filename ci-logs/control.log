@@ -1,17 +1,17 @@
-# control run — 2026-10-07T02:44:35.938Z
+# control run — 2026-10-07T03:25:55.241Z
 site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"draw","prompt":"A bowl of chicken soup on an oak table, steam rising, winter light"}
-HTTP 200  (4119 ms)
+POST {"action":"draw","prompt":"A red telephone box standing alone in a snowy pine forest at dusk"}
+HTTP 200  (5546 ms)
 {
   "status": "ready",
-  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791341080387-jxts57w0.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261007%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261007T024440Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=1bd8a7ed39cb2106be4e6e89ec8c4435b72d1fd237319b9cbe0d383021bdbcca",
-  "provider": "flux-schnell (open weights)",
-  "hardware": "Pollinations hosted GPU · FLUX.1-schnell, open weights — the card is not disclosed",
-  "prompt": "A bowl of chicken soup on an oak table, steam rising, winter light"
+  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791343560883-dyrcu986.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261007%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261007T032601Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=bd75c2389014df661b5c7ad51682376b4a27935c6c20e0aab3be442c0437ed6b",
+  "provider": "turbo (open weights)",
+  "hardware": "A hosted accelerator — the provider does not name it",
+  "prompt": "A red telephone box standing alone in a snowy pine forest at dusk"
 }
 
 done.
