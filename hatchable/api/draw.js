@@ -64,7 +64,7 @@ export default async function (req, res) {
     });
   }
 
-  const out = await generateImage(prompt, { initUrl: sketchUrl, engine: body.engine || 'auto' });
+  const out = await generateImage(prompt, { initUrl: sketchUrl, engine: body.engine || 'sd35' });
 
   if (!out.url) {
     /* Every quick route failed. The order's own GPU can draw it, but a
