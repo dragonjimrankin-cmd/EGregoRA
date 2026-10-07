@@ -98,7 +98,10 @@ export function holdingCard(host, words) {
     canvas.style.height = H + "px";
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     stars = [];
-    const many = Math.round((W * H) / 9000);
+    /* Two and a half times the old density: one star per 3,600 square
+       pixels rather than per 9,000, which reads as a real sky rather than
+       a sparse one on a phone as well as on a wall screen. */
+    const many = Math.round((W * H) / 3600);
     for (let i = 0; i < many; i++) {
       stars.push({
         x: rand(8, W - 8), y: rand(8, H - 8),
