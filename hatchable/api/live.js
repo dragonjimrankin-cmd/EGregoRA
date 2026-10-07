@@ -133,6 +133,7 @@ export default async function (req, res) {
         'no explanation.';
 
       let heard = '';
+      const trail = [];
       const tidy = (raw) => {
         let name = String(raw || '').trim();
         if (name) heard = name.slice(0, 120);
@@ -162,7 +163,9 @@ export default async function (req, res) {
           });
           const name = tidy(out && out.text);
           if (name) return res.json({ ok: true, name, by: (out && out.model) || model });
+          trail.push(model + ': ' + JSON.stringify(String((out && out.text) || '').slice(0, 60)));
         } catch (err) {
+          trail.push(model + ' threw: ' + ((err && err.message) || 'no reason'));
           console.error('live: sky-name ' + model + ' failed', err && err.message);
         }
       }
@@ -172,10 +175,12 @@ export default async function (req, res) {
         });
         const name = tidy(out && out.text);
         if (name) return res.json({ ok: true, name, by: (out && out.model) || 'open weights' });
+        trail.push('open: ' + JSON.stringify(String((out && out.text) || '').slice(0, 60)));
       } catch (err) {
+        trail.push('open threw: ' + ((err && err.message) || 'no reason'));
         console.error('live: sky-name open route failed', err && err.message);
       }
-      return res.json({ ok: false, reason: 'no model would name it', heard });
+      return res.json({ ok: false, reason: 'no model would name it', heard, trail });
     }
 
     if (action === 'join' || action === 'pull') {
