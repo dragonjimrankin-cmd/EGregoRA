@@ -162,17 +162,20 @@ Full reference: `docs/CONTROL-API.md`.
   `Qwen/Qwen2.5-72B-Instruct`, `deepseek-ai/DeepSeek-V3-0324`,
   `mistralai/Mistral-Small-24B-Instruct-2501`) → keyless routes. Verified
   working at ~300 ms.
-- **Images.** Default engine is **Stable Diffusion 3.5 Large** (`sd35`), with
-  SDXL-Turbo behind it and FLUX.1-schnell behind that. In practice Hugging
-  Face refuses image inference on the free token, so most pictures are drawn
-  by Pollinations (SDXL-Turbo or FLUX); the card always names the engine that
-  actually drew it.
+- **Images. Stable Diffusion, on hardware the order controls.** Pollinations
+  was removed from the stack entirely in v142 — image *and* text. The order
+  now is: a Colab worker that is awake → the hosted Stable Diffusion endpoint
+  on the order's own Hugging Face token → a **Kaggle kernel as a queued job**
+  (stills prefer the `cervixen` account so clips and pictures do not share one
+  weekly quota). The checkpoint ladder on every GPU is SD 3.5 Medium → SDXL
+  base → SD-Turbo. Until a GPU is actually available this ends in an honest
+  "no machine would draw it" rather than a borrowed picture.
 - **Video.** Order: member key → fal.ai → Colab → Replicate → Kaggle. With no
   GPU and no film key this returns 503, honestly.
-- **Keyless chat is exhausted.** Pollinations text = 402 from the Hatchable
-  IP; `ai.hackclub.com` = 404; DeepInfra / api.airforce / OpenRouter / GitHub
-  Models = 401. The Hugging Face router is the working route and it is *not*
-  keyless.
+- **There is no keyless route any more, by instruction.** `keylessChat()` is
+  a stub that returns null. Chat is: a Colab worker → OpenRouter if a key is
+  configured → the **Hugging Face router** on the order's own token. Do not
+  reintroduce Pollinations or any other anonymous public endpoint.
 
 ---
 
@@ -235,8 +238,11 @@ literals. There is no server-side vision and no SVG rasteriser.
    wanted.
 4. Optional: `FAL_KEY` or `REPLICATE_API_TOKEN` to make video work today.
 5. A verified sending domain, if platform mail starts bouncing.
-6. Second provider accounts as `KAGGLE_API_TOKEN_2` + `KAGGLE_USERNAME_2`,
-   `HUGGINGFACE_API_KEY_2`.
+6. **A Kaggle API token for `cervixen.info@gmail.com`**, pasted as
+   `KAGGLE_API_TOKEN_2` with `KAGGLE_USERNAME_2` — that account is now the
+   preferred one for drawing, and the code already looks for it. Phone-verify
+   it at the same time or it will be handed a CPU like the first one.
+   `HUGGINGFACE_API_KEY_2` works the same way.
 
 ---
 
