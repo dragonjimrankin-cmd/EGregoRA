@@ -342,6 +342,25 @@ export default async function (req, res) {
       case 'chat-probe': {
         const say = 'Reply with exactly: ready.';
         const tries = [
+          { name: 'pollinations GET with a referrer named',
+            url: 'https://text.pollinations.ai/' + encodeURIComponent(say) +
+              '?model=openai-fast&referrer=egregora.hatchable.site' },
+          { name: 'pollinations POST with a referrer in the body',
+            url: 'https://text.pollinations.ai/openai',
+            body: { model: 'openai-fast', referrer: 'egregora.hatchable.site',
+                    messages: [{ role: 'user', content: say }] } },
+          { name: 'hack club ai, v1 path',
+            url: 'https://ai.hackclub.com/v1/chat/completions',
+            body: { messages: [{ role: 'user', content: say }] } },
+          { name: 'duckduckgo duckchat, token step',
+            url: 'https://duckduckgo.com/duckchat/v1/status', headers: { 'x-vqd-accept': '1' } },
+          { name: 'openrouter free model with no key',
+            url: 'https://openrouter.ai/api/v1/chat/completions',
+            body: { model: 'meta-llama/llama-3.3-70b-instruct:free',
+                    messages: [{ role: 'user', content: say }] } },
+          { name: 'github models with no token',
+            url: 'https://models.inference.ai.azure.com/chat/completions',
+            body: { model: 'gpt-4o-mini', messages: [{ role: 'user', content: say }] } },
           { name: 'pollinations POST, anonymous, openai-fast',
             url: 'https://text.pollinations.ai/openai',
             body: { model: 'openai-fast', messages: [{ role: 'user', content: say }] } },
@@ -356,9 +375,11 @@ export default async function (req, res) {
           const started = Date.now();
           try {
             const r = await fetch(t.url, Object.assign(
-              { signal: AbortSignal.timeout(30000) },
+              { signal: AbortSignal.timeout(30000), headers: t.headers || {} },
               t.body
-                ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(t.body) }
+                ? { method: 'POST',
+                    headers: Object.assign({ 'content-type': 'application/json' }, t.headers || {}),
+                    body: JSON.stringify(t.body) }
                 : {}));
             const text = (await r.text()).slice(0, 300);
             seen.push({ route: t.name, status: r.status, ms: Date.now() - started, said: text });
