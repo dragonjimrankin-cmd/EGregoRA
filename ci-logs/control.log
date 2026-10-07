@@ -1,18 +1,113 @@
-# control run — 2026-10-07T03:25:55.241Z
+# control run — 2026-10-07T03:37:01.732Z
 site: https://egregora.hatchable.site   calls: 1
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST {"action":"draw","prompt":"A red telephone box standing alone in a snowy pine forest at dusk"}
-HTTP 200  (5546 ms)
+POST {"action":"workers"}
+HTTP 200  (243 ms)
 {
-  "status": "ready",
-  "url": "https://hatchable-sites.s3.us-east-1.amazonaws.com/apps/77277/storage/oracle-images/1791343560883-dyrcu986.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=AKIA4Q6T3U6ITJF7RFW5%2F20261007%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261007T032601Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=bd75c2389014df661b5c7ad51682376b4a27935c6c20e0aab3be442c0437ed6b",
-  "provider": "turbo (open weights)",
-  "hardware": "A hosted accelerator — the provider does not name it",
-  "prompt": "A red telephone box standing alone in a snowy pine forest at dusk"
+  "workers": []
 }
 
 done.
 exit=0
+# gpu probe — 2026-10-07T03:37:02.779Z
+
+----------------------------------------------------------------------
+kernels/list (does the token work)
+[
+  {
+    "id": 0,
+    "ref": "cdeotte/stacking-tfms-with-public-oof",
+    "title": "Stacking TFMs with Public OOF",
+    "author": "Chris Deotte",
+    "slug": "",
+    "lastRunTime": "2026-10-06T22:58:54.183Z",
+    "language": "",
+    "hasLanguage": false,
+    "kernelType": "",
+    "hasKernelType": false,
+    "isPrivate": false,
+    "hasIsPrivate": false,
+    "enableGpu": false,
+    "hasEnableGpu": false,
+    "enableTpu": false,
+    "hasEnableTpu": false,
+    "enableInternet": false,
+    "hasEnableInternet": false,
+    "categoryIds": [],
+    "datasetDataSources": [],
+    "kernelDataSources": [],
+    "competitionDataSources": [],
+    "modelDataSources": [],
+    "totalVotes": 12,
+    "currentVersionNumber": 0,
+    "hasCurrentVersionNumber": false,
+    "dockerImage": "",
+    "hasDockerImage": false,
+    "machineShape": "",
+    "hasMachineShape": false
+  }
+]
+
+----------------------------------------------------------------------
+oauth2/introspect
+{
+  "active": true,
+  "username": "shakradragon",
+  "userId": 36890995,
+  "user_id": 36890995,
+  "scope": "resources.admin:*"
+}
+
+----------------------------------------------------------------------
+owner guessed from the token
+shakradragon
+
+----------------------------------------------------------------------
+kernels/push with enable_gpu
+{
+  "versionNumberNullable": 1,
+  "ref": "/code/shakradragon/egregora-gpu-check-muxk3kn9",
+  "url": "https://www.kaggle.com/code/shakradragon/egregora-gpu-check-muxk3kn9",
+  "versionNumber": 1,
+  "hasVersionNumber": true,
+  "error": "",
+  "hasError": false,
+  "invalidTags": [],
+  "invalidDatasetSources": [],
+  "invalidCompetitionSources": [],
+  "invalidKernelSources": [],
+  "invalidModelSources": [],
+  "kernelId": 137424436
+}
+  [1] running 
+  [2] complete 
+
+----------------------------------------------------------------------
+kernel output
+{
+  "logNullable": "[{\"stream_name\":\"stdout\",\"time\":6.802058605,\"data\":\"{\\\"torch\\\": \\\"2.11.0+cpu\\\", \\\"cuda_available\\\": false, \\\"device\\\": null, \\\"smi_error\\\": \\\"[Errno 2] No such file or directory: 'nvidia-smi'\\\"}\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":10.208032631,\"data\":\"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\\\|'\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":10.208072441,\"data\":\"  cells[i][c] = re.sub('\\\\\\\\\\\\\\\\\\\\|', '|', cell)\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":10.624607441,\"data\":\"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\\\_'\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":10.624654279,\"data\":\"  text = re.sub(r'_', '\\\\_', text) # Escape underscores in display text\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":11.64901501,\"data\":\"[NbConvertApp] Converting notebook __script__.ipynb to html\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":13.187620409,\"data\":\"[NbConvertApp] Writing 276306 bytes to __results__.html\\n\"}\n]",
+  "files": [
+    {
+      "urlNullable": "https://ww
+
+----------------------------------------------------------------------
+hf router video · Lightricks/LTX-Video · HTTP 404
+Not Found
+
+----------------------------------------------------------------------
+hf router video · Wan-AI/Wan2.1-T2V-1.3B · HTTP 404
+Not Found
+
+----------------------------------------------------------------------
+hf router video · tencent/HunyuanVideo · HTTP 404
+Not Found
+
+----------------------------------------------------------------------
+hf whoami
+{"type":"user","id":"6aabb87e37b113e93d97094d","name":"ShakRaDragon","fullname":"Shakra","email":"shakradragon@gmail.com","emailVerified":true,"canPay":false,"billingMode":"prepaid","periodEnd":1793491200,"isPro":false,"avatarUrl":"/avatars/81fb2ab36ec54e9e6f96a49129c749e4.svg","orgs":[],"auth":{"type":"access_token","accessToken":{"displayName":"EGregoRA 1","role":"read","createdAt":"2026-10-07T01:25:57.581Z"}}}
+
+done.
+gpu-probe exit=0
