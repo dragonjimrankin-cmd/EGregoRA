@@ -768,6 +768,63 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
       this repository under <code>openmontage/</code>; see the README there.</p>
     </div>
 
+    <div class="byok" id="mind-byok">
+      <button class="btn btn--ghost" type="button" id="mk-open"
+              aria-expanded="false" aria-controls="mbyok-box">Lend the oracle a mind</button>
+      <div class="byok-box" id="mbyok-box" hidden>
+        <p class="muted xsmall">The order writes its own answers first and reaches for a model only when
+        nothing it has written fits. As of October 2026 there is no longer a single free hosted model that
+        will answer an unkeyed request from this server &mdash; we tested seven and published the results.
+        So: if you hold a key, lend it for the length of one question. <strong>Google AI Studio, Groq and
+        OpenRouter all give one away free in about two minutes</strong>, and any of the three is a good deal
+        better than the keyless routes ever were. Used once, never written down, never logged, and the
+        written answers still come first.</p>
+
+        <div class="byok-grid">
+          <div>
+            <label for="mk-provider">Provider</label>
+            <select id="mk-provider">
+              <option value="google">Google AI Studio &middot; free</option>
+              <option value="groq">Groq &middot; free</option>
+              <option value="openrouter">OpenRouter &middot; free tier</option>
+              <option value="cerebras">Cerebras</option>
+              <option value="mistral">Mistral</option>
+              <option value="openai">OpenAI</option>
+              <option value="custom">Any other service</option>
+            </select>
+          </div>
+          <div>
+            <label for="mk-model">Model</label>
+            <input id="mk-model" type="text" autocomplete="off" spellcheck="false"
+                   placeholder="gemini-2.0-flash">
+          </div>
+          <div>
+            <label for="mk-key">Your key</label>
+            <input id="mk-key" type="password" autocomplete="current-password"
+                   spellcheck="false" placeholder="AIza&hellip; or gsk_&hellip;">
+          </div>
+          <div id="mk-base-wrap" hidden>
+            <label for="mk-base">The chat endpoint</label>
+            <input id="mk-base" type="url" autocomplete="off" spellcheck="false"
+                   placeholder="https://api.example.com/v1/chat/completions">
+          </div>
+        </div>
+
+        <p class="byok-remember">
+          <label class="check">
+            <input id="mk-keep" type="checkbox">
+            <span>Keep it in this tab until I close it</span>
+          </label>
+        </p>
+
+        <div class="ask-actions">
+          <button class="btn" type="button" id="mk-use">Use this key</button>
+          <button class="btn btn--ghost" type="button" id="mk-forget">Forget it</button>
+        </div>
+        <p class="auth-msg" id="mk-msg" role="status"></p>
+      </div>
+    </div>
+
     <p class="muted xsmall oracle-foot">Test everything kindly. If an answer cannot survive your scepticism,
     it does not deserve your belief — and the written form below reaches Ed himself.</p>
   </div>

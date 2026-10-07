@@ -361,7 +361,8 @@
           name: (nameEl && nameEl.value || "").trim(),
           limb: (limbEl && limbEl.value) || "",
           history: history.slice(0, -1).slice(-MAX_KEPT),
-          attachments: attachments.filter((f) => f.id).map((f) => f.id)
+          attachments: attachments.filter((f) => f.id).map((f) => f.id),
+          byok: window.EGOwnMind ? window.EGOwnMind() : null
         })
       });
       const data = await res.json().catch(() => ({}));
@@ -3815,4 +3816,106 @@
   } catch { /* nothing kept */ }
 
   window.EGOwnFilmKey = () => own;
+})();
+
+/* ------------------------------------------------------------------ *
+ *  Lending the oracle a mind
+ *
+ *  The same arrangement as the picture and the clip. A key given here is
+ *  held in this tab and sent with the question, and the server uses it for
+ *  that one request and forgets it. Nothing is stored anywhere else, and
+ *  the order's own written answers are still tried first.
+ * ------------------------------------------------------------------ */
+(() => {
+  const open = document.getElementById("mk-open");
+  const panel = document.getElementById("mbyok-box");
+  if (!open || !panel) return;
+  const providerEl = document.getElementById("mk-provider");
+  const modelEl = document.getElementById("mk-model");
+  const keyEl = document.getElementById("mk-key");
+  const baseEl = document.getElementById("mk-base");
+  const baseWrap = document.getElementById("mk-base-wrap");
+  const keep = document.getElementById("mk-keep");
+  const msg = document.getElementById("mk-msg");
+  const STORE = "eg-byok-mind";
+
+  const HINT = {
+    google: "A Google AI Studio key begins AIza. Free, and generous: Gemini 2.0 Flash is the default " +
+      "and needs no model named.",
+    groq: "A Groq key begins gsk_. Free, and the fastest of the three: Llama 3.3 70B by default.",
+    openrouter: "An OpenRouter key begins sk-or-. Its free tier carries several open-weights models; " +
+      "leave the model empty for Llama 3.3 70B free.",
+    cerebras: "A Cerebras key. Llama 3.3 70B by default, and very fast indeed.",
+    mistral: "A Mistral key from La Plateforme. Mistral Small by default.",
+    openai: "An OpenAI key beginning sk-. Not free, and better than free.",
+    custom: "Anything that speaks the OpenAI shape. Give the full chat endpoint and the model name."
+  };
+
+  let own = null;
+  const say = (t, bad) => {
+    if (!msg) return;
+    msg.textContent = t || "";
+    msg.classList.toggle("is-bad", Boolean(bad));
+    msg.classList.toggle("is-good", Boolean(t) && !bad);
+  };
+  const shape = () => {
+    if (baseWrap) baseWrap.hidden = (providerEl && providerEl.value) !== "custom";
+  };
+
+  open.addEventListener("click", () => {
+    const show = panel.hidden;
+    panel.hidden = !show;
+    open.setAttribute("aria-expanded", String(show));
+    if (show) { shape(); say(HINT[(providerEl && providerEl.value) || "google"]); }
+  });
+  if (providerEl) providerEl.addEventListener("change", () => {
+    shape();
+    say(HINT[providerEl.value] || HINT.google);
+  });
+
+  const use = document.getElementById("mk-use");
+  if (use) use.addEventListener("click", () => {
+    const key = (keyEl && keyEl.value || "").trim();
+    if (!key) { say("Paste the key first.", true); return; }
+    const provider = (providerEl && providerEl.value) || "google";
+    const base = (baseEl && baseEl.value || "").trim();
+    if (provider === "custom" && !/^https:\/\//.test(base)) {
+      say("Give the https address of your provider's chat endpoint.", true);
+      return;
+    }
+    own = {
+      provider,
+      model: (modelEl && modelEl.value || "").trim() || undefined,
+      base: base || undefined,
+      key
+    };
+    if (keep && keep.checked) {
+      try { window.sessionStorage.setItem(STORE, JSON.stringify(own)); } catch { /* no store */ }
+    }
+    say("The oracle will think with your key when its own writings do not fit. It is never stored on " +
+      "the order's side.");
+  });
+
+  const forget = document.getElementById("mk-forget");
+  if (forget) forget.addEventListener("click", () => {
+    own = null;
+    if (keyEl) keyEl.value = "";
+    try { window.sessionStorage.removeItem(STORE); } catch { /* no store */ }
+    say("Forgotten.");
+  });
+
+  try {
+    const saved = JSON.parse(window.sessionStorage.getItem(STORE) || "null");
+    if (saved && saved.key) {
+      own = saved;
+      if (providerEl && saved.provider) providerEl.value = saved.provider;
+      if (modelEl && saved.model) modelEl.value = saved.model;
+      if (baseEl && saved.base) baseEl.value = saved.base;
+      if (keyEl) keyEl.value = saved.key;
+      if (keep) keep.checked = true;
+      shape();
+    }
+  } catch { /* nothing kept */ }
+
+  window.EGOwnMind = () => own;
 })();

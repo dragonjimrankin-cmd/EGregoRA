@@ -19,7 +19,7 @@ import { ai, db } from 'hatchable';
 import { bestMatch, nearest, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
 import { webSearch, readPage } from '../lib/websearch.js';
 import { generateImage } from '../lib/imagegen.js';
-import { openChat, keylessChat } from '../lib/openchat.js';
+import { openChat, keylessChat, chatWithOwnKey } from '../lib/openchat.js';
 import { ginkSystem, PRELUDE, isReturnRequest, RETURN_REPLY } from '../lib/gink-mind.js';
 import { openaiChat } from '../lib/openai.js';
 import { submitVideo } from '../lib/videogen.js';
@@ -367,10 +367,32 @@ export default async function (req, res) {
   let lastErr = null;
   let setupRequired = false;
 
+  /* 6₀ ── a key the member brought themselves. It goes first, because someone
+          who has lent the order a key did it so that it would be used, and
+          because it is the only route that reliably answers at all while the
+          project has no model of its own. Used once and forgotten. */
+  if (body.byok && body.byok.key) {
+    try {
+      const mine = await chatWithOwnKey(body.byok, {
+        system: ginkSystem({ tier: 'open', adult: studio.ok }),
+        messages,
+        maxTokens: 1200
+      });
+      if (mine && mine.text) {
+        answer = mine.text;
+        usedModel = mine.model;
+      } else if (mine && mine.error) {
+        console.error('ask: own key refused', mine.error);
+      }
+    } catch (err) {
+      console.error('ask: own-key route failed', err && err.message);
+    }
+  }
+
   /* 6a ── open-weights models first. The order would rather think with a
           model anyone can download, and this route needs no key at all. */
   try {
-    const open = await openChat({
+    const open = answer ? null : await openChat({
       system: ginkSystem({ tier: 'open', adult: studio.ok }),
       messages,
       tools,
@@ -476,7 +498,8 @@ export default async function (req, res) {
     const suggestions = nearest(question, 3);
     return res.status(200).json({
       answer:
-        'The order has no written answer close enough to that, and no model key is configured for composing a fresh one — so rather than invent something, it will say so.\n\n' +
+        'The order has no written answer close enough to that, and no model is reachable to compose a fresh one — so rather than invent something, it will say so.\n\n' +
+        'The honest position, as of October 2026: every free hosted model that used to answer an unkeyed request now refuses this server, and the order will not pretend otherwise. There are two ways to give it a mind. Press “Lend the oracle a mind” below and paste a key — Google AI Studio, Groq and OpenRouter each give one away free in about two minutes, and it is used for your question and then forgotten. Or run the order’s own notebook on a free Colab GPU, which lends it an open-weights model nobody has to pay for.\n\n' +
         'Questions it can answer in full today include:\n\n' +
         suggestions.map((q) => '— ' + q).join('\n') +
         '\n\nFor anything else, the written form below reaches Ed himself, and the best questions are answered at length in the podcast mailbag.',

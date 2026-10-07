@@ -346,3 +346,98 @@ async function runColab({ system, messages, tools, schema, temperature, maxToken
   }
   return null;
 }
+
+/* ------------------------------------------------------- a key of one's own
+ *
+ * Probed from the live server on 7 October 2026: there is no longer any
+ * keyless hosted chat route that answers. Pollinations returns 402 to this
+ * machine's address, Hack Club's endpoint has gone, OpenRouter and GitHub
+ * Models both refuse without a token. So the oracle is given the same door
+ * the picture and the clip already have: a member may lend it a key of
+ * their own for the length of one question.
+ *
+ * Three of these are free to obtain and take about two minutes: Google AI
+ * Studio, Groq, and OpenRouter's free tier. The key is used for the one
+ * request and is never stored, never logged, and never written to the
+ * register.
+ */
+const MIND_ROUTES = {
+  google: {
+    label: 'Google AI Studio',
+    model: 'gemini-2.0-flash',
+    call: async (key, model, system, messages, maxTokens) => {
+      const url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
+        encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key);
+      const body = {
+        systemInstruction: { parts: [{ text: String(system || '') }] },
+        contents: messages.map((m) => ({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: String(m.content || '') }]
+        })),
+        generationConfig: { maxOutputTokens: maxTokens, temperature: 0.72 }
+      };
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(TIMEOUT)
+      });
+      const data = await r.json().catch(() => null);
+      const parts = data && data.candidates && data.candidates[0] &&
+        data.candidates[0].content && data.candidates[0].content.parts;
+      const text = Array.isArray(parts) ? parts.map((p) => p.text || '').join('') : '';
+      return { ok: r.ok, text, why: (data && data.error && data.error.message) || ('HTTP ' + r.status) };
+    }
+  },
+  groq: { label: 'Groq', model: 'llama-3.3-70b-versatile', url: 'https://api.groq.com/openai/v1/chat/completions' },
+  openrouter: { label: 'OpenRouter', model: 'meta-llama/llama-3.3-70b-instruct:free', url: OPENROUTER_URL },
+  openai: { label: 'OpenAI', model: 'gpt-4o-mini', url: 'https://api.openai.com/v1/chat/completions' },
+  cerebras: { label: 'Cerebras', model: 'llama-3.3-70b', url: 'https://api.cerebras.ai/v1/chat/completions' },
+  mistral: { label: 'Mistral', model: 'mistral-small-latest', url: 'https://api.mistral.ai/v1/chat/completions' },
+  custom: { label: 'another service', model: '', url: '' }
+};
+
+export const MIND_PROVIDERS = Object.entries(MIND_ROUTES)
+  .map(([key, r]) => ({ key, label: r.label, model: r.model }));
+
+export async function chatWithOwnKey(own, { system, messages, maxTokens = 1200 }) {
+  if (!own || typeof own.key !== 'string' || !own.key.trim()) return null;
+  const route = MIND_ROUTES[String(own.provider || '')] || null;
+  if (!route) return null;
+  const key = own.key.trim();
+  const model = (own.model && String(own.model).trim()) || route.model;
+  const where = (own.base && String(own.base).trim()) || route.url;
+
+  try {
+    if (route.call) {
+      const out = await route.call(key, model, system, messages, maxTokens);
+      if (!out.ok || !out.text) {
+        return { error: 'Your ' + route.label + ' key was refused: ' + String(out.why).slice(0, 200) };
+      }
+      return { text: plainify(out.text), model: model + ' (your own ' + route.label + ' key)', route: 'byok' };
+    }
+    if (!/^https:\/\//.test(where)) return { error: 'Give the https address of your provider.' };
+    const r = await fetch(where, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'system', content: system }].concat(
+          messages.map((m) => ({ role: m.role, content: m.content }))),
+        temperature: 0.72,
+        max_tokens: maxTokens
+      }),
+      signal: AbortSignal.timeout(TIMEOUT)
+    });
+    const data = await r.json().catch(() => null);
+    const text = data && data.choices && data.choices[0] && data.choices[0].message &&
+      data.choices[0].message.content;
+    if (!r.ok || !text) {
+      const why = (data && data.error && (data.error.message || data.error)) || ('HTTP ' + r.status);
+      return { error: 'Your key was refused: ' + String(why).slice(0, 200) };
+    }
+    return { text: plainify(text), model: model + ' (your own key)', route: 'byok' };
+  } catch (err) {
+    return { error: 'That provider could not be reached: ' + ((err && err.message) || 'unknown') };
+  }
+}
