@@ -92,12 +92,12 @@ const TESTS = [
     t(tool.querySelector('.ae-prompt'), 'there is somewhere to say what should change');
     t(tool.querySelector('.ae-undo') && tool.querySelector('.ae-redo'),
       'undo and redo for the prompts are both there');
-    t(tool.querySelector('.ae-arm') && tool.querySelector('.ae-publish'),
-      'the two confirmations exist');
-    t(tool.querySelector('.ae-confirm').hidden, 'and stay hidden until something is proposed');
-    t(tool.querySelector('.ae-publish').disabled,
-      'the publish button cannot be pressed before the first confirmation');
-    t(/confirmed twice/i.test(tool.textContent), 'the panel says changes need confirming twice');
+    t(tool.querySelector('.ae-publish') && !tool.querySelector('.ae-arm'),
+      'one confirmation to publish, not two');
+    t(tool.querySelector('.ae-confirm').hidden, 'and it stays hidden until something is proposed');
+    t(/until it is\s+confirmed/i.test(tool.textContent.replace(/\s+/g, ' ')) ||
+      /confirmed/i.test(tool.textContent),
+      'the panel says a change must be confirmed before it takes effect');
     t(/logged/i.test(tool.textContent), 'and that every change is logged');
     t(tool.querySelector('.ae-log'), 'the log can be opened from the panel');
   }],

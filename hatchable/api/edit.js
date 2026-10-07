@@ -4,9 +4,9 @@
  * The small editor that lives in the bottom-left corner of every page. An
  * administrator draws a rectangle, says what they want changed inside it,
  * and this endpoint turns that sentence into a list of operations against
- * the elements the browser found in the box. Nothing is published until the
- * browser asks twice, with two different confirmations, and every published
- * change is written to a log that can be read, undone and redone.
+ * the elements the browser found in the box. The change is previewed on the
+ * page first and published only when confirmed, and every published change
+ * is written to a log that can be read, undone and redone.
  *
  * The rule the whole thing is built on: an operation may only name an
  * element the browser reported as inside the selection. The model never
@@ -17,16 +17,18 @@
  * Actions
  *   { action: 'draft',     pass, page, prompt, rect, nodes }  propose changes
  *   { action: 'save',      pass, page, prompt, rect, ops, source,
- *                          confirm, confirm2 }                publish them
+ *                          confirm }                          publish them
  *   { action: 'list',      pass, page? }                      the log
  *   { action: 'undo',      pass, id }                         put one back
  *   { action: 'redo',      pass, id }                         and forward
  *   { action: 'overrides', page }                             public: what
  *                          every visitor should see on this page
  */
-import { db } from 'hatchable';
+import { ai, db } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { freeChat } from '../lib/freeai.js';
+import { openChat } from '../lib/openchat.js';
+import { openaiChat } from '../lib/openai.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -155,7 +157,48 @@ function byRules(prompt, nodes) {
    The model is given the nodes and nothing else, and is asked for JSON. It
    is a convenience on top of the rules, never an authority: whatever comes
    back goes through tidyOps, which drops anything naming a node outside the
-   selection or an operation that is not on the list. */
+   selection or an operation that is not on the list.
+
+   The route is the oracle's route, in the oracle's order, so that there is
+   one model stack on this site rather than two that can drift apart: the
+   order's own Free.ai doors first (this endpoint is behind the passcode, so
+   the asker is always an administrator), then the open-weights route —
+   OpenRouter, Hugging Face, the order's own Colab GPU — then OpenAI on the
+   order's key, then the project's own BYOK gateway. The first route that
+   returns usable JSON wins. */
+async function askTheStack(system, user) {
+  const messages = [{ role: 'user', content: user }];
+
+  try {
+    const free = await freeChat({ system, messages, maxTokens: 700, temperature: 0.2 });
+    if (free && free.text) return { text: free.text, via: 'free.ai ' + (free.label || '') };
+  } catch (e) { console.error('edit: free.ai route failed', e && e.message); }
+
+  try {
+    const open = await openChat({ system, messages, temperature: 0.2, maxTokens: 700 });
+    if (open && open.text) return { text: open.text, via: open.model + ' (' + open.route + ')' };
+  } catch (e) { console.error('edit: open-weights route failed', e && e.message); }
+
+  try {
+    const oa = await openaiChat({ system, messages, temperature: 0.2, maxTokens: 700 });
+    if (oa && oa.text) return { text: oa.text, via: (oa.model || 'openai') + ' (OpenAI)' };
+  } catch (e) { console.error('edit: openai route failed', e && e.message); }
+
+  for (const model of ['openai/gpt-4o-mini', 'anthropic/claude-3-5-haiku']) {
+    try {
+      const out = await ai.generateText({
+        model, system, messages, maxTokens: 700, temperature: 0.2, purpose: 'page-edit'
+      });
+      const text = String(out && out.text ? out.text : '').trim();
+      if (text) return { text, via: (out && out.model) || model };
+    } catch (e) {
+      if (e && e.code === 'SetupRequired') break;
+      console.error('edit: byok route failed', e && e.message);
+    }
+  }
+  return null;
+}
+
 async function byModel(prompt, nodes, page) {
   const brief = nodes.map((n) => ({
     ref: n.ref, tag: n.tag, classes: n.classes || '',
@@ -172,16 +215,14 @@ async function byModel(prompt, nodes, page) {
     'with these operations, reply {"ops":[]}.'
   ].join(' ');
   const user = 'Page: ' + page + '\nInstruction: ' + prompt + '\nElements: ' + JSON.stringify(brief);
-  const said = await freeChat({
-    system, messages: [{ role: 'user', content: user }],
-    maxTokens: 700, temperature: 0.2
-  }).catch(() => null);
+  const said = await askTheStack(system, user);
   if (!said || !said.text) return null;
   const match = said.text.match(/\{[\s\S]*\}/);
   if (!match) return null;
   try {
     const parsed = JSON.parse(match[0]);
-    return Array.isArray(parsed.ops) ? parsed.ops : null;
+    if (!Array.isArray(parsed.ops)) return null;
+    return { ops: parsed.ops, via: said.via };
   } catch (e) {
     return null;
   }
@@ -231,8 +272,10 @@ export default async function (req, res) {
       const allowed = nodes.map((n) => n.ref);
 
       let source = 'rules';
-      let ops = tidyOps(await byModel(prompt, nodes, page), allowed);
-      if (ops.length) source = 'model';
+      let via = '';
+      const said = await byModel(prompt, nodes, page);
+      let ops = tidyOps(said && said.ops, allowed);
+      if (ops.length) { source = 'model'; via = (said && said.via) || ''; }
       if (!ops.length) ops = tidyOps(byRules(prompt, nodes), allowed);
 
       if (!ops.length) {
@@ -242,15 +285,16 @@ export default async function (req, res) {
             'for example: make the heading gold, or replace the text with "Life, Love, Magic."'
         });
       }
-      return res.json({ ok: true, ops, source });
+      return res.json({ ok: true, ops, source, via });
     }
 
     if (action === 'save') {
-      /* Two confirmations, and they are not the same word. A single
-         fat-fingered click cannot publish anything. */
-      if (clean(body.confirm, 20) !== 'yes' || clean(body.confirm2, 20) !== 'publish') {
+      /* One confirmation. The preview is on the page in front of the
+         administrator before this is ever called, and anything published
+         can be undone from the log. */
+      if (clean(body.confirm, 20) !== 'publish') {
         return res.status(400).json({
-          error: 'Changes do not take effect until they are confirmed twice. Nothing has been saved.'
+          error: 'Changes do not take effect until they are confirmed. Nothing has been saved.'
         });
       }
       const prompt = clean(body.prompt, 600);

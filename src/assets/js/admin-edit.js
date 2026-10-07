@@ -6,8 +6,8 @@
  * sentence goes to /api/edit, which answers with a list of operations
  * against the elements that are actually inside the box. Those are shown as
  * a preview on the page itself, in place, highlighted — and nothing is
- * published until two separate confirmations have been given, which the
- * panel says before it is asked.
+ * published until the change is confirmed, which the panel says before it
+ * is asked. Anything published can be undone again from the log.
  *
  * Every published change is logged server-side with the words that produced
  * it, and the log is readable, undoable and redoable from the same panel.
@@ -148,7 +148,6 @@
   var nodes = [];            /* what is inside it */
   var draft = null;          /* the ops last proposed */
   var preview = [];          /* snapshots taken before previewing */
-  var armed = false;         /* first confirmation given */
   var history = [];          /* prompts tried in this sitting */
   var at = -1;               /* where in that history we stand */
 
@@ -171,7 +170,7 @@
       '</div>',
       '<p class="ae-note">Draw a rectangle on the page. Everything you ask for applies ',
       'inside that box and nowhere else. <strong>No change takes effect until it is ',
-      'confirmed twice</strong>, and every published change is logged so that it can be ',
+      'confirmed</strong>, and every published change is logged so that it can be ',
       'undone later.</p>',
       '<div class="ae-row">',
       '  <button type="button" class="btn btn--small ae-pick">Select an area</button>',
@@ -189,8 +188,7 @@
       '</div>',
       '<div class="ae-draft" hidden></div>',
       '<div class="ae-row ae-confirm" hidden>',
-      '  <button type="button" class="btn btn--small ae-arm">Confirm (1 of 2)</button>',
-      '  <button type="button" class="btn btn--small ae-publish" disabled>Confirm again and publish</button>',
+      '  <button type="button" class="btn btn--small ae-publish">Confirm and publish</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-revert">Discard the preview</button>',
       '</div>',
       '<p class="ae-msg"></p>',
@@ -205,7 +203,6 @@
     panel.querySelector(".ae-go").addEventListener("click", propose);
     panel.querySelector(".ae-undo").addEventListener("click", function () { step(-1); });
     panel.querySelector(".ae-redo").addEventListener("click", function () { step(1); });
-    panel.querySelector(".ae-arm").addEventListener("click", arm);
     panel.querySelector(".ae-publish").addEventListener("click", publish);
     panel.querySelector(".ae-revert").addEventListener("click", revertPreview);
   }
@@ -355,7 +352,7 @@
     say("Thinking inside the box\u2026");
     post({ action: "draft", pass: pass, page: PAGE, prompt: prompt, rect: rect, nodes: nodes })
       .then(function (d) {
-        draft = { prompt: prompt, ops: d.ops || [], source: d.source || "rules" };
+        draft = { prompt: prompt, ops: d.ops || [], source: d.source || "rules", via: d.via || "" };
         if (!draft.ops.length) {
           panel.querySelector(".ae-draft").hidden = true;
           panel.querySelector(".ae-confirm").hidden = true;
@@ -375,12 +372,10 @@
         out.hidden = false;
         out.innerHTML = "<p class=\"muted xsmall\">Previewed on the page, not saved. " +
           draft.ops.length + " change(s), proposed by the " +
-          (draft.source === "model" ? "model" : "rules") + ".</p><ul class=\"ae-ops\">" + list + "</ul>";
+          (draft.source === "model" ? ("model" + (draft.via ? " \u2014 " + draft.via : "")) : "rules") +
+          ".</p><ul class=\"ae-ops\">" + list + "</ul>";
         panel.querySelector(".ae-confirm").hidden = false;
-        armed = false;
-        panel.querySelector(".ae-publish").disabled = true;
-        panel.querySelector(".ae-arm").textContent = "Confirm (1 of 2)";
-        say("This is a preview. It will not take effect until you confirm twice.");
+        say("This is a preview. It will not take effect until you confirm.");
       })
       .catch(function (err) { say(err.message || "That did not work.", true); });
   }
@@ -393,34 +388,22 @@
     });
     var out = panel && panel.querySelector(".ae-draft");
     var row = panel && panel.querySelector(".ae-confirm");
-    var pub = panel && panel.querySelector(".ae-publish");
     if (out) out.hidden = true;
     if (row) row.hidden = true;
-    if (pub) pub.disabled = true;
-    armed = false;
-  }
-
-  function arm() {
-    if (!draft) return;
-    armed = true;
-    panel.querySelector(".ae-arm").textContent = "Confirmed once \u2713";
-    panel.querySelector(".ae-publish").disabled = false;
-    say("Confirmed once. Press the second button to publish, or discard the preview.");
   }
 
   function publish() {
-    if (!draft || !armed) return say("Confirm once first.", true);
+    if (!draft) return say("Propose a change first.", true);
     post({
       action: "save", pass: pass, page: PAGE, prompt: draft.prompt,
       rect: rect, ops: draft.ops, source: draft.source,
-      confirm: "yes", confirm2: "publish"
+      confirm: "publish"
     }).then(function (d) {
       preview = [];
       document.querySelectorAll(".ae-touched").forEach(function (n) {
         n.classList.remove("ae-touched");
       });
       panel.querySelector(".ae-confirm").hidden = true;
-      armed = false;
       say("Published as change #" + d.id + ". It is in the log, and can be undone from there.");
     }).catch(function (err) { say(err.message || "It would not save.", true); });
   }
