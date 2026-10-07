@@ -40,18 +40,22 @@ const HF_MODELS = [
   'stabilityai/stable-diffusion-xl-base-1.0'
 ];
 
-/* House style. The fox draws photographs unless it is told otherwise:
-   real optics, real light, no illustration, no text burned into the frame. */
-const PHOTO_STYLE = [
-  'A single photorealistic photograph, 2D, no collage, no grid, no borders, no caption.',
-  'Shot on a full-frame camera with a fast prime lens; natural light, true-to-life colour,',
-  'correct depth of field, fine surface detail, subtle film grain, no digital over-sharpening.',
-  'No text, no watermark, no signature, no lettering anywhere in the image.',
-  'Not an illustration, not a painting, not 3D render, not CGI, not cartoon.'
-].join(' ');
+/* House style.
+ *
+ * Written positively, and kept short. These models read the prompt with a
+ * T5 text encoder, which handles negation badly: a string of "no text, no
+ * collage, not a painting" reliably puts text, collages and paintings into
+ * the frame, because the encoder sees the nouns and loses the "no". The
+ * old house style was eighty words of that, appended to whatever the asker
+ * typed, and it was drowning short requests — which is exactly the
+ * complaint. The subject now comes first, in the asker's own words, and
+ * the style is a brief positive tail. */
+const PHOTO_STYLE =
+  'Photorealistic photograph, full-frame camera, fast prime lens, natural light, ' +
+  'true colour, shallow depth of field, fine detail, clean single frame.';
 
 const STYLE_OVERRIDE =
-  /\b(illustrat|paint|drawing|drawn|sketch|woodcut|engrav|etching|diagram|cartoon|anime|watercolou?r|ink|render|3d|pixel|poster|icon|logo|stained glass|tapestry|fresco|mosaic)\b/i;
+  /\b(illustrat|paint|drawing|drawn|sketch|woodcut|engrav|etching|diagram|cartoon|anime|watercolou?r|ink|render|3d|pixel|poster|icon|logo|stained glass|tapestry|fresco|mosaic|photo|photograph|realistic)\b/i;
 
 /**
  * The wording used when a sketch has been drawn. The drawing is a
@@ -61,19 +65,16 @@ const STYLE_OVERRIDE =
  */
 function sketchPrompt(subject) {
   const s = String(subject || '').trim();
-  return s + '\n\nFollow the attached sketch as the composition: keep the arrangement, the ' +
-    'placement and the rough proportions of what is drawn, and keep the colours where they are ' +
-    'indicated. Do not reproduce the sketch\'s crude lines \u2014 render the scene properly.' +
-    (STYLE_OVERRIDE.test(s) ? ' Single standalone 2D image. No text, no watermark.' : '\n\n' + PHOTO_STYLE);
+  return s + '. Keep the composition, placement and proportions of the attached sketch, ' +
+    'rendered properly.' + (STYLE_OVERRIDE.test(s) ? '' : ' ' + PHOTO_STYLE);
 }
 
 function fullPrompt(subject) {
   const s = String(subject || '').trim();
-  // If the asker explicitly wants a style, honour it rather than forcing a photograph.
-  if (STYLE_OVERRIDE.test(s)) {
-    return s + ' Single standalone 2D image. No text, no watermark, no lettering.';
-  }
-  return s + '\n\n' + PHOTO_STYLE;
+  /* If the asker has said what kind of picture they want, their words are
+     the whole prompt. Nothing is added that could argue with them. */
+  if (STYLE_OVERRIDE.test(s)) return s;
+  return s + '. ' + PHOTO_STYLE;
 }
 
 /**

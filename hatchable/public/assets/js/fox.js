@@ -1149,7 +1149,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
     return out;
   };
 
-  let queue = [], muted = false, lastText = "", silentTimer = null;
+  let queue = [], muted = false, lastText = "", silentTimer = null, paused = false;
   let mimeTimer = null;
   const RATE = 0.95;
   const CPS = 13.5 * RATE;      // characters per second at this speaking rate
@@ -1171,7 +1171,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   };
 
   const stop = () => {
-    queue = []; speaking = false;
+    queue = []; speaking = false; paused = false;
     visQueue.length = 0; visHold = 0;
     clearTimeout(silentTimer);
     clearTimeout(mimeTimer); mimeTimer = null;
@@ -1255,8 +1255,37 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
   if (btnStop) btnStop.disabled = true;
   document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
 
+  /* Hold him mid-sentence and let him go on again. The browser's own
+     synthesiser can do this; a device without one is mouthing the words on
+     a timer, so there the pause simply stops him. */
+  const hold = () => {
+    if (!canSpeak || !speaking) return false;
+    try { synth.pause(); } catch { return false; }
+    paused = true;
+    setStatus("Paused.");
+    return true;
+  };
+  const resume = () => {
+    if (!canSpeak || !paused) return false;
+    try { synth.resume(); } catch { return false; }
+    paused = false;
+    setStatus(chosenVoice ? `Speaking — ${chosenVoice.name}.` : "Speaking.");
+    return true;
+  };
+  const again = () => {
+    if (!lastText) return false;
+    paused = false;
+    stop();
+    speak(lastText);
+    return true;
+  };
+
   window.EGFox = {
     speak, stop, available: true,
+    hold, resume, again,
+    get paused() { return paused; },
+    get speaking() { return speaking; },
+    get lastText() { return lastText; },
     /** The microphone button tells him when he is being spoken to, so he
         cocks his head, widens his pupils and swivels his ears. */
     listen(on) { listening = !!on; if (on) { stop(); earPerk = 1; } },

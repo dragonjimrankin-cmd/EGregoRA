@@ -43,6 +43,47 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
            aria-label="Gink, a three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
       </div>
 
+    <div class="oracle-chat">
+    <div class="oracle-bar">
+      <p class="oracle-bar-note">A room to talk in — the oracle holds the whole thread, and will talk
+      about anything, not only the limbs.</p>
+      <button class="btn btn--ghost btn--small" type="button" id="o-expand"
+              aria-pressed="false">Expand the space</button>
+    </div>
+    <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
+      <p class="oracle-waiting" id="oracle-waiting">The thread begins when you ask. Everything said
+      stays here, in order.</p>
+    </div>
+
+    <p class="oracle-mute-wrap">
+      <button class="btn btn--ghost btn--small oracle-mute" type="button" id="o-mute"
+              aria-pressed="false" title="Gink reads the answers aloud. Turn his voice off and on.">
+        <span class="mute-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9v6h3.5L12 19V5L7.5 9Z"/>
+            <path class="mute-wave" d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"/>
+            <path class="mute-bar" d="M16.5 9.5l5 5M21.5 9.5l-5 5"/>
+          </svg>
+        </span>
+        <span class="mute-label">Gink's voice is on</span>
+      </button>
+      <button class="btn btn--ghost btn--small" type="button" id="o-hold"
+              aria-pressed="false" title="Pause Gink mid-sentence, and set him going again.">Pause</button>
+      <button class="btn btn--ghost btn--small" type="button" id="o-again"
+              title="Read the last answer again from the beginning.">Read it again</button>
+    </p>
+
+    <div class="oracle-chips" id="oracle-chips">
+      <button class="chip" type="button">Is the meaning of life 42 or chicken soup?</button>
+      <button class="chip" type="button">Why 137.5 degrees and not 120?</button>
+      <button class="chip" type="button">Is the Law of One testable?</button>
+      <button class="chip" type="button">Did the druids really build Stonehenge?</button>
+      <button class="chip" type="button">What does a psychedelic actually do to a brain?</button>
+      <button class="chip" type="button">Is magic real, in one paragraph?</button>
+    </div>
+  </div>
+
       <div class="fox-ask">
     <form class="ornate oracle-form" id="oracle-form">
           <details class="oracle-opts">
@@ -85,6 +126,11 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             do not send anything confidential.</p>
           </div>
 
+          <div class="ask-box">
+            <label for="o-question">Your question</label>
+            <textarea id="o-question" name="question" required maxlength="2000" rows="3"
+              placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
+          </div>
           <div class="ask-actions">
             <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>
             <button class="btn btn--mic" type="button" id="o-mic" hidden
@@ -107,50 +153,9 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
           thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
 
-          <div class="ask-box">
-            <label for="o-question">Your question</label>
-            <textarea id="o-question" name="question" required maxlength="2000" rows="3"
-              placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
-          </div>
         </form>
       </div>
 
-    <div class="oracle-chat">
-    <div class="oracle-bar">
-      <p class="oracle-bar-note">A room to talk in — the oracle holds the whole thread, and will talk
-      about anything, not only the limbs.</p>
-      <button class="btn btn--ghost btn--small" type="button" id="o-expand"
-              aria-pressed="false">Expand the space</button>
-    </div>
-    <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
-      <p class="oracle-waiting" id="oracle-waiting">The thread begins when you ask. Everything said
-      stays here, in order.</p>
-    </div>
-
-    <p class="oracle-mute-wrap">
-      <button class="btn btn--ghost btn--small oracle-mute" type="button" id="o-mute"
-              aria-pressed="false" title="Gink reads the answers aloud. Turn his voice off and on.">
-        <span class="mute-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-               stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 9v6h3.5L12 19V5L7.5 9Z"/>
-            <path class="mute-wave" d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"/>
-            <path class="mute-bar" d="M16.5 9.5l5 5M21.5 9.5l-5 5"/>
-          </svg>
-        </span>
-        <span class="mute-label">Gink's voice is on</span>
-      </button>
-    </p>
-
-    <div class="oracle-chips" id="oracle-chips">
-      <button class="chip" type="button">Is the meaning of life 42 or chicken soup?</button>
-      <button class="chip" type="button">Why 137.5 degrees and not 120?</button>
-      <button class="chip" type="button">Is the Law of One testable?</button>
-      <button class="chip" type="button">Did the druids really build Stonehenge?</button>
-      <button class="chip" type="button">What does a psychedelic actually do to a brain?</button>
-      <button class="chip" type="button">Is magic real, in one paragraph?</button>
-    </div>
-  </div>
     </div>
 
 
@@ -235,13 +240,59 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
             <button class="tool" type="button" data-tool="triangle">Triangle</button>
             <button class="tool" type="button" data-tool="fill">Fill area</button>
             <button class="tool" type="button" data-tool="erase">Eraser</button>
+            <button class="tool" type="button" data-tool="select">Select a box</button>
+            <button class="tool" type="button" data-tool="lasso">Freehand select</button>
+          </div>
+
+          <div class="sketch-group" role="group" aria-label="Nib">
+            <label for="sk-nib">Nib</label>
+            <select id="sk-nib">
+              <option value="round">Round &mdash; an even line</option>
+              <option value="flat">Flat &mdash; a square-ended brush</option>
+              <option value="chisel">Chisel &mdash; broad across, thin along</option>
+              <option value="calligraphy">Calligraphy &mdash; a 45&deg; quill</option>
+              <option value="ribbon">Ribbon &mdash; width follows speed</option>
+              <option value="pencil">Pencil &mdash; grainy graphite</option>
+              <option value="charcoal">Charcoal &mdash; soft and smudged</option>
+              <option value="crayon">Crayon &mdash; waxy and broken</option>
+              <option value="marker">Marker &mdash; translucent, builds up</option>
+              <option value="airbrush">Airbrush &mdash; a soft spray</option>
+              <option value="spatter">Spatter &mdash; thrown ink</option>
+              <option value="dotted">Dotted</option>
+              <option value="dashed">Dashed</option>
+              <option value="double">Double line</option>
+              <option value="hatch">Hatching &mdash; cross-hatched shade</option>
+              <option value="neon">Neon &mdash; a glowing core</option>
+              <option value="bristle">Bristle &mdash; several hairs at once</option>
+              <option value="sprayline">Stipple line</option>
+            </select>
           </div>
 
           <div class="sketch-group sketch-group--size">
             <label for="sk-size">Pen</label>
             <input id="sk-size" type="range" min="1" max="60" step="1" value="4">
             <output id="sk-size-out" for="sk-size">4</output>
+            <label for="sk-alpha">Opacity</label>
+            <input id="sk-alpha" type="range" min="5" max="100" step="5" value="100">
+            <output id="sk-alpha-out" for="sk-alpha">100%</output>
             <button class="tool" type="button" id="sk-solid" aria-pressed="false">Solid shapes</button>
+            <button class="tool" type="button" id="sk-paper" aria-pressed="false">Transparent paper</button>
+          </div>
+
+          <div class="sketch-group" role="group" aria-label="Selection">
+            <button class="tool" type="button" id="sk-copy">Copy selection</button>
+            <button class="tool" type="button" id="sk-copy-all">Copy whole image</button>
+            <button class="tool" type="button" id="sk-paste">Paste</button>
+            <button class="tool" type="button" id="sk-crop">Crop to selection</button>
+            <button class="tool" type="button" id="sk-rot-l" aria-label="Rotate the selection a quarter turn anticlockwise">Rotate &#8634;</button>
+            <button class="tool" type="button" id="sk-rot-r" aria-label="Rotate the selection a quarter turn clockwise">Rotate &#8635;</button>
+            <label for="sk-angle">Angle</label>
+            <input id="sk-angle" type="range" min="-180" max="180" step="1" value="0">
+            <output id="sk-angle-out" for="sk-angle">0&deg;</output>
+            <button class="tool" type="button" id="sk-flip-h">Mirror across</button>
+            <button class="tool" type="button" id="sk-flip-v">Mirror down</button>
+            <button class="tool" type="button" id="sk-flip-d">Mirror diagonally</button>
+            <button class="tool" type="button" id="sk-drop">Put it down</button>
           </div>
 
           <div class="sketch-group" role="group" aria-label="The sketch itself">
@@ -250,9 +301,15 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
           </div>
         </div>
 
+        <p class="muted xsmall">Pick a selection tool and drag a box, or draw round something freehand.
+        A selection can be dragged about, scrolled to resize, rotated, mirrored, copied, cropped to, or
+        put down where it lies. <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>V</kbd> and
+        <kbd>Escape</kbd> do what you would expect.</p>
+
         <div class="sketch-stage">
           <canvas id="sketch-canvas" width="800" height="800" role="img"
                   aria-label="A square sketching surface, eight hundred pixels across"></canvas>
+          <canvas id="sketch-overlay" width="800" height="800" aria-hidden="true"></canvas>
         </div>
 
         <div class="ask-actions">

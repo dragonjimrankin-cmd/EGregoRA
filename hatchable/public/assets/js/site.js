@@ -902,14 +902,27 @@
   const PAPER = "#fdfbf5";
 
   let tool = "free", colour = "#1b1b1f", size = 4, fill = false;
+  let nib = "round", alpha = 1, transparent = false;
   let drawing = false, startX = 0, startY = 0, snapshot = null;
+  let lastX = 0, lastY = 0, travel = 0;
+  /* A selection is either a rectangle or a freehand loop. Once something is
+     done to it — dragged, rotated, mirrored, pasted — it is lifted off the
+     paper into a float that hovers until it is put down. */
+  let sel = null;            // { x, y, w, h, pts|null }
+  let float_ = null;         // { cv, x, y, w, h, angle, dragging, ox, oy }
+  let clip = null;           // the pad's own clipboard, a canvas
+  const overlay = document.getElementById("sketch-overlay");
+  const octx = overlay ? overlay.getContext("2d") : null;
   /* A piece carried in from the Turning Shop, waiting to be put down. */
   let placing = null;   // { img, scale, under }
   const history = [];
 
   const blank = () => {
-    ctx.fillStyle = PAPER;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!transparent) {
+      ctx.fillStyle = PAPER;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
   };
   blank();
 
@@ -928,12 +941,147 @@
   };
 
   const pen = () => {
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    const flatNib = nib === "flat" || nib === "chisel" || nib === "dashed";
+    ctx.lineCap = flatNib ? "butt" : "round";
+    ctx.lineJoin = flatNib ? "miter" : "round";
     ctx.lineWidth = size;
+    ctx.globalAlpha = alpha;
+    ctx.setLineDash(nib === "dashed" ? [size * 2.2, size * 1.8]
+      : nib === "dotted" ? [0.1, size * 1.9] : []);
+    if (nib === "dotted") ctx.lineCap = "round";
+    /* On transparent paper the rubber takes pixels away rather than
+       painting them the colour of a page that is not there. */
+    ctx.globalCompositeOperation =
+      (tool === "erase" && transparent) ? "destination-out"
+        : (nib === "marker" ? "multiply" : "source-over");
     ctx.strokeStyle = tool === "erase" ? PAPER : colour;
     ctx.fillStyle = tool === "erase" ? PAPER : colour;
+    if (nib === "marker") ctx.globalAlpha = Math.min(alpha, 0.38);
+    if (nib === "neon") { ctx.shadowColor = colour; ctx.shadowBlur = size * 1.6; }
+    else { ctx.shadowBlur = 0; ctx.shadowColor = "transparent"; }
   };
+
+  const restore = () => {
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.setLineDash([]);
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+  };
+
+  /* ---- the nibs ---------------------------------------------------------
+     Every one of these is drawn segment by segment between the last pointer
+     position and this one, which is what lets a nib have an angle, a grain
+     or a spray rather than being a uniform tube. */
+  const rnd = (n) => (Math.random() - 0.5) * 2 * n;
+
+  function strokeSeg(x0, y0, x1, y1) {
+    const dx = x1 - x0, dy = y1 - y0;
+    const len = Math.hypot(dx, dy) || 0.01;
+    pen();
+    if (nib === "airbrush" || nib === "spatter" || nib === "sprayline") {
+      const dots = nib === "spatter" ? 14 : nib === "sprayline" ? 6 : 26;
+      const spread = size * (nib === "spatter" ? 1.5 : 0.75);
+      ctx.globalAlpha = alpha * (nib === "airbrush" ? 0.1 : 0.5);
+      for (let i = 0; i < dots; i++) {
+        const t = Math.random();
+        const px = x0 + dx * t + rnd(spread);
+        const py = y0 + dy * t + rnd(spread);
+        const r = nib === "spatter" ? Math.random() * size * 0.35 + 0.4 : Math.max(0.4, size * 0.09);
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      restore();
+      return;
+    }
+    if (nib === "calligraphy" || nib === "chisel" || nib === "flat") {
+      /* A fixed-angle nib: the stroke is a quadrilateral swept between the
+         two ends, so it is broad across the angle and thin along it. */
+      const ang = nib === "calligraphy" ? -Math.PI / 4 : nib === "chisel" ? 0 : Math.PI / 2;
+      const hx = Math.cos(ang) * size / 2, hy = Math.sin(ang) * size / 2;
+      ctx.beginPath();
+      ctx.moveTo(x0 - hx, y0 - hy);
+      ctx.lineTo(x0 + hx, y0 + hy);
+      ctx.lineTo(x1 + hx, y1 + hy);
+      ctx.lineTo(x1 - hx, y1 - hy);
+      ctx.closePath();
+      ctx.fill();
+      restore();
+      return;
+    }
+    if (nib === "ribbon") {
+      /* Width follows speed, the way a loaded brush thins as it is dragged. */
+      const w = Math.max(1, size * Math.max(0.18, 1 - len / 48));
+      ctx.lineWidth = w;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      restore();
+      return;
+    }
+    if (nib === "pencil" || nib === "charcoal" || nib === "crayon") {
+      const passes = nib === "charcoal" ? 5 : nib === "crayon" ? 4 : 3;
+      const jitter = nib === "pencil" ? size * 0.22 : size * 0.5;
+      ctx.lineWidth = Math.max(0.6, size * (nib === "pencil" ? 0.5 : 0.7));
+      for (let i = 0; i < passes; i++) {
+        if (nib === "crayon" && Math.random() < 0.25) continue;   // waxy skips
+        ctx.globalAlpha = alpha * (nib === "pencil" ? 0.33 : 0.26);
+        ctx.beginPath();
+        ctx.moveTo(x0 + rnd(jitter), y0 + rnd(jitter));
+        ctx.lineTo(x1 + rnd(jitter), y1 + rnd(jitter));
+        ctx.stroke();
+      }
+      restore();
+      return;
+    }
+    if (nib === "bristle") {
+      const hairs = Math.max(3, Math.round(size / 3));
+      const nx = -dy / len, ny = dx / len;
+      ctx.lineWidth = Math.max(0.6, size / hairs);
+      for (let i = 0; i < hairs; i++) {
+        const off = (i / (hairs - 1) - 0.5) * size;
+        ctx.globalAlpha = alpha * (0.35 + Math.random() * 0.4);
+        ctx.beginPath();
+        ctx.moveTo(x0 + nx * off, y0 + ny * off);
+        ctx.lineTo(x1 + nx * off, y1 + ny * off);
+        ctx.stroke();
+      }
+      restore();
+      return;
+    }
+    if (nib === "double") {
+      const nx = -dy / len, ny = dx / len, off = size * 0.6;
+      ctx.lineWidth = Math.max(1, size * 0.3);
+      for (const k of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(x0 + nx * off * k, y0 + ny * off * k);
+        ctx.lineTo(x1 + nx * off * k, y1 + ny * off * k);
+        ctx.stroke();
+      }
+      restore();
+      return;
+    }
+    if (nib === "hatch") {
+      const nx = -dy / len, ny = dx / len;
+      ctx.lineWidth = Math.max(0.6, size * 0.14);
+      ctx.globalAlpha = alpha * 0.8;
+      for (let t = 0; t < len; t += Math.max(2, size * 0.45)) {
+        const px = x0 + dx * (t / len), py = y0 + dy * (t / len);
+        ctx.beginPath();
+        ctx.moveTo(px - nx * size / 2 - dx / len * size / 2, py - ny * size / 2 - dy / len * size / 2);
+        ctx.lineTo(px + nx * size / 2 + dx / len * size / 2, py + ny * size / 2 + dy / len * size / 2);
+        ctx.stroke();
+      }
+      restore();
+      return;
+    }
+    /* round, marker, neon, dotted, dashed and the eraser all draw a plain
+       stroke; the differences are in pen(). */
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+    restore();
+  }
 
   const shape = (x, y) => {
     if (snapshot) ctx.putImageData(snapshot, 0, 0);
@@ -953,6 +1101,7 @@
       ctx.closePath();
     }
     if (fill && tool !== "line") ctx.fill(); else ctx.stroke();
+    restore();
   };
 
   /* --- fill an area ---------------------------------------------------
@@ -1008,11 +1157,142 @@
     ctx.putImageData(img, 0, 0);
   }
 
+  /* ---- selection, and the float -----------------------------------------
+     A selection is a boundary. The moment it is acted upon the pixels are
+     lifted into a float — its own little canvas — which hovers above the
+     paper and can be dragged, scrolled bigger, rotated and mirrored before
+     it is put down again. Nothing is committed until it is. */
+  const clearOverlay = () => { if (octx) octx.clearRect(0, 0, overlay.width, overlay.height); };
+
+  function paintOverlay() {
+    if (!octx) return;
+    clearOverlay();
+    if (float_) {
+      octx.save();
+      octx.translate(float_.x + float_.w / 2, float_.y + float_.h / 2);
+      octx.rotate(float_.angle * Math.PI / 180);
+      octx.globalAlpha = 0.92;
+      octx.drawImage(float_.cv, -float_.w / 2, -float_.h / 2, float_.w, float_.h);
+      octx.globalAlpha = 1;
+      octx.strokeStyle = "rgba(215,176,90,0.95)";
+      octx.lineWidth = 2;
+      octx.setLineDash([7, 5]);
+      octx.strokeRect(-float_.w / 2, -float_.h / 2, float_.w, float_.h);
+      octx.restore();
+      return;
+    }
+    if (sel) {
+      octx.strokeStyle = "rgba(215,176,90,0.95)";
+      octx.lineWidth = 2;
+      octx.setLineDash([7, 5]);
+      if (sel.pts && sel.pts.length > 2) {
+        octx.beginPath();
+        octx.moveTo(sel.pts[0][0], sel.pts[0][1]);
+        for (const q of sel.pts.slice(1)) octx.lineTo(q[0], q[1]);
+        octx.closePath();
+        octx.stroke();
+      } else {
+        octx.strokeRect(sel.x, sel.y, sel.w, sel.h);
+      }
+    }
+  }
+
+  /* Cut the selected pixels out onto their own canvas. */
+  function liftSelection(cut) {
+    if (!sel || sel.w < 2 || sel.h < 2) return null;
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(sel.w); cv.height = Math.round(sel.h);
+    const c2 = cv.getContext("2d");
+    c2.drawImage(canvas, sel.x, sel.y, sel.w, sel.h, 0, 0, cv.width, cv.height);
+    if (sel.pts && sel.pts.length > 2) {
+      /* A freehand loop: keep only what falls inside the drawn path. */
+      c2.globalCompositeOperation = "destination-in";
+      c2.beginPath();
+      c2.moveTo(sel.pts[0][0] - sel.x, sel.pts[0][1] - sel.y);
+      for (const q of sel.pts.slice(1)) c2.lineTo(q[0] - sel.x, q[1] - sel.y);
+      c2.closePath();
+      c2.fill();
+      c2.globalCompositeOperation = "source-over";
+    }
+    if (cut) {
+      remember();
+      ctx.save();
+      if (sel.pts && sel.pts.length > 2) {
+        ctx.beginPath();
+        ctx.moveTo(sel.pts[0][0], sel.pts[0][1]);
+        for (const q of sel.pts.slice(1)) ctx.lineTo(q[0], q[1]);
+        ctx.closePath();
+        ctx.clip();
+      }
+      if (transparent) ctx.clearRect(sel.x, sel.y, sel.w, sel.h);
+      else { ctx.fillStyle = PAPER; ctx.fillRect(sel.x, sel.y, sel.w, sel.h); }
+      ctx.restore();
+    }
+    return cv;
+  }
+
+  function toFloat(cv, x, y, w, h) {
+    float_ = {
+      cv, x, y,
+      w: w || cv.width, h: h || cv.height,
+      angle: 0, dragging: false, ox: 0, oy: 0
+    };
+    pad.classList.add("has-float");
+    paintOverlay();
+    say("The selection is floating \u2014 drag it, scroll to size it, rotate or mirror it, " +
+      "then press Put it down (or Enter).");
+  }
+
+  function dropFloat() {
+    if (!float_) return;
+    remember();
+    ctx.save();
+    ctx.translate(float_.x + float_.w / 2, float_.y + float_.h / 2);
+    ctx.rotate(float_.angle * Math.PI / 180);
+    ctx.drawImage(float_.cv, -float_.w / 2, -float_.h / 2, float_.w, float_.h);
+    ctx.restore();
+    float_ = null;
+    sel = null;
+    pad.classList.remove("has-float");
+    clearOverlay();
+    mark(false);
+    say("Put down.");
+  }
+
+  const inFloat = (p) => Boolean(float_) &&
+    p.x >= float_.x && p.x <= float_.x + float_.w &&
+    p.y >= float_.y && p.y <= float_.y + float_.h;
+
   canvas.addEventListener("pointerdown", (e) => {
     e.preventDefault();
     canvas.setPointerCapture(e.pointerId);
     const p = at(e);
     if (placing) { stamp(p.x, p.y); return; }
+
+    if (float_) {
+      if (inFloat(p)) {
+        float_.dragging = true;
+        float_.ox = p.x - float_.x;
+        float_.oy = p.y - float_.y;
+        return;
+      }
+      dropFloat();
+      return;
+    }
+
+    if (tool === "select" || tool === "lasso") {
+      drawing = true;
+      startX = p.x; startY = p.y;
+      sel = tool === "lasso"
+        ? { x: p.x, y: p.y, w: 0, h: 0, pts: [[p.x, p.y]] }
+        : { x: p.x, y: p.y, w: 0, h: 0, pts: null };
+      paintOverlay();
+      return;
+    }
+
+    sel = null;
+    clearOverlay();
+
     if (tool === "fill") {
       remember();
       flood(p.x, p.y, colour);
@@ -1020,13 +1300,10 @@
       return;
     }
     drawing = true; startX = p.x; startY = p.y;
+    lastX = p.x; lastY = p.y; travel = 0;
     remember();
     if (tool === "free" || tool === "erase") {
-      pen();
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x + 0.01, p.y);
-      ctx.stroke();
+      strokeSeg(p.x, p.y, p.x + 0.01, p.y);
     } else {
       try { snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch { snapshot = null; }
     }
@@ -1034,15 +1311,44 @@
 
   canvas.addEventListener("pointermove", (e) => {
     if (placing) { ghost(at(e)); return; }
-    if (!drawing) return;
     const p = at(e);
-    if (tool === "free" || tool === "erase") { ctx.lineTo(p.x, p.y); ctx.stroke(); }
-    else shape(p.x, p.y);
+    if (float_ && float_.dragging) {
+      float_.x = p.x - float_.ox;
+      float_.y = p.y - float_.oy;
+      paintOverlay();
+      return;
+    }
+    if (!drawing) return;
+    if (tool === "select" || tool === "lasso") {
+      if (sel && sel.pts) {
+        sel.pts.push([p.x, p.y]);
+        const xs = sel.pts.map((q) => q[0]), ys = sel.pts.map((q) => q[1]);
+        sel.x = Math.min.apply(null, xs); sel.y = Math.min.apply(null, ys);
+        sel.w = Math.max.apply(null, xs) - sel.x;
+        sel.h = Math.max.apply(null, ys) - sel.y;
+      } else if (sel) {
+        sel.x = Math.min(startX, p.x); sel.y = Math.min(startY, p.y);
+        sel.w = Math.abs(p.x - startX); sel.h = Math.abs(p.y - startY);
+      }
+      paintOverlay();
+      return;
+    }
+    if (tool === "free" || tool === "erase") {
+      strokeSeg(lastX, lastY, p.x, p.y);
+      lastX = p.x; lastY = p.y;
+    } else shape(p.x, p.y);
   });
 
   const finish = (e) => {
+    if (float_ && float_.dragging) { float_.dragging = false; return; }
     if (!drawing) return;
     drawing = false;
+    if (tool === "select" || tool === "lasso") {
+      if (!sel || sel.w < 3 || sel.h < 3) { sel = null; clearOverlay(); }
+      else say("Selected. Copy it, crop to it, rotate or mirror it, or drag it to move it.");
+      paintOverlay();
+      return;
+    }
     if (tool !== "free" && tool !== "erase") shape(at(e).x, at(e).y);
     snapshot = null;
     mark(false);
@@ -1104,6 +1410,213 @@
     solidBtn.setAttribute("aria-pressed", String(fill));
   });
 
+  const nibEl = document.getElementById("sk-nib");
+  if (nibEl) nibEl.addEventListener("change", () => { nib = nibEl.value || "round"; });
+
+  const alphaEl = document.getElementById("sk-alpha");
+  const alphaOut = document.getElementById("sk-alpha-out");
+  if (alphaEl) {
+    const setAlpha = () => {
+      alpha = Math.max(0.05, Math.min(1, Number(alphaEl.value) / 100));
+      if (alphaOut) alphaOut.textContent = Math.round(alpha * 100) + "%";
+    };
+    alphaEl.addEventListener("input", setAlpha);
+    setAlpha();
+  }
+
+  /* Clear paper or white paper. On clear paper the rubber takes pixels
+     away, and what is handed over keeps its transparency. */
+  const paperBtn = document.getElementById("sk-paper");
+  if (paperBtn) paperBtn.addEventListener("click", () => {
+    transparent = !transparent;
+    paperBtn.classList.toggle("is-on", transparent);
+    paperBtn.setAttribute("aria-pressed", String(transparent));
+    pad.classList.toggle("is-transparent", transparent);
+    remember();
+    if (transparent) {
+      /* Lift the white page away and keep the marks: anything still the
+         colour of the paper becomes nothing. */
+      try {
+        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = img.data;
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i] > 246 && d[i + 1] > 243 && d[i + 2] > 235) d[i + 3] = 0;
+        }
+        ctx.putImageData(img, 0, 0);
+      } catch { /* tainted */ }
+    } else {
+      /* Put the page back underneath what is drawn. */
+      const keep = document.createElement("canvas");
+      keep.width = canvas.width; keep.height = canvas.height;
+      keep.getContext("2d").drawImage(canvas, 0, 0);
+      ctx.save();
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = PAPER;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(keep, 0, 0);
+      ctx.restore();
+    }
+    mark(false);
+    say(transparent ? "The paper is clear now." : "The paper is solid again.");
+  });
+
+  /* ---- copy, paste, crop, rotate, mirror ---- */
+  const copyToClipboard = async (cv) => {
+    clip = cv;
+    try {
+      if (navigator.clipboard && window.ClipboardItem && cv.toBlob) {
+        const blob = await new Promise((ok) => cv.toBlob(ok, "image/png"));
+        if (blob) await navigator.clipboard.write([new window.ClipboardItem({ "image/png": blob })]);
+        return true;
+      }
+    } catch { /* the browser said no; the pad keeps its own copy */ }
+    return false;
+  };
+
+  const copySel = document.getElementById("sk-copy");
+  if (copySel) copySel.addEventListener("click", async () => {
+    const cv = float_ ? float_.cv : liftSelection(false);
+    if (!cv) { say("Select something first \u2014 use Select a box or Freehand select.", true); return; }
+    const out = await copyToClipboard(cv);
+    say(out ? "The selection is on the clipboard." : "Copied, and held here \u2014 this browser would not take it.");
+  });
+
+  const copyAll = document.getElementById("sk-copy-all");
+  if (copyAll) copyAll.addEventListener("click", async () => {
+    const cv = document.createElement("canvas");
+    cv.width = canvas.width; cv.height = canvas.height;
+    cv.getContext("2d").drawImage(canvas, 0, 0);
+    const out = await copyToClipboard(cv);
+    say(out ? "The whole sketch is on the clipboard." : "Copied, and held here \u2014 this browser would not take it.");
+  });
+
+  const placeImage = (img, w, h) => {
+    const cv = document.createElement("canvas");
+    cv.width = w; cv.height = h;
+    cv.getContext("2d").drawImage(img, 0, 0, w, h);
+    const fit = Math.min(1, (canvas.width * 0.7) / w, (canvas.height * 0.7) / h);
+    toFloat(cv, (canvas.width - w * fit) / 2, (canvas.height - h * fit) / 2, w * fit, h * fit);
+  };
+
+  async function pasteIn() {
+    /* The system clipboard first, the pad's own second. */
+    try {
+      if (navigator.clipboard && navigator.clipboard.read) {
+        const items = await navigator.clipboard.read();
+        for (const item of items) {
+          const type = item.types.find((t) => /^image\//.test(t));
+          if (!type) continue;
+          const blob = await item.getType(type);
+          const bmp = await createImageBitmap(blob);
+          placeImage(bmp, bmp.width, bmp.height);
+          return;
+        }
+      }
+    } catch { /* no permission, or nothing in it */ }
+    if (clip) { placeImage(clip, clip.width, clip.height); return; }
+    say("There is no picture on the clipboard. Copy something first, or allow this page to read it.", true);
+  }
+  const pasteBtn = document.getElementById("sk-paste");
+  if (pasteBtn) pasteBtn.addEventListener("click", pasteIn);
+  window.addEventListener("paste", (e) => {
+    if (pad.hidden) return;
+    const f = e.clipboardData && e.clipboardData.files && e.clipboardData.files[0];
+    if (!f || !/^image\//.test(f.type)) return;
+    e.preventDefault();
+    const img = new Image();
+    img.onload = () => placeImage(img, img.width, img.height);
+    img.src = URL.createObjectURL(f);
+  });
+
+  const cropBtn = document.getElementById("sk-crop");
+  if (cropBtn) cropBtn.addEventListener("click", () => {
+    const cv = liftSelection(false);
+    if (!cv) { say("Select the part you want to keep first.", true); return; }
+    remember();
+    blank();
+    const fit = Math.min(canvas.width / cv.width, canvas.height / cv.height);
+    const w = cv.width * fit, h = cv.height * fit;
+    ctx.drawImage(cv, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+    sel = null; clearOverlay(); mark(false);
+    say("Cropped to the selection, and filled out to the square.");
+  });
+
+  const needFloat = () => {
+    if (float_) return true;
+    const cv = liftSelection(true);
+    if (!cv) { say("Select something first.", true); return false; }
+    toFloat(cv, sel.x, sel.y, sel.w, sel.h);
+    return true;
+  };
+
+  const angleEl = document.getElementById("sk-angle");
+  const angleOut = document.getElementById("sk-angle-out");
+  const showAngle = () => {
+    if (angleEl && float_) angleEl.value = String(Math.round(float_.angle));
+    if (angleOut && float_) angleOut.textContent = Math.round(float_.angle) + "\u00b0";
+  };
+  const turn = (deg) => {
+    if (!needFloat()) return;
+    float_.angle = ((float_.angle + deg + 180) % 360) - 180;
+    showAngle();
+    paintOverlay();
+  };
+  const rotL = document.getElementById("sk-rot-l");
+  const rotR = document.getElementById("sk-rot-r");
+  if (rotL) rotL.addEventListener("click", () => turn(-90));
+  if (rotR) rotR.addEventListener("click", () => turn(90));
+  if (angleEl) angleEl.addEventListener("input", () => {
+    if (!needFloat()) return;
+    float_.angle = Number(angleEl.value) || 0;
+    if (angleOut) angleOut.textContent = Math.round(float_.angle) + "\u00b0";
+    paintOverlay();
+  });
+
+  /* Across, down, and about the diagonal — which is a transpose, not a
+     flip, so a tall selection comes back wide. */
+  const mirror = (how) => {
+    if (!needFloat()) return;
+    const src = float_.cv;
+    const cv = document.createElement("canvas");
+    const diag = how === "d" || how === "d2";
+    cv.width = diag ? src.height : src.width;
+    cv.height = diag ? src.width : src.height;
+    const c2 = cv.getContext("2d");
+    if (how === "h") { c2.translate(cv.width, 0); c2.scale(-1, 1); }
+    else if (how === "v") { c2.translate(0, cv.height); c2.scale(1, -1); }
+    else { c2.rotate(Math.PI / 2); c2.scale(1, -1); }   // transpose
+    c2.drawImage(src, 0, 0);
+    const w = float_.w, h = float_.h;
+    float_.cv = cv;
+    if (diag) { float_.w = h; float_.h = w; }
+    paintOverlay();
+    say("Mirrored.");
+  };
+  const fh = document.getElementById("sk-flip-h");
+  const fv = document.getElementById("sk-flip-v");
+  const fd = document.getElementById("sk-flip-d");
+  if (fh) fh.addEventListener("click", () => mirror("h"));
+  if (fv) fv.addEventListener("click", () => mirror("v"));
+  if (fd) fd.addEventListener("click", () => mirror("d"));
+
+  const dropBtn = document.getElementById("sk-drop");
+  if (dropBtn) dropBtn.addEventListener("click", dropFloat);
+
+  window.addEventListener("keydown", (e) => {
+    if (pad.hidden) return;
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || "");
+    if (e.key === "Enter" && float_) { e.preventDefault(); dropFloat(); return; }
+    if (e.key === "Escape" && float_) { float_ = null; pad.classList.remove("has-float"); clearOverlay(); return; }
+    if (e.key === "Escape" && sel) { sel = null; clearOverlay(); return; }
+    if (typing) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "c" && (sel || float_)) {
+      e.preventDefault();
+      const cv = float_ ? float_.cv : liftSelection(false);
+      if (cv) copyToClipboard(cv);
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "v") { e.preventDefault(); pasteIn(); }
+  });
+
   const undo = document.getElementById("sk-undo");
   if (undo) undo.addEventListener("click", () => {
     const prev = history.pop();
@@ -1128,6 +1641,7 @@
 
   const use = document.getElementById("sk-use");
   if (use) use.addEventListener("click", async () => {
+    if (float_) dropFloat();
     use.disabled = true;
     say("Handing the sketch over\u2026");
     try {
@@ -1200,6 +1714,17 @@
   }
 
   canvas.addEventListener("wheel", (e) => {
+    if (float_) {
+      e.preventDefault();
+      const k = e.deltaY > 0 ? 0.93 : 1.075;
+      const cx = float_.x + float_.w / 2, cy = float_.y + float_.h / 2;
+      float_.w = Math.max(8, Math.min(canvas.width * 3, float_.w * k));
+      float_.h = Math.max(8, Math.min(canvas.height * 3, float_.h * k));
+      float_.x = cx - float_.w / 2;
+      float_.y = cy - float_.h / 2;
+      paintOverlay();
+      return;
+    }
     if (!placing) return;
     e.preventDefault();
     placing.scale = Math.max(0.05, Math.min(3, placing.scale * (e.deltaY > 0 ? 0.92 : 1.09)));
@@ -4009,12 +4534,39 @@
       : "Gink's voice is on. Turn it off.");
   };
 
+  /* Pause and carry on, and read it again from the top. */
+  const holdBtn = document.getElementById("o-hold");
+  const againBtn = document.getElementById("o-again");
+  const paintHold = () => {
+    if (!holdBtn) return;
+    const fox = window.EGFox;
+    const isPaused = Boolean(fox && fox.paused);
+    holdBtn.textContent = isPaused ? "Carry on" : "Pause";
+    holdBtn.setAttribute("aria-pressed", isPaused ? "true" : "false");
+    holdBtn.disabled = muted;
+    if (againBtn) againBtn.disabled = muted || !(fox && fox.lastText);
+  };
+  if (holdBtn) holdBtn.addEventListener("click", () => {
+    const fox = window.EGFox;
+    if (!fox) return;
+    if (fox.paused) fox.resume(); else fox.hold();
+    paintHold();
+  });
+  if (againBtn) againBtn.addEventListener("click", () => {
+    const fox = window.EGFox;
+    if (fox && fox.again) fox.again();
+    paintHold();
+  });
+  setInterval(paintHold, 700);
+
   btn.addEventListener("click", () => {
     muted = !muted;
     try { localStorage.setItem(KEY, muted ? "1" : "0"); } catch { /* private window */ }
     applyToFox();
     paint();
+    paintHold();
   });
 
   paint();
+  paintHold();
 })();

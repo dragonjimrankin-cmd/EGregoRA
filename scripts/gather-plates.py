@@ -106,11 +106,12 @@ head = page[:cut]
 
 body = io.StringIO()
 body.write(MARK + "\n")
-body.write('''    <p>Plates I to XL above were drawn for this page. Everything below was drawn for a particular
-    argument somewhere else on the site, and every one of them is here: %d drawings from %d pages,
-    gathered so the whole collection sits in one place. Each carries a link that opens the page it was
-    made for in a new tab, at the exact figure, where it is surrounded by the reasoning it belongs
-    to.</p>
+body.write('''    <p>Everything in this part was drawn for a particular argument somewhere else on the site, and
+    every one of them is here: %d drawings from %d pages, gathered so the whole collection sits in one
+    place. They are folded by the page they belong to &mdash; open a fold to see its plates. Each
+    carries a link that opens that page in a new tab, at the exact figure, where the drawing is
+    surrounded by the reasoning it was made for. The forty plates drawn for this page itself are at the
+    foot, below the folds.</p>
   </div>
 </section>
 
@@ -124,33 +125,36 @@ for g in gathered:
 for pagename in sorted(by_page):
     items = by_page[pagename]
     link = items[0]["link"]
-    body.write('''
+    body.write("""
 <section class="wrap narrow reveal">
-  <div class="frame">
-    <p class="kicker">FROM <a href="%s" target="_blank" rel="noopener">%s</a></p>
-    <p class="muted small">%d %s. Every title below opens that page in a new tab, at the figure
-    itself.</p>
-  </div>
-</section>
-''' % (link, html.escape(pagename), len(items),
-       "drawing" if len(items) == 1 else "drawings"))
+  <details class="scroll info-fold">
+    <summary>%s &mdash; %d %s</summary>
+    <p class="muted small">Drawn for <a href="%s" target="_blank" rel="noopener">%s</a>. Every title
+    below opens that page in a new tab, at the figure itself.</p>
+""" % (html.escape(pagename), len(items), "drawing" if len(items) == 1 else "drawings",
+       link, html.escape(pagename)))
     for g in items:
         art = prefix_ids(g["html"], g["slug"] + "-" + g["anchor"])
-        body.write('''
-<section class="wrap narrow reveal">
-  %s
-  <p class="plate-note"><em><a href="%s#%s" target="_blank" rel="noopener">%s &mdash; on %s, in a new
-  tab</a>.</em></p>
+        body.write("""
+    %s
+    <p class="plate-note"><em><a href="%s#%s" target="_blank" rel="noopener">%s &mdash; on %s, in a new
+    tab</a>.</em></p>
+""" % (art, g["link"], g["anchor"], html.escape(g["title"]), html.escape(pagename)))
+    body.write("""  </details>
 </section>
 
 <div class="divider">\u2726</div>
-''' % (art, g["link"], g["anchor"], html.escape(g["title"]), html.escape(pagename)))
+""")
+
 
 body.write('''
+{% include "partials/own-plates.njk" %}
+
 <section class="wrap narrow reveal">
   <div class="frame frame--creed">
-    <p>Every drawing on this site is on this page. If one is added anywhere else it is gathered here by
-    the same script that built this list, so the collection cannot quietly fall behind the site.</p>
+    <p>Every drawing on this site is on this page: the gathered folds above, and the forty plates drawn
+    for this page itself immediately before this note. If one is added anywhere else it is gathered here
+    by the same script that built this list, so the collection cannot quietly fall behind the site.</p>
     <p class="mt-1"><a href="/">The index &rarr;</a></p>
   </div>
 </section>

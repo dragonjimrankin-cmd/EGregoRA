@@ -303,6 +303,16 @@ blockquote cite { display: block; font-style: normal; font-family: var(--caps); 
 /* ---------- Form ------------------------------------------------------- */
 form.ornate { display: grid; gap: 1.1rem; }
 label { font-family: var(--caps); letter-spacing: 0.24em; text-transform: uppercase; font-size: 0.68rem; color: var(--gold); display: block; margin-bottom: 0.4rem; }
+input[type="checkbox"], input[type="radio"] { width: auto; }
+.declare {
+  display: grid; grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem; align-items: start;
+}
+.declare input[type="checkbox"] { width: 1.05rem; height: 1.05rem; margin: 0.2rem 0 0; accent-color: #d7b05a; }
+.declare label {
+  margin: 0; font-family: var(--serif); text-transform: none; letter-spacing: 0;
+  font-size: 0.92rem; line-height: 1.55; color: var(--vellum-dim);
+}
 input, textarea, select {
   width: 100%; background: rgba(7,7,13,0.7); border: 1px solid rgba(215,176,90,0.3);
   color: var(--vellum); font-family: var(--serif); font-size: 1rem; padding: 0.8rem 0.9rem; border-radius: var(--rad);
@@ -859,7 +869,7 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   scrollbar-color: rgba(215, 176, 90, 0.45) transparent;
 }
 /* Gink's voice, switched off and on from the corner of the answer box. */
-.oracle-mute-wrap { display: flex; justify-content: flex-end; margin: 0.5rem 0 0; }
+.oracle-mute-wrap { display: flex; justify-content: flex-end; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0 0; }
 .oracle-mute { display: inline-flex; align-items: center; gap: 0.45rem; }
 .oracle-mute .mute-icon { display: inline-flex; width: 1.05rem; height: 1.05rem; }
 .oracle-mute .mute-icon svg { width: 100%; height: 100%; }
@@ -1322,8 +1332,9 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 /* The answer belongs directly under the question that asked for it, so the
    transcript is a second row in the right-hand column and Gink keeps the
    left. */
-.fox-panel--ask > .oracle-chat { grid-column: 2; margin: 1rem 0 0; min-width: 0; }
-.fox-panel--ask .fox-column { grid-row: 1 / span 2; }
+.fox-panel--ask > .oracle-chat { grid-column: 2; grid-row: 1; margin: 0 0 1rem; min-width: 0; }
+.fox-panel--ask > .fox-ask { grid-column: 2; grid-row: 2; min-width: 0; }
+.fox-panel--ask .fox-column { grid-column: 1; grid-row: 1 / span 2; }
 .fox-panel--ask .fox-stage { aspect-ratio: 4 / 5; }
 /* The writing sits above Gink now, so the gap belongs under it, not over. */
 .fox-panel--ask .fox-side { margin: 0 0 0.9rem; }
@@ -1332,7 +1343,8 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 .fox-ask .oracle-form textarea { min-height: 7.5rem; }
 @media (max-width: 900px) {
   .fox-panel--ask { grid-template-columns: 1fr; }
-  .fox-panel--ask > .oracle-chat { grid-column: 1; }
+  .fox-panel--ask > .oracle-chat { grid-column: 1; grid-row: auto; }
+  .fox-panel--ask > .fox-ask { grid-column: 1; grid-row: auto; }
   .fox-panel--ask .fox-column { position: static; display: grid; gap: 1rem; grid-row: auto; }
   .fox-panel--ask .fox-stage { max-width: 260px; margin: 0 auto; }
 }
@@ -1577,7 +1589,7 @@ img.shot-thumb { object-fit: cover; }
   /* The conversation: full-width bubbles, and a thread tall enough to
      read in without being so tall the page below it disappears. */
   .oracle-wrap .oracle-msg, body.oracle-tall .oracle-msg { max-width: 100%; }
-  body.oracle-tall .oracle-thread { min-height: calc(4 * 46vh); max-height: none; }
+  body.oracle-tall .oracle-thread { min-height: calc(2.5 * 46vh); max-height: none; }
   .oracle-bar { gap: 0.5rem; }
   .oracle-bar .btn { align-self: flex-start; }
 
@@ -2064,4 +2076,40 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 .book-drawer > summary:hover { color: var(--gold-bright, #f3ddaa); }
 
 /* --- the oracle's larger thinking space is a desk idea ------------------- */
-@media (max-width: 720px) { #o-expand { display: none; } }
+/* The expanded box is for telephones as well; there the quadruple height
+   is absurd, so it is two and a half times instead. */
+@media (max-width: 720px) {
+  body.oracle-tall .oracle-thread { min-height: calc(2.5 * 46vh); max-height: none; }
+}
+
+
+/* ======================================================================
+   The sketch pad's selection layer
+   ====================================================================== */
+.sketch-stage { position: relative; }
+#sketch-overlay {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none;
+}
+/* Clear paper is shown as a chequerboard, so "transparent" is visible
+   rather than merely claimed. */
+.sketch-pad.is-transparent #sketch-canvas {
+  background-image:
+    linear-gradient(45deg, rgba(255,255,255,0.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.08) 75%),
+    linear-gradient(45deg, rgba(255,255,255,0.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.08) 75%);
+  background-size: 22px 22px;
+  background-position: 0 0, 11px 11px;
+}
+.sketch-pad.has-float #sketch-canvas { cursor: move; }
+.sketch-group select {
+  width: auto; min-width: 12rem; padding: 0.35rem 0.5rem; font-size: 0.86rem;
+}
+.sketch-group output { font-family: var(--caps); font-size: 0.72rem; color: var(--gold); }
+.sketch-group input[type="range"] { width: clamp(6rem, 14vw, 11rem); }
+@media (max-width: 720px) {
+  .sketch-group select { min-width: 0; width: 100%; }
+}
+
+/* Gathered plates, folded by the page they came from. */
+.info-fold > summary { font-size: 0.95rem; }
+.info-fold .plate, .info-fold figure { margin-inline: auto; }
