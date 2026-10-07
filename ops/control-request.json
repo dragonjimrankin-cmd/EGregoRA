@@ -1,4 +1,6 @@
-{ "calls": [
-  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "close", "pass": "8===D", "id": 1 } } },
-  { "raw": { "path": "/api/live", "method": "POST", "body": { "action": "list" } } }
-] }
+{"calls":[
+ {"raw":{"path":"/api/media","body":{"action":"shelf","pass":"8===D"}}},
+ {"raw":{"path":"/api/live","body":{"action":"open","pass":"8===D","title":"Probe room","word":"gink"}}},
+ {"raw":{"path":"/api/live","body":{"action":"people","pass":"8===D"}}},
+ {"raw":{"path":"/api/live","body":{"action":"order-say","pass":"8===D","text":"A line from The Order."}}}
+]}
