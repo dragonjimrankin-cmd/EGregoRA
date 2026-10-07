@@ -79,8 +79,11 @@ function stub(win) {
     try { body = JSON.parse((opts && opts.body) || '{}'); } catch (e) { body = {}; }
     const reply = { ok: true };
     if (body.action === 'list') {
-      reply.feeds = [{ id: 1, title: 'A test feed', note: '', since: new Date().toISOString(), watchers: 2 }];
+      reply.air = win.__egAir || { on: false, note: 'Cutting runes all week.', back_at: 'Thursday' };
+      reply.feeds = win.__egAir
+        ? [{ id: 1, title: 'A test feed', note: '', since: new Date().toISOString(), watchers: 2 }] : [];
     }
+    if (body.action === 'air') reply.on = body.on === true;
     if (body.action === 'mine') reply.feeds = [];
     if (body.action === 'tapes') {
       reply.tapes = [{ id: 1, folder: '2026-10-07', name: 'a.webm', title: 'A test recording',
@@ -117,7 +120,8 @@ function stub(win) {
   };
 }
 
-async function open(page) {
+async function open(page, opts) {
+  const wants = opts || {};
   const file = '_site' + page + 'index.html';
   const path = existsSync(file) ? file : '_site' + page;
   const vc = new VirtualConsole();
@@ -131,7 +135,7 @@ async function open(page) {
     resources: undefined,
     pretendToBeVisual: true,
     virtualConsole: vc,
-    beforeParse: stub
+    beforeParse: (win) => { win.__egAir = wants.air || null; stub(win); }
   });
   dom.window.innerWidth = PHONE.width;
   dom.window.innerHeight = PHONE.height;
@@ -235,6 +239,21 @@ const TESTS = [
 
 /* The live page is where this turn's work lives, so it gets its thumb
    pressed properly rather than only inspected. */
+/* Off air: the holding card, and the sign. */
+TESTS.push(['/live/', async ({ doc, dom }, t) => {
+  await new Promise((r) => setTimeout(r, 120));
+  const host = doc.querySelector('[data-lw="holding"]');
+  t(host && !host.hidden, 'off air, the page puts up a holding card rather than an apology');
+  t(host.querySelector('canvas.holding-canvas'), 'the card is drawn, not written');
+  t(/press/i.test(host.querySelector('.holding-cap').textContent),
+    'and it invites you to do something with it');
+  const lamp = doc.querySelector('[data-lw="lamp"]');
+  t(lamp && !lamp.classList.contains('is-lit'), 'the lamp over the door is dark');
+  t(doc.querySelector('[data-lv="air"]'), 'the broadcaster has an ON AIR switch');
+  t(doc.querySelector('[data-lv="air-note"]') && doc.querySelector('[data-lv="air-back"]'),
+    'with a line to leave and a time to promise');
+}]);
+
 TESTS.push(['/live/', async ({ doc }, t) => {
   const win = doc.defaultView;
   const tap = (el) => el.dispatchEvent(new win.Event('click', { bubbles: true }));
@@ -338,10 +357,10 @@ TESTS.push(['/live/', async ({ doc }, t) => {
   t(doc.querySelector('[data-lv="deck-keys"]').checked, 'the arrow keys are armed by default');
   const nums = [...doc.querySelectorAll('[data-lv="deck"] .deck-num')].map((n) => n.textContent);
   t(nums.join() === '1,2', 'the pages are numbered in the order they will run');
-}]);
+}, { air: { on: true, note: '', back_at: '' } }]);
 
-for (const [page, run] of TESTS) {
-  let { dom, doc, errors } = await open(page);
+for (const [page, run, opts] of TESTS) {
+  let { dom, doc, errors } = await open(page, opts);
   const t = (cond, what) => {
     if (cond) notes.push('    ' + page + '  ' + what);
     else bad(page, 'FAILED: ' + what);

@@ -19,6 +19,7 @@
  *   { action: 'close',  pass, id }                   end it
  *   { action: 'mine',   pass }                       the broadcaster's view
  *   { action: 'list' }                               what is live, titles only
+ *   { action: 'air',    pass, on, note?, back_at? }  on air, or off
  *   { action: 'join',   id, word }                   members: may I watch?
  *   { action: 'pull',   id, word, since }            the next segments
  *   { action: 'say',    id, word, body }             a line in the room
@@ -99,8 +100,11 @@ export default async function (req, res) {
       const { rows } = await db.query(
         `SELECT id, title, note, started_at, watchers FROM live_feeds
           WHERE state = 'live' AND parent_id IS NULL ORDER BY started_at DESC LIMIT 20`);
+      const { rows: air } = await db.query('SELECT * FROM live_air WHERE only_row = TRUE');
+      const state = (air && air[0]) || { on_air: false, note: '', back_at: '' };
       return res.json({
         ok: true,
+        air: { on: state.on_air === true, note: state.note || '', back_at: state.back_at || '', at: state.at },
         feeds: (rows || []).map((r) => ({
           id: Number(r.id),
           title: r.title,
@@ -267,6 +271,21 @@ export default async function (req, res) {
     /* ---------------------------------------------------- the broadcaster */
     const admin = await adminDoor(req, body.pass);
     if (!admin.ok) return res.status(admin.status).json({ error: admin.error });
+
+    /* The sign over the door. Flipping it off does not end a running feed
+       \u2014 that is a separate decision \u2014 it tells everyone who comes to the
+       page that nothing is expected for now, and why. */
+    if (action === 'air') {
+      const on = body.on === true;
+      await db.query(
+        `INSERT INTO live_air (only_row, on_air, note, back_at, at)
+         VALUES (TRUE, $1, $2, $3, NOW())
+         ON CONFLICT (only_row) DO UPDATE
+           SET on_air = EXCLUDED.on_air, note = EXCLUDED.note,
+               back_at = EXCLUDED.back_at, at = NOW()`,
+        [on, clean(body.note, 300), clean(body.back_at, 80)]);
+      return res.json({ ok: true, on });
+    }
 
     if (action === 'open') {
       const title = clean(body.title, 160);

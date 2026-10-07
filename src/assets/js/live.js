@@ -13,6 +13,7 @@
    ======================================================================== */
 
 import { createMixer, plateCanvas, PLATE_KINDS } from "./live-desk.js";
+import { holdingCard, LINES } from "./live-offline.js";
 
 const SEGMENT = 2000;          /* milliseconds per segment */
 const POLL = 1400;             /* how often a watcher asks for more */
@@ -47,6 +48,85 @@ export function countdown(host, seconds, go) {
     go();
   }, 1000);
   return () => { dead = true; clearInterval(tick); host.hidden = true; host.innerHTML = ""; };
+}
+
+/* Every stream this page is holding, so that "the camera is in use" can be
+   answered with "by this page, here, and here is the button that lets it
+   go" rather than left as a riddle. */
+const HELD = new Set();
+
+export function hold(stream) {
+  if (stream) HELD.add(stream);
+  return stream;
+}
+
+export function release() {
+  let n = 0;
+  HELD.forEach((s) => {
+    s.getTracks().forEach((t) => { t.stop(); n += 1; });
+    HELD.delete(s);
+  });
+  document.querySelectorAll("video").forEach((v) => {
+    if (v.srcObject) { v.srcObject = null; }
+  });
+  return n;
+}
+
+/* Which device is actually the problem. Labels are only given out once a
+   permission has been granted, so this says what it knows and no more. */
+async function nameTheDevice(want) {
+  try {
+    const all = await navigator.mediaDevices.enumerateDevices();
+    const kind = want === "audio" ? "audioinput" : "videoinput";
+    const list = all.filter((d) => d.kind === kind);
+    const named = list.filter((d) => d.label);
+    if (named.length === 1) return named[0].label;
+    if (named.length > 1) return named.map((d) => d.label).join(", ");
+    if (list.length) return list.length + " " + (want === "audio" ? "microphone" : "camera") +
+      (list.length === 1 ? "" : "s") + " this browser will not name until you grant permission once";
+    return "no " + (want === "audio" ? "microphone" : "camera") + " this browser can see";
+  } catch (e) {
+    return "a device this browser will not name";
+  }
+}
+
+/* The box that comes up instead of a shrug. */
+function busyBox(host, detail, again) {
+  if (!host) return;
+  const box = document.createElement("div");
+  box.className = "busy-box";
+  box.innerHTML =
+    '<p class="busy-head">That device is already in use</p>' +
+    '<p class="muted small">The device: <strong>' + esc(detail.device) + "</strong></p>" +
+    '<p class="muted xsmall">' + esc(detail.why) + "</p>" +
+    '<p class="btn-row"><button type="button" class="btn btn--small" data-busy="free">' +
+    "Stop any use on this page and try again</button>" +
+    '<button type="button" class="btn btn--small btn--ghost" data-busy="shut">Leave it</button></p>' +
+    '<p class="muted xsmall">If it is another program holding it \u2014 a meeting, another tab, a ' +
+    "recorder \u2014 this page cannot reach in and close that. Quit it there, then press the button.</p>";
+  const had = host.querySelector(".busy-box");
+  if (had) had.remove();
+  host.appendChild(box);
+  box.querySelector('[data-busy="shut"]').addEventListener("click", () => box.remove());
+  box.querySelector('[data-busy="free"]').addEventListener("click", async () => {
+    const n = release();
+    box.querySelector(".busy-head").textContent = n
+      ? "Released " + n + " track" + (n === 1 ? "" : "s") + " held by this page. Trying again\u2026"
+      : "This page was holding nothing. Trying again anyway\u2026";
+    try {
+      await again();
+      box.remove();
+    } catch (err) {
+      box.querySelector(".busy-head").textContent = "Still held: " + ((err && err.message) || "unknown");
+    }
+  });
+}
+
+/* Is this the particular failure that means "something else has it"? */
+function busyError(err) {
+  const n = (err && err.name) || "";
+  return n === "NotReadableError" || n === "TrackStartError" || n === "AbortError" ||
+    /in use|already|busy|could not start/i.test((err && err.message) || "");
 }
 
 /* ---------------------------------------------------------- broadcasting */
@@ -525,10 +605,10 @@ export function countdown(host, seconds, go) {
     const wantCam = $("source").value !== "mic";
     const quality = $("quality").value;
     const size = quality === "high" ? 1280 : quality === "low" ? 640 : 960;
-    stream = await navigator.mediaDevices.getUserMedia({
+    stream = hold(await navigator.mediaDevices.getUserMedia({
       video: wantCam ? { width: { ideal: size }, frameRate: { ideal: 24 } } : false,
       audio: { echoCancellation: true, noiseSuppression: true }
-    });
+    }));
     const mirror = $("mirror");
     mirror.srcObject = stream;
     mirror.muted = true;
@@ -552,8 +632,24 @@ export function countdown(host, seconds, go) {
       $("start").disabled = true;
       $("stop").disabled = false;
     } catch (err) {
-      say((err && err.message) || "The camera would not open.", true);
       $("start").disabled = false;
+      if (busyError(err)) {
+        const which = $("source").value === "mic" ? "audio" : "video";
+        say("That device is busy \u2014 see the box below.", true);
+        busyBox($("work"), {
+          device: await nameTheDevice(which),
+          why: "Something already has it open. Usually that is another tab of this site, a video " +
+            "call, or a recorder left running."
+        }, async () => {
+          const got = await openCamera();
+          say("Camera open. Ten seconds.");
+          cancel = countdown($("count"), 10, () => begin(title, word, got.wantCam, got.quality));
+          $("start").disabled = true;
+          $("stop").disabled = false;
+        });
+        return;
+      }
+      say((err && err.message) || "The camera would not open.", true);
     }
   });
 
@@ -839,6 +935,45 @@ export function countdown(host, seconds, go) {
     drawPeople();
   }));
 
+  /* The sign over the door. It is deliberately separate from starting a
+     feed: a broadcaster is often on air in spirit \u2014 about to go, between
+     items \u2014 and a visitor deserves to be told which it is. */
+  let onAir = false;
+  function drawAir() {
+    const b = $("air");
+    if (!b) return;
+    b.textContent = onAir ? "ON AIR \u2014 press to go off" : "OFFLINE \u2014 press to go on air";
+    b.classList.toggle("is-on-air", onAir);
+    b.setAttribute("aria-pressed", String(onAir));
+    const lamp = $("air-lamp");
+    if (lamp) {
+      lamp.className = "air-lamp" + (onAir ? " is-lit" : "");
+      lamp.textContent = onAir ? "on air" : "off air";
+    }
+  }
+  if ($("air")) $("air").addEventListener("click", async () => {
+    try {
+      const d = await post({ action: "air", on: !onAir,
+        note: ($("air-note") || {}).value || "", back_at: ($("air-back") || {}).value || "" });
+      onAir = d.on;
+      drawAir();
+      say(onAir ? "The sign is lit. Visitors are told the order is on air."
+        : "Off air. Visitors get the holding card until you come back.");
+    } catch (err) {
+      say((err && err.message) || "The sign would not change.", true);
+    }
+  });
+  (async () => {
+    try {
+      const d = await fetch("/api/live", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "list" })
+      }).then((r) => r.json());
+      onAir = !!(d.air && d.air.on);
+      drawAir();
+    } catch (e) { drawAir(); }
+  })();
+
   const orderSay = $("order-say");
   if (orderSay) orderSay.addEventListener("click", async () => {
     const box = $("order-line");
@@ -863,6 +998,7 @@ export function countdown(host, seconds, go) {
   if (!root) return;
   const $ = (n) => root.querySelector('[data-lw="' + n + '"]');
   const mine = { element: "" };
+  let stopCard = null;
   let feeds = [], picked = null, since = -1, timer = null, src = null, buffer = null;
   const queue = [];
 
@@ -898,6 +1034,29 @@ export function countdown(host, seconds, go) {
         body: JSON.stringify({ action: "list" })
       }).then((r) => r.json());
       feeds = d.feeds || [];
+      const air = d.air || { on: false, note: "", back_at: "" };
+      const card = $("holding");
+      const lamp = $("lamp");
+      if (lamp) {
+        lamp.className = "air-lamp" + (air.on ? " is-lit" : "");
+        lamp.textContent = air.on ? "on air" : "off air";
+      }
+
+      /* Off air, and nothing running: the holding card, not an apology. */
+      if (!air.on && !feeds.length) {
+        if (!stopCard && card) {
+          const words = LINES.slice();
+          if (air.note) words.unshift(air.note);
+          if (air.back_at) words.unshift("Back " + air.back_at + ".");
+          card.hidden = false;
+          stopCard = holdingCard(card, words);
+        }
+      } else if (stopCard) {
+        stopCard();
+        stopCard = null;
+        if (card) card.hidden = true;
+      }
+
       const n = $("list");
       n.innerHTML = feeds.length
         ? feeds.map((f) =>
@@ -906,8 +1065,10 @@ export function countdown(host, seconds, go) {
           '<span class="muted xsmall">live since ' + esc(when(f.since)) +
           " \u00b7 " + f.watchers + " watching</span>" +
           (f.note ? '<br><span class="muted xsmall">' + esc(f.note) + "</span>" : "") + "</li>").join("")
-        : '<li class="muted small">Nothing is live at the moment. The order broadcasts rarely and ' +
-          "without warning; this page is where it appears when it does.</li>";
+        : '<li class="muted small">' + (d.air && d.air.on
+          ? "On air, but no feed has started yet \u2014 stay on this page and it will appear here."
+          : "Nothing is live at the moment. The order broadcasts rarely and without warning; " +
+            "this page is where it appears when it does.") + "</li>";
       n.querySelectorAll("[data-feed]").forEach((b) => b.addEventListener("click", () => {
         picked = feeds.find((f) => String(f.id) === b.getAttribute("data-feed"));
         $("chosen").textContent = picked ? picked.title : "";
@@ -1216,10 +1377,10 @@ export function countdown(host, seconds, go) {
     $$("camera").addEventListener("click", async () => {
       if (mine) { dropCam(); return; }
       try {
-        myStream = await navigator.mediaDevices.getUserMedia({
+        myStream = hold(await navigator.mediaDevices.getUserMedia({
           video: { width: { ideal: 640 }, frameRate: { ideal: 20 } },
           audio: { echoCancellation: true, noiseSuppression: true }
-        });
+        }));
         const own = $$("own");
         const float = $$("float");
         if (float) float.hidden = false;
@@ -1229,6 +1390,14 @@ export function countdown(host, seconds, go) {
         $$("camera").textContent = "Lower my camera";
         countdown($$("count"), 10, () => raise(id, word));
       } catch (err) {
+        if (busyError(err)) {
+          say("Your camera is busy \u2014 see the box below.", true);
+          busyBox(box.querySelector(".room-side"), {
+            device: await nameTheDevice("video"),
+            why: "Another tab or program has your camera. This page can let go of its own hold on it."
+          }, async () => { $$("camera").click(); });
+          return;
+        }
         say((err && err.message) || "Your camera would not open.", true);
       }
     });

@@ -30,10 +30,12 @@ description: "The order's camera, when it is running: a live feed for members wh
 
 <section class="wrap narrow reveal" id="live-watch">
   <div class="frame">
-    <p class="kicker">What is open now</p>
+    <p class="kicker">What is open now <span class="air-lamp" data-lw="lamp">off air</span></p>
     <ul class="live-list" data-lw="list">
       <li class="muted small">Looking&hellip;</li>
     </ul>
+
+    <div class="holding-host" data-lw="holding" hidden></div>
 
     <div data-lw="gate" hidden>
       <div class="divider">&#10022;</div>
@@ -188,6 +190,26 @@ description: "The order's camera, when it is running: a live feed for members wh
       </div>
       <label for="lv-note">A line about it, shown beside the title</label>
       <input type="text" id="lv-note" data-lv="note" maxlength="400">
+
+      <div class="air-row-admin">
+        <button type="button" class="btn air-switch" data-lv="air" aria-pressed="false">OFFLINE &mdash; press to go on air</button>
+        <span class="air-lamp" data-lv="air-lamp">off air</span>
+      </div>
+      <div class="am-fields">
+        <div>
+          <label for="lv-air-note">What to tell visitors while you are off</label>
+          <input type="text" id="lv-air-note" data-lv="air-note" maxlength="300"
+                 placeholder="Cutting runes all week; the next broadcast is on the new moon.">
+        </div>
+        <div>
+          <label for="lv-air-back">When you are back</label>
+          <input type="text" id="lv-air-back" data-lv="air-back" maxlength="80"
+                 placeholder="Thursday, after dark">
+        </div>
+      </div>
+      <p class="muted xsmall">The sign is separate from the camera on purpose. Lit, the page tells
+      people a broadcast is expected; dark, they get the holding card and your line about when you
+      are back.</p>
 
       <div class="btn-row">
         <button type="button" class="btn" data-lv="start">Start the feed &mdash; ten second countdown</button>
