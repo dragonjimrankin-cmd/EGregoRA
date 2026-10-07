@@ -138,12 +138,6 @@ export async function estimateAge(image) {
     }
   }
 
-  /* Keyless, so the door still works on a project with nothing configured. */
-  for (const model of ['openai', 'mistral']) {
-    const out = await ask('https://text.pollinations.ai/openai', {}, model, image);
-    if (out) return out;
-  }
-
   const oa = await openaiKey();
   if (oa) {
     for (const model of ['gpt-4o', 'gpt-4o-mini']) {

@@ -4,11 +4,12 @@
  * A direct line to the oracle's image generator, with no model and no
  * conversation in between: a prompt goes in, one finished 2D image comes back.
  * Photorealistic unless the prompt asks for another style. The picture is made
- * by FLUX.1-schnell (open weights) wherever possible; see lib/imagegen.js for
- * the full order of generators.
+ * by Stable Diffusion on the order's own GPU wherever possible \u2014 a Colab
+ * notebook if one is awake, a Kaggle kernel as a queued job if not; see
+ * lib/imagegen.js for the full order of generators.
  */
 import { db } from 'hatchable';
-import { generateImage, storeImage, IMAGE_ENGINES } from '../lib/imagegen.js';
+import { generateImage, storeImage, repoFor, IMAGE_ENGINES } from '../lib/imagegen.js';
 import { drawWithOwnKey } from '../lib/byok.js';
 import { requireStudio } from '../lib/accounts.js';
 import { submitKaggleImage } from '../lib/videogen.js';
@@ -64,13 +65,19 @@ export default async function (req, res) {
     });
   }
 
-  const out = await generateImage(prompt, { initUrl: sketchUrl, engine: body.engine || 'sd35' });
+  const engine = String(body.engine || 'sd35');
+
+  /* Asked for the Kaggle GPU by name: there is no point pretending it can
+     answer inside this request, so it becomes a job straight away. */
+  const out = engine === 'kaggle'
+    ? { error: 'Kaggle was asked for by name.' }
+    : await generateImage(prompt, { initUrl: sketchUrl, engine });
 
   if (!out.url) {
     /* Every quick route failed. The order's own GPU can draw it, but a
        Kaggle notebook takes minutes rather than seconds, so the picture
        becomes a job the page waits on — exactly like a clip. */
-    const job = await submitKaggleImage(prompt);
+    const job = await submitKaggleImage(prompt, { repo: repoFor(engine) });
     if (!job.error) {
       const { rows } = await db.query(
         `INSERT INTO videos (prompt, provider, model, request_id, status_url, response_url, status, asker_name, kind)

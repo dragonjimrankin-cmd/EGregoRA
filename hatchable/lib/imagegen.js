@@ -5,26 +5,17 @@
  * project's object storage and handed back as a signed URL the browser can
  * show immediately.
  *
- * Two providers are tried in order through `ai.fetch`, which injects the
- * buyer's own key server-side — Google's Gemini image model first because it
- * is fast and cheap, then OpenAI's images endpoint. Nothing here throws: a
- * failure comes back as `{ error }` so the oracle can say so in plain words
- * instead of pretending it drew something.
+ * The house generator is **Stable Diffusion**, text to image, run on hardware
+ * the order controls: whichever Colab notebook is awake first, then a Kaggle
+ * kernel as a queued job, and only then a hosted inference endpoint. Nothing
+ * is drawn on a borrowed keyless service any more — that route is gone.
+ * Nothing here throws: a failure comes back as `{ error }` so the oracle can
+ * say so in plain words instead of pretending it drew something.
  */
 import { ai, storage, config } from 'hatchable';
 import { openaiImage } from './openai.js';
 import { colabImage } from './colab.js';
 import { huggingFaceAccounts, acrossAccounts } from './pool.js';
-
-/* The order's own generator: FLUX.1-schnell, Apache-2.0 open weights, reached
-   through the keyless Pollinations endpoint. It is tried first so the oracle
-   can draw on a project with no provider key at all; the proprietary models
-   below are only a fallback. */
-const OPEN_MODEL = 'flux';
-/* The image-to-image sibling, used only when a sketch has been drawn. */
-const OPEN_I2I_MODEL = 'kontext';
-const OPEN_ENDPOINT = 'https://image.pollinations.ai/prompt/';
-const OPEN_TIMEOUT = 45000;
 
 /* The Stable Diffusion route, on Hugging Face's inference API, used when a
    HUGGINGFACE_API_KEY is configured. Newest first: SD 3.5 Large is the
@@ -78,44 +69,6 @@ function fullPrompt(subject) {
 }
 
 /**
- * FLUX.1-schnell (open weights) — no key required.
- *
- * When the asker has drawn a sketch, the keyless endpoint is asked for its
- * image-to-image model and given the sketch as the starting frame. If that
- * model refuses, the caller falls through to a text-only attempt rather
- * than pretending the sketch was used.
- */
-async function viaOpenSource(prompt, opts = {}) {
-  const init = opts.initUrl || null;
-  const wanted = opts.model || (init ? OPEN_I2I_MODEL : OPEN_MODEL);
-  const url = OPEN_ENDPOINT + encodeURIComponent(prompt.slice(0, 1800)) +
-    '?width=1024&height=1024&nologo=true&safe=true&model=' + wanted +
-    (init ? '&image=' + encodeURIComponent(init) : '') +
-    '&seed=' + Math.floor(Math.random() * 1e9);
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), OPEN_TIMEOUT);
-  try {
-    const r = await fetch(url, { signal: ctrl.signal, headers: { accept: 'image/*' } });
-    if (!r || !r.ok) return null;
-    const type = (r.headers && r.headers.get && r.headers.get('content-type')) || 'image/jpeg';
-    if (!/^image\//i.test(type)) return null;
-    const buf = new Uint8Array(await r.arrayBuffer());
-    if (buf.length < 2048) return null;
-    return {
-      bytes: buf, contentType: type,
-      usedSketch: Boolean(init),
-      provider: (opts.model && opts.model !== OPEN_MODEL ? opts.model : (init ? 'flux-kontext, image to image' : 'flux-schnell')) +
-        ' (open weights)'
-    };
-  } catch (err) {
-    console.error('imagegen: open-source route failed', err && err.message);
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-/**
  * The order's own GPU, through whichever Colab notebook is awake.
  *
  * This comes first when a worker has registered itself as able to draw:
@@ -125,14 +78,14 @@ async function viaOpenSource(prompt, opts = {}) {
  * well under a second and the hosted routes below take over.
  */
 async function viaColab(prompt, opts = {}) {
-  const out = await colabImage(prompt, { initUrl: opts.initUrl || null });
+  const out = await colabImage(prompt, { initUrl: opts.initUrl || null, model: opts.repo || null });
   if (!out) return null;
   const who = (out.worker && (out.worker.label || out.worker.account)) || 'Colab';
   return {
     bytes: out.bytes,
     contentType: out.contentType || 'image/png',
     usedSketch: Boolean(opts.initUrl),
-    provider: 'flux-schnell on the order\'s own GPU (' + who + ')',
+    provider: 'Stable Diffusion on the order\'s own GPU (' + who + ')',
     hardware: 'Google Colab ' + ((out.worker && out.worker.gpu) || 'GPU') + ' \u00b7 ' + who
   };
 }
@@ -235,8 +188,8 @@ async function viaOpenAI(prompt) {
  */
 export function hardwareFor(provider) {
   const p = String(provider || '').toLowerCase();
-  if (p.includes('own gpu') || p.includes('colab')) return 'Google Colab GPU, run by the order itself \u00b7 FLUX.1-schnell, open weights';
-  if (p.includes('flux')) return 'Pollinations hosted GPU \u00b7 FLUX.1-schnell, open weights \u2014 the card is not disclosed';
+  if (p.includes('own gpu') || p.includes('colab')) return 'Google Colab GPU, run by the order itself \u00b7 Stable Diffusion, open weights';
+  if (p.includes('kaggle')) return 'Kaggle GPU, run by the order itself \u00b7 Stable Diffusion, open weights';
   if (p.includes('stable diffusion') || p.includes('stable-diffusion')) return 'Hugging Face Inference GPU \u00b7 Stable Diffusion, open weights \u2014 the card is not disclosed';
   if (p.includes('google')) return 'Google hosted accelerator (TPU or GPU) \u2014 not disclosed';
   if (p.includes('openai')) return 'OpenAI hosted accelerator \u2014 not disclosed';
@@ -268,39 +221,44 @@ export async function storeImage(out) {
 
 /* ----------------------------------------------------------- the choice
  *
- * Every generator here is free to use. Some are keyless and will always
- * answer; some run on the order's own borrowed GPU; some need a Hugging
- * Face token, which is free to get but has to be configured. The page
- * offers them all and says which is which, and whatever is chosen is only
- * put at the front of the queue \u2014 if it refuses, the rest still try, and
- * the finished picture always says which one actually drew it.
+ * Stable Diffusion, on hardware the order controls. The borrowed keyless
+ * service that used to draw most of these pictures has been taken out
+ * altogether: every route below is either one of the order's own GPUs \u2014 a
+ * Colab notebook that is awake, or a Kaggle kernel queued as a job \u2014 or a
+ * hosted endpoint reached with the order's own token. Whatever is chosen is
+ * only put at the front of the queue; if it refuses, the rest still try, and
+ * the finished picture always says which machine actually drew it.
  */
 export const IMAGE_ENGINES = [
-  { key: 'auto', label: 'Let the order choose', note: 'Own GPU first, then the keyless open-weights routes.', keyless: true },
-  { key: 'sd35', label: 'Stable Diffusion 3.5 Large', note: 'Stability AI, open weights, on the order\u2019s own Hugging Face token. The house default.', keyless: true },
-  { key: 'flux', label: 'FLUX.1-schnell', note: 'Black Forest Labs, open weights. The best all-round keyless model.', keyless: true },
-  { key: 'turbo', label: 'SDXL-Turbo', note: 'Fast and keyless. Rougher, but seconds rather than half a minute.', keyless: true },
-  { key: 'kontext', label: 'FLUX.1 Kontext', note: 'Image to image. The one that actually follows a sketch.', keyless: true },
-  { key: 'flux-dev', label: 'FLUX.1-dev', note: 'Slower and more careful than schnell, and better at writing and hands.', keyless: true },
-  { key: 'colab', label: 'The order\u2019s own GPU', note: 'FLUX on whichever Colab notebook is awake. Nothing borrowed, no queue but its own.', keyless: true },
-  { key: 'sd35turbo', label: 'SD 3.5 Large Turbo', note: 'Four steps instead of thirty. Hugging Face token needed.', keyless: false },
-  { key: 'sdxl', label: 'Stable Diffusion XL', note: 'The old reliable, and the best understood by prompt guides. Hugging Face token needed.', keyless: false },
-  { key: 'flux-hf', label: 'FLUX.1-schnell on Hugging Face', note: 'The same weights as above on different hardware. Hugging Face token needed.', keyless: false },
-  { key: 'playground', label: 'Playground v2.5', note: 'Strong on colour and composition for posters and covers. Hugging Face token needed.', keyless: false }
+  { key: 'sd35', label: 'Stable Diffusion 3.5', note: 'Stability AI, open weights. The house default \u2014 the order\u2019s own GPU first, a hosted endpoint only if no machine of ours is awake.', keyless: true },
+  { key: 'colab', label: 'The order\u2019s own GPU', note: 'Stable Diffusion on whichever Colab notebook is awake. Nothing borrowed, no queue but its own.', keyless: true },
+  { key: 'kaggle', label: 'The order\u2019s Kaggle GPU', note: 'Stable Diffusion on a Kaggle kernel. Minutes rather than seconds, because the machine has to be woken and the weights fetched.', keyless: true },
+  { key: 'sd3m', label: 'Stable Diffusion 3.5 Medium', note: 'The smaller 3.5. Runs where the large one will not, and is quicker.', keyless: true },
+  { key: 'sd35turbo', label: 'SD 3.5 Large Turbo', note: 'Four steps instead of thirty. Rougher, and much faster.', keyless: true },
+  { key: 'sdxl', label: 'Stable Diffusion XL', note: 'The old reliable, and the best understood by prompt guides.', keyless: true },
+  { key: 'sdturbo', label: 'SD-Turbo', note: 'Stability\u2019s one-step model. For trying a composition out before committing to it.', keyless: true },
+  { key: 'playground', label: 'Playground v2.5', note: 'Built on SDXL. Strong on colour and composition for posters and covers.', keyless: true }
 ];
 
+/* Every engine is a Stable Diffusion checkpoint except the two that name a
+   machine instead of a model; `repo` is what the hosted endpoint is asked
+   for and what the order's own GPUs are told to load. */
 const ENGINE_ROUTE = {
-  flux: { kind: 'open', model: 'flux' },
-  turbo: { kind: 'open', model: 'turbo' },
-  kontext: { kind: 'open', model: 'kontext' },
-  'flux-dev': { kind: 'open', model: 'flux-dev' },
   colab: { kind: 'colab' },
+  kaggle: { kind: 'kaggle' },
   sd35: { kind: 'hf', repo: 'stabilityai/stable-diffusion-3.5-large' },
+  sd3m: { kind: 'hf', repo: 'stabilityai/stable-diffusion-3.5-medium' },
   sd35turbo: { kind: 'hf', repo: 'stabilityai/stable-diffusion-3.5-large-turbo' },
   sdxl: { kind: 'hf', repo: 'stabilityai/stable-diffusion-xl-base-1.0' },
-  'flux-hf': { kind: 'hf', repo: 'black-forest-labs/FLUX.1-schnell' },
+  sdturbo: { kind: 'hf', repo: 'stabilityai/sd-turbo' },
   playground: { kind: 'hf', repo: 'playgroundai/playground-v2.5-1024px-aesthetic' }
 };
+
+/** The checkpoint a chosen engine names, for the GPU that will load it. */
+export function repoFor(engine) {
+  const r = ENGINE_ROUTE[String(engine || 'sd35')];
+  return (r && r.repo) || 'stabilityai/stable-diffusion-3.5-medium';
+}
 
 export async function generateImage(subject, opts = {}) {
   const subj = String(subject || '').trim().slice(0, 1200);
@@ -314,33 +272,28 @@ export async function generateImage(subject, opts = {}) {
     ? opts.initUrl : null;
 
   const prompt = initUrl ? sketchPrompt(subj) : fullPrompt(subj);
-  /* Own GPU first, then the keyless open-weights route, then anything the
-     owner has paid for. Each entry may itself span several accounts. */
+  /* The order's own GPU first, every time. Then the hosted Stable Diffusion
+     endpoint on the order's own token, and only then anything the owner has
+     paid for. Each entry may itself span several accounts. Kaggle is absent
+     here because it cannot answer inside one request: when everything below
+     fails, /api/draw turns the picture into a queued kernel job instead. */
   const attempts = initUrl
-    /* Routes that can follow a sketch come first; the rest are the fallback
-       and will draw from the words alone. */
-    ? [viaColab, viaOpenSource, viaColab, viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI]
-    : [viaColab, viaOpenSource, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI];
+    /* The one route that can follow a sketch goes twice: once with the
+       drawing, once without, before the word-only routes take over. */
+    ? [viaColab, viaColab, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI]
+    : [viaColab, viaHuggingFace, openaiImage, viaGoogle, viaOpenAI];
 
   /* A generator the member picked goes to the front. It is a preference and
      not a demand: if it will not answer, the queue behind it still runs. */
-  /* Stable Diffusion 3.5 Large is the house default now that the order has a
-   Hugging Face token of its own; anything else is a preference the member
-   states. It is still only a place in the queue, not a demand. */
-const chosen = ENGINE_ROUTE[String(opts.engine || 'sd35')];
-  if (chosen) {
-    const first = chosen.kind === 'colab'
-      ? (p, o) => viaColab(p, o)
-      : chosen.kind === 'hf'
-        ? (p, o) => viaHuggingFace(p, Object.assign({ repo: chosen.repo }, o))
-        : (p, o) => viaOpenSource(p, Object.assign({ model: chosen.model }, o));
-    attempts.unshift(first);
-    /* If Stable Diffusion was asked for and Hugging Face will not serve it
-       on a free token, keep the brush in the family: SDXL-Turbo is Stability
-       AI's own model and runs keyless, so it tries before anything else. */
-    if (/^sd/.test(String(opts.engine || 'sd35')) && chosen.kind === 'hf') {
-      attempts.splice(1, 0, (p2, o2) => viaOpenSource(p2, Object.assign({ model: 'turbo' }, o2)));
-    }
+  /* Stable Diffusion 3.5 is the house default; anything else is a preference
+     the member states, and it is still only a place in the queue rather than
+     a demand. Whichever checkpoint was named is also what the order's own
+     GPU is asked to load, so choosing SDXL means SDXL wherever it is drawn. */
+  const engine = String(opts.engine || 'sd35');
+  const chosen = ENGINE_ROUTE[engine];
+  const repo = repoFor(engine);
+  if (chosen && chosen.kind === 'hf') {
+    attempts.unshift((p, o) => viaHuggingFace(p, Object.assign({ repo: chosen.repo }, o)));
   }
   let lastErr = '';
 
@@ -350,8 +303,8 @@ const chosen = ENGINE_ROUTE[String(opts.engine || 'sd35')];
       /* Each sketch-capable route gets one attempt with the sketch and, if
          that fails, one without it. */
       const useSketch = Boolean(initUrl) && sketchTried < 2;
-      if (initUrl && (attempt === viaColab || attempt === viaOpenSource)) sketchTried++;
-      const out = await attempt(prompt, useSketch ? { initUrl } : {});
+      if (initUrl && attempt === viaColab) sketchTried++;
+      const out = await attempt(prompt, Object.assign({ repo }, useSketch ? { initUrl } : {}));
       if (!out) continue;
       const ext = out.contentType.includes('jpeg') ? 'jpg' : 'png';
       const key = `oracle-images/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;

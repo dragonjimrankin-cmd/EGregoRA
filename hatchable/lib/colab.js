@@ -255,7 +255,10 @@ export async function submitToColab(payload) {
  * dies mid-render the next account is tried, which is the whole point of
  * keeping more than one notebook open.
  */
-export async function colabImage(prompt, { budgetMs = 95000, model = 'flux-schnell', initUrl = null } = {}) {
+export async function colabImage(prompt, { budgetMs = 95000, model = null, initUrl = null } = {}) {
+  /* Stable Diffusion unless the member named another checkpoint. The worker
+     falls back down its own ladder if the card cannot hold this one. */
+  const repo = model || 'stabilityai/stable-diffusion-3.5-medium';
   const workers = await workersByAvailability('image');
   if (!workers.length) return null;
   const secret = await colabSecret();
@@ -268,7 +271,7 @@ export async function colabImage(prompt, { budgetMs = 95000, model = 'flux-schne
     if (left < 15000) break;
     const r = await call(w.endpoint + '/submit', {
       method: 'POST', headers,
-      body: JSON.stringify({ prompt, model, kind: 'image', init_image: initUrl || undefined })
+      body: JSON.stringify({ prompt, model: repo, kind: 'image', init_image: initUrl || undefined })
     });
     if (!r.ok || !r.json || !r.json.id) {
       await noteWorkerFailure(w, 'image refused ' + r.status);

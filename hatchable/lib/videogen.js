@@ -685,7 +685,7 @@ export async function pollVideo(row, byok) {
  * has failed, and only when no clip is being filmed. Same job shape as a
  * video so the browser can poll it with the same endpoint.
  */
-export async function submitKaggleImage(prompt) {
+export async function submitKaggleImage(prompt, { repo = 'stabilityai/stable-diffusion-3.5-medium' } = {}) {
   const text = String(prompt || '').trim().slice(0, 1500);
   if (!(await kaggleAccountList()).length) return { error: 'No Kaggle account is configured.' };
 
@@ -693,12 +693,12 @@ export async function submitKaggleImage(prompt) {
   if (busy) {
     /* The Kaggle GPU is taken. Look across the Colab accounts for a
        runtime that is sitting idle before refusing the picture. */
-    const spare = await submitToColab({ prompt: text, kind: 'image', model: 'flux-schnell' });
+    const spare = await submitToColab({ prompt: text, kind: 'image', model: repo });
     if (spare) {
       return {
         provider: 'colab',
         hardware: (spare.worker.gpu || 'an unnamed GPU') + ' \u00b7 Google Colab, lent to the order',
-        model: 'FLUX.1-schnell \u00b7 Colab ' + (spare.worker.gpu || 'GPU'),
+        model: 'Stable Diffusion \u00b7 Colab ' + (spare.worker.gpu || 'GPU'),
         requestId: spare.jobId,
         statusUrl: spare.worker.endpoint,
         responseUrl: spare.worker.endpoint
@@ -715,7 +715,13 @@ export async function submitKaggleImage(prompt) {
   const claim = await claimGpu('image', slug);
   if (!claim.ok) return { error: 'The order\u2019s GPU is busy. Try again shortly.' };
 
-  const out = await pushKernelAnyAccount({ slug, code: imageScript({ prompt: text }) });
+  const out = await pushKernelAnyAccount({
+    slug,
+    code: imageScript({ prompt: text, model: repo }),
+    /* Stills are drawn on the cervixen account by preference, so the weekly
+       GPU quota that films the clips is left alone. */
+    prefer: 'cervixen'
+  });
   if (out.error) {
     await releaseGpu(slug, 'failed');
     return { error: out.error };
@@ -723,7 +729,7 @@ export async function submitKaggleImage(prompt) {
   return {
     provider: 'kaggle',
     hardware: 'Nvidia Tesla T4 16GB \u00b7 Kaggle, the order\u2019s own notebook',
-    model: 'FLUX.1-schnell \u00b7 Kaggle T4',
+    model: 'Stable Diffusion \u00b7 Kaggle T4',
     requestId: out.slug,
     statusUrl: out.slug,
     responseUrl: out.url

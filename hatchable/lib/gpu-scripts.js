@@ -83,8 +83,14 @@ print("WROTE", OUT, os.path.getsize(OUT), "bytes", flush=True)
 `;
 }
 
-export function imageScript({ prompt }) {
-  return `# EGregoRA — FLUX.1-schnell on Kaggle's GPU.
+export function imageScript({ prompt, model = null }) {
+  return `# EGregoRA \u2014 Stable Diffusion on Kaggle's GPU.
+#
+# Stable Diffusion is the house generator: open weights, Stability AI's own
+# release, and the one the order can run on hardware it borrows rather than
+# on somebody else's hosted endpoint. 3.5 Medium is tried first and SDXL is
+# the fallback, because 3.5 is gated behind a licence click and SDXL never
+# is \u2014 so a machine with no Hugging Face token still draws.
 import subprocess, sys, os
 
 def pip(*a):
@@ -97,30 +103,53 @@ if not torch.cuda.is_available():
     sys.exit("NO GPU: Kaggle gave this notebook a CPU-only machine. Accelerators "
              "need a phone-verified Kaggle account and remaining weekly quota.")
 print("device:", torch.cuda.get_device_name(0), flush=True)
-from diffusers import FluxPipeline
+
+import diffusers
 
 PROMPT = ${py(prompt)}
+WANTED = ${py(model || '')}
 OUT = "/kaggle/working/out.png"
 
-pipe = FluxPipeline.from_pretrained(
-    "black-forest-labs/FLUX.1-schnell", torch_dtype=torch.bfloat16
-)
-pipe.enable_model_cpu_offload()
-try:
-    pipe.vae.enable_tiling()
-    pipe.vae.enable_slicing()
-except Exception:
-    pass
+# repo, pipeline class, steps, guidance, size
+LADDER = [
+    ("stabilityai/stable-diffusion-3.5-medium", "StableDiffusion3Pipeline", 28, 4.5, 1024),
+    ("stabilityai/stable-diffusion-xl-base-1.0", "AutoPipelineForText2Image", 30, 7.0, 1024),
+    ("stabilityai/sd-turbo", "AutoPipelineForText2Image", 4, 0.0, 512),
+]
+if WANTED:
+    LADDER.sort(key=lambda row: 0 if WANTED in row[0] else 1)
 
-img = pipe(
-    PROMPT,
-    guidance_scale=0.0,
-    num_inference_steps=4,
-    max_sequence_length=256,
-    height=1024, width=1024,
-    generator=torch.Generator("cpu").manual_seed(1618),
-).images[0]
+img, used, last = None, None, None
+for repo, cls, steps, guide, size in LADDER:
+    try:
+        print("loading", repo, flush=True)
+        Pipe = getattr(diffusers, cls, None) or diffusers.DiffusionPipeline
+        try:
+            pipe = Pipe.from_pretrained(repo, torch_dtype=torch.bfloat16)
+        except Exception:
+            pipe = Pipe.from_pretrained(repo, torch_dtype=torch.float16)
+        pipe.enable_model_cpu_offload()
+        for fn in ("enable_vae_tiling", "enable_vae_slicing"):
+            try: getattr(pipe.vae, fn)()
+            except Exception: pass
+        img = pipe(
+            PROMPT,
+            num_inference_steps=steps,
+            guidance_scale=guide,
+            height=size, width=size,
+            generator=torch.Generator("cpu").manual_seed(1618),
+        ).images[0]
+        used = repo
+        break
+    except Exception as e:
+        last = "%s: %s" % (repo, e)
+        print("that one would not run \u2014", last, flush=True)
+
+if img is None:
+    sys.exit("No Stable Diffusion model would run. " + str(last))
+
 img.save(OUT)
+print("MODEL", used, flush=True)
 print("WROTE", OUT, os.path.getsize(OUT), "bytes", flush=True)
 `;
 }

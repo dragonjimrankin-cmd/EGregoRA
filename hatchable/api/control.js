@@ -359,13 +359,6 @@ export default async function (req, res) {
           { name: 'hugging face, whoami',
             url: 'https://huggingface.co/api/whoami-v2',
             headers: { authorization: 'Bearer ' + (hfToken || 'none') } },
-          { name: 'pollinations GET with a referrer named',
-            url: 'https://text.pollinations.ai/' + encodeURIComponent(say) +
-              '?model=openai-fast&referrer=egregora.hatchable.site' },
-          { name: 'pollinations POST with a referrer in the body',
-            url: 'https://text.pollinations.ai/openai',
-            body: { model: 'openai-fast', referrer: 'egregora.hatchable.site',
-                    messages: [{ role: 'user', content: say }] } },
           { name: 'hack club ai, v1 path',
             url: 'https://ai.hackclub.com/v1/chat/completions',
             body: { messages: [{ role: 'user', content: say }] } },
@@ -377,15 +370,7 @@ export default async function (req, res) {
                     messages: [{ role: 'user', content: say }] } },
           { name: 'github models with no token',
             url: 'https://models.inference.ai.azure.com/chat/completions',
-            body: { model: 'gpt-4o-mini', messages: [{ role: 'user', content: say }] } },
-          { name: 'pollinations POST, anonymous, openai-fast',
-            url: 'https://text.pollinations.ai/openai',
-            body: { model: 'openai-fast', messages: [{ role: 'user', content: say }] } },
-          { name: 'pollinations GET, anonymous, openai-fast',
-            url: 'https://text.pollinations.ai/' + encodeURIComponent(say) + '?model=openai-fast' },
-          { name: 'pollinations GET, anonymous, no model named',
-            url: 'https://text.pollinations.ai/' + encodeURIComponent(say) },
-          { name: 'pollinations models list', url: 'https://text.pollinations.ai/models' }
+            body: { model: 'gpt-4o-mini', messages: [{ role: 'user', content: say }] } }
         ];
         const seen = [];
         for (const t of tries) {

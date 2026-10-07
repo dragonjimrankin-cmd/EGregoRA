@@ -265,9 +265,20 @@ export async function releaseGpu(slug, status = 'done') {
  * first, and the one that works is named in the result so the poller knows
  * whose token to use when it asks after the job.
  */
-export async function pushKernelAnyAccount({ slug, code, internet = true }) {
-  const accounts = await kaggleAccountList();
+export async function pushKernelAnyAccount({ slug, code, internet = true, prefer = null }) {
+  let accounts = await kaggleAccountList();
   if (!accounts.length) return { error: 'No Kaggle account is configured.' };
+
+  /* A named account goes first when the caller has one in mind \u2014 drawing
+     asks for the cervixen account, so that stills and clips are not
+     competing for the same weekly quota on the same login. It is a
+     preference, not a demand: if that account is missing, out of quota or
+     unverified, the rest of the pool is tried exactly as before. */
+  if (prefer) {
+    const want = String(prefer).toLowerCase();
+    const is = (a) => [a.id, a.user, a.label].some((v) => String(v || '').toLowerCase().includes(want));
+    accounts = accounts.filter(is).concat(accounts.filter((a) => !is(a)));
+  }
 
   const won = await acrossAccounts('kaggle', accounts, async (account) => {
     const out = await pushKernel({ slug, code, internet, account });
