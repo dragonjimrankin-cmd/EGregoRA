@@ -345,7 +345,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
                 aria-expanded="false" aria-controls="vbyok-box">Use your own API</button>
         <div class="byok-box" id="vbyok-box" hidden>
           <p class="muted xsmall">A clip costs real money on a paid endpoint, and the order's own GPUs
-          are often busy. If you hold a key at fal.ai or Replicate, hand it over and the clip is made
+          are often busy. If you hold a key at fal.ai, Replicate or Luma &mdash; or anywhere at all that
+          takes a prompt over HTTPS and hands back a job &mdash; give it here and the clip is made
           through your account instead &mdash; used once, for that request only, never written down and
           never logged. The same open-weights models either way.</p>
 
@@ -355,6 +356,8 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
               <select id="vk-provider">
                 <option value="fal">fal.ai</option>
                 <option value="replicate">Replicate</option>
+                <option value="luma">Luma &middot; Dream Machine</option>
+                <option value="custom">Any other service</option>
               </select>
             </div>
             <div>
@@ -366,6 +369,16 @@ description: Put a question to Edward Gregory, co-founder of EGregoRA. Answered 
               <label for="vk-key">Your key</label>
               <input id="vk-key" type="password" autocomplete="current-password"
                      spellcheck="false" placeholder="key id:secret, or r8_&hellip;">
+            </div>
+            <div id="vk-base-wrap" hidden>
+              <label for="vk-base">The endpoint that starts a clip</label>
+              <input id="vk-base" type="url" autocomplete="off" spellcheck="false"
+                     placeholder="https://api.yourprovider.com/v1/video">
+            </div>
+            <div id="vk-status-wrap" hidden>
+              <label for="vk-status">Where to ask after it, if not the same address</label>
+              <input id="vk-status" type="url" autocomplete="off" spellcheck="false"
+                     placeholder="https://api.yourprovider.com/v1/video/{id}">
             </div>
           </div>
 

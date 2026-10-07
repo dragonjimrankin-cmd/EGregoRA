@@ -65,7 +65,7 @@ export default async function (req, res) {
         progress: row.status === 'ready' ? 100 : (row.progress || 0), measured: true });
     }
 
-    const out = await pollVideo(row);
+    const out = await pollVideo(row, body.byok || null);
     const pct = out.status === 'ready' ? 100
       : Math.max(Number(row.progress) || 0, Number(out.progress) || 0);   // never goes backwards
 

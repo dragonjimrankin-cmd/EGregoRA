@@ -407,10 +407,16 @@ function start() {
     say(describe());
   }
 
-  /* A new piece arrives at a fifth of its drawn size: it is far easier to
+  /* A new piece arrives at half its drawn size: it is far easier to
      grow something into a scene than to find the rest of the bench behind
      it. The Size slider takes it back up. */
-  const ARRIVE = 0.2;
+  const ARRIVE = 0.5;
+
+  /* Whenever a piece lands, put the bench in front of the person who asked
+     for it \u2014 the shelf of objects is long, and the window is above it. */
+  const showBench = () => {
+    try { stage.scrollIntoView({ block: "center", behavior: "smooth" }); } catch { /* old browser */ }
+  };
 
   function add(kind) {
     remember();
@@ -421,6 +427,7 @@ function start() {
     mesh.userData = { kind, colour, finish, solid: kind };
     pieces.add(mesh);
     select(mesh);
+    showBench();
   }
 
   /* --- the pattern book ---------------------------------------------------
@@ -437,7 +444,8 @@ function start() {
     g.position.set((Math.random() - 0.5) * 2.5, 0, (Math.random() - 0.5) * 2.5);
     pieces.add(g);
     select(g);
-    say("Placed: " + item.label + ". Drag the background to walk round it.");
+    showBench();
+    say("Placed: " + item.label + ". Drag it to move it; drag the background to walk round it.");
   }
 
   const book = document.getElementById("pattern-book");
@@ -1867,15 +1875,22 @@ function start() {
     });
   }
 
-  sender("md-to-image", {
-    cutout: true,
-    name: "model-cutout.png",
-    go: (url) => {
-      if (window.EGModelPlace) window.EGModelPlace(url);
-      else if (window.EGModelHandOver) window.EGModelHandOver(url);
-    },
-    done: "The sketch pad is open above with the piece on the cursor \u2014 click to put it down, " +
-      "scroll to size it, then write what it is made of and press Generate."
+  /* Straight onto the paper. There is no need to put this through the
+     upload at all \u2014 the sketch pad draws it onto its own canvas, and the
+     canvas is uploaded later if the sketch is used. Keeping it local means
+     no round trip, no account needed, and nothing to go wrong between here
+     and there. */
+  on("md-to-image", () => {
+    if (!pieces.children.length) return note("Build something first.", true);
+    if (!window.EGModelPlace) return note("The sketch pad is not on this page.", true);
+    try {
+      const data = "data:image/png;base64," + capture(true);
+      window.EGModelPlace(data);
+      note("The sketch pad is open above with the piece on the cursor \u2014 click to put it down, " +
+        "scroll to size it, then write what it is made of and press Generate.");
+    } catch (err) {
+      note("The view could not be cut out: " + ((err && err.message) || "unknown error"), true);
+    }
   });
 
   sender("md-to-film", {

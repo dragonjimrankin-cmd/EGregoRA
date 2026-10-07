@@ -166,6 +166,82 @@ export async function submitVideo(prompt, opts = {}) {
   const seed = Number.isFinite(Number(opts.seed)) && Number(opts.seed) > 0
     ? Math.floor(Number(opts.seed)) : null;
 
+  /* ---------------------------------------------------------------------
+     A provider of the member's own that is neither fal nor Replicate. Two
+     are understood exactly \u2014 Luma's Dream Machine, and anything that speaks
+     the common shape of "post a prompt, get a job id, poll the job" \u2014 and
+     for the second the member gives the endpoint themselves. The key is
+     used for this request only and is never written down; the page sends it
+     again with every check on the job, because the order has not kept it. */
+  if (own && own.provider === 'luma') {
+    const base = 'https://api.lumalabs.ai/dream-machine/v1/generations';
+    const payload = {
+      prompt: text,
+      model: own.model || 'ray-2',
+      resolution: '540p',
+      duration: '5s',
+      aspect_ratio: aspect
+    };
+    if (initUrl) payload.keyframes = { frame0: { type: 'image', url: initUrl } };
+    const r = await call(base, {
+      method: 'POST',
+      headers: { authorization: 'Bearer ' + own.key, 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!(r.ok && r.json && r.json.id)) {
+      return { error: 'Luma refused that request: ' + String(r.text || r.status).slice(0, 200) };
+    }
+    return {
+      provider: 'byok',
+      model: 'Luma ' + (own.model || 'ray-2') + ' \u00b7 your own account',
+      hardware: 'Luma Labs, on the member\u2019s own key',
+      requestId: r.json.id,
+      statusUrl: base + '/' + r.json.id,
+      responseUrl: base + '/' + r.json.id
+    };
+  }
+
+  if (own && own.provider === 'custom') {
+    const endpoint = String(own.base || '').trim();
+    if (!/^https:\/\//.test(endpoint)) {
+      return { error: 'Give the full https address of your provider\u2019s video endpoint.' };
+    }
+    const payload = {
+      prompt: text,
+      model: own.model || undefined,
+      aspect_ratio: aspect,
+      num_frames: frames,
+      duration: Math.round(frames / 24)
+    };
+    if (initUrl) { payload.image_url = initUrl; payload.image = initUrl; }
+    const r = await call(endpoint, {
+      method: 'POST',
+      headers: { authorization: 'Bearer ' + own.key, 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!r.ok || !r.json) {
+      return { error: 'That endpoint refused the request: ' + String(r.text || r.status).slice(0, 200) };
+    }
+    /* Some services answer with the finished clip, some with a job. */
+    const straight = findVideoUrl(r.json);
+    const jobId = r.json.id || r.json.request_id || r.json.task_id || r.json.job_id || null;
+    if (!straight && !jobId) {
+      return { error: 'That endpoint answered with neither a video nor a job id.' };
+    }
+    const statusUrl = String(own.status || '').trim()
+      ? own.status.replace('{id}', jobId || '')
+      : endpoint.replace(/\/+$/, '') + '/' + (jobId || '');
+    return {
+      provider: 'byok',
+      model: (own.model || 'your provider') + ' \u00b7 your own account',
+      hardware: 'a provider of the member\u2019s own',
+      requestId: jobId || 'direct',
+      statusUrl: straight || statusUrl,
+      responseUrl: straight || statusUrl,
+      readyUrl: straight || null
+    };
+  }
+
   /* fal.ai. Credit is per account and a clip is not cheap, so every key the
      owner has configured is tried in turn — FAL_KEY, FAL_KEY_2 … or several
      at once in FAL_ACCOUNTS — and a key that has just been refused is put on
@@ -264,10 +340,14 @@ export async function submitVideo(prompt, opts = {}) {
           responseUrl: spare.worker.endpoint
         };
       }
+      const mins = claim.held && claim.held.started_at
+        ? Math.round((Date.now() - new Date(claim.held.started_at).getTime()) / 60000)
+        : null;
       return {
-        error: 'Every GPU the order can reach is busy \u2014 the Kaggle notebook is filming and no ' +
-          'Colab account has a free runtime. Try again in a few minutes, or open ' +
-          'colab/egregora-gpu.ipynb in another Google account to add one.'
+        error: 'Every GPU the order can reach is busy \u2014 the Kaggle notebook has been working for ' +
+          (mins === null ? 'a while' : mins + ' minutes') + ' and no Colab account has a free ' +
+          'runtime. Either wait, or press \u201cUse your own API\u201d under this box and film it ' +
+          'through your own fal.ai, Replicate, Luma or other account.'
       };
     }
     const out = await pushKernelAnyAccount({
@@ -329,10 +409,14 @@ export async function submitVideo(prompt, opts = {}) {
 
   return {
     error:
-      'No video generator is reachable just now. HunyuanVideo 1.5 is open-weights but it still has to run ' +
-      'on somebody\'s GPU: no Colab worker is awake, the order\'s Kaggle GPU did not accept the ' +
-      'job, and no FAL_KEY or REPLICATE_API_TOKEN is configured. Opening colab/egregora-gpu.ipynb ' +
-      'in any Google account and running it is enough to wake one.'
+      'No video generator is reachable just now, and the honest reason is that the order has no ' +
+      'GPU of its own awake and no paid key configured: HunyuanVideo 1.5 is open-weights, but the ' +
+      'weights still have to run on somebody\'s card. No Colab worker is registered, the Kaggle ' +
+      'notebook would not take the job, and there is no FAL_KEY or REPLICATE_API_TOKEN in this ' +
+      'project. Two ways forward: press \u201cUse your own API\u201d under this box and film it ' +
+      'through your own account at fal.ai, Replicate, Luma or anywhere else that takes a prompt ' +
+      'over HTTPS \u2014 or open colab/egregora-gpu.ipynb in any Google account and run it, which ' +
+      'lends the order a free GPU and takes about a minute.'
   };
 }
 
@@ -413,8 +497,36 @@ function findVideoUrl(json) {
  * Ask the provider how a job is getting on, and store the clip when it lands.
  * @returns {Promise<{status:'running'|'ready'|'failed', url?:string, key?:string, error?:string}>}
  */
-export async function pollVideo(row) {
+export async function pollVideo(row, byok) {
   if (!row || !row.request_id) return { status: 'failed', error: 'No job to check.' };
+
+  /* A key brought by the member is never stored, so the page sends it again
+     with every check. Without it there is nothing to ask the provider with. */
+  const own = byok && typeof byok.key === 'string' && byok.key.trim()
+    ? { provider: String(byok.provider || 'fal'), key: byok.key.trim() }
+    : null;
+
+  if (row.provider === 'byok') {
+    if (!own) {
+      return { status: 'running', progress: estimateProgress(row), measured: false,
+        stage: 'waiting for your key to be handed over again' };
+    }
+    if (/^https?:\/\/.*\.(mp4|webm|mov)(\?|$)/i.test(String(row.status_url || ''))) {
+      return { status: 'ready', url: row.status_url };
+    }
+    const r = await call(row.status_url, {
+      headers: { authorization: 'Bearer ' + own.key, accept: 'application/json' }
+    });
+    if (!r.ok || !r.json) return { status: 'running', progress: estimateProgress(row), measured: false };
+    const state = String(r.json.state || r.json.status || '').toLowerCase();
+    if (state === 'failed' || state === 'error' || state === 'cancelled' || state === 'canceled') {
+      return { status: 'failed',
+        error: String((r.json.failure_reason || r.json.error || 'your provider gave up on that one')).slice(0, 300) };
+    }
+    const url = findVideoUrl(r.json);
+    if (!url) return { status: 'running', progress: estimateProgress(row), measured: false };
+    return { status: 'ready', url };
+  }
 
   /* Kaggle is not an inference API: we ask the notebook how it is getting on,
      and when it finishes we pull the file it left in /kaggle/working. */
@@ -499,7 +611,9 @@ export async function pollVideo(row) {
   }
 
   const headers = {};
-  if (row.provider === 'fal') {
+  if (own && own.provider === row.provider) {
+    headers.authorization = (row.provider === 'fal' ? 'Key ' : 'Bearer ') + own.key;
+  } else if (row.provider === 'fal') {
     const k = await key('FAL_KEY');
     if (!k) return { status: 'failed', error: 'The video key has been removed from this project.' };
     headers.authorization = 'Key ' + k;

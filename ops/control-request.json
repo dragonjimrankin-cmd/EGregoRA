@@ -1,9 +1,7 @@
 {
-  "note": "Why will no clip film? Ask the live site what GPUs and keys it can actually reach, and try one short clip to see the exact refusal.",
+  "note": "After the fix: the stale Kaggle claim should be let go on the next attempt. Ask again, and try one clip.",
   "calls": [
     { "action": "status" },
-    { "action": "workers" },
-    { "action": "accounts" },
     { "action": "film", "prompt": "A single candle flame guttering in a draught, close, dark background" }
   ]
 }

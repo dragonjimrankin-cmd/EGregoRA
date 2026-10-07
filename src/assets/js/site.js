@@ -1131,7 +1131,7 @@
   const toggle = (on) => {
     pad.hidden = !on;
     open.setAttribute("aria-expanded", String(on));
-    if (on) pad.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    if (on) setTimeout(() => pad.scrollIntoView({ block: "center", behavior: "smooth" }), 60);
   };
   open.addEventListener("click", () => toggle(pad.hidden));
   if (shut) shut.addEventListener("click", () => toggle(false));
@@ -1189,9 +1189,13 @@
   /* Called by the Turning Shop: a transparent cut-out of the bench. */
   window.EGModelPlace = (url) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    /* A picture handed straight over as data needs no CORS dance; one
+       fetched from storage does. */
+    if (!/^data:/.test(String(url))) img.crossOrigin = "anonymous";
     img.onload = () => {
       toggle(true);
+      const room = document.getElementById("draw-box");
+      if (room) room.scrollIntoView({ block: "start", behavior: "smooth" });
       const fit = Math.min(
         (canvas.width * 0.45) / img.width,
         (canvas.height * 0.45) / img.height, 1);
@@ -1466,7 +1470,17 @@
         return failed(card, "This has run for over forty minutes \u2014 it may still arrive; reload later.", prompt);
       }
       try {
-        const res = await fetch("/api/video?id=" + encodeURIComponent(id));
+        /* The key, if the member brought one, has to come with every check
+           as well as with the submission: the order never keeps it, so it
+           has nothing to poll the provider with unless the page says. */
+        const own = window.EGOwnFilmKey ? window.EGOwnFilmKey() : null;
+        const res = own
+          ? await fetch("/api/video", {
+              method: "POST",
+              headers: window.EGAuthHeaders ? window.EGAuthHeaders() : { "content-type": "application/json" },
+              body: JSON.stringify({ id, byok: own })
+            })
+          : await fetch("/api/video?id=" + encodeURIComponent(id));
         const data = await res.json().catch(() => ({}));
         if (typeof data.progress === "number") bar.set(data.progress, data.measured, data.stage || null);
         if (data.hardware) bar.gpu(data.hardware);
@@ -3677,7 +3691,23 @@
     fal: "A fal.ai key is the whole id:secret pair. Leave the route empty and the model you chose " +
       "above is used; fill it in to send the job somewhere else on fal.",
     replicate: "A Replicate token begins r8_. Leave the route empty for the house model, or write " +
-      "owner/name to pick another."
+      "owner/name to pick another.",
+    luma: "A Luma Dream Machine key. The route is the model name \u2014 ray-2, ray-flash-2 \u2014 " +
+      "and ray-2 is used if you leave it empty.",
+    custom: "Anything that takes a prompt over HTTPS. Give the address that starts a clip, your " +
+      "key as a bearer token, and the model name if the service wants one. If asking after the job " +
+      "happens at a different address, give that too and write {id} where the job id goes. The page " +
+      "hands your key back with every check, because the order never keeps it."
+  };
+
+  const baseWrap = document.getElementById("vk-base-wrap");
+  const statusWrap = document.getElementById("vk-status-wrap");
+  const baseEl = document.getElementById("vk-base");
+  const statusEl = document.getElementById("vk-status");
+  const shape = () => {
+    const custom = (providerEl && providerEl.value) === "custom";
+    if (baseWrap) baseWrap.hidden = !custom;
+    if (statusWrap) statusWrap.hidden = !custom;
   };
 
   const say = (t, bad) => {
@@ -3703,20 +3733,31 @@
     panel.hidden = !show;
     open.setAttribute("aria-expanded", String(show));
     if (show) {
+      shape();
       say(HINT[(providerEl && providerEl.value) || "fal"]);
       if (keyEl && !own) keyEl.focus();
     }
   });
-  if (providerEl) providerEl.addEventListener("change", () =>
-    say(HINT[providerEl.value] || HINT.fal));
+  if (providerEl) providerEl.addEventListener("change", () => {
+    shape();
+    say(HINT[providerEl.value] || HINT.fal);
+  });
 
   const use = document.getElementById("vk-use");
   if (use) use.addEventListener("click", () => {
     const key = (keyEl && keyEl.value || "").trim();
     if (!key) { say("Paste the key first.", true); return; }
+    const provider = (providerEl && providerEl.value) || "fal";
+    const base = (baseEl && baseEl.value || "").trim();
+    if (provider === "custom" && !/^https:\/\//.test(base)) {
+      say("Give the https address that starts a clip on your service.", true);
+      return;
+    }
     own = {
-      provider: (providerEl && providerEl.value) || "fal",
+      provider,
       model: (modelEl && modelEl.value || "").trim() || undefined,
+      base: base || undefined,
+      status: (statusEl && statusEl.value || "").trim() || undefined,
       key
     };
     remember(own);
@@ -3739,7 +3780,10 @@
       own = saved;
       if (providerEl) providerEl.value = saved.provider || "fal";
       if (modelEl && saved.model) modelEl.value = saved.model;
+      if (baseEl && saved.base) baseEl.value = saved.base;
+      if (statusEl && saved.status) statusEl.value = saved.status;
       if (keyEl) keyEl.value = saved.key;
+      shape();
       if (keepEl) keepEl.checked = true;
       mark();
     }

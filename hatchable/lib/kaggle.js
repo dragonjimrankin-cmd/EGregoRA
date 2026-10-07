@@ -225,7 +225,22 @@ export async function gpuBusy() {
 }
 
 export async function claimGpu(kind, slug) {
-  const held = await gpuBusy();
+  let held = await gpuBusy();
+  /* A job that was claimed and never got as far as running is almost always
+     a push that died quietly \u2014 Kaggle accepting the kernel and then refusing
+     it a machine. Twenty minutes is far longer than that takes, so rather
+     than telling everyone for the next three quarters of an hour that the
+     GPU is busy, the dead claim is let go and the new job takes it. */
+  if (held) {
+    const age = (Date.now() - new Date(held.started_at).getTime()) / 60000;
+    if (age > 20) {
+      await db.query(
+        "UPDATE gpu_jobs SET status = 'stale', finished_at = NOW() WHERE slug = $1 AND status = 'queued'",
+        [held.slug]
+      ).catch(() => {});
+      held = await gpuBusy();
+    }
+  }
   if (held) return { ok: false, held };
   await db.query(
     "INSERT INTO gpu_jobs (kind, slug, status) VALUES ($1, $2, 'queued')",
