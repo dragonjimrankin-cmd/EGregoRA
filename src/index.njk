@@ -64,9 +64,11 @@ description: EGregoRA — the house of enquiry co-founded by Edward Gregory and 
   <div class="page-head">
     <p class="kicker">The Atlas</p>
     <h2>The Whole Figure, Turned in the Hand</h2>
-    <p class="lede muted">Every room in this house, drawn as one branching body: the trunk, the eleven
-    limbs, the sub-limbs hung beneath them, and under each the sections of the page itself. Drag to turn
-    it, wheel to come closer, click a limb to open it.</p>
+    <p class="lede muted">Every room in this house, drawn as one figure: the trunk, the eleven limbs, the
+    sub-limbs hung beneath them, and under each the sections of the page itself. The same structure is
+    drawn four ways &mdash; a branching body, a knotted cosmos, a tree, a galaxy &mdash; because it
+    honestly is all four. Drag to turn it, wheel to come closer, click a limb to open it; only one stem
+    stands open at a time, and touching the map gives it the whole screen.</p>
   </div>
 
   <div class="frame atlas">
@@ -78,11 +80,18 @@ description: EGregoRA — the house of enquiry co-founded by Edward Gregory and 
       </div>
 
       <div class="atlas-side">
+        <div class="atlas-tools" role="group" aria-label="How the map is drawn">
+          <button type="button" class="btn btn--small" data-skin="figure" aria-pressed="true">The Figure</button>
+          <button type="button" class="btn btn--small" data-skin="cosmos" aria-pressed="false">The Cosmos</button>
+          <button type="button" class="btn btn--small" data-skin="tree" aria-pressed="false">The Tree</button>
+          <button type="button" class="btn btn--small" data-skin="galaxy" aria-pressed="false">The Galaxy</button>
+        </div>
+        <p class="muted xsmall" id="atlas-skin-note">The plain branching body. The clearest of the four to read.</p>
         <div class="atlas-tools">
-          <button type="button" class="btn btn--small" id="at-spin" aria-pressed="true">Hold Still</button>
-          <button type="button" class="btn btn--small" id="at-open">Open All</button>
-          <button type="button" class="btn btn--small" id="at-fold">Fold Away</button>
-          <button type="button" class="btn btn--small" id="at-home">Whole Figure</button>
+          <button type="button" class="btn btn--small btn--ghost" id="at-focus" aria-pressed="false">Fill the screen</button>
+          <button type="button" class="btn btn--small btn--ghost" id="at-spin" aria-pressed="true">Hold Still</button>
+          <button type="button" class="btn btn--small btn--ghost" id="at-fold">Fold Away</button>
+          <button type="button" class="btn btn--small btn--ghost" id="at-home">Whole Figure</button>
         </div>
         <label class="atlas-find" for="at-find">Find a subject</label>
         <input type="search" id="at-find" placeholder="phyllotaxis, ogham, decoherence…" autocomplete="off">
