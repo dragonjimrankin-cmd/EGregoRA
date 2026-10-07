@@ -511,6 +511,10 @@ function start() {
     return url;
   }
 
+  /* Which drawers the person has opened, so that searching and clearing a
+     search does not keep shutting them again. */
+  const openDrawers = new Set();
+
   function fillShelf(q) {
     if (!shelf) return;
     const want = String(q || "").trim().toLowerCase();
@@ -523,10 +527,24 @@ function start() {
       shown++;
     });
     shelf.textContent = "";
+    /* Each group is a drawer that opens. Fourteen groups and a hundred and
+       seventy-nine objects is a very long shelf to scroll past looking for
+       one chair, so everything is shut by default \u2014 except when a search
+       is running, when every drawer holding a match stands open, and except
+       the first, so the shelf never looks empty. */
+    let first = true;
     groups.forEach((items, name) => {
-      const h = document.createElement("h4");
-      h.textContent = name;
-      shelf.appendChild(h);
+      const drawer = document.createElement("details");
+      drawer.className = "book-drawer";
+      drawer.open = Boolean(want) || first || openDrawers.has(name);
+      first = false;
+      drawer.addEventListener("toggle", () => {
+        if (drawer.open) openDrawers.add(name); else openDrawers.delete(name);
+      });
+      const h = document.createElement("summary");
+      h.textContent = name + " \u00b7 " + items.length;
+      drawer.appendChild(h);
+      shelf.appendChild(drawer);
       const row = document.createElement("div");
       row.className = "book-row";
       items.forEach((item) => {
@@ -549,7 +567,7 @@ function start() {
         b.addEventListener("click", () => addFromBook(item));
         row.appendChild(b);
       });
-      shelf.appendChild(row);
+      drawer.appendChild(row);
     });
     if (count) count.textContent = shown + " of " + LIBRARY.length + " objects";
     if (!shown) {

@@ -36,7 +36,13 @@ export const OPENROUTER_MODELS = [
    OVH. The plain GET route still works and honours a `system` parameter, but
    it is rate-limited hard: two calls in quick succession and the third is a
    402. So it is kept as the last resort, not the mainstay. */
-export const KEYLESS_MODELS = ['openai'];
+export const KEYLESS_MODELS = ['openai-fast'];
+
+/* What a refusal looks like when it arrives dressed as an answer. The plain
+   GET route answers HTTP 200 with the complaint in the body, so without this
+   the oracle cheerfully reads out somebody's billing problem. */
+const NOT_AN_ANSWER = /(api key|budget|rate.?limit|quota|unauthor|forbidden|try again later|no space left|internal server error)/i;
+const refusal = (t) => t.length < 400 && NOT_AN_ANSWER.test(t);
 const KEYLESS_GET = 'https://text.pollinations.ai/';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -122,8 +128,14 @@ export async function keylessChat({ system, messages, maxTokens = 900 }) {
   const prompt = convo.slice(-5000);
   if (!prompt) return null;
 
+  /* Anonymous on purpose. Pollinations' deprecation notice is explicit that
+     anonymous callers are unaffected, and a referrer or token attaches the
+     call to somebody's account \u2014 whose budget then runs out and the answer
+     comes back as a billing complaint instead of a reply. */
   const url = KEYLESS_GET + encodeURIComponent(prompt) +
-    '?model=openai&system=' + encodeURIComponent(String(system || '').slice(0, 2500));
+    '?model=' + KEYLESS_MODELS[0] +
+    '&system=' + encodeURIComponent(String(system || '').slice(0, 2500)) +
+    '&seed=' + Math.floor(Math.random() * 1e6);
 
   for (let attempt = 0; attempt < 3; attempt++) {
     const ctrl = new AbortController();
@@ -136,10 +148,15 @@ export async function keylessChat({ system, messages, maxTokens = 900 }) {
       }
       if (!r.ok) return null;
       const text = (await r.text()).trim();
-      if (text && text.length > 2 && !text.startsWith('{')) {
+      if (refusal(text)) {
+        console.error('openchat: keyless route refused: ' + text.slice(0, 120));
+        await new Promise((res) => setTimeout(res, 1200 * (attempt + 1)));
+        continue;
+      }
+      if (text && text.length > 2 && !text.startsWith('{') && !text.startsWith('<')) {
         return {
           text: plainify(text).slice(0, maxTokens * 4),
-          model: 'gpt-oss-20b',
+          model: 'gpt-oss-20b (OVH, anonymous tier)',
           route: 'pollinations'
         };
       }
@@ -186,6 +203,20 @@ export async function openChat(opts) {
       }
     });
   }
+  /* The keyless open-weights route, anonymously. Pollinations' anonymous
+     tier serves GPT-OSS 20B \u2014 OpenAI's open-weights release, with reasoning
+     and tool calling \u2014 and the deprecation notice on the older API is
+     explicit that anonymous callers are unaffected. No key, no referrer, no
+     account: nothing that can run out of budget mid-sentence. It sits below
+     a configured OpenRouter key and above the plain GET fallback, and it is
+     the route that actually answers on a project with no keys at all. */
+  routes.push({
+    name: 'pollinations',
+    url: KEYLESS_URL,
+    models: KEYLESS_MODELS,
+    headers: { accept: 'application/json' }
+  });
+
   const schema = toolSchema(tools);
 
   /* The order's own model first when a Colab worker is awake: open weights,

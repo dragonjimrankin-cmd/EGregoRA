@@ -2027,3 +2027,20 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
   .film-form > .ask-actions,
   .oracle-form > .ask-actions { order: 2; margin-top: 0.7rem; }
 }
+
+/* --- the shelf of objects, in drawers ------------------------------------ */
+.book-drawer { border-top: 1px solid rgba(215,176,90,0.18); }
+.book-drawer:first-of-type { border-top: 0; }
+.book-drawer > summary {
+  cursor: pointer; list-style: none;
+  font-family: 'Cinzel', serif; font-size: 0.74rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gold, #d7b05a);
+  padding: 0.55rem 0.2rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.book-drawer > summary::-webkit-details-marker { display: none; }
+.book-drawer > summary::before { content: "\25b8"; transition: transform 0.15s ease; }
+.book-drawer[open] > summary::before { transform: rotate(90deg); }
+.book-drawer > summary:hover { color: var(--gold-bright, #f3ddaa); }
+
+/* --- the oracle's larger thinking space is a desk idea ------------------- */
+@media (max-width: 720px) { #o-expand { display: none; } }

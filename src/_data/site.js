@@ -29,6 +29,7 @@ export default {
     { url: "/neurobiology/", label: "Neurobiology", glyph: "star" },
     { url: "/consciousness/", label: "Consciousness", glyph: "metatron" },
     { url: "/decoherence/", label: "Decoherence", glyph: "spiral" },
+    { url: "/locality/", label: "Local & Non-Local", glyph: "metatron" },
     { url: "/extraterrestrials/", label: "Extraterrestrials", glyph: "eye" },
     { url: "/music/", label: "Sound & Music", glyph: "spiral" },
     { url: "/wizardry/", label: "Wizardry", glyph: "star" },

@@ -46,6 +46,7 @@ const MANUAL = {
     status: {},
     ask: { question: 'string', history: 'optional [{role,content}]' },
     draw: { prompt: 'string' },
+    'chat-probe': 'which keyless thinking routes answer from the server',
     film: { prompt: 'string', aspect: '16:9 | 9:16', model: 'see action: models' },
     job: { id: 'number from draw or film' },
     mailbag: { limit: 'optional 1-50' },
@@ -334,6 +335,40 @@ export default async function (req, res) {
 
       /* Which accounts the render pool holds, and which of them are sulking.
          A route that has just failed is on a cooldown and shows as such. */
+      /* Which thinking routes actually answer from this machine. A probe,
+         not a chat: each candidate is called once with a trivial question
+         and its first words reported, so a route can be auditioned before
+         the oracle is pointed at it. */
+      case 'chat-probe': {
+        const say = 'Reply with exactly: ready.';
+        const tries = [
+          { name: 'pollinations POST, anonymous, openai-fast',
+            url: 'https://text.pollinations.ai/openai',
+            body: { model: 'openai-fast', messages: [{ role: 'user', content: say }] } },
+          { name: 'pollinations GET, anonymous, openai-fast',
+            url: 'https://text.pollinations.ai/' + encodeURIComponent(say) + '?model=openai-fast' },
+          { name: 'pollinations GET, anonymous, no model named',
+            url: 'https://text.pollinations.ai/' + encodeURIComponent(say) },
+          { name: 'pollinations models list', url: 'https://text.pollinations.ai/models' }
+        ];
+        const seen = [];
+        for (const t of tries) {
+          const started = Date.now();
+          try {
+            const r = await fetch(t.url, Object.assign(
+              { signal: AbortSignal.timeout(30000) },
+              t.body
+                ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(t.body) }
+                : {}));
+            const text = (await r.text()).slice(0, 300);
+            seen.push({ route: t.name, status: r.status, ms: Date.now() - started, said: text });
+          } catch (err) {
+            seen.push({ route: t.name, status: 0, ms: Date.now() - started, said: String((err && err.message) || 'failed') });
+          }
+        }
+        return res.json({ probe: seen });
+      }
+
       case 'accounts':
         return res.json({ pool: await poolReport() });
 
