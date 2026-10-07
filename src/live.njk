@@ -149,6 +149,127 @@ description: "The order's camera, when it is running: a live feed for members wh
       &mdash; if you want the recording, record it on the Videos page instead.</p>
 
       <div class="divider">&#10022;</div>
+      <p class="kicker">The Director&rsquo;s Desk</p>
+      <p class="muted xsmall">What the watchers receive is the <em>programme</em> below, not the raw
+      camera &mdash; so a plate you draw here, or a video off your disk, goes out on the same feed with
+      no second connection and nothing uploaded. Cut with the buttons; the fade is 260 milliseconds
+      each way.</p>
+
+      <div class="programme" data-lv="programme">
+        <p class="muted small">The gallery is dark. Open the camera to light it.</p>
+      </div>
+
+      <div class="btn-row air-row" role="group" aria-label="What goes out on the feed">
+        <button type="button" class="btn btn--small" data-air="camera">Camera</button>
+        <button type="button" class="btn btn--small" data-air="plate">Plate</button>
+        <button type="button" class="btn btn--small" data-air="tape">Tape</button>
+        <button type="button" class="btn btn--small" data-air="split">Split</button>
+        <button type="button" class="btn btn--small" data-air="inset">Plate + inset</button>
+        <span class="muted xsmall">On air: <strong data-lv="on-air">camera</strong></span>
+      </div>
+      <div class="switch-row">
+        <label class="switch"><input type="checkbox" data-lv="fade" checked> Fade between cuts</label>
+        <label class="switch"><input type="checkbox" data-lv="cap-on"> Show the lower third</label>
+        <label class="switch"><input type="checkbox" data-lv="tape-back" checked> Back to camera when the tape ends</label>
+      </div>
+
+      <div class="am-fields">
+        <div>
+          <label for="lv-cap">Lower third &mdash; name | what they are</label>
+          <input type="text" id="lv-cap" data-lv="cap-text" maxlength="140"
+                 placeholder="Edward Gregory | co-founder, EGregoRA">
+        </div>
+        <div>
+          <label for="lv-badge">Corner badge</label>
+          <select id="lv-badge" data-lv="badge">
+            <option value="">None</option>
+            <option value="LIVE">LIVE</option>
+            <option value="RECORDED EARLIER">RECORDED EARLIER</option>
+            <option value="THE ORDER">THE ORDER</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="divider">&#10022;</div>
+      <p class="kicker">Plates &mdash; the infographic composer</p>
+      <p class="muted xsmall">Every plate is drawn here, in the browser, as vector shapes on a canvas:
+      no image generator, no waiting, no network. Type and it redraws. Keep the ones that work and
+      they stay in this machine&rsquo;s deck for the next broadcast.</p>
+
+      <div class="am-fields">
+        <div>
+          <label for="lv-pk">Kind of plate</label>
+          <select id="lv-pk" data-lv="pk"></select>
+          <p class="muted xsmall" data-lv="p-hint"></p>
+        </div>
+        <div>
+          <label for="lv-pacc">Accent</label>
+          <select id="lv-pacc" data-lv="p-accent">
+            <option value="gold">Gold</option>
+            <option value="green">Verdant</option>
+            <option value="rose">Rose</option>
+            <option value="blue">Blue</option>
+          </select>
+        </div>
+        <div>
+          <label for="lv-pkick">Kicker</label>
+          <input type="text" id="lv-pkick" data-lv="p-kicker" maxlength="40" value="Limb I">
+        </div>
+        <div>
+          <label for="lv-ptitle">Title</label>
+          <input type="text" id="lv-ptitle" data-lv="p-title" maxlength="90" value="What the ether is">
+        </div>
+      </div>
+      <label for="lv-psub">Line under the title</label>
+      <input type="text" id="lv-psub" data-lv="p-sub" maxlength="160"
+             value="One clause was struck out, not the substrate">
+      <label for="lv-plines">The lines &mdash; one per row, split with a vertical bar</label>
+      <textarea id="lv-plines" data-lv="p-lines" rows="5">Michelson&ndash;Morley, 1887 | no rest frame survives
+Dirac, 1951 | the substrate returns as the quantum field
+Casimir, 1948 | the vacuum pushes, so it is not nothing</textarea>
+
+      <div class="plate-shop">
+        <div class="plate-view" data-lv="p-preview"></div>
+        <div class="btn-row">
+          <button type="button" class="btn btn--small" data-lv="p-air">Put this on air</button>
+          <button type="button" class="btn btn--small btn--ghost" data-lv="p-save">Keep it in the deck</button>
+          <button type="button" class="btn btn--small btn--ghost" data-lv="deck-clear">Empty the deck</button>
+        </div>
+      </div>
+      <div class="deck" data-lv="deck"></div>
+
+      <div class="divider">&#10022;</div>
+      <p class="kicker">Tape &mdash; a video played out on the feed</p>
+      <p class="muted xsmall">Choose a file from this machine. It is never uploaded: it plays here and
+      is re-recorded as part of the programme, which is why a two-hour film costs the feed nothing
+      extra. Its sound is mixed with yours on the two faders below.</p>
+      <label for="lv-tape-file">The file</label>
+      <input type="file" id="lv-tape-file" data-lv="tape-file" accept="video/*">
+      <video class="live-mirror tape-deck" data-lv="tape" playsinline
+             aria-label="The tape, as it will go out" role="img"></video>
+      <div class="tape-bar"><span data-lv="tape-bar"></span></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn--small" data-lv="tape-air">Play it out</button>
+        <button type="button" class="btn btn--small btn--ghost" data-lv="tape-play">Play</button>
+        <button type="button" class="btn btn--small btn--ghost" data-lv="tape-pause">Hold</button>
+        <button type="button" class="btn btn--small btn--ghost" data-lv="tape-back10">&minus;10s</button>
+        <button type="button" class="btn btn--small btn--ghost" data-lv="tape-on10">+10s</button>
+        <button type="button" class="btn btn--small btn--ghost" data-lv="tape-restart">Back to the top</button>
+        <label class="switch"><input type="checkbox" data-lv="tape-loop"> Loop</label>
+        <span class="muted xsmall" data-lv="tape-time"></span>
+      </div>
+      <div class="am-fields">
+        <div>
+          <label for="lv-mic-level">Your microphone</label>
+          <input type="range" id="lv-mic-level" data-lv="mic-level" min="0" max="140" value="100">
+        </div>
+        <div>
+          <label for="lv-tape-level">The tape&rsquo;s sound</label>
+          <input type="range" id="lv-tape-level" data-lv="tape-level" min="0" max="140" value="100">
+        </div>
+      </div>
+
+      <div class="divider">&#10022;</div>
       <p class="kicker">Who is in the room</p>
       <p class="muted xsmall">Tick what each person may do. Blocking takes the chat, the camera and
       the room away at once, so a nuisance is one click rather than three.</p>

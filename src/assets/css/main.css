@@ -2699,3 +2699,55 @@ details.ep:has(.pin-mark) { border-color: rgba(215, 176, 90, 0.55); }
   color: #9f947a;
   margin-top: 0.15rem;
 }
+
+/* The director's desk. */
+.programme {
+  background: #0b0906;
+  border: 1px solid rgba(215, 176, 90, 0.3);
+  border-radius: 3px;
+  padding: 0.4rem;
+  margin: 0.8rem 0;
+  text-align: center;
+}
+.programme-canvas { width: 100%; height: auto; display: block; border-radius: 2px; }
+.air-row { align-items: center; flex-wrap: wrap; gap: 0.4rem; }
+.air-row .btn.is-on {
+  background: #d7b05a;
+  color: #0e0c0a;
+  box-shadow: 0 0 0 2px rgba(215, 176, 90, 0.35);
+}
+.plate-shop { margin-top: 0.8rem; }
+.plate-view { max-width: 520px; }
+.plate-shot {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid rgba(215, 176, 90, 0.25);
+  border-radius: 2px;
+}
+.deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+.deck-card { margin: 0; }
+.deck-card figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+  color: #cbbb93;
+}
+.deck-card figcaption span { flex: 1 1 100%; color: #d7b05a; }
+.tape-deck { max-width: 320px; }
+.tape-bar {
+  height: 4px;
+  background: rgba(215, 176, 90, 0.18);
+  border-radius: 2px;
+  margin: 0.35rem 0;
+  max-width: 320px;
+}
+.tape-bar span { display: block; height: 100%; width: 0; background: #d7b05a; border-radius: 2px; }

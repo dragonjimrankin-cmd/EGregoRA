@@ -12,6 +12,8 @@
    and a shared word is not an identity, so both are asked for.
    ======================================================================== */
 
+import { createMixer, plateCanvas, PLATE_KINDS } from "./live-desk.js";
+
 const SEGMENT = 2000;          /* milliseconds per segment */
 const POLL = 1400;             /* how often a watcher asks for more */
 
@@ -111,8 +113,230 @@ export function countdown(host, seconds, go) {
     }));
   }
 
+  /* ------------------------------------------------------------- the desk */
+  /* The gallery: a deck of plates, a tape machine, and the buttons that put
+     one of them on air. It is built whether or not a feed is running, so a
+     broadcaster can cut plates together and rehearse before the countdown,
+     and keep editing them while live. */
+  const desk = (function makeDesk() {
+    const deckKey = "eg-live-deck";
+    let mixer = null;
+    let deck = [];
+    try { deck = JSON.parse(localStorage.getItem(deckKey) || "[]"); } catch (e) { deck = []; }
+
+    const d = (n) => root.querySelector('[data-lv="' + n + '"]');
+    const has = d("programme");
+
+    function spec() {
+      return {
+        kind: (d("pk") || {}).value || "title",
+        kicker: (d("p-kicker") || {}).value || "",
+        title: (d("p-title") || {}).value || "",
+        subtitle: (d("p-sub") || {}).value || "",
+        lines: (d("p-lines") || {}).value || "",
+        accent: (d("p-accent") || {}).value || "gold"
+      };
+    }
+
+    function preview() {
+      const host = d("p-preview");
+      if (!host) return;
+      const el = plateCanvas(spec(), 1280, 720);
+      el.className = "plate-shot";
+      host.innerHTML = "";
+      host.appendChild(el);
+      return el;
+    }
+
+    function toAir(sp, mode) {
+      if (!mixer) return;
+      mixer.setPlate(plateCanvas(sp, 1280, 720));
+      if (mode) mixer.take(mode, !!(d("fade") || {}).checked).then(mark);
+      else mark();
+    }
+
+    function mark() {
+      root.querySelectorAll("[data-air]").forEach((b) => {
+        const on = mixer && b.getAttribute("data-air") === mixer.state.mode;
+        b.classList.toggle("is-on", !!on);
+        b.setAttribute("aria-pressed", String(!!on));
+      });
+      const n = d("on-air");
+      if (n && mixer) n.textContent = mixer.state.mode;
+    }
+
+    function drawDeck() {
+      const host = d("deck");
+      if (!host) return;
+      host.innerHTML = deck.length ? "" : '<p class="muted small">The deck is empty. Compose a plate and keep it.</p>';
+      deck.forEach((sp, i) => {
+        const card = document.createElement("figure");
+        card.className = "deck-card";
+        const shot = plateCanvas(sp, 640, 360);
+        shot.className = "plate-shot";
+        card.appendChild(shot);
+        const cap = document.createElement("figcaption");
+        cap.innerHTML = '<span>' + esc(sp.title || sp.kind) + "</span>" +
+          '<button type="button" class="btn btn--small" data-deck-air="' + i + '">To air</button>' +
+          '<button type="button" class="btn btn--small btn--ghost" data-deck-edit="' + i + '">Edit</button>' +
+          '<button type="button" class="btn btn--small btn--ghost" data-deck-drop="' + i + '">Drop</button>';
+        card.appendChild(cap);
+        host.appendChild(card);
+      });
+      host.querySelectorAll("[data-deck-air]").forEach((b) => b.addEventListener("click", () => {
+        toAir(deck[Number(b.getAttribute("data-deck-air"))], "plate");
+      }));
+      host.querySelectorAll("[data-deck-edit]").forEach((b) => b.addEventListener("click", () => {
+        const sp = deck[Number(b.getAttribute("data-deck-edit"))];
+        if (d("pk")) d("pk").value = sp.kind;
+        if (d("p-kicker")) d("p-kicker").value = sp.kicker || "";
+        if (d("p-title")) d("p-title").value = sp.title || "";
+        if (d("p-sub")) d("p-sub").value = sp.subtitle || "";
+        if (d("p-lines")) d("p-lines").value = sp.lines || "";
+        if (d("p-accent")) d("p-accent").value = sp.accent || "gold";
+        preview();
+      }));
+      host.querySelectorAll("[data-deck-drop]").forEach((b) => b.addEventListener("click", () => {
+        deck.splice(Number(b.getAttribute("data-deck-drop")), 1);
+        localStorage.setItem(deckKey, JSON.stringify(deck));
+        drawDeck();
+      }));
+    }
+
+    if (has) {
+      const hint = d("p-hint");
+      const kindSel = d("pk");
+      if (kindSel && !kindSel.options.length) {
+        PLATE_KINDS.forEach((k) => {
+          const o = document.createElement("option");
+          o.value = k.id;
+          o.textContent = k.label;
+          kindSel.appendChild(o);
+        });
+      }
+      const showHint = () => {
+        const k = PLATE_KINDS.find((x) => x.id === (kindSel || {}).value);
+        if (hint && k) hint.textContent = k.hint;
+      };
+      if (kindSel) kindSel.addEventListener("change", () => { showHint(); preview(); });
+      showHint();
+      ["p-kicker", "p-title", "p-sub", "p-lines", "p-accent"].forEach((n) => {
+        const el = d(n);
+        if (el) el.addEventListener("input", preview);
+        if (el) el.addEventListener("change", preview);
+      });
+      if (d("p-air")) d("p-air").addEventListener("click", () => toAir(spec(), "plate"));
+      if (d("p-save")) d("p-save").addEventListener("click", () => {
+        deck.push(spec());
+        if (deck.length > 40) deck.shift();
+        localStorage.setItem(deckKey, JSON.stringify(deck));
+        drawDeck();
+        say("Plate kept in the deck \u2014 " + deck.length + " there now.");
+      });
+      if (d("deck-clear")) d("deck-clear").addEventListener("click", () => {
+        deck = [];
+        localStorage.setItem(deckKey, "[]");
+        drawDeck();
+      });
+
+      root.querySelectorAll("[data-air]").forEach((b) => b.addEventListener("click", () => {
+        if (!mixer) return say("Open the camera first \u2014 the desk needs a picture to cut with.", true);
+        mixer.take(b.getAttribute("data-air"), !!(d("fade") || {}).checked).then(mark);
+      }));
+
+      /* The tape machine. The file never leaves the browser; it is played
+         into the mixer, so what the watchers get is the recording of the
+         programme, not an upload they have to download. */
+      const tape = d("tape");
+      if (d("tape-file")) d("tape-file").addEventListener("change", (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f || !tape) return;
+        tape.src = URL.createObjectURL(f);
+        tape.loop = !!(d("tape-loop") || {}).checked;
+        tape.load();
+        say("Tape loaded: " + f.name + " \u2014 " + Math.round(f.size / 1048576) + " MB. Nothing was uploaded.");
+        if (mixer) { mixer.setTape(tape); mixer.tapeFrom(tape); }
+      });
+      if (tape) {
+        tape.addEventListener("timeupdate", () => {
+          const n = d("tape-time");
+          if (!n || !tape.duration) return;
+          const left = Math.max(0, tape.duration - tape.currentTime);
+          n.textContent = Math.floor(left / 60) + ":" + String(Math.floor(left % 60)).padStart(2, "0") + " left";
+          const bar = d("tape-bar");
+          if (bar) bar.style.width = ((tape.currentTime / tape.duration) * 100).toFixed(1) + "%";
+        });
+        tape.addEventListener("ended", () => {
+          if ((d("tape-back") || {}).checked && mixer) mixer.take("camera", true).then(mark);
+        });
+      }
+      const press = (name, fn) => { const b = d(name); if (b) b.addEventListener("click", fn); };
+      press("tape-play", () => { if (tape) { tape.play().catch(() => {}); if (mixer) mixer.tapeFrom(tape); } });
+      press("tape-pause", () => tape && tape.pause());
+      press("tape-restart", () => { if (tape) tape.currentTime = 0; });
+      press("tape-back10", () => { if (tape) tape.currentTime = Math.max(0, tape.currentTime - 10); });
+      press("tape-on10", () => { if (tape) tape.currentTime = Math.min(tape.duration || 0, tape.currentTime + 10); });
+      press("tape-air", () => {
+        if (!mixer) return say("Open the camera first.", true);
+        if (tape) { mixer.setTape(tape); mixer.tapeFrom(tape); tape.play().catch(() => {}); }
+        mixer.take("tape", !!(d("fade") || {}).checked).then(mark);
+      });
+      if (d("tape-loop")) d("tape-loop").addEventListener("change", (e) => { if (tape) tape.loop = e.target.checked; });
+
+      const level = (name, fn) => {
+        const el = d(name);
+        if (el) el.addEventListener("input", () => fn(Number(el.value) / 100));
+      };
+      level("mic-level", (v) => mixer && mixer.micLevel(v));
+      level("tape-level", (v) => mixer && mixer.tapeLevel(v));
+
+      const capWrite = () => mixer && mixer.setCaption((d("cap-text") || {}).value,
+        !!(d("cap-on") || {}).checked);
+      ["cap-text", "cap-on"].forEach((n) => {
+        const el = d(n);
+        if (el) { el.addEventListener("input", capWrite); el.addEventListener("change", capWrite); }
+      });
+      if (d("badge")) d("badge").addEventListener("change", () => mixer && mixer.setBadge(d("badge").value));
+
+      drawDeck();
+      preview();
+    }
+
+    return {
+      wake(camEl, w, h) {
+        if (mixer) return;
+        mixer = createMixer({ width: w || 960, height: h || 540, fps: 24 });
+        mixer.setCamera(camEl);
+        if (stream) mixer.micFrom(stream);
+        if (d("tape")) { mixer.setTape(d("tape")); }
+        mixer.setCaption((d("cap-text") || {}).value, !!(d("cap-on") || {}).checked);
+        if (d("badge")) mixer.setBadge(d("badge").value);
+        toAir(spec(), null);
+        const host = d("programme");
+        if (host) {
+          host.innerHTML = "";
+          mixer.canvas.className = "programme-canvas";
+          host.appendChild(mixer.canvas);
+        }
+        mark();
+      },
+      air(mode) { if (mixer) mixer.take(mode, false).then(mark); },
+      out() { return mixer ? mixer.stream : null; },
+      sleep() {
+        if (mixer) mixer.stop();
+        mixer = null;
+        const host = d("programme");
+        if (host) host.innerHTML = '<p class="muted small">The gallery is dark. Open the camera to light it.</p>';
+        mark();
+      }
+    };
+  }());
+
   /* The camera is opened before the countdown, so the ten seconds are spent
-     looking at yourself rather than waiting for a permission dialogue. */
+     looking at yourself rather than waiting for a permission dialogue. The
+     camera is not what gets recorded, though: it goes into the mixer, and
+     the mixer's canvas is what the recorder sees. That is what lets a plate
+     or a piece of tape go out on the feed without a second connection. */
   async function openCamera() {
     const wantCam = $("source").value !== "mic";
     const quality = $("quality").value;
@@ -125,6 +349,8 @@ export function countdown(host, seconds, go) {
     mirror.srcObject = stream;
     mirror.muted = true;
     await mirror.play().catch(() => {});
+    desk.wake(mirror, size, Math.round((size * 9) / 16));
+    if (!wantCam) desk.air("plate");
     return { wantCam, quality };
   }
 
@@ -155,7 +381,7 @@ export function countdown(host, seconds, go) {
       feedId = d.id;
       seq = 0;
 
-      rec = new MediaRecorder(stream, {
+      rec = new MediaRecorder(desk.out() || stream, {
         mimeType: type,
         videoBitsPerSecond: quality === "high" ? 1800000 : quality === "low" ? 500000 : 1000000,
         audioBitsPerSecond: 64000
@@ -186,6 +412,7 @@ export function countdown(host, seconds, go) {
   function stopAll() {
     if (rec && rec.state !== "inactive") rec.stop();
     rec = null;
+    desk.sleep();
     if (stream) stream.getTracks().forEach((t) => t.stop());
     stream = null;
     root.classList.remove("is-live");
