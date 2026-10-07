@@ -39,22 +39,18 @@
      r is a radius in metres from the centre of the view, which is you.
      Every figure is a round number of the real thing, not a guess. */
   const RUNGS = [
-    { r: 2.0e4, name: "London, England",
-      kind: "ground", tint: VERDANT,
-      say: "Twenty kilometres from Charing Cross in any direction and you are still in London. " +
-           "This is where the map starts, because it is where you are standing." },
-    { r: 5.0e5, name: "Britain",
-      kind: "ground", tint: VERDANT,
-      say: "A thousand kilometres from the Channel to Cape Wrath. Light crosses it in three " +
-           "thousandths of a second." },
-    { r: 6.371e6, name: "The Earth",
-      kind: "world", tint: BLUE,
-      say: "Mean radius 6,371 km. Everything anyone has ever done happened inside this circle, " +
-           "with a dozen exceptions who went as far as the next rung and came back." },
-    { r: 3.844e8, name: "The Moon's orbit",
-      kind: "world", tint: BLUE,
-      say: "384,400 km, and 1.3 light seconds. The furthest any human being has been. The " +
-           "distance grows by 3.8 cm a year, measured by bouncing lasers off mirrors left in 1969." },
+    { r: 6.957e8, name: "The Sun",
+      kind: "world", tint: BRIGHT,
+      say: "Radius 696,340 km — 109 Earths across the face of it, and 333,000 Earths by mass. " +
+           "The map starts here because this is the nearest star, and the one object in the sky " +
+           "whose surface we can watch change from hour to hour. The core runs at 15 million " +
+           "kelvin and fuses 600 million tonnes of hydrogen a second; a photon made down there " +
+           "takes tens of thousands of years to fight its way out, and eight minutes to reach you." },
+    { r: 1.5e10, name: "Mercury's orbit",
+      kind: "system", tint: GOLD,
+      say: "0.39 astronomical units. Its perihelion creeps forward by 43 arcseconds a century " +
+           "more than Newton allows, and that discrepancy was the first hard evidence that " +
+           "general relativity is the better account of gravity." },
     { r: 1 * AU, name: "One astronomical unit",
       kind: "system", tint: GOLD,
       say: "149,597,870,700 metres, exactly, by definition since 2012. Sunlight takes 8 minutes " +
@@ -114,9 +110,49 @@
     { r: 1.6e7 * LY, name: "The edge of the Local Group",
       kind: "group", tint: DIM,
       say: "Past the gravitational boundary the neighbours begin: the Sculptor and M81 groups " +
-           "around 12 million light years, the Centaurus A group beyond, and the Virgo Cluster " +
-           "at 54 million — the mass our whole group is falling towards. This is as far out as " +
-           "this map goes." }
+           "around 12 million light years, the Centaurus A group beyond. Everything inside this " +
+           "ring is bound to us by gravity; everything outside it is being carried away by the " +
+           "expansion of space." },
+    { r: 5.4e7 * LY, name: "The Virgo Cluster",
+      kind: "cluster", tint: BLUE,
+      say: "Thirteen hundred galaxies and more, 54 million light years off, with M87 and its " +
+           "photographed black hole at the centre. This is the mass our whole Local Group is " +
+           "falling towards at some 400 km/s — the Virgocentric flow." },
+    { r: 2.6e8 * LY, name: "Laniakea",
+      kind: "cluster", tint: BLUE,
+      say: "Our supercluster: 520 million light years across, a hundred thousand galaxies, " +
+           "defined in 2014 by Tully and colleagues not by where things are but by which way " +
+           "they are flowing. Everything in it drains towards the Great Attractor. The name is " +
+           "Hawaiian for immeasurable heaven." },
+    { r: 7.5e8 * LY, name: "The cosmic web",
+      kind: "cluster", tint: VERDANT,
+      say: "At this scale galaxies are not objects, they are pixels. They lie along filaments of " +
+           "dark matter and hot gas — the Sloan Great Wall runs 1.4 billion light years — walling " +
+           "off voids hundreds of millions of light years across with almost nothing in them. The " +
+           "whole pattern grew from density ripples of one part in a hundred thousand, which are " +
+           "directly visible in the microwave background." },
+    { r: 4.65e10 * LY, name: "The observable universe",
+      kind: "horizon", tint: BRIGHT,
+      say: "The edge of what can be seen: a co-moving radius of 46.5 billion light years, wider " +
+           "than the 13.8-billion-year age of the universe because space expanded while the light " +
+           "was in transit. The outermost thing visible is the microwave background, the moment " +
+           "380,000 years in when the universe cooled enough to go transparent. This is not an " +
+           "edge of the universe. It is the edge of our evidence." },
+    { r: 4.65e13 * LY, name: "Beyond the horizon",
+      kind: "beyond", tint: ROSE,
+      say: "Inflation implies the whole is very much larger than the part we can see — by a " +
+           "factor of at least a thousand on conservative readings, and possibly without limit. " +
+           "No observation made from inside the horizon can settle it, and none ever will. This " +
+           "is the rung where measurement stops and inference takes over: speculative and " +
+           "contested, and marked as such." },
+    { r: 4.65e16 * LY, name: "The Moebius Torus",
+      kind: "seam", tint: GOLD,
+      say: "The order's own figure for the shape of the whole, offered as emblem and not as " +
+           "cosmology: a torus seamed like a Möbius band, so that what leaves by one face returns " +
+           "by the other and there is no outside to stand in. Causality is its one-way flow and " +
+           "the cosmic ledger is what comes round. Cosmology does measure the curvature of space " +
+           "and finds it flat to a few tenths of a per cent, which permits several topologies and " +
+           "proves none of them. Myth, tradition and primary esoteric text." }
   ].map((r) => Object.assign(r, { at: Math.log10(r.r) }));
 
   const SPAN = 2.6;            // decades visible in the window at once
@@ -124,6 +160,13 @@
      the view; zoomed out, the outermost one does. */
   const LO = RUNGS[0].at + 0.35;
   const HI = RUNGS[RUNGS.length - 1].at + 0.25;
+
+  /* Where measurement ends. Past the observable horizon the map stops being
+     a survey and becomes an emblem, and it says so by changing what it
+     draws: the rings fade out and the order's Moebius torus fades in. */
+  const HORIZON = RUNGS.find((r) => r.kind === "horizon").at;
+  const EMBLEM = RUNGS[RUNGS.length - 1].at;
+  const beyondness = () => Math.max(0, Math.min(1, (top - (HORIZON + 0.4)) / (EMBLEM - HORIZON - 0.4)));
 
   let top = HI;                // the outermost decade currently on screen
   let want = HI;
@@ -139,7 +182,9 @@
     if (d < 1e6 * LY) {
       return Number((d / LY).toPrecision(3)).toLocaleString("en-GB") + " light years";
     }
-    return (d / (1e6 * LY)).toPrecision(3) + " million light years";
+    if (d < 1e9 * LY) return Number((d / (1e6 * LY)).toPrecision(3)).toLocaleString("en-GB") + " million light years";
+    if (d < 1e12 * LY) return Number((d / (1e9 * LY)).toPrecision(3)).toLocaleString("en-GB") + " billion light years";
+    return Number((d / (1e12 * LY)).toPrecision(3)).toLocaleString("en-GB") + " trillion light years";
   };
 
   /* A steady scatter of stars, the same every frame so nothing twinkles at
@@ -197,19 +242,81 @@
      collapses into the hub at the centre; above it, off the edge. */
   const ring = (at) => ((at - (top - SPAN)) / SPAN) * R;
 
+  /* ------------------------------------------------------- the emblem ----
+     A torus drawn in perspective with a single band running round it twice,
+     half-twisted, so the band's two apparent sides are one side. Nothing
+     here is a measurement; it is the order's figure for a whole with no
+     outside, and the panel beside it says so in those words. */
+  function drawTorus(alpha) {
+    const R0 = R * 0.62, r0 = R * 0.26, squash = 0.42;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(cx, cy);
+
+    /* The body of the torus: rings of latitude, drawn back to front. */
+    for (let i = 0; i <= 26; i++) {
+      const v = (i / 26) * Math.PI * 2;
+      const rr = R0 + r0 * Math.cos(v);
+      const yy = r0 * Math.sin(v) * squash * 1.9;
+      ctx.beginPath();
+      ctx.ellipse(0, yy, rr, rr * squash, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(215,176,90," + (0.05 + 0.1 * Math.cos(v)).toFixed(3) + ")";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    /* The seam. One strip, two laps, a half twist: the edge you start on is
+       not the edge you come back on. */
+    for (const lap of [0, 1]) {
+      ctx.beginPath();
+      for (let i = 0; i <= 240; i++) {
+        const u = (i / 240) * Math.PI * 2;
+        const phase = u / 2 + lap * Math.PI;      // the half twist
+        const rr = R0 + r0 * Math.cos(phase);
+        const x = Math.cos(u) * rr;
+        const y = Math.sin(u) * rr * squash + r0 * Math.sin(phase) * squash * 1.9;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = lap ? "rgba(243,221,170,0.75)" : "rgba(215,176,90,0.9)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    /* The observable universe, to scale against the whole: the little bright
+       disc somewhere on the band that is everything anyone has ever seen. */
+    const px = Math.cos(0.8) * (R0 + r0 * Math.cos(0.4));
+    const py = Math.sin(0.8) * (R0 + r0 * Math.cos(0.4)) * squash + r0 * Math.sin(0.4) * squash * 1.9;
+    ctx.fillStyle = BRIGHT;
+    ctx.beginPath();
+    ctx.arc(px, py, 3.4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = "10px 'EB Garamond', serif";
+    ctx.fillStyle = DIM;
+    ctx.textAlign = "left";
+    ctx.fillText("everything we can see", px + 8, py + 3);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = GOLD;
+    ctx.font = "11px 'EB Garamond', serif";
+    ctx.fillText("one side, one edge, no outside", 0, R * 0.92);
+    ctx.restore();
+  }
+
   function draw() {
     ctx.clearRect(0, 0, w, h);
+    const bey = beyondness();
 
     /* The field: a scatter that thickens as you go out, so the eye reads
        the outer decades as fuller of things than the inner ones. */
     ctx.save();
+    ctx.globalAlpha = 1 - bey;
     for (const s of SEED) {
       const at = (top - SPAN) + s.f * SPAN;
       const rr = ring(at);
       if (rr < 6 || rr > R) continue;
       const x = cx + Math.cos(s.a + at * 0.7) * rr;
       const y = cy + Math.sin(s.a + at * 0.7) * rr * 0.86;
-      ctx.globalAlpha = 0.12 + 0.5 * (rr / R);
+      ctx.globalAlpha = (0.12 + 0.5 * (rr / R)) * (1 - bey);
       ctx.fillStyle = s.f > 0.6 ? BLUE : BRIGHT;
       ctx.beginPath();
       ctx.arc(x, y, s.size, 0, Math.PI * 2);
@@ -219,6 +326,7 @@
 
     /* A ring for each whole power of ten inside the window. */
     ctx.save();
+    ctx.globalAlpha = 1 - bey;
     ctx.font = "10px 'EB Garamond', serif";
     for (let d = Math.ceil(top - SPAN); d <= Math.floor(top); d++) {
       const rr = ring(d);
@@ -235,12 +343,13 @@
 
     /* The rungs themselves. */
     for (const n of RUNGS) {
+      if (n.kind === "seam") continue;          // the last rung is the emblem
       const rr = ring(n.at);
       if (rr < 2 || rr > R * 1.02) continue;
       const near = Math.abs(n.at - (top - 0.35)) < 0.45;
       ctx.save();
       ctx.strokeStyle = n.tint;
-      ctx.globalAlpha = near ? 0.95 : 0.55;
+      ctx.globalAlpha = (near ? 0.95 : 0.55) * (1 - bey * 0.92);
       ctx.lineWidth = near ? 2 : 1.1;
       ctx.beginPath();
       ctx.ellipse(cx, cy, rr, rr * 0.86, 0, 0, Math.PI * 2);
@@ -265,6 +374,7 @@
 
     /* The hub: everything smaller than the window, folded to a point. */
     ctx.save();
+    ctx.globalAlpha = 1 - bey;
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 26);
     g.addColorStop(0, "rgba(243,221,170,0.5)");
     g.addColorStop(1, "rgba(243,221,170,0)");
@@ -277,6 +387,8 @@
     ctx.textAlign = "center";
     ctx.fillText("you are here", cx, cy + 34);
     ctx.restore();
+
+    if (bey > 0.01) drawTorus(bey);
   }
 
   /* ------------------------------------------------------------- the moving */
