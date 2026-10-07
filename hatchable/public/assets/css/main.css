@@ -2491,3 +2491,38 @@ body.atlas-focused { overflow: hidden; }
   border-radius: 3px;
   display: block;
 }
+
+/* An episode that opens: the summary, and where it meets the rest of the house. */
+details.ep { display: block; }
+details.ep > summary {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  cursor: pointer;
+  list-style: none;
+}
+details.ep > summary::-webkit-details-marker { display: none; }
+details.ep > summary::after {
+  content: "\203A";
+  margin-left: auto;
+  color: #d7b05a;
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+details.ep[open] > summary::after { transform: rotate(90deg); }
+details.ep > summary:hover .ep-title { color: #f3ddaa; }
+.ep-head { display: flex; flex-direction: column; gap: 0.15rem; }
+.ep-title {
+  font-family: Cinzel, serif;
+  font-size: 1.12rem;
+  color: #d7b05a;
+  letter-spacing: 0.01em;
+}
+.ep-body { padding-top: 0.7rem; }
+.am-links { list-style: none; padding: 0; margin: 0.3rem 0 0.8rem; }
+.am-links li {
+  padding: 0.18rem 0;
+  border-bottom: 1px solid rgba(215, 176, 90, 0.12);
+}
+.am-script { max-height: 20rem; overflow: auto; white-space: pre-wrap; }

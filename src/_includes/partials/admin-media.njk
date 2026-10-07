@@ -2,7 +2,8 @@
     /videos/ (kind = video). Everything inside is addressed by data-am,
     so the two copies cannot collide; the handful of real ids are prefixed
     with the kind. -#}
-<section class="wrap narrow admin-media" data-admin-media="{{ amKind }}">
+<section class="wrap narrow admin-media" data-admin-media="{{ amKind }}"
+  data-after="{{ amAfter | default(0) }}">
   <div class="btn-row">
     <button type="button" class="btn btn--ghost" data-am="open" aria-expanded="false">Admin Only</button>
     <span class="muted xsmall">Upload {{ amNoun }}, clean {{ amIt }} up, edit {{ amIt }}, publish {{ amIt }}
@@ -31,6 +32,15 @@
         <div data-am="before"></div>
         <div data-am="after"></div>
       </div>
+
+      {% if amKind == "audio" %}
+      <div class="btn-row">
+        <button type="button" class="btn btn--small" data-am="hear">Transcribe it and write the listing</button>
+        <span class="muted xsmall">Title, summary, tags and the parts of the site it touches &mdash;
+        written from the recording itself.</span>
+      </div>
+      <div data-am="listing" hidden></div>
+      {% endif %}
 
       <p class="kicker">Two &mdash; the work</p>
       {% if amKind == "audio" %}
@@ -81,7 +91,8 @@
           {% if amKind == "audio" %}
           <div>
             <label for="{{ amKind }}-number">Episode number</label>
-            <input type="text" id="{{ amKind }}-number" data-am="number" maxlength="12" placeholder="004">
+            <input type="text" id="{{ amKind }}-number" data-am="number" maxlength="12"
+                   placeholder="taken automatically">
           </div>
           {% endif %}
           <div>

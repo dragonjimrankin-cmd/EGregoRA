@@ -6,7 +6,28 @@
     "duration": "1h 12m",
     "summary": "Edward opens the order: thought-forms, group minds, the sociology of belief, and why naming a thing accurately is the first act of magic.",
     "audio": "",
-    "tags": ["magic", "psychology", "foundations"]
+    "tags": [
+      "magic",
+      "psychology",
+      "foundations"
+    ],
+    "links": [
+      {
+        "title": "What the word has meant",
+        "href": "/occult/#t-what-the-word-has-meant",
+        "why": "what the word has actually meant"
+      },
+      {
+        "title": "What a Wizard Actually Is",
+        "href": "/wizardry/#t-what-a-wizard-actually-is",
+        "why": "what the implements are really for"
+      },
+      {
+        "title": "What Survives Scrutiny",
+        "href": "/neurobiology/#t-what-survives-scrutiny",
+        "why": "what the brain evidence will and will not carry"
+      }
+    ]
   },
   {
     "number": "002",
@@ -15,7 +36,28 @@
     "duration": "58m",
     "summary": "Why druidry and high-energy physics are asking the same question in different dialects — pattern, persistence and the behaviour of energy under constraint.",
     "audio": "",
-    "tags": ["druids", "physics", "trees"]
+    "tags": [
+      "druids",
+      "physics",
+      "trees"
+    ],
+    "links": [
+      {
+        "title": "Who They Actually Were",
+        "href": "/druids/#t-who-they-actually-were",
+        "why": "who the druids actually were"
+      },
+      {
+        "title": "One Field, Named Twice",
+        "href": "/cosmic-ether/#t-one-field-named-twice",
+        "why": "the one field under both dialects"
+      },
+      {
+        "title": "IV · Why Nature Keeps Arriving at the Same Shapes",
+        "href": "/sacred-geometry/#t-iv-why-nature-keeps-arriving-at-the-same-shape",
+        "why": "why nature keeps arriving at the same shapes"
+      }
+    ]
   },
   {
     "number": "003",
@@ -24,6 +66,27 @@
     "duration": "1h 26m",
     "summary": "Predictive processing, the default mode network, and what the visionary state actually does to the machinery of perception. With a long caution on set, setting and law.",
     "audio": "",
-    "tags": ["neuroscience", "meditation", "psychology"]
+    "tags": [
+      "neuroscience",
+      "meditation",
+      "psychology"
+    ],
+    "links": [
+      {
+        "title": "Not Visitors. Neighbours.",
+        "href": "/extraterrestrials/#t-not-visitors-neighbours",
+        "why": "neighbours rather than visitors"
+      },
+      {
+        "title": "V · Densities, Chakras and the Honest Seam",
+        "href": "/qabalah/#t-v-densities-chakras-and-the-honest-seam",
+        "why": "densities, chakras and the honest seam"
+      },
+      {
+        "title": "Why This Is Not Just Another Hard Problem",
+        "href": "/consciousness/#t-why-this-is-not-just-another-hard-problem",
+        "why": "why this is not just another hard problem"
+      }
+    ]
   }
 ]

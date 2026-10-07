@@ -105,6 +105,7 @@ function setup(root) {
       if (el.pass) el.pass.value = "";
       say("Open. The passcode is not kept \u2014 closing the page locks it again.");
       drawShelf(d.items || []);
+      fillNumber();
     } catch (err) {
       pass = "";
       say((err && err.message) || "That did not open it.", true);
@@ -501,6 +502,153 @@ function setup(root) {
     el.preview.appendChild(node);
   }
 
+  /* ================================================== the ear and the archivist
+     The listing writes itself from the recording. The sound is reduced to a
+     small mono copy here \u2014 16 kHz, 32 kbps, in ten-minute stretches \u2014
+     because the services that transcribe take about 25 MB and an hour of
+     stereo is twenty times that. The words come back in order, are joined,
+     and the archivist writes the title, the summary, the tags and the
+     sections of this site the episode actually touches.
+
+     The links are checked against the real index of the site on the server,
+     so the archivist cannot send a listener to a page that is not there. */
+  const SEG = 600;            /* ten minutes a stretch */
+
+  async function smallCopy(buf, from, to) {
+    const rate = 16000;
+    const frames = Math.max(1, Math.floor((to - from) * rate));
+    const off = new OfflineAudioContext(1, frames, rate);
+    const src = off.createBufferSource();
+    src.buffer = buf;
+    /* Speech lives between 90 Hz and 7 kHz; stripping the rest makes a
+       smaller file the transcriber reads no worse. */
+    const hp = off.createBiquadFilter();
+    hp.type = "highpass"; hp.frequency.value = 90;
+    src.connect(hp); hp.connect(off.destination);
+    src.start(0, from, to - from);
+    const done = await off.startRendering();
+
+    const mod = await import("https://unpkg.com/@breezystack/lamejs@1.2.7/src/js/index.js");
+    const lame = mod.Mp3Encoder ? mod : (mod.default || mod);
+    const enc = new lame.Mp3Encoder(1, rate, 32);
+    const f = done.getChannelData(0);
+    const pcm = new Int16Array(f.length);
+    for (let i = 0; i < f.length; i++) {
+      const v = Math.max(-1, Math.min(1, f[i]));
+      pcm[i] = v < 0 ? v * 0x8000 : v * 0x7fff;
+    }
+    const out = [];
+    for (let i = 0; i < pcm.length; i += 1152) {
+      const b = enc.encodeBuffer(pcm.subarray(i, i + 1152));
+      if (b.length) out.push(new Uint8Array(b));
+    }
+    const tail = enc.flush();
+    if (tail.length) out.push(new Uint8Array(tail));
+    return new Blob(out, { type: "audio/mpeg" });
+  }
+
+  let listing = null;     /* what the archivist wrote, kept for the upload */
+
+  async function transcribeAndDescribe(buf, seconds) {
+    const parts = Math.max(1, Math.ceil(seconds / SEG));
+    const words = [];
+    let ear = "";
+
+    for (let i = 0; i < parts; i++) {
+      const from = i * SEG, to = Math.min(seconds, (i + 1) * SEG);
+      step("Reducing stretch " + (i + 1) + " of " + parts + "\u2026", i / parts);
+      const small = await smallCopy(buf, from, to);
+      step("Listening to stretch " + (i + 1) + " of " + parts +
+        " (" + mb(small.size) + ")\u2026", (i + 0.4) / parts);
+      const upload = await sendBlob(small, () => {});
+      const heard = await fetch("/api/transcribe", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ pass, action: "hear", upload, mime: "audio/mpeg" })
+      }).then(async (r) => {
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(d.error || "it could not be heard");
+        return d;
+      });
+      ear = heard.by || ear;
+      /* Stamp each stretch with where it began, so the archivist can give
+         the episode its chapters. */
+      words.push("[" + clock(from) + "] " + heard.text);
+      step("Heard " + (i + 1) + " of " + parts, (i + 1) / parts);
+    }
+
+    const transcript = words.join("\n\n");
+    step("Writing the listing\u2026", 0.95);
+    const d = await fetch("/api/transcribe", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ pass, action: "describe", text: transcript, kind: KIND })
+    }).then(async (r) => {
+      const out = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(out.error || "the listing could not be written");
+      return out;
+    });
+
+    listing = {
+      transcript,
+      links: d.links || [],
+      topics: d.topics || [],
+      tags: d.tags || []
+    };
+    if (el.title) el.title.value = d.title || el.title.value;
+    if (el.summary) el.summary.value = d.summary || el.summary.value;
+    if (el.tags) el.tags.value = (d.tags || []).join(", ");
+    if (el.meta) el.meta.hidden = false;
+
+    const n = root.querySelector("[data-am=listing]");
+    if (n) {
+      n.hidden = false;
+      n.innerHTML = '<p class="kicker">What it heard</p>' +
+        '<p class="muted small">Transcribed by ' + esc(ear || "the ear") +
+        ", described by " + esc(d.by || "a model") + ". " +
+        transcript.length.toLocaleString() + " characters of transcript, kept with the episode.</p>" +
+        ((d.links || []).length
+          ? '<p class="kicker">It touches these parts of the site</p><ul class="am-links">' +
+            d.links.map((l) => '<li><a href="' + esc(l.href) + '">' + esc(l.title) + "</a> " +
+              '<span class="muted xsmall">' + esc(l.why) + "</span></li>").join("") + "</ul>"
+          : '<p class="muted small">It did not match any section of the site closely enough to link.</p>') +
+        ((d.topics || []).length
+          ? '<p class="kicker">Its shape</p><ul class="am-links">' +
+            d.topics.map((t) => "<li><strong>" + clock(t.at) + "</strong> " + esc(t.heading) + "</li>").join("") +
+            "</ul>"
+          : "") +
+        '<details class="scroll"><summary>The transcript</summary><pre class="code-block am-script">' +
+        esc(transcript.slice(0, 40000)) + "</pre></details>";
+    }
+    step("The listing is written", 1);
+    say("Listed: " + (d.title || "") + " \u2014 " + (d.tags || []).length + " tags, " +
+      (d.links || []).length + " links into the site. Change anything you disagree with.");
+  }
+
+  const hearBtn = root.querySelector("[data-am=hear]");
+  if (hearBtn) hearBtn.addEventListener("click", async () => {
+    if (KIND !== "audio") return say("Only sound can be transcribed here.", true);
+    if (!fileBuf) return say("Choose a recording first.", true);
+    hearBtn.disabled = true;
+    try {
+      await transcribeAndDescribe(fileBuf, fileBuf.duration);
+    } catch (err) {
+      say((err && err.message) || "It could not be transcribed.", true);
+    } finally {
+      hearBtn.disabled = false;
+    }
+  });
+
+  /* The next number in the run, filled in without being asked. */
+  async function fillNumber() {
+    if (KIND !== "audio" || !el.number) return;
+    const after = Number(root.getAttribute("data-after") || 0);
+    try {
+      const d = await post({ action: "next-number", after });
+      if (d && d.number && !el.number.value) el.number.value = d.number;
+    } catch { /* type it by hand, then */ }
+  }
+
   /* -------------------------------------------------------------- the upload */
   if (el.send) el.send.addEventListener("click", async () => {
     const blob = (ready && ready.blob) || source;
@@ -537,6 +685,10 @@ function setup(root) {
         mime: blob.type || (KIND === "video" ? "video/webm" : "audio/mpeg"),
         original_bytes: source ? source.size : null,
         treatment: (ready && ready.treatment) || "uploaded as it arrived",
+        after: Number(root.getAttribute("data-after") || 0),
+        transcript: listing ? listing.transcript : null,
+        links: listing ? listing.links : null,
+        topics: listing ? listing.topics : null,
         publish: true
       });
 
@@ -1011,6 +1163,11 @@ function setup(root) {
   const KIND = slot.getAttribute("data-kind") === "video" ? "video" : "audio";
   const esc = (t) => String(t == null ? "" : t)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const stamp = (s) => {
+    s = Math.round(s || 0);
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+    return (h ? h + ":" + String(m).padStart(2, "0") : String(m)) + ":" + String(s % 60).padStart(2, "0");
+  };
 
   async function load() {
     try {
@@ -1024,12 +1181,24 @@ function setup(root) {
       if (!items.length) { slot.innerHTML = ""; slot.hidden = true; return; }
       slot.hidden = false;
       slot.innerHTML = items.map((i) => KIND === "audio"
-        ? '<article class="frame media">' +
-          '<div class="num">' + esc(i.number || "\u2726") + "</div><div>" +
-          '<p class="meta">' + esc(i.date) + (i.length ? " \u00b7 " + esc(i.length) : "") +
-          (i.tags.length ? " \u00b7 " + esc(i.tags.join(" \u00b7 ")) : "") + "</p>" +
-          "<h3>" + esc(i.title) + "</h3>" +
+        ? '<details class="frame media ep"><summary>' +
+          '<span class="num">' + esc(i.number || "\u2726") + "</span>" +
+          '<span class="ep-head"><span class="meta">' + esc(i.date) +
+          (i.length ? " \u00b7 " + esc(i.length) : "") + "</span>" +
+          '<span class="ep-title">' + esc(i.title) + "</span>" +
+          (i.tags.length ? '<span class="muted xsmall">' + esc(i.tags.join(" \u00b7 ")) + "</span>" : "") +
+          "</span></summary><div class=\"ep-body\">" +
           (i.summary ? "<p>" + esc(i.summary) + "</p>" : "") +
+          (i.links && i.links.length
+            ? '<p class="kicker">Where it meets the rest of the house</p><ul class="am-links">' +
+              i.links.map((l) => '<li><a href="' + esc(l.href) + '">' + esc(l.title) + "</a> " +
+                '<span class="muted xsmall">' + esc(l.why || "") + "</span></li>").join("") + "</ul>"
+            : "") +
+          (i.topics && i.topics.length
+            ? '<p class="kicker">Its shape</p><ul class="am-links">' +
+              i.topics.map((t) => "<li><strong>" + esc(stamp(t.at)) + "</strong> " +
+                esc(t.heading) + "</li>").join("") + "</ul>"
+            : "") +
           (i.cover || (i.images && i.images.length)
             ? '<div class="ep-plate" data-plates="' + i.id + '">' +
               '<img src="' + esc(i.cover || i.images[0].url) + '" alt="">' +
@@ -1037,7 +1206,7 @@ function setup(root) {
             : "") +
           (i.url ? '<audio class="player" controls preload="none" src="' + esc(i.url) +
             '" data-for="' + i.id + '"></audio>' : "") +
-          "</div></article>"
+          "</div></details>"
         : '<article class="frame card">' +
           (i.url ? '<video class="am-film" controls preload="metadata" src="' + esc(i.url) + '"></video>' : "") +
           '<p class="tag mt-1">' + esc(i.date) + (i.length ? " \u00b7 " + esc(i.length) : "") + "</p>" +

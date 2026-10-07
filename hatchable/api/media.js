@@ -44,6 +44,25 @@ const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
 
+const safeList = (raw) => {
+  if (!raw) return [];
+  try { const v = JSON.parse(raw); return Array.isArray(v) ? v : []; } catch { return []; }
+};
+
+/* An episode number nobody has to think about: the highest on the shelf or
+   in the committed run, plus one. */
+async function nextNumber(after) {
+  let top = Number(after) || 0;
+  try {
+    const { rows } = await db.query("SELECT number FROM media WHERE kind = 'audio' AND number <> ''");
+    for (const r of rows || []) {
+      const n = parseInt(String(r.number).replace(/\D/g, ''), 10);
+      if (Number.isFinite(n) && n > top) top = n;
+    }
+  } catch { /* an empty shelf is a fine answer */ }
+  return String(top + 1).padStart(3, '0');
+}
+
 async function sign(key) {
   if (!key) return null;
   try { return await storage.url(key, { ttl: TTL }); } catch { return null; }
@@ -77,6 +96,9 @@ async function dress(row) {
     length: row.length_text || '',
     seconds: row.seconds || null,
     tags: (row.tags || '').split(',').map((t) => t.trim()).filter(Boolean),
+    links: safeList(row.links),
+    topics: safeList(row.topics),
+    transcript_len: row.transcript ? String(row.transcript).length : 0,
     treatment: row.treatment || '',
     bytes: Number(row.bytes) || null,
     original_bytes: Number(row.original_bytes) || null,
@@ -176,14 +198,23 @@ export default async function (req, res) {
         await storage.put(key, whole, mime);
         await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]);
 
+        /* No number typed? Take the next one in the run. */
+        const number = kind === 'audio'
+          ? (clean(body.number, 12) || await nextNumber(body.after))
+          : clean(body.number, 12);
+
         const { rows: made } = await db.query(
           `INSERT INTO media (kind, title, summary, number, length_text, seconds, tags,
-                              storage_key, mime, bytes, original_bytes, treatment, state, who)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
-          [kind, title, clean(body.summary, 2000), clean(body.number, 12),
+                              storage_key, mime, bytes, original_bytes, treatment, state, who,
+                              transcript, links, topics)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17) RETURNING *`,
+          [kind, title, clean(body.summary, 2000), number,
             clean(body.length, 32), Number(body.seconds) || null, clean(body.tags, 300),
             key, mime, whole.length, Number(body.original_bytes) || null,
-            clean(body.treatment, 600), body.publish === false ? 'draft' : 'published', door.who]);
+            clean(body.treatment, 600), body.publish === false ? 'draft' : 'published', door.who,
+            body.transcript ? String(body.transcript).slice(0, 400000) : null,
+            Array.isArray(body.links) ? JSON.stringify(body.links.slice(0, 10)) : null,
+            Array.isArray(body.topics) ? JSON.stringify(body.topics.slice(0, 20)) : null]);
 
         return res.json({ ok: true, item: await dress(made[0]) });
       }
@@ -197,9 +228,24 @@ export default async function (req, res) {
         return res.json({ ok: true });
       }
 
+      case 'next-number':
+        return res.json({ ok: true, number: await nextNumber(body.after) });
+
       case 'edit': {
         const id = Number(body.id);
         if (!id) return res.status(400).json({ error: 'Which one?' });
+        if (Array.isArray(body.links)) {
+          await db.query('UPDATE media SET links = $2 WHERE id = $1',
+            [id, JSON.stringify(body.links.slice(0, 10))]);
+        }
+        if (Array.isArray(body.topics)) {
+          await db.query('UPDATE media SET topics = $2 WHERE id = $1',
+            [id, JSON.stringify(body.topics.slice(0, 20))]);
+        }
+        if (body.transcript) {
+          await db.query('UPDATE media SET transcript = $2 WHERE id = $1',
+            [id, String(body.transcript).slice(0, 400000)]);
+        }
         await db.query(
           `UPDATE media SET title = COALESCE($2, title), summary = COALESCE($3, summary),
                             number = COALESCE($4, number), length_text = COALESCE($5, length_text),

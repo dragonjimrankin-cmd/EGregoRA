@@ -25,7 +25,12 @@ description: Long-form conversation from EGregoRA — cosmology, druidry, neuros
 
 <div class="divider">✦</div>
 
-{% set amKind = "audio" %}{% set amNoun = "an episode" %}{% set amIt = "it" %}
+{%- set amLast = 0 -%}
+{%- for ep in episodes -%}
+  {%- set n = ep.number | int -%}
+  {%- if n > amLast %}{% set amLast = n %}{% endif -%}
+{%- endfor -%}
+{% set amKind = "audio" %}{% set amNoun = "an episode" %}{% set amIt = "it" %}{% set amAfter = amLast %}
 {% include "partials/admin-media.njk" %}
 
 <div class="divider">✦</div>
@@ -34,19 +39,32 @@ description: Long-form conversation from EGregoRA — cosmology, druidry, neuros
   <div class="media-list" id="uploaded-media" data-kind="audio" hidden></div>
   <div class="media-list">
     {% for ep in episodes | reverse %}
-    <article class="frame media reveal">
-      <div class="num">{{ ep.number }}</div>
-      <div>
-        <p class="meta">{{ ep.date }} · {{ ep.duration }} · {{ ep.tags | join(" · ") }}</p>
-        <h3>{{ ep.title }}</h3>
+    <details class="frame media ep reveal">
+      <summary>
+        <span class="num">{{ ep.number }}</span>
+        <span class="ep-head">
+          <span class="meta">{{ ep.date }} · {{ ep.duration }}</span>
+          <span class="ep-title">{{ ep.title }}</span>
+          <span class="muted xsmall">{{ ep.tags | join(" · ") }}</span>
+        </span>
+      </summary>
+      <div class="ep-body">
         <p>{{ ep.summary }}</p>
+        {% if ep.links and ep.links.length %}
+        <p class="kicker">Where it meets the rest of the house</p>
+        <ul class="am-links">
+          {%- for l in ep.links %}
+          <li><a href="{{ l.href }}">{{ l.title }}</a> <span class="muted xsmall">{{ l.why }}</span></li>
+          {%- endfor %}
+        </ul>
+        {% endif %}
         {% if ep.audio %}
           <audio class="player" controls preload="none" src="{{ ep.audio }}"></audio>
         {% else %}
           <p class="muted pending">⟡ Audio upload pending.</p>
         {% endif %}
       </div>
-    </article>
+    </details>
     {% endfor %}
   </div>
 
