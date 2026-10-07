@@ -47,9 +47,30 @@ console.log('# gpu probe — ' + new Date().toISOString());
 let who = await kg('/kernels/list?page=1&pageSize=1');
 show('kernels/list (does the token work)', who.json ?? who.text.slice(0, 400));
 
+/* 1b ── who the token actually belongs to. kernels/list without a filter
+        returns other people's public work, so it cannot answer this; the
+        OAuth introspection endpoint can. */
+let me = null;
+try {
+  const r = await fetch('https://www.kaggle.com/api/v1/oauth2/introspect', {
+    method: 'POST',
+    headers: {
+      authorization: 'Bearer ' + KAGGLE,
+      'content-type': 'application/x-www-form-urlencoded',
+      accept: 'application/json'
+    },
+    body: 'token=' + encodeURIComponent(KAGGLE)
+  });
+  const j = await r.json().catch(() => null);
+  show('oauth2/introspect', j ?? 'HTTP ' + r.status);
+  if (j && j.username) me = String(j.username);
+} catch (err) {
+  show('oauth2/introspect failed', String(err && err.message));
+}
+
 /* 2 ── push the smallest possible GPU kernel. */
 const slug = 'egregora-gpu-check-' + Date.now().toString(36);
-const owner = USER || (who.json && who.json[0] && who.json[0].ref && String(who.json[0].ref).split('/')[0]) || '';
+const owner = USER || me || '';
 show('owner guessed from the token', owner || '(none — a username is needed to push)');
 
 if (owner) {
@@ -72,22 +93,24 @@ if (owner) {
     'open("/kaggle/working/result.json","w").write(json.dumps(out))'
   ].join('\n');
 
-  const meta = {
-    id: owner + '/' + slug,
-    title: 'EGregoRA GPU check',
-    code_file: 'main.py',
+  /* The REST surface is generated from protobuf: camelCase, and the kernel
+     is identified by slug rather than by a numeric id. */
+  const body = {
+    slug: owner + '/' + slug,
+    newTitle: slug,
+    text: code,
     language: 'python',
-    kernel_type: 'script',
-    is_private: true,
-    enable_gpu: true,
-    enable_internet: true,
-    dataset_sources: [], competition_sources: [], kernel_sources: []
+    kernelType: 'script',
+    isPrivate: true,
+    enableInternet: true,
+    enableGpu: true,
+    kernelExecutionType: 'SaveAndRunAll'
   };
 
   const push = await kg('/kernels/push', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ ...meta, text: code })
+    body: JSON.stringify(body)
   });
   show('kernels/push with enable_gpu', push.json ?? push.text.slice(0, 600));
 
