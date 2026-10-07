@@ -5,7 +5,8 @@
 <section class="wrap narrow admin-media" data-admin-media="{{ amKind }}">
   <div class="btn-row">
     <button type="button" class="btn btn--ghost" data-am="open" aria-expanded="false">Admin Only</button>
-    <span class="muted xsmall">Upload {{ amNoun }}, clean {{ amIt }} up, publish {{ amIt }} &mdash; no laptop, no commit.</span>
+    <span class="muted xsmall">Upload {{ amNoun }}, clean {{ amIt }} up, edit {{ amIt }}, publish {{ amIt }}
+    &mdash; no laptop, no commit.</span>
   </div>
 
   <div class="frame admin-panel" data-am="panel" hidden>
@@ -13,7 +14,7 @@
     <div class="admin-signin">
       <label for="{{ amKind }}-pass">Passcode</label>
       <input type="password" id="{{ amKind }}-pass" data-am="pass" autocomplete="current-password"
-             inputmode="numeric" placeholder="&bull;&bull;&bull;&bull;">
+             placeholder="&bull;&bull;&bull;&bull;&bull;">
       <button type="button" class="btn btn--small" data-am="signin">Open the door</button>
     </div>
     <p class="auth-msg" data-am="msg"></p>

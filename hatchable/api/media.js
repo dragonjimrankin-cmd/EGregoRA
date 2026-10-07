@@ -24,6 +24,13 @@
  *   { action: 'publish'|'unpublish', pass, id }    show it, or take it down
  *   { action: 'edit', pass, id, \u2026 }                change the writing
  *   { action: 'delete', pass, id }                 remove it entirely
+ *   { action: 'replace', pass, id, upload, … }     a new master for an
+ *                                                  existing item: what a cut
+ *                                                  or a merge saves
+ *   { action: 'attach', pass, id, upload, role }   a cover, or a plate cued
+ *                                                  to a moment in the sound
+ *   { action: 'cue'|'drop-image', pass, image_id } move or remove a plate
+ *   { action: 'one', pass, id }                    one item, freshly signed
  */
 import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
@@ -37,12 +44,31 @@ const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
 
+async function sign(key) {
+  if (!key) return null;
+  try { return await storage.url(key, { ttl: TTL }); } catch { return null; }
+}
+
 async function dress(row) {
-  let url = null;
-  if (row.storage_key) {
-    try { url = await storage.url(row.storage_key, { ttl: TTL }); } catch { url = null; }
-  }
+  const url = await sign(row.storage_key);
+  const cover = await sign(row.cover_key);
+  let images = [];
+  try {
+    const { rows } = await db.query(
+      'SELECT id, at_seconds, storage_key, caption FROM media_images WHERE media_id = $1 ORDER BY at_seconds ASC',
+      [row.id]);
+    for (const i of rows || []) {
+      images.push({
+        id: Number(i.id),
+        at: Number(i.at_seconds) || 0,
+        caption: i.caption || '',
+        url: await sign(i.storage_key)
+      });
+    }
+  } catch { images = []; }
   return {
+    cover,
+    images,
     id: Number(row.id),
     kind: row.kind,
     title: row.title,
@@ -195,6 +221,106 @@ export default async function (req, res) {
         if (k && storage.delete) await storage.delete(k).catch(() => {});
         await db.query('DELETE FROM media WHERE id = $1', [id]);
         return res.json({ ok: true });
+      }
+
+      /* A new master for an item that already exists \u2014 what a cut or a
+         merge produces when it is saved over the original rather than
+         published beside it. */
+      case 'replace': {
+        const id = Number(body.id);
+        const upload = clean(body.upload, 64);
+        if (!id || !upload) return res.status(400).json({ error: 'Which one, and from what?' });
+
+        const { rows } = await db.query('SELECT storage_key, kind FROM media WHERE id = $1', [id]);
+        const was = rows && rows[0];
+        if (!was) return res.status(404).json({ error: 'There is no such item.' });
+
+        const { rows: parts } = await db.query(
+          'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
+        if (!parts || !parts.length) return res.status(400).json({ error: 'Nothing arrived.' });
+        const whole = Buffer.concat(parts.map((r) => Buffer.from(r.part, 'base64')));
+        if (whole.length > MAX_BYTES) return res.status(413).json({ error: 'That is too large for the shelf.' });
+
+        const mime = clean(body.mime, 80) || (was.kind === 'video' ? 'video/webm' : 'audio/mpeg');
+        const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('wav') ? 'wav'
+          : mime.includes('webm') ? 'webm' : mime.includes('mp4') ? 'mp4' : 'bin';
+        const key = (was.kind === 'video' ? 'films/' : 'episodes/') +
+          Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.' + ext;
+
+        await storage.put(key, whole, mime);
+        await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]);
+        await db.query(
+          `UPDATE media SET storage_key = $2, mime = $3, bytes = $4, seconds = COALESCE($5, seconds),
+                            length_text = COALESCE($6, length_text),
+                            treatment = COALESCE($7, treatment), updated_at = NOW()
+            WHERE id = $1`,
+          [id, key, mime, whole.length, Number(body.seconds) || null,
+            clean(body.length, 32) || null, clean(body.treatment, 600) || null]);
+        if (was.storage_key && storage.delete) await storage.delete(was.storage_key).catch(() => {});
+
+        const { rows: now } = await db.query('SELECT * FROM media WHERE id = $1', [id]);
+        return res.json({ ok: true, item: await dress(now[0]) });
+      }
+
+      /* A picture: either the item's cover, or a plate cued to a moment in
+         it, which the player raises as the recording reaches it. */
+      case 'attach': {
+        const id = Number(body.id);
+        const upload = clean(body.upload, 64);
+        if (!id || !upload) return res.status(400).json({ error: 'Which one, and from what?' });
+        const role = clean(body.role, 8) === 'cover' ? 'cover' : 'cue';
+
+        const { rows: parts } = await db.query(
+          'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
+        if (!parts || !parts.length) return res.status(400).json({ error: 'No picture arrived.' });
+        const whole = Buffer.concat(parts.map((r) => Buffer.from(r.part, 'base64')));
+        if (whole.length > 12 * 1024 * 1024) return res.status(413).json({ error: 'That picture is over 12 MB.' });
+
+        const mime = clean(body.mime, 60) || 'image/jpeg';
+        const ext = mime.includes('png') ? 'png' : mime.includes('webp') ? 'webp'
+          : mime.includes('gif') ? 'gif' : 'jpg';
+        const key = 'media-art/' + Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.' + ext;
+        await storage.put(key, whole, mime);
+        await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]);
+
+        if (role === 'cover') {
+          const { rows: old } = await db.query('SELECT cover_key FROM media WHERE id = $1', [id]);
+          await db.query('UPDATE media SET cover_key = $2, updated_at = NOW() WHERE id = $1', [id, key]);
+          const prev = old && old[0] && old[0].cover_key;
+          if (prev && storage.delete) await storage.delete(prev).catch(() => {});
+        } else {
+          await db.query(
+            'INSERT INTO media_images (media_id, at_seconds, storage_key, mime, caption) VALUES ($1,$2,$3,$4,$5)',
+            [id, Math.max(0, Number(body.at) || 0), key, mime, clean(body.caption, 300)]);
+        }
+
+        const { rows: now } = await db.query('SELECT * FROM media WHERE id = $1', [id]);
+        return res.json({ ok: true, item: await dress(now[0]) });
+      }
+
+      case 'drop-image': {
+        const imageId = Number(body.image_id);
+        if (!imageId) return res.status(400).json({ error: 'Which picture?' });
+        const { rows } = await db.query('SELECT storage_key FROM media_images WHERE id = $1', [imageId]);
+        const k = rows && rows[0] && rows[0].storage_key;
+        await db.query('DELETE FROM media_images WHERE id = $1', [imageId]);
+        if (k && storage.delete) await storage.delete(k).catch(() => {});
+        return res.json({ ok: true });
+      }
+
+      case 'cue': {
+        const imageId = Number(body.image_id);
+        if (!imageId) return res.status(400).json({ error: 'Which picture?' });
+        await db.query('UPDATE media_images SET at_seconds = $2, caption = COALESCE($3, caption) WHERE id = $1',
+          [imageId, Math.max(0, Number(body.at) || 0), body.caption == null ? null : clean(body.caption, 300)]);
+        return res.json({ ok: true });
+      }
+
+      case 'one': {
+        const id = Number(body.id);
+        const { rows } = await db.query('SELECT * FROM media WHERE id = $1', [id]);
+        if (!rows || !rows[0]) return res.status(404).json({ error: 'There is no such item.' });
+        return res.json({ ok: true, item: await dress(rows[0]) });
       }
 
       default:

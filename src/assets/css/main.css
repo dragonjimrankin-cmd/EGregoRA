@@ -2445,3 +2445,49 @@ body.atlas-focused { overflow: hidden; }
 @media (max-width: 700px) {
   .am-pair { grid-template-columns: 1fr; }
 }
+
+/* The editing room behind the admin door: snippets, plates, danger. */
+.am-editor { margin-top: 1rem; border-color: rgba(215, 176, 90, 0.38); }
+.am-ed-play { margin-bottom: 0.6rem; }
+.am-cut {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+.am-time {
+  font-family: "EB Garamond", serif;
+  color: #f3ddaa;
+  min-width: 4.5rem;
+  display: inline-block;
+}
+.am-snips { list-style: none; padding: 0; margin: 0.4rem 0; }
+.am-snips li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid rgba(215, 176, 90, 0.14);
+}
+.am-snips label { margin: 0; flex: 1; min-width: 12rem; color: #cbbb93; }
+.am-plates { list-style: none; padding: 0; margin: 0.4rem 0; }
+.am-plates li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+.am-plates img { width: 72px; height: 48px; object-fit: cover; border-radius: 2px; }
+.am-plates span { flex: 1; color: #9f947a; font-size: 0.88rem; }
+.am-danger { border-color: rgba(201, 139, 106, 0.5); color: #c98b6a; }
+.ep-plate { margin: 0.5rem 0; }
+.ep-plate img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  border: 1px solid rgba(215, 176, 90, 0.26);
+  border-radius: 3px;
+  display: block;
+}

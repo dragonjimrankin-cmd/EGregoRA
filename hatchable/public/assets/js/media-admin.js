@@ -553,6 +553,409 @@ function setup(root) {
     }
   });
 
+  /* ========================================================= the editing room
+     What an editor actually needs, and nothing it does not: cut a piece out,
+     merge the pieces you kept, hang pictures on an episode, fix the writing,
+     throw the whole thing away.
+
+     Cutting is non-destructive until you say otherwise. Marking snippets
+     builds a list; merging the chosen ones makes a new recording; and only
+     then do you choose whether it replaces the original or stands beside it
+     as a new entry. The original is never touched until that moment. */
+  let byId = new Map();
+  let edit = null;   /* { item, buf, snippets[], media } */
+
+  function openEditor(item) {
+    if (!item) return;
+    const box = root.querySelector('[data-am=editor]');
+    if (!box) return;
+    edit = { item, buf: null, snippets: [], seconds: item.seconds || 0 };
+
+    box.innerHTML =
+      '<div class="frame am-editor">' +
+      '<p class="kicker">Editing \u2014 ' + esc(item.title) + "</p>" +
+      '<div class="am-ed-play"></div>' +
+      '<p class="muted small" data-ed="state">Loading the ' +
+      (KIND === "audio" ? "episode" : "film") + "\u2026</p>" +
+
+      '<p class="kicker">The writing</p><div class="am-fields">' +
+      '<div><label for="' + KIND + '-ed-title">Title</label>' +
+      '<input type="text" id="' + KIND + '-ed-title" data-ed="title" value="' + esc(item.title) + '"></div>' +
+      (KIND === "audio"
+        ? '<div><label for="' + KIND + '-ed-number">Episode number</label>' +
+          '<input type="text" id="' + KIND + '-ed-number" data-ed="number" value="' + esc(item.number) + '"></div>'
+        : "") +
+      '<div><label for="' + KIND + '-ed-tags">Tags</label>' +
+      '<input type="text" id="' + KIND + '-ed-tags" data-ed="tags" value="' + esc(item.tags.join(", ")) + '"></div>' +
+      "</div>" +
+      '<label for="' + KIND + '-ed-summary">Summary</label>' +
+      '<textarea id="' + KIND + '-ed-summary" data-ed="summary" rows="3">' + esc(item.summary) + "</textarea>" +
+      '<div class="btn-row"><button class="btn btn--small" type="button" data-ed="save">Save the writing</button></div>' +
+
+      '<div class="divider">\u2726</div>' +
+      '<p class="kicker">Cut</p>' +
+      '<p class="muted small">Play up to the point you want, press <em>Mark in</em>, play on, press ' +
+      "<em>Mark out</em>, then cut. Nothing is lost until you save over the original.</p>" +
+      '<div class="am-cut">' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="in">Mark in</button>' +
+      '<span data-ed="inval" class="am-time">0:00</span>' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="out">Mark out</button>' +
+      '<span data-ed="outval" class="am-time">0:00</span>' +
+      '<button class="btn btn--small" type="button" data-ed="cut">Cut the snippet</button>' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="drop-range">Cut it OUT and keep the rest</button>' +
+      "</div>" +
+      '<div data-ed="snips"></div>' +
+      '<div class="btn-row">' +
+      '<button class="btn btn--small" type="button" data-ed="merge">Merge the chosen snippets</button>' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="whole">Start again from the whole thing</button>' +
+      "</div>" +
+      '<div data-ed="merged"></div>' +
+
+      (KIND === "audio"
+        ? '<div class="divider">\u2726</div>' +
+          '<p class="kicker">Pictures</p>' +
+          '<p class="muted small">A cover for the episode, and plates cued to a moment \u2014 the player ' +
+          "raises each one as the sound reaches it.</p>" +
+          '<label for="' + KIND + '-ed-img">Choose a picture</label>' +
+          '<input type="file" id="' + KIND + '-ed-img" data-ed="img" accept="image/*">' +
+          '<label for="' + KIND + '-ed-cap">Caption</label>' +
+          '<input type="text" id="' + KIND + '-ed-cap" data-ed="cap" maxlength="300">' +
+          '<div class="btn-row">' +
+          '<button class="btn btn--small btn--ghost" type="button" data-ed="as-cover">Make it the cover</button>' +
+          '<button class="btn btn--small" type="button" data-ed="as-cue">Insert it at the playhead</button>' +
+          "</div>" +
+          '<div data-ed="plates"></div>'
+        : "") +
+
+      '<div class="divider">\u2726</div>' +
+      '<div class="btn-row">' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="close">Close the editor</button>' +
+      '<button class="btn btn--small btn--ghost am-danger" type="button" data-ed="kill">Delete this ' +
+      (KIND === "audio" ? "episode" : "film") + " for good</button>" +
+      "</div></div>";
+
+    const ed = (name) => box.querySelector('[data-ed="' + name + '"]');
+    const tellEd = (t, bad) => { const n = ed("state"); if (n) { n.textContent = t; n.className = "muted small" + (bad ? " is-bad" : ""); } };
+
+    /* The player everything else is measured against. */
+    const player = document.createElement(KIND === "audio" ? "audio" : "video");
+    player.controls = true;
+    player.src = item.url;
+    player.className = KIND === "audio" ? "player" : "am-film";
+    player.crossOrigin = "anonymous";
+    box.querySelector(".am-ed-play").appendChild(player);
+    edit.player = player;
+
+    let markIn = 0, markOut = 0;
+    const show = () => {
+      ed("inval").textContent = clock(markIn);
+      ed("outval").textContent = clock(markOut);
+    };
+    show();
+
+    ed("in").addEventListener("click", () => { markIn = player.currentTime; if (markOut < markIn) markOut = markIn; show(); });
+    ed("out").addEventListener("click", () => { markOut = player.currentTime; if (markOut < markIn) markIn = markOut; show(); });
+
+    /* Audio is fetched and decoded once, so cutting is instant and exact.
+       Film is cut by re-recording the stretch you asked for, which is the
+       only way a browser can do it \u2014 so it costs playback time. */
+    if (KIND === "audio") {
+      tellEd("Fetching the audio so it can be cut exactly\u2026");
+      fetch(item.url).then((r) => r.arrayBuffer()).then(async (bytes) => {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        edit.buf = await ctx.decodeAudioData(bytes);
+        ctx.close();
+        edit.seconds = edit.buf.duration;
+        tellEd("Ready. " + clock(edit.buf.duration) + " of audio, cut to the sample.");
+      }).catch(() => tellEd("The audio could not be fetched for cutting. The writing and the pictures still work.", true));
+    } else {
+      tellEd("Ready. Cutting a film re-records the stretch at playback speed.");
+    }
+
+    ed("cut").addEventListener("click", async () => {
+      if (markOut - markIn < 0.2) return tellEd("Mark a stretch longer than a fifth of a second.", true);
+      edit.snippets.push({ from: markIn, to: markOut, keep: true, label: clock(markIn) + " \u2192 " + clock(markOut) });
+      drawSnips();
+      tellEd("Snippet marked. Mark as many as you like, then merge the ones you want.");
+    });
+
+    /* The commoner wish: take out the cough, keep everything else. */
+    ed("drop-range").addEventListener("click", () => {
+      if (markOut - markIn < 0.05) return tellEd("Mark the stretch to remove first.", true);
+      const end = edit.seconds || (edit.buf && edit.buf.duration) || player.duration || 0;
+      edit.snippets = [];
+      if (markIn > 0.05) edit.snippets.push({ from: 0, to: markIn, keep: true, label: "0:00 \u2192 " + clock(markIn) });
+      if (end - markOut > 0.05) edit.snippets.push({ from: markOut, to: end, keep: true, label: clock(markOut) + " \u2192 " + clock(end) });
+      drawSnips();
+      tellEd("The two keepers are listed. Merge them and that stretch is gone.");
+    });
+
+    ed("whole").addEventListener("click", () => { edit.snippets = []; drawSnips(); tellEd("Back to the whole thing."); });
+
+    function drawSnips() {
+      const n = ed("snips");
+      if (!edit.snippets.length) { n.innerHTML = '<p class="muted xsmall">No snippets marked.</p>'; return; }
+      n.innerHTML = '<ul class="am-snips">' + edit.snippets.map((sn, i) =>
+        "<li><label><input type=\"checkbox\" data-snip=\"" + i + '"' + (sn.keep ? " checked" : "") + "> " +
+        esc(sn.label) + ' <span class="muted xsmall">(' + clock(sn.to - sn.from) + ")</span></label> " +
+        '<button class="btn btn--small btn--ghost" type="button" data-hear="' + i + '">Hear it</button> ' +
+        '<button class="btn btn--small btn--ghost" type="button" data-up="' + i + '">\u2191</button>' +
+        '<button class="btn btn--small btn--ghost" type="button" data-down="' + i + '">\u2193</button>' +
+        '<button class="btn btn--small btn--ghost" type="button" data-cutdrop="' + i + '">\u00d7</button></li>'
+      ).join("") + "</ul>";
+      n.querySelectorAll("[data-snip]").forEach((b) => b.addEventListener("change", () => {
+        edit.snippets[Number(b.getAttribute("data-snip"))].keep = b.checked;
+      }));
+      n.querySelectorAll("[data-hear]").forEach((b) => b.addEventListener("click", () => {
+        const sn = edit.snippets[Number(b.getAttribute("data-hear"))];
+        player.currentTime = sn.from;
+        player.play();
+        setTimeout(() => player.pause(), Math.max(200, (sn.to - sn.from) * 1000));
+      }));
+      n.querySelectorAll("[data-up]").forEach((b) => b.addEventListener("click", () => {
+        const i = Number(b.getAttribute("data-up"));
+        if (i > 0) { const t = edit.snippets[i - 1]; edit.snippets[i - 1] = edit.snippets[i]; edit.snippets[i] = t; drawSnips(); }
+      }));
+      n.querySelectorAll("[data-down]").forEach((b) => b.addEventListener("click", () => {
+        const i = Number(b.getAttribute("data-down"));
+        if (i < edit.snippets.length - 1) { const t = edit.snippets[i + 1]; edit.snippets[i + 1] = edit.snippets[i]; edit.snippets[i] = t; drawSnips(); }
+      }));
+      n.querySelectorAll("[data-cutdrop]").forEach((b) => b.addEventListener("click", () => {
+        edit.snippets.splice(Number(b.getAttribute("data-cutdrop")), 1); drawSnips();
+      }));
+    }
+    drawSnips();
+
+    /* ---------------------------------------------------------- merging */
+    ed("merge").addEventListener("click", async () => {
+      const keep = edit.snippets.filter((sn) => sn.keep);
+      if (!keep.length) return tellEd("Mark and tick at least one snippet first.", true);
+      try {
+        if (KIND === "audio") await mergeAudio(keep);
+        else await mergeVideo(keep);
+      } catch (err) {
+        tellEd((err && err.message) || "The merge failed.", true);
+      }
+    });
+
+    async function mergeAudio(keep) {
+      if (!edit.buf) throw new Error("the audio is not loaded, so it cannot be cut");
+      tellEd("Merging " + keep.length + " snippet(s)\u2026");
+      const rate = edit.buf.sampleRate;
+      const chans = Math.min(2, edit.buf.numberOfChannels);
+      const total = keep.reduce((n, sn) => n + Math.floor((sn.to - sn.from) * rate), 0);
+      const off = new OfflineAudioContext(chans, Math.max(1, total), rate);
+      let at = 0;
+      keep.forEach((sn) => {
+        const src = off.createBufferSource();
+        src.buffer = edit.buf;
+        /* A short ramp at each join, so a cut does not click. */
+        const g = off.createGain();
+        const len = sn.to - sn.from;
+        g.gain.setValueAtTime(0, at);
+        g.gain.linearRampToValueAtTime(1, at + 0.008);
+        g.gain.setValueAtTime(1, at + Math.max(0.01, len - 0.008));
+        g.gain.linearRampToValueAtTime(0, at + len);
+        src.connect(g); g.connect(off.destination);
+        src.start(at, sn.from, len);
+        at += len;
+      });
+      const done = await off.startRendering();
+      const made = await encode(done);
+      edit.made = { blob: made.blob, mime: made.mime, seconds: done.duration,
+        treatment: "cut and merged from " + keep.length + " snippet(s)" };
+      showMerged(made.blob, "audio", done.duration);
+      tellEd("Merged: " + clock(done.duration) + ", " + mb(made.blob.size) + " as " + made.label + ".");
+    }
+
+    async function mergeVideo(keep) {
+      if (!window.MediaRecorder) throw new Error("this browser has no recorder");
+      tellEd("Re-recording the chosen stretches at playback speed\u2026");
+      const v = document.createElement("video");
+      v.src = item.url;
+      v.crossOrigin = "anonymous";
+      v.muted = true;
+      await new Promise((go, no) => { v.onloadedmetadata = go; v.onerror = () => no(new Error("the film would not open")); });
+
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(v.videoWidth / 2) * 2;
+      canvas.height = Math.round(v.videoHeight / 2) * 2;
+      const ctx = canvas.getContext("2d");
+      const stream = canvas.captureStream(30);
+      let ac = null;
+      try {
+        ac = new (window.AudioContext || window.webkitAudioContext)();
+        const src = ac.createMediaElementSource(v);
+        const dest = ac.createMediaStreamDestination();
+        src.connect(dest);
+        dest.stream.getAudioTracks().forEach((t) => stream.addTrack(t));
+      } catch { /* silent, then */ }
+
+      const type = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
+        .find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm";
+      const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 4200000 });
+      const bits = [];
+      rec.ondataavailable = (e) => { if (e.data && e.data.size) bits.push(e.data); };
+      const stopped = new Promise((go) => { rec.onstop = go; });
+      rec.start(1000);
+
+      let live = true;
+      const draw = () => { if (!live) return; ctx.drawImage(v, 0, 0, canvas.width, canvas.height); requestAnimationFrame(draw); };
+      draw();
+
+      /* One recorder, each kept stretch played into it in turn. */
+      for (let i = 0; i < keep.length; i++) {
+        const sn = keep[i];
+        v.currentTime = sn.from;
+        await new Promise((go) => { v.onseeked = go; });
+        await v.play();
+        await new Promise((go) => {
+          const watch = () => {
+            if (v.currentTime >= sn.to || v.ended) { v.pause(); go(); return; }
+            tellEd("Snippet " + (i + 1) + " of " + keep.length + " \u2014 " + clock(v.currentTime) + " of " + clock(sn.to));
+            requestAnimationFrame(watch);
+          };
+          watch();
+        });
+      }
+      live = false;
+      rec.stop();
+      await stopped;
+      if (ac) ac.close().catch(() => {});
+
+      const blob = new Blob(bits, { type: "video/webm" });
+      const total = keep.reduce((n, sn) => n + (sn.to - sn.from), 0);
+      edit.made = { blob, mime: "video/webm", seconds: total,
+        treatment: "cut and merged from " + keep.length + " snippet(s)" };
+      showMerged(blob, "video", total);
+      tellEd("Merged: " + clock(total) + ", " + mb(blob.size) + ".");
+    }
+
+    function showMerged(blob, how, seconds) {
+      const n = ed("merged");
+      n.innerHTML = "";
+      const node = document.createElement(how === "video" ? "video" : "audio");
+      node.controls = true;
+      node.src = URL.createObjectURL(blob);
+      node.className = how === "video" ? "am-film" : "player";
+      n.appendChild(node);
+      const row = document.createElement("div");
+      row.className = "btn-row";
+      row.innerHTML = '<button class="btn btn--small" type="button" data-save="over">Save over the original</button>' +
+        '<button class="btn btn--small btn--ghost" type="button" data-save="new">Publish as a new entry</button>';
+      n.appendChild(row);
+      row.querySelectorAll("[data-save]").forEach((b) => b.addEventListener("click", async () => {
+        b.disabled = true;
+        try {
+          const upload = await sendBlob(blob, (t, f) => { tellEd(t); step(t, f); });
+          if (b.getAttribute("data-save") === "over") {
+            await post({ action: "replace", id: item.id, upload, mime: blob.type,
+              seconds: Math.round(seconds), length: clock(seconds).replace(/ \d+s$/, ""),
+              treatment: edit.made.treatment });
+            tellEd("Saved over the original. The old file has been removed.");
+          } else {
+            await post({ action: "finish", upload, kind: KIND,
+              title: (ed("title").value || item.title) + " (edit)",
+              summary: ed("summary").value, number: KIND === "audio" ? ed("number").value : "",
+              length: clock(seconds).replace(/ \d+s$/, ""), seconds: Math.round(seconds),
+              tags: ed("tags").value, mime: blob.type, treatment: edit.made.treatment, publish: true });
+            tellEd("Published as a new entry.");
+          }
+          await refresh();
+        } catch (err) {
+          tellEd((err && err.message) || "That could not be saved.", true);
+          b.disabled = false;
+        }
+      }));
+    }
+
+    /* ---------------------------------------------------------- pictures */
+    if (KIND === "audio") {
+      const plates = () => {
+        const n = ed("plates");
+        const list = (byId.get(item.id) || item).images || [];
+        n.innerHTML = (item.cover ? '<p class="muted xsmall">Cover is set.</p>' : "") +
+          (list.length
+            ? '<ul class="am-plates">' + list.map((im) =>
+              '<li><img src="' + esc(im.url) + '" alt=""><span>' + clock(im.at) +
+              (im.caption ? " \u00b7 " + esc(im.caption) : "") + "</span>" +
+              '<button class="btn btn--small btn--ghost" type="button" data-plate="' + im.id + '">Remove</button></li>'
+            ).join("") + "</ul>"
+            : '<p class="muted xsmall">No plates cued yet.</p>');
+        n.querySelectorAll("[data-plate]").forEach((b) => b.addEventListener("click", async () => {
+          await post({ action: "drop-image", image_id: Number(b.getAttribute("data-plate")) }).catch(() => {});
+          await refresh(); plates();
+        }));
+      };
+      plates();
+
+      const hang = async (role) => {
+        const f = ed("img").files && ed("img").files[0];
+        if (!f) return tellEd("Choose a picture first.", true);
+        try {
+          tellEd("Sending the picture\u2026");
+          const upload = await sendBlob(f, () => {});
+          const d = await post({ action: "attach", id: item.id, upload, mime: f.type, role,
+            at: role === "cue" ? player.currentTime : 0, caption: ed("cap").value });
+          if (d && d.item) { item.cover = d.item.cover; item.images = d.item.images; byId.set(item.id, d.item); }
+          ed("img").value = ""; ed("cap").value = "";
+          tellEd(role === "cover" ? "Cover set." : "Plate cued at " + clock(player.currentTime) + ".");
+          plates();
+          await refresh();
+        } catch (err) {
+          tellEd((err && err.message) || "The picture would not go up.", true);
+        }
+      };
+      ed("as-cover").addEventListener("click", () => hang("cover"));
+      ed("as-cue").addEventListener("click", () => hang("cue"));
+    }
+
+    ed("save").addEventListener("click", async () => {
+      try {
+        await post({ action: "edit", id: item.id, title: ed("title").value,
+          summary: ed("summary").value, tags: ed("tags").value,
+          number: KIND === "audio" ? ed("number").value : "" });
+        tellEd("The writing is saved.");
+        await refresh();
+      } catch (err) {
+        tellEd((err && err.message) || "It would not save.", true);
+      }
+    });
+
+    ed("kill").addEventListener("click", async () => {
+      if (!window.confirm("Delete \u201c" + item.title + "\u201d for good? The file goes too.")) return;
+      await post({ action: "delete", id: item.id }).catch(() => {});
+      box.innerHTML = "";
+      await refresh();
+    });
+
+    ed("close").addEventListener("click", () => { box.innerHTML = ""; edit = null; });
+    box.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  /* Send any blob up in pieces and hand back the upload's name. */
+  async function sendBlob(blob, onStep) {
+    const upload = "u" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    const begun = await post({ action: "begin", upload, mime: blob.type });
+    const raw = Math.floor(Math.min(900000, begun.chunk_max || 900000) * 0.74);
+    const whole = new Uint8Array(await blob.arrayBuffer());
+    const pieces = Math.ceil(whole.length / raw);
+    for (let i = 0; i < pieces; i++) {
+      const slice = whole.subarray(i * raw, (i + 1) * raw);
+      let bin = "";
+      for (let j = 0; j < slice.length; j++) bin += String.fromCharCode(slice[j]);
+      await post({ action: "chunk", upload, seq: i, part: btoa(bin) });
+      if (onStep) onStep("Sending \u2014 " + (i + 1) + " of " + pieces, (i + 1) / pieces);
+    }
+    return upload;
+  }
+
+  async function refresh() {
+    const shelf = await post({ action: "shelf", kind: KIND }).catch(() => null);
+    if (shelf) drawShelf(shelf.items || []);
+    if (window.EGMediaRefresh) window.EGMediaRefresh();
+  }
+
   /* ---------------------------------------------------------- what is there */
   function drawShelf(items) {
     if (!el.shelf) return;
@@ -568,10 +971,14 @@ function setup(root) {
         "<td>" + esc(i.state) + "</td>" +
         "<td>" + (i.bytes ? mb(i.bytes) : "\u2014") + "</td>" +
         '<td class="muted xsmall">' + esc(i.treatment) + "</td>" +
-        '<td><button class="btn btn--small btn--ghost" type="button" data-flip="' + i.id + '">' +
+        '<td><button class="btn btn--small" type="button" data-edit="' + i.id + '">Edit</button> ' +
+        '<button class="btn btn--small btn--ghost" type="button" data-flip="' + i.id + '">' +
         (i.state === "published" ? "Take down" : "Publish") + "</button> " +
         '<button class="btn btn--small btn--ghost" type="button" data-drop="' + i.id + '">Delete</button></td></tr>'
-      ).join("") + "</tbody></table>";
+      ).join("") + "</tbody></table><div data-am=\"editor\"></div>";
+    byId = new Map(items.map((i) => [i.id, i]));
+    el.shelf.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () =>
+      openEditor(byId.get(Number(b.getAttribute("data-edit"))))));
 
     el.shelf.querySelectorAll("[data-flip]").forEach((b) => b.addEventListener("click", async () => {
       const id = Number(b.getAttribute("data-flip"));
@@ -623,7 +1030,13 @@ function setup(root) {
           (i.tags.length ? " \u00b7 " + esc(i.tags.join(" \u00b7 ")) : "") + "</p>" +
           "<h3>" + esc(i.title) + "</h3>" +
           (i.summary ? "<p>" + esc(i.summary) + "</p>" : "") +
-          (i.url ? '<audio class="player" controls preload="none" src="' + esc(i.url) + '"></audio>' : "") +
+          (i.cover || (i.images && i.images.length)
+            ? '<div class="ep-plate" data-plates="' + i.id + '">' +
+              '<img src="' + esc(i.cover || i.images[0].url) + '" alt="">' +
+              '<figcaption class="plate-cap"><span class="muted xsmall" data-cap></span></figcaption></div>'
+            : "") +
+          (i.url ? '<audio class="player" controls preload="none" src="' + esc(i.url) +
+            '" data-for="' + i.id + '"></audio>' : "") +
           "</div></article>"
         : '<article class="frame card">' +
           (i.url ? '<video class="am-film" controls preload="metadata" src="' + esc(i.url) + '"></video>' : "") +
@@ -632,6 +1045,27 @@ function setup(root) {
           (i.summary ? "<p>" + esc(i.summary) + "</p>" : "") +
           (i.tags.length ? '<p class="muted xsmall">' + esc(i.tags.join(" \u00b7 ")) + "</p>" : "") +
           "</article>").join("");
+      /* A plate rises as the sound reaches it. The cover stands until the
+         first cue, and each cue holds until the next. */
+      items.forEach((i) => {
+        if (!i.images || !i.images.length) return;
+        const player = slot.querySelector('[data-for="' + i.id + '"]');
+        const stage = slot.querySelector('[data-plates="' + i.id + '"]');
+        if (!player || !stage) return;
+        const img = stage.querySelector("img");
+        const cap = stage.querySelector("[data-cap]");
+        const cues = i.images.slice().sort((a, b) => a.at - b.at);
+        let now = -1;
+        player.addEventListener("timeupdate", () => {
+          let want = -1;
+          for (let k = 0; k < cues.length; k++) if (player.currentTime >= cues[k].at) want = k;
+          if (want === now) return;
+          now = want;
+          const pick = want < 0 ? null : cues[want];
+          img.src = pick ? pick.url : (i.cover || cues[0].url);
+          if (cap) cap.textContent = pick ? pick.caption || "" : "";
+        });
+      });
     } catch {
       slot.hidden = true;
     }

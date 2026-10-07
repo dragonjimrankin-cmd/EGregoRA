@@ -2,8 +2,9 @@
  * The order's one admin passcode, and the lockout that guards it.
  *
  * The keeper's key opened the first of these doors; the publishing doors on
- * /podcast/ and /videos/ are the same door with a different room behind it,
- * so they share the passcode, the three tries and the twenty-minute shut.
+ * /podcast/ and /videos/ share its three tries and its twenty-minute shut,
+ * but have their own passcode — the keeper minds machines, this one
+ * publishes work, and they are not the same job.
  * Keeping that logic in one place means a change to the rule is a change
  * everywhere, rather than three copies drifting apart.
  *
@@ -12,13 +13,17 @@
  */
 import { db, config } from 'hatchable';
 
-const FALLBACK = '1133';
+/* The publishing doors take the owner's own passcode. It is not a number,
+   so the fields that use it are plain text rather than numeric. */
+const FALLBACK = '8===D';
 const TRIES = 3;
 const LOCKOUT_MIN = 20;
 
 export async function passcode() {
   try {
-    const set = await config.get('KEEPER_PASSCODE');
+    /* Its own key, so setting the keeper's passcode on the Setup page does
+       not quietly change who may publish. */
+    const set = await config.get('PUBLISH_PASSCODE');
     if (set && String(set).trim()) return String(set).trim();
   } catch { /* not configured */ }
   return FALLBACK;
