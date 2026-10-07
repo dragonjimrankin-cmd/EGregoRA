@@ -25,7 +25,6 @@ export default {
     { url: "/druids/", label: "Druids", glyph: "tree" },
     { url: "/sacred-geometry/", label: "Sacred Geometry", glyph: "seed" },
     { url: "/astrology/", label: "Astrology", glyph: "star" },
-    { url: "/artwork/", label: "Artwork", glyph: "eye" },
     { url: "/neurobiology/", label: "Neurobiology", glyph: "star" },
     { url: "/consciousness/", label: "Consciousness", glyph: "metatron" },
     { url: "/decoherence/", label: "Decoherence", glyph: "spiral" },
