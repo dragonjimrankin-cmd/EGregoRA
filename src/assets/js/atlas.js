@@ -41,6 +41,49 @@ function start(data) {
 
   const say = (t) => { const el = document.getElementById("atlas-status"); if (el) el.textContent = t; };
 
+  /* --------------------------------------------------------- the Seam ----
+     The cosmos skin strings its knots on a M\u00f6bius band, and a band with
+     a half-twist in it is not decoration: it is the one claim this order
+     makes about how the limbs are joined. It is named on the map, and the
+     reading panel carries the synopsis. */
+  const SEAM = {
+    title: "The Moebius Seam",
+    kind: "seam",
+    href: "/cosmic-aether/",
+    lines: [
+      "A strip given half a turn before its ends are joined. The twist costs " +
+      "it a side: run a finger along the surface and you come back to where " +
+      "you began having covered what looked like both faces without once " +
+      "crossing an edge. One side, one edge, no inside. " +
+      "<span class=\"sci\">\u25c6</span> established science \u2014 this is " +
+      "ordinary topology, and you can cut one out of paper this evening.",
+
+      "The order reads it as the shape of the join. Every limb on this map is " +
+      "a knot strung on that one seam, so there is no back of the house and no " +
+      "front of it: physics does not sit on the far side of magic, and " +
+      "neuroscience is not the underside of prayer. Follow any of them far " +
+      "enough and you arrive at the others, facing the other way. " +
+      "<span class=\"spec\">\u25c6</span> speculative and contested \u2014 a " +
+      "reading of a structure, not a measurement of one.",
+
+      "Its flow is what makes causality: the seam runs one way through " +
+      "everything, and because it has no second side there is nowhere for a " +
+      "cause to be hidden. What is done enters the surface and comes round. " +
+      "That returning is the cosmic ledger \u2014 the account kept between the " +
+      "old and the new, in which nothing is written off and nothing is paid " +
+      "twice, only carried round the twist and met again changed. " +
+      "<span class=\"myth\">\u25c6</span> myth, tradition and primary esoteric " +
+      "text \u2014 the order's own framing, offered as such.",
+
+      "And it is watched. The spiral being is the observer who does not stand " +
+      "outside the band, because there is no outside to stand in: it travels " +
+      "the seam, and its turning is how the ledger is read. Its testimony is " +
+      "the only one available from in here, which is exactly why this order " +
+      "grades what it says rather than simply believing it. " +
+      "<span class=\"myth\">\u25c6</span> myth, tradition and primary esoteric text."
+    ]
+  };
+
   /* ------------------------------------------------------------- the tree */
   const nodes = [];
   const root = {
@@ -228,6 +271,9 @@ function start(data) {
           color: GOLD, metalness: 0.7, roughness: 0.35,
           transparent: true, opacity: 0.34, side: THREE.DoubleSide
         })));
+        /* Where to hang the seam's name: out on the band itself, at the
+           quarter turn, lifted clear of the knots. */
+        SEAM.anchor = new V(0, W + 1.4, R);
         return group;
       }
     },
@@ -430,6 +476,16 @@ function start(data) {
     n.label = el;
   });
 
+  /* The seam is not a node \u2014 it is the thread the nodes are strung on \u2014
+     so it gets its own label, shown only while the cosmos is worn. */
+  const seamLabel = document.createElement("button");
+  seamLabel.type = "button";
+  seamLabel.className = "atlas-label is-seam";
+  seamLabel.textContent = SEAM.title;
+  seamLabel.style.display = "none";
+  seamLabel.addEventListener("click", (e) => { e.stopPropagation(); readSeam(); });
+  layer.appendChild(seamLabel);
+
   /* ------------------------------------------------------------ the camera */
   let yaw = 0.6, pitch = 0.32, dist = skin.dist, spin = true;
   const target = new V(0, 0, 0);
@@ -521,6 +577,20 @@ function start(data) {
   }
 
   const read = document.getElementById("atlas-read");
+
+  /* The seam's synopsis, in the same panel that reads out a limb. */
+  function readSeam() {
+    chosen = null;
+    focus(true);
+    spin = false;
+    if (!read) return;
+    read.innerHTML =
+      '<p class="kicker">The thread the knots are strung on</p>' +
+      "<h3>" + SEAM.title + "</h3>" +
+      SEAM.lines.map((t) => "<p>" + t + "</p>").join("") +
+      '<p><a class="btn" href="' + SEAM.href + '">Cosmic Aether &rarr;</a></p>';
+    say(SEAM.title + ". One side, one edge, and every limb strung on it.");
+  }
   function paint(n) {
     if (!read) return;
     if (!n) {
@@ -586,6 +656,10 @@ function start(data) {
     say(skin.label + ". " + skin.blurb);
     const note = document.getElementById("atlas-skin-note");
     if (note) note.textContent = skin.blurb;
+    if (name === "cosmos") {
+      say(skin.label + ". " + skin.blurb +
+        " The gold band is the Moebius Seam \u2014 click its name for what it is.");
+    }
   }
   document.querySelectorAll("[data-skin]").forEach((b) =>
     b.addEventListener("click", () => wear(b.getAttribute("data-skin"))));
@@ -686,6 +760,21 @@ function start(data) {
       el.style.opacity = String(Math.max(0.22,
         1 - Math.max(0, (camera.position.distanceTo(n.pos) - dist * 0.5) / (dist * 1.4))));
     });
+
+    /* The seam's own label rides the band as the multiverse turns. */
+    if (skinName === "cosmos" && SEAM.anchor) {
+      const at = SEAM.anchor.clone().applyEuler(sceneryGroup.rotation);
+      screen.copy(at).project(camera);
+      if (screen.z > 1) seamLabel.style.display = "none";
+      else {
+        seamLabel.style.display = "";
+        seamLabel.style.transform = "translate(-50%,-50%) translate(" +
+          ((screen.x * 0.5 + 0.5) * w).toFixed(1) + "px," +
+          ((-screen.y * 0.5 + 0.5) * h).toFixed(1) + "px)";
+      }
+    } else {
+      seamLabel.style.display = "none";
+    }
 
     renderer.render(scene, camera);
     requestAnimationFrame(tick);

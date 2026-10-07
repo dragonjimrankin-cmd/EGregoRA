@@ -2256,6 +2256,13 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 .atlas-label.is-limb { color: #d7b05a; font-size: 0.7rem; }
 .atlas-label.is-sub { color: #7fae7a; }
 .atlas-label.is-topic { color: #9f947a; font-size: 0.58rem; max-width: 13ch; }
+/* The seam is not a node on the map but the thread they are strung on, so
+   its name is set apart: small capitals, the gold of the band itself. */
+.atlas-label.is-seam {
+  color: #f3ddaa; font-size: 0.62rem; letter-spacing: 0.22em;
+  text-transform: uppercase; border: 1px solid rgba(215, 176, 90, 0.5);
+  background: rgba(11, 10, 9, 0.82);
+}
 .atlas-label:hover,
 .atlas-label:focus-visible,
 .atlas-label.is-on { color: #f3ddaa; background: rgba(11, 10, 9, 0.9); }
