@@ -104,6 +104,10 @@ if (owner) {
     isPrivate: true,
     enableInternet: true,
     enableGpu: true,
+    /* Name the card explicitly as well as asking for "a GPU" — Kaggle will
+       hand back a CPU box without complaint if the account cannot have one,
+       so the probe asks in both dialects before believing the answer. */
+    machineShape: 'NvidiaTeslaT4',
     kernelExecutionType: 'SaveAndRunAll'
   };
 
