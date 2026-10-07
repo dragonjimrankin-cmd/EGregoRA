@@ -14,6 +14,7 @@
  * Hatchable's own `[ai]` gateway stays in `api/ask.js` as the last fallback.
  * Nothing here throws: a dead route returns null and the caller moves on.
  */
+import { storedHuggingFaceKey } from './key-store.js';
 import { config } from 'hatchable';
 import { colabChat } from './colab.js';
 
@@ -22,6 +23,17 @@ const MAX_STEPS = 6;
 
 /* Open-weights models, strongest first. Every one of these has published
    weights — no closed models in this list. */
+/* Hugging Face's router speaks the OpenAI shape and serves open-weights
+   models from several partner clouds on one token. The order has a token, so
+   this is the first route that does not depend on anybody's charity. */
+export const HF_CHAT_URL = 'https://router.huggingface.co/v1/chat/completions';
+export const HF_CHAT_MODELS = [
+  'meta-llama/Llama-3.3-70B-Instruct',
+  'Qwen/Qwen2.5-72B-Instruct',
+  'deepseek-ai/DeepSeek-V3-0324',
+  'mistralai/Mistral-Small-24B-Instruct-2501'
+];
+
 export const OPENROUTER_MODELS = [
   'deepseek/deepseek-chat-v3.1',
   'meta-llama/llama-3.3-70b-instruct',
@@ -203,6 +215,20 @@ export async function openChat(opts) {
       }
     });
   }
+  /* Hugging Face, on the order's own token. Open weights, OpenAI-shaped,
+     and tool calling on the models that support it. */
+  let hf = null;
+  try { hf = await config.get('HUGGINGFACE_API_KEY'); } catch { hf = null; }
+  if (!hf) hf = storedHuggingFaceKey();
+  if (hf) {
+    routes.push({
+      name: 'huggingface',
+      url: HF_CHAT_URL,
+      models: HF_CHAT_MODELS,
+      headers: { authorization: 'Bearer ' + hf }
+    });
+  }
+
   /* The keyless open-weights route, anonymously. Pollinations' anonymous
      tier serves GPT-OSS 20B \u2014 OpenAI's open-weights release, with reasoning
      and tool calling \u2014 and the deprecation notice on the older API is

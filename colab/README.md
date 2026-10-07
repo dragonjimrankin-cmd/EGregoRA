@@ -2,9 +2,15 @@
 
 ## What could not be done, and why
 
-Five Google accounts were named for connecting:
-`dragon.jim.rankin@`, `shakradragon@`, `cervixen.info@`, `pellegrinlondon@`
-and `jim.rankin.dragon@gmail.com`.
+Four Google accounts carry the order's GPU workers, confirmed 7 October 2026:
+
+* `dragon.jim.rankin@gmail.com` — label `jim-1`
+* `jim.rankin.dragon@gmail.com` — label `jim-2`
+* `shakradragon@gmail.com` — label `shakra`
+* `cervixen.info@gmail.com` — label `cervixen`
+
+One free runtime each, so four GPUs when all four are awake. See
+`docs/COLAB-WORKERS.md` for how a worker proves itself to the site.
 
 **An application cannot sign into Google Colab.** There is no Colab API, no
 service-account route to a Colab runtime, and no token that grants one. A
@@ -18,7 +24,7 @@ So the link is built the other way round: **the notebook connects to us.**
 ## How it works instead
 
 1. Open [`egregora-gpu.ipynb`](./egregora-gpu.ipynb) in Colab under any one of
-   those five accounts (File → Open notebook → GitHub, or upload it).
+   those four accounts (File → Open notebook → GitHub, or upload it).
 2. Runtime → Change runtime type → **T4 GPU**.
 3. Runtime → **Run all**.
 
@@ -38,7 +44,7 @@ order's own storage. The model stays resident between clips, so the second
 clip on a warm worker is minutes rather than half an hour.
 
 Close the tab and the worker stops heartbeating; fifteen minutes later it is
-no longer in the pool. Run it in all five accounts and the pool has five GPUs,
+no longer in the pool. Run it in all four accounts and the pool has four GPUs,
 and jobs spread across them by queue depth.
 
 **Your Google account is never shared with the site.** All it ever learns is a

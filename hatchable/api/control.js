@@ -23,7 +23,8 @@
  *   accounts                                the render pool: every account, and its health
  *   whoami                                  what this token is and may do
  */
-import { db } from 'hatchable';
+import { storedHuggingFaceKey } from '../lib/key-store.js';
+import { db, config } from 'hatchable';
 import { checkToken } from '../lib/tokens.js';
 import { ANSWERS } from '../lib/oracle-corpus.js';
 import { readSheet, extendSheet, composePrompt, describeSheet, seedFor } from '../lib/continuity.js';
@@ -341,7 +342,23 @@ export default async function (req, res) {
          the oracle is pointed at it. */
       case 'chat-probe': {
         const say = 'Reply with exactly: ready.';
+        let hfToken = null;
+        try { hfToken = await config.get('HUGGINGFACE_API_KEY'); } catch { hfToken = null; }
+        if (!hfToken) hfToken = storedHuggingFaceKey();
         const tries = [
+          { name: 'hugging face router, the order\'s own token, Llama 3.3 70B',
+            url: 'https://router.huggingface.co/v1/chat/completions',
+            headers: { authorization: 'Bearer ' + (hfToken || 'none') },
+            body: { model: 'meta-llama/Llama-3.3-70B-Instruct',
+                    messages: [{ role: 'user', content: say }], max_tokens: 20 } },
+          { name: 'hugging face router, Qwen 2.5 72B',
+            url: 'https://router.huggingface.co/v1/chat/completions',
+            headers: { authorization: 'Bearer ' + (hfToken || 'none') },
+            body: { model: 'Qwen/Qwen2.5-72B-Instruct',
+                    messages: [{ role: 'user', content: say }], max_tokens: 20 } },
+          { name: 'hugging face, whoami',
+            url: 'https://huggingface.co/api/whoami-v2',
+            headers: { authorization: 'Bearer ' + (hfToken || 'none') } },
           { name: 'pollinations GET with a referrer named',
             url: 'https://text.pollinations.ai/' + encodeURIComponent(say) +
               '?model=openai-fast&referrer=egregora.hatchable.site' },

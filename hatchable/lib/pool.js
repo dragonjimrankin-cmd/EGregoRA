@@ -23,6 +23,7 @@
  * Nothing in here throws. A pool with no usable account simply returns an
  * empty list, and the caller moves on to the next route.
  */
+import { storedHuggingFaceKey } from './key-store.js';
 import { config, db } from 'hatchable';
 
 const COOLDOWN_MINUTES = 12;   // how long a failed account is stepped over
@@ -196,7 +197,11 @@ export const kaggleAccounts = (fallbacks) => credentials('kaggle', {
   base: 'KAGGLE_API_TOKEN', bundle: 'KAGGLE_ACCOUNTS', userKey: 'KAGGLE_USERNAME', fallbacks
 });
 export const huggingFaceAccounts = () => credentials('huggingface', {
-  base: 'HUGGINGFACE_API_KEY', bundle: 'HUGGINGFACE_ACCOUNTS'
+  base: 'HUGGINGFACE_API_KEY', bundle: 'HUGGINGFACE_ACCOUNTS',
+  /* The owner's own token, carried in the project so the Hugging Face
+     routes work without anything being pasted into the setup page. A token
+     configured there wins over this one. */
+  fallbacks: [storedHuggingFaceKey()].filter(Boolean)
 });
 export const falAccounts = () => credentials('fal', { base: 'FAL_KEY', bundle: 'FAL_ACCOUNTS' });
 export const replicateAccounts = () => credentials('replicate', {

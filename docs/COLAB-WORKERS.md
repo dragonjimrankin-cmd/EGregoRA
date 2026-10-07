@@ -1,5 +1,28 @@
 # The Colab workers, and how the site comes to trust them
 
+## The four accounts the order uses
+
+These are the Google accounts the order's GPU workers are to run in. One free
+Colab runtime each, so four workers when all four are awake:
+
+| account | notebook | label to give it |
+|---|---|---|
+| `dragon.jim.rankin@gmail.com` | `colab/egregora-gpu.ipynb` | `jim-1` |
+| `jim.rankin.dragon@gmail.com` | `colab/egregora-gpu.ipynb` | `jim-2` |
+| `shakradragon@gmail.com` | `colab/egregora-gpu.ipynb` | `shakra` |
+| `cervixen.info@gmail.com` | `colab/egregora-gpu.ipynb` | `cervixen` |
+
+The `account` field in the registration is what the pool shows in the keeper's
+panel and in `{"action":"workers"}`, so putting the right label in tells you at
+a glance which runtime has gone to sleep. Nothing authenticates the account
+name itself — the shared secret below is what authenticates the worker — so it
+is a label for humans, not a credential.
+
+A free Colab runtime is reclaimed after a few hours and more aggressively if
+the tab is closed, so the realistic pattern is: open all four, run all four,
+and expect one or two to be awake at any moment. The pool prefers whichever is
+idle and ignores the rest.
+
 ## Who is in the pool right now
 
 **Nobody.** Asked of the live site on 7 October 2026:
