@@ -1,36 +1,128 @@
-# control run — 2026-10-07T14:16:38.551Z
-site: https://egregora.hatchable.site   calls: 3
+# control run — 2026-10-07T14:45:41.079Z
+site: https://egregora.hatchable.site   calls: 4
 
 GET /api/control -> HTTP 200
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"sky-name","stars":4,"shape":"a closed loop of 4 stars, much wider than tall, low on the horizon, spare"}
-HTTP 200  (1003 ms)
+POST /api/freeai  {"action":"status"}
+HTTP 401  (171 ms)
 {
-  "ok": true,
-  "name": "The Borrowed Limb",
-  "by": "the order's own lexicon",
-  "lexicon": true
+  "error": "Not the key. 2 tries left."
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"sky-name","stars":10,"shape":"a closed loop of 10 stars, tall and narrow, high in the sky, rambling"}
-HTTP 200  (729 ms)
+POST /api/freeai  {"action":"status","pass":"8===D"}
+HTTP 200  (58 ms)
 {
   "ok": true,
-  "name": "The Rambling Kettle",
-  "by": "the order's own lexicon",
-  "lexicon": true
+  "doors": [
+    {
+      "slot": 1,
+      "label": "Free.ai 1",
+      "tokens_left": 30000,
+      "tokens_used": 0,
+      "tokens_of": 30000,
+      "resets_in": 33258,
+      "videos_left": 1,
+      "videos_of": 1,
+      "videos_made": 0,
+      "videos_reset_in": 33258,
+      "images_left": 6,
+      "images_made": 0,
+      "requests_used": 0,
+      "requests_of": 1000,
+      "requests_reset_in": 2106858,
+      "last_error": ""
+    },
+    {
+      "slot": 2,
+      "label": "Free.ai 2",
+      "tokens_left": 30000,
+      "tokens_used": 0,
+      "tokens_of": 30000,
+      "resets_in": 33258,
+      "videos_left": 1,
+      "videos_of": 1,
+      "videos_made": 0,
+      "videos_reset_in": 33258,
+      "images_left": 6,
+      "images_made": 0,
+      "requests_used": 0,
+      "requests_of": 1000,
+      "requests_reset_in": 2106858,
+      "last_error": ""
+    },
+    {
+      "slot": 3,
+      "label": "Free.ai 3",
+      "tokens_left": 30000,
+      "tokens_used": 0,
+      "tokens_of": 30000,
+      "resets_in": 33258,
+      "videos_left": 1,
+      "videos_of": 1,
+      "videos_made": 0,
+      "videos_reset_in": 33258,
+      "images_left": 6,
+      "images_made": 0,
+      "requests_used": 0,
+      "requests_of": 1000,
+      "requests_reset_in": 2106858,
+      "last_error": ""
+    },
+    {
+      "slot": 4,
+      "label": "Free.ai 4",
+      "tokens_left": 30000,
+      "tokens_used": 0,
+      "tokens_of": 30000,
+      "resets_in": 33258,
+      "videos_left": 1,
+      "videos_of": 1,
+      "videos_made": 0,
+      "videos_reset_in": 33258,
+      "images_left": 6,
+      "images_made": 0,
+      "requests_used": 0,
+      "requests_of": 1000,
+      "requests_reset_in": 2106858,
+      "last_error": ""
+    },
+    {
+      "slot": 5,
+      "label": "Free.ai 5",
+      "tokens_left": 30000,
+      "tokens_used": 0,
+      "tokens_of": 30000,
+      "resets_in": 33258,
+      "videos_left": 1,
+      "videos_of": 1,
+      "videos_made": 0,
+      "videos_reset_in": 33258,
+      "images_left
+
+--------------------------------------------------------------------
+POST /api/freeai  {"action":"chat","pass":"8===D","system":"You are terse.","messages":[{"role":"user","content":"Name one tree sacred to druids. Two words maximum."}],"max_tokens":24}
+HTTP 200  (18339 ms)
+{
+  "ok": true,
+  "text": "Oak tree",
+  "model": "Qwen/Qwen3-30B-A3B-Instruct",
+  "door": "Free.ai 1",
+  "tokens": 36
 }
 
 --------------------------------------------------------------------
-POST /api/live  {"action":"sky-name","stars":6,"shape":"a closed loop of 6 stars, roughly square, mid-sky"}
-HTTP 200  (705 ms)
+POST /api/freeai  {"action":"probe","pass":"8===D","path":"/v1/models"}
+HTTP 200  (156 ms)
 {
   "ok": true,
-  "name": "The Folded Ferryman",
-  "by": "the order's own lexicon",
-  "lexicon": true
+  "probe": {
+    "ok": true,
+    "status": 200,
+    "label": "Free.ai 1",
+    "text": "{\"models\":[{\"id\":\"qwen7b\",\"name\":\"Qwen 2.5 7B\",\"type\":\"chat\",\"license\":\"Apache 2.0\",\"self_hosted\":true,\"pricing\":{\"prompt\":\"0\",\"completion\":\"0\"}},{\"id\":\"qwen-coder\",\"name\":\"Qwen 2.5 Coder 7B\",\"type\":\"code\",\"license\":\"Apache 2.0\",\"self_hosted\":true,\"pricing\":{\"prompt\":\"0\",\"completion\":\"0\"}},{\"id\":\"sdxl\",\"name\":\"Stable Diffusion XL\",\"type\":\"image\",\"license\":\"OpenRAIL++\",\"self_hosted\":true},{\"id\":\"co"
+  }
 }
 
 done.
