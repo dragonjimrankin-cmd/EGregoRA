@@ -1,1 +1,5 @@
-{ "calls": [ { "action": "workers" } ] }
+{ "calls": [
+  { "action": "draw", "prompt": "A single rowan branch heavy with red berries against a slate sky, cold October light" },
+  { "action": "workers" },
+  { "action": "accounts" }
+] }
