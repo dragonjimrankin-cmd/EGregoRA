@@ -274,13 +274,25 @@ export async function models() {
         const id = String((m && (m.id || m.name || m.model)) || m || '').trim();
         if (!id || seen.has(id)) continue;
         seen.add(id);
+        /* Free.ai's own list carries `type` and `self_hosted`, which is
+           better than guessing from the name; the regexes stay as the
+           fallback for a provider that answers in the OpenAI shape only. */
+        const told = String((m && m.type) || '').toLowerCase();
+        const kind = told === 'image' || told === 'video' || told === 'chat' ? told
+          : told === 'code' ? 'chat'
+            : told === 'tts' || told === 'speech' ? 'speech'
+              : told === 'stt' ? 'hearing'
+                : /video/i.test(id) ? 'video'
+                  : /flux|sdxl|image|diffusion|seedream|ideogram|banana/i.test(id) ? 'image'
+                    : /tts|kokoro|piper|melo|chatterbox/i.test(id) ? 'speech'
+                      : /whisper/i.test(id) ? 'hearing' : 'chat';
         tidy.push({
           id,
-          kind: /video/i.test(id) ? 'video'
-            : /flux|sdxl|image|diffusion|seedream|ideogram|banana/i.test(id) ? 'image'
-              : /tts|kokoro|piper|melo|chatterbox/i.test(id) ? 'speech'
-                : /whisper/i.test(id) ? 'hearing' : 'chat',
-          self: !/^premium\//.test(id) && !/\//.test(id)
+          name: String((m && m.name) || id),
+          kind,
+          self: m && typeof m.self_hosted === 'boolean'
+            ? m.self_hosted
+            : (!/^premium\//.test(id) && !/\//.test(id))
         });
       }
       cache = { at: Date.now(), models: tidy };

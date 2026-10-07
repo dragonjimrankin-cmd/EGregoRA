@@ -130,7 +130,7 @@ function setup(root) {
       mine.slice(0, 300).forEach((m) => {
         const o = document.createElement("option");
         o.value = m.id;
-        o.textContent = m.id;
+        o.textContent = m.name && m.name !== m.id ? m.name + "  \u00b7  " + m.id : m.id;
         g.appendChild(o);
       });
       select.appendChild(g);
