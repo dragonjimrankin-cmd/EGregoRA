@@ -38,6 +38,7 @@ export default {
   /* The spine of the site. Eight parts of the Unified Edition, plus the
      plate room, the dragon, and the way in. */
   nav: [
+    { url: "/summary/",       label: "Summary",       glyph: "star" },
     { url: "/foundations/",   label: "Foundations",   glyph: "sphere" },
     { url: "/the-self/",      label: "The Self",      glyph: "integral" },
     { url: "/dx/",             label: "dx",            glyph: "integral" },
@@ -52,6 +53,7 @@ export default {
     { url: "/stress-tests/",  label: "Stress Tests",  glyph: "eye" },
     { url: "/essays/",        label: "Essays",        glyph: "tree" },
     { url: "/plates/",        label: "Plates",        glyph: "metatron" },
+    { url: "/site-index/",    label: "Index",         glyph: "metatron" },
     { url: "/ask-shakdrah/",label: "ShakDrah",    glyph: "dragon" }
   ],
 

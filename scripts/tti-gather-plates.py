@@ -7,12 +7,12 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SITE = ROOT / "tti" / "_site"
 OUT  = ROOT / "tti" / "src" / "plates.njk"
 
-ORDER = [("foundations","Foundations"),("the-self","The Self"),("dx","dx"),("skeletal-splice","The Splice"),("megatubule","The Megatubule"),("gravity","Gravity"),
+ORDER = [("","The Opening Page"),("foundations","Foundations"),("the-self","The Self"),("dx","dx"),("skeletal-splice","The Splice"),("megatubule","The Megatubule"),("gravity","Gravity"),
          ("spiral","The Spiral"),("torus","Torus"),("moebius","Möbius"),
          ("cosmic-ledger","Cosmic Ledger"),("seams","Seams"),("stress-tests","Stress Tests"),
          ("essays","Essays")]
 
-FIG = re.compile(r'<figure[^>]*class="plate"[^>]*>.*?</figure>', re.S)
+FIG = re.compile(r'<figure[^>]*class="plate(?: [^"]*)?"[^>]*>.*?</figure>', re.S)
 OPEN = re.compile(r'<figure[^>]*>')
 
 def title_of(fig):

@@ -3691,3 +3691,54 @@ table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-
   .claims-list > li::before { width: 1.7rem; }
   .claim-tag { margin-left: 0; display: inline-block; margin-top: 0.25rem; }
 }
+
+/* ---- the summary page and the site index ---------------------------- */
+.sum-chain { counter-reset: link; list-style: none; margin: 1.2rem 0 0; padding: 0; }
+.sum-chain > li {
+  counter-increment: link;
+  position: relative;
+  margin: 0 0 1rem;
+  padding-left: 3rem;
+  line-height: 1.7;
+}
+.sum-chain > li::before {
+  content: counter(link);
+  position: absolute; left: 0; top: 0;
+  width: 2rem; height: 2rem; line-height: 1.95rem;
+  text-align: center;
+  font-family: Cinzel, serif; font-size: 0.78rem;
+  color: var(--gold);
+  border: 1px solid rgba(118, 207, 238, 0.4);
+  border-radius: 50%;
+}
+.sitemap-toc { columns: 2; column-gap: 2rem; margin: 1.2rem 0 0; padding-left: 1.1rem; }
+.sitemap-toc li { break-inside: avoid; margin-bottom: 0.3rem; }
+.sitemap-page h2 { margin-bottom: 0.2rem; }
+.sitemap-note { margin: 0 0 0.9rem; font-size: 0.9rem; }
+.sitemap-fund {
+  margin: 0 0 0.8rem;
+  font-family: Cinzel, serif; font-size: 0.62rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--star);
+}
+.sitemap-sections { margin: 0; padding-left: 1.4rem; }
+.sitemap-sections li { margin-bottom: 0.28rem; line-height: 1.5; }
+.sitemap-sections .sitemap-h3 {
+  list-style: none;
+  padding-left: 1.1rem;
+  font-size: 0.92rem;
+  opacity: 0.84;
+}
+.sitemap-sections .sitemap-h3::before { content: "\2014\00a0"; color: var(--gold-deep); }
+.sitemap-plates {
+  margin: 0.9rem 0 0;
+  font-size: 0.86rem;
+  color: var(--vellum-dim);
+  border-top: 1px solid rgba(118, 207, 238, 0.14);
+  padding-top: 0.7rem;
+}
+.sitemap-also { columns: 2; margin: 0.6rem 0 0; }
+@media (max-width: 640px) {
+  .sitemap-toc, .sitemap-also { columns: 1; }
+  .sum-chain > li { padding-left: 2.5rem; }
+}
