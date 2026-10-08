@@ -225,6 +225,23 @@ const BINARY = /\.(png|jpe?g|gif|webp|ico|woff2?|ttf|mp[34]|m4a|mov|pdf|zip)$/i;
   }
   if (!flag("deploy")) { console.log("▸ written but not deployed."); return; }
 
+  /* Show the handler's own lines, so the forwarding address can be read
+     back rather than assumed. */
+  for (const path of ["api/submit.js", "api/concierge.js"]) {
+    try {
+      const body = textFrom(await call(readTool, { [pidRead]: PROJECT, [pathArg]: path }));
+      if (!body) continue;
+      console.log(`\u25b8 ${path} — where mail is sent:`);
+      body.split("\n").forEach((line, i) => {
+        if (/email\.send|to:|@|subject/i.test(line) && /@|email\.send|to:/.test(line)) {
+          if (/@[a-z]|email\.send|\bto\b\s*:/i.test(line)) {
+            console.log(`    ${String(i + 1).padStart(4)}  ${line.trim().slice(0, 150)}`);
+          }
+        }
+      });
+    } catch (e) { console.log(`  ! ${path}: ${e.message.slice(0, 100)}`); }
+  }
+
   const out = await call("deploy", {
     project_id: PROJECT,
     intent: "Change the studio contact address",
