@@ -1,26 +1,26 @@
-# The Two Infinities → Hatchable — 2026-10-08T03:03:36Z
-bundle files: 137
+# The Two Infinities → Hatchable — 2026-10-08T03:41:14Z
+bundle files: 138
 existing project id: proj_U95i5y493z9x
 
 ▸ Connecting to https://hatchable.com/mcp
   connected to hatchable 2.0.0
   34 tools available
 ▸ using existing project proj_U95i5y493z9x
-▸ write_files — 133 text files
+▸ write_files — 134 text files
   ✓ api/account-face.js, api/account-identity.js, api/account-me.js, api/account-passkey.js, api/account-signout.j…
   ✓ api/oauth.js, api/transcribe.js, api/unsubscribe.js, api/upload.js, api/video.js, hatchable.toml, lib/accounts…
   ✓ lib/openai.js, lib/openchat.js, lib/oracle-corpus-iii.js, lib/oracle-corpus-iv.js, lib/oracle-corpus-ix.js, li…
   ✓ lib/oracle-corpus-xx.js, lib/oracle-corpus-xxi.js, lib/oracle-corpus-xxii.js, lib/oracle-corpus-xxiii.js, lib/…
   ✓ migrations/0009_mailing.sql, migrations/0010_gpu.sql, migrations/0011_colab.sql, migrations/0012_tokens.sql, m…
   ✓ public/assets/js/admin-edit.js, public/assets/js/atlas.js, public/assets/js/device-studio.js, public/assets/js…
-  ✓ public/essays/index.html, public/foundations/index.html, public/gravity/index.html, public/index.html, public/…
+  ✓ public/cosmic-ledger/index.html, public/essays/index.html, public/foundations/index.html, public/gravity/index…
 ▸ uploading 4 binary assets (server-side URL import)
   ✓ public/assets/img/apple-touch-icon.png (47 KB) via url import
   ✓ public/assets/img/favicon-32.png (2 KB) via url import
   ✓ public/assets/img/icon-192.png (53 KB) via url import
   ✓ public/assets/img/icon-512.png (336 KB) via url import
 ▸ dry_run_deploy
-  {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."}],"would_deploy":{"public_files":39,"api
+  {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."}],"would_deploy":{"public_files":41,"api
 ▸ openai key probe: HTTP 429 — You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.
 ▸ vision probe hf-router [Qwen/Qwen2.5-VL-7B-Instruct]: HTTP 401 — <!DOCTYPE html> <html class="" lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, ini
 ▸ vision probe openai [gpt-4o-mini]: HTTP 429 — ERR {"message":"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billin
@@ -32,10 +32,20 @@ existing project id: proj_U95i5y493z9x
   "project_name": "The Two Infinities (and beyond)",
   "project_public_id": "proj_U95i5y493z9x",
   "project_slug": "the-two-infinities",
-  "version": 2,
+  "version": 3,
   "url": "https://the-two-infinities.hatchable.site",
+  "status": "live",
   "is_draft": false,
-  "deduplicated": true
+  "public_url": "https://the-two-infinities.hatchable.site",
+  "draft_url": "https://the-two-infinities-draft.hatchable.site",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v2.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v3.png",
+  "console_url": "https://hatchable.com/console/projects/the-two-infinities",
+  "files_deployed": 139,
+  "functions_deployed": 25,
+  "warnings": [],
+  "visibility": "public",
+  "preview_url": null
 }
 
    https://the-two-infinities.hatchable.site
