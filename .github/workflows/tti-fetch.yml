@@ -65,16 +65,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -x
           for f in docs/tti/*.txt; do
             [ -e "$f" ] || continue
-            B64=$(base64 -w0 "$f")
             SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/$f?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
-            if [ -n "$SHA" ]; then
-              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/$f" \
-                -f message="ci: framework text" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA"
-            else
-              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/$f" \
-                -f message="ci: framework text" -f content="$B64" -f branch="${GITHUB_REF_NAME}"
-            fi
-            echo "pushed $f"
+            node -e '
+              const fs = require("fs");
+              const [f, sha, branch] = process.argv.slice(1);
+              const body = { message: "ci: framework text", branch,
+                content: fs.readFileSync(f).toString("base64") };
+              if (sha) body.sha = sha;
+              fs.writeFileSync("/tmp/payload.json", JSON.stringify(body));
+            ' "$f" "$SHA" "${GITHUB_REF_NAME}"
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/$f" --input /tmp/payload.json > /dev/null \
+              && echo "pushed $f" || echo "failed $f"
           done
