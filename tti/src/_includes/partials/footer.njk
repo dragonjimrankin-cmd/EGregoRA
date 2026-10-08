@@ -1,0 +1,14 @@
+<footer class="site-foot">
+  <div class="foot-glyph">{% glyph "spiral" %}</div>
+  <p class="foot-motto">{{ site.motto }}</p>
+  <nav class="foot-nav" aria-label="Footer">
+    {% for item in site.nav %}<a href="{{ item.url }}">{{ item.label }}</a>{% endfor %}
+  </nav>
+  <p class="foot-fine">
+    The framework is the work of <strong>{{ site.cofounder }}</strong>, written 2nd&#8211;19th June 2026 and revised to
+    {{ site.revision }}. Every page marks what is <em>earned</em> by argument, what is <em>chosen</em> as interpretation, and what is
+    <em>refused</em> as costume. Test everything; keep what survives.
+  </p>
+  <p class="foot-fine small">© {{ "" | year }} {{ site.author }} · {{ site.tagline }} · <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+  <p class="foot-fine small"><button class="linkish" type="button" id="cookie-reopen">Storage &amp; cookie choice</button></p>
+</footer>

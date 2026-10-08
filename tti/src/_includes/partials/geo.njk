@@ -1,0 +1,245 @@
+{#
+  Animated geometric backdrop. Three slow-moving layers of construction
+  geometry behind every page, varied per page so each room of the site feels
+  different. Pure SVG + CSS transforms; switched off by prefers-reduced-motion.
+#}
+{% set slug = page.fileSlug or "home" %}
+
+<div class="geo" aria-hidden="true">
+
+  {# ---- Layer 1 — a large slow wheel, upper right ---- #}
+  <svg class="geo-layer geo-1" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.35">
+      <circle cx="100" cy="100" r="98"/>
+      <circle cx="100" cy="100" r="78"/>
+      <circle cx="100" cy="100" r="46"/>
+      {% for i in range(0, 24) %}
+      <line x1="100" y1="100" x2="100" y2="2" transform="rotate({{ i * 15 }} 100 100)" opacity="0.5"/>
+      {% endfor %}
+      <polygon points="100,12 176,56 176,144 100,188 24,144 24,56"/>
+      <polygon points="100,22 168,61 168,139 100,178 32,139 32,61" opacity="0.6"/>
+    </g>
+  </svg>
+
+  {# ---- Layer 2 — seed-of-life rosette, lower left, counter-rotating ---- #}
+  <svg class="geo-layer geo-2" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.4">
+      <circle cx="100" cy="100" r="40"/>
+      {% for i in range(0, 6) %}
+      <circle cx="100" cy="60" r="40" transform="rotate({{ i * 60 }} 100 100)"/>
+      {% endfor %}
+      {% for i in range(0, 12) %}
+      <circle cx="100" cy="30" r="40" transform="rotate({{ i * 30 }} 100 100)" opacity="0.35"/>
+      {% endfor %}
+    </g>
+  </svg>
+
+  {# ---- Layer 3 — page-specific figure, centre, breathing ---- #}
+  <svg class="geo-layer geo-3" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.45">
+      {% if slug == "podcast" or slug == "music" %}
+        {# concentric waves #}
+        {% for i in range(1, 11) %}
+        <circle cx="100" cy="100" r="{{ i * 9 }}" opacity="{{ 1 - (i / 12) }}"/>
+        {% endfor %}
+        <path d="M10 100 Q 40 60 70 100 T 130 100 T 190 100"/>
+        <path d="M10 100 Q 40 140 70 100 T 130 100 T 190 100"/>
+      {% elif slug == "occult" %}
+      <circle cx="100" cy="100" r="78" opacity="0.6"/>
+      <circle cx="100" cy="100" r="54" opacity="0.5"/>
+      {% for i in range(0, 7) %}
+      <circle cx="100" cy="46" r="7" transform="rotate({{ i * 51.4 }} 100 100)" opacity="0.7"/>
+      <line x1="100" y1="100" x2="100" y2="22" transform="rotate({{ i * 51.4 }} 100 100)" opacity="0.3"/>
+      {% endfor %}
+      <path d="M100 62 L132 118 L68 118 Z" opacity="0.7"/>
+      <circle cx="100" cy="100" r="14" opacity="0.8"/>
+      {% elif slug == "cosmic-aether" %}
+      {% for i in range(0, 7) %}
+      <circle cx="100" cy="100" r="{{ 16 + i * 13 }}" opacity="0.5"/>
+      {% endfor %}
+      <path d="M100 100 L176 24 L24 24 Z" opacity="0.7"/>
+      <path d="M100 100 L176 176 L24 176 Z" opacity="0.7"/>
+      {% for i in range(0, 8) %}
+      <line x1="10" y1="{{ 30 + i * 20 }}" x2="190" y2="{{ 30 + i * 20 }}" opacity="0.25"/>
+      {% endfor %}
+      {% elif slug == "geometry" %}
+        {# metatron's cube: 13 circles with full chord lattice #}
+        <circle cx="100" cy="100" r="13"/>
+        {% for i in range(0, 6) %}
+        <circle cx="100" cy="74" r="13" transform="rotate({{ i * 60 }} 100 100)"/>
+        <circle cx="100" cy="48" r="13" transform="rotate({{ i * 60 }} 100 100)"/>
+        <line x1="100" y1="74" x2="100" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.6"/>
+        <line x1="100" y1="48" x2="145" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.45"/>
+        <line x1="100" y1="48" x2="55" y2="126" transform="rotate({{ i * 60 }} 100 100)" opacity="0.45"/>
+        {% endfor %}
+      {% elif slug == "druids" %}
+      {# grove: a ring of trunks around a nemeton #}
+      <circle cx="100" cy="100" r="86" stroke-dasharray="3 7"/>
+      <circle cx="100" cy="100" r="54"/>
+      <path d="M100 150 V96 M100 112 L84 96 M100 112 L116 96 M100 102 L90 90 M100 102 L110 90"/>
+      <circle cx="100" cy="78" r="26" stroke-dasharray="2 5"/>
+      <path d="M30 140 V110 M30 122 L20 112 M30 122 L40 112"/>
+      <path d="M170 140 V110 M170 122 L160 112 M170 122 L180 112"/>
+      <path d="M58 60 V36 M142 60 V36"/>
+      {% elif slug == "consciousness" %}
+      {# a microtubule lattice unrolled, with a collapsing superposition #}
+      <path d="M62 10 V190 M86 10 V190 M114 10 V190 M138 10 V190"/>
+      <path d="M40 40 H160 M40 70 H160 M40 100 H160 M40 130 H160 M40 160 H160" opacity="0.6"/>
+      <path d="M40 40 L160 130 M40 70 L160 160 M40 100 L160 190 M40 10 L160 100" opacity="0.4"/>
+      <circle cx="100" cy="100" r="22"/>
+      <circle cx="100" cy="100" r="34" stroke-dasharray="1 5"/>
+      <circle cx="100" cy="100" r="7"/>
+      {% elif slug == "astrology" %}
+      {# zodiac wheel: twelve houses and an aspect web #}
+      <circle cx="100" cy="100" r="88"/>
+      <circle cx="100" cy="100" r="72"/>
+      <circle cx="100" cy="100" r="40"/>
+      <path d="M100 12 V28 M100 172 V188 M12 100 H28 M172 100 H188"/>
+      <g>
+        <path d="M100 28 L162 136 L38 136 Z"/>
+        <path d="M100 172 L38 64 L162 64 Z"/>
+        <path d="M28 100 L136 38 L136 162 Z"/>
+        <path d="M172 100 L64 162 L64 38 Z"/>
+      </g>
+      {% elif slug == "infographics" %}
+        {# nested golden rectangles and a spiral #}
+        <path d="M100 100 m0 0 a6 6 0 1 1 6 -6 a13 13 0 1 1 -19 13 a26 26 0 1 1 38 -26 a47 47 0 1 1 -66 47 a68 68 0 1 1 96 -68" stroke-width="0.6"/>
+        <rect x="40" y="40" width="120" height="74"/>
+        <rect x="40" y="40" width="74" height="74" opacity="0.6"/>
+        <rect x="40" y="40" width="46" height="46" opacity="0.45"/>
+      {% elif slug == "neurobiology" %}
+      {# branching dendritic arbour + soma rings #}
+      <circle cx="100" cy="100" r="14"/>
+      <circle cx="100" cy="100" r="30"/>
+      <circle cx="100" cy="100" r="58"/>
+      <path d="M100 86 V40 M100 40 L84 18 M100 40 L116 18 M84 18 L74 4 M84 18 L92 2 M116 18 L124 2 M116 18 L134 6"/>
+      <path d="M100 114 V160 M100 160 L82 182 M100 160 L118 182 M82 182 L70 196 M118 182 L132 196"/>
+      <path d="M86 100 H34 M34 100 L14 86 M34 100 L14 116"/>
+      <path d="M114 100 H166 M166 100 L186 86 M166 100 L186 116"/>
+      {% elif slug == "extraterrestrials" %}
+      {# orbital rings, a distant system, and a radiating signal #}
+      <circle cx="100" cy="100" r="6"/>
+      <ellipse cx="100" cy="100" rx="40" ry="14"/>
+      <ellipse cx="100" cy="100" rx="64" ry="23"/>
+      <ellipse cx="100" cy="100" rx="88" ry="32"/>
+      <ellipse cx="100" cy="100" rx="40" ry="14" transform="rotate(60 100 100)"/>
+      <ellipse cx="100" cy="100" rx="64" ry="23" transform="rotate(60 100 100)"/>
+      <ellipse cx="100" cy="100" rx="88" ry="32" transform="rotate(120 100 100)"/>
+      <circle cx="140" cy="100" r="2.5"/><circle cx="36" cy="100" r="2"/>
+      <circle cx="100" cy="100" r="30" stroke-dasharray="1 6"/>
+      <circle cx="100" cy="100" r="50" stroke-dasharray="1 8"/>
+      {% elif slug == "videos" %}
+        {# vesica lattice #}
+        {% for i in range(0, 5) %}
+        <circle cx="{{ 60 + i * 20 }}" cy="100" r="34" opacity="0.6"/>
+        <circle cx="{{ 60 + i * 20 }}" cy="66" r="34" opacity="0.35"/>
+        <circle cx="{{ 60 + i * 20 }}" cy="134" r="34" opacity="0.35"/>
+        {% endfor %}
+      {% elif slug == "wizardry" %}
+        {# ritual circle: quarters, inscribed pentagram, outer dashed ward #}
+        <circle cx="100" cy="100" r="92"/>
+        <circle cx="100" cy="100" r="84" stroke-dasharray="2 6"/>
+        <circle cx="100" cy="100" r="22"/>
+        <polygon points="100,16 174,170 10,72 190,72 26,170" opacity="0.7"/>
+        <line x1="100" y1="8" x2="100" y2="192" opacity="0.4"/>
+        <line x1="8" y1="100" x2="192" y2="100" opacity="0.4"/>
+        {% for i in range(0, 4) %}
+        <circle cx="100" cy="14" r="7" transform="rotate({{ i * 90 }} 100 100)"/>
+        {% endfor %}
+      {% elif slug == "runes" %}
+        {# a cast of staves over a ring of three aettir #}
+        <circle cx="100" cy="100" r="88" stroke-dasharray="4 8"/>
+        {% for i in range(0, 24) %}
+        <line x1="100" y1="22" x2="100" y2="34" transform="rotate({{ i * 15 }} 100 100)" opacity="0.6"/>
+        {% endfor %}
+        {% for i in range(0, 3) %}
+        <circle cx="100" cy="100" r="{{ 30 + i * 18 }}" opacity="0.4"/>
+        {% endfor %}
+        <path d="M54 142 V58 M54 72 L80 60 M54 90 L80 78" opacity="0.8"/>
+        <path d="M146 142 V58 M146 70 L120 86 M146 92 L120 108" opacity="0.8"/>
+        <path d="M86 150 L100 118 L114 150" opacity="0.7"/>
+      {% elif slug == "elemental-alchemy" %}
+        {# squared circle with the four elemental triangles #}
+        <circle cx="100" cy="100" r="90"/>
+        <rect x="26" y="26" width="148" height="148"/>
+        <circle cx="100" cy="100" r="52"/>
+        <polygon points="100,34 134,94 66,94"/>
+        <polygon points="100,166 134,106 66,106"/>
+        <line x1="74" y1="76" x2="126" y2="76" opacity="0.8"/>
+        <line x1="74" y1="124" x2="126" y2="124" opacity="0.8"/>
+        <polygon points="100,52 142,148 58,148" opacity="0.35"/>
+      {% elif slug == "ask-ed" or slug == "products" %}
+        {# octagram + enclosing circles #}
+        <circle cx="100" cy="100" r="88"/>
+        <polygon points="100,12 125,61 180,65 142,105 155,160 100,134 45,160 58,105 20,65 75,61"/>
+        <polygon points="100,20 162,45 180,100 162,155 100,180 38,155 20,100 38,45" opacity="0.5"/>
+      {% else %}
+        {# home: flower of life #}
+        <circle cx="100" cy="100" r="20"/>
+        {% for i in range(0, 6) %}
+        <circle cx="100" cy="80" r="20" transform="rotate({{ i * 60 }} 100 100)"/>
+        <circle cx="100" cy="60" r="20" transform="rotate({{ i * 60 }} 100 100)" opacity="0.7"/>
+        <circle cx="117" cy="70" r="20" transform="rotate({{ i * 60 }} 100 100)" opacity="0.5"/>
+        {% endfor %}
+        <circle cx="100" cy="100" r="62" stroke-width="0.6"/>
+        <circle cx="100" cy="100" r="66" stroke-width="0.3"/>
+      {% endif %}
+    </g>
+  </svg>
+
+  {# ---- Layer 4 — metatron's cube, wandering the full page ---- #}
+  <svg class="geo-layer geo-4" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="20"/>
+      {% for i in range(0, 6) %}
+      <circle cx="100" cy="60" r="20" transform="rotate({{ i * 60 }} 100 100)"/>
+      <circle cx="100" cy="20" r="20" transform="rotate({{ i * 60 }} 100 100)" opacity="0.7"/>
+      {% endfor %}
+      <path d="M100 20 L169 60 L169 140 L100 180 L31 140 L31 60 Z"/>
+      <path d="M100 20 L100 180 M31 60 L169 140 M169 60 L31 140 M31 60 L169 60 M31 140 L169 140"/>
+      <path d="M100 20 L31 140 M100 20 L169 140 M100 180 L31 60 M100 180 L169 60" opacity="0.55"/>
+    </g>
+  </svg>
+
+  {# ---- Layer 5 — pentagram in a circle, slow diagonal drift ---- #}
+  <svg class="geo-layer geo-5" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.55">
+      <circle cx="100" cy="100" r="92"/>
+      <circle cx="100" cy="100" r="74"/>
+      <polygon points="100,12 173,159 11,67 189,67 27,159"/>
+      <polygon points="100,26 170,77 143,159 57,159 30,77" opacity="0.45"/>
+    </g>
+  </svg>
+
+  {# ---- Layer 6 — vesica chain, slow horizontal travel ---- #}
+  <svg class="geo-layer geo-6" viewBox="0 0 320 120">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      {% for i in range(0, 9) %}
+      <circle cx="{{ 20 + i * 36 }}" cy="60" r="36" opacity="0.7"/>
+      {% endfor %}
+      <line x1="0" y1="60" x2="320" y2="60" opacity="0.4"/>
+    </g>
+  </svg>
+
+  {# ---- Layer 7 — golden spiral, drifting upper left ---- #}
+  <svg class="geo-layer geo-7" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <path d="M100 100 m0 0 a5 5 0 1 1 5 -5 a13 13 0 1 1 -18 13 a34 34 0 1 1 47 -34 a55 55 0 1 1 -76 55 a89 89 0 1 1 123 -89"/>
+      <rect x="11" y="11" width="178" height="110"/>
+      <rect x="79" y="11" width="110" height="110" opacity="0.6"/>
+      <rect x="79" y="11" width="68" height="68" opacity="0.45"/>
+    </g>
+  </svg>
+
+  {# ---- Layer 8 — sri-yantra style triangle lattice, orbiting ---- #}
+  <svg class="geo-layer geo-8" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="88"/>
+      {% for i in range(0, 4) %}
+      <polygon points="100,{{ 20 + i * 12 }} {{ 180 - i * 14 }},{{ 150 - i * 8 }} {{ 20 + i * 14 }},{{ 150 - i * 8 }}"/>
+      <polygon points="100,{{ 180 - i * 12 }} {{ 180 - i * 14 }},{{ 50 + i * 8 }} {{ 20 + i * 14 }},{{ 50 + i * 8 }}" opacity="0.7"/>
+      {% endfor %}
+    </g>
+  </svg>
+
+</div>

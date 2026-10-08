@@ -1,0 +1,40 @@
+<header class="site-head">
+  <div class="rule rule--top" aria-hidden="true"></div>
+  <div class="brand-row">
+    <a class="brand" href="/">
+      <span class="brand-sigil">{% glyph "torus" %}</span>
+      <span class="brand-text">
+        <span class="brand-line">
+          <span class="brand-name">The Two Infinities</span>
+          <span class="brand-order" aria-hidden="true">
+            <span class="brand-rule"></span>
+            <span class="brand-order-text">A Geometry <em>of</em> Existence &#183; r3.5</span>
+            <span class="brand-rule"></span>
+          </span>
+        </span>
+        <span class="brand-tag">{{ site.tagline }}</span>
+      </span>
+    </a>
+    <a class="head-join" href="/join/" id="head-join">
+      <span class="head-join-mark" aria-hidden="true">&#9737;</span>
+      <span class="head-join-text">Sign in <span class="head-join-or">/ Join</span></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+      <span></span><span></span><span></span>
+      <em>Menu</em>
+    </button>
+  </div>
+  <nav id="primary-nav" class="site-nav" aria-label="Primary">
+    <ul>
+      {% for item in site.nav %}
+      <li>
+        <a href="{{ item.url }}" {% if page.url == item.url %}aria-current="page"{% endif %}>
+          <i aria-hidden="true">{% glyph item.glyph %}</i>
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  <div class="rule rule--bottom" aria-hidden="true"></div>
+</header>

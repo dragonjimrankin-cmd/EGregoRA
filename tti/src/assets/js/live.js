@@ -1,0 +1,1652 @@
+/* ===========================================================================
+   The Live Cam — broadcasting, and watching
+   ---------------------------------------------------------------------------
+   There is no media server behind this site, so a feed here is the camera
+   recording two seconds at a time and the watchers playing those segments
+   as they land, a few seconds behind the room. That is said on the page as
+   well as in the code, because a viewer who expects true live and gets six
+   seconds of lag will think something is broken rather than honest.
+
+   Watching needs two things: an account on this site, and the watchword the
+   broadcaster typed before the countdown. An account is not an invitation
+   and a shared word is not an identity, so both are asked for.
+   ======================================================================== */
+
+import { createMixer, plateCanvas, PLATE_KINDS } from "./live-desk.js";
+import { holdingCard, LINES } from "./live-offline.js";
+
+const SEGMENT = 2000;          /* milliseconds per segment */
+const POLL = 1400;             /* how often a watcher asks for more */
+
+const esc = (t) => String(t == null ? "" : t)
+  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+const when = (iso) => {
+  try { return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); }
+  catch { return ""; }
+};
+
+/* A countdown anybody can use: ten seconds, visible, cancellable. */
+export function countdown(host, seconds, go) {
+  let left = seconds;
+  host.hidden = false;
+  host.innerHTML = '<span class="count-num">' + left + "</span>" +
+    '<span class="count-note">Starting \u2014 look at the camera</span>' +
+    '<button type="button" class="btn btn--small btn--ghost count-stop">Stop</button>';
+  const num = host.querySelector(".count-num");
+  let dead = false;
+  host.querySelector(".count-stop").addEventListener("click", () => {
+    dead = true; host.hidden = true; host.innerHTML = "";
+  });
+  const tick = setInterval(() => {
+    if (dead) { clearInterval(tick); return; }
+    left -= 1;
+    if (left > 0) { num.textContent = left; return; }
+    clearInterval(tick);
+    host.hidden = true;
+    host.innerHTML = "";
+    go();
+  }, 1000);
+  return () => { dead = true; clearInterval(tick); host.hidden = true; host.innerHTML = ""; };
+}
+
+/* Every stream this page is holding, so that "the camera is in use" can be
+   answered with "by this page, here, and here is the button that lets it
+   go" rather than left as a riddle. */
+const HELD = new Set();
+
+export function hold(stream) {
+  if (stream) HELD.add(stream);
+  return stream;
+}
+
+export function release() {
+  let n = 0;
+  HELD.forEach((s) => {
+    s.getTracks().forEach((t) => { t.stop(); n += 1; });
+    HELD.delete(s);
+  });
+  document.querySelectorAll("video").forEach((v) => {
+    if (v.srcObject) { v.srcObject = null; }
+  });
+  return n;
+}
+
+/* Which device is actually the problem. Labels are only given out once a
+   permission has been granted, so this says what it knows and no more. */
+export async function nameTheDevice(want) {
+  try {
+    const all = await navigator.mediaDevices.enumerateDevices();
+    const kind = want === "audio" ? "audioinput" : "videoinput";
+    const list = all.filter((d) => d.kind === kind);
+    const named = list.filter((d) => d.label);
+    if (named.length === 1) return named[0].label;
+    if (named.length > 1) return named.map((d) => d.label).join(", ");
+    if (list.length) return list.length + " " + (want === "audio" ? "microphone" : "camera") +
+      (list.length === 1 ? "" : "s") + " this browser will not name until you grant permission once";
+    return "no " + (want === "audio" ? "microphone" : "camera") + " this browser can see";
+  } catch (e) {
+    return "a device this browser will not name";
+  }
+}
+
+/* The box that comes up instead of a shrug. */
+export function busyBox(host, detail, again) {
+  if (!host) return;
+  const box = document.createElement("div");
+  box.className = "busy-box";
+  box.innerHTML =
+    '<p class="busy-head">That device is already in use</p>' +
+    '<p class="muted small">The device: <strong>' + esc(detail.device) + "</strong></p>" +
+    '<p class="muted xsmall">' + esc(detail.why) + "</p>" +
+    '<p class="btn-row"><button type="button" class="btn btn--small" data-busy="free">' +
+    "Stop any use on this page and try again</button>" +
+    '<button type="button" class="btn btn--small btn--ghost" data-busy="shut">Leave it</button></p>' +
+    '<p class="muted xsmall">If it is another program holding it \u2014 a meeting, another tab, a ' +
+    "recorder \u2014 this page cannot reach in and close that. Quit it there, then press the button.</p>";
+  const had = host.querySelector(".busy-box");
+  if (had) had.remove();
+  host.appendChild(box);
+  box.querySelector('[data-busy="shut"]').addEventListener("click", () => box.remove());
+  box.querySelector('[data-busy="free"]').addEventListener("click", async () => {
+    const n = release();
+    box.querySelector(".busy-head").textContent = n
+      ? "Released " + n + " track" + (n === 1 ? "" : "s") + " held by this page. Trying again\u2026"
+      : "This page was holding nothing. Trying again anyway\u2026";
+    try {
+      await again();
+      box.remove();
+    } catch (err) {
+      box.querySelector(".busy-head").textContent = "Still held: " + ((err && err.message) || "unknown");
+    }
+  });
+}
+
+/* Is this the particular failure that means "something else has it"? */
+export function busyError(err) {
+  const n = (err && err.name) || "";
+  return n === "NotReadableError" || n === "TrackStartError" || n === "AbortError" ||
+    /in use|already|busy|could not start/i.test((err && err.message) || "");
+}
+
+/* ---------------------------------------------------------- broadcasting */
+(function broadcast() {
+  const root = document.getElementById("live-admin");
+  if (!root) return;
+  const $ = (n) => root.querySelector('[data-lv="' + n + '"]');
+  let pass = "";
+  let feedId = null, rec = null, stream = null, seq = 0, cancel = null;
+  let tapeParts = [], tapeType = "video/webm", tapeFrom = 0;
+
+  const say = (t, bad) => {
+    const n = $("msg");
+    if (n) { n.textContent = t || ""; n.className = "auth-msg" + (bad ? " is-bad" : ""); }
+  };
+
+  const post = (payload) => fetch("/api/live", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(Object.assign({ pass }, payload))
+  }).then(async (r) => {
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      /* Signing in, confirming an address, proving an age: whichever of
+         the three is in the way, bring that thing up here rather than
+         leaving a sentence about it on the page. */
+      if (d.gate && window.EGNeedCheck) window.EGNeedCheck(d.gate);
+      const err = new Error(d.error || "the feed refused that");
+      err.gate = d.gate;
+      throw err;
+    }
+    return d;
+  });
+
+  $("open").addEventListener("click", () => {
+    const panel = $("panel");
+    const shut = panel.hidden;
+    panel.hidden = !shut;
+    $("open").setAttribute("aria-expanded", String(shut));
+    $("open").textContent = shut ? "Close the admin door" : "Admin Only";
+  });
+
+  $("signin").addEventListener("click", async (e) => {
+    e.preventDefault();
+    pass = $("pass").value || "";
+    try {
+      const d = await post({ action: "mine" });
+      $("work").hidden = false;
+      $("pass").value = "";
+      if (window.EGAdminKeep) window.EGAdminKeep(pass);
+      say("Open.");
+      drawMine(d.feeds || []);
+      drawFiles();
+    } catch (err) {
+      pass = "";
+      say((err && err.message) || "That did not open it.", true);
+    }
+  });
+
+  function drawMine(feeds) {
+    const n = $("mine");
+    if (!n) return;
+    n.innerHTML = feeds.length
+      ? '<table class="keeper-table"><thead><tr><th>Feed</th><th>State</th><th>Watchers</th>' +
+        "<th>Segments</th><th></th></tr></thead><tbody>" + feeds.map((f) =>
+          "<tr><td>" + esc(f.title) + '<br><span class="muted xsmall">from ' + esc(when(f.since)) +
+          "</span></td><td>" + esc(f.state) + "</td><td>" + f.watchers + "</td><td>" + f.segments +
+          "</td><td>" + (f.state === "live"
+            ? '<button class="btn btn--small btn--ghost" type="button" data-end="' + f.id + '">End it</button>'
+            : "") + "</td></tr>").join("") + "</tbody></table>"
+      : '<p class="muted small">No feed has run yet.</p>';
+    n.querySelectorAll("[data-end]").forEach((b) => b.addEventListener("click", async () => {
+      await post({ action: "close", id: Number(b.getAttribute("data-end")) }).catch(() => {});
+      drawMine((await post({ action: "mine" })).feeds || []);
+    }));
+  }
+
+  /* ------------------------------------------------------------- the desk */
+  /* The gallery: a deck of plates, a tape machine, and the buttons that put
+     one of them on air. It is built whether or not a feed is running, so a
+     broadcaster can cut plates together and rehearse before the countdown,
+     and keep editing them while live. */
+  const desk = (function makeDesk() {
+    const deckKey = "eg-live-deck";
+    let mixer = null;
+    let deck = [];
+    try { deck = JSON.parse(localStorage.getItem(deckKey) || "[]"); } catch (e) { deck = []; }
+
+    const d = (n) => root.querySelector('[data-lv="' + n + '"]');
+    const has = d("programme");
+
+    function spec() {
+      return {
+        kind: (d("pk") || {}).value || "title",
+        kicker: (d("p-kicker") || {}).value || "",
+        title: (d("p-title") || {}).value || "",
+        subtitle: (d("p-sub") || {}).value || "",
+        lines: (d("p-lines") || {}).value || "",
+        accent: (d("p-accent") || {}).value || "gold"
+      };
+    }
+
+    function preview() {
+      const host = d("p-preview");
+      if (!host) return;
+      const el = plateCanvas(spec(), 1280, 720);
+      el.className = "plate-shot";
+      host.innerHTML = "";
+      host.appendChild(el);
+      return el;
+    }
+
+    function toAir(sp, mode) {
+      if (!mixer) return;
+      mixer.setPlate(plateCanvas(sp, 1280, 720));
+      if (mode) mixer.take(mode, !!(d("fade") || {}).checked).then(mark);
+      else mark();
+    }
+
+    function mark() {
+      root.querySelectorAll("[data-air]").forEach((b) => {
+        const on = mixer && b.getAttribute("data-air") === mixer.state.mode;
+        b.classList.toggle("is-on", !!on);
+        b.setAttribute("aria-pressed", String(!!on));
+      });
+      const n = d("on-air");
+      if (n && mixer) n.textContent = mixer.state.mode;
+    }
+
+    /* The deck is a presentation: an ordered run of pages that can be
+       flicked through while the feed is live, forwards, back, or straight
+       to a page by pressing its card. The page showing is remembered, so
+       coming back to the desk mid-broadcast does not lose your place. */
+    let at = -1;
+
+    function keep() {
+      localStorage.setItem(deckKey, JSON.stringify(deck));
+    }
+
+    function showPage(i, fade) {
+      if (!deck.length) return say("There are no pages in the deck yet.", true);
+      if (!mixer) return say("Open the camera first \u2014 the desk needs to be lit.", true);
+      at = (i + deck.length) % deck.length;
+      mixer.setPlate(plateCanvas(deck[at], 1280, 720));
+      mixer.take("plate", fade === undefined ? !!(d("fade") || {}).checked : fade).then(mark);
+      drawDeck();
+      say("Page " + (at + 1) + " of " + deck.length +
+        (deck[at].title ? " \u2014 " + deck[at].title : "") + ".");
+    }
+
+    function counter() {
+      const n = d("deck-count");
+      if (n) n.textContent = deck.length ? (at < 0 ? "page \u2014 of " + deck.length
+        : "page " + (at + 1) + " of " + deck.length) : "no pages yet";
+    }
+
+    function drawDeck() {
+      const host = d("deck");
+      if (!host) return;
+      counter();
+      host.innerHTML = deck.length ? "" : '<p class="muted small">No pages yet. Compose one above and ' +
+        "press Add this page; they run in the order you add them.</p>";
+      deck.forEach((sp, i) => {
+        const card = document.createElement("figure");
+        card.className = "deck-card" + (i === at ? " is-showing" : "");
+        const shot = plateCanvas(sp, 640, 360);
+        shot.className = "plate-shot";
+        card.appendChild(shot);
+        const cap = document.createElement("figcaption");
+        cap.innerHTML = '<span><em class="deck-num">' + (i + 1) + "</em> " +
+          esc(sp.title || sp.kind) + (i === at ? ' <strong class="deck-now">showing</strong>' : "") + "</span>" +
+          '<button type="button" class="btn btn--small" data-deck-air="' + i + '">Show</button>' +
+          '<button type="button" class="btn btn--small btn--ghost" data-deck-edit="' + i + '">Edit</button>' +
+          '<button type="button" class="btn btn--small btn--ghost" data-deck-up="' + i + '" ' +
+          (i === 0 ? "disabled" : "") + ' aria-label="Move earlier">&uarr;</button>' +
+          '<button type="button" class="btn btn--small btn--ghost" data-deck-down="' + i + '" ' +
+          (i === deck.length - 1 ? "disabled" : "") + ' aria-label="Move later">&darr;</button>' +
+          '<button type="button" class="btn btn--small btn--ghost" data-deck-drop="' + i + '">Drop</button>';
+        card.appendChild(cap);
+        host.appendChild(card);
+      });
+      host.querySelectorAll("[data-deck-air]").forEach((b) => b.addEventListener("click", () => {
+        showPage(Number(b.getAttribute("data-deck-air")));
+      }));
+      host.querySelectorAll("[data-deck-up]").forEach((b) => b.addEventListener("click", () => {
+        const i = Number(b.getAttribute("data-deck-up"));
+        const held = deck[i];
+        deck[i] = deck[i - 1];
+        deck[i - 1] = held;
+        if (at === i) at = i - 1;
+        else if (at === i - 1) at = i;
+        keep();
+        drawDeck();
+      }));
+      host.querySelectorAll("[data-deck-down]").forEach((b) => b.addEventListener("click", () => {
+        const i = Number(b.getAttribute("data-deck-down"));
+        const held = deck[i];
+        deck[i] = deck[i + 1];
+        deck[i + 1] = held;
+        if (at === i) at = i + 1;
+        else if (at === i + 1) at = i;
+        keep();
+        drawDeck();
+      }));
+      host.querySelectorAll("[data-deck-edit]").forEach((b) => b.addEventListener("click", () => {
+        const sp = deck[Number(b.getAttribute("data-deck-edit"))];
+        if (d("pk")) d("pk").value = sp.kind;
+        if (d("p-kicker")) d("p-kicker").value = sp.kicker || "";
+        if (d("p-title")) d("p-title").value = sp.title || "";
+        if (d("p-sub")) d("p-sub").value = sp.subtitle || "";
+        if (d("p-lines")) d("p-lines").value = sp.lines || "";
+        if (d("p-accent")) d("p-accent").value = sp.accent || "gold";
+        preview();
+      }));
+      host.querySelectorAll("[data-deck-drop]").forEach((b) => b.addEventListener("click", () => {
+        const i = Number(b.getAttribute("data-deck-drop"));
+        deck.splice(i, 1);
+        if (at >= deck.length) at = deck.length - 1;
+        keep();
+        drawDeck();
+      }));
+    }
+
+    if (has) {
+      const hint = d("p-hint");
+      const kindSel = d("pk");
+      if (kindSel && !kindSel.options.length) {
+        PLATE_KINDS.forEach((k) => {
+          const o = document.createElement("option");
+          o.value = k.id;
+          o.textContent = k.label;
+          kindSel.appendChild(o);
+        });
+      }
+      const showHint = () => {
+        const k = PLATE_KINDS.find((x) => x.id === (kindSel || {}).value);
+        if (hint && k) hint.textContent = k.hint;
+      };
+      if (kindSel) kindSel.addEventListener("change", () => { showHint(); preview(); });
+      showHint();
+      ["p-kicker", "p-title", "p-sub", "p-lines", "p-accent"].forEach((n) => {
+        const el = d(n);
+        if (el) el.addEventListener("input", preview);
+        if (el) el.addEventListener("change", preview);
+      });
+      if (d("p-air")) d("p-air").addEventListener("click", () => toAir(spec(), "plate"));
+      if (d("p-save")) d("p-save").addEventListener("click", () => {
+        deck.push(spec());
+        if (deck.length > 60) deck.shift();
+        keep();
+        drawDeck();
+        say("Added as page " + deck.length + ".");
+      });
+      if (d("p-replace")) d("p-replace").addEventListener("click", () => {
+        if (at < 0) return say("No page is showing, so there is none to replace.", true);
+        deck[at] = spec();
+        keep();
+        showPage(at, false);
+        say("Page " + (at + 1) + " replaced with what is in the composer.");
+      });
+      if (d("deck-clear")) d("deck-clear").addEventListener("click", () => {
+        if (!confirm("Throw away the whole presentation?")) return;
+        deck = [];
+        at = -1;
+        keep();
+        drawDeck();
+      });
+
+      /* The flicker. Three buttons and the arrow keys, which is what a
+         person presenting actually reaches for. */
+      if (d("deck-first")) d("deck-first").addEventListener("click", () => showPage(0));
+      if (d("deck-prev")) d("deck-prev").addEventListener("click", () => showPage(at < 0 ? 0 : at - 1));
+      if (d("deck-next")) d("deck-next").addEventListener("click", () => showPage(at < 0 ? 0 : at + 1));
+      if (d("deck-end")) d("deck-end").addEventListener("click", () => {
+        at = -1;
+        drawDeck();
+        if (mixer) mixer.take("camera", true).then(mark);
+        say("Out of the presentation, back to the camera.");
+      });
+      addEventListener("keydown", (e) => {
+        const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target && e.target.tagName) || "");
+        if (typing || !mixer || !deck.length) return;
+        if (!(d("deck-keys") || {}).checked) return;
+        if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); showPage(at < 0 ? 0 : at + 1); }
+        if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); showPage(at < 0 ? 0 : at - 1); }
+      });
+
+      /* Drag a picture onto the programme and it goes out. The file is read
+         in this browser and never uploaded; the monitor is also a drop
+         target so there is somewhere obvious to aim at, and the picture
+         stays up until the director takes it down. */
+      const drop = d("programme");
+      let lastStill = "";
+      const takeImage = (file) => {
+        if (!file || file.type.indexOf("image/") !== 0) {
+          return say("That is not a picture the browser can read.", true);
+        }
+        if (!mixer) return say("Open the camera first \u2014 the desk needs to be lit.", true);
+        const img = new Image();
+        img.onload = () => {
+          mixer.setStill(img, file.name);
+          lastStill = file.name;
+          const n = d("still-name");
+          if (n) n.textContent = file.name + " \u2014 " + img.naturalWidth + "\u00d7" + img.naturalHeight;
+          mixer.take("still", !!(d("fade") || {}).checked).then(mark);
+          say("Showing " + file.name + ". Press Camera, or the button under the monitor, to take it down.");
+        };
+        img.onerror = () => say("That picture would not open.", true);
+        img.src = URL.createObjectURL(file);
+      };
+      if (drop) {
+        ["dragenter", "dragover"].forEach((e) => drop.addEventListener(e, (ev) => {
+          ev.preventDefault();
+          drop.classList.add("is-dropping");
+        }));
+        ["dragleave", "drop"].forEach((e) => drop.addEventListener(e, () => drop.classList.remove("is-dropping")));
+        drop.addEventListener("drop", (ev) => {
+          ev.preventDefault();
+          const f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+          takeImage(f);
+        });
+      }
+      if (d("still-file")) d("still-file").addEventListener("change", (e) => {
+        takeImage(e.target.files && e.target.files[0]);
+      });
+      if (d("still-off")) d("still-off").addEventListener("click", () => {
+        if (mixer) mixer.take("camera", true).then(mark);
+        say(lastStill ? lastStill + " taken down. Back to the camera." : "Back to the camera.");
+      });
+
+      /* The second screen. A browser will only share a screen when a person
+         asks for it, so this is a button and not a setting; where it goes
+         once shared is the setting. */
+      let screenStream = null;
+      const screenEl = d("screen");
+      const screenWhere = () => (d("screen-mode") || { value: "off" }).value;
+      if (d("screen-share")) d("screen-share").addEventListener("click", async () => {
+        if (!mixer) return say("Open the camera first.", true);
+        try {
+          screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { frameRate: { ideal: 15 } }, audio: false
+          });
+          screenEl.srcObject = screenStream;
+          screenEl.muted = true;
+          await screenEl.play().catch(() => {});
+          mixer.setScreen(screenEl);
+          const stop = screenStream.getVideoTracks()[0];
+          if (stop) stop.addEventListener("ended", () => {
+            screenStream = null;
+            if (d("screen-mode")) d("screen-mode").value = "off";
+            if (mixer) mixer.take("camera", true).then(mark);
+            say("The screen share ended. Back to the camera.");
+          });
+          if (screenWhere() === "off" && d("screen-mode")) d("screen-mode").value = "instead";
+          applyScreen();
+          say("Screen shared. It is going out " +
+            (screenWhere() === "under" ? "underneath the camera." : "in place of the camera."));
+        } catch (err) {
+          say((err && err.message) || "The screen would not share.", true);
+        }
+      });
+      function applyScreen() {
+        if (!mixer) return;
+        const where = screenWhere();
+        if (where === "off") { mixer.take("camera", true).then(mark); return; }
+        if (!screenStream) return say("Share a screen first.", true);
+        mixer.take(where === "under" ? "stack" : "screen", !!(d("fade") || {}).checked).then(mark);
+      }
+      if (d("screen-mode")) d("screen-mode").addEventListener("change", applyScreen);
+      if (d("screen-stop")) d("screen-stop").addEventListener("click", () => {
+        if (screenStream) screenStream.getTracks().forEach((t) => t.stop());
+        screenStream = null;
+        if (d("screen-mode")) d("screen-mode").value = "off";
+        if (mixer) mixer.take("camera", true).then(mark);
+        say("The screen share is stopped.");
+      });
+
+      root.querySelectorAll("[data-air]").forEach((b) => b.addEventListener("click", () => {
+        if (!mixer) return say("Open the camera first \u2014 the desk needs a picture to cut with.", true);
+        mixer.take(b.getAttribute("data-air"), !!(d("fade") || {}).checked).then(mark);
+      }));
+
+      /* The tape machine. The file never leaves the browser; it is played
+         into the mixer, so what the watchers get is the recording of the
+         programme, not an upload they have to download. */
+      const tape = d("tape");
+      if (d("tape-file")) d("tape-file").addEventListener("change", (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f || !tape) return;
+        tape.src = URL.createObjectURL(f);
+        tape.loop = !!(d("tape-loop") || {}).checked;
+        tape.load();
+        say("Tape loaded: " + f.name + " \u2014 " + Math.round(f.size / 1048576) + " MB. Nothing was uploaded.");
+        if (mixer) { mixer.setTape(tape); mixer.tapeFrom(tape); }
+      });
+      if (tape) {
+        tape.addEventListener("timeupdate", () => {
+          const n = d("tape-time");
+          if (!n || !tape.duration) return;
+          const left = Math.max(0, tape.duration - tape.currentTime);
+          n.textContent = Math.floor(left / 60) + ":" + String(Math.floor(left % 60)).padStart(2, "0") + " left";
+          const bar = d("tape-bar");
+          if (bar) bar.style.width = ((tape.currentTime / tape.duration) * 100).toFixed(1) + "%";
+        });
+        tape.addEventListener("ended", () => {
+          if ((d("tape-back") || {}).checked && mixer) mixer.take("camera", true).then(mark);
+        });
+      }
+      const press = (name, fn) => { const b = d(name); if (b) b.addEventListener("click", fn); };
+      press("tape-play", () => { if (tape) { tape.play().catch(() => {}); if (mixer) mixer.tapeFrom(tape); } });
+      press("tape-pause", () => tape && tape.pause());
+      press("tape-restart", () => { if (tape) tape.currentTime = 0; });
+      press("tape-back10", () => { if (tape) tape.currentTime = Math.max(0, tape.currentTime - 10); });
+      press("tape-on10", () => { if (tape) tape.currentTime = Math.min(tape.duration || 0, tape.currentTime + 10); });
+      press("tape-air", () => {
+        if (!mixer) return say("Open the camera first.", true);
+        if (tape) { mixer.setTape(tape); mixer.tapeFrom(tape); tape.play().catch(() => {}); }
+        mixer.take("tape", !!(d("fade") || {}).checked).then(mark);
+      });
+      if (d("tape-loop")) d("tape-loop").addEventListener("change", (e) => { if (tape) tape.loop = e.target.checked; });
+
+      const level = (name, fn) => {
+        const el = d(name);
+        if (el) el.addEventListener("input", () => fn(Number(el.value) / 100));
+      };
+      level("mic-level", (v) => mixer && mixer.micLevel(v));
+      level("tape-level", (v) => mixer && mixer.tapeLevel(v));
+
+      const capWrite = () => mixer && mixer.setCaption((d("cap-text") || {}).value,
+        !!(d("cap-on") || {}).checked);
+      ["cap-text", "cap-on"].forEach((n) => {
+        const el = d(n);
+        if (el) { el.addEventListener("input", capWrite); el.addEventListener("change", capWrite); }
+      });
+      if (d("badge")) d("badge").addEventListener("change", () => mixer && mixer.setBadge(d("badge").value));
+
+      drawDeck();
+      preview();
+    }
+
+    return {
+      wake(camEl, w, h) {
+        if (mixer) return;
+        mixer = createMixer({ width: w || 960, height: h || 540, fps: 24 });
+        mixer.setCamera(camEl);
+        if (stream) mixer.micFrom(stream);
+        if (d("tape")) { mixer.setTape(d("tape")); }
+        mixer.setCaption((d("cap-text") || {}).value, !!(d("cap-on") || {}).checked);
+        if (d("badge")) mixer.setBadge(d("badge").value);
+        toAir(spec(), null);
+        const host = d("programme");
+        if (host) {
+          host.innerHTML = "";
+          mixer.canvas.className = "programme-canvas";
+          host.appendChild(mixer.canvas);
+        }
+        mark();
+      },
+      air(mode) { if (mixer) mixer.take(mode, false).then(mark); },
+      out() { return mixer ? mixer.stream : null; },
+      sleep() {
+        if (mixer) mixer.stop();
+        mixer = null;
+        const host = d("programme");
+        if (host) host.innerHTML = '<p class="muted small">The gallery is dark. Open the camera to light it.</p>';
+        mark();
+      }
+    };
+  }());
+
+  /* The camera is opened before the countdown, so the ten seconds are spent
+     looking at yourself rather than waiting for a permission dialogue. The
+     camera is not what gets recorded, though: it goes into the mixer, and
+     the mixer's canvas is what the recorder sees. That is what lets a plate
+     or a piece of tape go out on the feed without a second connection. */
+  async function openCamera() {
+    const wantCam = $("source").value !== "mic";
+    const quality = $("quality").value;
+    const size = quality === "high" ? 1280 : quality === "low" ? 640 : 960;
+    stream = hold(await navigator.mediaDevices.getUserMedia({
+      video: wantCam ? { width: { ideal: size }, frameRate: { ideal: 24 } } : false,
+      audio: { echoCancellation: true, noiseSuppression: true }
+    }));
+    const mirror = $("mirror");
+    mirror.srcObject = stream;
+    mirror.muted = true;
+    await mirror.play().catch(() => {});
+    desk.wake(mirror, size, Math.round((size * 9) / 16));
+    if (!wantCam) desk.air("plate");
+    return { wantCam, quality };
+  }
+
+  $("start").addEventListener("click", async () => {
+    const title = $("title").value.trim();
+    const word = $("word").value.trim();
+    if (!title) return say("Give the feed a title.", true);
+    if (word.length < 3) return say("Set a watchword of at least three characters \u2014 " +
+      "nobody gets in without it.", true);
+    try {
+      say("Opening the camera\u2026");
+      const { wantCam, quality } = await openCamera();
+      say("Camera open. Ten seconds.");
+      cancel = countdown($("count"), 10, () => begin(title, word, wantCam, quality));
+      $("start").disabled = true;
+      $("stop").disabled = false;
+    } catch (err) {
+      $("start").disabled = false;
+      if (busyError(err)) {
+        const which = $("source").value === "mic" ? "audio" : "video";
+        say("That device is busy \u2014 see the box below.", true);
+        busyBox($("work"), {
+          device: await nameTheDevice(which),
+          why: "Something already has it open. Usually that is another tab of this site, a video " +
+            "call, or a recorder left running."
+        }, async () => {
+          const got = await openCamera();
+          say("Camera open. Ten seconds.");
+          cancel = countdown($("count"), 10, () => begin(title, word, got.wantCam, got.quality));
+          $("start").disabled = true;
+          $("stop").disabled = false;
+        });
+        return;
+      }
+      say((err && err.message) || "The camera would not open.", true);
+    }
+  });
+
+  async function begin(title, word, wantCam, quality) {
+    try {
+      const type = ["video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus", "video/webm"]
+        .find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm";
+      const d = await post({ action: "open", title, word, mime: type, note: $("note").value.trim() });
+      feedId = d.id;
+      seq = 0;
+
+      rec = new MediaRecorder(desk.out() || stream, {
+        mimeType: type,
+        videoBitsPerSecond: quality === "high" ? 1800000 : quality === "low" ? 500000 : 1000000,
+        audioBitsPerSecond: 64000
+      });
+      rec.ondataavailable = async (e) => {
+        if (!e.data || !e.data.size || feedId == null) return;
+        /* The same segments that go out are kept in memory for the archive.
+           They are the broadcast, in order, head first, so concatenating
+           them is the whole recording with no re-encoding. */
+        if (keeping()) tapeParts.push(e.data);
+        const bytes = new Uint8Array(await e.data.arrayBuffer());
+        let bin = "";
+        for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        const mine = seq++;
+        try {
+          await post({ action: "push", id: feedId, seq: mine, head: mine === 0, part: btoa(bin) });
+          say("Live \u00b7 " + (mine + 1) + " segments sent \u00b7 watchword \u201c" + word + "\u201d");
+        } catch (err) {
+          say("A segment did not get through: " + ((err && err.message) || "unknown"), true);
+        }
+      };
+      tapeParts = [];
+      tapeType = type;
+      tapeFrom = Date.now();
+      rec.start(SEGMENT);
+      root.classList.add("is-live");
+      say("Live. Watchers need an account here and the watchword \u201c" + word + "\u201d.");
+      showInvite(d.id, word);
+      drawMine((await post({ action: "mine" })).feeds || []);
+    } catch (err) {
+      say((err && err.message) || "The feed would not start.", true);
+      stopAll();
+    }
+  }
+
+  /* The invite link, written out and copyable. Handing someone a URL is
+     the difference between a room with people in it and a room with one
+     person in it wondering why nobody came. */
+  function showInvite(id, word) {
+    const host = $("invite");
+    if (!host) return;
+    const url = location.origin + "/live/?feed=" + encodeURIComponent(id) +
+      "&word=" + encodeURIComponent(word);
+    host.hidden = false;
+    host.innerHTML = "";
+    const label = document.createElement("p");
+    label.className = "kicker";
+    label.textContent = "Invite link \u2014 send this to whoever should be in the room";
+    const field = document.createElement("input");
+    field.type = "text";
+    field.readOnly = true;
+    field.className = "invite-link";
+    field.value = url;
+    field.addEventListener("focus", () => field.select());
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "btn btn--small";
+    copy.textContent = "Copy the link";
+    copy.addEventListener("click", async () => {
+      try {
+        if (navigator.clipboard) await navigator.clipboard.writeText(url);
+        else { field.select(); document.execCommand("copy"); }
+        copy.textContent = "Copied";
+        setTimeout(() => { copy.textContent = "Copy the link"; }, 2000);
+      } catch (e) { field.select(); }
+    });
+    const note = document.createElement("p");
+    note.className = "muted xsmall";
+    note.textContent = "They still need a member account with a confirmed address \u2014 the link " +
+      "carries the watchword, not an identity. No identity check is asked of anyone just to watch.";
+    host.appendChild(label);
+    host.appendChild(field);
+    host.appendChild(copy);
+    host.appendChild(note);
+  }
+
+  function stopAll() {
+    if (rec && rec.state !== "inactive") rec.stop();
+    rec = null;
+    desk.sleep();
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    stream = null;
+    root.classList.remove("is-live");
+    $("start").disabled = false;
+    $("stop").disabled = true;
+    if (cancel) { cancel(); cancel = null; }
+  }
+
+  const keeping = () => !!($("keep") || {}).checked;
+
+  /* Filing the recording. The broadcast is already in memory as a list of
+     segments; this glues them into one file and sends it up in pieces, with
+     the count said out loud so a long upload does not look like a hang. */
+  async function fileTheTape(id, title) {
+    if (!tapeParts.length) return;
+    const whole = new Blob(tapeParts, { type: tapeType });
+    const seconds = Math.round((Date.now() - tapeFrom) / 1000);
+    tapeParts = [];
+    const upload = "live-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+    try {
+      const begun = await post({ action: "keep-begin", upload });
+      const raw = Math.floor((begun.chunk_max || 1400000) * 0.7);
+      const buf = new Uint8Array(await whole.arrayBuffer());
+      const pieces = Math.ceil(buf.length / raw);
+      say("Filing the recording \u2014 " + Math.round(buf.length / 1048576) + " MB in " + pieces + " pieces\u2026");
+      for (let i = 0; i < pieces; i++) {
+        const slice = buf.subarray(i * raw, Math.min(buf.length, (i + 1) * raw));
+        let bin = "";
+        for (let j = 0; j < slice.length; j++) bin += String.fromCharCode(slice[j]);
+        await post({ action: "keep-chunk", upload, seq: i, part: btoa(bin) });
+        say("Filing the recording \u2014 piece " + (i + 1) + " of " + pieces + "\u2026");
+      }
+      const done = await post({ action: "keep", upload, id, title, mime: tapeType, seconds });
+      say("Filed as " + done.folder + "/" + done.name + ". It is in the archive below.");
+      drawFiles();
+    } catch (err) {
+      say("The recording could not be filed: " + ((err && err.message) || "unknown") +
+        ". The broadcast itself went out fine.", true);
+    }
+  }
+
+  $("stop").addEventListener("click", async () => {
+    const id = feedId;
+    const title = $("title").value.trim() || "An unnamed broadcast";
+    const keep = keeping();
+    feedId = null;
+    stopAll();
+    if (id) await post({ action: "close", id }).catch(() => {});
+    say(keep ? "The feed is ended. Its live segments are deleted; the recording is being filed."
+      : "The feed is ended and its segments are deleted. Nothing was kept.");
+    drawMine((await post({ action: "mine" })).feeds || []);
+    if (keep) await fileTheTape(id, title);
+  });
+
+  /* ------------------------------------------------------- the archive */
+  /* A file browser, in the plain sense: folders on the left, what is in the
+     chosen folder on the right, and a player underneath. Folders are days,
+     because that is how anyone looking for a broadcast actually searches. */
+  let tapes = [];
+  let folderNow = "";
+
+  const size = (b) => (b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.round(b / 1024) + " KB");
+  const span = (sec) => Math.floor(sec / 60) + "m " + String(sec % 60).padStart(2, "0") + "s";
+
+  function drawFolders() {
+    const host = $("folders");
+    if (!host) return;
+    const names = [];
+    tapes.forEach((t) => { if (names.indexOf(t.folder) < 0) names.push(t.folder); });
+    if (!folderNow || names.indexOf(folderNow) < 0) folderNow = names[0] || "";
+    host.innerHTML = names.length
+      ? names.map((f) => '<li><button type="button" class="folder' +
+        (f === folderNow ? " is-on" : "") + '" data-folder="' + esc(f) + '">' +
+        '<span class="folder-mark">\u25b8</span> ' + esc(f) + ' <span class="muted xsmall">' +
+        tapes.filter((t) => t.folder === f).length + "</span></button></li>").join("")
+      : '<li class="muted small">No folders yet.</li>';
+    host.querySelectorAll("[data-folder]").forEach((b) => b.addEventListener("click", () => {
+      folderNow = b.getAttribute("data-folder");
+      drawFolders();
+      drawInFolder();
+    }));
+  }
+
+  function drawInFolder() {
+    const host = $("filelist");
+    if (!host) return;
+    const got = tapes.filter((t) => t.folder === folderNow);
+    host.innerHTML = got.length
+      ? '<table class="keeper-table"><thead><tr><th>File</th><th>Length</th><th>Size</th>' +
+        "<th></th></tr></thead><tbody>" + got.map((t) =>
+          "<tr><td>" + esc(t.name) + '<br><span class="muted xsmall">' + esc(t.title) +
+          "</span></td><td>" + span(t.seconds) + "</td><td>" + size(t.bytes) + "</td><td>" +
+          '<button type="button" class="btn btn--small" data-play="' + t.id + '">Play</button> ' +
+          '<a class="btn btn--small btn--ghost" href="' + t.url + '" download="' + esc(t.name) +
+          '">Download</a> ' +
+          '<button type="button" class="btn btn--small btn--ghost" data-burn="' + t.id + '">Delete</button>' +
+          "</td></tr>").join("") + "</tbody></table>"
+      : '<p class="muted small">This folder is empty.</p>';
+    host.querySelectorAll("[data-play]").forEach((b) => b.addEventListener("click", () => {
+      const t = tapes.find((x) => String(x.id) === b.getAttribute("data-play"));
+      const v = $("player");
+      if (t && v) { v.src = t.url; v.hidden = false; v.play().catch(() => {}); }
+    }));
+    host.querySelectorAll("[data-burn]").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("Delete this recording? There is no copy.")) return;
+      await post({ action: "tape-drop", tape: Number(b.getAttribute("data-burn")) }).catch(() => {});
+      drawFiles();
+    }));
+  }
+
+  async function drawFiles() {
+    if (!$("folders")) return;
+    try {
+      const d = await post({ action: "tapes" });
+      tapes = d.tapes || [];
+      drawFolders();
+      drawInFolder();
+    } catch (err) {
+      say((err && err.message) || "The archive would not open.", true);
+    }
+  }
+
+  if ($("files-load")) $("files-load").addEventListener("click", drawFiles);
+
+  /* The live table. Everyone who has come through the door, grouped by the
+     elemental phase they declared, with the overrides at three levels:
+     one person, one whole phase, or every non-admin in the room. The
+     element is how the order reads a room, so it is how the table is
+     ordered rather than an afterthought in a column. */
+  const PHASES = [
+    { id: "earth", glyph: "\u25bd", note: "body, ground, the slow proof" },
+    { id: "fire", glyph: "\u25b3", note: "will, drive, the fast proof" },
+    { id: "water", glyph: "\u25bf", note: "feeling, memory, the deep proof" },
+    { id: "air", glyph: "\u25b5", note: "thought, speech, the clear proof" },
+    { id: "aether", glyph: "\u2b21", note: "the field the other four stand in" },
+    { id: "unsaid", glyph: "\u00b7", note: "came in before the question, or would not answer" }
+  ];
+
+  function tick(p, f) {
+    return '<td class="tick-cell"><input type="checkbox" data-person="' + p.id + '" data-field="' + f +
+      '"' + (p[f] ? " checked" : "") + ' aria-label="' + f.replace("_", " ") + " for " + esc(p.who) +
+      '"></td>';
+  }
+
+  const glyphOf = (id) => (PHASES.find((x) => x.id === id) || { glyph: "\u00b7" }).glyph;
+
+  /* Six empty rows when the room is empty. A table that collapses to a
+     sentence makes the desk jump about as people come and go, and a
+     broadcaster glancing down mid-sentence should find the controls in the
+     same place they were a moment ago. */
+  function blankRows(n) {
+    let out = "";
+    for (let i = 0; i < n; i++) {
+      out += '<tr class="empty-row"><td><span class="muted">\u2014</span></td><td>\u2014</td>' +
+        '<td class="tick-cell">\u00b7</td><td class="tick-cell">\u00b7</td>' +
+        '<td class="tick-cell">\u00b7</td><td class="tick-cell">\u00b7</td><td>\u2014</td></tr>';
+    }
+    return out;
+  }
+
+  function elementStrip(folk) {
+    return PHASES.map((ph) => {
+      const got = folk.filter((p) => (p.element || "unsaid") === ph.id);
+      return '<div class="phase-strip"><span class="phase-glyph">' + ph.glyph + "</span>" +
+        '<span class="phase-name">' + ph.id + "</span>" +
+        '<span class="muted xsmall">' + got.length + "</span>" +
+        '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id +
+        '" data-field="can_cam" data-on="1" title="Cameras on for ' + ph.id + '">Cam on</button>' +
+        '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id +
+        '" data-field="can_cam" data-on="0">off</button>' +
+        '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id +
+        '" data-field="can_mic" data-on="1" title="Microphones on for ' + ph.id + '">Mic on</button>' +
+        '<button type="button" class="btn btn--small btn--ghost" data-el="' + ph.id +
+        '" data-field="can_mic" data-on="0">off</button></div>';
+    }).join("");
+  }
+
+  /* The live table. Every person in the room is a row; the phase they
+     declared at the door is a column, and so is each power, so the whole
+     state of the room is one glance and every switch is under a thumb.
+     It redraws every two and a half seconds. */
+  function paintPeople(folk) {
+    const n = $("people");
+    if (!n) return;
+    const rows = folk.map((p) =>
+      '<tr class="' + ((p.element || "unsaid")) + '-row">' +
+      "<td>" + esc(p.who) + "</td>" +
+      '<td class="el-cell"><span class="phase-glyph">' + glyphOf(p.element || "unsaid") +
+      "</span> " + esc(p.element || "unsaid") + "</td>" +
+      tick(p, "can_chat") + tick(p, "can_cam") + tick(p, "can_mic") + tick(p, "blocked") +
+      "<td>" + (p.on_camera ? '<span class="on-air-dot"></span> on air' : "\u2014") + "</td></tr>")
+      .join("");
+
+    n.innerHTML = '<div class="phase-strips">' + elementStrip(folk) + "</div>" +
+      '<table class="keeper-table people-table"><thead><tr><th>Who</th><th>Element</th>' +
+      "<th>Chat</th><th>Camera</th><th>Mic</th><th>Blocked</th><th>Picture</th></tr></thead><tbody>" +
+      rows + blankRows(Math.max(0, 6 - folk.length)) + "</tbody></table>" +
+      '<p class="muted xsmall">' + (folk.length
+        ? folk.length + (folk.length === 1 ? " person" : " people") + " in the room \u00b7 updating every 2.5 seconds"
+        : "Nobody is in the room yet. They are asked for their elemental phase at the door and appear here under it.") +
+      "</p>";
+
+    n.querySelectorAll("[data-person]").forEach((b) => b.addEventListener("change", async () => {
+      await post({ action: "allow", id: feedId, person: Number(b.getAttribute("data-person")),
+        field: b.getAttribute("data-field"), value: b.checked }).catch(() => {});
+      drawPeople();
+    }));
+    n.querySelectorAll("[data-el]").forEach((b) => b.addEventListener("click", async () => {
+      if (!feedId) return say("No feed is running.", true);
+      await post({ action: "allow", id: feedId, element: b.getAttribute("data-el"),
+        field: b.getAttribute("data-field"), value: b.getAttribute("data-on") === "1" }).catch(() => {});
+      drawPeople();
+    }));
+  }
+
+  async function drawPeople() {
+    if (!$("people")) return;
+    if (!feedId) { paintPeople([]); return; }
+    try {
+      const d = await post({ action: "people", id: feedId });
+      paintPeople(d.people || []);
+    } catch { /* the table will be there next beat */ }
+  }
+
+  /* Everyone at once. The admin is not in this table, so "all" can never
+     lock the broadcaster out of their own room. */
+  root.querySelectorAll("[data-all]").forEach((b) => b.addEventListener("click", async () => {
+    if (!feedId) return say("No feed is running.", true);
+    await post({ action: "allow", id: feedId, all: true,
+      field: b.getAttribute("data-all"), value: b.getAttribute("data-on") === "1" })
+      .then((d) => say("Changed for " + d.changed + " in the room."))
+      .catch((e) => say((e && e.message) || "That did not take.", true));
+    drawPeople();
+  }));
+
+  /* The sign over the door. It is deliberately separate from starting a
+     feed: a broadcaster is often on air in spirit \u2014 about to go, between
+     items \u2014 and a visitor deserves to be told which it is. */
+  let onAir = false;
+  function drawAir() {
+    const b = $("air");
+    if (!b) return;
+    b.textContent = onAir ? "ON AIR \u2014 press to go off" : "OFFLINE \u2014 press to go on air";
+    b.classList.toggle("is-on-air", onAir);
+    b.setAttribute("aria-pressed", String(onAir));
+    const lamp = $("air-lamp");
+    if (lamp) {
+      lamp.className = "air-lamp" + (onAir ? " is-lit" : "");
+      lamp.textContent = onAir ? "on air" : "off air";
+    }
+  }
+  if ($("air")) $("air").addEventListener("click", async () => {
+    try {
+      const d = await post({ action: "air", on: !onAir,
+        note: ($("air-note") || {}).value || "", back_at: ($("air-back") || {}).value || "" });
+      onAir = d.on;
+      drawAir();
+      say(onAir ? "The sign is lit. Visitors are told the order is on air."
+        : "Off air. Visitors get the holding card until you come back.");
+    } catch (err) {
+      say((err && err.message) || "The sign would not change.", true);
+    }
+  });
+  (async () => {
+    try {
+      const d = await fetch("/api/live", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "list" })
+      }).then((r) => r.json());
+      onAir = !!(d.air && d.air.on);
+      drawAir();
+    } catch (e) { drawAir(); }
+  })();
+
+  const orderSay = $("order-say");
+  if (orderSay) orderSay.addEventListener("click", async () => {
+    const box = $("order-line");
+    const body = box.value.trim();
+    if (!body || !feedId) return;
+    box.value = "";
+    await post({ action: "order-say", id: feedId, body }).catch(() => {});
+  });
+
+  paintPeople([]);
+  setInterval(drawPeople, 2500);
+
+  addEventListener("beforeunload", () => {
+    if (feedId) navigator.sendBeacon && navigator.sendBeacon("/api/live",
+      new Blob([JSON.stringify({ action: "close", pass, id: feedId })], { type: "application/json" }));
+  });
+})();
+
+/* -------------------------------------------------------------- watching */
+(function watch() {
+  const root = document.getElementById("live-watch");
+  if (!root) return;
+  const $ = (n) => root.querySelector('[data-lw="' + n + '"]');
+  const mine = { element: "" };
+  let stopCard = null;
+  let feeds = [], picked = null, since = -1, timer = null, src = null, buffer = null;
+  const queue = [];
+
+  /* An invite link carries the feed and the watchword, because asking a
+     guest to type a word they were sent in a message is how guests give up.
+     /live/?feed=12&word=whatever — the word never reaches our logs as part
+     of a GET, because the page reads it and strips it from the address bar
+     before anything else happens. */
+  const invite = (function readInvite() {
+    try {
+      const q = new URLSearchParams(location.search);
+      const id = Number(q.get("feed") || q.get("id") || 0);
+      const word = String(q.get("word") || q.get("w") || "");
+      if (!id && !word) return null;
+      if (history.replaceState) history.replaceState(null, "", location.pathname + location.hash);
+      return { id: id || 0, word: word };
+    } catch (e) { return null; }
+  })();
+
+  const say = (t, bad) => {
+    const n = $("msg");
+    if (n) { n.textContent = t || ""; n.className = "auth-msg" + (bad ? " is-bad" : ""); }
+  };
+
+  const post = (payload) => fetch("/api/live", {
+    method: "POST",
+    headers: Object.assign({ "content-type": "application/json" },
+      window.EGAuthHeaders ? window.EGAuthHeaders() : {}),
+    body: JSON.stringify(payload)
+  }).then(async (r) => {
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      /* Signing in, confirming an address, proving an age: whichever of
+         the three is in the way, bring that thing up here rather than
+         leaving a sentence about it on the page. */
+      if (d.gate && window.EGNeedCheck) window.EGNeedCheck(d.gate);
+      const err = new Error(d.error || "the feed refused that");
+      err.gate = d.gate;
+      throw err;
+    }
+    return d;
+  });
+
+  async function refresh() {
+    try {
+      const d = await fetch("/api/live", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "list" })
+      }).then((r) => r.json());
+      feeds = d.feeds || [];
+      const air = d.air || { on: false, note: "", back_at: "" };
+      const card = $("holding");
+      const lamp = $("lamp");
+      if (lamp) {
+        lamp.className = "air-lamp" + (air.on ? " is-lit" : "");
+        lamp.textContent = air.on ? "on air" : "off air";
+      }
+
+      /* Off air, and nothing running: the holding card, not an apology. */
+      if (!air.on && !feeds.length) {
+        if (!stopCard && card) {
+          const words = LINES.slice();
+          if (air.note) words.unshift(air.note);
+          if (air.back_at) words.unshift("Back " + air.back_at + ".");
+          card.hidden = false;
+          stopCard = holdingCard(card, words);
+        }
+      } else if (stopCard) {
+        stopCard();
+        stopCard = null;
+        if (card) card.hidden = true;
+      }
+
+      const n = $("list");
+      n.innerHTML = feeds.length
+        ? feeds.map((f) =>
+          '<li><button type="button" class="btn btn--small" data-feed="' + f.id + '">' +
+          esc(f.title) + "</button> " +
+          '<span class="muted xsmall">live since ' + esc(when(f.since)) +
+          " \u00b7 " + f.watchers + " watching</span>" +
+          (f.note ? '<br><span class="muted xsmall">' + esc(f.note) + "</span>" : "") + "</li>").join("")
+        : '<li class="muted small">' + (d.air && d.air.on
+          ? "On air, but no feed has started yet \u2014 stay on this page and it will appear here."
+          : "Nothing is live at the moment. The order broadcasts rarely and without warning; " +
+            "this page is where it appears when it does.") + "</li>";
+      n.querySelectorAll("[data-feed]").forEach((b) => b.addEventListener("click", () => {
+        choose(feeds.find((f) => String(f.id) === b.getAttribute("data-feed")));
+      }));
+
+      /* A guest who arrived on an invite should find the door already open
+         with the word in it, and only the element left to answer. */
+      if (invite && !picked && feeds.length) {
+        const want = invite.id
+          ? feeds.find((f) => Number(f.id) === invite.id)
+          : feeds[0];
+        if (want) {
+          choose(want);
+          if (invite.word) $("word").value = invite.word;
+          say("You were invited to " + want.title +
+            ". Answer the one question below and look through.");
+        }
+      }
+    } catch {
+      say("The list of feeds could not be read.", true);
+    }
+  }
+
+  function choose(f) {
+    picked = f || null;
+    $("chosen").textContent = picked ? picked.title : "";
+    $("gate").hidden = !picked;
+    if (picked) {
+      const w = $("word");
+      if (w) w.focus();
+      if ($("gate").scrollIntoView) $("gate").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }
+
+  $("enter").addEventListener("click", async () => {
+    if (!picked) return say("Choose a feed first.", true);
+    const word = $("word").value.trim();
+    if (!word) return say("The watchword, please.", true);
+    const chose = root.querySelector('input[name="lw-element"]:checked');
+    const element = chose ? chose.value : "";
+    if (!element) {
+      return say("Before you come in: which elemental phase is your integral aligned with \u2014 " +
+        "earth, fire, water, air or aether?", true);
+    }
+    try {
+      const d = await post({ action: "join", id: picked.id, word, element });
+      mine.element = d.element || element;
+      say("In, as " + (d.element || element) + ". " + d.title +
+        " \u2014 running a few seconds behind the room.");
+      start(picked.id, word, d.mime || "video/webm");
+      room(picked.id, word);
+    } catch (err) {
+      const gate = err && err.gate;
+      if (gate === "signin" || gate === "verify") {
+        say((err && err.message) || "That did not let you in.", true);
+        const box = $("msg");
+        if (box) {
+          const a = document.createElement("a");
+          a.href = "/join/";
+          a.textContent = gate === "signin" ? " Join or sign in \u2192" : " Finish joining \u2192";
+          box.appendChild(a);
+        }
+      } else {
+        say((err && err.message) || "That did not let you in.", true);
+      }
+    }
+  });
+
+  /* Segments are appended to one MediaSource in order. The first carries
+     the format header; 'sequence' mode lets the rest follow it without
+     their own timestamps lining up, which is what makes a recorded stream
+     playable as a stream at all. */
+  function start(id, word, mime) {
+    const video = $("video");
+    $("stage").hidden = false;
+    since = -1;
+    if (timer) clearInterval(timer);
+
+    if (!window.MediaSource || !MediaSource.isTypeSupported(mime)) {
+      say("This browser cannot play the feed's format.", true);
+      return;
+    }
+    src = new MediaSource();
+    video.src = URL.createObjectURL(src);
+    src.addEventListener("sourceopen", () => {
+      buffer = src.addSourceBuffer(mime);
+      buffer.mode = "sequence";
+      buffer.addEventListener("updateend", pump);
+      pull(id, word);
+      timer = setInterval(() => pull(id, word), POLL);
+    });
+
+    function pump() {
+      if (!buffer || buffer.updating || !queue.length) return;
+      try { buffer.appendBuffer(queue.shift()); } catch { /* the window moved on */ }
+    }
+
+    async function pull(feedId, pass) {
+      try {
+        const d = await post({ action: "pull", id: feedId, word: pass, since });
+        (d.parts || []).forEach((p) => {
+          since = Math.max(since, p.seq);
+          const bin = atob(p.part);
+          const bytes = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+          queue.push(bytes);
+        });
+        pump();
+        /* Keep near the live edge; a watcher who tabs away should not come
+           back three minutes behind. */
+        if (video.buffered.length) {
+          const edge = video.buffered.end(video.buffered.length - 1);
+          if (edge - video.currentTime > 6) video.currentTime = edge - 1.2;
+        }
+        if (video.paused) video.play().catch(() => {});
+        if (d.state !== "live") {
+          clearInterval(timer);
+          say("The feed has ended.");
+        }
+      } catch (err) {
+        say((err && err.message) || "The feed dropped.", true);
+      }
+    }
+  }
+
+
+  /* ------------------------------------------------------------- the room
+     Chat, the people in it, and any member who has been given the floor
+     with a camera of their own. All of it is polled on the same clock as
+     the feed, because a second connection would buy nothing here. */
+  function room(id, word) {
+    const box = document.getElementById("live-room");
+    if (!box) return;
+    box.hidden = false;
+    const $$ = (n) => box.querySelector('[data-lr="' + n + '"]');
+    let since = 0, mine = null, myRec = null, myStream = null, mySeq = 0;
+    const seen = new Set();
+
+    const line = (l) =>
+      '<li class="' + (l.order ? "chat-order" : "") + '"><span class="chat-who">' +
+      esc(l.who) + "</span> " + esc(l.body) + "</li>";
+
+    async function beat() {
+      try {
+        const d = await post({ action: "room", id, word, since });
+        (d.lines || []).forEach((l) => {
+          if (seen.has(l.id)) return;
+          seen.add(l.id);
+          since = Math.max(since, l.id);
+          $$("lines").insertAdjacentHTML("beforeend", line(l));
+        });
+        if (d.lines && d.lines.length) {
+          const log = $$("log");
+          log.scrollTop = log.scrollHeight;
+        }
+        $$("people").textContent = (d.people || []).length +
+          ((d.people || []).length === 1 ? " person here" : " people here");
+        folkNow = d.people || [];
+        $$("send").disabled = !(d.you && d.you.can_chat);
+        $$("saybox").placeholder = d.you && d.you.can_chat
+          ? "Say something to the room"
+          : "The broadcaster has turned your voice off";
+        const camBtn = $$("camera");
+        camBtn.disabled = !(d.you && d.you.can_cam) && !mine;
+        camBtn.title = d.you && d.you.can_cam
+          ? "" : "The broadcaster has to open the floor to you first";
+        drawWall(d.cams || [], folkNow, word);
+        if (d.state !== "live") { clearInterval(beatTimer); dropCam(); }
+      } catch (err) {
+        /* A dropped beat is not worth shouting about; the next one usually
+           lands. Only a refusal is worth saying out loud. */
+        if (err && /watchword|member|room to you/i.test(err.message)) say(err.message, true);
+      }
+    }
+
+    /* The wall: everybody in the room, whether or not they have a camera
+       up. A face if there is one, their elemental phase if not \u2014 because
+       a room where only the cameras show makes the quiet people invisible,
+       and they are still in it. Press a tile to bring it up large. */
+    const windows = new Map();   /* cam id -> { cell, video, stop } */
+    let folkNow = [];
+    let spotOn = null;
+
+    const GLYPH = { earth: "\u25bd", fire: "\u25b3", water: "\u25bf", air: "\u25b5", aether: "\u2b21" };
+
+    function spotlight(camId, who) {
+      const stage = $$("spot-stage");
+      const panel = $$("spot");
+      if (!stage || !panel) return;
+      if (spotOn === camId) { unspot(); return; }
+      unspot();
+      const w = windows.get(camId);
+      if (!w) return;
+      spotOn = camId;
+      stage.appendChild(w.video);          /* the same element: playback carries on */
+      w.cell.classList.add("is-spotted");
+      panel.hidden = false;
+      const name = $$("spot-who");
+      if (name) name.textContent = who || "";
+    }
+
+    function unspot() {
+      if (spotOn == null) return;
+      const w = windows.get(spotOn);
+      if (w) {
+        w.cell.insertBefore(w.video, w.cell.firstChild);
+        w.cell.classList.remove("is-spotted");
+      }
+      spotOn = null;
+      const panel = $$("spot");
+      if (panel) panel.hidden = true;
+    }
+
+    if ($$("spot-close")) $$("spot-close").addEventListener("click", unspot);
+    if ($$("spot-full")) $$("spot-full").addEventListener("click", () => {
+      const stage = $$("spot-stage");
+      if (!stage) return;
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (stage.requestFullscreen) stage.requestFullscreen().catch(() => {});
+    });
+
+    function drawWall(cams, folk, pass) {
+      const wall = $$("wall");
+      if (!wall) return;
+
+      /* Cameras first: a tile per live child feed, created once and then
+         left alone so its MediaSource is never torn down. */
+      cams.forEach((c) => {
+        if (windows.has(c.id)) return;
+        const cell = document.createElement("figure");
+        cell.className = "cam-cell";
+        const v = document.createElement("video");
+        v.playsInline = true;
+        v.autoplay = true;
+        v.muted = mine && c.id === mine;      /* never hear yourself */
+        cell.appendChild(v);
+        const cap = document.createElement("figcaption");
+        cap.textContent = c.who;
+        cell.appendChild(cap);
+        cell.setAttribute("data-cam", String(c.id));
+        cell.setAttribute("role", "button");
+        cell.setAttribute("tabindex", "0");
+        cell.title = "Press to bring " + c.who + " up large";
+        cell.addEventListener("click", () => spotlight(c.id, c.who));
+        cell.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); spotlight(c.id, c.who); }
+        });
+        wall.appendChild(cell);
+        windows.set(c.id, { cell, video: v, stop: playInto(v, c.id, pass) });
+      });
+
+      windows.forEach((w, id) => {
+        if (!cams.some((c) => c.id === id)) {
+          if (spotOn === id) unspot();
+          w.stop();
+          w.cell.remove();
+          windows.delete(id);
+        }
+      });
+
+      /* Then everyone without a camera, drawn as a plate rather than left
+         out of the room. */
+      const withCam = cams.map((c) => c.who);
+      const quiet = (folk || []).filter((p) => withCam.indexOf(p.who) < 0);
+      wall.querySelectorAll(".cam-cell--quiet").forEach((n) => n.remove());
+      quiet.forEach((p) => {
+        const cell = document.createElement("figure");
+        cell.className = "cam-cell cam-cell--quiet " + ((p.element || "unsaid") + "-tile");
+        cell.innerHTML = '<div class="quiet-face"><span class="quiet-glyph">' +
+          (GLYPH[p.element] || "\u00b7") + "</span><span class=\"quiet-el\">" +
+          esc(p.element || "unsaid") + "</span></div><figcaption>" + esc(p.who) +
+          (p.can_chat ? "" : ' <span class="muted" title="chat turned off">\u00d7</span>') +
+          "</figcaption>";
+        wall.appendChild(cell);
+      });
+
+      const none = !cams.length && !quiet.length;
+      wall.classList.toggle("is-empty", none);
+      if (none && !wall.querySelector(".wall-empty")) {
+        const p = document.createElement("p");
+        p.className = "muted small wall-empty";
+        p.textContent = "Nobody else is in the room yet.";
+        wall.appendChild(p);
+      }
+      if (!none) {
+        const e = wall.querySelector(".wall-empty");
+        if (e) e.remove();
+      }
+    }
+
+    /* The same segment-by-segment playback the main feed uses. */
+    function playInto(video, feedId, pass) {
+      let from = -1, timer = null, buf = null;
+      const q = [];
+      const mime = "video/webm";
+      if (!window.MediaSource || !MediaSource.isTypeSupported(mime)) return () => {};
+      const src = new MediaSource();
+      video.src = URL.createObjectURL(src);
+      src.addEventListener("sourceopen", () => {
+        buf = src.addSourceBuffer(mime);
+        buf.mode = "sequence";
+        buf.addEventListener("updateend", pump);
+        tick();
+        timer = setInterval(tick, POLL);
+      });
+      function pump() {
+        if (!buf || buf.updating || !q.length) return;
+        try { buf.appendBuffer(q.shift()); } catch { /* the window moved on */ }
+      }
+      async function tick() {
+        try {
+          const d = await post({ action: "pull", id: feedId, word: pass, since: from });
+          (d.parts || []).forEach((p) => {
+            from = Math.max(from, p.seq);
+            const bin = atob(p.part);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            q.push(bytes);
+          });
+          pump();
+          if (video.paused) video.play().catch(() => {});
+        } catch { /* the camera went down */ }
+      }
+      return () => { if (timer) clearInterval(timer); };
+    }
+
+    $$("send").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const body = $$("saybox").value.trim();
+      if (!body) return;
+      $$("saybox").value = "";
+      try { await post({ action: "say", id, word, body }); await beat(); }
+      catch (err) { say((err && err.message) || "That did not go through.", true); }
+    });
+    $$("saybox").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $$("send").click(); }
+    });
+
+    /* Your own camera in the room, with the same ten-second countdown the
+       broadcaster gets. */
+    $$("camera").addEventListener("click", async () => {
+      if (mine) { dropCam(); return; }
+      try {
+        myStream = hold(await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, frameRate: { ideal: 20 } },
+          audio: { echoCancellation: true, noiseSuppression: true }
+        }));
+        const own = $$("own");
+        const float = $$("float");
+        if (float) float.hidden = false;
+        own.srcObject = myStream;
+        own.muted = true;
+        own.play().catch(() => {});
+        $$("camera").textContent = "Lower my camera";
+        countdown($$("count"), 10, () => raise(id, word));
+      } catch (err) {
+        if (busyError(err)) {
+          say("Your camera is busy \u2014 see the box below.", true);
+          busyBox(box.querySelector(".room-side"), {
+            device: await nameTheDevice("video"),
+            why: "Another tab or program has your camera. This page can let go of its own hold on it."
+          }, async () => { $$("camera").click(); });
+          return;
+        }
+        say((err && err.message) || "Your camera would not open.", true);
+      }
+    });
+
+    async function raise(feedId, pass) {
+      try {
+        const type = ["video/webm;codecs=vp8,opus", "video/webm"]
+          .find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm";
+        const d = await post({ action: "cam", id: feedId, word: pass, on: true, mime: type });
+        mine = d.cam;
+        mySeq = 0;
+        myRec = new MediaRecorder(myStream, { mimeType: type, videoBitsPerSecond: 600000, audioBitsPerSecond: 48000 });
+        myRec.ondataavailable = async (e) => {
+          if (!e.data || !e.data.size || !mine) return;
+          const bytes = new Uint8Array(await e.data.arrayBuffer());
+          let bin = "";
+          for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+          const n = mySeq++;
+          await post({ action: "cam-push", id: feedId, word: pass, cam: mine, seq: n,
+            head: n === 0, part: btoa(bin) }).catch(() => {});
+        };
+        myRec.start(SEGMENT);
+        say("Your camera is up in the room.");
+      } catch (err) {
+        say((err && err.message) || "The floor is not open to you yet.", true);
+        dropCam();
+      }
+    }
+
+    function dropCam() {
+      if (myRec && myRec.state !== "inactive") myRec.stop();
+      myRec = null;
+      if (myStream) myStream.getTracks().forEach((t) => t.stop());
+      myStream = null;
+      const own = $$("own");
+      if (own) own.srcObject = null;
+      const float = $$("float");
+      if (float) float.hidden = true;
+      $$("camera").textContent = "Put my camera up";
+      if (mine) post({ action: "cam", id, word, on: false }).catch(() => {});
+      mine = null;
+    }
+
+    /* Your own picture, floating. It is dragged by its bar and sized by the
+       grip in its corner; where you leave it is remembered, because a thing
+       you have moved out of the way should stay out of the way. Everything
+       is clamped to the window, so it can never be dragged off the edge and
+       lost. */
+    (function floater() {
+      const box = $$("float");
+      const bar = $$("float-bar");
+      const grip = $$("float-grip");
+      if (!box || !bar) return;
+      const KEY = "eg-float-cam";
+      /* It begins life inside the side panel; the first drag lifts it out. */
+      let docked = true;
+
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+      function place(x, y, w) {
+        const wide = clamp(w, 140, Math.min(640, innerWidth - 20));
+        box.style.width = wide + "px";
+        box.style.left = clamp(x, 0, Math.max(0, innerWidth - wide)) + "px";
+        box.style.top = clamp(y, 0, Math.max(0, innerHeight - 90)) + "px";
+      }
+
+      function remember() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify({
+            x: parseInt(box.style.left, 10) || 0,
+            y: parseInt(box.style.top, 10) || 0,
+            w: parseInt(box.style.width, 10) || 240,
+            docked: docked
+          }));
+        } catch (e) { /* a full disk is not worth a broken room */ }
+      }
+
+      function float() {
+        docked = false;
+        box.classList.add("is-floating");
+        document.body.appendChild(box);
+      }
+
+      function dock() {
+        docked = true;
+        box.classList.remove("is-floating");
+        box.style.left = box.style.top = box.style.width = "";
+        const side = box.closest(".room-side") || document.querySelector(".room-side");
+        if (side) side.appendChild(box);
+        remember();
+      }
+
+      let held = null;
+      bar.addEventListener("pointerdown", (e) => {
+        if (e.target.classList.contains("float-btn")) return;
+        if (docked) float();
+        const r = box.getBoundingClientRect();
+        if (!box.style.left) place(r.left, r.top, r.width);
+        held = { dx: e.clientX - parseInt(box.style.left, 10), dy: e.clientY - parseInt(box.style.top, 10) };
+        bar.setPointerCapture(e.pointerId);
+        box.classList.add("is-held");
+      });
+      bar.addEventListener("pointermove", (e) => {
+        if (!held) return;
+        place(e.clientX - held.dx, e.clientY - held.dy, parseInt(box.style.width, 10) || 240);
+      });
+      ["pointerup", "pointercancel"].forEach((n) => bar.addEventListener(n, () => {
+        if (!held) return;
+        held = null;
+        box.classList.remove("is-held");
+        remember();
+      }));
+
+      if (grip) {
+        let sizing = null;
+        grip.addEventListener("pointerdown", (e) => {
+          e.preventDefault();
+          if (docked) {
+            float();
+            const r = box.getBoundingClientRect();
+            place(r.left, r.top, r.width);
+          }
+          sizing = { x: e.clientX, w: parseInt(box.style.width, 10) || box.offsetWidth };
+          grip.setPointerCapture(e.pointerId);
+        });
+        grip.addEventListener("pointermove", (e) => {
+          if (!sizing) return;
+          place(parseInt(box.style.left, 10) || 0, parseInt(box.style.top, 10) || 0,
+            sizing.w + (e.clientX - sizing.x));
+        });
+        ["pointerup", "pointercancel"].forEach((n) => grip.addEventListener(n, () => {
+          if (!sizing) return;
+          sizing = null;
+          remember();
+        }));
+      }
+
+      if ($$("float-dock")) $$("float-dock").addEventListener("click", () => (docked ? float() : dock()));
+      if ($$("float-hide")) $$("float-hide").addEventListener("click", () => { box.hidden = true; });
+
+      addEventListener("resize", () => {
+        if (docked || !box.style.left) return;
+        place(parseInt(box.style.left, 10), parseInt(box.style.top, 10), parseInt(box.style.width, 10));
+      });
+
+      try {
+        const was = JSON.parse(localStorage.getItem(KEY) || "null");
+        if (was && !was.docked) { float(); place(was.x, was.y, was.w); }
+      } catch (e) { /* first time out */ }
+    }());
+
+    beat();
+    const beatTimer = setInterval(beat, 2500);
+    addEventListener("beforeunload", dropCam);
+  }
+
+  refresh();
+  setInterval(refresh, 20000);
+})();
