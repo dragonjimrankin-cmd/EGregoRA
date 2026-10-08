@@ -412,6 +412,53 @@ description: "The shape of the universe read as a torus carrying a Mobius half-t
   </div>
 </section>
 
+<div class="divider">&#10022;</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">&mdash; why exactly one</p>
+    <h2 id="t-one-throat">One Half-Twist, One Throat, and No Freedom to Choose</h2>
+    <p>The strongest thing about this chapter is also the least dramatic: the structure is not adjustable.
+      A surface with a single half-twist has one edge and one face, and the pinch where the inversion is
+      taken is not a feature that can be placed twice or moved by preference. One twist gives one throat.
+      A second twist would restore orientability and give none at all &mdash; a strip with two half-twists
+      is a cylinder with a knot in it, two-sided, with nothing to pass through.
+      <span class="sci">&#9670;</span></p>
+    <p class="lede">So the framework cannot buy itself a second throat if the first one proves awkward.
+      That is a constraint, and constraints are the only thing that make a geometric story capable of being
+      wrong.</p>
+    <p>It also fixes what can cross. Passage through the throat is an inversion, not a journey: what arrives
+      on the far side is the mirror of what entered. A being that has accumulated enough structure to be
+      <em>someone</em> cannot survive that operation as the same someone, which is why the framework insists
+      that what passes beyond the thousandth turn arrives as <strong>residue</strong> &mdash; material for a
+      floor &mdash; rather than as a self with its history intact. The same topology that permits the
+      crossing forbids the survival. <span class="spec">&#9670;</span></p>
+    <p class="muted">The connection to the small scale is not decorative either. Confinement is the
+      statement that a colour charge and its inversion cannot be pulled apart and displayed separately;
+      the throat is the statement that passing from one face to the other <em>is</em> that inversion. Both
+      are read as one seam at two scales, and the argument is made properly at
+      <a href="/moebius/#t-colour">the seam and the colour charge</a>.</p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h3 id="t-coldspot-honesty">What the Cold Spot can and cannot be asked to carry</h3>
+    <p>The identification of the throat with the CMB Cold Spot is the most vulnerable paragraph on this
+      page and should be read as such. The feature is real: a region some five degrees across in Eridanus,
+      roughly 70 &micro;K below the 2.72548 K mean, first flagged by Vielva and colleagues in 2004 with a
+      wavelet analysis and still present in the Planck maps. Its <em>significance</em> is the problem. Once
+      the look-elsewhere effect is accounted for &mdash; the spot was found by searching, not predicted
+      &mdash; the anomaly sits at the level of a few per cent, which is interesting and is not evidence.
+      Szapudi's 2015 supervoid offered a conventional explanation; Mackenzie's 2017 survey argued against
+      it. The question is open on the data's own terms. <span class="sci">&#9670;</span></p>
+    <p class="muted">The framework's position: the Cold Spot is where a throat <em>would</em> show, and the
+      framework predicts one throat and therefore one such feature, which is at least the right number. It
+      does not predict the location, the depth or the angular size, and until it does, this is a place to
+      look rather than a result.</p>
+  </div>
+</section>
+
 <section class="wrap narrow reveal">
   <div class="frame frame--creed">
     <p class="lede">One surface, one edge, one throat &mdash; and on the other side of it a floor being laid
