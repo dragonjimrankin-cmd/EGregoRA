@@ -8,7 +8,7 @@
  * that is acceptable; a key pasted on the Hatchable Setup page always wins
  * over this one, which is the proper place for it long-term.
  *
- * Re-deployed after a Hatchable rate limit on the first attempt.
+ * Re-deployed after a Hatchable rate limit; retried once the window cleared.
  * Server-side only. Nothing in hatchable/public/ ever imports this file, so
  * the value never reaches a browser.
  */
