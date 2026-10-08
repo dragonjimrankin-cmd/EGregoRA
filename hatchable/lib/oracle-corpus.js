@@ -32,6 +32,8 @@ import { VOL22 } from './oracle-corpus-xxii.js';
 import { VOL23 } from './oracle-corpus-xxiii.js';
 import { VOL24 } from './oracle-corpus-xxiv.js';
 import { VOL25 } from './oracle-corpus-xxv.js';
+import { VOL26 } from './oracle-corpus-xxvi.js';
+import { VOL27 } from './oracle-corpus-xxvii.js';
 
 const BASE = [
  {
@@ -311,7 +313,7 @@ The Further Research page grades every source so you always know whether you are
 
 export const ANSWERS = [
  ...BASE, ...MORE, ...VOL3, ...VOL4, ...VOL5, ...VOL6, ...VOL7,
- ...VOL8, ...VOL9, ...VOL10, ...VOL11, ...VOL12, ...VOL13, ...VOL14, ...VOL15, ...VOL16, ...VOL17, ...VOL18, ...VOL19, ...VOL20, ...VOL21, ...VOL22, ...VOL23, ...VOL24, ...VOL25
+ ...VOL8, ...VOL9, ...VOL10, ...VOL11, ...VOL12, ...VOL13, ...VOL14, ...VOL15, ...VOL16, ...VOL17, ...VOL18, ...VOL19, ...VOL20, ...VOL21, ...VOL22, ...VOL23, ...VOL24, ...VOL25, ...VOL26, ...VOL27
 ];
 
 const STOP = new Set(
@@ -319,12 +321,16 @@ const STOP = new Set(
  ).split(' ')
 );
 
+// Short tokens that carry real meaning on these sites and must survive the
+// length filter: a question like 'what is dx' is otherwise empty.
+const SHORT = new Set(['dx', 'pi', 'ai']);
+
 const tokenize = (s) =>
  String(s)
  .toLowerCase()
  .replace(/[^a-z0-9\s']/g, ' ')
  .split(/\s+/)
- .filter((w) => w.length > 2 && !STOP.has(w));
+ .filter((w) => (w.length > 2 || SHORT.has(w)) && !STOP.has(w));
 
 /**
  * Score every answer against the question and return the best, with a

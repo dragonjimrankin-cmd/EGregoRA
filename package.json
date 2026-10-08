@@ -4,6 +4,8 @@
   "description": "EGregoRA \u2014 Life, Love, Magic",
   "main": "index.js",
   "scripts": {
+    "oracle:sync": "python3 scripts/oracle-sync.py",
+    "oracle:check": "python3 scripts/oracle-sync.py --check",
     "build": "eleventy",
     "dev": "eleventy --serve --port 8080",
     "clean": "rm -rf _site",

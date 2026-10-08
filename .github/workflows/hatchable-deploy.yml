@@ -25,6 +25,9 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
 
+      - name: Gink and ShakDrah must carry the same corpus
+        run: python3 scripts/oracle-sync.py --check
+
       - name: Run deploy (never fails the job; output is captured)
         id: run
         continue-on-error: true
