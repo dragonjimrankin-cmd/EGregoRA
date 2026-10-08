@@ -8,8 +8,8 @@
     {
       "path": "public/index.html",
       "note": "take it out of the top bar",
-      "old": "        <a href=\"#contact\">Contact</a>\n        <a href=\"/swirler.html\" class=\"nav-swirler\">Swirler →</a>\n",
-      "new": "        <a href=\"#contact\">Contact</a>\n"
+      "old": "      <a href=\"#contact\">Contact</a>\n      <a href=\"/swirler.html\" class=\"nav-swirler\">Swirler →</a>\n",
+      "new": "      <a href=\"#contact\">Contact</a>\n"
     },
     {
       "path": "public/index.html",
