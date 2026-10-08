@@ -16,7 +16,7 @@
     "check": "python3 scripts/check-site.py",
     "check:phone": "node scripts/check-phone.mjs",
     "check:mobile": "python3 scripts/check-mobile.py",
-    "build:tti": "eleventy --config=tti/eleventy.config.js",
+    "build:tti": "npx @11ty/eleventy --config=tti/eleventy.config.js",
     "build:tti:hatchable": "npm run build:tti && rm -rf tti/hatchable/public && mkdir -p tti/hatchable/public && cp -r tti/_site/* tti/hatchable/public/",
     "lint:tti": "html-validate \"tti/_site/**/*.html\""
   },

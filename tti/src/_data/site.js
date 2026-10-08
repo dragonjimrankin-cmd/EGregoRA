@@ -41,6 +41,7 @@ export default {
     { url: "/foundations/",   label: "Foundations",   glyph: "sphere" },
     { url: "/the-self/",      label: "The Self",      glyph: "integral" },
     { url: "/gravity/",       label: "Gravity",       glyph: "spiral" },
+    { url: "/spiral/",        label: "The Spiral",    glyph: "spiral" },
     { url: "/torus/",         label: "Torus",         glyph: "torus" },
     { url: "/moebius/",       label: "Möbius",        glyph: "mobius" },
     { url: "/cosmic-ledger/", label: "The Ledger",    glyph: "ledger" },
