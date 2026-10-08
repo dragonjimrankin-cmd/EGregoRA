@@ -36,52 +36,52 @@ ok Synchroton Band Predictions.jpg — 282 KB ()
 ok WMAPS Interpretation.jpg — 250 KB ()
 done
 ---- extract ----
-text: docs/tti/1 The_Two_Infinities_Unified_Edition_r3.5 (1).txt — 259181 bytes, 4758 lines
-text: docs/tti/2 Rankin_Two_Infinities_Visual_Compendium_Consolidated_r3.4 (6).txt — 13003 bytes, 270 lines
-text: docs/tti/3 Rankin_Framework_Problems_Addressed.txt — 6260 bytes, 159 lines
+text: docs/tti/part-1.txt <- 1 The_Two_Infinities_Unified_Edition_r3.5 (1).pdf — 259241 bytes
+text: docs/tti/part-2.txt <- 2 Rankin_Two_Infinities_Visual_Compendium_Consolidated_r3.4 (6).pdf — 13081 bytes
+text: docs/tti/part-3.txt <- 3 Rankin_Framework_Problems_Addressed.pdf — 6312 bytes
 ---- files ----
 docs/tti:
 total 288
-drwxr-xr-x 2 runner runner   4096 Oct  8 01:33 .
-drwxr-xr-x 3 runner runner   4096 Oct  8 01:33 ..
--rw-r--r-- 1 runner runner 259181 Oct  8 01:33 1 The_Two_Infinities_Unified_Edition_r3.5 (1).txt
--rw-r--r-- 1 runner runner  13003 Oct  8 01:33 2 Rankin_Two_Infinities_Visual_Compendium_Consolidated_r3.4 (6).txt
--rw-r--r-- 1 runner runner   6260 Oct  8 01:33 3 Rankin_Framework_Problems_Addressed.txt
+drwxr-xr-x 2 runner runner   4096 Oct  8 01:37 .
+drwxr-xr-x 3 runner runner   4096 Oct  8 01:36 ..
+-rw-r--r-- 1 runner runner 259241 Oct  8 01:37 part-1.txt
+-rw-r--r-- 1 runner runner  13081 Oct  8 01:37 part-2.txt
+-rw-r--r-- 1 runner runner   6312 Oct  8 01:37 part-3.txt
 
 tti-src:
 total 28960
-drwxr-xr-x  2 runner runner     4096 Oct  8 01:33 .
-drwxr-xr-x 16 runner runner     4096 Oct  8 01:33 ..
--rw-r--r--  1 runner runner  2127792 Oct  8 01:33 1 The_Two_Infinities_Unified_Edition_r3.5 (1).pdf
--rw-r--r--  1 runner runner 19304501 Oct  8 01:33 2 Rankin_Two_Infinities_Visual_Compendium_Consolidated_r3.4 (6).pdf
--rw-r--r--  1 runner runner     7882 Oct  8 01:33 3 Rankin_Framework_Problems_Addressed.pdf
--rw-r--r--  1 runner runner   223916 Oct  8 01:33 Beings Routes.jpg
--rw-r--r--  1 runner runner   253520 Oct  8 01:33 CMB Blackbody Spectrum.jpg
--rw-r--r--  1 runner runner   215722 Oct  8 01:33 CMB Field Gradients.jpg
--rw-r--r--  1 runner runner   267553 Oct  8 01:33 CMB Lensing and Delensing.jpg
--rw-r--r--  1 runner runner   207401 Oct  8 01:33 CMB Prediction.jpg
--rw-r--r--  1 runner runner   213452 Oct  8 01:33 CMB-S4 Polarization Constraints.jpg
--rw-r--r--  1 runner runner   307004 Oct  8 01:33 CMD S4 Design.jpg
--rw-r--r--  1 runner runner   246764 Oct  8 01:33 Entropy Contribution.jpg
--rw-r--r--  1 runner runner   208509 Oct  8 01:33 Flat Rotation Curves.jpg
--rw-r--r--  1 runner runner   186737 Oct  8 01:33 Forking Spiral.jpg
--rw-r--r--  1 runner runner   345660 Oct  8 01:33 Higher-Genus Surfaces in Cosmology.jpg
--rw-r--r--  1 runner runner   251619 Oct  8 01:33 Klein Bottle Alignments.jpg
--rw-r--r--  1 runner runner   238361 Oct  8 01:33 Lensing Potential.jpg
--rw-r--r--  1 runner runner   215791 Oct  8 01:33 Lensing and Delensing Flow.jpg
--rw-r--r--  1 runner runner   928157 Oct  8 01:33 M_bius_Strip.jpg
--rw-r--r--  1 runner runner   348870 Oct  8 01:33 Manifolds in the Cosmos.jpg
--rw-r--r--  1 runner runner    65226 Oct  8 01:33 Microtubules.jpg
--rw-r--r--  1 runner runner   283226 Oct  8 01:33 Mobius Seam effects.jpg
--rw-r--r--  1 runner runner   220586 Oct  8 01:33 Mobius Universe.jpg
--rw-r--r--  1 runner runner   220557 Oct  8 01:33 Planck Cold Spot.jpg
--rw-r--r--  1 runner runner   223916 Oct  8 01:33 QFT Foundations in Framework.jpg
--rw-r--r--  1 runner runner    80574 Oct  8 01:33 Reiman sphere-A.jpg
--rw-r--r--  1 runner runner   167393 Oct  8 01:33 Residues and Poles.jpg
--rw-r--r--  1 runner runner   153233 Oct  8 01:33 Returner Beings.jpg
--rw-r--r--  1 runner runner   253520 Oct  8 01:33 Spectral Distortions in Framework.jpg
--rw-r--r--  1 runner runner   248298 Oct  8 01:33 Stiefel-Whitney in Cosmology.jpg
--rw-r--r--  1 runner runner   289231 Oct  8 01:33 Synchroton Band Predictions.jpg
--rw-r--r--  1 runner runner   255640 Oct  8 01:33 WMAPS Interpretation.jpg
--rw-r--r--  1 runner runner   283226 Oct  8 01:33 polarization spectrum.jpg
--rw-r--r--  1 runner runner   742993 Oct  8 01:33 riemann-2.jpg
+drwxr-xr-x  2 runner runner     4096 Oct  8 01:37 .
+drwxr-xr-x 16 runner runner     4096 Oct  8 01:36 ..
+-rw-r--r--  1 runner runner  2127792 Oct  8 01:36 1 The_Two_Infinities_Unified_Edition_r3.5 (1).pdf
+-rw-r--r--  1 runner runner 19304501 Oct  8 01:36 2 Rankin_Two_Infinities_Visual_Compendium_Consolidated_r3.4 (6).pdf
+-rw-r--r--  1 runner runner     7882 Oct  8 01:36 3 Rankin_Framework_Problems_Addressed.pdf
+-rw-r--r--  1 runner runner   223916 Oct  8 01:37 Beings Routes.jpg
+-rw-r--r--  1 runner runner   253520 Oct  8 01:37 CMB Blackbody Spectrum.jpg
+-rw-r--r--  1 runner runner   215722 Oct  8 01:37 CMB Field Gradients.jpg
+-rw-r--r--  1 runner runner   267553 Oct  8 01:37 CMB Lensing and Delensing.jpg
+-rw-r--r--  1 runner runner   207401 Oct  8 01:37 CMB Prediction.jpg
+-rw-r--r--  1 runner runner   213452 Oct  8 01:37 CMB-S4 Polarization Constraints.jpg
+-rw-r--r--  1 runner runner   307004 Oct  8 01:37 CMD S4 Design.jpg
+-rw-r--r--  1 runner runner   246764 Oct  8 01:37 Entropy Contribution.jpg
+-rw-r--r--  1 runner runner   208509 Oct  8 01:37 Flat Rotation Curves.jpg
+-rw-r--r--  1 runner runner   186737 Oct  8 01:37 Forking Spiral.jpg
+-rw-r--r--  1 runner runner   345660 Oct  8 01:37 Higher-Genus Surfaces in Cosmology.jpg
+-rw-r--r--  1 runner runner   251619 Oct  8 01:37 Klein Bottle Alignments.jpg
+-rw-r--r--  1 runner runner   238361 Oct  8 01:37 Lensing Potential.jpg
+-rw-r--r--  1 runner runner   215791 Oct  8 01:37 Lensing and Delensing Flow.jpg
+-rw-r--r--  1 runner runner   928157 Oct  8 01:37 M_bius_Strip.jpg
+-rw-r--r--  1 runner runner   348870 Oct  8 01:37 Manifolds in the Cosmos.jpg
+-rw-r--r--  1 runner runner    65226 Oct  8 01:37 Microtubules.jpg
+-rw-r--r--  1 runner runner   283226 Oct  8 01:37 Mobius Seam effects.jpg
+-rw-r--r--  1 runner runner   220586 Oct  8 01:37 Mobius Universe.jpg
+-rw-r--r--  1 runner runner   220557 Oct  8 01:37 Planck Cold Spot.jpg
+-rw-r--r--  1 runner runner   223916 Oct  8 01:37 QFT Foundations in Framework.jpg
+-rw-r--r--  1 runner runner    80574 Oct  8 01:37 Reiman sphere-A.jpg
+-rw-r--r--  1 runner runner   167393 Oct  8 01:37 Residues and Poles.jpg
+-rw-r--r--  1 runner runner   153233 Oct  8 01:37 Returner Beings.jpg
+-rw-r--r--  1 runner runner   253520 Oct  8 01:37 Spectral Distortions in Framework.jpg
+-rw-r--r--  1 runner runner   248298 Oct  8 01:37 Stiefel-Whitney in Cosmology.jpg
+-rw-r--r--  1 runner runner   289231 Oct  8 01:37 Synchroton Band Predictions.jpg
+-rw-r--r--  1 runner runner   255640 Oct  8 01:37 WMAPS Interpretation.jpg
+-rw-r--r--  1 runner runner   283226 Oct  8 01:37 polarization spectrum.jpg
+-rw-r--r--  1 runner runner   742993 Oct  8 01:37 riemann-2.jpg
