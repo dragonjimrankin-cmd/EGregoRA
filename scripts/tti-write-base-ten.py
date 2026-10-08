@@ -56,6 +56,44 @@ def census(b: int):
 
 TABLE_BASES = [5, 8, 9, 10, 12, 16, 25, 36]
 
+# ------------------------------------------------- the two-plane speculation
+P4, P5 = pisano(4), pisano(5)
+C4 = Counter(F[n] % 4 for n in range(P4))
+C5 = Counter(F[n] % 5 for n in range(P5))
+BEAT = P4 * P5 // math.gcd(P4, P5)
+
+
+def roots_mod(p):
+    return [x for x in range(p) if (x * x - x - 1) % p == 0]
+
+
+assert roots_mod(2) == [] and roots_mod(5) == [3] and len(roots_mod(11)) == 2
+assert BEAT == PI10 == pisano(20)
+
+SW, SH = 760, 320
+cell = 11.4
+x0, y0 = 42, 96
+strip = []
+for n in range(BEAT):
+    x = x0 + n * cell
+    a = (n % P4 == 0)
+    b = (n % P5 == 0)
+    both = a and b and n > 0
+    strip.append(f'          <rect x="{x:.1f}" y="{y0}" width="{cell-2.2:.1f}" height="26" '
+                 f'fill="{"#a07cf0" if a else "#0d1430"}" opacity="{0.95 if a else 0.5}"/>')
+    strip.append(f'          <rect x="{x:.1f}" y="{y0+42}" width="{cell-2.2:.1f}" height="26" '
+                 f'fill="{"#45d6b4" if b else "#0d1430"}" opacity="{0.95 if b else 0.5}"/>')
+    if n % 10 == 0:
+        strip.append(f'          <text x="{x + (cell-2.2)/2:.1f}" y="{y0-10}" fill="#a9b6d8" '
+                     f'font-size="10" text-anchor="middle" font-family="EB Garamond, serif">{n}</text>')
+xend = x0 + BEAT * cell
+strip.append(f'          <rect x="{xend:.1f}" y="{y0}" width="{cell-2.2:.1f}" height="68" '
+             f'fill="#ffd979" opacity="0.95"/>')
+strip.append(f'          <text x="{xend + (cell-2.2)/2:.1f}" y="{y0-10}" fill="#ffd979" font-size="10" '
+             f'text-anchor="middle" font-family="EB Garamond, serif">{BEAT}</text>')
+STRIP = chr(10).join(strip)
+
+
 # ------------------------------------------------------------------ plate
 W, H = 760, 640
 CX, CY, R = 380, 248, 176
@@ -122,6 +160,35 @@ PLATE = f'''  <figure id="fig-pisano" class="plate">
       count how often each digit appears in one full period: <strong>every odd digit {ODD // 5} times,
       every even digit {EVEN // 5} times</strong>, a two-to-one split with no exceptions and no
       remainder. <span class="sci">&#9670;</span></p>
+  </figure>
+'''
+
+
+PLATE_PHASE = f'''  <figure id="fig-phase" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate II</span> Two Clocks, One Beat &mdash;
+      the {BEAT}-Step Return <span class="sci">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 {SW} {SH}" role="img" aria-label="Two rows of cells over sixty steps. The upper row lights every six steps, the lower every twenty. They coincide only at step sixty, marked in gold.">
+        <g>
+{STRIP}
+        </g>
+        <g font-family="Cinzel, serif" font-size="9" letter-spacing="2" fill="#a9b6d8">
+          <text x="{x0}" y="{y0+92}">UPPER: THE RETURNERS, BASE FOUR &mdash; PERIOD {P4}</text>
+          <text x="{x0}" y="{y0+110}">LOWER: THE PRIME PLANE, BASE FIVE &mdash; PERIOD {P5}</text>
+          <text x="{x0}" y="{y0+128}" fill="#ffd979">THEY MEET ONLY AT {BEAT}</text>
+        </g>
+        <g font-family="EB Garamond, serif" font-size="12.5" font-style="italic" fill="#a9b6d8">
+          <text x="{x0}" y="{y0+164}">Each clock returns to its own beginning on its own schedule.</text>
+          <text x="{x0}" y="{y0+183}">Nothing in either row knows about the other; the shared return is forced.</text>
+          <text x="{x0}" y="{y0+202}">lcm({P4}, {P5}) = {BEAT} &mdash; and {BEAT} is the Pisano period of ten.</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">The upper row marks the steps at which a base-four reading returns to its start;
+      the lower, a base-five reading. Because four and five share no factor, the two never agree until the
+      sixtieth step. A system containing both therefore has a natural cycle of {BEAT} &mdash; which is
+      exactly the Pisano period of ten, the clock drawn in Plate I.
+      <span class="sci">&#9670;</span> <span class="myth">&#9670;</span></p>
   </figure>
 '''
 
@@ -407,6 +474,124 @@ description: "Why the Rankin Skeletal Splice puts ten in nature rather than in o
       colours by two. That identity is <strong>base-independent</strong>; it is a statement about
       triangular numbers, and it holds in any notation whatsoever.
       <a href="/skeletal-splice/#t-base-ten">The full splice argument is in its own chapter.</a></p>
+  </div>
+</section>
+
+<div class="divider">&#10022;</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">&mdash; speculation, and labelled as such throughout</p>
+    <h2 id="t-bt-phase">Two Bases, Two Planes, and the Phase Shift Between Them</h2>
+    <p class="lede muted">What follows is vision rather than result. It is placed here because the
+      arithmetic it leans on is exact and checkable, and because a speculation worth keeping is one that
+      can be checked at the points where it touches the ground.</p>
+  </div>
+
+  <div class="wrap narrow">
+    <div class="frame">
+      <h3 id="t-bt-phase-claim">The proposal</h3>
+      <p class="lede">The prime being's plane saturates on five. The returning beings saturate on four.
+        Neither can read the other directly, and the difference between the two counts is the phase shift
+        between the planes. <span class="myth">&#9670;</span></p>
+      <p>Stated that way it is a picture. What makes it worth a section is that the framework already
+        holds, on independent grounds, that <strong>a base is a saturation and not a notation</strong>
+        &mdash; the count at which a place fills and carries. If that is true, then two orders of being
+        that saturate at different counts are not using different scripts for the same arithmetic. They
+        are running <em>different arithmetics</em>, and the question of how they interleave is a real
+        question with a computable answer. <span class="spec">&#9670;</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <h3 id="t-bt-phase-arith">What the arithmetic says, before any interpretation</h3>
+    <p>Three facts, all computed for this page, none of which depends on the speculation being true.</p>
+
+    <h4 id="t-bt-phase-inert">Four and five are the two opposite cases in the golden field</h4>
+    <p>Reduce x&sup2; &minus; x &minus; 1 modulo a prime and exactly three things can happen. At most
+      primes it <strong>splits</strong>: two distinct roots, as at 11, where the roots are 4 and 8. At
+      five it <strong>ramifies</strong>: the two roots collapse to one, x &equiv; 3. At two it is
+      <strong>inert</strong>: no root exists at all, and the pair never separates into the base field.
+      <span class="sci">&#9670;</span></p>
+    <p class="lede">So the two bases the speculation names sit at the only two exceptional primes of the
+      structure, and at opposite exceptions. Five is where the two become one. Two &mdash; and therefore
+      four &mdash; is where the two refuse to come apart.</p>
+    <p class="muted">That is a genuine coincidence of the pleasant kind: the speculation was not built to
+      land there, and it did.</p>
+
+    <h4 id="t-bt-phase-census">The two planes have opposite temperaments</h4>
+    <p>Over one full period, a base-five reading of the sequence is <strong>perfectly flat</strong>: every
+      digit exactly four times in twenty steps, nothing preferred. A base-four reading is the opposite
+      &mdash; six steps, and the census is <strong>1 once, 2 once, 3 once, and the digit 1 three
+      times</strong>. A three-to-one bias toward unity. <span class="sci">&#9670;</span></p>
+    <p>Read against the framework's own language, that is almost too apt to leave uncommented and too
+      cheap to lean on: the prime plane is even-handed, with no digit favoured; the returners' plane is
+      weighted three to one toward the threshold of one, which is precisely what a returner is held to be
+      trying to cross. <span class="myth">&#9670;</span></p>
+
+    <h4 id="t-bt-phase-beat">The two clocks meet at sixty, and sixty is already on this page</h4>
+    <p>A base-four reading returns to its start every six steps; a base-five reading every twenty. Four
+      and five share no factor, so the two agree only at the least common multiple of six and twenty:</p>
+    <p class="formula" style="text-align:center">lcm(6, 20) = <strong>60</strong> = π(10) = π(20)</p>
+    <p class="lede">A system containing both planes has a natural period of sixty &mdash; which is exactly
+      the Pisano period of ten, the clock drawn in Plate I. The base-ten rhythm this page spent its length
+      arguing for is <em>the beat between a four-plane and a five-plane</em>, and that is arithmetic
+      rather than poetry. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap">
+{PLATE_PHASE}
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h3 id="t-bt-phase-reading">What this would mean, if it were true</h3>
+    <p>Four consequences follow directly, and they are the reason to keep the speculation on file rather
+      than discard it.</p>
+    <ol>
+      <li><strong>The planes are mutually illegible except at the beat.</strong> Nothing in a six-cycle
+        can read a twenty-cycle in real time; the two line up once every sixty steps and are out of
+        register everywhere else. Contact would be periodic rather than continuous, and rare.</li>
+      <li><strong>Ten is the interface, not either home.</strong> On this reading base ten is not the
+        prime plane's number and not the returners' either. It is the shape of the <em>overlap</em>
+        &mdash; which is a better explanation of why ten keeps turning up in a world containing both than
+        anything the rest of this page has offered. <span class="spec">&#9670;</span></li>
+      <li><strong>The phase shift has a magnitude.</strong> The first Fibonacci number divisible by two
+        is the third; the first divisible by five is the fifth. Three and five: consecutive Fibonacci
+        numbers, whose ratio tends to φ. The offset between the planes is not arbitrary &mdash; it is
+        golden. <span class="sci">&#9670;</span> <span class="myth">&#9670;</span></li>
+      <li><strong>Direction is explained, not assumed.</strong> Five ramifies; its two become one. Two is
+        inert; its two never separate. A being on the five-plane is on the side where unification is
+        possible, and a being on the four-plane is on the side where it is structurally withheld. The
+        return is then a change of prime, not a change of place. <span class="myth">&#9670;</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h3 id="t-bt-phase-against">Against it, at full strength</h3>
+    <p>This section would be worthless without this paragraph, so here it is without softening.</p>
+    <ul>
+      <li><strong>The arithmetic is true and the interpretation is free.</strong> Everything verified
+        above would hold in a universe with no planes, no returners and no beings of any kind. Nothing in
+        lcm(6,&nbsp;20) = 60 implies anybody is counting.</li>
+      <li><strong>Four is not two.</strong> The elegant fact is about the prime two; four is its square,
+        and the speculation names four. The framework gets the ramified-versus-inert contrast only by
+        sliding between a base and its prime factor, and that slide is not free.</li>
+      <li><strong>The three-to-one bias is a six-element sample.</strong> One period of base four contains
+        six terms. Drawing a temperament out of six numbers is the kind of thing this site exists to
+        catch other people doing.</li>
+      <li><strong>No prediction.</strong> Nothing here says what would be observed if it were true, which
+        means that as it stands it is not a hypothesis but a picture with good arithmetic attached. Until
+        someone states a consequence that could fail, it stays in this section and is never cited
+        elsewhere on the site as support for anything.</li>
+    </ul>
+    <p class="lede">Kept, then, on one condition: that it is called what it is. The sixty-step beat is a
+      fact. The two planes are a story told over it. <span class="myth">&#9670;</span></p>
   </div>
 </section>
 
