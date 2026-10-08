@@ -25,7 +25,7 @@
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep, extname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -262,7 +262,9 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
      sandbox) has egress. Logged so the key can be verified without a human
      opening a console. */
   try {
-    const store = await import("../hatchable/lib/key-store.js");
+    /* Probe the key that THIS bundle will actually ship with, not the
+       EGregoRA copy — the two projects can carry different keys. */
+    const store = await import(pathToFileURL(join(BUNDLE, "lib", "key-store.js")).href);
     const m = [null, store.storedOpenAIKey()];
     if (m[1]) {
       const r = await fetch("https://api.openai.com/v1/chat/completions", {

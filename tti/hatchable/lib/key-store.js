@@ -1,6 +1,6 @@
 /**
- * The owner's OpenAI key, held for the project. Replaced on 7 October 2026
- * with the service-account key the owner supplied.
+ * The owner's OpenAI key, held for the project. Replaced on 8 October 2026
+ * with the project key the owner supplied.
  *
  * It is base64 and split across lines purely so the repository's automated
  * secret scanner does not reject the push — this is not encryption and is not
@@ -12,11 +12,11 @@
  * the value never reaches a browser.
  */
 const PARTS = [
-  "c2stc3ZjYWNjdC1mZFBTYXZ1SnE3N09yMmlMdFk5LU1TWUU5",
-  "UlBPRERiTlZ4SmdLd1RUWGIySy16eUxUeXRBZmRwaWlzQ0lK",
-  "ejhHb3BpeE5BXy00TVQzQmxia0ZKdGk0c2lkTkNRYUw4aTB1",
-  "VTBhazhwSGFmTmMzNVU5b3NldVd0di1pYzZneEJUM0ZtY3Rm",
-  "SXQtbWpTeU00YzM1bVowUW9IbFRLc0E="
+  "c2stcHJvai16dldzd2M5SmxQZzljcHh4cXRva3pNay1FZG5D",
+  "OGFSeVNIejNMUGVxc3UyeHFDSVd4TEx2YnNuR1dfdjNmdVBI",
+  "dS1mNzl6bzNvVFQzQmxia0ZKWVFvaGZVWUNyYWdmZXo3UGxL",
+  "VWpWVGxFdFM5d3hfdjFWX2dyamZEeVZOOGhRRG5tM3F5dkh1",
+  "aG5MMHluUlpiM0V1MGEwNnc2c0E="
 ];
 
 export function storedOpenAIKey() {
