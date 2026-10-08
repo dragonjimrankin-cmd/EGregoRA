@@ -3598,3 +3598,12 @@ table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-
 .fundamental-list li a { text-decoration: none; }
 .fundamental-list li a:hover strong { color: var(--star, #ffd979); }
 .fundamental-list .muted { text-align: center; margin: 1rem 0 0; }
+
+.fundamental-thesis {
+  max-width: 68ch;
+  margin: 1.4rem auto 0;
+  text-align: center;
+  color: var(--vellum-dim);
+  line-height: 1.85;
+}
+.fundamental-thesis strong { color: var(--star, #ffd979); font-style: italic; }
