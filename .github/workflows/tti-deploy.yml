@@ -11,6 +11,7 @@ on:
     paths:
       - "tti/hatchable/**"
       - "ops/tti-project.txt"
+      - "ops/tti-tools.flag"
       - ".github/workflows/tti-deploy.yml"
 
 permissions:
@@ -21,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ' }}
-      TOOLS_DUMP: ${{ github.event.inputs.tools || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,6 +35,8 @@ jobs:
           mkdir -p ci-logs ops
           PID=""
           [ -f ops/tti-project.txt ] && PID=$(tr -d ' \n\r' < ops/tti-project.txt)
+          TOOLS_DUMP=0
+          [ -f ops/tti-tools.flag ] && TOOLS_DUMP=1
           {
             echo "# The Two Infinities → Hatchable — $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo "bundle files: $(find tti/hatchable -type f | wc -l)"
