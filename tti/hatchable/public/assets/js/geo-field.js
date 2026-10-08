@@ -103,6 +103,16 @@
     if (b.y > maxY) { b.y = maxY; b.vy = -Math.abs(b.vy); }
   }
 
+  /* A strike is worth seeing: the bodies brighten for a moment, the way a
+     real impact throws light before it throws debris. */
+  function flash(el) {
+    if (!el) return;
+    el.classList.remove("is-struck");
+    void el.offsetWidth;                 // restart the transition
+    el.classList.add("is-struck");
+    setTimeout(() => el.classList.remove("is-struck"), 900);
+  }
+
   function merge(a, b) {
     /* Area is conserved: π r₁² + π r₂² = π R². The heavier body survives. */
     const keep = a.mass >= b.mass ? a : b;
@@ -126,6 +136,7 @@
     gone.state = "absorbed";
     gone.partner = keep;
     gone.alpha = 0;
+    flash(keep.el);
   }
 
   function fission(keep) {
@@ -143,6 +154,7 @@
     keep.vy += Math.sin(dir) * kick;
     keep.strain = 1;
     keep.strainAngle = dir;
+    flash(keep.el);
 
     gone.state = "free";
     gone.partner = null;
@@ -201,6 +213,7 @@
             b.vx += m * a.mass * nx; b.vy += m * a.mass * ny;
             a.strain = 1; b.strain = 1;
             a.strainAngle = b.strainAngle = axis;
+            flash(a.el); flash(b.el);
             /* push them apart so they cannot stick */
             const push = (touch * 0.82 - d) / 2;
             a.x -= nx * push; a.y -= ny * push;

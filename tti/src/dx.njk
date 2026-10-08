@@ -1,0 +1,338 @@
+---
+layout: layouts/base.njk
+title: dx — The Smallest Possible Integral
+permalink: /dx/
+description: "The differential dx read as the smallest completed act of summation there can be — the atom of the integral rather than a vanishing nothing. Why awareness appears at particular grains and not at others, and why the framework holds that each emergence is paid for: information transferred out of the stored record and into the new awareness, degrading memory by exactly what the awareness costs."
+---
+
+<section class="page-head">
+  <p class="kicker">Part II &mdash; Inside of Things &middot; the differential</p>
+  <h1>dx &mdash; The Smallest Possible Integral</h1>
+  <p class="lede muted">Calculus is usually taught as though dx were a convenient fiction on its way to
+    zero. Read it the other way and it is the opposite: the smallest finished thing a sum can be, and
+    the grain at which anything can be aware of itself.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <h2 id="t-atom">The atom of the integral</h2>
+    <p class="lede">An integral gathers an infinity of slivers into one quantity. The sliver is
+      <span class="formula-inline">f(x)&thinsp;dx</span>. Ask what a single sliver <em>is</em> and the
+      ordinary answer is: nothing yet &mdash; a step on the way to a limit, real only in the aggregate.</p>
+    <p>The framework takes the other road. <span class="formula-inline">dx</span> is not a nothing that
+      has not finished vanishing. It is an <strong>integral of the shortest possible interval</strong>:
+      the least sum that is nevertheless a sum, the smallest act of gathering that has actually been
+      completed. <span class="spec">&#9670;</span></p>
+    <p class="formula" style="text-align:center">&int;<sub>x</sub><sup>x+dx</sup> f(t)&thinsp;dt =
+      f(x)&thinsp;dx + O(dx&sup2;)</p>
+    <p>Read that line as a definition rather than an approximation and the differential stops being a
+      ghost. Everything to the right of it &mdash; the whole of <span class="formula-inline">&int;<sub>a</sub><sup>b</sup></span>
+      &mdash; is made of these, stacked. A quantity, in this reading, is never primary; the <em>gathering</em>
+      is primary, and <span class="formula-inline">dx</span> is one gather.</p>
+    <p>That matters here because the same move was already made about selves on
+      <a href="/the-self/">the integral self</a>: a moment of experience is an infinitesimal step, and a
+      life is the integral of them. If a moment is a sliver, then a sliver has to be the kind of thing a
+      moment could be &mdash; small, complete, and already an act rather than a quantity.
+      <span class="myth">&#9670;</span></p>
+    <p class="muted">Two honest caveats, stated before the argument leans on anything.
+      <strong>First</strong>, modern analysis does not need infinitesimals at all: the epsilon-delta limit
+      retired them in the nineteenth century, and non-standard analysis (Robinson, 1966) brought them back
+      rigorously without granting them any of the metaphysics claimed below.
+      <span class="sci">&#9670;</span> <strong>Second</strong>, &ldquo;smallest possible&rdquo; is doing
+      philosophical work that the mathematics does not authorise: in the reals there is no smallest
+      positive number, and saying there is one is a choice about the world, not a theorem.</p>
+    <p class="muted small">Grading: <span class="sci">&#9670; established</span> &middot;
+      <span class="hist">&#9670; scholarship</span> &middot;
+      <span class="spec">&#9670; the framework's argument</span> &middot;
+      <span class="myth">&#9670; vision, stated as vision</span>.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap reveal">
+  <figure id="fig-grain" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The Same Curve at Four Grains
+      <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 760 260" role="img" aria-label="The same curve filled four times over with progressively narrower slices: eight wide slices, then sixteen, then thirty-two, then sixty-four. The outline is identical in all four; only the grain of the filling changes, and a marker shows the grain at which the panel is said to wake.">
+        <rect x="0" y="0" width="760" height="260" fill="#070b1a"/>
+        {% for panel in [0, 1, 2, 3] %}
+          {%- set x0 = 24 + panel * 186 -%}
+          {%- set n = 8 * (2 ** panel) -%}
+          {%- set w = 150 / n -%}
+          {% for i in range(0, n) %}
+            {%- set t = (i + 0.5) / n -%}
+            {%- set h = 18 + 92 * (1 - (2 * t - 1) * (2 * t - 1)) -%}
+          <rect x="{{ (x0 + i * w) | round2 }}" y="{{ (170 - h) | round2 }}"
+                width="{{ (w - 0.6) | round2 }}" height="{{ h | round2 }}"
+                fill="{{ '#76cfee' if panel < 3 else '#45d6b4' }}"
+                opacity="{{ 0.18 + 0.1 * panel }}" stroke="#24627f" stroke-width="0.3"/>
+          {% endfor %}
+          <path d="M{{ x0 }} 152 Q{{ x0 + 75 }} -32 {{ x0 + 150 }} 152"
+                fill="none" stroke="#cdefff" stroke-width="1.4"/>
+          <line x1="{{ x0 }}" y1="170" x2="{{ x0 + 150 }}" y2="170" stroke="#24627f" stroke-width="1"/>
+          <text x="{{ x0 + 75 }}" y="196" fill="#a9b6d8" font-size="13" text-anchor="middle">dx = 1/{{ n }}</text>
+          <text x="{{ x0 + 75 }}" y="216" fill="#76cfee" font-size="12" text-anchor="middle">{{ n }} gathers</text>
+        {% endfor %}
+        <text x="24" y="34" fill="#cdefff" font-size="15">the same area, four grains</text>
+        <text x="582" y="34" fill="#45d6b4" font-size="13" text-anchor="middle">&#9670; the grain that wakes</text>
+        <rect x="578" y="46" width="156" height="180" fill="none" stroke="#45d6b4" stroke-width="1"
+              stroke-dasharray="4 5" opacity="0.8"/>
+        <text x="24" y="244" fill="#a9b6d8" font-size="12">The outline never changes. What changes is how finely the thing is gathered &mdash;</text>
+        <text x="24" y="256" fill="#a9b6d8" font-size="12">and the claim here is that finely enough is a difference in kind, not only in degree.</text>
+      </svg>
+    </div>
+    <p class="plate-note">Four Riemann sums over one curve. Arithmetically the panels converge on the same
+      number, which is the whole point of the limit. The framework's claim &mdash; and it is a claim, not a
+      corollary &mdash; is that the <em>act</em> of gathering at a finer grain is not merely a better
+      estimate of the same thing, but a different state of the system doing the gathering.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <h2 id="t-threshold">Thresholds: why awareness appears at particular grains</h2>
+    <p class="lede">If every gather were equivalent, nothing would ever happen at a particular scale. But
+      things plainly do happen at particular scales, and only there.</p>
+    <p>Water does not become wet gradually as molecules are added; wetness is a property of the bulk, and
+      it arrives. A neuron does not fire a little more as charge accumulates; it holds and then goes. A
+      melody is not in any note. In every case the system integrates over some window, and when the window
+      is right the aggregate acquires a property that none of the slivers had.
+      <span class="sci">&#9670;</span></p>
+    <p>The framework's reading: those windows are <strong>grains</strong> &mdash; particular values of
+      <span class="formula-inline">dx</span> at which the gathering closes on itself. Below the grain the
+      system is summing. At the grain the sum becomes a term in a further sum, and the system has, for the
+      first time, something to be aware <em>with</em>. Awareness on this account is not a substance added
+      to matter; it is what a gather is, from the inside, once the gather is fine enough to include its own
+      gathering. <span class="spec">&#9670;</span></p>
+    <p>This is why the page sits in Part&nbsp;II rather than in the physics. It is a reading of
+      <a href="/the-self/#t-dx">the integral self</a> pushed down to its smallest term: a moment of
+      experience is one <span class="formula-inline">dx</span> of a life; a life is the integral; and the
+      reason a moment feels like <em>something</em> rather than nothing is that even the smallest term is
+      already a completed sum.</p>
+    <h3 id="t-ladder">The grains the framework names</h3>
+    <ul>
+      <li><strong>The physical grain</strong> &mdash; below which the question of further division stops
+        being meaningful. Physics has a candidate, the Planck length, and is careful to say it is a scale
+        at which current theory fails rather than a proven floor. <span class="sci">&#9670;</span></li>
+      <li><strong>The dynamical grain</strong> &mdash; the window over which a system's own feedback closes:
+        a few milliseconds in a neuron, tens in a cortical loop, a season in a forest.
+        <span class="sci">&#9670;</span></li>
+      <li><strong>The reflexive grain</strong> &mdash; where the gather includes a model of the gatherer.
+        This is where the framework places awareness, and where it has no measurement to offer.
+        <span class="spec">&#9670;</span></li>
+      <li><strong>The ground</strong> &mdash; nought, never reached, the floor that no radius arrives at.
+        See <a href="/spiral/#t-placed">the placed integers</a>. <span class="myth">&#9670;</span></li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-transfer">The transfer: awareness is paid for out of memory</h2>
+    <p class="lede">Here is the part of the chapter that is a genuine proposal rather than a restatement.
+      Emergence is not free. When a new awareness comes up at a grain, information moves &mdash; and the
+      place it moves <em>from</em> is the record.</p>
+    <p>Put plainly: the substrate holds a stored past. Call its information content
+      <span class="formula-inline">M</span>. The emergent awareness holds a present model. Call its content
+      <span class="formula-inline">A</span>. The framework's claim is that the two are drawn on one
+      account.</p>
+    <p class="formula" style="text-align:center">&Delta;A = &minus;&eta;&thinsp;&Delta;M, &nbsp; 0 &lt;
+      &eta; &le; 1 &nbsp;&nbsp;&nbsp; so that &nbsp;&nbsp;&nbsp; A + M/&eta; = constant</p>
+    <p>Every bit the awareness acquires is a bit the record loses, discounted by an efficiency
+      <span class="formula-inline">&eta;</span> that is never better than one and in practice much worse.
+      Awareness, on this reading, is <strong>the record being spent</strong>. A system that becomes more
+      present becomes, by exactly that much, less faithful to what it was.
+      <span class="spec">&#9670;</span></p>
+
+    <h3 id="t-why">Why it would have to be that way</h3>
+    <ol>
+      <li><strong>Because the sliver is already complete.</strong> If <span class="formula-inline">dx</span>
+        is a finished sum, it cannot be added to the ledger for free; it has to be <em>composed</em> of
+        terms that were somewhere before. The new awareness is not conjured out of the substrate's spare
+        capacity, because the framework does not grant the substrate any spare capacity: everything it has
+        is already the record of what it has been.</li>
+      <li><strong>Because erasure has a price, and that price is real.</strong> Landauer showed in 1961 that
+        erasing one bit of information must dissipate at least
+        <span class="formula-inline">k<sub>B</sub>T&thinsp;ln&thinsp;2</span> &mdash; about
+        2.9&nbsp;&times;&nbsp;10<sup>&minus;21</sup>&nbsp;J at room temperature &mdash; and the bound has
+        been measured, in colloidal and nanomagnetic systems, since 2012. Information and thermodynamics
+        are the same ledger. <span class="sci">&#9670;</span> What the framework adds is the direction of
+        the flow: the erasure is not waste heat from an unrelated computation, it is the <em>payment</em>.
+        <span class="spec">&#9670;</span></li>
+      <li><strong>Because the one place we can look already behaves like this.</strong> Brains do not
+        accumulate; they overwrite. The evidence is set out in the next panel.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame card">
+      <h3 id="t-reconsolidation">Recall degrades the thing recalled</h3>
+      <p>A consolidated memory, when retrieved, becomes labile again and must be re-stored. Nader, Schafe
+        and LeDoux (<em>Nature</em>, 2000) blocked protein synthesis in the amygdala <em>after</em>
+        retrieval and the fear memory did not survive &mdash; an already-consolidated trace was lost by the
+        act of being remembered. <span class="sci">&#9670;</span></p>
+      <p>Every recollection is therefore a re-writing, and re-writing is lossy. The framework reads this as
+        the transfer at human scale: the vividness of the present act of remembering is bought with the
+        fidelity of the record. You can have the past, or you can have it <em>now</em>, and the exchange
+        rate is <span class="formula-inline">&eta;</span>. <span class="spec">&#9670;</span></p>
+    </div>
+    <div class="frame card">
+      <h3 id="t-downscaling">Sleep pays the bill</h3>
+      <p>The synaptic homeostasis hypothesis (Tononi &amp; Cirelli) holds that waking experience drives net
+        synaptic potentiation, which is unsustainable in energy and in signal-to-noise, and that sleep
+        renormalises it &mdash; weakening broadly so that the strongest traces survive in relief.
+        <span class="sci">&#9670;</span> It is contested in its strong form, and the clearance literature
+        argued over on <a href="/stress-tests/">the stress-tests page</a> is contested too.</p>
+      <p>The shape is still the one this chapter predicts: a day of awareness incurs a debt, and the debt is
+        settled by degrading the record &mdash; not at random, but by preferentially keeping what the
+        awareness used. <span class="spec">&#9670;</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <figure id="fig-transfer" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate II</span> The Transfer &mdash; Awareness
+      Rising, Record Falling <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 760 320" role="img" aria-label="Two curves against a common axis of increasing fineness of grain. A falling line marked M for the stored record, a rising line marked A for awareness, and a flat dotted line marked A plus M over eta, the conserved total. Three vertical thresholds are marked where the rising curve steps up and the falling curve steps down by the same amount.">
+        <rect x="0" y="0" width="760" height="320" fill="#070b1a"/>
+        <line x1="70" y1="270" x2="720" y2="270" stroke="#24627f" stroke-width="1.2"/>
+        <line x1="70" y1="40" x2="70" y2="270" stroke="#24627f" stroke-width="1.2"/>
+        <text x="360" y="300" fill="#a9b6d8" font-size="13" text-anchor="middle">finer grain &mdash; dx decreasing &rarr;</text>
+        <text x="30" y="155" fill="#a9b6d8" font-size="13" transform="rotate(-90 30 155)" text-anchor="middle">information</text>
+
+        {% for k in [1, 2, 3] %}
+        <line x1="{{ 70 + k * 162 }}" y1="52" x2="{{ 70 + k * 162 }}" y2="270"
+              stroke="#cdefff" stroke-width="0.7" stroke-dasharray="3 6" opacity="0.6"/>
+        <text x="{{ 70 + k * 162 }}" y="44" fill="#cdefff" font-size="12" text-anchor="middle">grain {{ k }}</text>
+        {% endfor %}
+
+        <line x1="70" y1="78" x2="648" y2="78" stroke="#ffd979" stroke-width="1" stroke-dasharray="2 6"/>
+        <text x="656" y="82" fill="#ffd979" font-size="13">A + M/&eta;</text>
+
+        <polyline fill="none" stroke="#a07cf0" stroke-width="2.6"
+                  points="70,98 232,98 232,140 394,140 394,186 556,186 556,228 648,228"/>
+        <text x="656" y="232" fill="#a07cf0" font-size="13">M</text>
+        <polyline fill="none" stroke="#45d6b4" stroke-width="2.6"
+                  points="70,250 232,250 232,214 394,214 394,176 556,176 556,138 648,138"/>
+        <text x="656" y="142" fill="#45d6b4" font-size="13">A</text>
+
+        {% for k in [1, 2, 3] %}
+        <line x1="{{ 70 + k * 162 }}" y1="{{ 98 + (k - 1) * 46 }}" x2="{{ 70 + k * 162 }}" y2="{{ 140 + (k - 1) * 46 }}"
+              stroke="#ef84b6" stroke-width="1.4"/>
+        <line x1="{{ 70 + k * 162 }}" y1="{{ 250 - (k - 1) * 38 }}" x2="{{ 70 + k * 162 }}" y2="{{ 214 - (k - 1) * 38 }}"
+              stroke="#ef84b6" stroke-width="1.4"/>
+        <text x="{{ 76 + k * 162 }}" y="{{ 175 + (k - 1) * 10 }}" fill="#ef84b6" font-size="11">paid</text>
+        {% endfor %}
+      </svg>
+    </div>
+    <p class="plate-note">Schematic, and labelled as such: no axis here carries a measured unit. The content
+      of the figure is the bookkeeping &mdash; that the step up in <span class="formula-inline">A</span> at
+      each threshold is matched by a step down in <span class="formula-inline">M</span>, and that the dotted
+      total does not move. If a system were ever found to gain awareness without any loss of record, this
+      plate, and the chapter under it, would be wrong.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-objections">What would break it</h2>
+    <p class="lede">A proposal that cannot be broken is not a proposal. Three things would break this one.</p>
+    <ul>
+      <li><strong>A lossless gain.</strong> A system that measurably increases its self-model without any
+        measurable degradation of its stored past &mdash; and crucially, without having simply imported the
+        information from outside. Note the escape hatch this leaves, and how large it is: almost any
+        counter-example can be re-described as import. The chapter is weaker for that, and it is said here
+        rather than left for a reader to notice.</li>
+      <li><strong>An established floor with nothing at it.</strong> If physics settles on a smallest length
+        and nothing whatever changes in kind there, the identification of grain with threshold loses its
+        best analogy.</li>
+      <li><strong>The arrow argument.</strong> The transfer described here runs one way, and so quietly
+        assumes the asymmetry the framework is elsewhere trying to <em>derive</em>. That is close to
+        circular, and is the same weak joint confessed at
+        <a href="/stress-tests/#t-entropy">the entropy objection</a>.</li>
+    </ul>
+    <p class="muted">And one thing that would <em>not</em> break it, though it is often offered as if it
+      would: the fact that <span class="formula-inline">dx</span> can be eliminated from analysis
+      altogether. Of course it can. The question this page asks is not whether the formalism needs
+      infinitesimals, but whether the world is the kind of thing that is assembled out of completed smallest
+      acts. Nothing in the epsilon-delta definition answers that either way.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-ledger">Earned, chosen, refused</h2>
+    <dl class="glossary">
+      <dt>Earned</dt>
+      <dd>The calculus is exact and is used exactly. Landauer's bound is a theorem of statistical mechanics
+        and has been measured. Reconsolidation is a replicated experimental finding. Emergent properties at
+        characteristic scales are ordinary physics, not mysticism.</dd>
+      <dt>Chosen</dt>
+      <dd>Reading <span class="formula-inline">dx</span> as the smallest <em>completed</em> integral rather
+        than a limit artefact. Identifying a grain of gathering with a threshold of awareness. Writing the
+        exchange as <span class="formula-inline">&Delta;A = &minus;&eta;&thinsp;&Delta;M</span> when nothing
+        yet measures <span class="formula-inline">&eta;</span>.</dd>
+      <dt>Refused</dt>
+      <dd>The claim that this explains consciousness; it proposes a price, not a mechanism. The claim that
+        Landauer's bound is evidence <em>for</em> the transfer rather than the reason a transfer would have
+        to cost something. And the move of treating every counter-example as imported information, which is
+        named above as the chapter's cheapest escape.</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-glossary">Terms</h2>
+    <dl class="glossary">
+      <dt>Differential (dx)</dt>
+      <dd>In standard analysis, a formal object inside an integral; here, the smallest finished gather.</dd>
+      <dt>Grain</dt>
+      <dd>A value of <span class="formula-inline">dx</span> at which a gathering closes on itself and the
+        aggregate acquires a property no sliver had.</dd>
+      <dt>Transfer</dt>
+      <dd>The movement of information out of the stored record and into an emergent awareness.</dd>
+      <dt>&eta; (eta)</dt>
+      <dd>The efficiency of that transfer. At most one; unmeasured; probably small.</dd>
+      <dt>Landauer's bound</dt>
+      <dd>The minimum energy dissipated by erasing one bit of information:
+        <span class="formula-inline">k<sub>B</sub>T&thinsp;ln&thinsp;2</span>.</dd>
+    </dl>
+    <h3>Reading</h3>
+    <ul class="biblio">
+      <li>Robinson, A. — <em>Non-standard Analysis</em> (1966). Infinitesimals made rigorous, with no
+        metaphysics attached.</li>
+      <li>Landauer, R. — &ldquo;Irreversibility and Heat Generation in the Computing Process&rdquo;,
+        <em>IBM J. Res. Dev.</em> <strong>5</strong> (1961).</li>
+      <li>Bérut, A. <em>et al.</em> — &ldquo;Experimental verification of Landauer's principle&rdquo;,
+        <em>Nature</em> <strong>483</strong> (2012).</li>
+      <li>Nader, K., Schafe, G. &amp; LeDoux, J. — &ldquo;Fear memories require protein synthesis in the
+        amygdala for reconsolidation after retrieval&rdquo;, <em>Nature</em> <strong>406</strong> (2000).</li>
+      <li>Tononi, G. &amp; Cirelli, C. — &ldquo;Sleep and the price of plasticity&rdquo;, <em>Neuron</em>
+        <strong>81</strong> (2014).</li>
+    </ul>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <p class="lede">Nothing wakes for free. Every grain fine enough to know itself is bought out of the
+      record of what it was &mdash; which is why becoming more present and remembering more faithfully have
+      always felt like opposite labours.</p>
+    <p class="muted small">Next: <a href="/gravity/">gravity as the curvature of the geometry</a>.</p>
+  </div>
+</section>

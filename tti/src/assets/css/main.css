@@ -3494,3 +3494,7 @@ body.is-picking * { cursor: crosshair !important; user-select: none; }
 }
 .attach-msg { margin: 0; min-height: 1.2em; }
 .attach-msg.is-error { color: var(--rose); }
+
+/* A body that has just been struck, or has just split, flares briefly. */
+.geo--live .geo-layer { transition: filter 320ms ease-out; }
+.geo--live .geo-layer.is-struck { filter: brightness(2.6) drop-shadow(0 0 14px currentColor); }

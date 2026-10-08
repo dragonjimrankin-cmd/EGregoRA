@@ -7,7 +7,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SITE = ROOT / "tti" / "_site"
 OUT  = ROOT / "tti" / "src" / "plates.njk"
 
-ORDER = [("foundations","Foundations"),("the-self","The Self"),("gravity","Gravity"),
+ORDER = [("foundations","Foundations"),("the-self","The Self"),("dx","dx"),("gravity","Gravity"),
          ("spiral","The Spiral"),("torus","Torus"),("moebius","Möbius"),
          ("cosmic-ledger","The Ledger"),("seams","Seams"),("stress-tests","Stress Tests"),
          ("essays","Essays")]

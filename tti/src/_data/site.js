@@ -40,6 +40,7 @@ export default {
   nav: [
     { url: "/foundations/",   label: "Foundations",   glyph: "sphere" },
     { url: "/the-self/",      label: "The Self",      glyph: "integral" },
+    { url: "/dx/",             label: "dx",            glyph: "integral" },
     { url: "/gravity/",       label: "Gravity",       glyph: "spiral" },
     { url: "/spiral/",        label: "The Spiral",    glyph: "spiral" },
     { url: "/torus/",         label: "Torus",         glyph: "torus" },
