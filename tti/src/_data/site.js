@@ -47,7 +47,7 @@ export default {
     { url: "/torus/",         label: "Torus",         glyph: "torus" },
     { url: "/megatubule/",    label: "Megatubule",    glyph: "torus" },
     { url: "/moebius/",       label: "Möbius",        glyph: "mobius" },
-    { url: "/cosmic-ledger/", label: "The Ledger",    glyph: "ledger" },
+    { url: "/cosmic-ledger/", label: "Cosmic Ledger", glyph: "ledger" },
     { url: "/seams/",         label: "Seams",         glyph: "star" },
     { url: "/stress-tests/",  label: "Stress Tests",  glyph: "eye" },
     { url: "/essays/",        label: "Essays",        glyph: "tree" },

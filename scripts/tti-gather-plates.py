@@ -9,7 +9,7 @@ OUT  = ROOT / "tti" / "src" / "plates.njk"
 
 ORDER = [("foundations","Foundations"),("the-self","The Self"),("dx","dx"),("skeletal-splice","The Splice"),("megatubule","The Megatubule"),("gravity","Gravity"),
          ("spiral","The Spiral"),("torus","Torus"),("moebius","Möbius"),
-         ("cosmic-ledger","The Ledger"),("seams","Seams"),("stress-tests","Stress Tests"),
+         ("cosmic-ledger","Cosmic Ledger"),("seams","Seams"),("stress-tests","Stress Tests"),
          ("essays","Essays")]
 
 FIG = re.compile(r'<figure[^>]*class="plate"[^>]*>.*?</figure>', re.S)
