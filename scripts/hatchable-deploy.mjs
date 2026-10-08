@@ -387,3 +387,4 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
   if (/401|unauthor/i.test(err.message)) console.error("  Check HATCHABLE_TOKEN — console → Settings → API keys.");
   process.exit(1);
 });
+// redeploy trigger: 2026-10-08T12:34:36Z
