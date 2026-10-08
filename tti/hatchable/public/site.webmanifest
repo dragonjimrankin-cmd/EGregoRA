@@ -1,0 +1,19 @@
+{
+  "name": "EGregoRA — An Order of Enquiry",
+  "short_name": "EGregoRA",
+  "description": "Cosmic physics, natural philosophy, sacred geometry, consciousness and the Law of One, braided into one living study of reality.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d0b10",
+  "theme_color": "#0d0b10",
+  "lang": "en-GB",
+  "dir": "ltr",
+  "categories": ["education", "books", "lifestyle"],
+  "icons": [
+    { "src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/assets/img/sigil.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

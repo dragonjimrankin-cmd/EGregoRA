@@ -1,0 +1,9 @@
+# EGregoRA — an order of enquiry. Everything here is meant to be read.
+User-agent: *
+Allow: /
+Disallow: /account/
+
+# The oracle and the generators are live endpoints, not documents.
+Disallow: /api/
+
+Sitemap: https://egregora.hatchable.site/sitemap.xml
