@@ -3519,3 +3519,63 @@ table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-
   text-align: center;
   margin: 0 0 0.75rem;
 }
+
+/* ---------------------- the fundamentals callout ---------------------- */
+.fundamental {
+  position: relative;
+  margin: 2.4rem 0 2rem;
+  padding: 2.2rem clamp(1rem, 3vw, 2.2rem) 1.6rem;
+  border: 1px solid rgba(255, 217, 121, 0.38);
+  border-left: 3px solid var(--star, #ffd979);
+  border-radius: 3px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 217, 121, 0.07), transparent 60%),
+    linear-gradient(180deg, rgba(118, 207, 238, 0.05), rgba(0, 0, 0, 0.28));
+  box-shadow: 0 0 60px rgba(255, 217, 121, 0.06), 0 18px 48px rgba(0, 0, 0, 0.45);
+}
+.fundamental-tag {
+  position: absolute;
+  top: -0.72rem;
+  left: clamp(1rem, 3vw, 2.2rem);
+  margin: 0;
+  padding: 0.2em 0.85em;
+  background: var(--ink-2, #070b1a);
+  border: 1px solid rgba(255, 217, 121, 0.55);
+  border-radius: 2px;
+  font-family: var(--caps);
+  font-size: 0.64rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--star, #ffd979);
+  white-space: nowrap;
+}
+.fundamental-head { max-width: 64ch; margin: 0 auto 1.6rem; text-align: center; }
+.fundamental-head h3 {
+  font-family: var(--title);
+  font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+  letter-spacing: 0.04em;
+  color: var(--gold-bright);
+  margin: 0 0 0.7rem;
+}
+.fundamental-head p { margin: 0; color: var(--vellum-dim); line-height: 1.8; }
+.fundamental-head strong { color: var(--star, #ffd979); }
+.fundamental .plate--fundamental {
+  margin-bottom: 0;
+  border-color: rgba(255, 217, 121, 0.3);
+  background: linear-gradient(180deg, rgba(255, 217, 121, 0.05), rgba(0, 0, 0, 0.3));
+}
+.fundamental-foot {
+  max-width: 64ch;
+  margin: 1.5rem auto 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(255, 217, 121, 0.22);
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--vellum-dim);
+}
+.fundamental-foot strong { color: var(--gold-bright); }
+@media (max-width: 600px) {
+  .fundamental { padding-top: 2.4rem; }
+  .fundamental-tag { letter-spacing: 0.22em; left: 0.8rem; }
+}
