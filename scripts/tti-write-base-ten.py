@@ -295,6 +295,100 @@ description: "Why the Rankin Skeletal Splice puts ten in nature rather than in o
   </div>
 </section>
 
+<div class="divider">&#10022;</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">&mdash; the question underneath the question</p>
+    <h2 id="t-bt-why-five">Why Five, Exactly</h2>
+    <p class="lede muted">If the census says five rather than ten, the obvious next question is whether
+      five is distinguished for a reason or merely came out on top. It is distinguished for a reason, and
+      the reason is one line long.</p>
+  </div>
+
+  <div class="wrap narrow">
+    <div class="frame illuminated">
+      <h3 id="t-bt-disc">The discriminant is five</h3>
+      <p>The Fibonacci recursion is the solution of a single quadratic:</p>
+      <p class="formula" style="text-align:center">x&sup2; &minus; x &minus; 1 = 0, &nbsp;
+        discriminant &Delta; = 1 + 4 = <strong>5</strong></p>
+      <p>That is the whole source. Every five on this page &mdash; the &radic;5 in Binet, the field
+        Q(&radic;5), the divisibility rule, the flat census &mdash; is that discriminant showing through.
+        Five is not a number the sequence happens to like. It is the number the sequence is
+        <em>made of</em>. <span class="sci">&#9670;</span></p>
+
+      <h3 id="t-bt-ramify">Five is the one prime where the two roots become one</h3>
+      <p>The quadratic has two roots, φ and ψ, and ordinarily they stay apart. Reduce it modulo a prime and
+        ask what happens. Modulo 11 there are two distinct roots; modulo 13 there are none in the field at
+        all. <strong>Modulo 5 the two roots collapse into a single repeated root, x &equiv; 3.</strong>
+        In the language of number theory, five is the ramified prime of Q(&radic;5) &mdash; the unique
+        place where the golden ratio and its conjugate stop being two things.
+        <span class="sci">&#9670;</span></p>
+      <p class="lede">The framework did not have to reach for that. A structure whose whole content is a
+        relation between two opposed quantities turns out to have exactly one prime at which the two
+        become one &mdash; and that prime is five.</p>
+
+      <h3 id="t-bt-rank">Five is the only prime that waits for itself</h3>
+      <p>For each prime p there is a rank of apparition: the first Fibonacci number p divides. A theorem
+        says this rank always divides p&nbsp;&minus;&nbsp;1 or p&nbsp;+&nbsp;1, depending on whether p is
+        congruent to &plusmn;1 or &plusmn;2 modulo five. Checked here for every prime below 300, that
+        holds without exception &mdash; <strong>except for five itself, whose rank is 5.</strong> It is the
+        only prime in the sequence whose first appearance is at its own index.
+        <span class="sci">&#9670;</span></p>
+      <p>And this is why the census came out flat. Modulo any power of five the period is exactly four
+        times that power &mdash; π(5) = 20, π(25) = 100, π(125) = 500 &mdash; and each residue occurs the
+        same number of times, with no digit preferred and none missed. Five does not merely score well.
+        It is the only base in which the Fibonacci sequence is perfectly even-handed about its own
+        digits. <span class="sci">&#9670;</span></p>
+      <p class="muted">Which sharpens the claim of this page rather than softening it. <em>Nature's
+        arithmetic counts in fives, and we write it in tens because we have two hands.</em> The notation
+        is ours. The five is not.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-bt-two-fives">Where the Two Fives Do Connect &mdash; and Where They Do Not</h2>
+    <p>The page admits a debt: nothing links the five of Fibonacci arithmetic to the five of a hand. That
+      debt is real, but it is not total, because in two places the link is not a story &mdash; it is
+      demonstrated.</p>
+
+    <h3 id="t-bt-phyllo">Connected: phyllotaxis</h3>
+    <p>Leaves, florets and seeds are placed at a divergence angle of about 137.5&deg;, which is
+      360&deg;/φ&sup2; &mdash; the golden angle. The parastichy counts that result are consecutive
+      Fibonacci numbers, 5 and 8 and 13 being the commonest in sunflowers and pine cones, and the reason
+      is packing: the golden angle is the single irrational rotation that never lets successive primordia
+      line up, because φ is the hardest number to approximate by rationals. Douady and Couder reproduced
+      the Fibonacci counts in a physical experiment with ferrofluid droplets in 1992, with no biology
+      involved at all. <span class="sci">&#9670;</span> Here the same five is genuinely in both places,
+      and the bridge is φ.</p>
+
+    <h3 id="t-bt-quasi">Connected: five-fold symmetry and quasicrystals</h3>
+    <p>Five-fold symmetry is <em>forbidden</em> in a periodic crystal &mdash; the crystallographic
+      restriction theorem permits two, three, four and six-fold axes and nothing else, because pentagons
+      do not tile the plane. For most of the twentieth century that settled the matter. Then Shechtman
+      found a diffraction pattern with ten-fold symmetry in 1982, published against considerable
+      resistance, and was given the Nobel Prize in 2011. Quasicrystals are now routine, and their
+      one-dimensional model is literally the <strong>Fibonacci chain</strong>, whose diffraction peaks are
+      indexed by pairs of integers in the ratio φ. <span class="sci">&#9670;</span></p>
+    <p class="lede">So where five-fold order appears in matter, it appears precisely <em>because</em> the
+      golden ratio is there &mdash; and the golden ratio is there because the discriminant is five.
+      Icosahedral virus capsids and the Penrose tiling are the same fact in different materials.</p>
+
+    <h3 id="t-bt-notconnected">Not connected: the hand</h3>
+    <p>Pentadactyly is a different matter and the framework will not pretend otherwise. The tetrapod limb
+      settled on five digits through a developmental and historical constraint &mdash; Hox expression
+      domains and a Devonian accident of lineage &mdash; and there is no known route from Q(&radic;5) to
+      the autopod. It may be coincidence. On the evidence here it probably <em>is</em> coincidence, and
+      the argument of this page is unaffected either way, because the five it needs is the arithmetical
+      one. <span class="spec">&#9670;</span></p>
+    <p class="muted">Which leaves the doubling to be done by bilateral symmetry alone, and that is enough:
+      two of a five-structure is a ten-structure, whether the five in question is a hand or a parastichy
+      count.</p>
+  </div>
+</section>
+
 <section class="wrap narrow reveal">
   <div class="frame">
     <h2 id="t-bt-splice">What the Splice Adds</h2>
