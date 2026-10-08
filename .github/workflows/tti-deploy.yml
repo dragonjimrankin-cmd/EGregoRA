@@ -22,9 +22,9 @@ jobs:
     env:
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -39,12 +39,22 @@ jobs:
           RAW_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/tti/hatchable
         run: |
           if [ -z "$HATCHABLE_TOKEN" ]; then
-            echo "HATCHABLE_TOKEN is not configured as a repository secret." >&2
+            echo "::error title=Hatchable deployment unavailable::HATCHABLE_TOKEN is not configured as a repository secret. The site built successfully, but the live project was not changed."
             exit 1
           fi
+
           PROJECT_ID=$(tr -d ' \n\r' < ops/tti-project.txt)
+          set +e
           node scripts/hatchable-deploy.mjs \
             --bundle tti/hatchable \
             --project "$PROJECT_ID" \
             --name "Zero, One, and the Bubbles That Blow Between" \
-            --slug two-infinities
+            --slug two-infinities 2>&1 | tee /tmp/hatchable-deploy.log
+          STATUS=${PIPESTATUS[0]}
+          set -e
+
+          if [ "$STATUS" -ne 0 ]; then
+            MESSAGE=$(tail -20 /tmp/hatchable-deploy.log | tr '\n' ' ' | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g' | cut -c1-1800)
+            echo "::error title=Hatchable deployment failed::$MESSAGE"
+            exit "$STATUS"
+          fi
