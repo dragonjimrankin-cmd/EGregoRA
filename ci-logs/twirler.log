@@ -1,0 +1,72 @@
+# Twirler — 2026-10-08T00:50:15Z — mode inspect
+▸ https://hatchable.com/mcp — project proj_uT6hbTUn8qxc
+  tools: create_project, get_project, list_agent_tasks, update_agent_task, list_projects, deploy, write_file, write_files, read_file, grep, list_files, patch_file, delete_file, execute_sql, get_schema, run_function, view_logs, list_deployments, list_functions, get_deployment, list_cron_jobs, update_project, import_file_from_url, search_documentation, dry_run_deploy, create_preview_link, upload_file, list_pending_uploads, run_code, fork_project, search_projects, list_skills, read_skill, submit_platform_feedback
+    create_project(name, description)
+    get_project(project_id)
+    list_agent_tasks(project_id, status, limit)
+    list_projects()
+    deploy(project_id, intent, summary, resolves)
+    write_file(project_id, path, content, encoding, reason)
+    write_files(project_id, reason, encoding, files)
+    read_file(project_id, path, offset, limit)
+    list_files(project_id)
+    patch_file(project_id, path, old_string, new_string, reason)
+    delete_file(project_id, path, reason)
+    list_deployments(project_id, limit)
+    list_functions(project_id)
+    get_deployment(project_id, version)
+    list_cron_jobs(project_id)
+    update_project(project_id, name, tagline, description, category)
+    import_file_from_url(project_id, url, path)
+    dry_run_deploy(project_id)
+    upload_file(project_id, path, chunk, chunk_index, upload_id, final, sha256, bytes, encoding)
+    list_pending_uploads(project_id)
+    fork_project(project_id, name)
+    search_projects(query, category, limit)
+    list_skills(query, tag, model)
+    read_skill(name, model)
+  using list=list_files read=read_file write=write_files
+▸ 49 path(s)
+    AGENTS.md
+    api/captcha-config.js
+    api/checkout.js
+    api/concierge.js
+    api/doc.js
+    api/docs-zip.js
+    api/file.js
+    api/images.js
+    api/kling.js
+    api/submit.js
+    api/upload.js
+    api/verify-email.js
+    hatchable.toml
+    lib/docs.js
+    lib/minipdf.js
+    lib/minizip.js
+    lib/pdfgen.js
+    package.json
+    public/age-gate.css
+    public/age-gate.js
+    public/concierge.js
+    public/data/noir0.txt
+    public/data/r04-0.b64
+    public/data/resident-04.b64
+    public/data/silk-p0.b64
+    public/index.html
+    public/main.js
+    public/mobile.css
+    public/style.css
+    public/swirler.html
+  ✎ api/concierge.js — 2 address(es): info@shakra.co.uk
+  ✎ api/submit.js — 2 address(es): info@shakra.co.uk
+  ✎ public/concierge.js — 2 address(es): info@shakra.co.uk
+  ✎ public/index.html — 8 address(es): info@shakra.co.uk
+  ✎ public/main.js — 4 address(es): info@shakra.co.uk
+  ✎ public/swirler.html — 12 address(es): info@shakra.co.uk
+▸ every address found in the project:
+     30 × info@shakra.co.uk
+     20 × casting@twirler.co.uk
+      1 × user@example.com
+▸ 6 file(s) would change.
+▸ look only. Re-run with --apply.
+exit=0
