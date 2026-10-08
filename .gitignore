@@ -8,3 +8,4 @@ ci-logs/
 
 # OpenMontage is cloned locally, not vendored
 openmontage/vendor/
+tti-src/
