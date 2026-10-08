@@ -28,6 +28,7 @@ ORDER = [
     ("megatubule", "The Megatubule", "Part III — the throat, and the Cold Spot"),
     ("gravity", "Gravity", "Part IV — curvature as the thing itself"),
     ("spiral", "The Spiral", "Part IV — the integers placed, and where 666 falls"),
+    ("base-ten", "Base Ten in Nature", "Part III — why ten is found rather than chosen"),
     ("torus", "The Torus", "Part V — return without repetition"),
     ("moebius", "The Möbius Strip", "Part V — the half-twist, and galaxy handedness"),
     ("cosmic-ledger", "The Cosmic Ledger", "Part VI — residue, polarity, and the χ-field"),

@@ -8,7 +8,7 @@ SITE = ROOT / "tti" / "_site"
 OUT  = ROOT / "tti" / "src" / "plates.njk"
 
 ORDER = [("","The Opening Page"),("foundations","Foundations"),("the-self","The Self"),("dx","dx"),("skeletal-splice","The Splice"),("megatubule","The Megatubule"),("gravity","Gravity"),
-         ("spiral","The Spiral"),("torus","Torus"),("moebius","Möbius"),
+         ("spiral","The Spiral"),("base-ten","Base Ten in Nature"),("torus","Torus"),("moebius","Möbius"),
          ("cosmic-ledger","Cosmic Ledger"),("seams","Seams"),("stress-tests","Stress Tests"),
          ("essays","Essays")]
 
