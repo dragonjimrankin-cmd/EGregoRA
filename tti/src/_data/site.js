@@ -8,7 +8,7 @@
 export default {
   name: "The Two Infinities",
   longName: "The Two Infinities (and Beyond)",
-  tagline: "Zero, One, and the Shape They Are Forced to Make.",
+  tagline: "Zero, One, and the Inflating Bubble Between Them.",
   url: "https://the-two-infinities.hatchable.site",
   lang: "en-GB",
   locale: "en_GB",
