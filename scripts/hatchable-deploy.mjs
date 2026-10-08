@@ -29,7 +29,6 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const BUNDLE = join(ROOT, "hatchable");
 const ENDPOINT = process.env.HATCHABLE_MCP_URL || "https://hatchable.com/mcp";
 const TOKEN = process.env.HATCHABLE_TOKEN;
 
@@ -40,6 +39,7 @@ const opt = (n, d = null) => {
   return i !== -1 && argv[i + 1] ? argv[i + 1] : d;
 };
 
+const BUNDLE = join(ROOT, opt("bundle", "hatchable"));
 const PROJECT_NAME = opt("name", "EGregoRA");
 const PROJECT_SLUG = opt("slug", "egregora");
 const BINARY = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".ico", ".woff", ".woff2", ".mp3", ".m4a", ".mp4"]);

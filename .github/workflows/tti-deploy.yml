@@ -1,0 +1,79 @@
+name: Deploy The Two Infinities
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/01a10807-egregora"]
+    paths:
+      - "tti/hatchable/**"
+      - "ops/tti-project.txt"
+      - ".github/workflows/tti-deploy.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+
+      - name: Create or redeploy the project (never fails the job)
+        id: run
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p ci-logs ops
+          PID=""
+          [ -f ops/tti-project.txt ] && PID=$(tr -d ' \n\r' < ops/tti-project.txt)
+          {
+            echo "# The Two Infinities → Hatchable — $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "bundle files: $(find tti/hatchable -type f | wc -l)"
+            echo "existing project id: ${PID:-<none, will create>}"
+            echo
+            if [ -n "$PID" ]; then
+              RAW_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/tti/hatchable" \
+                node scripts/hatchable-deploy.mjs --bundle tti/hatchable --project "$PID" \
+                  --name "The Two Infinities (and beyond)" --slug two-infinities 2>&1
+            else
+              RAW_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/tti/hatchable" \
+                node scripts/hatchable-deploy.mjs --bundle tti/hatchable \
+                  --name "The Two Infinities (and beyond)" --slug two-infinities 2>&1
+            fi
+            echo "exit=$?"
+          } > ci-logs/tti-deploy.log 2>&1
+          if [ -n "$HATCHABLE_TOKEN" ]; then
+            sed -i "s/${HATCHABLE_TOKEN}/***REDACTED***/g" ci-logs/tti-deploy.log
+          fi
+          sed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/tti-deploy.log
+          tail -80 ci-logs/tti-deploy.log
+          NEW=$(grep -oE 'proj_[A-Za-z0-9]+' ci-logs/tti-deploy.log | head -1 || true)
+          echo "pid=$NEW" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the log, and the project id if one was created
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          put () {
+            P="$1"; M="$2"
+            B64=$(base64 -w0 "$P")
+            SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
+            if [ -n "$SHA" ]; then
+              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
+                -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA"
+            else
+              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
+                -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}"
+            fi
+          }
+          put ci-logs/tti-deploy.log "ci: two-infinities deploy log"
+          PID="${{ steps.run.outputs.pid }}"
+          if [ -n "$PID" ] && [ ! -f ops/tti-project.txt ]; then
+            mkdir -p ops
+            printf '%s\n' "$PID" > ops/tti-project.txt
+            put ops/tti-project.txt "ci: record the Two Infinities project id"
+          fi
