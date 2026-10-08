@@ -1,1 +1,23 @@
-{ "mode": "inspect" }
+{
+  "mode": "show",
+  "show": [
+    {
+      "path": "public/index.html",
+      "match": "swirler",
+      "flags": "i",
+      "context": 8
+    },
+    {
+      "path": "public/index.html",
+      "match": "<footer",
+      "flags": "i",
+      "context": 10
+    },
+    {
+      "path": "public/style.css",
+      "match": "swirler",
+      "flags": "i",
+      "context": 10
+    }
+  ]
+}

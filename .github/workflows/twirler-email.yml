@@ -10,6 +10,7 @@ on:
     branches: ["arena/01a10807-egregora"]
     paths:
       - "scripts/twirler-email.mjs"
+      - "scripts/twirler-run.mjs"
       - "ops/twirler-request.json"
       - ".github/workflows/twirler-email.yml"
 
@@ -27,26 +28,14 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
 
-      - name: Read the request
-        id: req
-        run: |
-          MODE=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('ops/twirler-request.json','utf8')).mode||'inspect')}catch(e){console.log('inspect')}")
-          echo "mode=$MODE" >> $GITHUB_OUTPUT
-          echo "mode: $MODE"
-
       - name: Run
         continue-on-error: true
         run: |
           set +e
           mkdir -p ci-logs
-          case "${{ steps.req.outputs.mode }}" in
-            deploy) ARGS="--apply --deploy" ;;
-            apply)  ARGS="--apply" ;;
-            *)      ARGS="" ;;
-          esac
           {
-            echo "# Twirler — $(date -u +'%Y-%m-%dT%H:%M:%SZ') — mode ${{ steps.req.outputs.mode }}"
-            node scripts/twirler-email.mjs $ARGS 2>&1
+            echo "# Twirler — $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            node scripts/twirler-run.mjs ops/twirler-request.json 2>&1
             echo "exit=$?"
           } > ci-logs/twirler.log 2>&1
           sed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/twirler.log
