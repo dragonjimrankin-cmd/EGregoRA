@@ -21,19 +21,25 @@ if (!FOLDER) { console.error("usage: tti-fetch.mjs <folderId> [outDir]"); proces
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36";
 mkdirSync(OUT, { recursive: true });
 
-const page = await (await fetch(`https://drive.google.com/drive/folders/${FOLDER}`, {
-  headers: { "user-agent": UA, "accept-language": "en-GB,en" }
-})).text();
-console.log(`folder page: ${page.length} bytes`);
-
-/* Entries look like ["<id>",["<parentId>"],"<name>","<mime>", … */
-const found = new Map();
-const re = /\["([a-zA-Z0-9_-]{25,})",\["[a-zA-Z0-9_-]{25,}"\],"((?:[^"\\]|\\.)*)","([^"]+)"/g;
-let m;
-while ((m = re.exec(page))) {
-  const name = JSON.parse(`"${m[2]}"`);
-  if (!found.has(m[1])) found.set(m[1], { name, mime: m[3] });
+/* The embedded folder view is plain HTML and lists every child with its id,
+   which saves scraping Drive's bootstrap blob. */
+async function listFolder(id) {
+  const html = await (await fetch(`https://drive.google.com/embeddedfolderview?id=${id}#list`, {
+    headers: { "user-agent": UA, "accept-language": "en-GB,en" }
+  })).text();
+  console.log(`embedded view: ${html.length} bytes`);
+  const out = new Map();
+  const re = /id="entry-([a-zA-Z0-9_-]{20,})"[\s\S]*?flip-entry-title">([^<]+)</g;
+  let m;
+  while ((m = re.exec(html))) out.set(m[1], { name: m[2].trim(), mime: "" });
+  if (!out.size) {
+    console.log("no entries; first 1200 bytes follow:");
+    console.log(html.slice(0, 1200));
+  }
+  return out;
 }
+
+const found = await listFolder(FOLDER);
 console.log(`${found.size} entr(ies) found`);
 
 const cookies = new Map();
@@ -68,14 +74,14 @@ async function grab(id, name) {
   throw new Error(`${name}: too many hops`);
 }
 
-const want = [...found.entries()].filter(([, f]) => !/folder/.test(f.mime));
+const want = [...found.entries()].filter(([, f]) => /\.(pdf|jpe?g|png)$/i.test(f.name));
 for (const [id, f] of want) {
   const safe = f.name.replace(/[^\w.() -]+/g, "_").replace(/^\.+/, "");
   if (/^_/.test(safe) && f.name.startsWith("._")) { console.log(`skip ${f.name} (resource fork)`); continue; }
   try {
     const bytes = await grab(id, f.name);
     writeFileSync(join(OUT, safe), bytes);
-    console.log(`✓ ${safe} — ${(bytes.length / 1024).toFixed(0)} KB (${f.mime})`);
+    console.log(`ok ${safe} — ${(bytes.length / 1024).toFixed(0)} KB (${f.mime})`);
   } catch (e) {
     console.log(`✖ ${f.name}: ${e.message.slice(0, 160)}`);
   }
