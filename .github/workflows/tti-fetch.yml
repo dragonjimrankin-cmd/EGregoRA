@@ -34,11 +34,13 @@ jobs:
           {
             node scripts/tti-fetch.mjs 1yoTIvzp9oTIIkJ8gbr0e9gK4_G_EwO__ tti-src 2>&1
             echo "---- extract ----"
+            n=0
             for f in tti-src/*.pdf; do
               [ -e "$f" ] || continue
-              b=$(basename "$f" .pdf)
-              pdftotext -layout "$f" "docs/tti/$b.txt" 2>&1 && \
-                echo "text: docs/tti/$b.txt — $(wc -c < "docs/tti/$b.txt") bytes, $(wc -l < "docs/tti/$b.txt") lines"
+              n=$((n+1))
+              out="docs/tti/part-$n.txt"
+              { echo "# source: $(basename "$f")"; pdftotext -layout "$f" -; } > "$out" 2>/dev/null && \
+                echo "text: $out <- $(basename "$f") — $(wc -c < "$out") bytes"
             done
             echo "---- files ----"
             ls -la tti-src docs/tti
