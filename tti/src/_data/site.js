@@ -45,6 +45,7 @@ export default {
     { url: "/spiral/",        label: "The Spiral",    glyph: "spiral" },
     { url: "/skeletal-splice/", label: "The Splice", glyph: "spiral" },
     { url: "/torus/",         label: "Torus",         glyph: "torus" },
+    { url: "/megatubule/",    label: "Megatubule",    glyph: "torus" },
     { url: "/moebius/",       label: "Möbius",        glyph: "mobius" },
     { url: "/cosmic-ledger/", label: "The Ledger",    glyph: "ledger" },
     { url: "/seams/",         label: "Seams",         glyph: "star" },
