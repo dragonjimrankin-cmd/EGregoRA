@@ -45,12 +45,28 @@ jobs:
           } > ci-logs/tti-fetch.log 2>&1
           tail -60 ci-logs/tti-fetch.log
 
-      - name: Commit the text
+      - name: Publish the log
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          B64=$(base64 -w0 ci-logs/tti-fetch.log)
+          SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/ci-logs/tti-fetch.log?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
+          if [ -n "$SHA" ]; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/ci-logs/tti-fetch.log" \
+              -f message="ci: tti fetch log" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA"
+          else
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/ci-logs/tti-fetch.log" \
+              -f message="ci: tti fetch log" -f content="$B64" -f branch="${GITHUB_REF_NAME}"
+          fi
+
+      - name: Commit the text, if there is any
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(ls -A docs/tti 2>/dev/null)" ]; then echo "no text extracted"; exit 0; fi
+          git pull -q --rebase origin ${GITHUB_REF_NAME} || true
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add docs/tti ci-logs/tti-fetch.log 2>/dev/null || true
+          git add docs/tti
           git commit -m "ci: the Two Infinities framework, as text" || echo "nothing to commit"
           git push origin HEAD:${GITHUB_REF_NAME}
