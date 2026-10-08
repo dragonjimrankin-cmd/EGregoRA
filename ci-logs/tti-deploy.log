@@ -1,4 +1,4 @@
-# The Two Infinities → Hatchable — 2026-10-08T02:55:03Z
+# The Two Infinities → Hatchable — 2026-10-08T03:00:11Z
 bundle files: 137
 existing project id: proj_U95i5y493z9x
 
@@ -34,18 +34,8 @@ existing project id: proj_U95i5y493z9x
   "project_slug": "the-two-infinities",
   "version": 2,
   "url": "https://the-two-infinities.hatchable.site",
-  "status": "live",
   "is_draft": false,
-  "public_url": "https://the-two-infinities.hatchable.site",
-  "draft_url": "https://the-two-infinities-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v1.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v2.png",
-  "console_url": "https://hatchable.com/console/projects/the-two-infinities",
-  "files_deployed": 137,
-  "functions_deployed": 25,
-  "warnings": [],
-  "visibility": "personal",
-  "preview_url": "https://the-two-infinities.hatchable.site/?_preview=eyJzbHVnIjoidGhlLXR3by1pbmZpbml0aWVzIiwiZXhwIjoxNzkxNDI5OTE1LCJyb2xlIjoicHVibGljIn0.4cd910f242732a382669b463220c6145bcd2a9221a69c96a832880f528f4533f"
+  "deduplicated": true
 }
 
    https://the-two-infinities.hatchable.site
