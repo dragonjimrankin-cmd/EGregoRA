@@ -173,6 +173,17 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
 <div class="divider">✦</div>
 
 <section class="wrap reveal">
+<aside class="fundamental" aria-labelledby="t-fundamental-three">
+    <p class="fundamental-tag">Fundamental&nbsp;III</p>
+    <div class="fundamental-head">
+      <h3 id="t-fundamental-three">Accumulation is the mechanism. At scale it stops being invisible.</h3>
+      <p>This is the fundamental the rest of the framework leans on hardest, and the one most easily
+        waved past as poetry. It is not poetry. <strong>An infinitesimal self is beneath measurement; a
+        great many of them are not.</strong> The halves sent back at every threshold are not losses and
+        not metaphors &mdash; they are completed differentials, deposited below one, and they add. Once
+        the sum is large enough it crosses out of the unmeasurable and into the measurable, and what
+        appears at the top of the accumulation is not the same kind of thing as what went into it.</p>
+    </div>
   <figure id="fig-skeletal" class="plate">
     <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The Splice at Every Density, on
       the Same Skeleton <span class="spec">&#9670;</span></figcaption>
@@ -185,9 +196,79 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
       <a href="/seams/#t-returners">chapter fifteen</a>, each fall shorter than the last by the golden
       ratio. The three fixed points sit at the centre; their scaled images sit on the outer turn.</p>
   </figure>
+
+    <p class="fundamental-foot">Hold on to one sentence: <strong>nothing here depends on any single
+      moment being significant &mdash; it depends only on moments adding up, and on a large enough sum
+      being a different kind of object from its terms.</strong></p>
+  </aside>
 </section>
 
 <div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">&mdash; the step from the unmeasurable to the measurable</p>
+    <h2 id="t-emergence">Where Infinitesimal Selves Become a Quantity</h2>
+    <p class="lede muted">A differential is, by construction, too small to register. The framework's
+      claim is that this stops being true by addition alone &mdash; and that what the addition produces
+      is not a bigger version of the thing added.</p>
+  </div>
+
+  <div class="wrap narrow">
+    <div class="frame illuminated">
+      <p>Take the reading of dx seriously for a moment. A differential is not a vanishing nothing; it is
+        the smallest act of gathering that has actually been completed. One of them is beneath any
+        instrument, beneath any report, beneath notice &mdash; including its own. The framework does not
+        claim otherwise, and any account that asked a single infinitesimal to carry significance would
+        be asking it to be something other than infinitesimal.</p>
+      <p class="lede">What changes everything is that they do not stay single. They accumulate, and
+        accumulation has a threshold.</p>
+      <p>This is not an exotic move. It is the ordinary structure of every measurable quantity physics
+        has. <strong>Temperature is nothing a single molecule has</strong> &mdash; ask for the
+        temperature of one argon atom and the question is malformed; what the atom has is a velocity.
+        Temperature exists at 10<sup>23</sup> of them and is then as real and as measurable as anything
+        in a laboratory. Pressure is nothing one impact has. Entropy is nothing one microstate has. A
+        phase &mdash; solid, liquid, gas &mdash; is nothing one particle can be in.
+        <span class="sci">&#9670;</span> In every case a quantity that does not exist at the level of
+        the constituent exists, sharply and measurably, at the level of the sum, and it obeys laws of
+        its own that cannot be read off a single term.</p>
+      <p>The splice says the deposited selves behave the same way. Below one, the returning halves pile
+        up as completed differentials. Individually: unmeasurable, and not claimed otherwise.
+        Accumulated: a gradient, with a magnitude, a direction and a rate &mdash; and the rate is the
+        thing the rest of this page computes. <span class="spec">&#9670;</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h3 id="t-emergent-states">New states, not more of the same</h3>
+    <p>The second half of the claim is the sharper one. An accumulation does not merely make the
+      constituent louder. <strong>It makes a kind of thing the constituent could not be.</strong>
+      Temperature is not a loud velocity. A phase transition is not a vigorous molecule. Something is
+      available at the level of the sum that was not available anywhere below it, and it appears
+      abruptly, at a threshold, rather than fading in.</p>
+    <p>Applied to thought, which is where the framework actually wants it: a single moment of
+      attention is a differential &mdash; completed, real, and far too small to be anything. A life's
+      worth of them is an integral, and that is already a self. But the framework does not stop at one
+      life, because the splice does not. The deposits below one are the accumulated moments of
+      <em>everything that has climbed and been sent back</em>, and at that scale the same threshold
+      logic applies again: a sufficient accumulation of thought is not a larger thought. It is a state
+      with properties none of its moments had. <span class="spec">&#9670;</span></p>
+    <p class="lede">Densities, on this reading, are exactly those thresholds. A density is not a region
+      of space one travels to; it is the level at which a sufficient accumulation has produced a state
+      that was not previously available &mdash; the same step that takes velocities to temperature,
+      taken on the only other quantity the framework recognises.</p>
+    <p class="muted">Where this must be held honestly. The thermodynamic cases are
+      <em>derived</em>: statistical mechanics shows exactly how temperature emerges from velocities, with
+      the distribution written down and the threshold calculable. The framework has the analogy and not
+      the derivation &mdash; it has no partition function for thought, no equation of state, and no way
+      yet to say how many accumulated moments make a density rather than a crowd. Until it does, this is
+      a structural claim about the <em>form</em> emergence takes, backed by the fact that every
+      measurable collective quantity we have takes that form, and it is not a calculation. Stating the
+      difference is the price of being allowed to make the claim at all.</p>
+  </div>
+</section>
 
 <section class="wrap narrow reveal">
   <div class="frame">

@@ -3579,3 +3579,22 @@ table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-
   .fundamental { padding-top: 2.4rem; }
   .fundamental-tag { letter-spacing: 0.22em; left: 0.8rem; }
 }
+
+.fundamental-list {
+  max-width: 68ch;
+  margin: 1.6rem auto 0;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(255, 217, 121, 0.22);
+}
+.fundamental-list .kicker { text-align: center; display: block; margin-bottom: 0.9rem; }
+.fundamental-list ol { margin: 0; padding-left: 1.4rem; }
+.fundamental-list li {
+  margin-bottom: 0.65rem;
+  color: var(--vellum-dim);
+  line-height: 1.75;
+  font-size: 0.93rem;
+}
+.fundamental-list li strong { color: var(--gold-bright); }
+.fundamental-list li a { text-decoration: none; }
+.fundamental-list li a:hover strong { color: var(--star, #ffd979); }
+.fundamental-list .muted { text-align: center; margin: 1rem 0 0; }
