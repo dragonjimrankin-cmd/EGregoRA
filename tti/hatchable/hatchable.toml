@@ -1,7 +1,7 @@
 # Hatchable project manifest — The Two Infinities (and beyond)
 # Reference: https://hatchable.com/docs/developers/config
 name        = "The Two Infinities (and beyond)"
-tagline     = "Nothing is geometrically impossible — the Two Infinities framework, drawn"
+tagline     = "Zero, One, and the Bubbles That Blow Between Them."
 description = "The Two Infinities (and beyond): the Unified Edition set out page by page — the asymmetry between the infinity below one and the infinity above it, closure at pi, the integral self, gravity as curvature of the geometry, the galactic torus, Mobius parity, the cosmic ledger of three residues, the seams, eleven plain-language essays and a full visual compendium. ShakDrah, a green dragon, keeps the papers and answers questions from them."
 category    = "Publishing"
 tags        = ["astronomy", "cosmology", "mathematics", "philosophy", "geometry", "physics"]

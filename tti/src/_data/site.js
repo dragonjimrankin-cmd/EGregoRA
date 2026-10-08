@@ -8,7 +8,7 @@
 export default {
   name: "The Two Infinities",
   longName: "The Two Infinities (and Beyond)",
-  tagline: "Zero, One, and the Bubble That Blows Between Them.",
+  tagline: "Zero, One, and the Bubbles That Blow Between Them.",
   url: "https://the-two-infinities.hatchable.site",
   lang: "en-GB",
   locale: "en_GB",
