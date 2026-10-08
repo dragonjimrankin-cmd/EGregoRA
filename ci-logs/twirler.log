@@ -1,4 +1,4 @@
-# Twirler — 2026-10-08T00:50:15Z — mode inspect
+# Twirler — 2026-10-08T00:52:40Z — mode deploy
 ▸ https://hatchable.com/mcp — project proj_uT6hbTUn8qxc
   tools: create_project, get_project, list_agent_tasks, update_agent_task, list_projects, deploy, write_file, write_files, read_file, grep, list_files, patch_file, delete_file, execute_sql, get_schema, run_function, view_logs, list_deployments, list_functions, get_deployment, list_cron_jobs, update_project, import_file_from_url, search_documentation, dry_run_deploy, create_preview_link, upload_file, list_pending_uploads, run_code, fork_project, search_projects, list_skills, read_skill, submit_platform_feedback
     create_project(name, description)
@@ -68,5 +68,14 @@
      20 × casting@twirler.co.uk
       1 × user@example.com
 ▸ 6 file(s) would change.
-▸ look only. Re-run with --apply.
+  ✓ wrote api/concierge.js, api/submit.js, public/concierge.js, public/index.html, public/main.js, public/swirler.html
+▸ dry run: {"ok":true,"errors":[],"warnings":[],"would_deploy":{"public_files":31,"api_functions":11,"pages":0,"migrations":0,"auth_enabled":false,"next_version":201}}
+▸ api/submit.js — where mail is sent:
+       6  const TO = 'casting@twirler.co.uk';
+     311  await email.send({ to: TO, replyTo: b.email, subject, html });
+     323  error: 'We could not send that right now. Please email casting@twirler.co.uk directly.'
+▸ api/concierge.js — where mail is sent:
+       6  const EMAIL = 'casting@twirler.co.uk';
+      26  - For anything not covered by these published facts, direct the visitor to casting@twirler.co.uk. Never invent a price, promise, policy, person, date,
+✔ deployed: {"project_name":"Twirler","project_public_id":"proj_uT6hbTUn8qxc","project_slug":"twirler-pictures","version":201,"url":"https://twirler-pictures.hatchable.site","status":"live","is_draft":false,"public_url":"https://twirler-pictures.hatchable.site","draft_url":"https://twirler-pictures-draft.hatchable.site","screenshot_url":"https://hatchable.com/storage/deploy-previews/proj_uT6hbTUn8qxc/v200.png","screenshot_pending_url":"https://hatchable.com/storage/deploy-previews/proj_uT6hbTUn8qxc/v201.png","console_url":"https://hatchable.com/console/projects/twirler-pictures","files_deployed":48,"functions_deployed":11,"warnings":[],"visibility":"public","preview_url":null}
 exit=0
