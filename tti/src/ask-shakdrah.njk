@@ -210,6 +210,20 @@ description: "Put a question to ShakDrah, who keeps the Two Infinities papers â€
           <button class="chip" type="button">A brass orrery on a cluttered desk, candlelight, brass worn at the fingertips</button>
           <button class="chip" type="button">A copperplate engraving of the twelve zodiac glyphs around a wheel</button>
         </div>
+        <div class="attach" data-attach="draw">
+          <label class="btn btn--ghost file-btn">
+            <span aria-hidden="true">&#9679;</span> Attach an image
+            <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-attach-input>
+          </label>
+          <div class="attach-held" data-attach-held hidden>
+            <img data-attach-thumb src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="The image you attached as a starting point" width="72" height="72">
+            <button class="btn btn--ghost btn--small" type="button" data-attach-drop>Remove</button>
+          </div>
+          <p class="attach-msg muted xsmall" data-attach-msg role="status"></p>
+          <p class="muted xsmall">A photograph, a scan, a picture you already made &mdash; the generator
+          starts from it and your words say what to change. Leave it off and the picture is built from the
+          words alone.</p>
+        </div>
         <div class="ask-actions">
           <button class="btn" type="submit" id="d-submit">Generate</button>
           <button class="btn btn--ghost" type="button" id="d-sketch-open"
@@ -437,6 +451,19 @@ description: "Put a question to ShakDrah, who keeps the Two Infinities papers â€
           <button class="chip" type="button">A single candle flame guttering in a draught, close, dark background</button>
           <button class="chip" type="button">Ink dropped into still water, slow motion, backlit, blooming into filaments</button>
           <button class="chip" type="button">Clouds racing over a standing stone circle, time-lapse, long shadows turning</button>
+        </div>
+        <div class="attach" data-attach="film">
+          <label class="btn btn--ghost file-btn">
+            <span aria-hidden="true">&#9679;</span> Attach an image
+            <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-attach-input>
+          </label>
+          <div class="attach-held" data-attach-held hidden>
+            <img data-attach-thumb src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="The image the clip will open on" width="72" height="72">
+            <button class="btn btn--ghost btn--small" type="button" data-attach-drop>Remove</button>
+          </div>
+          <p class="attach-msg muted xsmall" data-attach-msg role="status"></p>
+          <p class="muted xsmall">The clip opens on this frame and moves from it &mdash; the surest way to
+          keep a character, a place or a palette the same across several shots.</p>
         </div>
         <div class="ask-actions">
           <button class="btn" type="submit" id="v-submit">Generate</button>
@@ -1124,6 +1151,7 @@ description: "Put a question to ShakDrah, who keeps the Two Infinities papers â€
 </section>
 
 <script type="module" src="/assets/js/freeai-admin.js?v={{ build.id }}"></script>
+<script src="/assets/js/attach-image.js?v={{ build.id }}" defer></script>
 <script type="module" src="/assets/js/dragon.js?v={{ build.id }}"></script>
 <script type="module" src="/assets/js/model.js?v={{ build.id }}"></script>
 <script type="module" src="/assets/js/scan.js?v={{ build.id }}"></script>

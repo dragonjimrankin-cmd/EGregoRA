@@ -828,7 +828,11 @@
         body: JSON.stringify({
           prompt: p,
           name: (nameEl && nameEl.value || "").trim(),
-          sketch: window.EGSketchUrl ? window.EGSketchUrl() : null,
+          /* An uploaded starting image wins over a sketch drawn in the page;
+             both travel in the same field, because the back end treats either
+             as the picture to begin from. */
+          sketch: (window.EGAttachedImage && window.EGAttachedImage("draw")) ||
+                  (window.EGSketchUrl ? window.EGSketchUrl() : null),
           engine: (document.getElementById("d-engine") || {}).value || "sd35",
           byok: window.EGOwnKey ? window.EGOwnKey() : null
         })
@@ -2265,7 +2269,8 @@
           frames: Number(lengthEl && lengthEl.value) || undefined,
           name: (nameEl && nameEl.value || "").trim(),
           from: cont && cont.id ? cont.id : undefined,
-          frame: cont ? cont.frame : undefined,
+          frame: cont ? cont.frame
+                      : ((window.EGAttachedImage && window.EGAttachedImage("film")) || undefined),
           sheet: cont ? cont.sheet : undefined,
           seed: cont ? cont.seed : undefined,
           byok: window.EGOwnFilmKey ? window.EGOwnFilmKey() : null
