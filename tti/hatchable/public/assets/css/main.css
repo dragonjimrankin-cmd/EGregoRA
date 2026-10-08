@@ -3513,3 +3513,9 @@ table.ledger thead th {
 }
 table.ledger tbody tr + tr td { border-top: 1px solid rgba(118,207,238,0.12); }
 table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-nums; }
+
+/* A kicker sitting directly above a plate, centred on it. */
+.kicker--plate {
+  text-align: center;
+  margin: 0 0 0.75rem;
+}
