@@ -1,0 +1,192 @@
+{#
+  The sky behind every page. Eight bodies — stars, planets, a comet and a
+  moon — drifting in a fixed field. geo-field.js gives them positions,
+  velocities and radii, so they repel one another, deform as they pass, and
+  either collide or merge when they meet. The classes geo-1 … geo-8 are the
+  physics module's handles; only the drawing inside them is celestial.
+  Switched off entirely by prefers-reduced-motion.
+#}
+{% set slug = page.fileSlug or "home" %}
+
+<div class="geo" aria-hidden="true">
+
+  {# ---- 1 — a gas giant, banded, with a ring system ---- #}
+  <svg class="geo-layer geo-1" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="54"/>
+      <path d="M48 82 Q100 72 152 82" opacity="0.8"/>
+      <path d="M46 94 Q100 86 154 94" opacity="0.65"/>
+      <path d="M46 106 Q100 116 154 106" opacity="0.65"/>
+      <path d="M50 118 Q100 128 150 118" opacity="0.5"/>
+      <path d="M58 130 Q100 138 142 130" opacity="0.4"/>
+      <ellipse cx="100" cy="100" rx="52" ry="24" opacity="0.5" transform="rotate(-18 100 100)"/>
+      <ellipse cx="100" cy="100" rx="88" ry="30" transform="rotate(-18 100 100)"/>
+      <ellipse cx="100" cy="100" rx="78" ry="26" opacity="0.7" transform="rotate(-18 100 100)"/>
+      <ellipse cx="100" cy="100" rx="68" ry="22" opacity="0.45" transform="rotate(-18 100 100)"/>
+      <circle cx="166" cy="62" r="4" opacity="0.8"/>
+    </g>
+  </svg>
+
+  {# ---- 2 — a star with a corona and eight rays ---- #}
+  <svg class="geo-layer geo-2" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.45">
+      <circle cx="100" cy="100" r="30"/>
+      <circle cx="100" cy="100" r="42" opacity="0.6"/>
+      <circle cx="100" cy="100" r="56" stroke-dasharray="1 5" opacity="0.7"/>
+      {% for i in range(0, 8) %}
+      <path d="M100 58 L104 18 L100 2 L96 18 Z" transform="rotate({{ i * 45 }} 100 100)" opacity="{{ 0.8 if i % 2 == 0 else 0.4 }}"/>
+      {% endfor %}
+      {% for i in range(0, 24) %}
+      <line x1="100" y1="70" x2="100" y2="62" transform="rotate({{ i * 15 }} 100 100)" opacity="0.35"/>
+      {% endfor %}
+    </g>
+  </svg>
+
+  {# ---- 3 — the page's own body, centre of the field ---- #}
+  <svg class="geo-layer geo-3" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.45">
+      {% if slug == "foundations" or slug == "spiral" %}
+        {# a protoplanetary disc with a cleared gap #}
+        <circle cx="100" cy="100" r="9"/>
+        {% for i in range(1, 9) %}
+        <ellipse cx="100" cy="100" rx="{{ i * 11 }}" ry="{{ i * 3.6 }}" opacity="{{ 0.85 - i * 0.07 }}"/>
+        {% endfor %}
+        <ellipse cx="100" cy="100" rx="55" ry="18" stroke-dasharray="2 6"/>
+        <circle cx="155" cy="100" r="3.5"/>
+      {% elif slug == "torus" %}
+        {# an accretion torus seen at a low angle #}
+        {% for i in range(0, 7) %}
+        <ellipse cx="100" cy="100" rx="{{ 30 + i * 10 }}" ry="{{ 10 + i * 3.4 }}" opacity="{{ 0.8 - i * 0.08 }}"/>
+        {% endfor %}
+        <circle cx="100" cy="100" r="14"/>
+        <circle cx="100" cy="100" r="22" stroke-dasharray="1 4"/>
+      {% elif slug == "moebius" %}
+        {# two stars on a shared orbit, one twisted path #}
+        <path d="M40 100 C40 60 160 140 160 100 C160 60 40 140 40 100 Z"/>
+        <circle cx="40" cy="100" r="11"/>
+        <circle cx="160" cy="100" r="8"/>
+        <ellipse cx="100" cy="100" rx="78" ry="34" stroke-dasharray="2 6" opacity="0.5"/>
+      {% elif slug == "gravity" %}
+        {# a curved sheet with a well in it #}
+        {% for i in range(0, 9) %}
+        <path d="M14 {{ 48 + i * 14 }} Q100 {{ 48 + i * 14 + (40 - (i - 4) * (i - 4) * 2) }} 186 {{ 48 + i * 14 }}" opacity="0.5"/>
+        {% endfor %}
+        <circle cx="100" cy="104" r="10"/>
+        <ellipse cx="100" cy="104" rx="30" ry="10" stroke-dasharray="1 5"/>
+      {% elif slug == "cosmic-ledger" %}
+        {# three bodies at three distances, with their shares marked #}
+        <circle cx="100" cy="100" r="86" stroke-dasharray="3 7"/>
+        <circle cx="100" cy="100" r="7"/>
+        <circle cx="100" cy="42" r="12" opacity="0.8"/>
+        <circle cx="150" cy="130" r="18" opacity="0.6"/>
+        <circle cx="46" cy="126" r="26" opacity="0.4"/>
+        {% for i in range(0, 3) %}
+        <line x1="100" y1="100" x2="100" y2="16" transform="rotate({{ i * 120 }} 100 100)" opacity="0.3"/>
+        {% endfor %}
+      {% elif slug == "seams" or slug == "stress-tests" %}
+        {# an event horizon: photon ring and infalling shell #}
+        <circle cx="100" cy="100" r="26"/>
+        <circle cx="100" cy="100" r="40" opacity="0.8"/>
+        <circle cx="100" cy="100" r="41" stroke-dasharray="1 3"/>
+        <ellipse cx="100" cy="100" rx="90" ry="20" opacity="0.6"/>
+        <ellipse cx="100" cy="100" rx="90" ry="20" opacity="0.4" transform="rotate(24 100 100)"/>
+        {% for i in range(0, 12) %}
+        <line x1="100" y1="46" x2="100" y2="58" transform="rotate({{ i * 30 }} 100 100)" opacity="0.4"/>
+        {% endfor %}
+      {% elif slug == "dx" or slug == "the-self" %}
+        {# a limb being filled by ever-finer slices #}
+        <path d="M16 160 C60 40 140 180 184 44" opacity="0.9"/>
+        {% for i in range(0, 22) %}
+        <line x1="{{ 18 + i * 7.6 }}" y1="160" x2="{{ 18 + i * 7.6 }}" y2="{{ 150 - (i * 4) % 96 }}" opacity="0.3"/>
+        {% endfor %}
+        <line x1="12" y1="160" x2="188" y2="160" opacity="0.7"/>
+        <circle cx="100" cy="104" r="4"/>
+      {% else %}
+        {# home: a star and its inner system #}
+        <circle cx="100" cy="100" r="16"/>
+        {% for i in range(1, 6) %}
+        <circle cx="100" cy="100" r="{{ 14 + i * 16 }}" stroke-dasharray="1 6" opacity="{{ 0.8 - i * 0.1 }}"/>
+        {% endfor %}
+        <circle cx="130" cy="100" r="3"/>
+        <circle cx="100" cy="54" r="4.5"/>
+        <circle cx="38" cy="112" r="6"/>
+        <circle cx="156" cy="146" r="3.5"/>
+      {% endif %}
+    </g>
+  </svg>
+
+  {# ---- 4 — a cratered rocky world ---- #}
+  <svg class="geo-layer geo-4" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="62"/>
+      <circle cx="100" cy="100" r="62" stroke-dasharray="1 7" opacity="0.5"/>
+      <circle cx="76" cy="74" r="16"/><circle cx="76" cy="74" r="10" opacity="0.6"/>
+      <circle cx="124" cy="118" r="22"/><circle cx="124" cy="118" r="14" opacity="0.6"/>
+      <circle cx="68" cy="126" r="9"/>
+      <circle cx="132" cy="62" r="7"/>
+      <circle cx="100" cy="150" r="5"/>
+      <path d="M44 92 Q70 100 92 88" opacity="0.5"/>
+      <path d="M112 44 Q130 70 158 76" opacity="0.4"/>
+    </g>
+  </svg>
+
+  {# ---- 5 — a comet, coma and split tail ---- #}
+  <svg class="geo-layer geo-5" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="68" cy="128" r="9"/>
+      <circle cx="68" cy="128" r="18" opacity="0.6"/>
+      <circle cx="68" cy="128" r="28" stroke-dasharray="1 5" opacity="0.5"/>
+      <path d="M78 118 Q130 70 186 24" opacity="0.8"/>
+      <path d="M80 122 Q136 86 192 60" opacity="0.5"/>
+      <path d="M74 112 Q118 62 150 10" opacity="0.4"/>
+      {% for i in range(0, 7) %}
+      <line x1="{{ 86 + i * 14 }}" y1="{{ 112 - i * 14 }}" x2="{{ 94 + i * 14 }}" y2="{{ 108 - i * 14 }}" opacity="0.35"/>
+      {% endfor %}
+    </g>
+  </svg>
+
+  {# ---- 6 — a barred spiral galaxy, edge on to the drift ---- #}
+  <svg class="geo-layer geo-6" viewBox="0 0 320 120">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <ellipse cx="160" cy="60" rx="150" ry="22"/>
+      <ellipse cx="160" cy="60" rx="110" ry="36" opacity="0.6"/>
+      <ellipse cx="160" cy="60" rx="46" ry="20"/>
+      <path d="M118 52 Q160 40 202 52" opacity="0.8"/>
+      <path d="M202 60 Q268 60 296 36" opacity="0.6"/>
+      <path d="M118 60 Q52 60 24 84" opacity="0.6"/>
+      {% for i in range(0, 16) %}
+      <circle cx="{{ 24 + i * 18 }}" cy="{{ 60 + (12 if i % 3 == 0 else -9) }}" r="1.6" opacity="0.5"/>
+      {% endfor %}
+    </g>
+  </svg>
+
+  {# ---- 7 — a ringed ice giant with two moons ---- #}
+  <svg class="geo-layer geo-7" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <circle cx="100" cy="100" r="40"/>
+      <path d="M62 92 Q100 84 138 92" opacity="0.6"/>
+      <path d="M64 110 Q100 118 136 110" opacity="0.5"/>
+      <ellipse cx="100" cy="100" rx="86" ry="18" transform="rotate(22 100 100)"/>
+      <ellipse cx="100" cy="100" rx="70" ry="14" opacity="0.6" transform="rotate(22 100 100)"/>
+      <circle cx="176" cy="60" r="5"/>
+      <circle cx="28" cy="146" r="7"/>
+      <ellipse cx="100" cy="100" rx="98" ry="56" stroke-dasharray="2 8" opacity="0.35" transform="rotate(22 100 100)"/>
+    </g>
+  </svg>
+
+  {# ---- 8 — a binary pair orbiting a common centre ---- #}
+  <svg class="geo-layer geo-8" viewBox="0 0 200 200">
+    <g fill="none" stroke="currentColor" stroke-width="0.5">
+      <ellipse cx="100" cy="100" rx="78" ry="44" transform="rotate(-20 100 100)"/>
+      <ellipse cx="100" cy="100" rx="44" ry="24" opacity="0.7" transform="rotate(-20 100 100)"/>
+      <circle cx="26" cy="126" r="16"/>
+      {% for i in range(0, 6) %}
+      <line x1="26" y1="104" x2="26" y2="96" transform="rotate({{ i * 60 }} 26 126)" opacity="0.5"/>
+      {% endfor %}
+      <circle cx="172" cy="74" r="9"/>
+      <circle cx="100" cy="100" r="2.5"/>
+      <path d="M42 120 Q100 100 158 80" stroke-dasharray="2 5" opacity="0.5"/>
+    </g>
+  </svg>
+
+</div>

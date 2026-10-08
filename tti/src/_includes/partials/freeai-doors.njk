@@ -1,0 +1,71 @@
+{#- The five Free.ai doors. Included inside every admin panel, and shown
+    only once the order's passcode has actually opened one — the markup is
+    inert without it, and the keys live on the server. -#}
+<div class="freeai" data-fa="root" data-fa-where="{{ faWhere | default('admin') }}" hidden>
+  <div class="divider">&#10022;</div>
+  <p class="kicker">Free.ai &mdash; the order&rsquo;s five doors</p>
+  <p class="muted xsmall">Administrators only. The accounts behind these doors are never named
+  here: they are Free.ai 1 to 5, in a fixed order. Each carries a free pool of 30,000 tokens a
+  day, which is six pictures or one film, and the pool resets at midnight UTC.</p>
+
+  <div class="btn-row">
+    <button type="button" class="btn btn--small" data-fa="check">Check the doors</button>
+    <button type="button" class="btn btn--small btn--ghost" data-fa="load-models">Load the model list</button>
+    <span class="muted xsmall" data-fa="msg"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table class="cell-table" data-fa="table" hidden>
+      <caption class="ds-cap">What each door has left today. Counted by this site as it spends,
+      not read from Free.ai &mdash; anything spent elsewhere on the same account is not in these
+      numbers.</caption>
+      <thead>
+        <tr>
+          <th scope="col">Door</th>
+          <th scope="col">Tokens left</th>
+          <th scope="col">Resets in</th>
+          <th scope="col">Films left</th>
+          <th scope="col">Films reset in</th>
+          <th scope="col">Pictures left</th>
+          <th scope="col">Requests this month</th>
+        </tr>
+      </thead>
+      <tbody data-fa="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="am-fields">
+    <div>
+      <label for="fa-{{ faWhere | default('admin') }}-chat">Chat model (admins)</label>
+      <select id="fa-{{ faWhere | default('admin') }}-chat" data-fa="model-chat">
+        <option value="">Qwen 2.5 7B &mdash; self-hosted, cheapest</option>
+      </select>
+    </div>
+    <div>
+      <label for="fa-{{ faWhere | default('admin') }}-image">Picture model (admins)</label>
+      <select id="fa-{{ faWhere | default('admin') }}-image" data-fa="model-image">
+        <option value="">FLUX.2 Klein &mdash; self-hosted</option>
+      </select>
+    </div>
+    <div>
+      <label for="fa-{{ faWhere | default('admin') }}-video">Film model (admins)</label>
+      <select id="fa-{{ faWhere | default('admin') }}-video" data-fa="model-video">
+        <option value="">CogVideoX &mdash; self-hosted</option>
+      </select>
+    </div>
+    <div>
+      <label for="fa-{{ faWhere | default('admin') }}-door">Which door to use</label>
+      <select id="fa-{{ faWhere | default('admin') }}-door" data-fa="door">
+        <option value="">Whichever answers first</option>
+        <option value="1">Free.ai 1</option>
+        <option value="2">Free.ai 2</option>
+        <option value="3">Free.ai 3</option>
+        <option value="4">Free.ai 4</option>
+        <option value="5">Free.ai 5</option>
+      </select>
+    </div>
+  </div>
+  <p class="muted xsmall">These choices are remembered on this device and used by the order&rsquo;s
+  own work &mdash; the oracle&rsquo;s answers, the pictures and the films &mdash; whenever an
+  administrator is the one asking.</p>
+</div>

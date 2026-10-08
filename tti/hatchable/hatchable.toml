@@ -1,0 +1,123 @@
+# Hatchable project manifest — Zero, One, and the Bubbles That Blow Between
+# Reference: https://hatchable.com/docs/developers/config
+name        = "Zero, One, and the Bubbles That Blow Between"
+tagline     = "A geometry of existence, from zero and one to the Cosmic Ledger"
+description = "Zero, One, and the Bubbles That Blow Between: the Unified Edition set out page by page — the asymmetry between the infinity below one and the infinity above it, closure at pi, the integral self, gravity as curvature of the geometry, the galactic torus, Mobius parity, the cosmic ledger of three residues, the seams, eleven plain-language essays and a full visual compendium. ShakDrah, a green dragon, keeps the papers and answers questions from them."
+category    = "Publishing"
+tags        = ["astronomy", "cosmology", "mathematics", "philosophy", "geometry", "physics"]
+
+# ShakDrah answers visitors with the owner's own model key (BYOK).
+# The gateway resolves it server-side; project code never sees the raw key.
+[ai]
+required = false
+providers = ["anthropic", "openai", "google"]
+
+# Optional second open-source image route. The oracle draws with FLUX.1-schnell
+# (open weights, keyless) by default; paste a Hugging Face token here to use
+# Stable Diffusion XL instead of the keyless endpoint.
+[[secret]]
+key         = "HUGGINGFACE_API_KEY"
+required    = false
+description = "Optional Hugging Face token, for Stable Diffusion XL image generation."
+
+# Optional: the strongest open-weights chat models (DeepSeek V3, Llama 3.3 70B,
+# Qwen 3, Mistral) through OpenRouter. Without it the oracle still thinks, on a
+# keyless open-weights route.
+[[secret]]
+key         = "OPENROUTER_API_KEY"
+required    = false
+description = "Optional OpenRouter token, for the strongest open-weights chat models."
+
+# Video. HunyuanVideo 1.5 is open-weights but still needs a GPU somewhere:
+# either of these keys turns the fox's camera on.
+[[secret]]
+key         = "FAL_KEY"
+required    = false
+description = "Optional fal.ai key, for HunyuanVideo 1.5 480p video generation."
+
+[[secret]]
+key         = "REPLICATE_API_TOKEN"
+required    = false
+description = "Optional Replicate token, as a second route to HunyuanVideo 1.5."
+
+# The oracle's OpenAI route. A value pasted here on the Setup page overrides
+# the key the owner supplied in lib/key-store.js.
+[[secret]]
+key         = "OPENAI_API_KEY"
+required    = false
+description = "OpenAI key used by the oracle for chat and as an image fallback."
+
+[[secret]]
+name = "KAGGLE_API_TOKEN"
+description = "Kaggle access token (KGAT_...) — runs HunyuanVideo and FLUX on Kaggle's free GPU. A token is already bundled; this overrides it."
+required = false
+
+[[secret]]
+name = "KAGGLE_USERNAME"
+description = "Kaggle username, if the token's owner cannot be worked out automatically."
+required = false
+
+# ---------------------------------------------------------------------------
+# Signing in with an account you already have. Each pair is optional: a door
+# with no key behind it is simply not shown. The redirect URL to register
+# with every provider is https://egregora.hatchable.site/api/oauth?back=<name>
+
+[[secret]]
+key         = "GOOGLE_CLIENT_ID"
+required    = false
+description = "Google sign-in: the client id. console.cloud.google.com → APIs & Services → Credentials → OAuth client ID (Web)."
+
+[[secret]]
+key         = "GOOGLE_CLIENT_SECRET"
+required    = false
+description = "Google sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "APPLE_CLIENT_ID"
+required    = false
+description = "Apple sign-in: the client id. developer.apple.com → Services ID; the secret is the signed client-secret JWT."
+
+[[secret]]
+key         = "APPLE_CLIENT_SECRET"
+required    = false
+description = "Apple sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "X_CLIENT_ID"
+required    = false
+description = "X sign-in: the client id. developer.x.com → OAuth 2.0, confidential client, PKCE."
+
+[[secret]]
+key         = "X_CLIENT_SECRET"
+required    = false
+description = "X sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "FACEBOOK_CLIENT_ID"
+required    = false
+description = "Facebook sign-in: the client id. developers.facebook.com → Facebook Login → App ID and App Secret."
+
+[[secret]]
+key         = "FACEBOOK_CLIENT_SECRET"
+required    = false
+description = "Facebook sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "GITHUB_CLIENT_ID"
+required    = false
+description = "GitHub sign-in: the client id. github.com/settings/developers → New OAuth App."
+
+[[secret]]
+key         = "GITHUB_CLIENT_SECRET"
+required    = false
+description = "GitHub sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "DISCORD_CLIENT_ID"
+required    = false
+description = "Discord sign-in: the client id. discord.com/developers → OAuth2 → Client ID and Secret."
+
+[[secret]]
+key         = "DISCORD_CLIENT_SECRET"
+required    = false
+description = "Discord sign-in: the client secret that goes with it."

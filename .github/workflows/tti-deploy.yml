@@ -1,0 +1,50 @@
+name: Deploy Zero, One, and the Bubbles
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - arena/c016ca5c-egregora
+    paths:
+      - "tti/**"
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/hatchable-deploy.mjs"
+      - "ops/tti-project.txt"
+      - ".github/workflows/tti-deploy.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Build the static site
+        run: |
+          npm ci
+          npm run build:tti:hatchable
+
+      - name: Deploy the existing Hatchable project
+        env:
+          RAW_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/tti/hatchable
+        run: |
+          if [ -z "$HATCHABLE_TOKEN" ]; then
+            echo "HATCHABLE_TOKEN is not configured as a repository secret." >&2
+            exit 1
+          fi
+          PROJECT_ID=$(tr -d ' \n\r' < ops/tti-project.txt)
+          node scripts/hatchable-deploy.mjs \
+            --bundle tti/hatchable \
+            --project "$PROJECT_ID" \
+            --name "Zero, One, and the Bubbles That Blow Between" \
+            --slug two-infinities

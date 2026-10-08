@@ -1,0 +1,182 @@
+---
+layout: layouts/base.njk
+title: The Shape of Everything — the Torus
+permalink: /torus/
+description: "Part IV of the Unified Edition, first half: π applied twice gives the torus — the shape that recurs in the galactic halo, in the atom's probability cloud, in the tokamak, in the circulation of every neuron, and in the course of a life that returns to its own beginning at a higher turn."
+---
+
+<section class="page-head">
+  <p class="kicker">Part IV &mdash; Torus and Möbius &middot; Chapter 6</p>
+  <h1>The Shape of Everything</h1>
+  <p class="lede muted">The circle is π applied once: a line curved into a closed loop. The torus is π
+    applied twice: a loop curved around another loop. Everything that must both circulate and return
+    arrives at the same surface.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">Why this shape, and not another</p>
+    <h2 id="t-why-torus">A Loop Around a Loop</h2>
+    <p class="lede">A sphere lets a path return but gives it nowhere to circulate. A cylinder lets a path
+      circulate but never brings it home. The torus is the simplest surface that permits both at once
+      &mdash; which is why anything that has to keep going round <em>and</em> come back ends up on
+      one.</p>
+    <p>The framework does not treat the recurrence as a coincidence noticed after the fact. It treats the
+      torus as the second application of the same closure constant that made existence possible, and then
+      goes looking for it. What it finds is a genuinely remarkable list &mdash; and the honest question,
+      pressed in the ledger below, is whether that list is evidence or simply what you get when a shape is
+      common enough. <span class="spec">&#9670;</span></p>
+    <p class="muted small">Grading: <span class="sci">&#9670; established</span> &middot;
+      <span class="hist">&#9670; scholarship</span> &middot;
+      <span class="spec">&#9670; the framework's argument, contested</span> &middot;
+      <span class="myth">&#9670; vision, stated as vision</span>.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <figure id="fig-torus" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> π Applied Twice
+      <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 760 360" role="img" aria-label="A torus drawn as nested ellipses with poloidal rings threaded around the body, a bright axis through the hole, and a field line spiralling around the surface">
+        <g fill="none" stroke="#76cfee" stroke-width="1.1" opacity="0.9">
+          <ellipse cx="380" cy="190" rx="250" ry="110"/>
+          <ellipse cx="380" cy="190" rx="92" ry="34"/>
+        </g>
+        <g fill="none" stroke="#45d6b4" stroke-width="0.8" opacity="0.55">
+          {% for k in range(0, 12) %}
+          <ellipse cx="{{ (380 + 171 * ((k / 12) * 6.2832 | cos)) | round2 }}"
+                   cy="{{ (190 + 72 * ((k / 12) * 6.2832 | sin)) | round2 }}"
+                   rx="34" ry="{{ (14 + 10 * ((k / 12) * 6.2832 | cos)) | round2 }}"/>
+          {% endfor %}
+        </g>
+        <path d="M130 190 C 180 100, 300 86, 380 156 C 460 226, 580 240, 630 190"
+              fill="none" stroke="#ef84b6" stroke-width="1.6" opacity="0.95"/>
+        <g stroke="#cdefff" stroke-width="0.9" opacity="0.6" stroke-dasharray="4 6">
+          <path d="M380 24 V356"/>
+        </g>
+        <g font-family="Cinzel, serif" font-size="10" fill="#a9b6d8" letter-spacing="2" text-anchor="middle">
+          <text x="380" y="18">THE AXIS</text>
+          <text x="660" y="190">THE RETURN</text>
+          <text x="380" y="340">THE CIRCULATION</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">One loop carries the circulation, the other carries the return. Neither alone
+      makes a system that can persist and still go somewhere.</p>
+  </figure>
+</section>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">6.1 to 6.5</p>
+    <h2 id="t-where">Five Places the Same Surface Turns Up</h2>
+  </div>
+  <div class="grid two">
+    <div class="frame card">
+      <h3>In the cosmos <span class="sci">&#9670;</span></h3>
+      <p>Galactic magnetic fields wind poloidally and toroidally through the disc and halo; accretion
+        structures are tori; the jets of an active nucleus leave along the axis of one. A galaxy is not a
+        disc with a hole so much as a circulation with an axis.</p>
+    </div>
+    <div class="frame card">
+      <h3>In quantum mechanics <span class="sci">&#9670;</span></h3>
+      <p>Orbital probability clouds with non-zero angular momentum are toroidal: the electron is not
+        anywhere in particular, and the shape of where it is not is a ring around an axis of nodal
+        silence.</p>
+    </div>
+    <div class="frame card">
+      <h3>In fusion energy <span class="sci">&#9670;</span></h3>
+      <p>Every tokamak ever built is a torus, and not for aesthetic reasons. Confining a plasma requires a
+        field with no ends; a torus is the shape that lets the field close on itself without a boundary
+        for the plasma to strike.</p>
+    </div>
+    <div class="frame card">
+      <h3>In every neuron <span class="sci">&#9670;</span></h3>
+      <p>Depolarisation travels out, the membrane repolarises, ions are pumped back, and the cell returns
+        to a resting state ready to fire again. The cycle is a loop in state space that circulates and
+        returns &mdash; the same topology, drawn in ion gradients.</p>
+    </div>
+  </div>
+
+  <div class="wrap narrow">
+    <div class="frame illuminated">
+      <h3 id="t-life">In the shape of your life <span class="myth">&#9670;</span></h3>
+      <p>You return to the same questions, the same rooms, the same arguments &mdash; and not at the same
+        place, because the return happens one turn further along. That is the toroidal reading of a life:
+        a circulation that comes back, displaced along the axis by everything accumulated in the loop.
+        This is the point at which the geometry becomes a way of living rather than a way of calculating,
+        and the site marks it as vision rather than as physics.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame card">
+      <h3>Earned</h3>
+      <ul>
+        <li>Tokamaks, toroidal orbitals, galactic field geometry and the neuronal cycle are all real and
+          correctly described. <span class="sci">&#9670;</span></li>
+        <li>A torus is the simplest orientable surface of genus one &mdash; the formal sense in which it
+          both circulates and returns. <span class="sci">&#9670;</span></li>
+      </ul>
+    </div>
+    <div class="frame card">
+      <h3>Chosen</h3>
+      <ul>
+        <li>That these instances share a <em>cause</em> rather than a constraint. Many systems are
+          toroidal because toroids solve a boundary problem; that is an explanation the framework must
+          out-argue, not ignore. <span class="spec">&#9670;</span></li>
+        <li>That the torus is &ldquo;π applied twice&rdquo; in any sense stronger than a figure of speech.
+          <span class="spec">&#9670;</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- expand:torus:start -->
+<div class="divider">&#10022;</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">&mdash; what a second loop buys</p>
+    <h2 id="t-why-two-loops">Why One Loop Is Not Enough</h2>
+    <p>A circle closes a line. It gives return without repetition: you come back to where you were, and
+      there is no room in the figure for the fact that you have been round once already. A circle cannot
+      carry history, because every point on it is identical to itself on every pass.</p>
+    <p>Curve that loop around a second loop and the situation changes completely. On a torus a path is
+      labelled by two winding numbers &mdash; how many times round the tube, how many times round the ring
+      &mdash; and the pair of them is a memory. Returning to the same point of the surface after a different
+      winding is not the same event, and the figure knows it. <span class="sci">&#9670;</span></p>
+    <p class="lede">The torus is the smallest shape that can both come back and keep count. That is the
+      whole reason the framework needs π applied twice rather than once.</p>
+    <p>Everything the structure is later asked to do rests on that one property. The spiral can ascend
+      without leaving, because the ring direction carries the climb while the tube direction carries the
+      return. A density can be a turn rather than a place. And a path can be non-contractible &mdash;
+      impossible to shrink to a point &mdash; which is the precondition for the geometric phase that the
+      <a href="/moebius/#t-cp">M&ouml;bius chapter</a> asks to do the work of CP violation. A contractible
+      loop accumulates nothing.</p>
+    <p class="muted">What is not claimed: that the universe is <em>literally</em> a torus in the sense a
+      topologist would test. Cosmological searches for the matched circles a compact topology would print
+      on the microwave background have found nothing, and the framework does not pretend otherwise. The
+      torus here is the shape of the <em>process</em> &mdash; return with accumulation &mdash; and the
+      distinction is kept rather than blurred. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+<!-- expand:torus:end -->
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <p class="kicker">Closing Stance</p>
+    <p>The torus chapter is the framework at its most seductive and therefore at its most dangerous. A
+      shape that appears everywhere explains nothing by appearing; it earns its place only where it
+      forbids something. The next chapter is where the geometry starts forbidding things &mdash; because
+      the Möbius strip, unlike the torus, is not a level but a transition between levels.</p>
+    <p class="muted small">Next: <a href="/moebius/">the inside of the outside</a>.</p>
+  </div>
+</section>

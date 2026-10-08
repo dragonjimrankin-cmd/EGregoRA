@@ -1,0 +1,48 @@
+{
+  "name": "egregora",
+  "version": "1.0.0",
+  "description": "EGregoRA \u2014 Life, Love, Magic",
+  "main": "index.js",
+  "scripts": {
+    "build": "eleventy",
+    "dev": "eleventy --serve --port 8080",
+    "clean": "rm -rf _site",
+    "lint": "html-validate \"_site/**/*.html\"",
+    "build:hatchable": "npm run build && rm -rf hatchable/public && mkdir -p hatchable/public && cp -r _site/* hatchable/public/",
+    "zip:hatchable": "npm run build:hatchable && rm -f egregora-hatchable.zip && cd hatchable && zip -qr ../egregora-hatchable.zip . && cd ..",
+    "deploy:hatchable": "npm run build:hatchable && node scripts/hatchable-deploy.mjs",
+    "cards": "node scripts/make-cards.mjs",
+    "audit": "node scripts/meta-audit.mjs && python3 scripts/check-site.py && python3 scripts/check-mobile.py && node scripts/check-phone.mjs && node scripts/check-desktop.mjs && node scripts/check-diamonds.mjs && node scripts/check-links.mjs",
+    "check": "python3 scripts/check-site.py",
+    "check:phone": "node scripts/check-phone.mjs",
+    "check:mobile": "python3 scripts/check-mobile.py",
+    "build:tti": "npx @11ty/eleventy --config=tti/eleventy.config.js",
+    "build:tti:hatchable": "npm run build:tti && rm -rf tti/hatchable/public && mkdir -p tti/hatchable/public && cp -r tti/_site/* tti/hatchable/public/",
+    "lint:tti": "html-validate \"tti/_site/**/*.html\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dragonjimrankin-cmd/EGregoRA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dragonjimrankin-cmd/EGregoRA/issues"
+  },
+  "homepage": "https://github.com/dragonjimrankin-cmd/EGregoRA#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6",
+    "cheerio": "^1.2.0",
+    "esbuild": "^0.28.2",
+    "html-validate": "^11.16.2",
+    "jsdom": "^30.1.2",
+    "luxon": "^3.7.2",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.35.5"
+  },
+  "type": "module",
+  "dependencies": {
+    "@breezystack/lamejs": "^1.2.7"
+  }
+}
