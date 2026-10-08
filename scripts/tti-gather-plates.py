@@ -87,7 +87,7 @@ tail = '''<div class="divider">✦</div>
   <div class="frame frame--creed">
     <p class="lede">A diagram is an argument you can check at a glance. These are kept together so the
       shape of the whole framework can be read before a word of it is.</p>
-    <p class="muted small">Next: <a href="/ask-shakdragon/">ask ShakDragon</a>.</p>
+    <p class="muted small">Next: <a href="/ask-shakdrah/">ask ShakDrah</a>.</p>
   </div>
 </section>
 '''

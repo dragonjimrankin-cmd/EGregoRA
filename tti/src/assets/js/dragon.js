@@ -1,5 +1,5 @@
 /* ===========================================================================
-   The Two Infinities — ShakDragon, the oracle's keeper.
+   The Two Infinities — ShakDrah, the oracle's keeper.
 
    A green dragon built entirely in code, on the same rig as EGregoRA's dragon
    and shaded for realism rather than for charm:
@@ -388,7 +388,7 @@ import * as THREE from "./vendor/three.module.js";
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   } catch (err) {
     mount.classList.add("dragon-stage--failed");
-    setStatus("ShakDragon cannot be drawn here — this browser has no WebGL. The written answer stands on its own.");
+    setStatus("ShakDrah cannot be drawn here — this browser has no WebGL. The written answer stands on its own.");
     return;
   }
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
@@ -1278,8 +1278,8 @@ import * as THREE from "./vendor/three.module.js";
   };
 
   const readyLine = () => {
-    if (!canSpeak) return "No speech synthesiser here — ShakDragon will mouth the words silently.";
-    if (!chosenVoice) return "Ready. Ask the oracle and ShakDragon will read the answer aloud.";
+    if (!canSpeak) return "No speech synthesiser here — ShakDrah will mouth the words silently.";
+    if (!chosenVoice) return "Ready. Ask the oracle and ShakDrah will read the answer aloud.";
     return /^en[-_]GB/i.test(chosenVoice.lang)
       ? `Ready — speaking as ${chosenVoice.name}, British English.`
       : `Ready — no British voice is installed on this device, so ${chosenVoice.name} stands in.`;
@@ -1308,7 +1308,7 @@ import * as THREE from "./vendor/three.module.js";
      ----------------------------------------------------------------------
      On the page a claim is graded by a coloured diamond, which is silent:
      a listener gets the words and loses the order's judgement of them.
-     So when ShakDragon meets a graded claim he reads the claim, leaves a beat,
+     So when ShakDrah meets a graded claim he reads the claim, leaves a beat,
      and then says what it was graded as, in the legend's own wording.
      The diamond itself is never pronounced.
   ---------------------------------------------------------------------- */
@@ -1490,7 +1490,7 @@ import * as THREE from "./vendor/three.module.js";
 
   btnSpeak?.addEventListener("click", () => {
     speak(lastText || (
-      "I am ShakDragon, the order's familiar. Ask the oracle a question and I will read its answer aloud. " +
+      "I am ShakDrah, the order's familiar. Ask the oracle a question and I will read its answer aloud. " +
       "Everything I say was written in advance by the order and graded by its rules on evidence. " +
       "Test everything kindly."
     ));

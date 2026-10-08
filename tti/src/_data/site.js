@@ -9,14 +9,14 @@ export default {
   name: "The Two Infinities",
   longName: "The Two Infinities (and Beyond)",
   tagline: "Zero, One, and the Shape They Are Forced to Make.",
-  url: "https://two-infinities.hatchable.site",
+  url: "https://the-two-infinities.hatchable.site",
   lang: "en-GB",
   locale: "en_GB",
   themeColor: "#03040c",
   email: "dragon.jim.rankin@gmail.com",
   author: "James Alexander Matthew Rankin",
   cofounder: "James Alexander Matthew Rankin",
-  cofounder2: "ShakDragon",
+  cofounder2: "ShakDrah",
   founded: "2026-06-02",
   revision: "r3.5",
   revised: "2026-06-20",
@@ -49,14 +49,14 @@ export default {
     { url: "/stress-tests/",  label: "Stress Tests",  glyph: "eye" },
     { url: "/essays/",        label: "Essays",        glyph: "tree" },
     { url: "/plates/",        label: "Plates",        glyph: "metatron" },
-    { url: "/ask-shakdragon/",label: "ShakDragon",    glyph: "dragon" }
+    { url: "/ask-shakdrah/",label: "ShakDrah",    glyph: "dragon" }
   ],
 
   oracle: {
-    name: "ShakDragon",
+    name: "ShakDrah",
     kind: "a green dragon",
     blurb:
-      "ShakDragon keeps the framework in his head the way old dragons keep maps: whole, " +
+      "ShakDrah keeps the framework in his head the way old dragons keep maps: whole, " +
       "and with the dangerous parts marked. Ask him anything in these papers and he will " +
       "answer from them — and tell you plainly when a thing is earned, chosen, or refused."
   }

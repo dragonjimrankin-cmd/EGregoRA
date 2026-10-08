@@ -104,7 +104,7 @@
       "publisher": { "@id": site.url + "/#organization" },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": { "@type": "EntryPoint", "urlTemplate": site.url + "/ask-shakdragon/?q={search_term_string}" },
+        "target": { "@type": "EntryPoint", "urlTemplate": site.url + "/ask-shakdrah/?q={search_term_string}" },
         "query-input": "required name=search_term_string"
       }
     },
@@ -186,6 +186,7 @@
 {% include "partials/cookies.njk" %}
 
 <script src="/assets/js/site.js?v={{ build.id }}" defer></script>
+<script src="/assets/js/geo-field.js?v={{ build.id }}" defer></script>
 <script src="/assets/js/admin-edit.js?v={{ build.id }}" defer></script>
 </body>
 </html>
