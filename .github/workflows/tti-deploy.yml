@@ -2,6 +2,10 @@ name: Deploy The Two Infinities
 
 on:
   workflow_dispatch:
+    inputs:
+      tools:
+        description: "Set to 1 to dump the MCP tool schemas instead of deploying"
+        default: "0"
   push:
     branches: ["arena/01a10807-egregora"]
     paths:
@@ -17,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ' }}
+      TOOLS_DUMP: ${{ github.event.inputs.tools || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,7 +40,9 @@ jobs:
             echo "bundle files: $(find tti/hatchable -type f | wc -l)"
             echo "existing project id: ${PID:-<none, will create>}"
             echo
-            if [ -n "$PID" ]; then
+            if [ "${TOOLS_DUMP}" = "1" ]; then
+              node scripts/hatchable-deploy.mjs --bundle tti/hatchable --tools 2>&1
+            elif [ -n "$PID" ]; then
               RAW_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/tti/hatchable" \
                 node scripts/hatchable-deploy.mjs --bundle tti/hatchable --project "$PID" \
                   --name "The Two Infinities (and beyond)" --slug two-infinities 2>&1
