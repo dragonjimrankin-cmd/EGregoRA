@@ -43,6 +43,7 @@ export default {
     { url: "/dx/",             label: "dx",            glyph: "integral" },
     { url: "/gravity/",       label: "Gravity",       glyph: "spiral" },
     { url: "/spiral/",        label: "The Spiral",    glyph: "spiral" },
+    { url: "/skeletal-splice/", label: "The Splice", glyph: "spiral" },
     { url: "/torus/",         label: "Torus",         glyph: "torus" },
     { url: "/moebius/",       label: "Möbius",        glyph: "mobius" },
     { url: "/cosmic-ledger/", label: "The Ledger",    glyph: "ledger" },

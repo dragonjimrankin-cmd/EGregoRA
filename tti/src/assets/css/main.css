@@ -3498,3 +3498,18 @@ body.is-picking * { cursor: crosshair !important; user-select: none; }
 /* A body that has just been struck, or has just split, flares briefly. */
 .geo--live .geo-layer { transition: filter 320ms ease-out; }
 .geo--live .geo-layer.is-struck { filter: brightness(2.6) drop-shadow(0 0 14px currentColor); }
+
+/* ---------- Small data tables -------------------------------------------- */
+.table-wrap { overflow-x: auto; margin: 1.1rem 0 0.2rem; }
+table.ledger { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+table.ledger caption {
+  caption-side: top; text-align: left; font-family: var(--caps); font-size: 0.64rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); padding-bottom: 0.5rem;
+}
+table.ledger th, table.ledger td { padding: 0.38rem 0.7rem; text-align: right; }
+table.ledger th:first-child, table.ledger td:first-child { text-align: left; }
+table.ledger thead th {
+  color: var(--gold-bright); border-bottom: 1px solid rgba(118,207,238,0.35); font-weight: 600;
+}
+table.ledger tbody tr + tr td { border-top: 1px solid rgba(118,207,238,0.12); }
+table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-nums; }
