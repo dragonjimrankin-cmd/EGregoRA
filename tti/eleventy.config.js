@@ -6,6 +6,12 @@ export default function (eleventyConfig) {
      hand-typed coordinates that nobody can check. */
   eleventyConfig.addFilter("sin", (n) => Math.round(Math.sin(Number(n)) * 1000) / 1000);
   eleventyConfig.addFilter("cos", (n) => Math.round(Math.cos(Number(n)) * 1000) / 1000);
+  /* log10, with the ground at zero handled rather than returning -Infinity:
+     nought has no radius on the spiral, and is drawn by hand at the centre. */
+  eleventyConfig.addFilter("log10nz", (n) => {
+    const v = Number(n);
+    return v > 0 ? Math.round(Math.log10(v) * 100000) / 100000 : 0;
+  });
   eleventyConfig.addFilter("round2", (n) => Math.round(Number(n) * 100) / 100);
   eleventyConfig.addPassthroughCopy({ "tti/src/static": "." });
   eleventyConfig.addWatchTarget("tti/src/assets/");

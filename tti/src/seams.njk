@@ -1,0 +1,160 @@
+---
+layout: layouts/base.njk
+title: Seams, Horizons and Time
+permalink: /seams/
+description: "Part VI of the Unified Edition: the cosmic seam at every scale, the event horizon as a seam that leaks, the cell cycle as a completed octave, the passing moment and the residue of the past, the returners who pass below one and pack toward the ground by the golden law, and where the arrow of time comes from."
+---
+
+<section class="page-head">
+  <p class="kicker">Part VI &mdash; Seams, Horizons and Time &middot; Chapters 11 to 15</p>
+  <h1>Seams, Horizons &amp; Time</h1>
+  <p class="lede muted">A seam is where one level ends and the next begins &mdash; and the framework's
+    claim is that it is always the same seam, appearing at whatever scale you happen to be looking.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">Chapter 11</p>
+    <h2 id="t-seam">One Seam, Many Scales</h2>
+    <p class="lede">Wherever the framework found a transition it found the same structure: a boundary
+      that is not a wall but an identification, where what was outside becomes inside.</p>
+    <ul>
+      <li>At the quantum scale, <a href="/moebius/#t-collapse">collapse</a>: two faces of possibility
+        becoming one face of fact.</li>
+      <li>At the stellar scale, the event horizon &mdash; the subject of the next chapter.</li>
+      <li>At the scale of a life, the moment of recognition at which the spiral is seen to have been a
+        spiral.</li>
+      <li>At the scale of the whole, the saturation ceiling: the point at which a density is full and can
+        hold nothing more without inverting.</li>
+    </ul>
+    <p class="muted small">Grading: <span class="sci">&#9670; established</span> &middot;
+      <span class="hist">&#9670; scholarship</span> &middot;
+      <span class="spec">&#9670; the framework's argument</span> &middot;
+      <span class="myth">&#9670; vision, stated as vision</span>.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame card">
+      <h3 id="t-horizon">Chapter 12 &mdash; The Leaking Horizon</h3>
+      <p>Hawking radiation is real physics: a horizon is not perfectly black, and a hole slowly
+        evaporates. <span class="sci">&#9670;</span> The framework reads the horizon as a seam, and the
+        radiation as <strong>density leakage</strong> &mdash; the seam failing to hold perfectly, letting
+        a trickle back across the boundary it defines.</p>
+      <p class="muted">On the information question it is deliberately brief, and does not claim to settle
+        the paradox. A seam that leaks is a picture; unitarity is a constraint. The chapter says which it
+        is offering.</p>
+    </div>
+    <div class="frame card">
+      <h3 id="t-octave">Chapter 13 &mdash; The Octave of the Cell</h3>
+      <p>Interphase through mitosis is read against the seven stations, with division as the completed
+        octave: one becoming two at the eighth step, the same note at double the frequency. The
+        Fibonacci connection from <a href="/spiral/#t-splice">the splice</a> is the same law appearing in
+        the lattice the cell is built from. <span class="spec">&#9670;</span></p>
+      <p class="muted">Cell-cycle biology is well measured and does not need this reading; the chapter's
+        claim is that the reading costs nothing and unifies something. That is a weaker claim than it
+        first appears, and is filed as chosen.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Chapter 14</p>
+    <h2 id="t-moment">The Passing Moment, Without Softening</h2>
+    <p>If the self is the integral of its moments, then each moment, once integrated, is spent. The
+      chapter refuses to soften the tension: the past is not stored somewhere intact, and nothing in the
+      framework promises that it is.</p>
+    <p>What it offers instead is a reframing &mdash; <strong>residue as relationship, observation as
+      amplitude</strong>. A moment leaves a residue in the way a pole leaves a residue: not the thing
+      itself, but a quantity the rest of the function must account for. What it costs is any comfortable
+      doctrine of preservation. What it saves is consistency with
+      <a href="/cosmic-ledger/">the Ledger</a>, where residues are exactly what remains of a singularity
+      once you have integrated around it. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">Chapter 15 &mdash; a revision the framework makes against itself</p>
+    <h2 id="t-returners">The Returners Pass Below One</h2>
+    <p class="lede muted">The earlier chapters sent the returning being back to 1, leaving the ground
+      untouched. That was tidy, and it wasted the foundation's best idea.</p>
+  </div>
+
+  <figure id="fig-returners" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The Returners and the Denser
+      Infinity <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 680 420" role="img" aria-label="An outward spiral of ascending integers one, ten and one hundred, and inside it a set of inward dashed rings marking returners landing at one over phi, one over phi squared and so on, crowding toward a bright ground at zero that none of them reach">
+        <g fill="none" stroke="#76cfee" stroke-width="1.2" opacity="0.85">
+          <circle cx="340" cy="210" r="186"/><circle cx="340" cy="210" r="120"/><circle cx="340" cy="210" r="58"/>
+        </g>
+        {%- set phi = 1.61803 -%}
+        {%- set rs = [96, 59, 36, 23, 14, 9] -%}
+        {%- for r in rs %}
+        <circle cx="340" cy="210" r="{{ r }}" fill="none" stroke="#ffd979" stroke-width="0.9"
+                stroke-dasharray="5 6" opacity="{{ 0.85 - loop.index0 * 0.09 }}"/>
+        <circle cx="{{ 340 + r }}" cy="210" r="4" fill="none" stroke="#ffd979" stroke-width="1.1"/>
+        <text x="{{ 348 + r }}" y="206" font-family="EB Garamond, serif" font-size="10" fill="#ffd979">1/φ{{ "" if loop.index == 1 else loop.index }}</text>
+        {%- endfor %}
+        <circle cx="340" cy="210" r="13" fill="#ffd979"/>
+        <text x="340" y="215" font-family="Cinzel, serif" font-size="11" fill="#03040c" text-anchor="middle">0</text>
+        <g font-family="Cinzel, serif" font-size="10" fill="#cdefff" text-anchor="middle">
+          <circle cx="340" cy="152" r="11" fill="#03040c" stroke="#76cfee"/><text x="340" y="156">1</text>
+          <circle cx="340" cy="90" r="11" fill="#03040c" stroke="#45d6b4"/><text x="340" y="94">10</text>
+          <circle cx="340" cy="24" r="13" fill="#03040c" stroke="#a07cf0"/><text x="340" y="28">100</text>
+        </g>
+        <text x="340" y="404" font-family="EB Garamond, serif" font-size="12" fill="#a9b6d8"
+              font-style="italic" text-anchor="middle">the ground — approached forever, never reached</text>
+      </svg>
+    </div>
+    <p class="plate-note">Returners land at 1/φ, 1/φ², 1/φ³&hellip; &mdash; strictly decreasing, strictly
+      positive, converging on zero without attaining it. The packing is densest nearest the ground and
+      sparsest near one.</p>
+  </figure>
+
+  <div class="wrap narrow">
+    <div class="frame illuminated">
+      <p class="lede">The density toward zero was always asserted. Now it is built: it is where the
+        returners pile, turn after turn, forever short of the ground.</p>
+      <h3 id="t-two-densities">15.3 &mdash; two densities, kept apart</h3>
+      <p>The chapter is careful where it would be easy to cheat. <strong>Population density</strong>
+        &mdash; how many beings occupy the small region &mdash; is what the returners produce, and the
+        mechanism owns it completely: every fork at every level sends someone downward, so the low region
+        receives traffic from all densities above it. <strong>Numerical density</strong> &mdash; how many
+        numbers occupy a region &mdash; is Cantor's, a property of the value system and nothing to do
+        with beings. <span class="sci">&#9670;</span></p>
+      <p>The new idea is the <em>conjecture</em> that the two coincide: that the beings pile where the
+        numbers crowd, and that the foundational density is the shadow of the fork's returns. It is named
+        as a conjecture in the text and is named as one here. <span class="spec">&#9670;</span></p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <p class="kicker">Chapter 31</p>
+    <h2 id="t-arrow">Where the Arrow Comes From</h2>
+    <p>The asymmetry noticed on the very first page &mdash; that the interval below one is denser than
+      everything above it &mdash; is cashed in here. If there is more room in the direction of the small,
+      then the natural drift of anything free to move is downhill toward the denser infinity. Time's
+      direction is the slope of that tilt. <span class="spec">&#9670;</span></p>
+    <p class="muted">The obvious objection is that thermodynamics already explains the arrow by counting
+      states, and does so quantitatively. The framework's reply &mdash; that the counting itself inherits
+      its asymmetry from the geometry &mdash; is taken up properly in
+      <a href="/stress-tests/#t-entropy">the entropy objection</a>, where it is also conceded that this
+      is the framework's weakest joint.</p>
+    <p class="muted small">Next: <a href="/stress-tests/">Part VII &mdash; stress tests and open
+      challenges</a>.</p>
+  </div>
+</section>
