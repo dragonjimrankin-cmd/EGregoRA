@@ -3477,9 +3477,59 @@ body.is-picking * { cursor: crosshair !important; user-select: none; }
   .ae-grid { grid-template-columns: 1fr; }
 }
 
-/* Formulae ------------------------------------------------------------- */
-.formula{font-family:"EB Garamond",Georgia,serif;font-size:1.08rem;letter-spacing:.01em;color:var(--gold-bright)}
-.formula-inline{font-family:"EB Garamond",Georgia,serif;color:var(--gold-bright);white-space:nowrap}
+/* Formulae -------------------------------------------------------------
+   TeX remains legible before MathJax arrives, then becomes responsive SVG.
+   Long derivations scroll inside their own measure instead of widening the
+   chapter or clipping on a phone. */
+.formula {
+  max-width: 100%;
+  margin: 1.35rem auto;
+  padding: 0.45rem 0.25rem 0.65rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  color: var(--gold-bright);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  text-align: center;
+  scrollbar-color: rgba(255,217,121,0.42) transparent;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.formula-inline {
+  color: var(--gold-bright);
+  font-family: "EB Garamond", Georgia, serif;
+  white-space: nowrap;
+}
+.formula mjx-container[display="true"] {
+  width: max-content;
+  min-width: 100%;
+  margin: 0 !important;
+  text-align: center !important;
+}
+.formula mjx-container svg { max-width: none; }
+.formula-inline mjx-container,
+mjx-container:not([display="true"]) {
+  margin: 0 0.06em;
+  color: inherit;
+}
+mjx-container {
+  color: var(--gold-bright);
+  font-size: 1.04em;
+}
+@media (max-width: 640px) {
+  .formula {
+    margin: 1rem -0.2rem;
+    padding-inline: 0.2rem;
+    font-size: 1rem;
+    text-align: left;
+  }
+  .formula mjx-container[display="true"] {
+    min-width: 0;
+    padding-inline: 0.25rem;
+    text-align: left !important;
+  }
+}
 
 /* ---------- The geometry field, once the physics takes over ---------------
    geo-field.js pins every layer to the origin and drives translate/rotate/

@@ -20,15 +20,20 @@ description: "Part V of the Unified Edition: the universe as a structured zero, 
     <p class="lede">Model the universe as a meromorphic function on the Riemann sphere whose residues
       encode the structural constraints of the cosmos. The Global Residue Theorem then requires that the
       total residue on the sphere vanish.</p>
-    <p class="formula" style="text-align:center">&#8750;<sub>γ</sub> f(z) dz = 2πi &sum;<sub>k</sub>
-      Res(f, z<sub>k</sub>) = 0 <span class="sci">&#9670;</span></p>
+    <p class="formula">\[
+      \oint_{\gamma}f(z)\,dz
+      =2\pi i\sum_k\operatorname*{Res}_{z=z_k}f(z)=0
+    \] <span class="sci">&#9670;</span></p>
     <p>That is standard complex analysis. The framework's own content is the choice of f &mdash; the
       <strong>Universal Rankin Measurement Function</strong>:</p>
-    <p class="formula" style="text-align:center">f(z) = (1 / z&thinsp;sin(πz)) &middot;
-      cos(πz/2) &minus; κz²</p>
+    <p class="formula">\[
+      f(z)=\frac{\cos(\pi z/2)}{z\sin(\pi z)}-\kappa z^2
+    \]</p>
     <p>where κ is presented not as a fitted parameter but as a rigid geometric coupling: the
       volume-to-surface-area ratio of a unit torus undergoing a Möbius inversion half-twist,</p>
-    <p class="formula" style="text-align:center">κ = 1 / 4π² &#8776; 0.025330.</p>
+    <p class="formula">\[
+      \kappa=\frac{1}{4\pi^2}\approx 0.025330
+    \]</p>
     <p class="muted small">Grading: <span class="sci">&#9670; established mathematics</span> &middot;
       <span class="spec">&#9670; the framework's own ansatz, contested</span> &middot;
       <span class="myth">&#9670; vision</span>.</p>
@@ -72,8 +77,7 @@ description: "Part V of the Unified Edition: the universe as a structured zero, 
         </g>
       </svg>
     </div>
-    <p class="plate-note">Because the global residue theorem fixes R₁ + R<sub>½</sub> + R₀ + R<sub>∞</sub>
-      = 0 with R<sub>∞</sub> = &minus;1, the three positive residues must sum to one. In this account the
+    <p class="plate-note">Because the global residue theorem fixes \(R_1+R_{1/2}+R_0+R_{\infty}=0\) with \(R_{\infty}=-1\), the three positive residues must sum to one. In this account the
       percentages are not adjustable: they are the algebraic fingerprints of a universe that
       balances.</p>
   </figure>
@@ -82,10 +86,10 @@ description: "Part V of the Unified Edition: the universe as a structured zero, 
     <div class="frame">
       <h3>The numbers it produces</h3>
       <ul class="biblio">
-        <li><strong>Ω<sub>Λ</sub> = 68.10%</strong> &mdash; dark energy, the pole at z = 1, π-level.</li>
-        <li><strong>Ω<sub>DM</sub> = 26.95%</strong> &mdash; dark matter, the pole at z = ½, π-level but
+        <li><strong>\(\Omega_{\Lambda}=68.10\%\)</strong> &mdash; dark energy, the pole at z = 1, π-level.</li>
+        <li><strong>\(\Omega_{\mathrm{DM}}=26.95\%\)</strong> &mdash; dark matter, the pole at z = ½, π-level but
           uncomplexified.</li>
-        <li><strong>Ω<sub>b</sub> = 4.95%</strong> &mdash; baryonic matter, the pole at z = 0, the
+        <li><strong>\(\Omega_{\mathrm b}=4.95\%\)</strong> &mdash; baryonic matter, the pole at z = 0, the
           complexified π/2-level.</li>
       </ul>
       <p class="muted">Imposing closure quantises κ to a single value. Change κ and the residues stop
@@ -105,25 +109,30 @@ description: "Part V of the Unified Edition: the universe as a structured zero, 
   </div>
   <div class="wrap narrow">
     <div class="frame illuminated">
-      <p>A continuous scalar <strong>integration field</strong> χ(x<sup>μ</sup>) is introduced into the
+      <p>A continuous scalar <strong>integration field</strong> \(\chi(x^\mu)\) is introduced into the
         Einstein&ndash;Hilbert action, giving</p>
-      <p class="formula" style="text-align:center">G<sub>μν</sub> + Λ₀&thinsp;F(χ)&thinsp;g<sub>μν</sub>
-        = 8πG&thinsp;T<sub>μν</sub>(χ)</p>
-      <p>in which Λ₀ is the <em>unsuppressed</em> quantum vacuum energy &mdash; the ~10<sup>120</sup>
+      <p class="formula">\[
+        G_{\mu\nu}+\Lambda_0F(\chi)g_{\mu\nu}
+        =8\pi G\,T_{\mu\nu}(\chi)
+      \]</p>
+      <p>in which Λ₀ is the <em>unsuppressed</em> quantum vacuum energy &mdash; the \(\sim10^{120}\)
         over-estimate &mdash; and F(χ) is a topological screening function acting as a category block,
         scaling internal quantum fluctuations down to the observed background curvature, with
-        F(χ) &#8776; 10<sup>&minus;122</sup> as χ &rarr; 0. The stress-energy tensor then partitions the
-        phases by the same residues: T<sub>μν</sub>(χ) = (1 &minus; χ)&thinsp;T<sup>DM</sup><sub>μν</sub>
-        + χ&thinsp;T<sup>b</sup><sub>μν</sub>. <span class="spec">&#9670;</span></p>
+        \(F(\chi)\approx 10^{-122}\) as \(\chi\to 0\). The stress-energy tensor then partitions the
+        phases by the same residues:</p>
+      <p class="formula">\[
+        T_{\mu\nu}(\chi)
+        =(1-\chi)T_{\mu\nu}^{\mathrm{DM}}+\chi T_{\mu\nu}^{\mathrm b}
+      \] <span class="spec">&#9670;</span></p>
       <h3>Two benchmarks the ansatz claims</h3>
       <ul>
         <li><strong>Mercury.</strong> In dense baryonic zones the field saturates (χ &#8776; 1) and
           F(χ) &rarr; 0, so the metric reduces to a modified Schwarzschild geometry with a correction
-          below 10<sup>&minus;7</sup> &mdash; preserving the classical 43.0849 arcseconds per century.
+          below \(10^{-7}\) &mdash; preserving the classical 43.0849 arcseconds per century.
           <span class="sci">&#9670;</span> for the benchmark, <span class="spec">&#9670;</span> for the
           reduction.</li>
         <li><strong>The CMB acoustic peaks.</strong> At z &#8776; 1100 the fixed ratio
-          Ω<sub>DM</sub>/Ω<sub>b</sub> &#8776; 5.44 drives the photon&ndash;baryon oscillations, placing
+          \(\Omega_{\mathrm{DM}}/\Omega_{\mathrm b}\approx5.44\) drives the photon&ndash;baryon oscillations, placing
           the first peak near &#8467; &#8776; 219, with the second and third set by the baryonic fraction
           and the dark-matter inertia. <span class="spec">&#9670;</span></li>
       </ul>
@@ -141,7 +150,7 @@ description: "Part V of the Unified Edition: the universe as a structured zero, 
       <li><strong>Uniqueness of f(z).</strong> Proving that this particular meromorphic function is the
         only mathematically permissible one when algorithmic (Solomonoff) induction is lifted onto the
         complex plane. Until that is done, the function is a choice that happens to work.</li>
-      <li><strong>A differential derivation of κ.</strong> Deriving κ = 1/4π² directly from a fundamental
+      <li><strong>A differential derivation of \(\kappa\).</strong> Deriving \(\kappa=1/(4\pi^2)\) directly from a fundamental
         topological invariant &mdash; a Chern number or an Euler characteristic of a four-dimensional
         manifold undergoing Möbius inversion &mdash; so that no appearance of post-hoc tuning
         remains.</li>
@@ -159,7 +168,7 @@ description: "Part V of the Unified Edition: the universe as a structured zero, 
       <ul>
         <li>The global residue theorem, and the arithmetic of the normalisation.
           <span class="sci">&#9670;</span></li>
-        <li>That the three stated residues do sum to one once R<sub>∞</sub> = &minus;1 is imposed.
+        <li>That the three stated residues do sum to one once \(R_{\infty}=-1\) is imposed.
           <span class="sci">&#9670;</span></li>
         <li>That the measured cosmological budget is close to these figures.
           <span class="sci">&#9670;</span></li>
@@ -263,11 +272,14 @@ description: "Part V of the Unified Edition: the universe as a structured zero, 
       intergalactic void. The halo is not a cloud of anything. It is the region where the geometry has
       <em>partially integrated</em> &mdash; enough to gravitate, not enough to radiate &mdash; and the
       rotation curve simply reads its profile off.</p>
-    <p class="formula" style="text-align:center">χ(r) &prop; 1/r &nbsp;&rArr;&nbsp;
-      ρ<sub>χ</sub> &prop; 1/r² &nbsp;&rArr;&nbsp; M(r) &prop; r &nbsp;&rArr;&nbsp;
-      v(r) = &radic;(GM(r)/r) = constant</p>
+    <p class="formula">\[
+      \chi(r)\propto r^{-1}
+      \Longrightarrow \rho_{\chi}(r)\propto r^{-2}
+      \Longrightarrow M(r)\propto r
+      \Longrightarrow v(r)=\sqrt{\frac{GM(r)}{r}}=\text{constant}
+    \]</p>
     <p>That is the flat curve, and it falls out of the gradient rather than being fitted to it. Newtonian
-      gravity acting on the visible disk alone gives the Keplerian decline v &prop; 1/&radic;r, which is not
+      gravity acting on the visible disk alone gives the Keplerian decline \(v\propto r^{-1/2}\), which is not
       what is seen; an enclosed mass growing linearly with radius is what is required, and a 1/r integration
       field delivers exactly that. <span class="spec">&#9670;</span></p>
     <p class="muted">The debt, stated as the author states it against himself: the 1/r profile is the natural

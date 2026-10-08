@@ -32,8 +32,7 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
       The splice is skeletal because the bone it breaks on is the same bone every time.</p>
     <p class="muted">Said plainly, because the next three sections depend on it: the splice is a rule the
       framework asserts, not a result it derives. What <em>is</em> derived &mdash; and provable &mdash; is
-      the count that comes out of it: <span class="formula-inline">P<sub>n</sub> = F<sub>n+2</sub> &minus;
-      1</span>, the population after n splices, one less than a Fibonacci number every time.
+      the count that comes out of it: <span class="formula-inline">\(P_n=F_{n+2}-1\)</span>, the population after n splices, one less than a Fibonacci number every time.
       <span class="sci">&#9670;</span></p>
     <p class="muted small">Grading: <span class="sci">&#9670; established</span> &middot;
       <span class="hist">&#9670; scholarship</span> &middot;
@@ -121,21 +120,24 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
       sum of such acts, and the half that is sent back carries its share of them downward.
       <span class="spec">&#9670;</span></p>
     <p>Each return lands below one, at a depth set by the golden law &mdash; the n-th return falling to
-      roughly <span class="formula-inline">&phi;<sup>&minus;n</sup></span> of the way to the ground. And
+      roughly <span class="formula-inline">\(\varphi^{-n}\)</span> of the way to the ground. And
       the number of returners at the n-th density is the population minus the single line that keeps
-      climbing: <span class="formula-inline">R<sub>n</sub> = F<sub>n+2</sub> &minus; 1</span>.</p>
+      climbing: <span class="formula-inline">\(R_n=F_{n+2}-1\)</span>.</p>
     <p>So the quantity deposited into the lower infinity at the n-th density is the count times the depth:</p>
-    <p class="formula" style="text-align:center">&delta;&Pi;<sub>n</sub> = R<sub>n</sub> &middot;
-      &phi;<sup>&minus;n</sup> = (F<sub>n+2</sub> &minus; 1)&thinsp;&phi;<sup>&minus;n</sup></p>
+    <p class="formula">\[
+      \delta\Pi_n=R_n\varphi^{-n}=(F_{n+2}-1)\varphi^{-n}
+    \]</p>
     <p>Here is the pretty part, and it is arithmetic rather than assertion. Fibonacci grows like
-      <span class="formula-inline">&phi;<sup>n</sup></span> and the depth discount shrinks like
-      <span class="formula-inline">&phi;<sup>&minus;n</sup></span>, so the two cancel. The deposit does
+      <span class="formula-inline">\(\varphi^n\)</span> and the depth discount shrinks like
+      <span class="formula-inline">\(\varphi^{-n}\)</span>, so the two cancel. The deposit does
       not run away and it does not die out: it converges on a constant.</p>
-    <p class="formula" style="text-align:center">&delta;&Pi;<sub>n</sub> &rarr; &phi;&sup2;/&radic;5 =
-      (5 + 3&radic;5)/10 = 1.170820&hellip;</p>
+    <p class="formula">\[
+      \delta\Pi_n\longrightarrow\frac{\varphi^2}{\sqrt5}
+      =\frac{5+3\sqrt5}{10}=1.170820\ldots
+    \]</p>
     <p><strong>Every further density deposits the same quantum.</strong> Not more, not less &mdash;
       1.1708 of whatever unit the first one was measured in. The running total is therefore straight:
-      <span class="formula-inline">&Pi;<sub>n</sub> &asymp; 1.1708&thinsp;n &minus; 1.618</span>, with a
+      <span class="formula-inline">\(\Pi_n\sim1.1708n-1.618\)</span>, with a
       correction that dies geometrically. <span class="sci">&#9670;</span> The arithmetic is checkable; the
       <em>reading</em> of it as a physical deposit is the framework's. <span class="spec">&#9670;</span></p>
 
@@ -202,9 +204,9 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
         <text x="360" y="292" fill="#a9b6d8" font-size="12" text-anchor="middle">density index n &#8212; the splices at 10, 100, 1000, &#8230;</text>
       </svg>
     </div>
-    <p class="plate-note">The bars are <span class="formula-inline">&delta;&Pi;<sub>n</sub></span>, the
+    <p class="plate-note">The bars are <span class="formula-inline">\(\delta\Pi_n\)</span>, the
       deposit each density makes. They climb for three or four densities and then sit on the dashed line at
-      <span class="formula-inline">&phi;&sup2;/&radic;5</span> and stay there. The purple line is the
+      <span class="formula-inline">\(\varphi^2/\sqrt5\)</span> and stay there. The purple line is the
       running total, drawn at a tenth scale so it fits: a straight line, because a constant added again and
       again is a straight line. This panel is arithmetic and nothing else &mdash; anyone can check it.</p>
   </figure>
@@ -236,13 +238,18 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
       each half it loses deepens the pole behind it, and the deeper pole pulls harder on what remains. It
       is not propelled in spite of the losses. It is propelled <em>by</em> them.
       <span class="myth">&#9670;</span></p>
-    <p class="formula" style="text-align:center">v<sub>n</sub> &prop; &Pi;<sub>n</sub> &asymp;
-      1.1708&thinsp;n &nbsp;&nbsp;&rArr;&nbsp;&nbsp; t<sub>n</sub> &prop; 1/&Pi;<sub>n</sub></p>
+    <p class="formula">\[
+      v_n\propto\Pi_n\sim1.1708n
+      \qquad\Longrightarrow\qquad
+      t_n\propto\frac{1}{\Pi_n}
+    \]</p>
     <p>And then the sting in the tail, which is the reason this chapter belongs in the framework rather
       than in a motivational pamphlet. If each further density takes a time proportional to
-      <span class="formula-inline">1/n</span>, the total time to climb them all is the harmonic series
+      <span class="formula-inline">\(1/n\)</span>, the total time to climb them all is the harmonic series
       &mdash; and the harmonic series <em>diverges</em>. <span class="sci">&#9670;</span></p>
-    <p class="formula" style="text-align:center">&sum;<sub>n</sub> 1/n = &infin;</p>
+    <p class="formula">\[
+      \sum_{n=1}^{\infty}\frac1n=\infty
+    \]</p>
     <p>The prime being gets faster at every density, without limit, and still never arrives. That is the
       <a href="/the-self/#t-asymptotic-god">asymptotic God</a> of chapter eight, derived here a second time
       from a different direction &mdash; which is the only kind of corroboration a framework like this one
@@ -277,7 +284,7 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
     </div>
     <p class="plate-note">Green is the prime being's speed, proportional to the accumulated polarisation:
       straight, rising, no ceiling. Rose is the time the next density costs, falling away as
-      <span class="formula-inline">1/&Pi;<sub>n</sub></span>. The second curve is the one that matters: its
+      <span class="formula-inline">\(1/\Pi_n\)</span>. The second curve is the one that matters: its
       terms go to zero, its sum does not. Acceleration without arrival is not a consolation the framework
       added afterwards &mdash; it is what the arithmetic says.</p>
   </figure>
@@ -346,7 +353,7 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
         decade closes on a single saturating digit. That is the arithmetic shadow of the seam, and it is
         a base-ten fact. <span class="sci">&#9670;</span></li>
       <li><strong>The Fibonacci count meets the decade cleanly.</strong>
-        <span class="formula-inline">P<sub>n</sub> = F<sub>n+2</sub> &minus; 1</span> is indexed by the
+        <span class="formula-inline">\(P_n=F_{n+2}-1\)</span> is indexed by the
         splices, and the final digits of the Fibonacci numbers repeat in base ten with a period of
         exactly 60 &mdash; the Pisano period &pi;(10). The growth law of the population and the notation
         of the densities share a cycle. <span class="sci">&#9670;</span></li>
@@ -382,7 +389,7 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
       is not a human overlay on the structure but a reading of it, and says so plainly:
       <strong>nature does use base ten, after all.</strong> <span class="myth">&#9670;</span></p>
     <p class="muted">Filed as vision, which is what it is. It is not provable in the sense that
-      <span class="formula-inline">P<sub>n</sub> = F<sub>n+2</sub> &minus; 1</span> is provable, and the
+      <span class="formula-inline">\(P_n=F_{n+2}-1\)</span> is provable, and the
       page does not pretend otherwise. It is, however, falsifiable in the only way a claim like this can
       be: by producing the rival base.</p>
   </div>
@@ -395,16 +402,16 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
     <h2 id="t-ledger">Earned, chosen, refused</h2>
     <dl class="glossary">
       <dt>Earned</dt>
-      <dd><span class="formula-inline">P<sub>n</sub> = F<sub>n+2</sub> &minus; 1</span> is a theorem. The
-        convergence of <span class="formula-inline">(F<sub>n+2</sub> &minus; 1)&phi;<sup>&minus;n</sup></span>
-        on <span class="formula-inline">&phi;&sup2;/&radic;5 = 1.170820&hellip;</span> follows from Binet's
+      <dd><span class="formula-inline">\(P_n=F_{n+2}-1\)</span> is a theorem. The
+        convergence of <span class="formula-inline">\((F_{n+2}-1)\varphi^{-n}\)</span>
+        on <span class="formula-inline">\(\varphi^2/\sqrt5=1.170820\ldots\)</span> follows from Binet's
         formula and can be checked by hand in the table above. The divergence of the harmonic series is
         Oresme's, proved around 1350.</dd>
       <dt>Chosen</dt>
       <dd>That nature counts in tens &mdash; held here as a reading of where the splice lands rather than
         as a theorem, and resting on the exactness of the landings rather than on their prettiness. That
         the splice happens at all; that returners deposit at depth
-        <span class="formula-inline">&phi;<sup>&minus;n</sup></span>; that the resulting asymmetry deserves
+        <span class="formula-inline">\(\varphi^{-n}\)</span>; that the resulting asymmetry deserves
         the name polarisation; and that a gradient so described accelerates anything. Four choices, each
         reasonable, none forced.</dd>
       <dt>Refused</dt>
@@ -431,9 +438,9 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
       <dd>The single line that takes the climbing branch at every splice.</dd>
       <dt>&Pi;<sub>n</sub></dt>
       <dd>The accumulated polarisation after n densities; grows by
-        <span class="formula-inline">&phi;&sup2;/&radic;5</span> per density in the limit.</dd>
+        <span class="formula-inline">\(\varphi^2/\sqrt5\)</span> per density in the limit.</dd>
       <dt>Quantum of deposit</dt>
-      <dd><span class="formula-inline">&phi;&sup2;/&radic;5 = (5 + 3&radic;5)/10 = 1.170820393&hellip;</span></dd>
+      <dd><span class="formula-inline">\(\varphi^2/\sqrt5=(5+3\sqrt5)/10=1.170820393\ldots\)</span></dd>
     </dl>
   </div>
 </section>
@@ -452,19 +459,20 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
   <div class="wrap narrow">
     <div class="frame illuminated">
       <p>Two skeletons, counted independently, say the same thing. The Fibonacci skeleton used on this page
-        deposits <span class="formula-inline">&phi;&sup2;/&radic;5 = 1.170820393&hellip;</span> per density,
-        so accumulated progress is <span class="formula-inline">&Pi;<sub>n</sub> &asymp; 1.1708n &minus;
-        1.618</span> &mdash; linear in n. The triangular skeleton, which the framework meets at the
+        deposits <span class="formula-inline">\(\varphi^2/\sqrt5=1.170820393\ldots\)</span> per density,
+        so accumulated progress is <span class="formula-inline">\(\Pi_n\sim1.1708n-1.618\)</span> &mdash; linear in n. The triangular skeleton, which the framework meets at the
         accumulation vertex 666 = T<sub>36</sub>, has increment
-        <span class="formula-inline">T<sub>n</sub> &minus; T<sub>n&minus;1</sub> = n</span> &mdash; also
+        <span class="formula-inline">\(T_n-T_{n-1}=n\)</span> &mdash; also
         linear, with the deposit equal to the index itself. Different objects, different derivations, one
         law: <strong>progress accumulates linearly, and the total goes as n&sup2;.</strong>
         <span class="sci">&#9670;</span></p>
       <p>Turn that into time. If the rate at which a density is crossed is carried by the progress already
-        banked &mdash; v<sub>n</sub> &prop; &Pi;<sub>n</sub> &prop; n &mdash; then the duration of the n-th
-        crossing is its reciprocal, t<sub>n</sub> &prop; 1/n. The ticks shorten without limit. And yet the
+        banked &mdash; \(v_n\propto\Pi_n\propto n\) &mdash; then the duration of the n-th
+        crossing is its reciprocal, \(t_n\propto1/n\). The ticks shorten without limit. And yet the
         journey never ends, because the harmonic series diverges:</p>
-      <p class="formula" style="text-align:center">&sum; 1/n &rarr; &infin;</p>
+      <p class="formula">\[
+        \sum_{n=1}^{\infty}\frac1n=\infty
+      \]</p>
       <p class="lede">An accelerating clock on an unfinishable road. The asymptotic God, arrived at a second
         time and from the other end &mdash; not from the unreachable zero, but from the pace.</p>
     </div>
@@ -482,7 +490,7 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
       constant would give ticks that never shorten and an ascent that stalls.</p>
     <p class="lede">Linear deposit is the single knife-edge between arriving and stalling, and both of the
       framework's skeletons sit on it.</p>
-    <p class="muted">Logged against ourselves: v<sub>n</sub> &prop; &Pi;<sub>n</sub> is an assumption, the
+    <p class="muted">Logged against ourselves: \(v_n\propto\Pi_n\) is an assumption, the
       natural one rather than a derived one, and the whole of the timing argument rests on it. Change the
       coupling between banked progress and rate and the series changes with it. The sturdy part is the
       divergence given linearity; the hinge is the linearity itself. The same argument, written from the

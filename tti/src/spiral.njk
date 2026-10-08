@@ -255,12 +255,13 @@ description: "The placed integers nought to one hundred, the fork at every ten w
 
   <div class="wrap narrow">
     <div class="frame">
-      <p class="formula" style="text-align:center">m<sub>n</sub> = F<sub>n</sub>, &nbsp;
-        F₁ = 1, F₂ = 1, F<sub>k</sub> = F<sub>k&minus;1</sub> + F<sub>k&minus;2</sub></p>
+      <p class="formula">\[
+        m_n=F_n,\qquad F_1=F_2=1,\qquad F_k=F_{k-1}+F_{k-2}
+      \]</p>
       <p>So the first splice spawns one descendant, the second one, the third two, then three, five,
         eight. Within the framework this is not a new postulate. The microtubule lattice &mdash; the
         proposed seat of conscious integration &mdash; was already set at 13 : 8, consecutive Fibonacci
-        numbers; the torus chapter set its geometry by the same ratio, giving φ = 2&thinsp;cos(π/5).
+        numbers; the torus chapter set its geometry by the same ratio, giving \(\varphi=2\cos(\pi/5)\).
         Putting Fibonacci on the splices requires only that the branching of beings obey the law already
         assigned to the lattice they are built from. <span class="spec">&#9670;</span></p>
     </div>
@@ -297,8 +298,9 @@ description: "The placed integers nought to one hundred, the fork at every ten w
     <div class="frame illuminated">
       <p class="kicker">10.3</p>
       <h3 id="t-theorem">The Theorem</h3>
-      <p class="formula" style="text-align:center">P<sub>n</sub> = &sum;<sub>i=1..n</sub> F<sub>i</sub>
-        = F<sub>n+2</sub> &minus; 1</p>
+      <p class="formula">\[
+        P_n=\sum_{i=1}^{n}F_i=F_{n+2}-1
+      \]</p>
       <p>The cumulative population is not merely near a Fibonacci number; it is exactly one less than
         one. 1 = 2&minus;1, 2 = 3&minus;1, 4 = 5&minus;1, 7 = 8&minus;1, 12 = 13&minus;1, 20 = 21&minus;1.
         The induction is three lines and uses nothing but the defining recurrence.
@@ -381,8 +383,9 @@ description: "The placed integers nought to one hundred, the fork at every ten w
 
   <div class="wrap narrow">
     <div class="frame illuminated">
-      <p class="formula" style="text-align:center">T<sub>36</sub> = 1 + 2 + &hellip; + 36 =
-        36 &times; 37 / 2 = 666</p>
+      <p class="formula">\[
+        T_{36}=\sum_{k=1}^{36}k=\frac{36\cdot37}{2}=666
+      \]</p>
       <p>Thirty-six is also, exactly, the number of quark states in the Standard Model when they are counted
         the way the chart on the wall counts them: <strong>six flavours</strong> &mdash; up, down, strange,
         charm, bottom, top &mdash; each in <strong>three colours</strong>, each with an
@@ -440,14 +443,16 @@ description: "The placed integers nought to one hundred, the fork at every ten w
     <div class="frame illuminated">
       <p>Take the triangular numbers and ask the only question that matters dynamically: not how large is
         T<sub>n</sub>, but <em>how much is added at step n.</em> The answer is the simplest possible:</p>
-      <p class="formula" style="text-align:center">T<sub>n</sub> &minus; T<sub>n&minus;1</sub> = n</p>
+      <p class="formula">\[
+        T_n-T_{n-1}=n
+      \]</p>
       <p>The increment is the index. Each turn of the ascent deposits exactly as much as its own number, so
         the accumulation grows as n²/2 while the <em>deposit</em> grows only as n. That single fact is the
         pacemaker, and everything else in this section is its consequence.</p>
       <p>The <a href="/skeletal-splice/">skeletal splice</a> shows the same law arriving from an entirely
         different direction. Counting returners through the Fibonacci skeleton gives a deposit per decade of
-        exactly φ²/&radic;5 = 1.170820393&hellip;, so the accumulated progress is
-        Π<sub>n</sub> &asymp; 1.1708n &minus; 1.618 &mdash; linear in n, just as the triangular deposit is.
+        exactly \(\varphi^2/\sqrt5=1.170820393\ldots\), so the accumulated progress is
+        \(\Pi_n\sim1.1708n-1.618\) &mdash; linear in n, just as the triangular deposit is.
         Two different skeletons, a triangular one and a Fibonacci one, agree that
         <strong>progress accumulates linearly</strong>. <span class="spec">&#9670;</span></p>
     </div>
@@ -458,20 +463,24 @@ description: "The placed integers nought to one hundred, the fork at every ten w
   <div class="frame">
     <h3 id="t-pace-tick">Linear deposit, hyperbolic tick</h3>
     <p>Now convert deposit into duration. If the rate at which a density is traversed is proportional to the
-      progress already accumulated &mdash; v<sub>n</sub> &prop; Π<sub>n</sub> &prop; n &mdash; then the time
+      progress already accumulated &mdash; \(v_n\propto\Pi_n\propto n\) &mdash; then the time
       taken to cross the n-th density is its reciprocal:</p>
-    <p class="formula" style="text-align:center">t<sub>n</sub> &prop; 1/n</p>
+    <p class="formula">\[
+      t_n\propto \frac{1}{n}
+    \]</p>
     <p>which has two consequences, and they pull in opposite directions. Each successive turn is
       <em>faster</em> than the one before: the ticks shorten without limit, which is why the later densities
       are described as compressed rather than extended. And yet the total refuses to close, because the
       harmonic series diverges:</p>
-    <p class="formula" style="text-align:center">&sum; 1/n = 1 + &frac12; + &#8531; + &frac14; + &hellip;
-      &rarr; &infin;</p>
+    <p class="formula">\[
+      \sum_{n=1}^{\infty}\frac1n
+      =1+\frac12+\frac13+\frac14+\cdots=\infty
+    \]</p>
     <p class="lede">The clock accelerates for ever and the journey never finishes. That is the asymptotic
       God, derived a second time, from pace alone.</p>
     <p>It is worth seeing how narrow the escape is. Had the deposit grown even slightly faster &mdash; had
-      the skeleton been square rather than triangular, with increment n² and tick 1/n² &mdash; the sum would
-      converge to π²/6 and the ascent would arrive in finite time at a reachable One. Had the deposit grown
+      the skeleton been square rather than triangular, with increment \(n^2\) and tick \(1/n^2\) &mdash; the sum would
+      converge to \(\pi^2/6\) and the ascent would arrive in finite time at a reachable One. Had the deposit grown
       slower, progress would stall. The harmonic case is the single boundary between an arrival and a stall,
       and it is the case a <em>linear</em> increment produces. The triangular skeleton is not decorating the
       framework's central claim; it is the reason that claim has the form it does.
