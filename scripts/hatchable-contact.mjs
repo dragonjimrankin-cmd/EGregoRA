@@ -118,8 +118,29 @@ const main = async () => {
     [argName("grep", ["project_id", "projectId", "project"])]: PROJECT,
     [argName("grep", ["pattern", "query", "q", "search"])]: "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
   };
-  const hits = await call("grep", gArgs);
-  const text = typeof hits === "string" ? hits : JSON.stringify(hits, null, 1);
+  console.log(`grep args: ${Object.keys(gArgs).join(", ")}`);
+  console.log(`grep schema: ${Object.keys(TOOLS.get("grep")?.inputSchema?.properties || {}).join(", ")}`);
+
+  /* Try the regex, then plain "mailto:", then a bare "@" — whichever the
+     server's grep understands and actually answers. */
+  let text = "";
+  for (const pat of [
+    "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}",
+    "mailto:",
+    "@gmail.com",
+    "@"
+  ]) {
+    const args = { ...gArgs };
+    args[argName("grep", ["pattern", "query", "q", "search"])] = pat;
+    let hits;
+    try { hits = await call("grep", args); }
+    catch (err) { console.log(`  grep "${pat}" failed: ${err.message}`); continue; }
+    const t = typeof hits === "string" ? hits : JSON.stringify(hits, null, 1);
+    console.log(`  grep "${pat}" → ${t.length} chars`);
+    if (t.length > 40) { text = t; break; }
+    await sleep(800);
+  }
+  if (text.length < 200) console.log(`raw grep reply:\n${text.slice(0, 1500)}`);
 
   const perFile = new Map();
   const lines = text.split("\n");
