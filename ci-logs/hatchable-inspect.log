@@ -1,79 +1,36 @@
-# hatchable inspect — 2026-10-09T21:12:22Z
+# hatchable inspect — 2026-10-09T21:15:05Z
 args: <none, listing projects>
 
-grep args: project_id, pattern
-grep schema: project_id, pattern, glob, output_mode, -i, -n, context, head_limit
-  grep "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}" → 4871 chars
-raw grep reply (first 2500 chars):
-{
- "output_mode": "content",
- "matches": [
-  {
-   "path": "api/checkout.js",
-   "line": 18,
-   "text": "18:      error: 'Card checkout is not connected yet. Add a Stripe secret key in Hatchable Setup, or email casting@twirler.co.uk or shakradragon@gmail.com.',"
-  },
-  {
-   "path": "api/checkout.js",
-   "line": 92,
-   "text": "92:      to: 'casting@twirler.co.uk',"
-  },
-  {
-   "path": "api/mailing-list.js",
-   "line": 35,
-   "text": "35:        to: 'casting@twirler.co.uk',"
-  },
-  {
-   "path": "api/order.js",
-   "line": 41,
-   "text": "41:      to: 'casting@twirler.co.uk',"
-  },
-  {
-   "path": "api/order.js",
-   "line": 54,
-   "text": "54:      text: 'Thanks for ordering ' + item.name + ' (' + pounds + ').\\n\\nCard checkout is being connected. We will email a payment link to this address.\\n\\nShakRa · casting@twirler.co.uk or shakradragon@gmail.com',"
-  },
-  {
-   "path": "api/order.js",
-   "line": 55,
-   "text": "55:      html: '<p>Thanks for ordering <strong>' + item.name + '</strong> (' + pounds + ').</p><p>Card checkout is being connected. We will email a payment link to this address.</p><p>ShakRa · casting@twirler.co.uk or shakradragon@gmail.com</p>',"
-  },
-  {
-   "path": "api/purchases-confirm.js",
-   "line": 53,
-   "text": "53:  if (!email) return res.status(400).json({ error: 'No email on this payment. Sign in and contact casting@twirler.co.uk or shakradragon@gmail.com.' });"
-  },
-  {
-   "path": "public/analytics.html",
-   "line": 256,
-   "text": "256:    <p class=\"copyright\">&copy; Jim Rankin (2026) &middot; www.shakra.co.uk &middot; casting@twirler.co.uk or shakradragon@gmail.com</p>"
-  },
-  {
-   "path": "public/buy-thanks.html",
-   "line": 29,
-   "text": "29:      <p class=\"muted\" style=\"max-width:36rem;margin:0 auto 1.5rem\">Your payment is in. A Stripe receipt goes to the email you used at checkout. For downloads or questions, write to casting@twirler.co.uk or shakradragon@gmail.com.</p>"
-  },
-  {
-   "path": "public/checkout.html",
-   "line": 59,
-   "text": "59:        <input id=\"chk-email\" name=\"email\" type=\"email\" autocomplete=\"email\" required placeholder=\"you@example.com\" />"
-  },
-  {
-   "path": "public/checkout.html",
-   "line": 62,
-   "text": "62:        <p class=\"muted\" style=\"margin:0;font-size:.9rem\">Card is Stripe test mode. PayPal pays <strong>shakradragon@gmail.com</strong> in GBP.</p>"
-  },
-  {
-   "path": "public/checkout.js",
-   "line": 97,
-   "text": "97:    u.searchParams.set('business', 'shakradragon@gmail.co
---- end ---
-addresses found in the project (3):
-  casting@twirler.co.uk              keep   [api/checkout.js, api/mailing-list.js, api/order.js, api/purchases-confirm.js, public/analytics.html, public/buy-thanks.html]
-  shakradragon@gmail.com             keep   [api/checkout.js, api/order.js, api/purchases-confirm.js, public/analytics.html, public/buy-thanks.html, public/checkout.html]
-  you@example.com                    LEAVE (not a site contact address)   [public/checkout.html, public/login.html]
+5 projects on this account
 
-files needing a rewrite: 0
-
-(report only — pass --apply to rewrite)
+── EGregoRA
+   id:         proj_eiuxpFfTnwwx
+   slug:       egregora
+   url:        —
+   visibility: —   version: —
+   updated:    —
+── ShakRa
+   id:         proj_M87iuAZUiCz4
+   slug:       shakra-0ote
+   url:        —
+   visibility: —   version: —
+   updated:    —
+── The Two Infinities (and beyond)
+   id:         proj_U95i5y493z9x
+   slug:       the-two-infinities
+   url:        —
+   visibility: —   version: —
+   updated:    —
+── Twirler
+   id:         proj_uT6hbTUn8qxc
+   slug:       twirler-pictures
+   url:        —
+   visibility: —   version: —
+   updated:    —
+── ShakRa
+   id:         proj_GINEvYGocFlO
+   slug:       shakra
+   url:        —
+   visibility: —   version: —
+   updated:    —
 exit=0
