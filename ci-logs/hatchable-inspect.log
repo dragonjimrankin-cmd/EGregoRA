@@ -1,4 +1,4 @@
-# hatchable inspect — 2026-10-09T21:00:01Z
+# hatchable inspect — 2026-10-09T21:03:08Z
 args: <none, listing projects>
 
 grep args: project_id, pattern
@@ -74,11 +74,11 @@ raw grep reply (first 2500 chars):
    "text": "107:        <a class=\"cta cta-ghost\" href=\"mailto:info@shakra.co.uk?subject=Earned%20claims%20%E2%80%94
 --- end ---
 addresses found in the project (3):
-  info@shakra.co.uk                  → casting@twirler.co.uk   [(unknown)]
+  info@shakra.co.uk                  → casting@twirler.co.uk / shakradragon@gmail.com   [(unknown)]
   shakradragon@gmail.com             keep   [(unknown)]
-  you@example.com                    LEAVE (not in the replace list)   [(unknown)]
+  you@example.com                    LEAVE (not a site contact address)   [(unknown)]
 
 files needing a rewrite: 0
 
-(report only — pass --apply to rewrite)
+rewrote 0 files
 exit=0
