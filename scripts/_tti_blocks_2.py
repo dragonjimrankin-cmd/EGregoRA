@@ -358,7 +358,10 @@ BLOCKS2["essays"] = r"""
         is that skeleton rescaled.</li>
       <li><a href="#t-arrow">Chapter 31, <em>Where the Arrow Comes From</em></a>, is the framework's
         weakest joint and its most important one, and it is the reason the entropy objection in
-        <a href="/stress-tests/#t-entropy">the stress tests</a> is conceded rather than answered.</li>
+        <a href="/stress-tests/#t-entropy">the stress tests</a> is conceded rather than answered. It has
+        since been tested directly, at <a href="/stress-tests/#t-toy">the toy integrator</a>, and the
+        chapter's central step did not survive: the arrow it describes comes from an assumed measure, not
+        from the asymmetry it credits.</li>
     </ul>
     <p class="muted">The three retractions remain the best writing here. A volume that can say <em>this
       part does not work</em> in its own voice has earned more trust than one that cannot, and the
