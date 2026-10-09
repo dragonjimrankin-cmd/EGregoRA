@@ -28,25 +28,36 @@ const opt = (n, d = null) => {
 const PROJECT = opt("project");
 const PAUSE = Number(opt("pause", "1200"));
 
-/* The addresses that should be on the site, and what to turn into what. */
+/* The addresses that should be on the site, and the ones being retired. */
 const CASTING = "casting@twirler.co.uk";
 const DRAGON = "shakradragon@gmail.com";
-
-/* Any address matching a key is replaced by its value. The pair is written as
-   "casting@twirler.co.uk" where one address is wanted and both are offered
-   where the markup has room; a second pass adds the dragon address beside it. */
-const REPLACE = new Map([
-  ["hello@shakra.co.uk", CASTING],
-  ["contact@shakra.co.uk", CASTING],
-  ["info@shakra.co.uk", CASTING],
-  ["support@shakra.co.uk", CASTING],
-  ["admin@shakra.co.uk", CASTING],
-  ["hello@shakra-0ote.hatchable.site", CASTING],
-  ["dragon.jim.rankin@gmail.com", DRAGON],
-  ["jim@shakra.co.uk", DRAGON],
-  ["ed@shakra.co.uk", DRAGON]
-]);
+const OLD = ["info@shakra.co.uk", "hello@shakra.co.uk", "contact@shakra.co.uk",
+  "support@shakra.co.uk", "admin@shakra.co.uk", "dragon.jim.rankin@gmail.com"];
 const KEEP = new Set([CASTING, DRAGON]);
+
+/**
+ * Rewrite one file's worth of text.
+ *
+ * Where a line is addressing an envelope — a mailto: href, or a `to:` field in
+ * a mail call — only one address can go in, and that is the casting address on
+ * the real domain. Everywhere the address is being *shown* to a reader, both
+ * are shown, because both are the site's contact addresses.
+ */
+function rewrite(body) {
+  let out = body;
+  for (const old of OLD) {
+    const esc = old.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    out = out.replace(new RegExp(`mailto:${esc}`, "gi"), `mailto:${CASTING}`);
+    out = out.replace(new RegExp(`(\\bto\\s*:\\s*['"\`])${esc}`, "gi"), `$1${CASTING}`);
+    out = out.replace(new RegExp(`(['"\`])${esc}\\1`, "gi"), `$1${CASTING}$1`);
+    out = out.replace(new RegExp(esc, "gi"), `${CASTING} or ${DRAGON}`);
+  }
+  /* Never let the pair double up if a file is processed twice. */
+  out = out.replace(
+    new RegExp(`${CASTING.replace(/\./g, "\\.")} or ${DRAGON.replace(/\./g, "\\.")} or ${DRAGON.replace(/\./g, "\\.")}`, "gi"),
+    `${CASTING} or ${DRAGON}`);
+  return out;
+}
 
 if (!TOKEN) { console.error("✖ HATCHABLE_TOKEN is not set."); process.exit(1); }
 if (!PROJECT) { console.error("✖ no --project given."); process.exit(1); }
@@ -161,13 +172,13 @@ const main = async () => {
   [...all].sort().forEach((a) => {
     const where = [...perFile.entries()].filter(([, s]) => s.has(a)).map(([f]) => f);
     const verdict = KEEP.has(a) ? "keep"
-      : REPLACE.has(a) ? `→ ${REPLACE.get(a)}`
-        : "LEAVE (not in the replace list)";
+      : OLD.includes(a) ? `→ ${CASTING} / ${DRAGON}`
+        : "LEAVE (not a site contact address)";
     console.log(`  ${a.padEnd(34)} ${verdict}   [${where.slice(0, 6).join(", ")}]`);
   });
 
   const targets = [...perFile.entries()]
-    .filter(([, s]) => [...s].some((a) => REPLACE.has(a)))
+    .filter(([, s]) => [...s].some((a) => OLD.includes(a)))
     .map(([f]) => f)
     .filter((f) => f !== "(unknown)");
 
@@ -192,10 +203,7 @@ const main = async () => {
       body = typeof r === "string" ? r : (r.content ?? r.text ?? r.body ?? "");
     } catch (err) { console.log(`  ! read ${file}: ${err.message}`); continue; }
 
-    let out = body;
-    for (const [from, to] of REPLACE) {
-      out = out.replace(new RegExp(from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), to);
-    }
+    const out = rewrite(body);
     if (out === body) { console.log(`  = ${file} (nothing to change)`); continue; }
 
     await sleep(PAUSE);
