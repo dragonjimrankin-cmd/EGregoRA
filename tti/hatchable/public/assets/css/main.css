@@ -301,8 +301,11 @@ h3 { font-size: 1.15rem; color: var(--gold-bright); margin: 0 0 0.4rem; letter-s
   text-align: right;
 }
 
-/* illuminated first letter */
-.illuminated > p:first-of-type::first-letter {
+/* Illuminated initials belong to body copy, never to compact labels or
+   displayed mathematics. Without these exclusions, the first character of a
+   kicker becomes an oversized gold drop cap instead of staying with its green
+   sentence. */
+.illuminated > p:first-of-type:not(.kicker):not(.formula)::first-letter {
   font-family: var(--display); font-size: 3.6em; float: left; line-height: 0.82;
   padding: 0.08em 0.14em 0 0; color: var(--gold-bright);
   text-shadow: 0 0 22px rgba(118,207,238,0.45);
