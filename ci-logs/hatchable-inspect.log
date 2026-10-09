@@ -1,4 +1,4 @@
-# hatchable inspect — 2026-10-09T21:03:08Z
+# hatchable inspect — 2026-10-09T21:07:27Z
 args: <none, listing projects>
 
 grep args: project_id, pattern
@@ -74,11 +74,34 @@ raw grep reply (first 2500 chars):
    "text": "107:        <a class=\"cta cta-ghost\" href=\"mailto:info@shakra.co.uk?subject=Earned%20claims%20%E2%80%94
 --- end ---
 addresses found in the project (3):
-  info@shakra.co.uk                  → casting@twirler.co.uk / shakradragon@gmail.com   [(unknown)]
-  shakradragon@gmail.com             keep   [(unknown)]
-  you@example.com                    LEAVE (not a site contact address)   [(unknown)]
+  info@shakra.co.uk                  → casting@twirler.co.uk / shakradragon@gmail.com   [api/checkout.js, api/mailing-list.js, api/order.js, api/purchases-confirm.js, public/analytics.html, public/buy-thanks.html]
+  shakradragon@gmail.com             keep   [public/checkout.html, public/checkout.js]
+  you@example.com                    LEAVE (not a site contact address)   [public/checkout.html, public/login.html]
 
-files needing a rewrite: 0
+files needing a rewrite: 11
+  api/checkout.js
+  api/mailing-list.js
+  api/order.js
+  api/purchases-confirm.js
+  public/analytics.html
+  public/buy-thanks.html
+  public/framework-earned.html
+  public/framework-map.html
+  public/index.html
+  public/listen.html
+  public/login.html
+  ✓ api/checkout.js
+  ✓ api/mailing-list.js
+  ✓ api/order.js
+  ✓ api/purchases-confirm.js
+  ✓ public/analytics.html
+  ✓ public/buy-thanks.html
+  ✓ public/framework-earned.html
+  ✓ public/framework-map.html
+  ✓ public/index.html
+  ✓ public/listen.html
+  ✓ public/login.html
 
-rewrote 0 files
+rewrote 11 files
+deployed: version 194
 exit=0
