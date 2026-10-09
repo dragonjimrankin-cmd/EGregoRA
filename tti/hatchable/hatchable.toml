@@ -1,4 +1,5 @@
 # Hatchable project manifest — Zero, One, and the Bubbles That Blow Between
+# Deployment refreshed 2026-10-09 after repository-secret configuration.
 # Reference: https://hatchable.com/docs/developers/config
 name        = "Zero, One, and the Bubbles That Blow Between"
 tagline     = "A geometry of existence, from zero and one to the Cosmic Ledger"
