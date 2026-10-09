@@ -2,7 +2,7 @@
 # Reference: https://hatchable.com/docs/developers/config
 name        = "Zero, One, and the Bubbles That Blow Between"
 tagline     = "A geometry of existence, from zero and one to the Cosmic Ledger"
-description = "Zero, One, and the Bubbles That Blow Between: the Unified Edition set out page by page — the asymmetry between the infinity below one and the infinity above it, closure at pi, the integral self, gravity as curvature of the geometry, the galactic torus, Mobius parity, the cosmic ledger of three residues, the seams, eleven plain-language essays and a full visual compendium. ShakDrah, a green dragon, keeps the papers and answers questions from them."
+description = "Zero, One, and the Bubbles That Blow Between: the Unified Edition set out page by page — the asymmetry between the infinity below one and the infinity above it, closure at pi, the integral self, gravity as curvature of the geometry, the galactic torus, Mobius parity, the cosmic ledger of three residues, the seams, eleven plain-language essays, a full visual compendium, and a standalone examination of matter as residue with complementary antimatter out of phase. ShakDrah, a green dragon, keeps the papers and answers questions from them."
 category    = "Publishing"
 tags        = ["astronomy", "cosmology", "mathematics", "philosophy", "geometry", "physics"]
 
