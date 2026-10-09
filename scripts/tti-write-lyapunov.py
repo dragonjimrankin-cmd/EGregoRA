@@ -15,6 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "tti" / "src" / "stress-tests.njk"
 MAIN = json.loads((ROOT / "ops" / "tti-lyapunov.json").read_text())
 SWEEP = json.loads((ROOT / "ops" / "tti-lyapunov-sweep.json").read_text())
+UND = json.loads((ROOT / "ops" / "tti-lyapunov-undamped.json").read_text())
+UND_MIN = min(l for _, l in UND)
+UND_ONSET = min(a for a, l in UND if l > 0.02)
+UND_TYP = sum(l for a, l in UND if l > 0.02) / len([1 for a, l in UND if l > 0.02])
+UND_FLAT = [a for a, l in UND if l <= 0.02]
 
 LAM = MAIN["chaotic"]["lambda"]
 CTRL = MAIN["periodic"]["lambda"]
@@ -35,7 +40,7 @@ HORIZON = math.log(1e10) / LAM
 # ----------------------------------------------------------------- plate
 W, H = 760, 420
 L, R, T, B = 78, 726, 48, 330
-amin, amax = min(a for a, _ in SWEEP), max(a for a, _ in SWEEP)
+amin, amax = 0.0, max(a for a, _ in SWEEP)
 lmin, lmaxp = -0.28, 0.20
 
 
@@ -53,6 +58,11 @@ shade = "".join(
     for lo, hi in BANDS
 )
 pts = " L".join(f"{X(a):.1f} {Y(l):.1f}" for a, l in SWEEP)
+undpts = " L".join(f"{X(a):.1f} {Y(l):.1f}" for a, l in UND)
+unddots = "".join(
+    f'          <circle cx="{X(a):.1f}" cy="{Y(l):.1f}" r="2.6" fill="#ef84b6" opacity="0.9"/>\n'
+    for a, l in UND
+)
 dots = "".join(
     f'          <circle cx="{X(a):.1f}" cy="{Y(l):.1f}" r="3" '
     f'fill="{"#ffd979" if l > 0.005 else "#45d6b4"}"/>\n'
@@ -60,7 +70,7 @@ dots = "".join(
 )
 xt = "".join(
     f'          <text x="{X(a):.1f}" y="{B+20}">{a:.1f}</text>\n'
-    for a in (1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6)
+    for a in (0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6)
 )
 yt = "".join(
     f'          <text x="{L-12}" y="{Y(v)+4:.1f}">{v:+.2f}</text>\n'
@@ -79,7 +89,8 @@ PLATE = f'''  <figure id="fig-lyapunov" class="plate">
 {shade}{grid}
         <path d="M{L} {Y(0):.1f} H{R}" stroke="#ffd979" stroke-width="1" opacity="0.8"/>
         <path d="M{L} {T} V{B} M{L} {B} H{R}" stroke="#a9b6d8" stroke-width="0.8" opacity="0.5" fill="none"/>
-        <path d="M{pts}" fill="none" stroke="#cdefff" stroke-width="1.5" opacity="0.85"/>
+        <path d="M{undpts}" fill="none" stroke="#ef84b6" stroke-width="1.5" opacity="0.8"/>
+{unddots}        <path d="M{pts}" fill="none" stroke="#cdefff" stroke-width="1.5" opacity="0.85"/>
 {dots}
         <g font-family="EB Garamond, serif" font-size="11.5" fill="#a9b6d8" text-anchor="middle">
 {xt}        </g>
@@ -92,15 +103,19 @@ PLATE = f'''  <figure id="fig-lyapunov" class="plate">
         </g>
         <g font-family="EB Garamond, serif" font-size="12.5" font-style="italic">
           <text x="{L+8}" y="{T+18}" fill="#ffd979">λ &gt; 0: chaotic &mdash; prediction decays exponentially</text>
-          <text x="{R-8}" y="{B-14}" fill="#45d6b4" text-anchor="end">λ &lt; 0: periodic &mdash; the motion settles into a cycle</text>
+          <text x="{L+8}" y="{T+36}" fill="#ef84b6">undamped: never negative, anywhere</text>
+          <text x="{L+8}" y="{T+54}" fill="#cdefff">damped: dips below zero again and again</text>
+          <text x="{L+8}" y="{B-12}" fill="#45d6b4">λ &lt; 0: periodic &mdash; the motion settles into a cycle</text>
         </g>
       </svg>
     </div>
-    <p class="plate-note">Each point is a separate integration of the driven damped pendulum at
+    <p class="plate-note">Two sweeps. The pale curve is the damped pendulum; the rose curve is the same
+      system with the damping removed. Each point is a separate integration of the driven damped pendulum at
       q&nbsp;=&nbsp;0.5 and &omega;&nbsp;=&nbsp;2/3, run for three thousand time units after a discarded
-      transient, with the tangent vector renormalised every unit. Where the curve sits above the gold line
-      the motion is genuinely chaotic. Where it dips below &mdash; and it dips below repeatedly &mdash;
-      the same equation is perfectly periodic. <span class="sci">&#9670;</span></p>
+      transient, with the tangent vector renormalised every unit. Where a curve sits above the gold line
+      the motion is genuinely chaotic. The damped curve dips below repeatedly &mdash; the same equation,
+      perfectly periodic. The undamped curve never does, at any amplitude tested.
+      <span class="sci">&#9670;</span></p>
   </figure>
 '''
 
@@ -167,10 +182,43 @@ SECTION = f'''<div class="divider">&#10022;</div>
       parameters would sit inside a chaotic band rather than in one of the much wider periodic
       regions</strong> &mdash; and it does not have one. Saying the cosmos is chaotic because pendulums
       are chaotic is no longer available: most pendulums, most of the time, are not.</p>
-    <p class="muted">The honest repair, if there is one, is that the cosmic system is undamped, and an
-      undamped system cannot settle into the attracting cycles that produce the negative exponents here.
-      That is plausible and it is not demonstrated, because every number on this page comes from a damped
-      system and the undamped case has not been computed. Until it is, the windows stand against us.</p>
+    <p class="muted">The repair, if there is one, is that a cosmic system is undamped, and an undamped
+      system cannot settle into the attracting cycles that produce the negative exponents here. That was
+      written as plausible and uncomputed. It is computed in the next section.</p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <h3 id="t-lyap-undamped">Experiment four &mdash; the undamped case, which the last section demanded</h3>
+    <p>The repair offered above was that a cosmic system has no outside to lose energy to, so it cannot
+      settle into the attracting cycles that produce the negative exponents &mdash; and that this was
+      plausible but uncomputed. It has now been computed: the same sweep with the damping set to zero,
+      amplitudes from 0 to {amax:.1f}.</p>
+    <p class="lede">The result is unambiguous. <strong>The undamped exponent is never negative at any
+      amplitude tested</strong> &mdash; the minimum over the whole sweep is
+      {UND_MIN:+.5f}, which is zero to within the integration error. The periodic windows are
+      <em>gone</em>. <span class="sci">&#9670;</span></p>
+    <p>And this is not a numerical accident; it could not have come out otherwise. An undamped system
+      preserves phase-space area, so by Liouville's theorem its exponents must sum to zero, which in two
+      dimensions forces λ&#8321; = &minus;λ&#8322; and therefore λ&#8321; &ge; 0. <strong>A negative
+      largest exponent is mathematically impossible without dissipation.</strong> The computation agrees
+      with the theorem, which is the correct order of events. <span class="sci">&#9670;</span></p>
+    <p>Above A &asymp; {UND_ONSET:.2f} the exponent sits around {UND_TYP:+.2f} across the entire range,
+      with no windows and no returns to regularity &mdash; chaos is <em>generic</em> once the drive is
+      strong enough. Below that the exponent is zero rather than negative: the motion is quasi-periodic,
+      wandering on an intact torus, still never settling but perfectly predictable.</p>
+    <p class="lede">So the debt the sweep created is paid, and the two halves of the thesis sentence come
+      apart cleanly in the process. <strong>Cannot settle</strong> is now the stronger claim: it holds at
+      every amplitude, and it holds by theorem rather than by computation.
+      <strong>Out of control</strong> is the weaker one: it holds above a threshold and fails below it,
+      where the motion is unending and entirely foreseeable.</p>
+    <p class="muted">Stated against ourselves, because the repair should not be allowed to buy more than
+      it paid for: all of this is a two-dimensional driven pendulum, and Liouville's theorem applies to
+      the universe only if the universe is Hamiltonian, which is exactly the sort of thing a framework
+      should not help itself to. What has been shown is that <em>the framework's own chosen system</em>
+      behaves as the framework said it would once the dissipation is removed. That was in doubt an hour
+      ago and it is not in doubt now.</p>
   </div>
 </section>
 
