@@ -1,6 +1,9 @@
-# hatchable inspect — 2026-10-09T20:54:48Z
+# hatchable inspect — 2026-10-09T20:57:29Z
 args: <none, listing projects>
 
+grep args: project_id, pattern
+grep schema: project_id, pattern, glob, output_mode, -i, -n, context, head_limit
+  grep "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}" → 424 chars
 addresses found in the project (0):
 
 files needing a rewrite: 0
