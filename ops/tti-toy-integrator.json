@@ -1,0 +1,81 @@
+{
+  "baker": {
+    "forward_entropy_bits": [
+      3.5218,
+      3.543,
+      4.4264,
+      5.4024,
+      6.3776,
+      7.3512,
+      7.3506,
+      8.3447,
+      9.3329,
+      10.3063,
+      11.2586,
+      11.7503,
+      11.8073,
+      11.8449,
+      11.8447
+    ],
+    "backward_entropy_bits": [
+      3.5218,
+      3.5377,
+      4.4289,
+      5.404,
+      6.3786,
+      7.3519,
+      7.3522,
+      8.3467,
+      9.3341,
+      10.31,
+      11.2605,
+      11.7676,
+      11.8169,
+      11.8395,
+      11.843
+    ],
+    "forward_rise": 8.3229,
+    "backward_rise": 8.3212,
+    "asymmetry": 0.0017
+  },
+  "branch": {
+    "2": {
+      "p_down": 0.6666666666666666,
+      "drift_per_step": 0.33119,
+      "entropy_production_per_step_nats": 0.23104906018664834,
+      "measured_fraction_down": 0.665595
+    },
+    "3": {
+      "p_down": 0.75,
+      "drift_per_step": 0.49817,
+      "entropy_production_per_step_nats": 0.5493061443340549,
+      "measured_fraction_down": 0.749085
+    },
+    "5": {
+      "p_down": 0.8333333333333334,
+      "drift_per_step": 0.66683,
+      "entropy_production_per_step_nats": 1.0729586082894007,
+      "measured_fraction_down": 0.833415
+    },
+    "10": {
+      "p_down": 0.9090909090909091,
+      "drift_per_step": 0.8169,
+      "entropy_production_per_step_nats": 1.883933257904219,
+      "measured_fraction_down": 0.90845
+    }
+  },
+  "swap": {
+    "2": {
+      "p_down": 0.5,
+      "drift_per_step": -3e-05,
+      "entropy_production_per_step_nats": 0.0,
+      "measured_fraction_down": 0.499985
+    },
+    "10": {
+      "p_down": 0.5,
+      "drift_per_step": 0.00063,
+      "entropy_production_per_step_nats": 0.0,
+      "measured_fraction_down": 0.500315
+    }
+  }
+}
