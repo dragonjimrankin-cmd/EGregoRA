@@ -9,6 +9,7 @@
  * when the person has long since forgotten the account exists.
  */
 import { db } from 'hatchable';
+import { mirror } from '../lib/twin.js';
 import { whoAmI } from '../lib/accounts.js';
 
 export const access = 'public';
@@ -68,9 +69,12 @@ export default async function (req, res) {
         : 'UPDATE members SET subscribed = FALSE, unsubscribed_at = NOW() WHERE id = $1',
       [me.id]
     );
+    mirror(me.email, { subscribed: on }).catch(() => {});
     return res.json({
       ok: true, subscribed: on,
-      message: on ? 'You are on the mailing list again.' : 'You are off the mailing list.'
+      message: on
+        ? 'You are on the mailing list again — one list, covering both sites.'
+        : 'You are off the mailing list, on both sites. Nothing further will arrive from either.'
     });
   }
 
@@ -92,6 +96,7 @@ export default async function (req, res) {
       `UPDATE members SET subscribed = FALSE, unsubscribed_at = NOW()
         WHERE unsub_token = $1 RETURNING email, subscribed`, [token]);
     const member = rows[0];
+    if (member) mirror(member.email, { subscribed: false }).catch(() => {});
 
     if (!member) {
       return res.status(404).send(page(

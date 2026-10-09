@@ -2,6 +2,7 @@
 import { db } from 'hatchable';
 import { cleanEmail, checkCode, startSession, SESSION_DAYS } from '../lib/accounts.js';
 import { sendWelcome } from '../lib/mailing.js';
+import { mirror } from '../lib/twin.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -36,6 +37,11 @@ export default async function (req, res) {
       );
       sendWelcome(fresh[0] || member).catch(() => {});
     }
+
+    /* One membership, two sites. The twin is told the address is good and on
+       the list, so signing in over there finds an account already waiting. */
+    mirror(member.email, { name: member.name, verified: true, subscribed: true })
+      .catch(() => {});
     res.json({
       ok: true,
       token,

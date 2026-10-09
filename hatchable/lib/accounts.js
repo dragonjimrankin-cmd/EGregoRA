@@ -76,32 +76,33 @@ export async function issueCode(member, purpose = 'verify') {
 export async function sendCode(member, code, purpose) {
   const joining = purpose === 'verify';
   const subject = joining
-    ? `EGregoRA — your verification code is ${code}`
-    : `EGregoRA — your sign-in code is ${code}`;
+    ? `${BRAND.name} — your verification code is ${code}`
+    : `${BRAND.name} — your sign-in code is ${code}`;
   const html = `
-    <div style="font-family:Georgia,serif;background:#0d0a05;color:#e8dcc0;padding:28px">
-      <p style="font-family:'Times New Roman',serif;letter-spacing:4px;color:#d7b05a;font-size:13px;margin:0 0 14px">
-        E G R E G O R A</p>
+    <div style="font-family:Georgia,serif;background:${BRAND.paper};color:${BRAND.ink};padding:28px">
+      <p style="font-family:'Times New Roman',serif;letter-spacing:4px;color:${BRAND.accent};font-size:13px;margin:0 0 14px">
+        ${BRAND.wordmark}</p>
       <p style="margin:0 0 12px">${joining
         ? 'Welcome. One number proves the address is yours:'
         : 'Someone asked to sign in as you. If that was you:'}</p>
-      <p style="font-size:34px;letter-spacing:10px;color:#f3ddaa;margin:18px 0">${code}</p>
-      <p style="margin:0 0 10px;font-size:14px;color:#cbbb93">
+      <p style="font-size:34px;letter-spacing:10px;color:${BRAND.bright};margin:18px 0">${code}</p>
+      <p style="margin:0 0 10px;font-size:14px;color:${BRAND.dim}">
         It is good for ${CODE_MINUTES} minutes and can be used once.</p>
-      <p style="margin:0 0 10px;font-size:13px;color:#8e8468">
+      <p style="margin:0 0 10px;font-size:13px;color:${BRAND.faint}">
         If you did not ask for this, ignore it — nothing has been created or changed.
         Test everything kindly.</p>
-      <p style="margin:0;font-size:12px;color:#6f6855">
-        EGregoRA &middot; write to the order at
-        <a href="mailto:shakradragon@gmail.com" style="color:#d7b05a">shakradragon@gmail.com</a> &mdash;
+      <p style="margin:0 0 10px;font-size:13px;color:${BRAND.dim}">${PAIR_LINE}</p>
+      <p style="margin:0;font-size:12px;color:${BRAND.foot}">
+        ${BRAND.name} &middot; write to us at
+        <a href="mailto:shakradragon@gmail.com" style="color:${BRAND.accent}">shakradragon@gmail.com</a> &mdash;
         that address reaches us, whatever this letter was sent from.</p>
     </div>`;
   await email.send({
     to: member.email,
     subject,
     html,
-    text: `EGregoRA — your code is ${code}. It is good for ${CODE_MINUTES} minutes.\n` +
-      'Write to the order at shakradragon@gmail.com.'
+    text: `${BRAND.name} — your code is ${code}. It is good for ${CODE_MINUTES} minutes.\n` +
+      `${PAIR_LINE}\nWrite to us at shakradragon@gmail.com.`
   });
 }
 
