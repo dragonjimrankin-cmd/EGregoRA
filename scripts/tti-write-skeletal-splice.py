@@ -130,7 +130,7 @@ page = f'''---
 layout: layouts/base.njk
 title: The Rankin Skeletal Splice
 permalink: /skeletal-splice/
-description: "The Rankin skeletal splice: the fork at every density threshold, taken against the fixed skeleton of minus one, nought and one and its scaled images 333, 666 and 999. Why the halves sent back accumulate as completed differentials below one, how that accumulation polarises the two infinities, and why the resulting gradient accelerates the prime being at every further density without ever letting it arrive."
+description: "The Rankin skeletal splice: the fork at every density threshold, taken against the fixed skeleton of minus one, nought and one and its scaled images 333, 666 and 999."
 ---
 
 <section class="page-head">

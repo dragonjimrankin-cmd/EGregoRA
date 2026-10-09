@@ -1,0 +1,258 @@
+---
+layout: layouts/base.njk
+title: Join the Integration
+permalink: /join/
+description: "Create an account on The Two Infinities or sign in — a verified email address, then your face or fingerprint. No passwords, anywhere."
+---
+
+<section class="page-head">
+  <p class="kicker">The Threshold &mdash; the door in the torus</p>
+  <h1>Join the Integration</h1>
+  <p class="lede muted">No passwords. An address you can prove is yours, and after that your own face or
+  fingerprint if your device has one. Membership costs nothing, confers no rank, and withholds no chapter —
+  every page of the framework stays public and unmetered. An account simply means ShakDrah knows who is
+  asking, and that the studio knows it is talking to an adult.</p>
+</section>
+
+<section class="wrap narrow reveal" id="gate">
+  <div class="frame frame--first illuminated">
+    <div class="auth-box" id="auth-box" data-state="start">
+
+      <!-- ------------------------------------------------ signed out --- -->
+      <div class="auth-pane" data-pane="start">
+        <p class="kicker">STEP ONE · YOUR ADDRESS</p>
+        <h2>Sign in, or create an account</h2>
+        <p class="muted small">One form does both. If the address is new, an account is made; if it is known,
+        you are signed back in. Either way a six-digit code goes to the inbox and nothing is created until
+        you enter it.</p>
+
+        <div class="social-door" id="social-door" hidden>
+          <p class="muted xsmall">Or come in with an account you already have. It signs you in if we
+          know the address and makes the account if we do not. We take the address and the name, and
+          nothing else; no password is ever seen here. Proving a Google account is not proof of age,
+          so the studio check below is still asked for separately.</p>
+          <div class="social-row" id="social-row"></div>
+          <p class="auth-msg xsmall" id="social-msg"></p>
+        </div>
+
+        <form class="ornate" id="auth-start-form">
+          <div>
+            <label for="a-email">Email address</label>
+            <input id="a-email" type="email" name="email" required autocomplete="email"
+                   inputmode="email" placeholder="rowan@example.org">
+          </div>
+          <div>
+            <label for="a-name">Name <span class="muted xsmall">(optional — what the oracle should call you)</span></label>
+            <input id="a-name" type="text" name="name" maxlength="80" autocomplete="name"
+                   placeholder="Rowan of the Northern Arm">
+          </div>
+          <div class="captcha" data-captcha="join">
+            <p class="captcha-label">Read the gate-word and type it back</p>
+            <div class="captcha-row">
+              <div class="captcha-art" data-captcha-art aria-live="polite"></div>
+              <button class="captcha-new" type="button" data-captcha-new
+                      title="Draw another word" aria-label="Draw another gate-word">&#8634;</button>
+            </div>
+            <input type="text" data-captcha-input autocomplete="off" autocapitalize="characters"
+                   spellcheck="false" maxlength="8" required
+                   aria-label="The gate-word" placeholder="The five letters above">
+          </div>
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="a-send">Send my code</button>
+            <button class="btn btn--ghost" type="button" id="a-bio" hidden>
+              <span aria-hidden="true">☉</span> Use face or fingerprint
+            </button>
+          </div>
+        </form>
+        <p class="auth-msg" id="a-msg" role="status"></p>
+        <p class="muted xsmall">Confirming your address also puts you on the order's mailing list —
+        new chapters, revised plates, and a note whenever an experiment on the stress-tests page is
+        actually run. Not weekly, never sold, and the way off it sits at the foot of every one of them,
+        one click, no reason asked.</p>
+      </div>
+
+      <!-- -------------------------------------------------- the code --- -->
+      <div class="auth-pane" data-pane="code" hidden>
+        <p class="kicker">STEP TWO · THE SIX DIGITS</p>
+        <h2>Check your inbox</h2>
+        <p class="muted small" id="a-code-note">A code is on its way. It lasts fifteen minutes and works once.</p>
+        <form class="ornate" id="auth-code-form">
+          <div>
+            <label for="a-code">Verification code</label>
+            <input id="a-code" type="text" name="code" required inputmode="numeric" pattern="[0-9]*"
+                   maxlength="6" autocomplete="one-time-code" class="code-input" placeholder="000000">
+          </div>
+          <div class="ask-actions">
+            <button class="btn" type="submit" id="a-check">Verify and enter</button>
+            <button class="btn btn--ghost" type="button" id="a-again">Send another</button>
+            <button class="btn btn--ghost" type="button" id="a-back">Different address</button>
+          </div>
+        </form>
+        <p class="auth-msg" id="a-code-msg" role="status"></p>
+      </div>
+
+      <!-- --------------------------------------------------- signed in -- -->
+      <div class="auth-pane" data-pane="in" hidden>
+        <p class="kicker">INSIDE</p>
+        <h2 id="a-greeting">Welcome</h2>
+        <p class="muted small" id="a-who"></p>
+
+        <div class="auth-id" id="a-id-block">
+          <h3>Age &amp; identity — the studio door</h3>
+          <p class="muted small" id="a-id-state">The image and video generators are the one part of this
+          site kept behind a check. Every chapter, plate and ledger is open to everyone, signed in or not.
+          There are two ways through: a look at your face, which takes seconds, or a document, which always
+          works.</p>
+
+          <div class="scan-box" id="scan-box">
+            <p class="kicker">THE QUICK WAY · A LOOK AT YOUR FACE</p>
+            <p class="muted small">Let the camera see you for a moment and a published face model
+            estimates your age. <strong>The estimate is computed inside this page</strong> — the model is
+            fetched once and run in your browser, so the frames are read where they are taken. Seven
+            readings are averaged, the median is used, and no face print, template or biometric of any
+            kind is kept. If the reading lands anywhere near eighteen the studio asks for a document
+            instead: estimation is only good to a few years, so the line is drawn at twenty-five.</p>
+            <p class="muted xsmall">The first scan downloads about a megabyte of model weights, so give it
+            a moment. If your browser blocks the download, or the camera, the document check below always
+            works.</p>
+
+            <div class="scan-stage" id="scan-stage">
+              <video id="scan-video" playsinline muted hidden></video>
+              <div class="scan-ring" id="scan-ring" hidden aria-hidden="true"></div>
+              <p class="scan-hint" id="scan-hint">Face a window if you can. Fill the oval with your head,
+              take off sunglasses, and look straight at the lens.</p>
+            </div>
+
+            <div class="ask-actions">
+              <button class="btn" type="button" id="scan-start">Scan my face</button>
+              <button class="btn btn--ghost" type="button" id="scan-shoot" hidden>Take the reading</button>
+              <button class="btn btn--ghost" type="button" id="scan-stop" hidden>Stop the camera</button>
+            </div>
+            <p class="auth-msg" id="scan-msg" role="status"></p>
+            <p class="muted xsmall" id="scan-unsupported" hidden>This browser will not give a page camera
+            access, so the document check below is your way through.</p>
+          </div>
+
+          <p class="scan-or"><span>or show a document</span></p>
+
+          <form class="ornate" id="id-form">
+            <div>
+              <label for="i-legal">Full legal name, as printed on the document</label>
+              <input id="i-legal" name="legal_name" type="text" required maxlength="140"
+                     autocomplete="name" placeholder="Rowan Alexander Rankin">
+            </div>
+            <div>
+              <label for="i-dob">Date of birth</label>
+              <input id="i-dob" name="dob" type="date" required>
+            </div>
+            <div>
+              <label for="i-country">Country that issued the document</label>
+              <input id="i-country" name="country" type="text" required maxlength="60"
+                     autocomplete="country-name" placeholder="United Kingdom">
+            </div>
+            <div>
+              <label for="i-doc-type">Kind of document</label>
+              <select id="i-doc-type" name="doc_type">
+                <option value="passport">Passport</option>
+                <option value="driving-licence">Driving licence</option>
+                <option value="national-id">National identity card</option>
+                <option value="residence-permit">Residence permit</option>
+              </select>
+            </div>
+            <div>
+              <label for="i-doc">Photograph of the document</label>
+              <input id="i-doc" name="doc" type="file" accept="image/*" capture="environment" required>
+              <p class="muted xsmall">A flat, well-lit shot of the page carrying your photograph and your
+              date of birth. JPEG, PNG, WebP or HEIC, under 6&nbsp;MB. You may cover the document number
+              with your thumb — we do not need it.</p>
+              <p class="id-preview" id="i-preview" aria-live="polite"></p>
+            </div>
+            <div class="declare">
+              <input id="i-declare" name="declaration" type="checkbox" required>
+              <label for="i-declare">I declare that this document is mine, that the name and date of birth
+              above are true, and that I am eighteen or older. I understand a false declaration is recorded
+              against this account and ends my use of the generators.</label>
+            </div>
+            <div class="ask-actions">
+              <button class="btn" type="submit" id="i-send">Submit the check</button>
+            </div>
+          </form>
+          <p class="auth-msg" id="i-msg" role="status"></p>
+
+          <p class="muted xsmall">What we do with it: the photograph is stored privately in this project's
+          own storage, is never published, never shown on the site, and is never given a public link. It is
+          held so that a false declaration leaves evidence, and for no other purpose. The check is honest
+          about what it is — a signed declaration with a document attached, not a forensic examination —
+          and that is what stands behind every image and clip made here.</p>
+        </div>
+
+        <div class="auth-bio">
+          <h3>Biometric entry</h3>
+          <p class="muted small">Add a passkey and your device will let you back in with
+          <strong>Face ID, Touch ID, Windows Hello, an Android fingerprint</strong> or a hardware key. The
+          scan happens on your device and stays there: nothing biometric is sent here, ever. All this server
+          keeps is a public key and the device's word — cryptographically signed — that it checked a real
+          human.</p>
+          <ul class="passkey-list" id="a-keys"></ul>
+          <p class="ask-actions">
+            <button class="btn" type="button" id="a-add-key">Enrol this device</button>
+            <button class="btn btn--ghost" type="button" id="a-signout">Sign out</button>
+          </p>
+          <p class="auth-msg" id="a-bio-msg" role="status"></p>
+          <p class="muted xsmall" id="a-bio-unsupported" hidden>This browser or device does not offer
+          platform biometrics, so the emailed code remains your way in. Nothing is lost by that.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame reveal">
+      <h3>What an account is for</h3>
+      <ul class="biblio">
+        <li>ShakDrah greets you by name and keeps the thread of what you have asked.</li>
+        <li>Files you hand it stay attached to you rather than to a browser tab.</li>
+        <li>Images and clips you make are gathered in one place instead of scattering.</li>
+        <li>No chapter is hidden behind it. There are no grades, no fees and nothing withheld from the
+        page — an account is a convenience, not an initiation. The one exception is the studio: the image
+        and video generators ask for an age check, and nothing else on the site does.</li>
+      </ul>
+    </div>
+    <div class="frame reveal">
+      <h3>How the door is built</h3>
+      <ul class="biblio">
+        <li><span class="sci">◆</span> <strong>No passwords.</strong> Nothing to reuse, leak, phish or reset.
+        Proof of the address is a one-time code that expires in fifteen minutes.</li>
+        <li><span class="sci">◆</span> <strong>Passkeys, not fingerprints.</strong> WebAuthn keeps the
+        biometric on your device's secure element; the server only ever sees a public key and a signature.</li>
+        <li><span class="sci">◆</span> <strong>User verification required.</strong> We reject any sign-in
+        where the device did not actually check a face, a finger or a PIN.</li>
+        <li><span class="sci">◆</span> <strong>Sessions expire.</strong> Thirty days, revocable by signing
+        out, and every passkey can be forgotten individually.</li>
+        <li><span class="myth">◆</span> We will not sell the list, because there is nothing we want to sell
+        it for.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <h3>Earned, chosen, refused</h3>
+    <p><strong>Earned:</strong> passwordless entry, passkeys bound to your own device's secure element,
+      and sessions that expire. None of that is this project's invention &mdash; it is WebAuthn, used the
+      way it was designed to be used. <span class="sci">&#9670;</span></p>
+    <p><strong>Chosen:</strong> to put nothing of the framework behind the door. A cosmology that charged
+      for its own chapters would be a different kind of thing.</p>
+    <p><strong>Refused:</strong> to pretend the age check is more than it is. It is a signed declaration
+      with a document attached, held as evidence, not a forensic examination &mdash; and it is said
+      plainly rather than dressed up.</p>
+    <p class="muted small">Next: <a href="/ask-shakdrah/">ask the dragon</a>, or begin at
+      <a href="/foundations/">the foundations</a>.</p>
+  </div>
+</section>
