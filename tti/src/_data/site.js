@@ -41,7 +41,7 @@ export default {
     { url: "/summary/",       label: "Summary",       glyph: "star" },
     { url: "/foundations/",   label: "Foundations",   glyph: "sphere" },
     { url: "/the-self/",      label: "The Self",      glyph: "integral" },
-    { url: "/dx/",             label: "dx",            glyph: "integral" },
+    { url: "/dx/",             label: "The Integral",  glyph: "integral" },
     { url: "/gravity/",       label: "Gravity",       glyph: "spiral" },
     { url: "/spiral/",        label: "The Spiral",    glyph: "spiral" },
     { url: "/skeletal-splice/", label: "The Splice", glyph: "spiral" },
