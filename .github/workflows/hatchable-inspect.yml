@@ -47,12 +47,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A ci-logs shakra 2>/dev/null || true
-          git add -A . 2>/dev/null || true
-          if ! git diff --cached --quiet; then
-            git commit -q -m "ci: hatchable inspect"
-            git pull --rebase -q origin "${GITHUB_REF_NAME}" || true
-            git push -q origin "HEAD:${GITHUB_REF_NAME}"
+          put () {
+            P="$1"; M="$2"
+            [ -f "$P" ] || return 0
+            B64=$(base64 -w0 "$P")
+            SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
+            if [ -n "$SHA" ]; then
+              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
+                -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA" >/dev/null
+            else
+              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
+                -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" >/dev/null
+            fi
+            echo "published $P"
+          }
+          put ci-logs/hatchable-inspect.log "ci: hatchable inspect"
+          if [ -d shakra ]; then
+            find shakra -type f | while read -r F; do put "$F" "ci: pull ${F}"; done
           fi
