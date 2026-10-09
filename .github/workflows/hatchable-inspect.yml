@@ -1,0 +1,58 @@
+name: Inspect Hatchable
+
+# Lists the projects on the account, and optionally clones one into the repo.
+# Triggered by committing ops/inspect.flag. Its contents are the arguments:
+#   (empty)                         → list every project
+#   --project proj_x                → list that project's files
+#   --project proj_x --pull dir     → clone it into dir/ and commit it
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/01a10807-egregora"]
+    paths:
+      - "ops/inspect.flag"
+      - ".github/workflows/hatchable-inspect.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    env:
+      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+
+      - name: Ask Hatchable what is there
+        run: |
+          mkdir -p ci-logs
+          ARGS=""
+          [ -f ops/inspect.flag ] && ARGS=$(grep -v '^#' ops/inspect.flag | tr -d '\n')
+          set +e
+          {
+            echo "# hatchable inspect — $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "args: ${ARGS:-<none, listing projects>}"
+            echo
+            node scripts/hatchable-inspect.mjs $ARGS 2>&1
+            echo "exit=$?"
+          } > ci-logs/hatchable-inspect.log 2>&1
+          sed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/hatchable-inspect.log
+          tail -120 ci-logs/hatchable-inspect.log
+
+      - name: Publish the log and anything pulled
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A ci-logs shakra 2>/dev/null || true
+          git add -A . 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -q -m "ci: hatchable inspect"
+            git pull --rebase -q origin "${GITHUB_REF_NAME}" || true
+            git push -q origin "HEAD:${GITHUB_REF_NAME}"
+          fi
