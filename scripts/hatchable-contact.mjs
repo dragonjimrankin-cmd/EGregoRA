@@ -154,16 +154,29 @@ const main = async () => {
   console.log(`raw grep reply (first 2500 chars):\n${text.slice(0, 2500)}\n--- end ---`);
 
   const perFile = new Map();
-  const lines = text.split("\n");
-  for (const line of lines) {
-    const addrs = line.match(EMAIL) || [];
-    if (!addrs.length) continue;
-    const m = line.match(/([\w./@-]+\.(?:html|js|mjs|css|json|md|txt|njk|sql|toml|webmanifest|xml))\s*:\s*\d+\s*:/i)
-      || line.match(/"?(?:file|path)"?\s*[:=]\s*"?([^"',\s]+)/i)
-      || line.match(/^\s*"?([\w./-]+\.(?:html|js|css|json|md|txt|njk|sql))"?\s*[:[]/i);
-    const file = m ? m[1] : "(unknown)";
+  const note = (file, addr) => {
     if (!perFile.has(file)) perFile.set(file, new Set());
-    addrs.forEach((a) => perFile.get(file).add(a.toLowerCase()));
+    perFile.get(file).add(addr.toLowerCase());
+  };
+
+  /* The server answers with { matches: [ { path, line, text } ] }. Parse that
+     when we can; fall back to scanning the text if the shape ever changes. */
+  let parsed = null;
+  try { parsed = JSON.parse(text); } catch { /* not JSON */ }
+  const matches = parsed && Array.isArray(parsed.matches) ? parsed.matches : null;
+
+  if (matches) {
+    for (const m of matches) {
+      const file = m.path || m.file || "(unknown)";
+      for (const a of String(m.text || "").match(EMAIL) || []) note(file, a);
+    }
+  } else {
+    for (const line of text.split("\n")) {
+      const addrs = line.match(EMAIL) || [];
+      if (!addrs.length) continue;
+      const m = line.match(/([\w./@-]+\.(?:html|js|mjs|css|json|md|txt|njk|sql|toml|webmanifest|xml))\s*:\s*\d+\s*:/i);
+      addrs.forEach((a) => note(m ? m[1] : "(unknown)", a));
+    }
   }
 
   const all = new Set();
