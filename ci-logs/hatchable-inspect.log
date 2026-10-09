@@ -1,10 +1,82 @@
-# hatchable inspect — 2026-10-09T20:57:29Z
+# hatchable inspect — 2026-10-09T21:00:01Z
 args: <none, listing projects>
 
 grep args: project_id, pattern
 grep schema: project_id, pattern, glob, output_mode, -i, -n, context, head_limit
-  grep "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}" → 424 chars
-addresses found in the project (0):
+  grep "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}" → 4461 chars
+raw grep reply (first 2500 chars):
+{
+ "output_mode": "content",
+ "matches": [
+  {
+   "path": "api/checkout.js",
+   "line": 18,
+   "text": "18:      error: 'Card checkout is not connected yet. Add a Stripe secret key in Hatchable Setup, or email info@shakra.co.uk.',"
+  },
+  {
+   "path": "api/checkout.js",
+   "line": 92,
+   "text": "92:      to: 'info@shakra.co.uk',"
+  },
+  {
+   "path": "api/mailing-list.js",
+   "line": 35,
+   "text": "35:        to: 'info@shakra.co.uk',"
+  },
+  {
+   "path": "api/order.js",
+   "line": 41,
+   "text": "41:      to: 'info@shakra.co.uk',"
+  },
+  {
+   "path": "api/order.js",
+   "line": 54,
+   "text": "54:      text: 'Thanks for ordering ' + item.name + ' (' + pounds + ').\\n\\nCard checkout is being connected. We will email a payment link to this address.\\n\\nShakRa · info@shakra.co.uk',"
+  },
+  {
+   "path": "api/order.js",
+   "line": 55,
+   "text": "55:      html: '<p>Thanks for ordering <strong>' + item.name + '</strong> (' + pounds + ').</p><p>Card checkout is being connected. We will email a payment link to this address.</p><p>ShakRa · info@shakra.co.uk</p>',"
+  },
+  {
+   "path": "api/purchases-confirm.js",
+   "line": 53,
+   "text": "53:  if (!email) return res.status(400).json({ error: 'No email on this payment. Sign in and contact info@shakra.co.uk.' });"
+  },
+  {
+   "path": "public/analytics.html",
+   "line": 256,
+   "text": "256:    <p class=\"copyright\">&copy; Jim Rankin (2026) &middot; www.shakra.co.uk &middot; info@shakra.co.uk</p>"
+  },
+  {
+   "path": "public/buy-thanks.html",
+   "line": 29,
+   "text": "29:      <p class=\"muted\" style=\"max-width:36rem;margin:0 auto 1.5rem\">Your payment is in. A Stripe receipt goes to the email you used at checkout. For downloads or questions, write to info@shakra.co.uk.</p>"
+  },
+  {
+   "path": "public/checkout.html",
+   "line": 59,
+   "text": "59:        <input id=\"chk-email\" name=\"email\" type=\"email\" autocomplete=\"email\" required placeholder=\"you@example.com\" />"
+  },
+  {
+   "path": "public/checkout.html",
+   "line": 62,
+   "text": "62:        <p class=\"muted\" style=\"margin:0;font-size:.9rem\">Card is Stripe test mode. PayPal pays <strong>shakradragon@gmail.com</strong> in GBP.</p>"
+  },
+  {
+   "path": "public/checkout.js",
+   "line": 97,
+   "text": "97:    u.searchParams.set('business', 'shakradragon@gmail.com');"
+  },
+  {
+   "path": "public/framework-earned.html",
+   "line": 107,
+   "text": "107:        <a class=\"cta cta-ghost\" href=\"mailto:info@shakra.co.uk?subject=Earned%20claims%20%E2%80%94
+--- end ---
+addresses found in the project (3):
+  info@shakra.co.uk                  → casting@twirler.co.uk   [(unknown)]
+  shakradragon@gmail.com             keep   [(unknown)]
+  you@example.com                    LEAVE (not in the replace list)   [(unknown)]
 
 files needing a rewrite: 0
 
