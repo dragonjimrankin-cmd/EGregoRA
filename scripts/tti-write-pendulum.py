@@ -136,7 +136,7 @@ SECTION = f'''<div class="divider">&#10022;</div>
   <div class="wrap narrow">
     <div class="frame frame--creed illuminated">
       <p class="lede" style="text-align:center">The universe is an eternal integration of opposing
-        infinities, which together swing like an out-of-control pendulum.</p>
+        infinities, which together swing like a pendulum that cannot settle.</p>
     </div>
   </div>
 
@@ -262,27 +262,34 @@ SECTION = f'''<div class="divider">&#10022;</div>
 
 <section class="wrap narrow reveal">
   <div class="frame illuminated">
-    <h3 id="t-ei-out-of-control">&ldquo;Out of control&rdquo; &mdash; what that means technically</h3>
-    <p>The phrase is doing specific work, and three different things could be meant by it. Two of them
-      are precise and the framework means both.</p>
+    <h3 id="t-ei-out-of-control">&ldquo;Cannot settle&rdquo; &mdash; what that means technically, and what chaos adds</h3>
+    <p>The sentence used to say <em>out of control</em>, and it has been changed. The reason is worth
+      giving, because it is the framework tightening a claim rather than softening one. Two different
+      things were being asserted at once, and computation separated them: one holds everywhere and by
+      theorem, the other holds only above a threshold. The thesis now carries the first and states the
+      second as a consequence. <a href="/stress-tests/#t-lyap-undamped">The numbers are here.</a></p>
     <ol>
       <li><strong>Undamped.</strong> A real pendulum loses energy to friction, its amplitude decays, and
         it settles at the bottom. This one does not. Nothing removes energy from the system, because the
         system is everything &mdash; there is no outside for the losses to go to. An undamped pendulum
         never settles, in principle and not merely in practice.</li>
-      <li><strong>Driven, and therefore chaotic.</strong> Add a periodic drive to a damped pendulum and
+      <li><strong>Above a threshold, chaotic &mdash; a consequence, not part of the thesis.</strong> Add a periodic drive to a damped pendulum and
         you have the canonical chaotic system of nonlinear dynamics: motion that is fully deterministic,
         obeys an equation written on one line, and is nonetheless unpredictable in the long run because
         nearby trajectories separate exponentially &mdash; a positive Lyapunov exponent. Determinism and
         predictability are not the same property, and the pendulum is the standard demonstration that
         they come apart. <span class="sci">&#9670;</span></li>
-      <li><strong>Not</strong> random, and not lawless. This is the reading the framework refuses. An
-        out-of-control pendulum is not one that does whatever it likes. It is one whose law is exact and
-        whose future is beyond computation.</li>
+      <li><strong>Not</strong> random, and not lawless. This is the reading the framework refuses. A
+        pendulum that cannot settle is not one that does whatever it likes. It is one whose law is exact,
+        whose rest is structurally unavailable, and whose future &mdash; past a threshold in the drive
+        &mdash; is beyond computation.</li>
     </ol>
     <p class="lede">So the thesis, unpacked: a sum that never converges, taken over contributions pulled
       between two unequal infinities, in a system that cannot settle because there is nothing outside it
-      to absorb the swing &mdash; and whose exact law does not buy anyone a prediction.</p>
+      to absorb the swing. That much holds unconditionally. Whether its exact law also fails to buy
+      anyone a prediction depends on how hard it is driven &mdash; and that is a measurable question,
+      answered for the pendulum itself on the <a href="/stress-tests/#t-lyapunov">stress-tests
+      page</a>.</p>
   </div>
 </section>
 
