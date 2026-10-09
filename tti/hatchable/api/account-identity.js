@@ -123,6 +123,10 @@ export default async function (req, res) {
       [me.id, 'verified', age, docType, key, 'declaration signed, document stored', ip]
     );
 
+    /* The check is of a person, not of a website: it counts on both sites. */
+    mirror(me.email, { verified: true, age_verified: true, id_status: 'verified' })
+      .catch(() => {});
+
     res.json({
       ok: true,
       id_status: 'verified',

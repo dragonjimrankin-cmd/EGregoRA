@@ -2,6 +2,7 @@
 import { cleanEmail, findOrCreate, issueCode, sendCode } from '../lib/accounts.js';
 import { db } from 'hatchable';
 import { solveCaptcha } from '../lib/captcha.js';
+import { adoptFromTwin, TWIN } from '../lib/twin.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -25,7 +26,22 @@ export default async function (req, res) {
       return res.status(429).json({ error: 'Too many codes sent to that address in the last hour. Wait a little.' });
     }
 
-    const member = await findOrCreate(addr, name);
+    let member = await findOrCreate(addr, name);
+
+    /* Known on the other site but not here yet? Adopt what it knows — the
+       name, the verified flag, the age check — so this is a sign-in rather
+       than a second joining, and the studio does not ask twice. */
+    let fromTwin = false;
+    if (!member.verified) {
+      const adopted = await adoptFromTwin(addr).catch(() => ({ adopted: false }));
+      if (adopted.adopted && adopted.verified) {
+        fromTwin = true;
+        const { rows: again } = await db.query(
+          'SELECT id, email, name, verified FROM members WHERE email = $1', [addr]);
+        if (again[0]) member = again[0];
+      }
+    }
+
     const purpose = member.verified ? 'signin' : 'verify';
     const code = await issueCode(member, purpose);
     await sendCode(member, code, purpose);
@@ -34,7 +50,10 @@ export default async function (req, res) {
       ok: true,
       purpose,
       returning: Boolean(member.verified),
-      message: `A six-digit code is on its way to ${addr}. It lasts fifteen minutes.`
+      twin: fromTwin ? TWIN.label : undefined,
+      message: fromTwin
+        ? `Your ${TWIN.label} account covers this site too — welcome back. A six-digit code is on its way to ${addr}. It lasts fifteen minutes.`
+        : `A six-digit code is on its way to ${addr}. It lasts fifteen minutes.`
     });
   } catch (err) {
     console.error('account-start failed', err && err.message);

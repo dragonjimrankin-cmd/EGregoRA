@@ -11,8 +11,8 @@
 import { db, email } from 'hatchable';
 import { randomToken } from './accounts.js';
 
-export const SITE = 'https://egregora.hatchable.site';
-export const FROM_NAME = 'EGregoRA';
+export const SITE = HOME.url;
+export const FROM_NAME = BRAND.name;
 
 /**
  * The order's address. One constant, used by every letter the site sends.
@@ -27,7 +27,7 @@ export const FROM_NAME = 'EGregoRA';
  */
 export const CONTACT = 'shakradragon@gmail.com';
 export const CONTACT_LINK =
-  `<a href="mailto:${CONTACT}" style="color:#d7b05a">${CONTACT}</a>`;
+  `<a href="mailto:${CONTACT}" style="color:${BRAND.accent}">${CONTACT}</a>`;
 
 /** Every member needs a stable token before they can be mailed. */
 export async function unsubToken(member) {
@@ -50,20 +50,23 @@ export function listFooter(addr, token) {
   return `
   <tr><td style="padding:0 30px 26px;text-align:center;color:#6f6855;font-size:11.5px;line-height:1.75">
     <hr style="border:0;border-top:1px solid rgba(215,176,90,.18);margin:0 0 14px">
-    You are receiving this because <strong style="color:#9f947a">${esc(addr)}</strong> is on the EGregoRA
-    mailing list &mdash; you were added when you confirmed this address, and you were told so at the time.
+    You are receiving this because <strong style="color:#9f947a">${esc(addr)}</strong> is on the mailing
+    list &mdash; one list covering ${BRAND.name} and ${TWIN.label}, which you joined when you confirmed
+    this address, and were told so at the time.
     <br><br>
-    <a href="${out}" style="color:#d7b05a;text-decoration:underline">Unsubscribe from the mailing list</a>
+    <a href="${out}" style="color:${BRAND.accent};text-decoration:underline">Unsubscribe from the mailing list</a>
     &nbsp;&middot;&nbsp;
-    <a href="${SITE}/account/" style="color:#d7b05a;text-decoration:underline">Your account</a>
+    <a href="${SITE}/account/" style="color:${BRAND.accent};text-decoration:underline">Your account</a>
     <br><br>
-    One click removes you at once. No reason is asked for, no confirmation page argues with you, and no
-    further list mail is sent. You keep your account, and everything on the site stays open to you either
+    One click removes you at once, from both sites &mdash; there is one list, not two, so you never have
+    to leave the same list twice. No reason is asked for, no confirmation page argues with you, and no
+    further list mail is sent from either. You keep your account, and everything on the site stays open to you either
     way. If the link will not open, copy this address into your browser:<br>
     <span style="color:#5d5747;word-break:break-all">${out}</span>
     <br><br>
-    EGregoRA &middot; co-founded by Edward Gregory and Jim Rankin &middot;
-    <a href="${SITE}" style="color:#6f6855">egregora.hatchable.site</a>
+    ${BRAND.name} &middot; co-founded by Edward Gregory and Jim Rankin &middot;
+    <a href="${SITE}" style="color:#6f6855">${SITE.replace(/^https?:\/\//, '')}</a>
+    &middot; <a href="${TWIN.url}" style="color:#6f6855">${TWIN.url.replace(/^https?:\/\//, '')}</a>
     <br>Write to the order at ${CONTACT_LINK} &mdash; that address reaches us, whatever
     this letter was sent from.
   </td></tr>`;
@@ -101,7 +104,7 @@ export async function sendWelcome(member) {
 
   const body = `
     <p style="margin:0 0 14px">${first ? esc(first) + ',' : 'Welcome,'}</p>
-    <p style="margin:0 0 14px">Your address is confirmed and you are a member of EGregoRA. There is no
+    <p style="margin:0 0 14px">${BRAND.youAreIn} There is no
     rank attached to that, no fee, and no teaching withheld from anyone who is not &mdash; every page on
     the site stays open to everybody. What an account changes is small and practical: the oracle knows
     your name, keeps the thread of what you have asked, and can open the image and video studio once your
@@ -111,16 +114,16 @@ export async function sendWelcome(member) {
     new pages, the podcast when there is one, and the occasional long letter when Ed has something worth
     the postage. It is not weekly and it is never a newsletter about newsletters. The way off it is at the
     foot of this and every other list email, and takes one click.</p>
-    <p style="margin:0 0 10px"><strong style="color:#f3ddaa">Worth your first hour:</strong></p>
-    <ul style="margin:0 0 14px;padding-left:20px;color:#cbbb93">
-      <li style="margin-bottom:6px"><a href="${SITE}/ask-ed/" style="color:#d7b05a">The oracle</a> &mdash;
-      1,280 written answers, graded by how well they are evidenced, and a fox who reads them aloud.</li>
-      <li style="margin-bottom:6px"><a href="${SITE}/infographics/" style="color:#d7b05a">The plates</a>
-      &mdash; one idea to a page, drawn as live vector art.</li>
-      <li style="margin-bottom:6px"><a href="${SITE}/cosmic-aether/" style="color:#d7b05a">The cosmic
-      aether</a> &mdash; why only one clause of the old idea was struck out, and the rest stands.</li>
-      <li><a href="${SITE}/occult/" style="color:#d7b05a">The Occult</a> &mdash; including the part most
-      orders will not print about stolen runes and industrial atrocity.</li>
+    <p style="margin:0 0 14px"><strong style="color:${BRAND.bright}">The same account opens
+    ${TWIN.label}</strong> &mdash; the sister site, same hand, same house style, turned to astronomy and
+    the galactic torus. Nothing further to fill in: sign in there with this address and it knows you,
+    including the age check if you have passed it here.
+    <a href="${TWIN.url}" style="color:${BRAND.accent}">${TWIN.url.replace(/^https?:\/\//, '')}</a></p>
+    <p style="margin:0 0 10px"><strong style="color:${BRAND.bright}">Worth your first hour:</strong></p>
+    <ul style="margin:0 0 14px;padding-left:20px;color:${BRAND.dim}">
+      ${BRAND.highlights.map(([href, label, note]) =>
+        `<li style="margin-bottom:6px"><a href="${SITE}${href}" style="color:${BRAND.accent}">${label}</a> &mdash; ${note}</li>`
+      ).join('')}
     </ul>
     <p style="margin:0 0 14px">Test everything kindly. If an answer cannot survive your scepticism, it
     does not deserve your belief &mdash; ours included.</p>
@@ -129,7 +132,7 @@ export async function sendWelcome(member) {
   try {
     await email.send({
       to: member.email,
-      subject: 'You are in \u2014 EGregoRA',
+      subject: `You are in \u2014 ${BRAND.name}`,
       html: listLetter({ title: 'Welcome to the order', body, addr: member.email, token })
     });
     await db.query('UPDATE members SET welcomed = TRUE, subscribed_at = COALESCE(subscribed_at, NOW()) WHERE id = $1',
