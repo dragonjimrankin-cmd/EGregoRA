@@ -12,6 +12,7 @@ on:
     branches: ["arena/01a10807-egregora"]
     paths:
       - "ops/inspect.flag"
+      - "ops/contact.flag"
       - ".github/workflows/hatchable-inspect.yml"
 
 permissions:
@@ -37,7 +38,11 @@ jobs:
             echo "# hatchable inspect — $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo "args: ${ARGS:-<none, listing projects>}"
             echo
-            node scripts/hatchable-inspect.mjs $ARGS 2>&1
+            if [ -f ops/contact.flag ]; then
+              node scripts/hatchable-contact.mjs $(grep -v '^#' ops/contact.flag | tr -d '\n') 2>&1
+            else
+              node scripts/hatchable-inspect.mjs $ARGS 2>&1
+            fi
             echo "exit=$?"
           } > ci-logs/hatchable-inspect.log 2>&1
           sed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/hatchable-inspect.log
