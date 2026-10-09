@@ -130,7 +130,7 @@ const main = async () => {
     "@gmail.com",
     "@"
   ]) {
-    const args = { ...gArgs };
+    const args = { ...gArgs, output_mode: "content", "-n": true, head_limit: 500 };
     args[argName("grep", ["pattern", "query", "q", "search"])] = pat;
     let hits;
     try { hits = await call("grep", args); }
@@ -140,14 +140,15 @@ const main = async () => {
     if (t.length > 40) { text = t; break; }
     await sleep(800);
   }
-  if (text.length < 200) console.log(`raw grep reply:\n${text.slice(0, 1500)}`);
+  console.log(`raw grep reply (first 2500 chars):\n${text.slice(0, 2500)}\n--- end ---`);
 
   const perFile = new Map();
   const lines = text.split("\n");
   for (const line of lines) {
     const addrs = line.match(EMAIL) || [];
     if (!addrs.length) continue;
-    const m = line.match(/"?(?:file|path)"?\s*[:=]\s*"?([^"',\s]+)/i)
+    const m = line.match(/([\w./@-]+\.(?:html|js|mjs|css|json|md|txt|njk|sql|toml|webmanifest|xml))\s*:\s*\d+\s*:/i)
+      || line.match(/"?(?:file|path)"?\s*[:=]\s*"?([^"',\s]+)/i)
       || line.match(/^\s*"?([\w./-]+\.(?:html|js|css|json|md|txt|njk|sql))"?\s*[:[]/i);
     const file = m ? m[1] : "(unknown)";
     if (!perFile.has(file)) perFile.set(file, new Set());
