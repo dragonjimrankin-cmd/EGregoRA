@@ -1,0 +1,36 @@
+# hatchable inspect — 2026-10-09T20:48:34Z
+args: <none, listing projects>
+
+5 projects on this account
+
+── EGregoRA
+   id:         proj_eiuxpFfTnwwx
+   slug:       egregora
+   url:        —
+   visibility: —   version: —
+   updated:    —
+── ShakRa
+   id:         proj_M87iuAZUiCz4
+   slug:       shakra-0ote
+   url:        —
+   visibility: —   version: —
+   updated:    —
+── The Two Infinities (and beyond)
+   id:         proj_U95i5y493z9x
+   slug:       the-two-infinities
+   url:        —
+   visibility: —   version: —
+   updated:    —
+── Twirler
+   id:         proj_uT6hbTUn8qxc
+   slug:       twirler-pictures
+   url:        —
+   visibility: —   version: —
+   updated:    —
+── ShakRa
+   id:         proj_GINEvYGocFlO
+   slug:       shakra
+   url:        —
+   visibility: —   version: —
+   updated:    —
+exit=0
