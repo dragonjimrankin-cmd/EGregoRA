@@ -1,9 +1,9 @@
-# hatchable inspect — 2026-10-09T21:07:27Z
+# hatchable inspect — 2026-10-09T21:12:22Z
 args: <none, listing projects>
 
 grep args: project_id, pattern
 grep schema: project_id, pattern, glob, output_mode, -i, -n, context, head_limit
-  grep "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}" → 4461 chars
+  grep "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}" → 4871 chars
 raw grep reply (first 2500 chars):
 {
  "output_mode": "content",
@@ -11,47 +11,47 @@ raw grep reply (first 2500 chars):
   {
    "path": "api/checkout.js",
    "line": 18,
-   "text": "18:      error: 'Card checkout is not connected yet. Add a Stripe secret key in Hatchable Setup, or email info@shakra.co.uk.',"
+   "text": "18:      error: 'Card checkout is not connected yet. Add a Stripe secret key in Hatchable Setup, or email casting@twirler.co.uk or shakradragon@gmail.com.',"
   },
   {
    "path": "api/checkout.js",
    "line": 92,
-   "text": "92:      to: 'info@shakra.co.uk',"
+   "text": "92:      to: 'casting@twirler.co.uk',"
   },
   {
    "path": "api/mailing-list.js",
    "line": 35,
-   "text": "35:        to: 'info@shakra.co.uk',"
+   "text": "35:        to: 'casting@twirler.co.uk',"
   },
   {
    "path": "api/order.js",
    "line": 41,
-   "text": "41:      to: 'info@shakra.co.uk',"
+   "text": "41:      to: 'casting@twirler.co.uk',"
   },
   {
    "path": "api/order.js",
    "line": 54,
-   "text": "54:      text: 'Thanks for ordering ' + item.name + ' (' + pounds + ').\\n\\nCard checkout is being connected. We will email a payment link to this address.\\n\\nShakRa · info@shakra.co.uk',"
+   "text": "54:      text: 'Thanks for ordering ' + item.name + ' (' + pounds + ').\\n\\nCard checkout is being connected. We will email a payment link to this address.\\n\\nShakRa · casting@twirler.co.uk or shakradragon@gmail.com',"
   },
   {
    "path": "api/order.js",
    "line": 55,
-   "text": "55:      html: '<p>Thanks for ordering <strong>' + item.name + '</strong> (' + pounds + ').</p><p>Card checkout is being connected. We will email a payment link to this address.</p><p>ShakRa · info@shakra.co.uk</p>',"
+   "text": "55:      html: '<p>Thanks for ordering <strong>' + item.name + '</strong> (' + pounds + ').</p><p>Card checkout is being connected. We will email a payment link to this address.</p><p>ShakRa · casting@twirler.co.uk or shakradragon@gmail.com</p>',"
   },
   {
    "path": "api/purchases-confirm.js",
    "line": 53,
-   "text": "53:  if (!email) return res.status(400).json({ error: 'No email on this payment. Sign in and contact info@shakra.co.uk.' });"
+   "text": "53:  if (!email) return res.status(400).json({ error: 'No email on this payment. Sign in and contact casting@twirler.co.uk or shakradragon@gmail.com.' });"
   },
   {
    "path": "public/analytics.html",
    "line": 256,
-   "text": "256:    <p class=\"copyright\">&copy; Jim Rankin (2026) &middot; www.shakra.co.uk &middot; info@shakra.co.uk</p>"
+   "text": "256:    <p class=\"copyright\">&copy; Jim Rankin (2026) &middot; www.shakra.co.uk &middot; casting@twirler.co.uk or shakradragon@gmail.com</p>"
   },
   {
    "path": "public/buy-thanks.html",
    "line": 29,
-   "text": "29:      <p class=\"muted\" style=\"max-width:36rem;margin:0 auto 1.5rem\">Your payment is in. A Stripe receipt goes to the email you used at checkout. For downloads or questions, write to info@shakra.co.uk.</p>"
+   "text": "29:      <p class=\"muted\" style=\"max-width:36rem;margin:0 auto 1.5rem\">Your payment is in. A Stripe receipt goes to the email you used at checkout. For downloads or questions, write to casting@twirler.co.uk or shakradragon@gmail.com.</p>"
   },
   {
    "path": "public/checkout.html",
@@ -66,42 +66,14 @@ raw grep reply (first 2500 chars):
   {
    "path": "public/checkout.js",
    "line": 97,
-   "text": "97:    u.searchParams.set('business', 'shakradragon@gmail.com');"
-  },
-  {
-   "path": "public/framework-earned.html",
-   "line": 107,
-   "text": "107:        <a class=\"cta cta-ghost\" href=\"mailto:info@shakra.co.uk?subject=Earned%20claims%20%E2%80%94
+   "text": "97:    u.searchParams.set('business', 'shakradragon@gmail.co
 --- end ---
 addresses found in the project (3):
-  info@shakra.co.uk                  → casting@twirler.co.uk / shakradragon@gmail.com   [api/checkout.js, api/mailing-list.js, api/order.js, api/purchases-confirm.js, public/analytics.html, public/buy-thanks.html]
-  shakradragon@gmail.com             keep   [public/checkout.html, public/checkout.js]
+  casting@twirler.co.uk              keep   [api/checkout.js, api/mailing-list.js, api/order.js, api/purchases-confirm.js, public/analytics.html, public/buy-thanks.html]
+  shakradragon@gmail.com             keep   [api/checkout.js, api/order.js, api/purchases-confirm.js, public/analytics.html, public/buy-thanks.html, public/checkout.html]
   you@example.com                    LEAVE (not a site contact address)   [public/checkout.html, public/login.html]
 
-files needing a rewrite: 11
-  api/checkout.js
-  api/mailing-list.js
-  api/order.js
-  api/purchases-confirm.js
-  public/analytics.html
-  public/buy-thanks.html
-  public/framework-earned.html
-  public/framework-map.html
-  public/index.html
-  public/listen.html
-  public/login.html
-  ✓ api/checkout.js
-  ✓ api/mailing-list.js
-  ✓ api/order.js
-  ✓ api/purchases-confirm.js
-  ✓ public/analytics.html
-  ✓ public/buy-thanks.html
-  ✓ public/framework-earned.html
-  ✓ public/framework-map.html
-  ✓ public/index.html
-  ✓ public/listen.html
-  ✓ public/login.html
+files needing a rewrite: 0
 
-rewrote 11 files
-deployed: version 194
+(report only — pass --apply to rewrite)
 exit=0
