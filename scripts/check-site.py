@@ -69,9 +69,16 @@ class Page(HTMLParser):
             self.title += data.strip()
 
 
+# Served by routed functions (hatchable/pages, hatchable/api) rather than by
+# a file in the build, so they will never appear under _site.
+LIVE_ROUTES = {"/feed.xml", "/ping"}
+
+
 def built(path):
     """Does this site-absolute path exist in the build?"""
     path = path.split("?")[0]
+    if path in LIVE_ROUTES:
+        return True
     if path.endswith("/"):
         return os.path.exists(os.path.join(ROOT, path.strip("/"), "index.html"))
     return os.path.exists(os.path.join(ROOT, path.lstrip("/")))
