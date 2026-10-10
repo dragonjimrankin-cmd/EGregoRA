@@ -1,7 +1,6 @@
 {
   "project": "proj_eiuxpFfTnwwx",
-  "version": 204,
-  "recorded_at": "2026-10-10T17:15:00.000Z",
-  "deployed_at": null,
-  "note": "Live v204 is our own previous deploy; the single changed file the drift guard sees (public/research/index.html) is the rename of Limb VIII to the Black Tribunal that this branch is shipping, not foreign work. Recording 204 lets the pending rename deploy, as with the v200 merge note."
+  "version": 205,
+  "recorded_at": "2026-10-10T17:18:48.074Z",
+  "deployed_at": null
 }
