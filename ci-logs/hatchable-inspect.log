@@ -1,25 +1,25 @@
-# hatchable inspect — 2026-10-10T11:03:40Z
+# hatchable inspect — 2026-10-10T11:49:30Z
 args: --project proj_U95i5y493z9x --pull ops/incoming/tti --only foundations
 
-checking 181 entry ids across 5 newest volumes
+checking 151 entry ids across 5 newest volumes
 
 EGregoRA (Gink) — proj_eiuxpFfTnwwx
   ✓ aggregator imports all 5 newest volumes
-  ✓ lib/oracle-corpus-xxvii.js: all 24 entries present
-  ✓ lib/oracle-corpus-xxviii.js: all 41 entries present
-  ✓ lib/oracle-corpus-xxx.js: all 46 entries present
-  ✓ lib/oracle-corpus-xxxi.js: all 31 entries present
   ✓ lib/oracle-corpus-xxxii.js: all 39 entries present
-  ✓ 181 entries verified live
+  ✓ lib/oracle-corpus-xxxiii.js: all 29 entries present
+  ✓ lib/oracle-corpus-xxxiv.js: all 26 entries present
+  ✓ lib/oracle-corpus-xxxv.js: all 29 entries present
+  ✓ lib/oracle-corpus-xxxvi.js: all 28 entries present
+  ✓ 151 entries verified live
 
 The Two Infinities (ShakDrah) — proj_U95i5y493z9x
   ✓ aggregator imports all 5 newest volumes
-  ✓ lib/oracle-corpus-xxvii.js: all 24 entries present
-  ✓ lib/oracle-corpus-xxviii.js: all 41 entries present
-  ✓ lib/oracle-corpus-xxx.js: all 46 entries present
-  ✓ lib/oracle-corpus-xxxi.js: all 31 entries present
   ✓ lib/oracle-corpus-xxxii.js: all 39 entries present
-  ✓ 181 entries verified live
+  ✓ lib/oracle-corpus-xxxiii.js: all 29 entries present
+  ✓ lib/oracle-corpus-xxxiv.js: all 26 entries present
+  ✓ lib/oracle-corpus-xxxv.js: all 29 entries present
+  ✓ lib/oracle-corpus-xxxvi.js: all 28 entries present
+  ✓ 151 entries verified live
 
 VERIFIED — both live projects carry the current corpus.
 exit=0
