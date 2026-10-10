@@ -70,22 +70,37 @@ jobs:
         \ --bundle tti/hatchable --project \"$PID\" --key tti --record \\\n  >> ci-logs/tti-drift.log\
         \ 2>&1 || true\n"
     - name: Publish the log, and the project id if one was created
+      if: always()
+      continue-on-error: true
       env:
         GH_TOKEN: ${{ github.token }}
-      run: "put () {\n  P=\"$1\"; M=\"$2\"\n  B64=$(base64 -w0 \"$P\")\n  SHA=$(gh\
-        \ api \"repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}\"\
-        \ -q .sha 2>/dev/null || true)\n  if [ -n \"$SHA\" ]; then\n    gh api --method\
-        \ PUT \"repos/${GITHUB_REPOSITORY}/contents/${P}\" \\\n      -f message=\"\
-        $M\" -f content=\"$B64\" -f branch=\"${GITHUB_REF_NAME}\" -f sha=\"$SHA\"\n\
-        \  else\n    gh api --method PUT \"repos/${GITHUB_REPOSITORY}/contents/${P}\"\
-        \ \\\n      -f message=\"$M\" -f content=\"$B64\" -f branch=\"${GITHUB_REF_NAME}\"\
-        \n  fi\n}\nput ci-logs/tti-deploy.log \"ci: two-infinities deploy log\"\n\
-        [ -f ci-logs/tti-drift.log ] && put ci-logs/tti-drift.log \"ci: two-infinities\
-        \ drift check\"\n[ -f ops/tti-deployed.json ] && put ops/tti-deployed.json\
-        \ \"ci: record the live two-infinities version\"\nif [ -d ops/incoming/tti\
-        \ ]; then\n  find ops/incoming/tti -type f | while read -r F; do\n    put\
-        \ \"$F\" \"ci: a foreign deploy's copy of ${F#ops/incoming/tti/}\"\n  done\n\
-        fi\nPID=\"${{ steps.run.outputs.pid }}\"\nif [ -n \"$PID\" ] && [ ! -f ops/tti-project.txt\
-        \ ]; then\n  mkdir -p ops\n  printf '%s\\n' \"$PID\" > ops/tti-project.txt\n\
-        \  put ops/tti-project.txt \"ci: record the Two Infinities project id\"\n\
-        fi\n"
+      run: |
+        put () {
+          P="$1"; M="$2"
+          [ -f "$P" ] || return 0
+          B64=$(base64 -w0 "$P")
+          SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
+          if [ -n "$SHA" ]; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
+              -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA" >/dev/null \
+              && echo "  published $P" || echo "  ! could not publish $P"
+          else
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
+              -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" >/dev/null \
+              && echo "  published $P" || echo "  ! could not publish $P"
+          fi
+        }
+        put ci-logs/tti-deploy.log "ci: two-infinities deploy log"
+        put ci-logs/tti-drift.log "ci: two-infinities drift check"
+        put ops/tti-deployed.json "ci: record the live two-infinities version"
+        if [ -d ops/incoming/tti ]; then
+          find ops/incoming/tti -type f | while read -r F; do
+            put "$F" "ci: a foreign deploy's copy of ${F#ops/incoming/tti/}"
+          done
+        fi
+        PID="${{ steps.run.outputs.pid }}"
+        if [ -n "$PID" ] && [ ! -f ops/tti-project.txt ]; then
+          mkdir -p ops
+          printf '%s\n' "$PID" > ops/tti-project.txt
+          put ops/tti-project.txt "ci: record the project id"
+        fi
