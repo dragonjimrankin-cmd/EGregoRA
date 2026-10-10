@@ -1,7 +1,6 @@
 {
   "project": "proj_eiuxpFfTnwwx",
-  "version": 200,
-  "recorded_at": "2026-10-10T13:00:00.000Z",
-  "deployed_at": null,
-  "note": "Live v200 was deployed by another agent while we were at v199 and our deploy was held by the drift guard. Its changes were analysed and merged into this bundle before the next deploy: lib/oracle-corpus.js was a strict subset of ours (theirs ended at VOL38, ours adds VOL39); public/artwork and public/research were ported into the Eleventy source as src/artwork.njk and src/research.njk with nav entries; their audio README replaced our PLACE_AUDIO_HERE placeholder. Recording 200 here tells the drift guard the merge is done, as with tti-deployed.json."
+  "version": 201,
+  "recorded_at": "2026-10-10T16:32:00.458Z",
+  "deployed_at": null
 }
