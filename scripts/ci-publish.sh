@@ -38,11 +38,23 @@ if [ -z "$REPO" ] || [ -z "$REF" ]; then
   exit 0
 fi
 
-SHA=$(gh api "repos/${REPO}/contents/${P}?ref=${REF}" -q .sha 2>/dev/null || true)
 PAY=$(mktemp)
-trap 'rm -f "$PAY"' EXIT
+ERR=$(mktemp)
+trap 'rm -f "$PAY" "$ERR"' EXIT
 
-PAY_PATH="$P" PAY_MSG="$M" PAY_SHA="$SHA" PAY_FILE="$PAY" python3 -c '
+# The branch head moves while we are working: the two deploy workflows fire on
+# the same commit and each publishes several files, so a SHA read before the
+# first write is stale by the second. The contents API answers that with 409,
+# and because this script never fails the caller, three green steps once landed
+# nothing at all — the EGregoRA deploy log and recorded version for a whole
+# corpus commit simply vanished. So the SHA is re-read inside the retry, not
+# once up front, and a conflict is the expected case rather than an error.
+ATTEMPT=1
+MAX=5
+while [ "$ATTEMPT" -le "$MAX" ]; do
+  SHA=$(gh api "repos/${REPO}/contents/${P}?ref=${REF}" -q .sha 2>/dev/null || true)
+
+  if ! PAY_PATH="$P" PAY_MSG="$M" PAY_SHA="$SHA" PAY_FILE="$PAY" python3 -c '
 import base64, json, os
 body = {
     "message": os.environ["PAY_MSG"],
@@ -53,10 +65,25 @@ if os.environ.get("PAY_SHA"):
     body["sha"] = os.environ["PAY_SHA"]
 with open(os.environ["PAY_FILE"], "w") as fh:
     json.dump(body, fh)
-' || { echo "  ! could not build a payload for $P"; exit 0; }
+'; then
+    echo "  ! could not build a payload for $P"
+    exit 0
+  fi
 
-if gh api --method PUT "repos/${REPO}/contents/${P}" --input "$PAY" >/dev/null 2>&1; then
-  echo "  published $P"
-else
-  echo "  ! could not publish $P"
-fi
+  if gh api --method PUT "repos/${REPO}/contents/${P}" --input "$PAY" >/dev/null 2>"$ERR"; then
+    echo "  published $P"
+    exit 0
+  fi
+
+  if grep -q '409' "$ERR"; then
+    echo "  … $P: branch moved under us, re-reading the sha (attempt $ATTEMPT of $MAX)"
+    sleep $((ATTEMPT * 3))
+    ATTEMPT=$((ATTEMPT + 1))
+    continue
+  fi
+
+  echo "  ! could not publish $P: $(head -c 200 "$ERR" | tr -d '\n')"
+  exit 0
+done
+
+echo "  ! could not publish $P after $MAX attempts; the branch kept moving"
