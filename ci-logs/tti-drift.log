@@ -6,354 +6,41 @@ ours:         58
    Reading the live files so the two can be merged rather than one buried.
 
    live project holds 176 files
-   ! could not read lib/oracle-corpus-xiv.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xix.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xv.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xvi.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xvii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xviii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xx.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xxi.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xxii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xxiii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xxiv.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xxv.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xxvi.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xxvii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/pool.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/site-map.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/tokens.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/twin.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/videogen.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/websearch.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0001_questions.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0002_question_source.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0003_uploads.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0004_videos.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0005_accounts.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0006_letters.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0007_identity.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0008_captcha.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0009_mailing.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0010_gpu.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0011_colab.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0012_tokens.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0013_colab_caps.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0014_continuity.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0015_pool.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0016_keeper_tries.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0017_media.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0018_media_images.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0019_media_describe.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0020_live.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0021_pins_and_room.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0022_archive_and_elements.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0023_oauth.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0024_air.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0025_freeai.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0026_page_edits.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read migrations/0027_twin.sql: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/ask-shakdragon/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/ask-shakdrah/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/css/main.css: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/img/torus.svg: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/admin-edit.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/atlas.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/attach-image.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/device-studio.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/dragon.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/fox.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/freeai-admin.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/geo-field.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/live-desk.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/live-offline.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/live.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/media-admin.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/model-library.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/model.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/pendulum.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/rune-forge-page.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/rune-forge.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/scan.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/site.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/sky.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/vendor/lamejs.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/assets/js/vendor/three.module.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/base-ten/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/corrections/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/cosmic-ledger/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/dx/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/a-number-made-of-itself/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/how-far-did-it-get/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/never-going-to-stay/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/the-cell-keeps-the-beat/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/the-dream/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/the-infinite-echo/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/the-one-edge/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/three-numbers-everything-hangs-from/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/where-the-arrow-comes-from/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/where-the-sent-back-beings-go/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/essays/why-black-holes-glow/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/foundations/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/gravity/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/join/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/library/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/live/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/megatubule/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/moebius/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/notation/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/out-of-phase/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/pendulum/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/plates/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/prime-plane/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/reading/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/robots.txt: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/seams/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/site-index/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/site.webmanifest: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/sitemap.xml: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/skeletal-splice/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/spiral/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/stress-tests/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/summary/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/the-self/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read public/torus/index.html: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 0
-   present live, absent here  : 0
+   changed live vs our bundle : 7
+     ~ lib/oracle-corpus.js
+     ~ public/essays/index.html
+     ~ public/foundations/index.html
+     ~ public/index.html
+     ~ public/seams/index.html
+     ~ public/stress-tests/index.html
+     ~ public/summary/index.html
+   present live, absent here  : 21
+     + public/ask-shakdragon/index.html
+     + public/assets/js/pendulum.js
+     + public/corrections/index.html
+     + public/essays/a-number-made-of-itself/index.html
+     + public/essays/how-far-did-it-get/index.html
+     + public/essays/never-going-to-stay/index.html
+     + public/essays/the-cell-keeps-the-beat/index.html
+     + public/essays/the-dream/index.html
+     + public/essays/the-infinite-echo/index.html
+     + public/essays/the-one-edge/index.html
+     + public/essays/three-numbers-everything-hangs-from/index.html
+     + public/essays/where-the-arrow-comes-from/index.html
+     + public/essays/where-the-sent-back-beings-go/index.html
+     + public/essays/why-black-holes-glow/index.html
+     + public/library/index.html
+     + public/live/index.html
+     + public/notation/index.html
+     + public/out-of-phase/index.html
+     + public/pendulum/index.html
+     + public/prime-plane/index.html
+     + public/reading/index.html
    present here, absent live  : 5
      - lib/oracle-corpus-xxix.js
      - lib/oracle-corpus-xxviii.js
@@ -361,8 +48,5 @@ ours:         58
      - lib/oracle-corpus-xxxi.js
      - lib/oracle-corpus-xxxii.js
 
-   The 5 file(s) above are ours and simply not live yet.
-   Nothing foreign to merge. Safe to deploy.
-drift check failed: initialize → HTTP 429: {
-    "message": "Too Many Attempts."
-}
+   their versions are saved under ops/incoming/tti/
+   DEPLOY SKIPPED. Merge, then deploy.
