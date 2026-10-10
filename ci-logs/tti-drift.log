@@ -11,9 +11,8 @@ ours:         58
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 2
+   changed live vs our bundle : 1
      ~ lib/oracle-corpus.js
-     ~ public/foundations/index.html
    present live, absent here  : 0
    present here, absent live  : 5
      - lib/oracle-corpus-xxix.js
