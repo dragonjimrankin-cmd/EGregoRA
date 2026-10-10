@@ -1,36 +1,124 @@
-# hatchable inspect — 2026-10-09T21:15:05Z
-args: <none, listing projects>
+# hatchable inspect — 2026-10-10T10:11:51Z
+args: --project proj_U95i5y493z9x --pull ops/incoming/tti --only foundations
 
-5 projects on this account
+{
+  "project_id": "proj_U95i5y493z9x",
+  "name": "The Two Infinities (and beyond)",
+  "slug": "the-two-infinities",
+  "is_locked": false,
+  "license": null,
+  "tier": "personal",
+  "status": "active",
+  "current_version": 59,
+  "your_role": "owner",
+  "owner": {
+    "handle": "shakradragon",
+    "display_name": "shakradragon"
+  },
+  "forked_from": null,
+  "urls": {
+    "app": "https://the-two-infinities.hatchable.site",
+    "api": "https://the-two-infinities.hatchable.site/api",
+    "subdomain": "https://the-two-infinities.hatchable.site"
+  },
+  "functions": [
+    {
+      "id": 395134,
+      "name": "api-account-face",
+      "route": "/api/account-face",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395135,
+      "name": "api-account-identity",
+      "route": "/api/account-identity",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395136,
+      "name": "api-account-me",
+      "route": "/api/account-me",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395137,
+      "name": "api-account-passkey",
+      "route": "/api/account-passkey",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395138,
+      "name": "api-account-signout",
+      "route": "/api/account-signout",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395139,
+      "name": "api-account-start",
+      "route": "/api/account-start",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395140,
+      "name": "api-account-verify",
+      "route": "/api/account-verify",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395141,
+      "name": "api-ask",
+      "route": "/api/ask",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395142,
+      "name": "api-captcha",
+      "route": "/api/captcha",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395143,
+      "name": "api-colab",
+      "route": "/api/colab",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395144,
+      "name": "api-control",
+      "route": "/api/control",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395145,
+      "name": "api-dispatch",
+      "route": "/api/dispatch",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395146,
+      "name": "api-draw",
+      "route": "/api/draw",
+      "method": "ANY",
+      "status": "active"
+    },
+    {
+      "id": 395147
 
-── EGregoRA
-   id:         proj_eiuxpFfTnwwx
-   slug:       egregora
-   url:        —
-   visibility: —   version: —
-   updated:    —
-── ShakRa
-   id:         proj_M87iuAZUiCz4
-   slug:       shakra-0ote
-   url:        —
-   visibility: —   version: —
-   updated:    —
-── The Two Infinities (and beyond)
-   id:         proj_U95i5y493z9x
-   slug:       the-two-infinities
-   url:        —
-   visibility: —   version: —
-   updated:    —
-── Twirler
-   id:         proj_uT6hbTUn8qxc
-   slug:       twirler-pictures
-   url:        —
-   visibility: —   version: —
-   updated:    —
-── ShakRa
-   id:         proj_GINEvYGocFlO
-   slug:       shakra
-   url:        —
-   visibility: —   version: —
-   updated:    —
+176 files
+   filtered by --only "foundations" → 1
+   public/foundations/index.html
+
+pulled 1 text files into ops/incoming/tti/ (0 binary files left behind)
 exit=0
