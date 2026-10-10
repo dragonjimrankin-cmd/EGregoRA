@@ -1,7 +1,6 @@
 {
   "project": "proj_U95i5y493z9x",
-  "version": 59,
-  "recorded_at": "2026-10-10T10:52:00.000Z",
-  "deployed_at": null,
-  "note": "v59 was another agent's deploy. Merged by hand and verified: all 21 pages they added and all 7 they changed are in step with our bundle. The one remaining difference, lib/oracle-corpus.js, is ours being a strict superset of theirs (VOL28-XXXII on top of their VOL27), which is a difference we intend to ship, not drift to resolve."
+  "version": 60,
+  "recorded_at": "2026-10-10T10:47:49.541Z",
+  "deployed_at": null
 }
