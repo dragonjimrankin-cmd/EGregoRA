@@ -1419,10 +1419,15 @@ function setup(root) {
         "<td>" + (i.bytes ? mb(i.bytes) : "\u2014") + "</td>" +
         '<td class="muted xsmall">' + esc(i.treatment) + "</td>" +
         '<td><button class="btn btn--small" type="button" data-edit="' + i.id + '">Edit</button> ' +
-        '<button class="btn btn--small btn--ghost" type="button" data-pin="' + i.id + '">' +
-        (i.pinned ? "Unpin" : "Pin to the top") + "</button> " +
-        '<button class="btn btn--small btn--ghost" type="button" data-flip="' + i.id + '">' +
-        (i.state === "published" ? "Take down" : "Publish") + "</button> " +
+        (i.state === "archived"
+          ? '<button class="btn btn--small btn--ghost" type="button" data-restore="' + i.id +
+            '">Restore</button> '
+          : '<button class="btn btn--small btn--ghost" type="button" data-pin="' + i.id + '">' +
+            (i.pinned ? "Unpin" : "Pin to the top") + "</button> " +
+            '<button class="btn btn--small btn--ghost" type="button" data-flip="' + i.id + '">' +
+            (i.state === "published" ? "Take down" : "Publish") + "</button> " +
+            '<button class="btn btn--small btn--ghost" type="button" data-arch="' + i.id +
+            '">Archive</button> ') +
         '<button class="btn btn--small btn--ghost" type="button" data-drop="' + i.id + '">Delete</button></td></tr>'
       ).join("") + "</tbody></table><div data-am=\"editor\"></div>";
     byId = new Map(items.map((i) => [i.id, i]));
@@ -1450,6 +1455,26 @@ function setup(root) {
       drawShelf((await post({ action: "shelf", kind: KIND })).items || []);
       if (window.EGMediaRefresh) window.EGMediaRefresh();
     }));
+
+    /* Archive steps the episode off the public shelf without destroying it;
+       Restore brings it back as a draft, ready to publish again. */
+    el.shelf.querySelectorAll("[data-arch]").forEach((b) => b.addEventListener("click", async () => {
+      const id = Number(b.getAttribute("data-arch"));
+      if (!window.confirm("Archive that episode? It leaves the public page and the feed, " +
+        "and stays here in the vault.")) return;
+      b.disabled = true;
+      await post({ action: "archive", id }).catch(() => {});
+      drawShelf((await post({ action: "shelf", kind: KIND })).items || []);
+      if (window.EGMediaRefresh) window.EGMediaRefresh();
+    }));
+    el.shelf.querySelectorAll("[data-restore]").forEach((b) => b.addEventListener("click", async () => {
+      const id = Number(b.getAttribute("data-restore"));
+      b.disabled = true;
+      await post({ action: "restore", id }).catch(() => {});
+      drawShelf((await post({ action: "shelf", kind: KIND })).items || []);
+      if (window.EGMediaRefresh) window.EGMediaRefresh();
+    }));
+
     el.shelf.querySelectorAll("[data-drop]").forEach((b) => b.addEventListener("click", async () => {
       if (!window.confirm("Delete that for good?")) return;
       await post({ action: "delete", id: Number(b.getAttribute("data-drop")) }).catch(() => {});

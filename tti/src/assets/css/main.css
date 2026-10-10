@@ -212,7 +212,7 @@ h1, h2, h3, h4 { font-family: var(--title); font-weight: 600; line-height: 1.15;
 h1 {
   font-family: var(--display); font-weight: 700;
   font-size: clamp(1.7rem, 7.6vw, 4.1rem); margin: 0.6rem 0 0.4rem;
-  overflow-wrap: break-word; hyphens: auto;
+  overflow-wrap: break-word; hyphens: manual;
   background: linear-gradient(180deg, #fffaf0, var(--gold) 60%, var(--gold-deep));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -1438,7 +1438,7 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   font-size: .82rem; letter-spacing: .04em; text-transform: none;
   max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.acct-email { font-family: 'EB Garamond', serif; color: #76cfee; margin: .1rem 0 1rem; word-break: break-all; }
+.acct-email { font-family: 'EB Garamond', serif; color: #76cfee; margin: .1rem 0 1rem; overflow-wrap: anywhere; }
 .acct-grid {
   display: grid; grid-template-columns: auto 1fr; gap: .45rem 1.2rem;
   margin: 0 0 1.2rem; font-family: 'EB Garamond', serif;
@@ -3351,9 +3351,17 @@ th, td { overflow-wrap: break-word; }
 html { overflow-x: hidden; }
 body { max-width: 100%; }
 
+/* 7. Never split a word to fill a line. Hyphenation is off everywhere, at
+      every width, so a word that does not fit always moves to the next line
+      whole rather than being broken with a hyphen. `overflow-wrap` above
+      still lets a genuinely unbreakable token (a long URL, a key, a file
+      name) break so it cannot push the page sideways. */
+html { hyphens: manual; }
+
 @media (max-width: 640px) {
-  /* On a phone, hyphenate the long prose rather than leaving rivers. */
-  .frame p, .lede, .biblio li, .glossary dd, .timeline li { hyphens: auto; }
+  /* On a phone the long prose wraps whole words — never hyphenated, never
+     split — so a word that does not fit always moves to the next line intact. */
+  .frame p, .lede, .biblio li, .glossary dd, .timeline li { hyphens: manual; }
   /* Buttons and chips wrap their label instead of growing past the screen. */
   .btn, .chip { white-space: normal; }
   .btn-row { flex-wrap: wrap; }

@@ -250,6 +250,19 @@ export default async function (req, res) {
         return res.json({ ok: true });
       }
 
+      /* Archive steps an episode off the public shelf and out of the feed
+         without destroying anything — the file, the transcript and the
+         notes all stay in the vault until the delete button is pressed.
+         Restore brings it back as a draft, ready to be published again. */
+      case 'archive':
+      case 'restore': {
+        const id = Number(body.id);
+        if (!id) return res.status(400).json({ error: 'Which one?' });
+        await db.query('UPDATE media SET state = $1, updated_at = NOW() WHERE id = $2',
+          [action === 'archive' ? 'archived' : 'draft', id]);
+        return res.json({ ok: true });
+      }
+
       /* Up to three held at the top of the page. A fourth pin pushes the
          oldest pin off rather than refusing \u2014 the limit is the point of
          the feature, and an error message would just be in the way. */
