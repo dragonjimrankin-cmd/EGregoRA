@@ -11,36 +11,10 @@ ours:         58
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 7
+   changed live vs our bundle : 2
      ~ lib/oracle-corpus.js
-     ~ public/essays/index.html
      ~ public/foundations/index.html
-     ~ public/index.html
-     ~ public/seams/index.html
-     ~ public/stress-tests/index.html
-     ~ public/summary/index.html
-   present live, absent here  : 21
-     + public/ask-shakdragon/index.html
-     + public/assets/js/pendulum.js
-     + public/corrections/index.html
-     + public/essays/a-number-made-of-itself/index.html
-     + public/essays/how-far-did-it-get/index.html
-     + public/essays/never-going-to-stay/index.html
-     + public/essays/the-cell-keeps-the-beat/index.html
-     + public/essays/the-dream/index.html
-     + public/essays/the-infinite-echo/index.html
-     + public/essays/the-one-edge/index.html
-     + public/essays/three-numbers-everything-hangs-from/index.html
-     + public/essays/where-the-arrow-comes-from/index.html
-     + public/essays/where-the-sent-back-beings-go/index.html
-     + public/essays/why-black-holes-glow/index.html
-     + public/library/index.html
-     + public/live/index.html
-     + public/notation/index.html
-     + public/out-of-phase/index.html
-     + public/pendulum/index.html
-     + public/prime-plane/index.html
-     + public/reading/index.html
+   present live, absent here  : 0
    present here, absent live  : 5
      - lib/oracle-corpus-xxix.js
      - lib/oracle-corpus-xxviii.js
