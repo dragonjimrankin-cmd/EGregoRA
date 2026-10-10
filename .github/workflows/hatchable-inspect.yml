@@ -12,6 +12,7 @@ on:
     branches: ["arena/01a10807-egregora"]
     paths:
       - "ops/inspect.flag"
+      - "ops/verify.flag"
       - "ops/contact.flag"
       - ".github/workflows/hatchable-inspect.yml"
 
@@ -38,7 +39,9 @@ jobs:
             echo "# hatchable inspect — $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo "args: ${ARGS:-<none, listing projects>}"
             echo
-            if [ -f ops/contact.flag ]; then
+            if [ -f ops/verify.flag ]; then
+              node scripts/oracle-verify-live.mjs 2>&1
+            elif [ -f ops/contact.flag ]; then
               node scripts/hatchable-contact.mjs $(grep -v '^#' ops/contact.flag | tr -d '\n') 2>&1
             else
               node scripts/hatchable-inspect.mjs $ARGS 2>&1
