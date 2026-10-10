@@ -29,6 +29,9 @@ const opt = (n, d = null) => {
 };
 const PROJECT = opt("project");
 const PULL = opt("pull");
+/* Restrict a pull to paths containing this substring. Reading 176 files to
+   recover one costs a rate limit; reading one file costs nothing. */
+const ONLY = opt("only");
 const BINARY = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".ico", ".woff", ".woff2",
   ".mp3", ".m4a", ".mp4", ".pdf", ".zip"]);
 
@@ -104,9 +107,13 @@ const main = async () => {
 
   const lfArg = argName("list_files", ["project_id", "projectId", "project"]);
   const listed = await call("list_files", { [lfArg]: PROJECT });
-  const names = (listed.files || listed.items || listed.data || [])
+  let names = (listed.files || listed.items || listed.data || [])
     .map((f) => (typeof f === "string" ? f : f.path || f.name)).filter(Boolean);
   console.log(`\n${names.length} files`);
+  if (ONLY) {
+    names = names.filter((n) => n.includes(ONLY));
+    console.log(`   filtered by --only "${ONLY}" → ${names.length}`);
+  }
   names.forEach((n) => console.log(`   ${n}`));
 
   if (!PULL) return;
