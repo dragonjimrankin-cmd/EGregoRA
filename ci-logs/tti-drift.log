@@ -1,25 +1,8 @@
 project proj_U95i5y493z9x
 live version: 59
-ours:         58
-
-✖ 1 deploy(s) landed since ours (v58 → v59).
-   Reading the live files so the two can be merged rather than one buried.
-
-   live project holds 176 files
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-
-   changed live vs our bundle : 1
-     ~ lib/oracle-corpus.js
-   present live, absent here  : 0
-   present here, absent live  : 5
-     - lib/oracle-corpus-xxix.js
-     - lib/oracle-corpus-xxviii.js
-     - lib/oracle-corpus-xxx.js
-     - lib/oracle-corpus-xxxi.js
-     - lib/oracle-corpus-xxxii.js
-
-   their versions are saved under ops/incoming/tti/
-   DEPLOY SKIPPED. Merge, then deploy.
+ours:         59
+✓ no foreign deploy since ours. Safe to deploy.
+project proj_U95i5y493z9x
+live version: 60
+ours:         59
+recorded version 60 in ops/tti-deployed.json
