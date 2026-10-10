@@ -123,9 +123,14 @@ function setup(root) {
       /* The Free.ai panel inside this one needs to know an administrator is
          present. The pass is kept for this tab only, never written to disk. */
       if (window.EGAdminKeep) window.EGAdminKeep(pass);
+      /* The public shelf learns an administrator is present, so summaries
+         can be edited where they stand. Kept for this tab only. */
+      window.EGMediaAdminOn = true;
+      window.EGMediaPass = pass;
       say("Open. The passcode is not kept \u2014 closing the page locks it again.");
       drawShelf(d.items || []);
       fillNumber();
+      if (window.EGMediaRefresh) window.EGMediaRefresh();
     } catch (err) {
       pass = "";
       say((err && err.message) || "That did not open it.", true);
@@ -860,18 +865,105 @@ function setup(root) {
   }
 
   let listing = null;     /* what the archivist wrote, kept for the upload */
+  let earBy = "";         /* which ear heard the episode */
 
-  async function transcribeAndDescribe(buf, seconds) {
+  /* The ear, opened directly beneath the button: a read-only box the
+     transcript is typed into as it is heard. */
+  const hearBtn = root.querySelector("[data-am=hear]");
+  let earBox = null;
+  function earShow() {
+    if (!earBox) {
+      earBox = document.createElement("textarea");
+      earBox.readOnly = true;
+      earBox.rows = 10;
+      earBox.className = "am-ear";
+      earBox.setAttribute("aria-label", "The transcript as it is heard");
+      /* Directly underneath the button, clear of the button row's flex. */
+      const row = (hearBtn && hearBtn.closest(".btn-row")) || hearBtn;
+      if (row) row.insertAdjacentElement("afterend", earBox);
+    }
+    earBox.hidden = false;
+    return earBox;
+  }
+
+  /* Types the transcript out a few characters at a time; interim words sit
+     behind a caret until they are final. */
+  function makeTyper(node) {
+    let target = "", shown = 0, ghost = "", live = true;
+    (function tick() {
+      if (!live) return;
+      if (shown < target.length) shown = Math.min(target.length, shown + 9);
+      node.value = target.slice(0, shown) +
+        (shown < target.length || ghost ? " \u258c " + ghost : "");
+      node.scrollTop = node.scrollHeight;
+      window.setTimeout(tick, 16);
+    })();
+    return {
+      add: (s) => { target += s; },
+      ghost: (s) => { ghost = s || ""; },
+      text: () => target,
+      stop: () => { live = false; node.value = target; node.scrollTop = node.scrollHeight; }
+    };
+  }
+
+  /* The browser's ear: the enhanced episode plays out loud and the
+     microphone writes what it hears, stamped with the playhead. A pause
+     longer than two and a half seconds is read as a change of voice; the
+     names are guesses, kept plainly in the transcript so they can be fixed. */
+  function listenLive(blob, typer) {
+    return new Promise((go, no) => {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const a = new Audio(URL.createObjectURL(blob));
+      const rec = new SR();
+      rec.continuous = true;
+      rec.interimResults = true;
+      let speaker = 1, lastAt = -10, done = false;
+      const finish = (err) => {
+        if (done) return;
+        done = true;
+        try { rec.stop(); } catch { /* already stopped */ }
+        a.pause();
+        typer.stop();
+        if (err) no(err); else go(typer.text());
+      };
+      rec.onresult = (ev) => {
+        let interim = "";
+        for (let i = ev.resultIndex; i < ev.results.length; i++) {
+          const r = ev.results[i];
+          if (!r.isFinal) { interim += r[0].transcript; continue; }
+          const t = a.currentTime;
+          if (t - lastAt > 2.5) speaker = speaker === 1 ? 2 : 1;
+          lastAt = t;
+          typer.add("[" + clock(t) + "] Speaker " + speaker + " \u2014 " +
+            r[0].transcript.trim() + "\n");
+        }
+        typer.ghost(interim);
+      };
+      rec.onerror = (e) => {
+        if (e.error === "not-allowed" || e.error === "service-not-allowed")
+          finish(new Error("the microphone would not open \u2014 the ear needs it while the episode plays out loud"));
+        /* "no-speech" is only silence; keep listening */
+      };
+      rec.onend = () => {
+        if (!a.ended && !a.paused) { try { rec.start(); } catch { /* restarting */ } }
+      };
+      a.onended = () => { typer.ghost(""); window.setTimeout(() => finish(null), 600); };
+      a.onerror = () => finish(new Error("the episode would not play for the ear"));
+      a.play().then(() => {
+        try { rec.start(); } catch (err) { finish(err); }
+      }).catch((err) => finish(err));
+    });
+  }
+
+  /* The server's ear, for browsers with no SpeechRecognition of their own:
+     ten-minute stretches, each stamped with where it began. */
+  async function listenServer(buf, seconds, typer) {
     const parts = Math.max(1, Math.ceil(seconds / SEG));
-    const words = [];
-    let ear = "";
-
+    let out = "";
     for (let i = 0; i < parts; i++) {
       const from = i * SEG, to = Math.min(seconds, (i + 1) * SEG);
       step("Reducing stretch " + (i + 1) + " of " + parts + "\u2026", i / parts);
       const small = await smallCopy(buf, from, to);
-      step("Listening to stretch " + (i + 1) + " of " + parts +
-        " (" + mb(small.size) + ")\u2026", (i + 0.4) / parts);
       const upload = await sendBlob(small, () => {});
       const heard = await fetch("/api/transcribe", {
         method: "POST",
@@ -882,14 +974,18 @@ function setup(root) {
         if (!r.ok) throw new Error(d.error || "it could not be heard");
         return d;
       });
-      ear = heard.by || ear;
-      /* Stamp each stretch with where it began, so the archivist can give
-         the episode its chapters. */
-      words.push("[" + clock(from) + "] " + heard.text);
+      const line = "[" + clock(from) + "] " + heard.text + "\n\n";
+      out += line;
+      typer.add(line);
       step("Heard " + (i + 1) + " of " + parts, (i + 1) / parts);
     }
+    typer.stop();
+    return out;
+  }
 
-    const transcript = words.join("\n\n");
+  /* The archivist writes the listing from a transcript. summaryOnly touches
+     nothing but the summary field. */
+  async function describeListing(transcript, summaryOnly) {
     step("Writing the listing\u2026", 0.95);
     const d = await fetch("/api/transcribe", {
       method: "POST",
@@ -907,16 +1003,18 @@ function setup(root) {
       topics: d.topics || [],
       tags: d.tags || []
     };
-    if (el.title) el.title.value = d.title || el.title.value;
     if (el.summary) el.summary.value = d.summary || el.summary.value;
-    if (el.tags) { el.tags.value = (d.tags || []).join(", "); if (el.markTags) el.markTags(); }
+    if (!summaryOnly) {
+      if (el.title) el.title.value = d.title || el.title.value;
+      if (el.tags) { el.tags.value = (d.tags || []).join(", "); if (el.markTags) el.markTags(); }
+    }
     if (el.meta) el.meta.hidden = false;
 
     const n = root.querySelector("[data-am=listing]");
-    if (n) {
+    if (n && !summaryOnly) {
       n.hidden = false;
       n.innerHTML = '<p class="kicker">What it heard</p>' +
-        '<p class="muted small">Transcribed by ' + esc(ear || "the ear") +
+        '<p class="muted small">Transcribed by ' + esc(earBy || "the ear") +
         ", described by " + esc(d.by || "a model") + ". " +
         transcript.length.toLocaleString() + " characters of transcript, kept with the episode.</p>" +
         ((d.links || []).length
@@ -933,18 +1031,50 @@ function setup(root) {
         esc(transcript.slice(0, 40000)) + "</pre></details>";
     }
     step("The listing is written", 1);
-    say("Listed: " + (d.title || "") + " \u2014 " + (d.tags || []).length + " tags, " +
-      (d.links || []).length + " links into the site. Change anything you disagree with.");
+    if (!summaryOnly)
+      say("Listed: " + (d.title || "") + " \u2014 " + (d.tags || []).length + " tags, " +
+        (d.links || []).length + " links into the site. Change anything you disagree with.");
+    return d;
   }
 
-  const hearBtn = root.querySelector("[data-am=hear]");
+  /* A summary from the transcript, without touching the rest. */
+  let lastTranscript = "";
+  const sumBtn = root.querySelector("[data-am=summarise]");
+  if (sumBtn) sumBtn.addEventListener("click", async () => {
+    if (!lastTranscript) return say("There is no transcript yet \u2014 transcribe first.", true);
+    sumBtn.disabled = true;
+    try {
+      await describeListing(lastTranscript, true);
+      say("The summary is written from the transcript. Read it before you publish.");
+    } catch (err) {
+      say((err && err.message) || "No model would write the summary just now.", true);
+    } finally { sumBtn.disabled = false; }
+  });
+
   if (hearBtn) hearBtn.addEventListener("click", async () => {
     if (KIND !== "audio") return say("Only sound can be transcribed here.", true);
-    if (!fileBuf) return say("Choose a recording first.", true);
+    const blob = (ready && ready.blob) || source;
+    if (!blob) return say("Choose a recording first.", true);
     hearBtn.disabled = true;
+    const typer = makeTyper(earShow());
     try {
-      await transcribeAndDescribe(fileBuf, fileBuf.duration);
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SR) {
+        earBy = "the browser's ear, listening out loud";
+        say("Listening \u2014 the episode plays out loud and the ear writes it below.");
+        lastTranscript = await listenLive(blob, typer);
+      } else if (fileBuf) {
+        earBy = "the server's ear";
+        say("This browser has no ear of its own \u2014 the server is listening instead.");
+        lastTranscript = await listenServer(fileBuf, fileBuf.duration, typer);
+      } else {
+        throw new Error("this browser has no ear, and the file would not decode for the server's");
+      }
+      if (sumBtn) sumBtn.disabled = lastTranscript.trim().length < 40;
+      if (lastTranscript.trim().length >= 40) await describeListing(lastTranscript, false);
+      else say("The ear kept almost nothing \u2014 the listing is yours to write by hand.", true);
     } catch (err) {
+      typer.stop();
       say((err && err.message) || "It could not be transcribed.", true);
     } finally {
       hearBtn.disabled = false;
@@ -1054,7 +1184,8 @@ function setup(root) {
       "</div>" +
       '<label for="' + KIND + '-ed-summary">Summary</label>' +
       '<textarea id="' + KIND + '-ed-summary" data-ed="summary" rows="3">' + esc(item.summary) + "</textarea>" +
-      '<div class="btn-row"><button class="btn btn--small" type="button" data-ed="save">Save the writing</button></div>' +
+      '<div class="btn-row"><button class="btn btn--small" type="button" data-ed="save">Save the writing</button>' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="sum-from-tr">Write the summary from its transcript</button></div>' +
 
       '<div class="divider">\u2726</div>' +
       '<p class="kicker">Cut</p>' +
@@ -1074,6 +1205,23 @@ function setup(root) {
       '<button class="btn btn--small btn--ghost" type="button" data-ed="whole">Start again from the whole thing</button>' +
       "</div>" +
       '<div data-ed="merged"></div>' +
+
+      (KIND === "audio"
+        ? '<div class="divider">\u2726</div>' +
+          '<p class="kicker">Drop another voice in</p>' +
+          '<p class="muted small">Choose a moment, choose a file, and lay it over the episode \u2014 or ' +
+          "hold the episode silent while the new voice plays. The master is only replaced when it is laid in.</p>" +
+          '<div class="am-cut">' +
+          '<button class="btn btn--small btn--ghost" type="button" data-ed="drop-here">Use the playhead</button>' +
+          '<span data-ed="dropat" class="am-time">0:00</span>' +
+          '<input type="file" data-ed="drop-file" ' +
+          'accept="audio/*,video/mp4,.mp3,.wav,.flac,.aac,.m4a,.wma,.mp4">' +
+          "</div>" +
+          '<label class="ae-pair"><input type="checkbox" data-ed="drop-both" checked> ' +
+          "Both heard at once \u2014 untick and the episode is muted while the new voice plays</label>" +
+          '<div class="btn-row"><button class="btn btn--small" type="button" data-ed="drop-go">Lay it in</button></div>' +
+          '<p class="muted small" data-ed="drop-state"></p>'
+        : "") +
 
       (KIND === "audio"
         ? '<div class="divider">\u2726</div>' +
@@ -1155,6 +1303,98 @@ function setup(root) {
     });
 
     ed("whole").addEventListener("click", () => { edit.snippets = []; drawSnips(); tellEd("Back to the whole thing."); });
+
+    /* A summary written from the kept transcript, by the same models the
+       oracle leans on. Nothing is saved until the writing is saved. */
+    ed("sum-from-tr").addEventListener("click", async () => {
+      tellEd("Reading the kept transcript\u2026");
+      const r = await fetch("/api/media", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "transcript", id: item.id })
+      }).catch(() => null);
+      const td = r ? await r.json().catch(() => null) : null;
+      if (!td || !td.transcript || td.transcript.trim().length < 40)
+        return tellEd("No transcript is kept with this episode.", true);
+      const dd = await fetch("/api/transcribe", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ pass, action: "describe", text: td.transcript, kind: KIND })
+      }).then((x) => x.json()).catch(() => null);
+      if (!dd || !dd.ok)
+        return tellEd((dd && dd.error) || "No model would write the summary just now.", true);
+      ed("summary").value = dd.summary || ed("summary").value;
+      tellEd("A summary is written from the transcript by " + (dd.by || "a model") +
+        " \u2014 read it, then save the writing.");
+    });
+
+    /* Drop another voice in at any point. Both heard at once lays the new
+       voice over the episode; unticked, the episode holds its breath while
+       the new voice plays. The master is replaced over the wire. */
+    if (KIND === "audio") {
+      let dropAt = 0;
+      ed("drop-here").addEventListener("click", () => {
+        dropAt = player.currentTime;
+        ed("dropat").textContent = clock(dropAt);
+      });
+      ed("drop-go").addEventListener("click", async () => {
+        const f = ed("drop-file").files && ed("drop-file").files[0];
+        if (!edit.buf) return tellEd("The master is not decoded yet \u2014 give it a second.", true);
+        if (!f) return tellEd("Choose the file to drop in.", true);
+        const both = ed("drop-both").checked;
+        tellEd("Decoding " + f.name + "\u2026");
+        let drop;
+        try {
+          const c0 = new (window.AudioContext || window.webkitAudioContext)();
+          drop = await c0.decodeAudioData(await f.arrayBuffer());
+          c0.close();
+        } catch {
+          return tellEd("This browser cannot decode that file.", true);
+        }
+        const m = edit.buf;
+        const rate = m.sampleRate;
+        const chans = m.numberOfChannels;
+        const at = Math.max(0, Math.min(dropAt, m.duration));
+        const cut = Math.floor(at * rate);
+        const dropFrames = Math.ceil(drop.duration * rate);
+        const totalSeconds = both
+          ? Math.max(m.duration, at + drop.duration)
+          : m.duration + drop.duration;
+        const c1 = new (window.AudioContext || window.webkitAudioContext)();
+        const outBuf = c1.createBuffer(chans, Math.ceil(totalSeconds * rate), rate);
+        for (let ch = 0; ch < chans; ch++) {
+          const o = outBuf.getChannelData(ch);
+          const src = m.getChannelData(ch);
+          const dch = drop.getChannelData(Math.min(ch, drop.numberOfChannels - 1));
+          if (both) {
+            o.set(src);
+            for (let i = 0; i < dch.length && cut + i < o.length; i++) o[cut + i] += dch[i];
+          } else {
+            o.set(src.subarray(0, cut), 0);
+            o.set(dch, cut);
+            o.set(src.subarray(cut), cut + dropFrames);
+          }
+        }
+        c1.close();
+        tellEd("Encoding the new master\u2026");
+        const made = await encode(outBuf);
+        const upload = await sendBlob(made.blob, (t) => tellEd(t));
+        await post({
+          action: "replace", id: item.id, upload, mime: made.mime,
+          seconds: Math.round(outBuf.duration),
+          length: clock(outBuf.duration).replace(/ \d+s$/, ""),
+          treatment: "another voice laid in at " + clock(at) +
+            (both ? " \u2014 both heard at once" : " \u2014 the episode muted while it plays")
+        });
+        edit.buf = outBuf;
+        edit.seconds = outBuf.duration;
+        await refresh();
+        const ni = byId.get(item.id);
+        if (ni) { item = ni; edit.item = ni; player.src = ni.url; }
+        tellEd("Laid in at " + clock(at) + " and saved over the master" +
+          (both ? ", both voices heard." : "; the episode holds its breath while the new voice plays."));
+      });
+    }
 
     function drawSnips() {
       const n = ed("snips");
@@ -1514,6 +1754,7 @@ function setup(root) {
   const slot = document.getElementById("uploaded-media");
   if (!slot) return;
   const KIND = slot.getAttribute("data-kind") === "video" ? "video" : "audio";
+  let lastItems = [];
   const esc = (t) => String(t == null ? "" : t)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const stamp = (s) => {
@@ -1531,6 +1772,7 @@ function setup(root) {
       });
       const d = await r.json();
       const items = (d && d.items) || [];
+      lastItems = items;
       if (!items.length) { slot.innerHTML = ""; slot.hidden = true; return; }
       slot.hidden = false;
       slot.innerHTML = items.map((i) => KIND === "audio"
@@ -1542,7 +1784,12 @@ function setup(root) {
           '<span class="ep-title">' + esc(i.title) + "</span>" +
           (i.tags.length ? '<span class="muted xsmall">' + esc(i.tags.join(" \u00b7 ")) + "</span>" : "") +
           "</span></summary><div class=\"ep-body\">" +
-          (i.summary ? "<p>" + esc(i.summary) + "</p>" : "") +
+          (window.EGMediaAdminOn
+            ? "<p class=\"ep-sum\">" +
+              (i.summary ? esc(i.summary) : '<span class="muted xsmall">No summary yet.</span>') +
+              ' <button type="button" class="btn btn--small btn--ghost" data-mx-sum="' + i.id +
+              '">Edit the summary</button></p>'
+            : (i.summary ? "<p>" + esc(i.summary) + "</p>" : "")) +
           (i.links && i.links.length
             ? '<p class="kicker">Where it meets the rest of the house</p><ul class="am-links">' +
               i.links.map((l) => '<li><a href="' + esc(l.href) + '">' + esc(l.title) + "</a> " +
@@ -1640,6 +1887,56 @@ function setup(root) {
   slot.addEventListener("click", async (ev) => {
     const dl = ev.target.closest && ev.target.closest("[data-mx-dl]");
     const tr = ev.target.closest && ev.target.closest("[data-mx-tr]");
+
+    /* Summaries stand editable where they are, while the door is open. */
+    const su = ev.target.closest && ev.target.closest("[data-mx-sum]");
+    if (su) {
+      const id = Number(su.getAttribute("data-mx-sum"));
+      const item = lastItems.find((x) => x.id === id);
+      if (!item) return;
+      const holder = su.closest("p");
+      holder.innerHTML = "";
+      const ta = document.createElement("textarea");
+      ta.rows = 3;
+      ta.className = "am-ear";
+      ta.value = item.summary || "";
+      const save = document.createElement("button");
+      save.type = "button";
+      save.className = "btn btn--small";
+      save.textContent = "Save the summary";
+      const leave = document.createElement("button");
+      leave.type = "button";
+      leave.className = "btn btn--small btn--ghost";
+      leave.textContent = "Leave it";
+      holder.appendChild(ta);
+      holder.appendChild(save);
+      holder.appendChild(leave);
+      save.addEventListener("click", async () => {
+        save.disabled = true;
+        try {
+          const r = await fetch("/api/media", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              pass: window.EGMediaPass || "", action: "edit", id,
+              title: item.title, summary: ta.value,
+              tags: item.tags.join(", "), number: item.number || ""
+            })
+          });
+          const out = await r.json().catch(() => ({}));
+          if (!r.ok) throw new Error(out.error || "it would not save");
+          if (window.EGMediaRefresh) window.EGMediaRefresh();
+        } catch (err) {
+          save.disabled = false;
+          save.textContent = (err && err.message) || "It would not save";
+        }
+      });
+      leave.addEventListener("click", () => {
+        if (window.EGMediaRefresh) window.EGMediaRefresh();
+      });
+      ta.focus();
+      return;
+    }
     if (dl) {
       const url = dl.getAttribute("data-mx-url");
       if (!url) return;

@@ -147,7 +147,8 @@ for (const [page, kind] of [['/podcast/', 'audio'], ['/videos/', 'video']]) {
       'the position is a slider a thumb can drag');
     t(root.querySelector('[data-ds="crop"]') && root.querySelector('[data-ds="mute-range"]'),
       'it can crop, and strip the sound from a marked stretch');
-    t(root.querySelector('[data-ds="ins-file"]')?.getAttribute('accept') === 'audio/*',
+    t(String(root.querySelector('[data-ds="ins-file"]')?.getAttribute('accept') || '').includes('audio/*') &&
+      String(root.querySelector('[data-ds="ins-file"]')?.getAttribute('accept') || '').includes('.wma'),
       'audio can be inserted');
     t(root.querySelector('[data-ds="archive"]'), 'and the result archived on this device');
     const table = root.querySelector('table.cell-table');

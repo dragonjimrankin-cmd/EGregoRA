@@ -3604,3 +3604,16 @@ table.ledger tbody tr:last-child td { border-bottom: 0; }
 @media (max-width: 640px) {
   .sitemap-toc, .sitemap-also { columns: 1; }
 }
+
+/* ---- the ear: the read-only transcript box under the transcribe button -- */
+.am-ear {
+  display: block; width: 100%; box-sizing: border-box;
+  margin: 0.55rem 0 0.4rem; padding: 0.6rem 0.7rem;
+  background: #0b0a08; color: var(--vellum-dim);
+  border: 1px solid rgba(215, 176, 90, 0.3); border-radius: 3px;
+  font-family: var(--serif); font-size: 0.9rem; line-height: 1.55;
+  resize: vertical; min-height: 9rem;
+}
+textarea.am-ear[readonly] { opacity: 0.92; }
+.ep-sum .btn { vertical-align: baseline; margin-left: 0.4rem; }
+.am-cut input[type="file"] { font-family: var(--serif); font-size: 0.85rem; color: var(--vellum-dim); }
