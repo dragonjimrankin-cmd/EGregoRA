@@ -2,6 +2,7 @@ project proj_eiuxpFfTnwwx
 live version: 195
 ours:         195
 ✓ no foreign deploy since ours. Safe to deploy.
-drift check failed: initialize → HTTP 429: {
-    "message": "Too Many Attempts."
-}
+project proj_eiuxpFfTnwwx
+live version: 196
+ours:         195
+recorded version 196 in ops/egregora-deployed.json
