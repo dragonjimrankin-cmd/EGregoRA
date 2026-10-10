@@ -53,7 +53,27 @@ if (!TOKEN) {
 let sessionId = null;
 let rpcId = 0;
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* Hatchable answers a burst with HTTP 429. Retrying immediately makes it
+   worse, so back off and try again — the difference between a deploy that
+   waits a minute and one that dies on `initialize` and ships nothing. */
+const MAX_TRIES = 6;
+
 async function rpc(method, params = undefined) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await rpcOnce(method, params);
+    } catch (err) {
+      if (!/HTTP 429/.test(err.message) || attempt >= MAX_TRIES) throw err;
+      const wait = 20000 * attempt;
+      console.log(`   … 429 on ${method}, waiting ${wait / 1000}s (attempt ${attempt}/${MAX_TRIES - 1})`);
+      await sleep(wait);
+    }
+  }
+}
+
+async function rpcOnce(method, params = undefined) {
   const headers = {
     "content-type": "application/json",
     accept: "application/json, text/event-stream",
