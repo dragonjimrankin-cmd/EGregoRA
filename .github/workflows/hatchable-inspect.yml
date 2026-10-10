@@ -67,6 +67,7 @@ jobs:
             echo "published $P"
           }
           put ci-logs/hatchable-inspect.log "ci: hatchable inspect"
-          if [ -d shakra ]; then
-            find shakra -type f | while read -r F; do put "$F" "ci: pull ${F}"; done
-          fi
+          for D in shakra ops/incoming; do
+            [ -d "$D" ] || continue
+            find "$D" -type f | while read -r F; do put "$F" "ci: pull ${F}"; done
+          done
