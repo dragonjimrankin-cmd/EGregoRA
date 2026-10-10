@@ -1,28 +1,8 @@
 project proj_eiuxpFfTnwwx
 live version: 200
-ours:         199
-
-✖ 1 deploy(s) landed since ours (v199 → v200).
-   Reading the live files so the two can be merged rather than one buried.
-
-   live project holds 207 files
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-
-   changed live vs our bundle : 1
-     ~ lib/oracle-corpus.js
-   present live, absent here  : 4
-     + public/artwork/index.html
-     + public/assets/audio/README.md
-     + public/assets/audio/README/index.html
-     + public/research/index.html
-   present here, absent live  : 2
-     - README.md
-     - lib/oracle-corpus-xxxix.js
-
-   their versions are saved under ops/incoming/egregora/
-   DEPLOY SKIPPED. Merge, then deploy.
+ours:         200
+✓ no foreign deploy since ours. Safe to deploy.
+project proj_eiuxpFfTnwwx
+live version: 201
+ours:         200
+recorded version 201 in ops/egregora-deployed.json
