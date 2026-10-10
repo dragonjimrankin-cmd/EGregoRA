@@ -1,6 +1,11 @@
 /**
  * The Oracle's written answers.
  *
+ * Shared with ShakDrah on The Two Infinities: the two oracles carry one
+ * corpus, mirrored by scripts/oracle-sync.py and gated in CI by
+ * scripts/oracle-validate.mjs, which also requires that every entry be
+ * reachable — ask it its own question and it must win the match.
+ *
  * Composed for EGregoRA in the order's voice and graded by the house rules
  * (science / scholarship / speculative / myth). The matcher in
  * api/ask.js scores a visitor's question against the `keys` of each entry and
@@ -34,6 +39,11 @@ import { VOL24 } from './oracle-corpus-xxiv.js';
 import { VOL25 } from './oracle-corpus-xxv.js';
 import { VOL26 } from './oracle-corpus-xxvi.js';
 import { VOL27 } from './oracle-corpus-xxvii.js';
+import { VOL28 } from './oracle-corpus-xxviii.js';
+import { VOL29 } from './oracle-corpus-xxix.js';
+import { VOL30 } from './oracle-corpus-xxx.js';
+import { VOL31 } from './oracle-corpus-xxxi.js';
+import { VOL32 } from './oracle-corpus-xxxii.js';
 
 const BASE = [
  {
@@ -313,7 +323,7 @@ The Further Research page grades every source so you always know whether you are
 
 export const ANSWERS = [
  ...BASE, ...MORE, ...VOL3, ...VOL4, ...VOL5, ...VOL6, ...VOL7,
- ...VOL8, ...VOL9, ...VOL10, ...VOL11, ...VOL12, ...VOL13, ...VOL14, ...VOL15, ...VOL16, ...VOL17, ...VOL18, ...VOL19, ...VOL20, ...VOL21, ...VOL22, ...VOL23, ...VOL24, ...VOL25, ...VOL26, ...VOL27
+ ...VOL8, ...VOL9, ...VOL10, ...VOL11, ...VOL12, ...VOL13, ...VOL14, ...VOL15, ...VOL16, ...VOL17, ...VOL18, ...VOL19, ...VOL20, ...VOL21, ...VOL22, ...VOL23, ...VOL24, ...VOL25, ...VOL26, ...VOL27, ...VOL28, ...VOL29, ...VOL30, ...VOL31, ...VOL32
 ];
 
 const STOP = new Set(

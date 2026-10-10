@@ -1,118 +1,90 @@
 name: Deploy The Two Infinities
-
 on:
   workflow_dispatch:
     inputs:
       tools:
-        description: "Set to 1 to dump the MCP tool schemas instead of deploying"
-        default: "0"
+        description: Set to 1 to dump the MCP tool schemas instead of deploying
+        default: '0'
   push:
-    branches: ["arena/01a10807-egregora"]
+    branches:
+    - arena/01a10807-egregora
     paths:
-      - "tti/hatchable/**"
-      - "ops/tti-project.txt"
-      - "ops/tti-tools.flag"
-      - ".github/workflows/tti-deploy.yml"
-
+    - tti/hatchable/**
+    - ops/tti-project.txt
+    - ops/tti-tools.flag
+    - .github/workflows/tti-deploy.yml
+    - scripts/oracle-validate.mjs
+    - ops/oracle-duplicate-baseline.json
+    - ops/oracle-shadowed-baseline.json
 permissions:
   contents: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ' }}
+      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ'
+        }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 24 }
-
-      - name: Gink and ShakDrah must carry the same corpus
-        run: python3 scripts/oracle-sync.py --check
-
-      - name: Has anyone else deployed since we did?
-        id: drift
-        run: |
-          mkdir -p ci-logs ops
-          PID=$(tr -d ' \n\r' < ops/tti-project.txt)
-          set +e
-          node scripts/hatchable-drift.mjs --bundle tti/hatchable --project "$PID" --key tti \
-            > ci-logs/tti-drift.log 2>&1
-          echo "code=$?" >> "$GITHUB_OUTPUT"
-          sed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/tti-drift.log
-          cat ci-logs/tti-drift.log
-
-      - name: Create or redeploy the project (never fails the job)
-        id: run
-        if: steps.drift.outputs.code != '2'
-        continue-on-error: true
-        run: |
-          set +e
-          mkdir -p ci-logs ops
-          PID=""
-          [ -f ops/tti-project.txt ] && PID=$(tr -d ' \n\r' < ops/tti-project.txt)
-          TOOLS_DUMP=0
-          [ -f ops/tti-tools.flag ] && TOOLS_DUMP=1
-          {
-            echo "# The Two Infinities → Hatchable — $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-            echo "bundle files: $(find tti/hatchable -type f | wc -l)"
-            echo "existing project id: ${PID:-<none, will create>}"
-            echo
-            if [ "${TOOLS_DUMP}" = "1" ]; then
-              node scripts/hatchable-deploy.mjs --bundle tti/hatchable --tools 2>&1
-            elif [ -n "$PID" ]; then
-              RAW_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/tti/hatchable" \
-                node scripts/hatchable-deploy.mjs --bundle tti/hatchable --project "$PID" \
-                  --name "The Two Infinities (and beyond)" --slug two-infinities 2>&1
-            else
-              RAW_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/tti/hatchable" \
-                node scripts/hatchable-deploy.mjs --bundle tti/hatchable \
-                  --name "The Two Infinities (and beyond)" --slug two-infinities 2>&1
-            fi
-            echo "exit=$?"
-          } > ci-logs/tti-deploy.log 2>&1
-          if [ -n "$HATCHABLE_TOKEN" ]; then
-            sed -i "s/${HATCHABLE_TOKEN}/***REDACTED***/g" ci-logs/tti-deploy.log
-          fi
-          sed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/tti-deploy.log
-          tail -80 ci-logs/tti-deploy.log
-          NEW=$(grep -oE 'proj_[A-Za-z0-9]+' ci-logs/tti-deploy.log | head -1 || true)
-          echo "pid=$NEW" >> "$GITHUB_OUTPUT"
-
-      - name: Record the version we just put live
-        if: steps.drift.outputs.code != '2'
-        run: |
-          PID=$(tr -d ' \n\r' < ops/tti-project.txt)
-          node scripts/hatchable-drift.mjs --bundle tti/hatchable --project "$PID" --key tti --record \
-            >> ci-logs/tti-drift.log 2>&1 || true
-
-      - name: Publish the log, and the project id if one was created
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          put () {
-            P="$1"; M="$2"
-            B64=$(base64 -w0 "$P")
-            SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
-            if [ -n "$SHA" ]; then
-              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
-                -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA"
-            else
-              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
-                -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}"
-            fi
-          }
-          put ci-logs/tti-deploy.log "ci: two-infinities deploy log"
-          [ -f ci-logs/tti-drift.log ] && put ci-logs/tti-drift.log "ci: two-infinities drift check"
-          [ -f ops/tti-deployed.json ] && put ops/tti-deployed.json "ci: record the live two-infinities version"
-          if [ -d ops/incoming/tti ]; then
-            find ops/incoming/tti -type f | while read -r F; do
-              put "$F" "ci: a foreign deploy's copy of ${F#ops/incoming/tti/}"
-            done
-          fi
-          PID="${{ steps.run.outputs.pid }}"
-          if [ -n "$PID" ] && [ ! -f ops/tti-project.txt ]; then
-            mkdir -p ops
-            printf '%s\n' "$PID" > ops/tti-project.txt
-            put ops/tti-project.txt "ci: record the Two Infinities project id"
-          fi
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+    - name: Gink and ShakDrah must carry the same corpus
+      run: python3 scripts/oracle-sync.py --check
+    - name: The corpus must be well formed and in step
+      run: node scripts/oracle-validate.mjs
+    - name: Has anyone else deployed since we did?
+      id: drift
+      run: "mkdir -p ci-logs ops\nPID=$(tr -d ' \\n\\r' < ops/tti-project.txt)\nset\
+        \ +e\nnode scripts/hatchable-drift.mjs --bundle tti/hatchable --project \"\
+        $PID\" --key tti \\\n  > ci-logs/tti-drift.log 2>&1\necho \"code=$?\" >> \"\
+        $GITHUB_OUTPUT\"\nsed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g' ci-logs/tti-drift.log\n\
+        cat ci-logs/tti-drift.log\n"
+    - name: Create or redeploy the project (never fails the job)
+      id: run
+      if: steps.drift.outputs.code != '2'
+      continue-on-error: true
+      run: "set +e\nmkdir -p ci-logs ops\nPID=\"\"\n[ -f ops/tti-project.txt ] &&\
+        \ PID=$(tr -d ' \\n\\r' < ops/tti-project.txt)\nTOOLS_DUMP=0\n[ -f ops/tti-tools.flag\
+        \ ] && TOOLS_DUMP=1\n{\n  echo \"# The Two Infinities \u2192 Hatchable \u2014\
+        \ $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  echo \"bundle files: $(find tti/hatchable\
+        \ -type f | wc -l)\"\n  echo \"existing project id: ${PID:-<none, will create>}\"\
+        \n  echo\n  if [ \"${TOOLS_DUMP}\" = \"1\" ]; then\n    node scripts/hatchable-deploy.mjs\
+        \ --bundle tti/hatchable --tools 2>&1\n  elif [ -n \"$PID\" ]; then\n    RAW_BASE=\"\
+        https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/tti/hatchable\"\
+        \ \\\n      node scripts/hatchable-deploy.mjs --bundle tti/hatchable --project\
+        \ \"$PID\" \\\n        --name \"The Two Infinities (and beyond)\" --slug two-infinities\
+        \ 2>&1\n  else\n    RAW_BASE=\"https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/tti/hatchable\"\
+        \ \\\n      node scripts/hatchable-deploy.mjs --bundle tti/hatchable \\\n\
+        \        --name \"The Two Infinities (and beyond)\" --slug two-infinities\
+        \ 2>&1\n  fi\n  echo \"exit=$?\"\n} > ci-logs/tti-deploy.log 2>&1\nif [ -n\
+        \ \"$HATCHABLE_TOKEN\" ]; then\n  sed -i \"s/${HATCHABLE_TOKEN}/***REDACTED***/g\"\
+        \ ci-logs/tti-deploy.log\nfi\nsed -i -E 's/hb_[A-Za-z0-9]{8,}/hb_***REDACTED***/g'\
+        \ ci-logs/tti-deploy.log\ntail -80 ci-logs/tti-deploy.log\nNEW=$(grep -oE\
+        \ 'proj_[A-Za-z0-9]+' ci-logs/tti-deploy.log | head -1 || true)\necho \"pid=$NEW\"\
+        \ >> \"$GITHUB_OUTPUT\"\n"
+    - name: Record the version we just put live
+      if: steps.drift.outputs.code != '2'
+      run: "PID=$(tr -d ' \\n\\r' < ops/tti-project.txt)\nnode scripts/hatchable-drift.mjs\
+        \ --bundle tti/hatchable --project \"$PID\" --key tti --record \\\n  >> ci-logs/tti-drift.log\
+        \ 2>&1 || true\n"
+    - name: Publish the log, and the project id if one was created
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: "put () {\n  P=\"$1\"; M=\"$2\"\n  B64=$(base64 -w0 \"$P\")\n  SHA=$(gh\
+        \ api \"repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}\"\
+        \ -q .sha 2>/dev/null || true)\n  if [ -n \"$SHA\" ]; then\n    gh api --method\
+        \ PUT \"repos/${GITHUB_REPOSITORY}/contents/${P}\" \\\n      -f message=\"\
+        $M\" -f content=\"$B64\" -f branch=\"${GITHUB_REF_NAME}\" -f sha=\"$SHA\"\n\
+        \  else\n    gh api --method PUT \"repos/${GITHUB_REPOSITORY}/contents/${P}\"\
+        \ \\\n      -f message=\"$M\" -f content=\"$B64\" -f branch=\"${GITHUB_REF_NAME}\"\
+        \n  fi\n}\nput ci-logs/tti-deploy.log \"ci: two-infinities deploy log\"\n\
+        [ -f ci-logs/tti-drift.log ] && put ci-logs/tti-drift.log \"ci: two-infinities\
+        \ drift check\"\n[ -f ops/tti-deployed.json ] && put ops/tti-deployed.json\
+        \ \"ci: record the live two-infinities version\"\nif [ -d ops/incoming/tti\
+        \ ]; then\n  find ops/incoming/tti -type f | while read -r F; do\n    put\
+        \ \"$F\" \"ci: a foreign deploy's copy of ${F#ops/incoming/tti/}\"\n  done\n\
+        fi\nPID=\"${{ steps.run.outputs.pid }}\"\nif [ -n \"$PID\" ] && [ ! -f ops/tti-project.txt\
+        \ ]; then\n  mkdir -p ops\n  printf '%s\\n' \"$PID\" > ops/tti-project.txt\n\
+        \  put ops/tti-project.txt \"ci: record the Two Infinities project id\"\n\
+        fi\n"

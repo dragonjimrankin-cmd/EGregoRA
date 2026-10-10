@@ -1,6 +1,11 @@
 /**
  * The Oracle's written answers.
  *
+ * Shared with ShakDrah on The Two Infinities: the two oracles carry one
+ * corpus, mirrored by scripts/oracle-sync.py and gated in CI by
+ * scripts/oracle-validate.mjs, which also requires that every entry be
+ * reachable — ask it its own question and it must win the match.
+ *
  * Composed for EGregoRA in the order's voice and graded by the house rules
  * (science / scholarship / speculative / myth). The matcher in
  * api/ask.js scores a visitor's question against the `keys` of each entry and
