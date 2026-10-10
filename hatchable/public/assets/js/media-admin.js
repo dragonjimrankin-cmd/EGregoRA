@@ -515,12 +515,25 @@ function setup(root) {
     say("Reading " + f.name + " \u2014 " + mb(f.size) + "\u2026");
     try {
       if (KIND === "audio") {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        fileBuf = await ctx.decodeAudioData(await f.arrayBuffer());
-        ctx.close();
-        fileLook = inspect(fileBuf);
-        el.before.innerHTML = reading(fileLook, "As it arrived");
-        say("Read. Choose what to do to it, then enhance.");
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          fileBuf = await ctx.decodeAudioData(await f.arrayBuffer());
+          ctx.close();
+          fileLook = inspect(fileBuf);
+          el.before.innerHTML = reading(fileLook, "As it arrived");
+          say("Read. Choose what to do to it, then enhance.");
+        } catch {
+          /* A format this browser cannot decode — a WMA, say, which no
+             browser can open. The file is not lost: it can still be
+             published exactly as it arrived, and downloaded from the page. */
+          fileBuf = null;
+          fileLook = null;
+          el.before.innerHTML = '<p class="kicker">As it arrived</p><ul class="am-read">' +
+            "<li>Weight <strong>" + mb(f.size) + "</strong></li>" +
+            "<li>Kind <strong>" + esc(f.type || "unknown") + "</strong></li></ul>";
+          say("This browser cannot open that file for cleaning — it can still " +
+            "be published exactly as it arrived.");
+        }
       } else {
         const probe = document.createElement("video");
         probe.preload = "metadata";
@@ -560,7 +573,11 @@ function setup(root) {
   });
 
   async function enhanceAudio(want) {
-    if (!fileBuf) return say("Choose a file first.", true);
+    if (!fileBuf) {
+      return say(source
+        ? "That file cannot be cleaned in this browser \u2014 publish it as it arrived."
+        : "Choose a file first.", true);
+    }
     step("Rendering\u2026", 0.1);
     const rate = fileBuf.sampleRate;
 
@@ -1560,6 +1577,20 @@ function setup(root) {
           (i.summary ? "<p>" + esc(i.summary) + "</p>" : "") +
           (i.tags.length ? '<p class="muted xsmall">' + esc(i.tags.join(" \u00b7 ")) + "</p>" : "") +
           "</article>").join("");
+      /* Not every format plays in a browser — a WMA, in particular, plays
+         nowhere on the web. Where the player would be, say so plainly and
+         leave the download standing: the file itself is never lost. */
+      items.forEach((i) => {
+        if (!/wma/i.test(String(i.mime || ""))) return;
+        const player = slot.querySelector('[data-for="' + i.id + '"]');
+        if (!player) return;
+        const note = document.createElement("p");
+        note.className = "muted small";
+        note.textContent = "This episode is a WMA file. No browser can play that " +
+          "format — the download button below gives you the file itself.";
+        player.replaceWith(note);
+      });
+
       if (window.EGPlayerSweep) window.EGPlayerSweep(slot);
 
       /* A plate rises as the sound reaches it. The cover stands until the
@@ -1600,7 +1631,11 @@ function setup(root) {
   const extFor = (t) => String(t || "").includes("mpeg") ? ".mp3"
     : String(t || "").includes("wav") ? ".wav"
       : String(t || "").includes("ogg") ? ".ogg"
-        : String(t || "").includes("mp4") ? ".mp4" : ".webm";
+        : String(t || "").includes("mp4") ? ".mp4"
+          : String(t || "").includes("m4a") ? ".m4a"
+            : String(t || "").includes("aac") ? ".aac"
+              : String(t || "").includes("flac") ? ".flac"
+                : String(t || "").includes("wma") ? ".wma" : ".webm";
 
   slot.addEventListener("click", async (ev) => {
     const dl = ev.target.closest && ev.target.closest("[data-mx-dl]");

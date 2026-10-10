@@ -213,7 +213,11 @@ export default async function (req, res) {
           : mime.includes('wav') ? 'wav'
             : mime.includes('ogg') ? 'ogg'
               : mime.includes('mp4') ? 'mp4'
-                : mime.includes('webm') ? 'webm' : 'bin';
+                : mime.includes('m4a') ? 'm4a'
+                  : mime.includes('aac') ? 'aac'
+                    : mime.includes('flac') ? 'flac'
+                      : mime.includes('wma') ? 'wma'
+                        : mime.includes('webm') ? 'webm' : 'bin';
         const key = (kind === 'video' ? 'films/' : 'episodes/') +
           Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.' + ext;
 

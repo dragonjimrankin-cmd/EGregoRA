@@ -91,7 +91,8 @@
 
       <div class="ds-insert">
         <label for="ds-{{ dsKind }}-ins">Insert audio at the playhead</label>
-        <input type="file" id="ds-{{ dsKind }}-ins" data-ds="ins-file" accept="audio/*">
+        <input type="file" id="ds-{{ dsKind }}-ins" data-ds="ins-file"
+               accept="audio/*,video/mp4,.mp3,.wav,.flac,.aac,.m4a,.wma,.mp4">
         <div class="btn-row">
           <button type="button" class="btn btn--small" data-ds="insert" disabled>Insert it</button>
           <span class="muted xsmall">{% if dsKind == "video" %}Laid over the film from the playhead
