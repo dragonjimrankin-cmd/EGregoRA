@@ -222,6 +222,17 @@ const main = async () => {
   added.slice(0, 40).forEach((n) => console.log(`     + ${n}`));
   console.log(`   present here, absent live  : ${removed.length}`);
   removed.slice(0, 40).forEach((n) => console.log(`     - ${n}`));
+
+  /* Only a foreign deploy that CHANGED or ADDED something needs a human or an
+     agent to merge before we go. Files present in our bundle and absent live
+     are our own new work — deploying is precisely what adds them, so blocking
+     on them would mean a bundle can never grow. */
+  if (!changed.length && !added.length) {
+    console.log(`\n   The ${removed.length} file(s) above are ours and simply not live yet.`);
+    console.log("   Nothing foreign to merge. Safe to deploy.");
+    return 0;
+  }
+
   console.log(`\n   their versions are saved under ops/incoming/${KEY}/`);
   console.log("   DEPLOY SKIPPED. Merge, then deploy.");
   return 2;

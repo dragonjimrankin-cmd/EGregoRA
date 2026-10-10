@@ -14,6 +14,7 @@ on:
     - ops/tti-tools.flag
     - .github/workflows/tti-deploy.yml
     - scripts/oracle-validate.mjs
+    - scripts/hatchable-drift.mjs
     - ops/oracle-duplicate-baseline.json
     - ops/oracle-shadowed-baseline.json
 permissions:
