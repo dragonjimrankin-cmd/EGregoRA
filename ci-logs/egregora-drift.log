@@ -1,10 +1,10 @@
 project proj_eiuxpFfTnwwx
-live version: 196
-ours:         196
+live version: 197
+ours:         197
 ✓ no foreign deploy since ours. Safe to deploy.
    … 429 on tools/list, waiting 20s
    … 429 on tools/list, waiting 40s
 project proj_eiuxpFfTnwwx
-live version: 197
-ours:         196
-recorded version 197 in ops/egregora-deployed.json
+live version: 198
+ours:         197
+recorded version 198 in ops/egregora-deployed.json
