@@ -59,7 +59,23 @@ if (!PROJECT) { console.error("✖ no --project given."); process.exit(1); }
 /* ------------------------------------------------------------------ MCP --- */
 let sessionId = null, rpcId = 0;
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const MAX_TRIES = 5;
+
 async function rpc(method, params) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await rpcOnce(method, params);
+    } catch (err) {
+      if (!/HTTP 429/.test(err.message) || attempt >= MAX_TRIES) throw err;
+      const wait = 20000 * attempt;
+      console.log(`   … 429 on ${method}, waiting ${wait / 1000}s`);
+      await sleep(wait);
+    }
+  }
+}
+
+async function rpcOnce(method, params) {
   const headers = {
     "content-type": "application/json",
     accept: "application/json, text/event-stream",
