@@ -75,32 +75,17 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        put () {
-          P="$1"; M="$2"
-          [ -f "$P" ] || return 0
-          B64=$(base64 -w0 "$P")
-          SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
-          if [ -n "$SHA" ]; then
-            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
-              -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA" >/dev/null \
-              && echo "  published $P" || echo "  ! could not publish $P"
-          else
-            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
-              -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" >/dev/null \
-              && echo "  published $P" || echo "  ! could not publish $P"
-          fi
-        }
-        put ci-logs/tti-deploy.log "ci: two-infinities deploy log"
-        put ci-logs/tti-drift.log "ci: two-infinities drift check"
-        put ops/tti-deployed.json "ci: record the live two-infinities version"
+        bash scripts/ci-publish.sh ci-logs/tti-deploy.log "ci: two-infinities deploy log"
+        bash scripts/ci-publish.sh ci-logs/tti-drift.log "ci: two-infinities drift check"
+        bash scripts/ci-publish.sh ops/tti-deployed.json "ci: record the live two-infinities version"
         if [ -d ops/incoming/tti ]; then
           find ops/incoming/tti -type f | while read -r F; do
-            put "$F" "ci: a foreign deploy's copy of ${F#ops/incoming/tti/}"
+            bash scripts/ci-publish.sh "$F" "ci: a foreign deploy's copy of ${F#ops/incoming/tti/}"
           done
         fi
         PID="${{ steps.run.outputs.pid }}"
         if [ -n "$PID" ] && [ ! -f ops/tti-project.txt ]; then
           mkdir -p ops
           printf '%s\n' "$PID" > ops/tti-project.txt
-          put ops/tti-project.txt "ci: record the project id"
+          bash scripts/ci-publish.sh ops/tti-project.txt "ci: record the Two Infinities project id"
         fi
