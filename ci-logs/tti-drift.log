@@ -1,8 +1,10 @@
 project proj_U95i5y493z9x
-live version: 61
-ours:         61
-✓ no foreign deploy since ours. Safe to deploy.
-project proj_U95i5y493z9x
 live version: 62
-ours:         61
-recorded version 62 in ops/tti-deployed.json
+ours:         62
+✓ no foreign deploy since ours. Safe to deploy.
+   … 429 on initialize, waiting 20s
+   … 429 on initialize, waiting 40s
+project proj_U95i5y493z9x
+live version: 63
+ours:         62
+recorded version 63 in ops/tti-deployed.json
