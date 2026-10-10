@@ -71,7 +71,7 @@ class Page(HTMLParser):
 
 # Served by routed functions (hatchable/pages, hatchable/api) rather than by
 # a file in the build, so they will never appear under _site.
-LIVE_ROUTES = {"/feed.xml", "/ping"}
+LIVE_ROUTES = {"/feed", "/ping"}
 
 
 def built(path):
