@@ -49,33 +49,15 @@ jobs:
           tail -120 ci-logs/hatchable-inspect.log
 
       - name: Publish the log and anything pulled
+        if: always()
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          put () {
-            P="$1"; M="$2"
-            [ -f "$P" ] || return 0
-            # A large page base64s to more than the command line will carry, so
-            # the payload goes in a file and gh reads it with --input.
-            B64=$(base64 -w0 "$P")
-            SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
-            PAY=$(mktemp)
-            if [ -n "$SHA" ]; then
-              jq -n --arg m "$M" --arg c "$B64" --arg b "${GITHUB_REF_NAME}" --arg s "$SHA" \
-                '{message:$m, content:$c, branch:$b, sha:$s}' > "$PAY"
-            else
-              jq -n --arg m "$M" --arg c "$B64" --arg b "${GITHUB_REF_NAME}" \
-                '{message:$m, content:$c, branch:$b}' > "$PAY"
-            fi
-            if gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" --input "$PAY" >/dev/null; then
-              echo "  published $P"
-            else
-              echo "  ! could not publish $P"
-            fi
-            rm -f "$PAY"
-          }
-          put ci-logs/hatchable-inspect.log "ci: hatchable inspect"
+          bash scripts/ci-publish.sh ci-logs/hatchable-inspect.log "ci: hatchable inspect"
           for D in shakra ops/incoming; do
             [ -d "$D" ] || continue
-            find "$D" -type f | while read -r F; do put "$F" "ci: pull ${F}"; done
+            find "$D" -type f | while read -r F; do
+              bash scripts/ci-publish.sh "$F" "ci: pull ${F}"
+            done
           done
