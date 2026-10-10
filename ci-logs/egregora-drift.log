@@ -1,27 +1,8 @@
 project proj_eiuxpFfTnwwx
 live version: 204
-ours:         203
-
-✖ 1 deploy(s) landed since ours (v203 → v204).
-   Reading the live files so the two can be merged rather than one buried.
-
-   live project holds 212 files
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-
-   changed live vs our bundle : 1
-     ~ public/research/index.html
-   present live, absent here  : 4
-     + pages/feed.xml.js
-     + public/assets/audio/PLACE_AUDIO_HERE.txt
-     + public/assets/audio/README/index.html
-     + public/feed.xml
-   present here, absent live  : 1
-     - README.md
-
-   their versions are saved under ops/incoming/egregora/
-   DEPLOY SKIPPED. Merge, then deploy.
+ours:         204
+✓ no foreign deploy since ours. Safe to deploy.
+project proj_eiuxpFfTnwwx
+live version: 205
+ours:         204
+recorded version 205 in ops/egregora-deployed.json
