@@ -6,90 +6,6 @@ ours:         58
    Reading the live files so the two can be merged rather than one buried.
 
    live project holds 176 files
-   ! could not read lib/accounts.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/byok.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/captcha.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/colab.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/continuity.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/door.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/facecheck.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/freeai.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/gink-mind.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/gpu-scripts.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/imagegen.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/kaggle.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/key-store.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/mailing.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/openai.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/openchat.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-iii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-iv.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-ix.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-more.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-v.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-vi.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-vii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-viii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-x.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xi.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
-   ! could not read lib/oracle-corpus-xiii.js: tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}
    ! could not read lib/oracle-corpus-xiv.js: tools/call → HTTP 429: {
     "message": "Too Many Attempts."
 }
@@ -437,8 +353,7 @@ ours:         58
 }
 
    changed live vs our bundle : 0
-   present live, absent here  : 1
-     + AGENTS.md
+   present live, absent here  : 0
    present here, absent live  : 5
      - lib/oracle-corpus-xxix.js
      - lib/oracle-corpus-xxviii.js
