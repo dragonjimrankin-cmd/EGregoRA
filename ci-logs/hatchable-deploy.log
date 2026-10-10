@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-10T09:23:50Z
+# Hatchable deploy — 2026-10-10T10:55:15Z
 
 token present: 43 chars, prefix hb_
 
@@ -35,11 +35,57 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/img/product-cap.jpg (49 KB) via url import
   ✓ public/assets/img/product-cloak.jpg (69 KB) via url import
   ✓ public/assets/img/product-codex.jpg (198 KB) via url import
-  … url import failed (tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
-}), falling back to chunks
+  ✓ public/assets/img/product-cytoskeleton.jpg (68 KB) via url import
+  ✓ public/assets/img/product-deck.jpg (240 KB) via url import
+  ✓ public/assets/img/product-earrings.jpg (103 KB) via url import
+  ✓ public/assets/img/product-elements.jpg (153 KB) via url import
+  ✓ public/assets/img/product-glass.jpg (181 KB) via url import
+  ✓ public/assets/img/product-hoodie.jpg (87 KB) via url import
+  ✓ public/assets/img/product-journal.jpg (293 KB) via url import
+  ✓ public/assets/img/product-member.jpg (168 KB) via url import
+  ✓ public/assets/img/product-mug.jpg (68 KB) via url import
+  ✓ public/assets/img/product-orrery.jpg (135 KB) via url import
+  ✓ public/assets/img/product-pendant.jpg (111 KB) via url import
+  ✓ public/assets/img/product-runes.jpg (162 KB) via url import
+  ✓ public/assets/img/product-scarf.jpg (133 KB) via url import
+  ✓ public/assets/img/product-signet.jpg (79 KB) via url import
+  ✓ public/assets/img/product-skull.jpg (151 KB) via url import
+  ✓ public/assets/img/product-solids.jpg (153 KB) via url import
+  ✓ public/assets/img/product-tee.jpg (99 KB) via url import
+  ✓ public/assets/img/product-tote.jpg (52 KB) via url import
+  ✓ public/assets/img/product-tribunal.jpg (160 KB) via url import
+  ✓ public/assets/img/product-wheel.jpg (215 KB) via url import
+▸ dry_run_deploy
+  {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintUndeclaredEnvReads","
+▸ openai key probe: HTTP 429 — You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.
+▸ vision probe hf-router [Qwen/Qwen2.5-VL-7B-Instruct]: HTTP 401 — <!DOCTYPE html> <html class="" lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, ini
+▸ vision probe openai [gpt-4o-mini]: HTTP 429 — ERR {"message":"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billin
+▸ kaggle token: HTTP 200 — {"active":true,"username":"shakradragon","userId":36890995,"user_id":36890995,"scope":"resources.admin:*"}
+▸ deploy
 
-✖ tools/call → HTTP 429: {
-    "message": "Too Many Attempts."
+✔ Deployed.
+{
+  "project_name": "EGregoRA",
+  "project_public_id": "proj_eiuxpFfTnwwx",
+  "project_slug": "egregora",
+  "version": 196,
+  "url": "https://egregora.hatchable.site",
+  "status": "live",
+  "is_draft": false,
+  "public_url": "https://egregora.hatchable.site",
+  "draft_url": "https://egregora-draft.hatchable.site",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v195.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v196.png",
+  "console_url": "https://hatchable.com/console/projects/egregora",
+  "files_deployed": 200,
+  "functions_deployed": 26,
+  "warnings": [],
+  "visibility": "public",
+  "preview_url": null
 }
-exit=1
+
+   https://egregora.hatchable.site
+
+   Projects start PRIVATE. Flip visibility to public from the Hatchable console;
+   that is deliberately a dashboard-only action, not something MCP can do.
+exit=0
