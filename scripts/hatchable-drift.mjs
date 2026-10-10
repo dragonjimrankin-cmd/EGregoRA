@@ -46,6 +46,13 @@ const STATE = join(ROOT, "ops", `${KEY}-deployed.json`);
 const INCOMING = join(ROOT, "ops", "incoming", KEY);
 const BINARY = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".ico", ".woff", ".woff2", ".mp3", ".m4a", ".mp4"]);
 
+/* Files the Hatchable platform writes into a project itself. AGENTS.md is
+   regenerated on every read or deploy and says so at the top — it appearing
+   live and absent from our bundle is the platform doing its own bookkeeping,
+   not another agent shipping work. Skipping them keeps the drift check
+   pointed at changes that actually need merging. */
+const PLATFORM_GENERATED = new Set(["agents.md", "readme.md", "hatchable.toml"]);
+
 if (!TOKEN) { console.error("✖ HATCHABLE_TOKEN is not set."); process.exit(1); }
 if (!PROJECT) { console.error("✖ no --project given."); process.exit(1); }
 
@@ -194,7 +201,10 @@ const main = async () => {
       continue;
     }
     const mine = localFiles.get(name);
-    if (mine === undefined) { added.push(name); }
+    if (mine === undefined) {
+      if (PLATFORM_GENERATED.has(name.toLowerCase())) continue;
+      added.push(name);
+    }
     else if (norm(mine) !== norm(body)) { changed.push(name); }
     else continue;
     const dest = join(INCOMING, name);
