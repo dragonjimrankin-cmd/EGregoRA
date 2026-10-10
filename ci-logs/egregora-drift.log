@@ -1,8 +1,8 @@
 project proj_eiuxpFfTnwwx
-live version: 204
-ours:         204
+live version: 205
+ours:         205
 ✓ no foreign deploy since ours. Safe to deploy.
 project proj_eiuxpFfTnwwx
-live version: 205
-ours:         204
-recorded version 205 in ops/egregora-deployed.json
+live version: 206
+ours:         205
+recorded version 206 in ops/egregora-deployed.json
