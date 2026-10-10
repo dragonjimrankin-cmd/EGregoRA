@@ -1,6 +1,6 @@
 name: Deploy to Hatchable
-true:
-  workflow_dispatch: null
+on:
+  workflow_dispatch:
   push:
     branches:
     - arena/01a10807-egregora
