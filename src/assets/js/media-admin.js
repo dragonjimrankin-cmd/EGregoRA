@@ -1517,7 +1517,15 @@ function setup(root) {
               '<figcaption class="plate-cap"><span class="muted xsmall" data-cap></span></figcaption></div>'
             : "") +
           (i.url ? '<audio class="player" controls preload="none" src="' + esc(i.url) +
-            '" data-for="' + i.id + '"></audio>' : "") +
+            '" data-for="' + i.id + '"></audio>' +
+            '<p class="ep-actions">' +
+            '<button type="button" class="btn btn--small" data-mx-dl="' + i.id +
+            '" data-mx-url="' + esc(i.url) + '">Download the episode</button>' +
+            (i.has_transcript
+              ? '<button type="button" class="btn btn--small btn--ghost" data-mx-tr="' + i.id +
+                '" data-mx-title="' + esc(i.title) + '">Download the transcript</button>'
+              : "") +
+            "</p>" : "") +
           "</div></details>"
         : '<article class="frame card' + (i.pinned ? " is-pinned" : "") + '">' +
           (i.pinned ? '<p class="pin-mark">pinned</p>' : "") +
@@ -1527,6 +1535,8 @@ function setup(root) {
           (i.summary ? "<p>" + esc(i.summary) + "</p>" : "") +
           (i.tags.length ? '<p class="muted xsmall">' + esc(i.tags.join(" \u00b7 ")) + "</p>" : "") +
           "</article>").join("");
+      if (window.EGPlayerSweep) window.EGPlayerSweep(slot);
+
       /* A plate rises as the sound reaches it. The cover stands until the
          first cue, and each cue holds until the next. */
       items.forEach((i) => {
@@ -1552,6 +1562,56 @@ function setup(root) {
       slot.hidden = true;
     }
   }
+
+  const save = (blob, name) => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.setTimeout(() => URL.revokeObjectURL(a.href), 20000);
+  };
+  const extFor = (t) => String(t || "").includes("mpeg") ? ".mp3"
+    : String(t || "").includes("wav") ? ".wav"
+      : String(t || "").includes("ogg") ? ".ogg"
+        : String(t || "").includes("mp4") ? ".mp4" : ".webm";
+
+  slot.addEventListener("click", async (ev) => {
+    const dl = ev.target.closest && ev.target.closest("[data-mx-dl]");
+    const tr = ev.target.closest && ev.target.closest("[data-mx-tr]");
+    if (dl) {
+      const url = dl.getAttribute("data-mx-url");
+      if (!url) return;
+      dl.disabled = true;
+      try {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error();
+        const b = await r.blob();
+        save(b, "egregora-episode-" + dl.getAttribute("data-mx-dl") + extFor(b.type));
+      } catch { save(new Blob([], { type: "text/plain" }), "egregora-episode.txt"); }
+      dl.disabled = false;
+    }
+    if (tr) {
+      tr.disabled = true;
+      try {
+        const r = await fetch("/api/media", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "transcript", id: Number(tr.getAttribute("data-mx-tr")) })
+        });
+        const d = await r.json();
+        if (d && d.ok) {
+          const head = "EGregoRA \u2014 " + (d.title || "episode") +
+            "\nTranscript as kept when the episode was posted.\n\n";
+          save(new Blob([head + (d.transcript || "(no words were kept)")],
+            { type: "text/plain" }),
+            "egregora-transcript-" + tr.getAttribute("data-mx-tr") + ".txt");
+        }
+      } catch { /* a failed fetch is a quiet no-op; the button returns */ }
+      tr.disabled = false;
+    }
+  });
 
   window.EGMediaRefresh = load;
   load();

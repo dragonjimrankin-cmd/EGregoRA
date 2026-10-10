@@ -144,5 +144,14 @@
       </table>
       <p class="muted small" data-ds="empty">Nothing archived on this device yet.</p>
     </div>
+
+    {% if dsKind == "audio" %}
+    <div class="btn-row ds-post-row">
+      <button type="button" class="btn" data-ds="post">Post as podcast on the site</button>
+      <span class="muted xsmall" data-ds="post-note">Sends the recording open in the editor above
+      through the Admin Only door. It joins the episode list on this page and the RSS feed, with
+      its transcript if one was kept.</span>
+    </div>
+    {% endif %}
   </div>
 </section>

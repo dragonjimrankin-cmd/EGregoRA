@@ -3487,3 +3487,88 @@ table.ledger th {
   color: #cbbb93;
 }
 table.ledger tbody tr:last-child td { border-bottom: 0; }
+
+/* ------------------------------------------------ the house player
+
+   The canvas listens to the sound; the transport underneath is plain and
+   exact. Gold on paper, like the rest of the house. */
+.fx-player {
+  position: relative;
+  margin-top: 0.9rem;
+  border: 1px solid rgba(215, 176, 90, 0.35);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(215, 176, 90, 0.08), transparent 65%),
+    #0d0a05;
+  padding: 0.6rem 0.6rem 0.8rem;
+}
+.fx-player audio { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.fx-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+.fx-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.4rem;
+}
+.fx-play {
+  flex: 0 0 auto;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid rgba(215, 176, 90, 0.6);
+  border-radius: 50%;
+  background: transparent;
+  color: #f3ddaa;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: box-shadow 0.25s, background 0.25s;
+}
+.fx-play:hover { background: rgba(215, 176, 90, 0.14); box-shadow: 0 0 14px rgba(215, 176, 90, 0.35); }
+.fx-time {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  color: #cbbb93;
+  font-variant-numeric: tabular-nums;
+  min-width: 3.2ch;
+}
+.fx-seek {
+  flex: 1 1 auto;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(215, 176, 90, 0.28);
+  outline: none;
+  cursor: pointer;
+}
+.fx-seek::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #f3ddaa;
+  box-shadow: 0 0 8px rgba(215, 176, 90, 0.6);
+}
+.fx-seek::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: #f3ddaa;
+  box-shadow: 0 0 8px rgba(215, 176, 90, 0.6);
+}
+
+/* Buttons that sit with an episode: download, transcript. */
+.ep-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.7rem 0 0;
+}
+
+/* The door out of the device archive and onto the site. */
+.ds-post-row { margin-top: 0.9rem; }

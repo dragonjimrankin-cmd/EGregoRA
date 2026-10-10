@@ -1,6 +1,11 @@
 export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
 
+  /* Notes left in the asset folders (README.md and the like) are for a
+     person with a clone, not pages: without this, Eleventy renders them
+     into bare HTML with no title and the site checks rightly complain. */
+  eleventyConfig.ignores.add("src/assets/**/*.md");
+
   /* Trigonometry in the templates, so a mark made of eleven evenly spaced
      points can be drawn from the number eleven rather than from eleven
      hand-typed coordinates that nobody can check. */

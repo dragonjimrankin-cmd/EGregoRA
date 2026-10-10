@@ -246,7 +246,8 @@ function setup(root) {
     insFile: d("ins-file"), insert: d("insert"),
     bar: d("bar"), msg: d("msg"), name: d("name"),
     archive: d("archive"), download: d("download"),
-    rows: d("rows"), empty: d("empty"), table: d("table")
+    rows: d("rows"), empty: d("empty"), table: d("table"),
+    post: d("post"), postNote: d("post-note")
   };
 
   let stream = null;
@@ -254,6 +255,10 @@ function setup(root) {
   let chunks = [];
   let ticking = 0;
   let pending = null;       /* the blob just recorded, awaiting keep or bin */
+  let pendingTranscript = "";  /* what the ear caught while recording */
+  let liveWords = [];
+  let liveRec = null;
+  let workTranscript = "";    /* transcript travelling with the editor blob */
   let workBlob = null;      /* what the editor is holding */
   let workId = null;        /* if it came out of the archive, which row */
   let history = [];
@@ -362,6 +367,9 @@ function setup(root) {
     rec = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
     rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
     rec.onstop = () => {
+      if (liveRec) { const r = liveRec; liveRec = null; try { r.stop(); } catch (e) {} }
+      pendingTranscript = liveWords.join(" ").trim();
+      liveWords = [];
       const blob = new Blob(chunks, { type: rec.mimeType || type || (KIND === "video" ? "video/webm" : "audio/webm") });
       pending = blob;
       shutStream();
@@ -376,6 +384,30 @@ function setup(root) {
       rec = null;
     };
     rec.start(1000);
+
+    /* The ear: live recognition while the recorder runs, so a recording
+       carries its own transcript out to the site. Where the browser has no
+       recognition the recording still works; the transcript is simply absent. */
+    liveWords = [];
+    liveRec = null;
+    if (KIND === "audio") {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SR) {
+        try {
+          liveRec = new SR();
+          liveRec.continuous = true;
+          liveRec.interimResults = false;
+          liveRec.lang = "en-GB";
+          liveRec.onresult = (e) => {
+            for (let i = e.resultIndex; i < e.results.length; i++)
+              if (e.results[i].isFinal) liveWords.push(String(e.results[i][0].transcript).trim());
+          };
+          liveRec.onerror = () => {};
+          liveRec.onend = () => { if (rec && liveRec) { try { liveRec.start(); } catch (e) {} } };
+          liveRec.start();
+        } catch (e) { liveRec = null; }
+      }
+    }
 
     ticking = 0;
     el.clock.textContent = "0:00";
@@ -404,6 +436,8 @@ function setup(root) {
     if (!pending) return;
     el.keep.hidden = true;
     loadIntoEditor(pending, null, (KIND === "video" ? "Film" : "Recording") + " of " + when(Date.now()));
+    workTranscript = pendingTranscript || "";
+    pendingTranscript = "";
     pending = null;
   });
   if (el.keepNo) el.keepNo.addEventListener("click", () => {
@@ -680,6 +714,7 @@ function setup(root) {
       seconds: Math.round(span() || 0),
       made: workId ? undefined : Date.now(),
       saved: Date.now(),
+      transcript: workTranscript || "",
       blob: workBlob
     };
     if (rec2.made === undefined) {
@@ -690,6 +725,102 @@ function setup(root) {
     workId = rec2.id;
     await refreshFiles();
     say("Kept in this device's archive as " + rec2.name + ".");
+  }));
+
+
+  /* --------------------------------------------- posting to the site
+
+     The archive lives on this device; the site lives on the shelf. This is
+     the bridge: the file goes through the same chunked door the Admin Only
+     panel uses (/api/media), is published at once, and therefore joins the
+     episode list on this page and the living RSS feed in the same minute.
+     A transcript, if the ear kept one, goes with it.                       */
+  const PASS_KEY = "eg-publish-pass";
+
+  const mediaCall = (body) => fetch("/api/media", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  function b64blob(blob) {
+    return blob.arrayBuffer().then((buf) => {
+      const u = new Uint8Array(buf);
+      let out = "";
+      for (let i = 0; i < u.length; i += 0x8000)
+        out += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000));
+      return window.btoa(out);
+    });
+  }
+
+  async function postToSite(blob, name, seconds, transcript) {
+    let pass = window.sessionStorage ? window.sessionStorage.getItem(PASS_KEY) : null;
+    if (!pass) pass = window.prompt("The Admin Only passcode, to publish this recording:");
+    if (!pass) return { ok: false, why: "No passcode — nothing was sent." };
+    const upload = "ds-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+    const mime = blob.type || "audio/webm";
+    for (let attempt = 0; attempt < 3; attempt++) {
+      let r = await mediaCall({ action: "begin", pass, upload, mime });
+      let d = await r.json().catch(() => ({}));
+      if (r.status === 401 || r.status === 403) {
+        if (window.sessionStorage) window.sessionStorage.removeItem(PASS_KEY);
+        pass = window.prompt("The door refused that passcode" +
+          (d.error ? " (" + d.error + ")" : "") + ". Again:");
+        if (!pass) return { ok: false, why: "The door stayed shut; nothing was sent." };
+        continue;
+      }
+      if (!r.ok) return { ok: false, why: d.error || "The door would not open." };
+
+      const STEP = 1024 * 1024;
+      const pieces = Math.max(1, Math.ceil(blob.size / STEP));
+      let seq = 0;
+      for (let at = 0; at < blob.size; at += STEP) {
+        const part = await b64blob(blob.slice(at, at + STEP));
+        r = await mediaCall({ action: "chunk", pass, upload, seq, part });
+        if (!r.ok) { d = await r.json().catch(() => ({})); return { ok: false, why: d.error || "A piece would not arrive." }; }
+        seq += 1;
+        if (el.postNote) el.postNote.textContent = "Sending piece " + seq + " of " + pieces + "\u2026";
+      }
+
+      r = await mediaCall({
+        action: "finish", pass, upload, kind: "audio",
+        title: (name || "Recording " + new Date().toISOString().slice(0, 10)).slice(0, 200),
+        summary: "Posted from the device studio on this site.",
+        mime, seconds: Math.round(seconds || 0) || null,
+        transcript: transcript || null
+      });
+      d = await r.json().catch(() => ({}));
+      if (r.status === 401 || r.status === 403) {
+        if (window.sessionStorage) window.sessionStorage.removeItem(PASS_KEY);
+        pass = window.prompt("The door refused that passcode. Again:");
+        if (!pass) return { ok: false, why: "The door stayed shut; nothing was sent." };
+        continue;
+      }
+      if (!r.ok || !d.ok) return { ok: false, why: d.error || "The shelf would not take it." };
+      if (window.sessionStorage) window.sessionStorage.setItem(PASS_KEY, pass);
+      return { ok: true, item: d.item };
+    }
+    return { ok: false, why: "The door stayed shut; nothing was sent." };
+  }
+
+  function announced(done) {
+    const num = done.item && done.item.number ? "Episode " + done.item.number : "The episode";
+    if (window.EGMediaRefresh) window.EGMediaRefresh();
+    return num + " is live on this page, and the RSS feed carries it now.";
+  }
+
+  if (el.post) el.post.addEventListener("click", () => withGuard("Posting to the site", async () => {
+    if (!workBlob) throw new Error("open a recording in the editor first \u2014 Edit, from the table above");
+    if (el.postNote) el.postNote.textContent = "Sending\u2026";
+    const done = await postToSite(workBlob, el.name && el.name.value, span(), workTranscript);
+    if (!done.ok) {
+      if (el.postNote) el.postNote.textContent = done.why;
+      say(done.why, true);
+      return;
+    }
+    const line = announced(done);
+    if (el.postNote) el.postNote.textContent = line;
+    say(line);
   }));
 
   /* -------------------------------------------------------- the file table */
@@ -738,6 +869,7 @@ function setup(root) {
           return;
         }
         loadIntoEditor(full.blob, full.id, full.name);
+        workTranscript = full.transcript || "";
         refreshFiles();
       });
       if (!mine) edit.classList.add("is-elsewhere");
@@ -761,6 +893,15 @@ function setup(root) {
         a.click();
         a.remove();
         window.setTimeout(() => URL.revokeObjectURL(a.href), 20000);
+      }, true);
+      if (f.kind === "audio") make("Post as podcast", async () => {
+        const full = await store.get(f.id);
+        if (!full) return;
+        say("Sending " + (full.name || "the recording") + " to the site\u2026");
+        const done = await postToSite(full.blob, full.name, full.seconds, full.transcript);
+        if (!done.ok) { say(done.why, true); return; }
+        say(announced(done));
+        refreshFiles();
       }, true);
       make("Delete", async () => {
         if (!window.confirm("Delete " + (f.name || "this file") + " from this device?")) return;

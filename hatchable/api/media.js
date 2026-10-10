@@ -108,6 +108,8 @@ async function dress(row) {
     state: row.state,
     pinned: Number(row.pinned) || 0,
     date: row.created_at ? new Date(row.created_at).toISOString().slice(0, 10) : '',
+    mime: row.mime || '',
+    has_transcript: !!(row.transcript && String(row.transcript).trim()),
     url
   };
 }
@@ -129,6 +131,23 @@ export default async function (req, res) {
     } catch (err) {
       console.error('media: the shelf could not be read', err && err.message);
       return res.json({ ok: true, items: [] });
+    }
+  }
+
+  /* The words of a published episode, for the transcript button. Public,
+     like the list: what is published is published. */
+  if (action === 'transcript') {
+    const id = Number(body.id);
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'Which episode?' });
+    try {
+      const { rows } = await db.query(
+        'SELECT title, state, transcript FROM media WHERE id = $1', [id]);
+      if (!rows || !rows.length) return res.status(404).json({ error: 'No episode by that number.' });
+      if (rows[0].state !== 'published') return res.status(404).json({ error: 'That episode is not on the shelf.' });
+      return res.json({ ok: true, title: rows[0].title, transcript: rows[0].transcript || '' });
+    } catch (err) {
+      console.error('media: the transcript could not be read', err && err.message);
+      return res.status(500).json({ error: 'The shelf could not be read.' });
     }
   }
 
