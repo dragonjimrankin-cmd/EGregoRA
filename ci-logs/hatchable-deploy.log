@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-10T16:31:37Z
+# Hatchable deploy — 2026-10-10T16:42:28Z
 
 token present: 43 chars, prefix hb_
 
@@ -18,8 +18,8 @@ hatchable.com/mcp -> HTTP 200
   ✓ lib/oracle-corpus-xviii.js, lib/oracle-corpus-xx.js, lib/oracle-corpus-xxi.js, lib/oracle-corpus-xxii.js, lib/…
   ✓ lib/oracle-corpus-xxxviii.js, lib/oracle-corpus.js, lib/pool.js, lib/site-map.js, lib/tokens.js, lib/twin.js, …
   ✓ migrations/0013_colab_caps.sql, migrations/0014_continuity.sql, migrations/0015_pool.sql, migrations/0016_keep…
-  ✓ public/assets/audio/README.md, public/assets/css/main.css, public/assets/img/sigil.svg, public/assets/js/admin…
-  ✓ public/assets/js/vendor/lamejs.js, public/assets/js/vendor/three.module.js, public/astrology/index.html, publi…
+  ✓ public/ask-ed/index.html, public/assets/audio/README.md, public/assets/css/main.css, public/assets/img/sigil.s…
+  ✓ public/assets/js/sky.js, public/assets/js/vendor/lamejs.js, public/assets/js/vendor/three.module.js, public/as…
   ✓ public/music/index.html, public/neurobiology/index.html, public/occult/index.html, public/podcast/index.html, …
 ▸ uploading 33 binary assets (server-side URL import)
   ✓ public/assets/img/apple-touch-icon.png (47 KB) via url import
@@ -68,17 +68,17 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 201,
+  "version": 202,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v200.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v201.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v201.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v202.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
-  "files_deployed": 209,
-  "functions_deployed": 27,
+  "files_deployed": 210,
+  "functions_deployed": 28,
   "warnings": [],
   "visibility": "public",
   "preview_url": null
