@@ -55,16 +55,24 @@ jobs:
           put () {
             P="$1"; M="$2"
             [ -f "$P" ] || return 0
+            # A large page base64s to more than the command line will carry, so
+            # the payload goes in a file and gh reads it with --input.
             B64=$(base64 -w0 "$P")
             SHA=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${P}?ref=${GITHUB_REF_NAME}" -q .sha 2>/dev/null || true)
+            PAY=$(mktemp)
             if [ -n "$SHA" ]; then
-              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
-                -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" -f sha="$SHA" >/dev/null
+              jq -n --arg m "$M" --arg c "$B64" --arg b "${GITHUB_REF_NAME}" --arg s "$SHA" \
+                '{message:$m, content:$c, branch:$b, sha:$s}' > "$PAY"
             else
-              gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" \
-                -f message="$M" -f content="$B64" -f branch="${GITHUB_REF_NAME}" >/dev/null
+              jq -n --arg m "$M" --arg c "$B64" --arg b "${GITHUB_REF_NAME}" \
+                '{message:$m, content:$c, branch:$b}' > "$PAY"
             fi
-            echo "published $P"
+            if gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${P}" --input "$PAY" >/dev/null; then
+              echo "  published $P"
+            else
+              echo "  ! could not publish $P"
+            fi
+            rm -f "$PAY"
           }
           put ci-logs/hatchable-inspect.log "ci: hatchable inspect"
           for D in shakra ops/incoming; do
