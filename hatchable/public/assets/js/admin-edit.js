@@ -178,6 +178,27 @@
   if (document.readyState === "complete") setTimeout(applyPublished, 0);
   else addEventListener("load", function () { setTimeout(applyPublished, 0); });
 
+  /* A page whose source was saved through the Source tab is served in place
+     of the built file: the browser writes it over the document, exactly as
+     if the file itself had been edited on the platform. The written page
+     carries a flag so it does not write itself again. */
+  if (!window.__aeSourceDone) {
+    fetch("/api/edit", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "source", page: PAGE })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d || !d.html) return;
+      window.__aeSourceDone = true;
+      var head = d.html.replace(/<head(\s|>)/i, function (m, sp) {
+        return "<head" + sp + "<scr" + "ipt>window.__aeSourceDone=1;</scr" + "ipt>";
+      });
+      document.open();
+      document.write(head);
+      document.close();
+    }).catch(function () { /* the built page stands */ });
+  }
+
   /* --------------------------------------------------------- the button */
   var mount = document.createElement("div");
   mount.className = "admin-edit-mount";
@@ -238,6 +259,9 @@
       '  <button type="button" class="btn btn--small btn--ghost ae-one">Click one element</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-clear" disabled>Clear</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-log">Log</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-undo-pub" title="Undo the last published change on this page">Undo</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-redo-pub" title="Bring back the last undone change">Redo</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-signins">Sign-ins</button>',
       '</div>',
       '<p class="ae-count muted xsmall">Nothing selected yet.</p>',
 
@@ -245,6 +269,7 @@
       '  <button type="button" class="ae-tab is-on" data-tab="words" role="tab">Words</button>',
       '  <button type="button" class="ae-tab" data-tab="look" role="tab">Look</button>',
       '  <button type="button" class="ae-tab" data-tab="ask" role="tab">Ask</button>',
+      '  <button type="button" class="ae-tab" data-tab="source" role="tab">Source</button>',
       '</div>',
 
       /* ---- verbatim words ------------------------------------------- */
@@ -252,7 +277,11 @@
       '  <label class="ae-label" for="ae-verbatim">The selected words, exactly as they are. ',
       '  Edit them and apply \u2014 nothing is interpreted.</label>',
       '  <textarea id="ae-verbatim" class="ae-prompt ae-verbatim" rows="4"></textarea>',
-      '  <div class="ae-row"><button type="button" class="btn btn--small ae-words">Apply these words</button></div>',
+      '  <div class="ae-row">',
+      '    <button type="button" class="btn btn--small ae-words">Apply these words</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-para" ',
+      '    title="Rewrite the selection in the house voice, checked against the order\u2019s current knowledge">Paraphrase</button>',
+      '  </div>',
       '</section>',
 
       /* ---- look ------------------------------------------------------ */
@@ -291,6 +320,17 @@
       '  </div>',
       '</section>',
 
+      /* ---- source: the whole page, edited like a file ----------------- */
+      '<section class="ae-pane" data-pane="source" hidden>',
+      '  <p class="muted xsmall">The entire page as one document, edited the way the platform edits a ',
+      '  file. Every save writes a backup first, and any backup can be restored from the log.</p>',
+      '  <textarea class="ae-prompt ae-source" rows="12" spellcheck="false"></textarea>',
+      '  <div class="ae-row">',
+      '    <button type="button" class="btn btn--small ae-src-load">Load the page source</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-src-save">Save the source (backs up first)</button>',
+      '  </div>',
+      '</section>',
+
       '<div class="ae-draft" hidden></div>',
       '<div class="ae-row ae-confirm" hidden>',
       '  <button type="button" class="btn btn--small ae-publish">Confirm and publish</button>',
@@ -321,6 +361,12 @@
     q(".ae-redo").addEventListener("click", function () { step(1); });
     q(".ae-publish").addEventListener("click", publish);
     q(".ae-revert").addEventListener("click", revertPreview);
+    q(".ae-para").addEventListener("click", paraphrase);
+    q(".ae-undo-pub").addEventListener("click", function () { pubStep("undo"); });
+    q(".ae-redo-pub").addEventListener("click", function () { pubStep("redo"); });
+    q(".ae-signins").addEventListener("click", showSignins);
+    q(".ae-src-load").addEventListener("click", loadSource);
+    q(".ae-src-save").addEventListener("click", saveSource);
     panel.querySelectorAll(".ae-tab").forEach(function (b) {
       b.addEventListener("click", function () {
         panel.querySelectorAll(".ae-tab").forEach(function (o) { o.classList.remove("is-on"); });
@@ -777,6 +823,87 @@
     }).catch(function (err) {
       out.innerHTML = "<p class=\"ae-msg is-bad\">" + (err.message || "The log would not open.") + "</p>";
     });
+  }
+
+  /* Paraphrase the selected words against the order's most current
+     knowledge. The server consults the corpus and the site map first and
+     tells the model it may not contradict them; the result lands in the
+     verbatim box, where it stays editable until it is applied. */
+  function paraphrase() {
+    var ta = q(".ae-verbatim");
+    var text = (ta && ta.value) || selectedText();
+    if (!text || !text.trim()) return say("Select some words to paraphrase first.", true);
+    say("Paraphrasing against the order's knowledge\u2026");
+    post({ action: "paraphrase", pass: pass, page: PAGE, text: text }).then(function (d) {
+      if (ta) ta.value = d.paraphrase;
+      say("Paraphrased, checked against " + (d.checked || 0) + " entries of the order's knowledge" +
+        (d.via ? " (" + d.via + ")" : "") + ". Read it, then Apply these words.");
+    }).catch(function (err) { say(err.message || "It would not paraphrase.", true); });
+  }
+
+  /* Undo / redo the most recent published change on this page, then reload
+     so the administrator sees what a visitor will. */
+  function pubStep(want) {
+    post({ action: "list", pass: pass, page: PAGE }).then(function (d) {
+      var pick = null;
+      var edits = d.edits || [];
+      for (var i = 0; i < edits.length; i++) {
+        if (edits[i].state === (want === "undo" ? "live" : "undone")) { pick = edits[i]; break; }
+      }
+      if (!pick) return say(want === "undo"
+        ? "Nothing published on this page to undo."
+        : "Nothing undone on this page to redo.", true);
+      post({ action: want, pass: pass, id: pick.id }).then(function () {
+        say((want === "undo" ? "Undone" : "Redone") + " \u2014 reloading.");
+        setTimeout(function () { location.reload(); }, 600);
+      }).catch(function (err) { say(err.message || "That would not " + want + ".", true); });
+    }).catch(function (err) { say(err.message || "The log could not be read.", true); });
+  }
+
+  /* The sign-in ledger: who came through the door, how, and when. */
+  function showSignins() {
+    var out = q(".ae-log-out");
+    if (!out) return;
+    out.hidden = false;
+    out.innerHTML = "<p class=\"muted xsmall\">Reading the ledger\u2026</p>";
+    post({ action: "signins", pass: pass }).then(function (d) {
+      var rows = (d.signins || []).map(function (r) {
+        return "<tr><td>" + String((r.name || "") + " " + (r.email || ""))
+          .replace(/[<&]/g, "") + "</td><td>" + String(r.how || "").replace(/[<&]/g, "") +
+          "</td><td>" + String(r.at || "").slice(0, 16).replace(/[<&]/g, "") + "</td></tr>";
+      }).join("");
+      out.innerHTML = rows
+        ? "<p class=\"muted xsmall\">Every sign-in is kept, and a note goes to the order's address each time.</p>" +
+          "<div class=\"table-scroll\"><table class=\"ae-table\"><thead><tr><th>Who</th><th>How</th>" +
+          "<th>When</th></tr></thead><tbody>" + rows + "</tbody></table></div>"
+        : "<p class=\"muted xsmall\">No sign-ins kept yet.</p>";
+    }).catch(function (err) {
+      out.innerHTML = "<p class=\"ae-msg is-bad\">" + (err.message || "The ledger would not open.") + "</p>";
+    });
+  }
+
+  /* ------------------------------------------------- the page as a file */
+  function loadSource() {
+    var ta = q(".ae-source");
+    if (!ta) return;
+    post({ action: "source", page: PAGE }).then(function (d) {
+      if (d && d.html) { ta.value = d.html; say("The saved source is in the box."); return; }
+      return fetch(PAGE).then(function (r) { return r.text(); }).then(function (t) {
+        ta.value = t;
+        say("The served page is in the box \u2014 no saved source yet.");
+      });
+    }).catch(function (err) { say(err.message || "The source could not be loaded.", true); });
+  }
+
+  function saveSource() {
+    var ta = q(".ae-source");
+    if (!ta || !ta.value || ta.value.length < 40) return say("Load the source first.", true);
+    if (!window.confirm("Save the whole page as edited? A backup of what stands now is kept, " +
+      "and every visitor will see the new page.")) return;
+    post({ action: "save-source", pass: pass, page: PAGE, html: ta.value }).then(function () {
+      say("Saved, with a backup kept \u2014 reloading.");
+      setTimeout(function () { location.reload(); }, 600);
+    }).catch(function (err) { say(err.message || "It would not save.", true); });
   }
 
   /* ----------------------------------------------------------- the door */

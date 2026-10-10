@@ -3,6 +3,7 @@ import { db } from 'hatchable';
 import { cleanEmail, checkCode, startSession, SESSION_DAYS } from '../lib/accounts.js';
 import { sendWelcome } from '../lib/mailing.js';
 import { mirror } from '../lib/twin.js';
+import { noteSignin } from '../lib/signin-note.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -24,6 +25,10 @@ export default async function (req, res) {
     if (!ok) return res.status(401).json({ error: 'That code is wrong, used, or older than fifteen minutes.' });
 
     const token = await startSession(member.id, 'email');
+
+    /* The ledger and the post: every sign-in is kept, and the order's
+       address is told. Neither may fail the sign-in. */
+    noteSignin(member, 'emailed code').catch(() => {});
 
     /* First time through: welcome them, and put them on the list. The letter
        itself says they are on it and carries the way off at its foot. */

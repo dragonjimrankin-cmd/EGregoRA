@@ -3617,3 +3617,12 @@ table.ledger tbody tr:last-child td { border-bottom: 0; }
 textarea.am-ear[readonly] { opacity: 0.92; }
 .ep-sum .btn { vertical-align: baseline; margin-left: 0.4rem; }
 .am-cut input[type="file"] { font-family: var(--serif); font-size: 0.85rem; color: var(--vellum-dim); }
+
+/* ---- the Source tab: the whole page as one editable document ---------- */
+.ae-source {
+  font-family: "Courier New", monospace;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+}

@@ -19,6 +19,7 @@ import {
   whoAmI, cleanEmail, newChallenge, takeChallenge,
   verifyAssertion, authFlags, parseClientData, startSession, b64url
 } from '../lib/accounts.js';
+import { noteSignin } from '../lib/signin-note.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -146,6 +147,10 @@ export default async function (req, res) {
 
       await db.query('UPDATE member_passkeys SET last_used = NOW() WHERE id = $1', [key.id]);
       const token = await startSession(key.member_id, 'passkey');
+
+      /* The ledger and the post: every sign-in is kept, and the order's
+         address is told. Neither may fail the sign-in. */
+      noteSignin({ email: key.email, name: key.name }, 'passkey').catch(() => {});
       return res.json({
         ok: true, token,
         member: { id: key.member_id, email: key.email, name: key.name, verified: true }
