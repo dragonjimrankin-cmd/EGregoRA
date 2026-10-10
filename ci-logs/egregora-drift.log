@@ -1,8 +1,7 @@
 project proj_eiuxpFfTnwwx
-live version: 194
-ours:         <never recorded>
-first run: nothing to compare against. Deploy, then --record.
-project proj_eiuxpFfTnwwx
 live version: 195
-ours:         <never recorded>
-recorded version 195 in ops/egregora-deployed.json
+ours:         195
+✓ no foreign deploy since ours. Safe to deploy.
+drift check failed: initialize → HTTP 429: {
+    "message": "Too Many Attempts."
+}
