@@ -361,5 +361,8 @@ ours:         58
      - lib/oracle-corpus-xxxi.js
      - lib/oracle-corpus-xxxii.js
 
-   their versions are saved under ops/incoming/tti/
-   DEPLOY SKIPPED. Merge, then deploy.
+   The 5 file(s) above are ours and simply not live yet.
+   Nothing foreign to merge. Safe to deploy.
+drift check failed: initialize → HTTP 429: {
+    "message": "Too Many Attempts."
+}
