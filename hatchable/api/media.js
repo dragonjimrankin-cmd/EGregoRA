@@ -45,8 +45,36 @@ import { doors as freeDoors, freeChat } from '../lib/freeai.js';
 export const access = 'public';
 export const methods = ['POST'];
 
-const MAX_BYTES = 220 * 1024 * 1024;      /* a long episode, comfortably */
+const MAX_BYTES = 460 * 1024 * 1024;      /* a long episode as raw WAV, comfortably */
 const MAX_CHUNK = 1.4 * 1024 * 1024;      /* base64, per request */
+
+/* Glue an upload's chunks into one buffer without ever holding the base64
+   AND the decoded bytes AND a concatenation of both at once — the old
+   Buffer.concat path peaked at roughly triple the file size and died with
+   "Array buffer allocation failed" on a 39-minute WAV. The size is measured
+   from the base64 lengths alone, one buffer is allocated once, and the parts
+   are decoded into it a page at a time. */
+async function assemble(db, upload) {
+  const { rows: [meta] } = await db.query(
+    `SELECT COUNT(*)::int AS n,
+            COALESCE(SUM(LENGTH(part)), 0)::int AS b64,
+            COALESCE(SUM(CASE WHEN part LIKE '%==' THEN 2
+                              WHEN part LIKE '%='  THEN 1 ELSE 0 END), 0)::int AS pad
+       FROM media_chunks WHERE upload_id = $1`, [upload]);
+  const count = meta ? meta.n : 0;
+  const total = meta ? Math.floor(meta.b64 / 4) * 3 - meta.pad : 0;
+  if (!count || total <= 0) return { whole: null, count: 0 };
+  const whole = Buffer.allocUnsafeSlow(total);
+  const PAGE = 48;
+  let off = 0;
+  for (let at = 0; at < count; at += PAGE) {
+    const { rows } = await db.query(
+      'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC LIMIT $2 OFFSET $3',
+      [upload, PAGE, at]);
+    for (const r of rows) off += whole.write(r.part, off, 'base64');
+  }
+  return { whole, count };
+}
 const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
@@ -741,12 +769,8 @@ export default async function (req, res) {
         if (!upload) return res.status(400).json({ error: 'No upload name.' });
         if (!title) return res.status(400).json({ error: 'It needs a title before it can be published.' });
 
-        const { rows } = await db.query(
-          'SELECT seq, part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
-        if (!rows || !rows.length) return res.status(400).json({ error: 'Nothing arrived. Try the upload again.' });
-
-        const whole = Buffer.concat(rows.map((r) => Buffer.from(r.part, 'base64')));
-        if (!whole.length) return res.status(400).json({ error: 'The file came through empty.' });
+        const { whole, count } = await assemble(db, upload);
+        if (!count || !whole || !whole.length) return res.status(400).json({ error: 'Nothing arrived. Try the upload again.' });
         if (whole.length > MAX_BYTES) {
           await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]);
           return res.status(413).json({ error: 'That file is larger than the ' +
@@ -1163,10 +1187,8 @@ export default async function (req, res) {
         const was = rows && rows[0];
         if (!was) return res.status(404).json({ error: 'There is no such item.' });
 
-        const { rows: parts } = await db.query(
-          'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
-        if (!parts || !parts.length) return res.status(400).json({ error: 'Nothing arrived.' });
-        const whole = Buffer.concat(parts.map((r) => Buffer.from(r.part, 'base64')));
+        const { whole, count } = await assemble(db, upload);
+        if (!count || !whole || !whole.length) return res.status(400).json({ error: 'Nothing arrived.' });
         if (whole.length > MAX_BYTES) return res.status(413).json({ error: 'That is too large for the shelf.' });
 
         const mime = clean(body.mime, 80) || (was.kind === 'video' ? 'video/webm' : 'audio/mpeg');

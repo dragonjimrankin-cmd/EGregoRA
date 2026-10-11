@@ -1231,23 +1231,27 @@ function setup(root) {
       const enc = new lame.Mp3Encoder(chans, buf.sampleRate, 128);
       const L = buf.getChannelData(0);
       const R = chans > 1 ? buf.getChannelData(1) : null;
-      const to16 = (f) => {
-        const o = new Int16Array(f.length);
-        for (let i = 0; i < f.length; i++) {
+      /* Convert one encoder block at a time straight from the float channel
+         data. Materialising the whole take as Int16 first costs the size of
+         the recording a second time over, and that second copy is exactly
+         what tips a long episode into "Array buffer allocation failed". */
+      const to16 = (f, from, to) => {
+        const n = Math.min(to, f.length);
+        const o = new Int16Array(Math.max(0, n - from));
+        for (let i = from; i < n; i++) {
           const v = Math.max(-1, Math.min(1, f[i]));
-          o[i] = v < 0 ? v * 0x8000 : v * 0x7fff;
+          o[i - from] = v < 0 ? v * 0x8000 : v * 0x7fff;
         }
         return o;
       };
-      const l16 = to16(L), r16 = R ? to16(R) : null;
       const BLOCK = 1152, out = [];
-      for (let i = 0; i < l16.length; i += BLOCK) {
-        const a = l16.subarray(i, i + BLOCK);
-        const b = r16 ? r16.subarray(i, i + BLOCK) : undefined;
+      for (let i = 0; i < L.length; i += BLOCK) {
+        const a = to16(L, i, i + BLOCK);
+        const b = R ? to16(R, i, i + BLOCK) : undefined;
         const buf8 = chans > 1 ? enc.encodeBuffer(a, b) : enc.encodeBuffer(a);
         if (buf8.length) out.push(new Uint8Array(buf8));
         if (i % (BLOCK * 400) === 0) {
-          step("Encoding\u2026 " + Math.round((i / l16.length) * 100) + "%", 0.85 + (i / l16.length) * 0.14);
+          step("Encoding\u2026 " + Math.round((i / L.length) * 100) + "%", 0.85 + (i / L.length) * 0.14);
           await new Promise((r2) => setTimeout(r2, 0));
         }
       }
@@ -1465,12 +1469,40 @@ function setup(root) {
      transcript keeps plainly so they can be fixed. Consecutive fragments from
      one voice are one turn, with one timestamp at the change of speaker. */
   let whisperPipe = null;
+  /* The library is fetched from a CDN the first time. A seam — a loader the
+     page can override — lets the test harness stand in a fake ear; in the
+     browser it is a plain dynamic import. */
+  function transformersLoader() {
+    if (window.EGTransformersLoader) return window.EGTransformersLoader();
+    return import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2");
+  }
   function whisper(report = step) {
     if (!whisperPipe) {
       report("Loading the transcription model", 0.03);
-      whisperPipe = import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2")
+      whisperPipe = transformersLoader()
         .then(function (m) {
-          return m.pipeline("automatic-speech-recognition", "Xenova/whisper-tiny.en", {
+          /* The CDN bundle is an ES module with named exports, but reach for
+             a default export too in case the shape ever changes. */
+          const T = (m && typeof m.pipeline === "function") ? m
+                  : (m && m.default && typeof m.default.pipeline === "function") ? m.default
+                  : null;
+          if (!T) throw new Error("the ear loaded but carried no pipeline");
+          /* Run the model single-threaded, on this thread. The default wants
+             SharedArrayBuffer, which a browser only hands over behind
+             cross-origin-isolation headers this site does not send — so the
+             threaded WASM would never start and the ear would sit silent.
+             Pinning it to a single thread on the main thread is what lets it
+             run anywhere. The model itself is cached in the browser, so only
+             the first listen pays the download. */
+          try {
+            if (T.env) {
+              T.env.allowLocalModels = false;
+              T.env.useBrowserCache = true;
+              const wasm = T.env.backends && T.env.backends.onnx && T.env.backends.onnx.wasm;
+              if (wasm) { wasm.numThreads = 1; wasm.proxy = false; }
+            }
+          } catch (e) { /* the env is best-effort; the defaults may still serve */ }
+          return T.pipeline("automatic-speech-recognition", "Xenova/whisper-tiny.en", {
             quantized: true,
             progress_callback: function (p) {
               if (p && p.status === "progress" && p.progress != null) {
@@ -1857,11 +1889,14 @@ function setup(root) {
       const begun = await post({ action: "begin", upload, mime: blob.type });
       const CH = Math.min(900000, begun.chunk_max || 900000);
       const raw = Math.floor(CH * 0.74);   /* base64 grows a third */
-      const whole = new Uint8Array(await blob.arrayBuffer());
-      const pieces = Math.ceil(whole.length / raw);
+      const pieces = Math.ceil(blob.size / raw);
 
+      /* Read one slice at a time. Asking the blob for the whole recording as
+         one ArrayBuffer costs the size of the file in fresh memory, which a
+         long episode does not have to spare. */
       for (let i = 0; i < pieces; i++) {
-        const slice = whole.subarray(i * raw, (i + 1) * raw);
+        const slice = new Uint8Array(
+          await blob.slice(i * raw, Math.min(blob.size, (i + 1) * raw)).arrayBuffer());
         let bin = "";
         for (let j = 0; j < slice.length; j++) bin += String.fromCharCode(slice[j]);
         await post({ action: "chunk", upload, seq: i, part: btoa(bin) });
@@ -2790,10 +2825,10 @@ function setup(root) {
     const upload = "u" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
     const begun = await post({ action: "begin", upload, mime: blob.type });
     const raw = Math.floor(Math.min(900000, begun.chunk_max || 900000) * 0.74);
-    const whole = new Uint8Array(await blob.arrayBuffer());
-    const pieces = Math.ceil(whole.length / raw);
+    const pieces = Math.ceil(blob.size / raw);
     for (let i = 0; i < pieces; i++) {
-      const slice = whole.subarray(i * raw, (i + 1) * raw);
+      const slice = new Uint8Array(
+        await blob.slice(i * raw, Math.min(blob.size, (i + 1) * raw)).arrayBuffer());
       let bin = "";
       for (let j = 0; j < slice.length; j++) bin += String.fromCharCode(slice[j]);
       await post({ action: "chunk", upload, seq: i, part: btoa(bin) });
