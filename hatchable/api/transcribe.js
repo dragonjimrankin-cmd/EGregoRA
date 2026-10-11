@@ -22,10 +22,11 @@
  * index of the site (lib/site-map.js, generated from the Atlas) and every
  * link it returns is checked against that list before it is kept.
  */
-import { db } from 'hatchable';
+import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { openaiKey } from '../lib/openai.js';
 import { openChat } from '../lib/openchat.js';
+import { doors as freeDoors, models as freeModels, freeChat } from '../lib/freeai.js';
 import { SECTIONS, SECTION_LINES, PRESET_TAGS } from '../lib/site-map.js';
 import { storedHuggingFaceKey } from '../lib/key-store.js';
 
@@ -35,6 +36,83 @@ export const methods = ['POST'];
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
 
 /* ------------------------------------------------------------- the hearing */
+
+/* Free.ai already supplies the five admin-only doors used by the publishing
+   panel. Its STT route accepts a short-lived URL, so the reduced ten-minute
+   MP3 is placed in private object storage only long enough for the provider to
+   fetch it. No key, passcode, permanent media URL or original master reaches
+   browser code. */
+let hearingModels = null;
+async function freeHearingModels() {
+  if (hearingModels) return hearingModels;
+  let listed = [];
+  try {
+    listed = (await freeModels())
+      .filter((m) => m && m.kind === 'hearing' && m.id)
+      .map((m) => String(m.id));
+  } catch { listed = []; }
+  /* `whisper` is the provider's documented STT name. Keep model discovery as
+     a second line so a future rename need not break this door. */
+  hearingModels = [...new Set(['whisper'].concat(listed, [
+    'whisper-large-v3-turbo',
+    'whisper-large-v3'
+  ]))];
+  return hearingModels;
+}
+
+function transcriptFrom(raw) {
+  const text = String(raw || '').trim();
+  if (!text) return '';
+  try {
+    const d = JSON.parse(text);
+    return String(d && (d.text || d.transcript || d.output_text ||
+      (d.data && (d.data.text || d.data.transcript))) || '').trim();
+  } catch {
+    return /^\s*</.test(text) ? '' : text;
+  }
+}
+
+async function hearWithFreeAI(bytes, mime) {
+  const doors = freeDoors();
+  if (!doors.length) return { error: 'no Free.ai transcription door' };
+  const models = await freeHearingModels();
+  const key = 'transcription/' + Date.now().toString(36) + '-' +
+    Math.random().toString(36).slice(2, 12) + '.mp3';
+  let audioUrl = '';
+
+  try {
+    await storage.put(key, bytes, mime || 'audio/mpeg');
+    audioUrl = await storage.url(key, { ttl: 300 });
+    if (!audioUrl) return { error: 'the temporary sound URL could not be made' };
+
+    for (const door of doors) {
+      for (const model of models) {
+        const r = await fetch('https://api.free.ai/v1/stt/transcribe/', {
+          method: 'POST',
+          headers: {
+            authorization: 'Bearer ' + door.key,
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({ url: audioUrl, model })
+        }).catch(() => null);
+        if (!r) break;
+        const raw = await r.text().catch(() => '');
+        if (r.ok) {
+          const text = transcriptFrom(raw);
+          if (text) return { text, by: 'free.ai/' + model + ' via ' + door.label };
+        }
+        /* Authentication or allowance errors belong to this door; move to
+           the next one rather than spending more requests on model names. */
+        if (r.status === 401 || r.status === 402 || r.status === 403 || r.status === 429) break;
+      }
+    }
+    return { error: 'the Free.ai transcription doors would not hear it' };
+  } catch {
+    return { error: 'the temporary Free.ai transcription route failed' };
+  } finally {
+    if (storage.delete) await storage.delete(key).catch(() => {});
+  }
+}
 
 async function hearWithOpenAI(bytes, mime) {
   const key = await openaiKey();
@@ -184,7 +262,7 @@ export default async function (req, res) {
           'Ten minutes at a time is the right size.' });
       }
 
-      const tries = [hearWithOpenAI, hearWithHF];
+      const tries = [hearWithFreeAI, hearWithOpenAI, hearWithHF];
       const why = [];
       for (const attempt of tries) {
         const out = await attempt(bytes, clean(body.mime, 60)).catch((e) => ({ error: e && e.message }));
@@ -212,6 +290,23 @@ export default async function (req, res) {
         : text.slice(0, WINDOW * 0.45) + '\n[\u2026]\n' +
           text.slice(Math.floor(text.length / 2 - WINDOW * 0.15), Math.floor(text.length / 2 + WINDOW * 0.15)) +
           '\n[\u2026]\n' + text.slice(-WINDOW * 0.25);
+
+      /* The same Free.ai doors that now hear the recording can write its
+         listing. This keeps both podcast buttons useful when the separate
+         OpenAI account has no credit and the open-chat routes are asleep. */
+      const free = await freeChat({
+        system: BRIEF(kind),
+        messages: [{ role: 'user', content: fed }],
+        maxTokens: 1500,
+        temperature: 0.5
+      }).catch(() => null);
+      const freeListing = free && parseListing(free.text, kind);
+      if (freeListing) {
+        return res.json(Object.assign({
+          ok: true,
+          by: (free.model || 'Free.ai') + (free.label ? ' via ' + free.label : '')
+        }, freeListing));
+      }
 
       const key = await openaiKey();
       if (key) {

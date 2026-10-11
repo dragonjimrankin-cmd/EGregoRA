@@ -45,6 +45,7 @@ const fake = (obj, status) => ({
   status: status || 200,
   json: async () => obj,
   text: async () => JSON.stringify(obj),
+  arrayBuffer: async () => new ArrayBuffer(3),
   blob: async () => ({ size: 3, type: "audio/mpeg", arrayBuffer: async () => new ArrayBuffer(3) })
 });
 
@@ -274,6 +275,17 @@ if (fileInput) {
   if (!/hello world/.test(heard)) problems.push("the in-page ear did not type the transcript it heard");
   if (!/Listed/i.test(msg("[data-am=msg]"))) problems.push("the listing was not written from the heard transcript");
 }
+
+/* The editor's own transcribe button hears a stored episode and saves the
+   transcript. Reopen the editor now that Web Audio is stubbed, so the master
+   decodes and the ear has something to read. */
+click("[data-edit]");
+await tick(90);
+click('[data-ed="transcribe"]');
+await tick(360);
+say("editor transcribe: " + msg('[data-ed="state"]'));
+if (!/Transcript saved/i.test(msg('[data-ed="state"]')))
+  problems.push("the editor's transcribe button did not save a transcript");
 
 /* ---- admin summary on the public page ------------------------------- */
 click("[data-mx-sum]");

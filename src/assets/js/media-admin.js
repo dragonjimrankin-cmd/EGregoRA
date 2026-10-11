@@ -1311,7 +1311,8 @@ function setup(root) {
      from memory — no playing out loud, no real-time wait — and returns the
      words with their timestamps. A pause longer than two and a half seconds
      between segments is read as a change of voice; the names are guesses the
-     transcript keeps plainly so they can be fixed. */
+     transcript keeps plainly so they can be fixed. Consecutive fragments from
+     one voice are one turn, with one timestamp at the change of speaker. */
   let whisperPipe = null;
   /* The library is fetched from a CDN the first time. A seam — a loader the
      page can override — lets the test harness stand in a fake ear; in the
@@ -1378,23 +1379,28 @@ function setup(root) {
           stride_length_s: 5
         });
       }).then(function (res) {
-        let out = "", speaker = 1, lastEnd = 0;
+        let speaker = 1, lastEnd = 0;
+        const turns = [];
         const chunks = (res && res.chunks) || [];
         if (chunks.length) {
-          chunks.forEach(function (c) {
+          chunks.forEach(function (c, index) {
             const start = (c.timestamp && c.timestamp[0]) || 0;
             const end = (c.timestamp && c.timestamp[1]) || start + 2;
-            if (start - lastEnd > 2.5) speaker = speaker === 1 ? 2 : 1;
+            if (index && start - lastEnd > 2.5) speaker = speaker === 1 ? 2 : 1;
             lastEnd = end;
-            const line = "[" + clock(start) + "] Speaker " + speaker + " \u2014 " +
-              String(c.text || "").trim() + "\n";
-            out += line;
-            typer.add(line);
+            const words = String(c.text || "").trim();
+            if (!words) return;
+            const active = turns[turns.length - 1];
+            if (active && active.speaker === speaker) active.text += " " + words;
+            else turns.push({ at: start, speaker, text: words });
           });
         } else if (res && res.text) {
-          out = "[0:00] Speaker 1 \u2014 " + res.text.trim() + "\n";
-          typer.add(out);
+          turns.push({ at: 0, speaker: 1, text: res.text.trim() });
         }
+        const out = turns.map(function (turn) {
+          return "[" + clock(turn.at) + "] Speaker " + turn.speaker + " \u2014 " + turn.text;
+        }).join("\n\n") + (turns.length ? "\n" : "");
+        typer.add(out);
         typer.ghost("");
         return out;
       });
@@ -1411,7 +1417,7 @@ function setup(root) {
       const rec = new SR();
       rec.continuous = true;
       rec.interimResults = true;
-      let speaker = 1, lastAt = -10, done = false;
+      let speaker = 1, lastAt = null, wroteTurn = false, done = false;
       const finish = (err) => {
         if (done) return;
         done = true;
@@ -1426,10 +1432,18 @@ function setup(root) {
           const r = ev.results[i];
           if (!r.isFinal) { interim += r[0].transcript; continue; }
           const t = a.currentTime;
-          if (t - lastAt > 2.5) speaker = speaker === 1 ? 2 : 1;
+          const changed = lastAt != null && t - lastAt > 2.5;
+          if (changed) speaker = speaker === 1 ? 2 : 1;
           lastAt = t;
-          typer.add("[" + clock(t) + "] Speaker " + speaker + " \u2014 " +
-            r[0].transcript.trim() + "\n");
+          const words = r[0].transcript.trim();
+          if (!words) continue;
+          if (!wroteTurn || changed) {
+            typer.add((wroteTurn ? "\n\n" : "") + "[" + clock(t) + "] Speaker " +
+              speaker + " \u2014 " + words);
+            wroteTurn = true;
+          } else {
+            typer.add(" " + words);
+          }
         }
         typer.ghost(interim);
       };
@@ -1450,7 +1464,9 @@ function setup(root) {
   }
 
   /* The server's ear, for browsers with no SpeechRecognition of their own:
-     ten-minute stretches, each stamped with where it began. */
+     ten-minute transport pieces are joined as one transcript. The provider
+     does not return speaker turns, so it gets one opening timestamp rather
+     than inventing a change of voice at every upload boundary. */
   async function listenServer(buf, seconds, typer) {
     const parts = Math.max(1, Math.ceil(seconds / SEG));
     let out = "";
@@ -1468,7 +1484,7 @@ function setup(root) {
         if (!r.ok) throw new Error(d.error || "it could not be heard");
         return d;
       });
-      const line = "[" + clock(from) + "] " + heard.text + "\n\n";
+      const line = (i ? "\n\n" : "[" + clock(0) + "] ") + heard.text;
       out += line;
       typer.add(line);
       step("Heard " + (i + 1) + " of " + parts, (i + 1) / parts);
@@ -1715,6 +1731,7 @@ function setup(root) {
       '<label for="' + KIND + '-ed-summary">Summary</label>' +
       '<textarea id="' + KIND + '-ed-summary" data-ed="summary" rows="3">' + esc(item.summary) + "</textarea>" +
       '<div class="btn-row"><button class="btn btn--small" type="button" data-ed="save">Save the writing</button>' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="transcribe">Transcribe this episode</button>' +
       '<button class="btn btn--small btn--ghost" type="button" data-ed="sum-from-tr">Write the summary from its transcript</button>' +
       '<button class="btn btn--small btn--ghost" type="button" data-ed="read-tr">Read its transcript</button></div>' +
       '<div class="ep-transcript" data-ed="trbox" hidden></div>' +
@@ -1835,6 +1852,58 @@ function setup(root) {
     });
 
     ed("whole").addEventListener("click", () => { edit.snippets = []; drawSnips(); tellEd("Back to the whole thing."); });
+
+    /* Existing uploads can be heard too. This is particularly useful when an
+       episode reached the shelf before the transcription doors were repaired:
+       the browser's timestamped ear is tried first, then the server ear. Known
+       speaker names travel with the transcript and cause their compact speech
+       patterns to be refreshed on the server. */
+    ed("transcribe").addEventListener("click", async () => {
+      const button = ed("transcribe");
+      if (!edit.buf) return tellEd("The audio is still loading. Try again when the player says Ready.", true);
+      button.disabled = true;
+      const transcriptBox = ed("trbox");
+      transcriptBox.innerHTML = "";
+      const area = document.createElement("textarea");
+      area.readOnly = true;
+      area.rows = 12;
+      area.className = "am-ear";
+      area.setAttribute("aria-label", "The transcript as it is heard");
+      transcriptBox.appendChild(area);
+      transcriptBox.hidden = false;
+      const typer = makeTyper(area);
+      let transcript = "";
+      try {
+        tellEd("Listening to the stored episode in this browser\u2026");
+        try {
+          transcript = await listenWhisper(edit.buf, typer);
+        } catch {
+          tellEd("The browser ear could not load; the server is listening in reduced stretches\u2026");
+          transcript = await listenServer(edit.buf, edit.buf.duration, typer);
+        }
+        typer.stop();
+        if (!transcript || transcript.trim().length < 40) {
+          throw new Error("The ear did not keep enough words to save.");
+        }
+        await post({ action: "edit", id: item.id, transcript });
+        const known = Array.isArray(item.speakers) ? item.speakers : [];
+        let named = null;
+        if (known.length) {
+          named = await post({ action: "name-speakers", id: item.id, speakers: known });
+        }
+        area.value = (named && named.transcript) || transcript;
+        item.has_transcript = true;
+        tellEd(named && named.speaker_patterns_stored
+          ? "Transcript saved. The named voices' speech patterns are stored, with one timestamp per turn."
+          : "Transcript saved. Its speaker turns are kept with the episode.");
+        button.textContent = "Transcribe it again";
+      } catch (err) {
+        typer.stop();
+        tellEd((err && err.message) || "The episode could not be transcribed.", true);
+      } finally {
+        button.disabled = false;
+      }
+    });
 
     /* A summary written from the kept transcript, by the same models the
        oracle leans on. Nothing is saved until the writing is saved. */

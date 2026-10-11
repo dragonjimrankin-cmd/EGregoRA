@@ -51,6 +51,168 @@ const safeList = (raw) => {
   try { const v = JSON.parse(raw); return Array.isArray(v) ? v : []; } catch { return []; }
 };
 
+/* A transcript keeps one timestamp per turn: when the named voice changes.
+   Older transcripts stamped every Whisper fragment, so they are parsed into
+   turns at read time without throwing away the original words in storage. */
+const wordsOf = (text) => (String(text || '').toLowerCase().match(/[a-z0-9]+(?:['’][a-z0-9]+)*/g) || []);
+
+function secondsAt(stamp) {
+  const s = String(stamp || '').trim().toLowerCase();
+  let m;
+  if (/[hms]/.test(s)) {
+    m = /^(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?$/.exec(s.replace(/\s+/g, ''));
+    return m ? Number(m[1] || 0) * 3600 + Number(m[2] || 0) * 60 + Number(m[3] || 0) : 0;
+  }
+  const parts = s.split(':').map(Number);
+  if (parts.some((n) => !Number.isFinite(n))) return 0;
+  return parts.length > 2
+    ? parts[0] * 3600 + parts[1] * 60 + parts[2]
+    : (parts[0] || 0) * 60 + (parts[1] || 0);
+}
+
+function transcriptTurns(raw, speakers) {
+  const byNumber = new Map((speakers || []).map((s) => [Number(s.speaker_no), s.name]));
+  const byName = new Map((speakers || []).map((s) => [String(s.name).toLowerCase(), Number(s.speaker_no)]));
+  const turns = [];
+  let active = null;
+
+  for (const sourceLine of String(raw || '').replace(/\r/g, '').split('\n')) {
+    const line = sourceLine.trim();
+    if (!line) continue;
+    const stamped = /^\[([^\]]+)\]\s*(.*)$/.exec(line);
+    if (!stamped) {
+      if (active) active.text += (active.text ? ' ' : '') + line;
+      continue;
+    }
+
+    const stamp = stamped[1].trim();
+    let rest = stamped[2].trim();
+    let speakerNo = null;
+    let name = '';
+    const numbered = /^Speaker\s+(\d+)\s*(?:—|-|:)\s*(.*)$/i.exec(rest);
+    const named = !numbered && /^([^—]{1,80}?)\s+—\s*(.*)$/.exec(rest);
+    let labelled = numbered ? [numbered[0], numbered[1], '', numbered[2]] : null;
+    if (named && byName.has(named[1].trim().toLowerCase())) {
+      labelled = [named[0], '', named[1].trim(), named[2]];
+    }
+    if (labelled) {
+      speakerNo = labelled[1] ? Number(labelled[1]) : null;
+      name = speakerNo ? (byNumber.get(speakerNo) || 'Speaker ' + speakerNo) : String(labelled[2] || '').trim();
+      if (!speakerNo && name) speakerNo = byName.get(name.toLowerCase()) || null;
+      rest = String(labelled[3] || '').trim();
+    } else if (active) {
+      speakerNo = active.speakerNo;
+      name = active.name;
+    }
+
+    const identity = speakerNo ? 'n:' + speakerNo : name ? 's:' + name.toLowerCase() : 'unlabelled';
+    if (active && active.identity === identity) {
+      active.text += (active.text ? ' ' : '') + rest;
+      continue;
+    }
+    active = { identity, speakerNo, name, stamp, seconds: secondsAt(stamp), text: rest };
+    turns.push(active);
+  }
+  return turns;
+}
+
+function displayTranscript(raw, speakers) {
+  const turns = transcriptTurns(raw, speakers);
+  if (!turns.length) return String(raw || '').trim();
+  return turns.map((t) => '[' + t.stamp + '] ' +
+    (t.name ? t.name + ' — ' : '') + t.text.trim()).join('\n\n').trim();
+}
+
+const COMMON_WORDS = new Set(('a an and are as at be been being but by can could did do does for from had has have he her ' +
+  'hers him his i if in into is it its just me more my no not of on one or our out she so some than that the their ' +
+  'them then there these they this those to up us very was we were what when where which who why will with would you your').split(' '));
+
+function speechPatterns(turns) {
+  const groups = new Map();
+  turns.forEach((turn, index) => {
+    if (!turn.name || !turn.speakerNo) return;
+    if (!groups.has(turn.name)) groups.set(turn.name, { turns: [], seconds: 0, timed: 0 });
+    const group = groups.get(turn.name);
+    group.turns.push(turn);
+    const next = turns[index + 1];
+    if (next && next.seconds > turn.seconds) {
+      group.seconds += Math.min(600, next.seconds - turn.seconds);
+      group.timed += 1;
+    }
+  });
+
+  const result = new Map();
+  for (const [name, group] of groups) {
+    const all = wordsOf(group.turns.map((t) => t.text).join(' '));
+    if (all.length < 8) continue;
+    const counts = new Map();
+    for (const word of all) {
+      if (word.length < 3 || COMMON_WORDS.has(word)) continue;
+      counts.set(word, (counts.get(word) || 0) + 1);
+    }
+    const characteristic = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 14)
+      .map(([word, uses]) => ({ word, uses }));
+    const unique = new Set(all);
+    const fillers = all.filter((w) => /^(um|uh|erm|hmm|like|basically|actually)$/.test(w)).length;
+    const questions = group.turns.filter((t) => /\?\s*$/.test(t.text)).length;
+    const mean = (n) => Math.round(n * 100) / 100;
+    result.set(name, {
+      kind: 'aggregate linguistic cadence; not a voiceprint',
+      turns: group.turns.length,
+      words: all.length,
+      mean_words_per_turn: mean(all.length / group.turns.length),
+      mean_word_characters: mean(all.reduce((n, w) => n + w.length, 0) / all.length),
+      vocabulary_ratio: mean(unique.size / all.length),
+      question_turn_ratio: mean(questions / group.turns.length),
+      filler_words_per_thousand: mean(fillers * 1000 / all.length),
+      estimated_words_per_minute: group.seconds > 5 ? mean(all.length * 60 / group.seconds) : null,
+      mean_timed_turn_seconds: group.timed ? mean(group.seconds / group.timed) : null,
+      characteristic_words: characteristic
+    });
+  }
+  return result;
+}
+
+async function speakersFor(mediaId) {
+  try {
+    const { rows } = await db.query(
+      'SELECT speaker_no, name, profiled_chars FROM media_speakers WHERE media_id = $1 ORDER BY speaker_no',
+      [mediaId]);
+    return rows || [];
+  } catch { return []; }
+}
+
+async function ensureSpeakerPatterns(mediaId, raw, supplied) {
+  const speakers = supplied || await speakersFor(mediaId);
+  const chars = String(raw || '').length;
+  if (!chars || !speakers.length) return { speakers, stored: false };
+  if (speakers.every((s) => Number(s.profiled_chars) === chars)) return { speakers, stored: true };
+
+  const patterns = speechPatterns(transcriptTurns(raw, speakers));
+  let stored = false;
+  for (const speaker of speakers) {
+    const pattern = patterns.get(speaker.name);
+    if (!pattern) continue;
+    await db.query(
+      `INSERT INTO speaker_profiles (name, patterns, sample_words, source_media_id, updated_at)
+       VALUES ($1,$2,$3,$4,NOW())
+       ON CONFLICT (name) DO UPDATE SET patterns = EXCLUDED.patterns,
+         sample_words = EXCLUDED.sample_words, source_media_id = EXCLUDED.source_media_id,
+         updated_at = NOW()`,
+      [speaker.name, JSON.stringify(pattern), pattern.words, mediaId]);
+    stored = true;
+  }
+  if (stored) {
+    await db.query(
+      'UPDATE media_speakers SET profiled_chars = $2, updated_at = NOW() WHERE media_id = $1',
+      [mediaId, chars]);
+    speakers.forEach((s) => { s.profiled_chars = chars; });
+  }
+  return { speakers, stored };
+}
+
 /* An episode number nobody has to think about: the highest on the shelf or
    in the committed run, plus one. */
 async function nextNumber(after) {
@@ -73,6 +235,9 @@ async function sign(key) {
 async function dress(row) {
   const url = await sign(row.storage_key);
   const cover = await sign(row.cover_key);
+  const speakerState = row.transcript
+    ? await ensureSpeakerPatterns(Number(row.id), row.transcript).catch(() => ({ speakers: [], stored: false }))
+    : { speakers: await speakersFor(Number(row.id)), stored: false };
   let images = [];
   try {
     const { rows } = await db.query(
@@ -101,6 +266,10 @@ async function dress(row) {
     links: safeList(row.links),
     topics: safeList(row.topics),
     transcript_len: row.transcript ? String(row.transcript).length : 0,
+    speakers: (speakerState.speakers || []).map((s) => ({
+      number: Number(s.speaker_no), name: s.name
+    })),
+    speaker_patterns_stored: !!speakerState.stored,
     treatment: row.treatment || '',
     bytes: Number(row.bytes) || null,
     original_bytes: Number(row.original_bytes) || null,
@@ -141,10 +310,17 @@ export default async function (req, res) {
     if (!Number.isFinite(id)) return res.status(400).json({ error: 'Which episode?' });
     try {
       const { rows } = await db.query(
-        'SELECT title, state, transcript FROM media WHERE id = $1', [id]);
+        'SELECT id, title, state, transcript FROM media WHERE id = $1', [id]);
       if (!rows || !rows.length) return res.status(404).json({ error: 'No episode by that number.' });
       if (rows[0].state !== 'published') return res.status(404).json({ error: 'That episode is not on the shelf.' });
-      return res.json({ ok: true, title: rows[0].title, transcript: rows[0].transcript || '' });
+      const profile = await ensureSpeakerPatterns(id, rows[0].transcript || '');
+      return res.json({
+        ok: true,
+        title: rows[0].title,
+        transcript: displayTranscript(rows[0].transcript || '', profile.speakers),
+        speakers: profile.speakers.map((s) => ({ number: Number(s.speaker_no), name: s.name })),
+        speaker_patterns_stored: profile.stored
+      });
     } catch (err) {
       console.error('media: the transcript could not be read', err && err.message);
       return res.status(500).json({ error: 'The shelf could not be read.' });
@@ -242,6 +418,20 @@ export default async function (req, res) {
             Array.isArray(body.links) ? JSON.stringify(body.links.slice(0, 10)) : null,
             Array.isArray(body.topics) ? JSON.stringify(body.topics.slice(0, 20)) : null]);
 
+        if (Array.isArray(body.speakers)) {
+          for (const speaker of body.speakers.slice(0, 12)) {
+            const no = Number(speaker && speaker.number);
+            const name = clean(speaker && speaker.name, 80);
+            if (!Number.isInteger(no) || no < 1 || no > 19 || !name || /^speaker\s+\d+$/i.test(name)) continue;
+            await db.query(
+              `INSERT INTO media_speakers (media_id, speaker_no, name, profiled_chars, updated_at)
+               VALUES ($1,$2,$3,NULL,NOW())
+               ON CONFLICT (media_id, speaker_no) DO UPDATE SET name = EXCLUDED.name,
+                 profiled_chars = NULL, updated_at = NOW()`,
+              [made[0].id, no, name]);
+          }
+        }
+
         return res.json({ ok: true, item: await dress(made[0]) });
       }
 
@@ -304,6 +494,48 @@ export default async function (req, res) {
       case 'next-number':
         return res.json({ ok: true, number: await nextNumber(body.after) });
 
+      case 'name-speakers': {
+        const id = Number(body.id);
+        if (!id || !Array.isArray(body.speakers)) {
+          return res.status(400).json({ error: 'Which episode, and which voices?' });
+        }
+        const { rows } = await db.query('SELECT transcript FROM media WHERE id = $1', [id]);
+        if (!rows || !rows[0]) return res.status(404).json({ error: 'There is no such episode.' });
+        for (const speaker of body.speakers.slice(0, 12)) {
+          const no = Number(speaker && speaker.number);
+          const name = clean(speaker && speaker.name, 80);
+          if (!Number.isInteger(no) || no < 1 || no > 19 || !name) continue;
+          await db.query(
+            `INSERT INTO media_speakers (media_id, speaker_no, name, profiled_chars, updated_at)
+             VALUES ($1,$2,$3,NULL,NOW())
+             ON CONFLICT (media_id, speaker_no) DO UPDATE SET name = EXCLUDED.name,
+               profiled_chars = NULL, updated_at = NOW()`,
+            [id, no, name]);
+        }
+        const profile = await ensureSpeakerPatterns(id, rows[0].transcript || '');
+        return res.json({
+          ok: true,
+          transcript: displayTranscript(rows[0].transcript || '', profile.speakers),
+          speakers: profile.speakers.map((s) => ({ number: Number(s.speaker_no), name: s.name })),
+          speaker_patterns_stored: profile.stored
+        });
+      }
+
+      case 'speaker-profiles': {
+        const { rows } = await db.query(
+          'SELECT name, patterns, sample_words, source_media_id, updated_at FROM speaker_profiles ORDER BY name');
+        return res.json({
+          ok: true,
+          profiles: (rows || []).map((r) => ({
+            name: r.name,
+            patterns: (() => { try { return JSON.parse(r.patterns || '{}'); } catch { return {}; } })(),
+            sample_words: Number(r.sample_words) || 0,
+            source_media_id: Number(r.source_media_id) || null,
+            updated_at: r.updated_at
+          }))
+        });
+      }
+
       case 'edit': {
         const id = Number(body.id);
         if (!id) return res.status(400).json({ error: 'Which one?' });
@@ -318,6 +550,8 @@ export default async function (req, res) {
         if (body.transcript) {
           await db.query('UPDATE media SET transcript = $2 WHERE id = $1',
             [id, String(body.transcript).slice(0, 400000)]);
+          await db.query('UPDATE media_speakers SET profiled_chars = NULL WHERE media_id = $1', [id])
+            .catch(() => {});
         }
         await db.query(
           `UPDATE media SET title = COALESCE($2, title), summary = COALESCE($3, summary),
