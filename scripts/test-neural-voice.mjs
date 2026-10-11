@@ -103,6 +103,8 @@ const [dragon, fox, patchFox, helper, patchHelper, shakPage, ginkPage, site, pac
 ]);
 assert.equal(patchFox, fox, "The deployed Gink sculpt must match the canonical Gink module");
 assert.equal(patchHelper, helper, "Both sites must use the same neural engine");
+assert.doesNotMatch(helper, /import\.meta/,
+  "The neural adapter must remain valid under Hatchable's static parser");
 assert.match(helper, /import\("\.\/headtts\/headtts\.mjs"\)/,
   "HeadTTS must stay lazy and load only after consent");
 assert.doesNotMatch(helper, /^import .*headtts/m,
@@ -156,9 +158,17 @@ const patchVendor = path.join(root, "egregora-patch", "public", "assets", "js", 
 const files = await walk(ttiVendor);
 assert.deepEqual(await walk(patchVendor), files, "Both deployments need the complete same worker/runtime set");
 for (const relative of files) {
-  assert.equal(await hash(path.join(ttiVendor, relative)), await hash(path.join(patchVendor, relative)),
+  const ttiPath = path.join(ttiVendor, relative);
+  assert.equal(await hash(ttiPath), await hash(path.join(patchVendor, relative)),
     `Vendored asset differs between sites: ${relative}`);
+  if (/\.(?:mjs|js)$/.test(relative)) {
+    const moduleSource = await text(path.relative(root, ttiPath));
+    assert.doesNotMatch(moduleSource, /import\.meta/,
+      `Hatchable-incompatible import.meta remains in ${relative}`);
+  }
 }
+assert.doesNotMatch(await text("tti/src/assets/js/headtts/worker-tts.mjs"), /node:worker_threads/,
+  "The vendored worker must remain browser-only");
 for (const required of [
   "headtts.mjs", "worker-tts.mjs", "language.mjs", "language-en-us.mjs", "utils.mjs",
   "transformers.min.js", "dictionaries/en-us.txt", "LICENSE-HeadTTS.txt",

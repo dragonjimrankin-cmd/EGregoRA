@@ -5,9 +5,9 @@
 * @return {boolean} If true, we are in Node.js
 */
 export function isNode() {
-  return typeof import.meta !== 'undefined' &&
-    typeof import.meta.url === 'string' &&
-    import.meta.url.startsWith('file://');
+  return typeof globalThis.location !== 'undefined' &&
+    typeof (new URL("/assets/js/headtts/utils.mjs", globalThis.location.origin).href) === 'string' &&
+    (new URL("/assets/js/headtts/utils.mjs", globalThis.location.origin).href).startsWith('file://');
 }
 
 

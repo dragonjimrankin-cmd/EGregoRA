@@ -225,7 +225,7 @@ export class NaturalVoiceEngine {
       await this.audioContext.resume();
       const { HeadTTS } = await modulePromise;
 
-      const root = new URL("./headtts/", import.meta.url);
+      const root = new URL("/assets/js/headtts/", window.location.origin);
       this.tts = new HeadTTS({
         endpoints: navigator.gpu ? ["webgpu", "wasm"] : ["wasm"],
         audioCtx: this.audioContext,

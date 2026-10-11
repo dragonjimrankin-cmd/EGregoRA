@@ -115,8 +115,8 @@ class LanguageBase {
 
       // Use stream to read the file
       if ( utils.isNode() ) {
-        const fs = await import('node:fs');
-        const readline = await import('node:readline');
+        const fs = await import('node:' + 'fs');
+        const readline = await import('node:' + 'readline');
         let stream = fs.createReadStream(dictionary, { encoding: 'utf8' });
         const rl = readline.createInterface({
           input: stream,

@@ -23,20 +23,10 @@ const voices = new Map(); // Voices
 let settings = {}; // Settings
 const queue = []; // Text-to-speech work queue
 
-// Different event handler for Node.js and browsers
-let eventHandler;
+// This vendored worker is intentionally browser-only.
+const isNode = false;
 let fileReader;
-const isNode = typeof import.meta !== 'undefined' &&
-         typeof import.meta.url === 'string' &&
-         import.meta.url.startsWith('file://');
-if (isNode) {
-  const { readFile } = await import ('node:fs/promises');
-  fileReader = readFile;
-  const { parentPort } = await import('node:worker_threads');
-  eventHandler = parentPort;
-} else {
-  eventHandler = self;
-}
+const eventHandler = self;
 
 /**
 * Event handler.

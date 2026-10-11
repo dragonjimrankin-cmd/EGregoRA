@@ -142,7 +142,10 @@ function collect() {
     const extension = extname(f.path).toLowerCase();
     const oversized = statSync(f.abs).size > 1024 * 1024;
     const browserModule = extension === ".mjs" ||
-      (extension === ".js" && readFileSync(f.abs, "utf8").includes("import.meta"));
+      (extension === ".js" && (
+        readFileSync(f.abs, "utf8").includes("import.meta") ||
+        /\/headtts\/|\/neural-voice\.js$/.test(f.path)
+      ));
     /* A built static site can mirror generated module/text paths from its
        source tree when the generated output itself is not committed. */
     f.sourceMirror = browserModule || (oversized && !BINARY.has(extension));

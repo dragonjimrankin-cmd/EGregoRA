@@ -277,7 +277,7 @@ class HeadTTS {
                 origTerminate.call(this);
               };
             } else {
-              const url = new URL("./worker-tts.mjs", import.meta.url);
+              const url = new URL("/assets/js/headtts/worker-tts.mjs", globalThis.location.origin);
               this.ww = new Worker(url, { type: 'module' });
             }
 
