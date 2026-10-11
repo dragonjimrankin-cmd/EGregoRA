@@ -28,9 +28,10 @@ import * as THREE from "./vendor/three.module.js";
 import {
   AVATAR_VOICE_PROFILES,
   NaturalVoiceEngine,
+  getMaleNeuralVoice,
   normaliseSpeechText,
   rankNativeVoices
-} from "./neural-voice.js?v=model-voice-2";
+} from "./neural-voice.js?v=male-voices-2";
 
 (() => {
   "use strict";
@@ -42,6 +43,7 @@ import {
   const btnSpeak = document.getElementById("fox-speak");
   const btnStop = document.getElementById("fox-stop");
   const btnNatural = document.getElementById("fox-natural");
+  const neuralVoiceSelect = document.getElementById("fox-voice");
   const setStatus = (s) => { if (statusEl) statusEl.textContent = s; };
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   /* Stable procedural detail gives Gink a recognisable coat and face on
@@ -1179,10 +1181,20 @@ import {
   const canSpeak = !!synth && typeof SpeechSynthesisUtterance === "function";
   const canSpeakNaturally = NaturalVoiceEngine.isSupported();
   const naturalPreferenceKey = "eg-gink-natural-voice";
+  const neuralVoicePreferenceKey = "eg-gink-neural-male-voice";
   let chosenVoice = null;
   let naturalVoice = null;
   let naturalWanted = false;
-  try { naturalWanted = localStorage.getItem(naturalPreferenceKey) === "1"; } catch { naturalWanted = false; }
+  let selectedNeuralVoice = voiceProfile.neuralVoice;
+  try {
+    naturalWanted = localStorage.getItem(naturalPreferenceKey) === "1";
+    const remembered = localStorage.getItem(neuralVoicePreferenceKey);
+    selectedNeuralVoice = getMaleNeuralVoice(remembered)?.id || voiceProfile.neuralVoice;
+  } catch {
+    naturalWanted = false;
+    selectedNeuralVoice = voiceProfile.neuralVoice;
+  }
+  if (neuralVoiceSelect) neuralVoiceSelect.value = selectedNeuralVoice;
 
   const pickVoice = () => {
     if (!canSpeak) return null;
@@ -1190,11 +1202,16 @@ import {
     return chosenVoice;
   };
 
+  const selectedVoiceLabel = () => {
+    const selected = getMaleNeuralVoice(naturalVoice?.voiceId || selectedNeuralVoice);
+    return selected ? `${selected.name} (${selected.accent})` : selectedNeuralVoice;
+  };
+
   const readyLine = () => {
     if (naturalWanted && canSpeakNaturally) {
       return naturalVoice?.ready
-        ? "Ready — Gink's natural neural voice is generated privately on this device."
-        : "Natural voice selected — it will load only when Gink next speaks.";
+        ? `Ready — ${selectedVoiceLabel()} is generated privately on this device.`
+        : `Natural voice selected — ${selectedVoiceLabel()} will load only when Gink next speaks.`;
     }
     if (!canSpeak) return "No speech synthesiser here — Gink will mouth the words silently.";
     if (!chosenVoice) return "Ready. Ask the oracle and Gink will read the answer aloud.";
@@ -1330,12 +1347,13 @@ import {
 
   naturalVoice = new NaturalVoiceEngine({
     profile: VOICE_KEY,
+    voice: selectedNeuralVoice,
     onStatus: ({ text }) => { if (naturalWanted && !muted) setStatus(text); },
     onStart: () => {
       speaking = true;
       paused = false;
       if (btnStop) btnStop.disabled = false;
-      setStatus("Speaking — Gink's local neural voice.");
+      setStatus(`Speaking — ${naturalVoice.voiceLabel}, generated locally.`);
     },
     onEnd: ({ cancelled }) => {
       speaking = false;
@@ -1350,6 +1368,7 @@ import {
   });
 
   const paintNatural = () => {
+    if (neuralVoiceSelect) neuralVoiceSelect.disabled = !canSpeakNaturally;
     if (!btnNatural) return;
     btnNatural.hidden = !canSpeakNaturally;
     btnNatural.disabled = !canSpeakNaturally;
@@ -1359,6 +1378,21 @@ import {
       ? "Use the immediate voice installed on this device instead"
       : "Download and run Gink's more realistic neural voice in this browser";
   };
+  neuralVoiceSelect?.addEventListener("change", () => {
+    const selected = getMaleNeuralVoice(neuralVoiceSelect.value);
+    if (!selected) {
+      neuralVoiceSelect.value = naturalVoice.voiceId;
+      return;
+    }
+    stop();
+    naturalVoice.setVoice(selected.id);
+    selectedNeuralVoice = selected.id;
+    try { localStorage.setItem(neuralVoicePreferenceKey, selected.id); } catch { /* private window */ }
+    setStatus(naturalWanted
+      ? `${naturalVoice.voiceLabel} selected — press Speak to hear Gink use it.`
+      : `${naturalVoice.voiceLabel} selected for Natural voice mode.`);
+  });
+
   btnNatural?.addEventListener("click", async () => {
     naturalWanted = !naturalWanted;
     try { localStorage.setItem(naturalPreferenceKey, naturalWanted ? "1" : "0"); } catch { /* private window */ }
@@ -1552,7 +1586,7 @@ import {
     if (naturalWanted && naturalVoice.resume()) {
       paused = false;
       speaking = true;
-      setStatus("Speaking — Gink's local neural voice.");
+      setStatus(`Speaking — ${naturalVoice.voiceLabel}, generated locally.`);
       return true;
     }
     if (!canSpeak) return false;
