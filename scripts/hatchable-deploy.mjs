@@ -42,6 +42,10 @@ const opt = (n, d = null) => {
 const BUNDLE = join(ROOT, opt("bundle", "hatchable"));
 const PROJECT_NAME = opt("name", "EGregoRA");
 const PROJECT_SLUG = opt("slug", "egregora");
+/* Binary assets are uploaded as bytes (server-side URL import, or chunked
+   base64). .bin covers the Kokoro voice embeddings the neural-voice feature
+   ships under headtts/voices/ — without this they would be sent through
+   write_files as UTF-8 text and arrive corrupted. */
 const BINARY = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".ico", ".woff", ".woff2", ".mp3", ".m4a", ".mp4", ".bin"]);
 
 if (!TOKEN) {
