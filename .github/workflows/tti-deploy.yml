@@ -99,6 +99,7 @@ jobs:
           grep -q 'Where the Dot Would Live Mathematically' tti/hatchable/public/little-red-dots/index.html
           grep -q 'Six Debts the Sky Can Collect' tti/hatchable/public/little-red-dots/index.html
           grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
+          grep -q 'little red dots are compact' tti/hatchable/public/cosmic-ledger/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
@@ -153,6 +154,11 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence', 'A Geometry of the Cosmos']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/cosmic-ledger/',
+              markers: ['The Cosmic Ledger', 'JWST&rsquo;s little red dots are compact',
+                'a conjecture, not a result of the equations above']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/time-and-residue/',
@@ -234,12 +240,13 @@ jobs:
                 });
                 const body = await response.arrayBuffer();
                 const html = page.markers.length ? new TextDecoder().decode(body) : '';
+                const missingMarkers = page.markers.filter((marker) => !html.includes(marker));
                 const current = response.ok && body.byteLength >= (page.minBytes || 1) &&
-                  page.markers.every((marker) => html.includes(marker));
+                  missingMarkers.length === 0;
                 const voiceHash = page.voiceId
                   ? Buffer.from(await crypto.subtle.digest('SHA-256', body)).toString('hex')
                   : null;
-                return { page, response, current, voiceHash };
+                return { page, response, current, voiceHash, missingMarkers };
               }));
               const voiceChecks = checked.filter((result) => result.page.voiceId);
               const voicesDistinct = voiceChecks.length === 6 &&
@@ -249,7 +256,8 @@ jobs:
                 process.exit(0);
               }
               detail = checked.map((result) =>
-                `${result.page.url} HTTP ${result.response.status}; current=${result.current}`).join(' | ') +
+                `${result.page.url} HTTP ${result.response.status}; current=${result.current}; ` +
+                `missing=${result.missingMarkers.join(',') || 'none'}`).join(' | ') +
                 ` | sixDistinctVoices=${voicesDistinct}`;
             } catch (error) {
               detail = error && error.message || String(error);
