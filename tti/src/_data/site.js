@@ -1,14 +1,14 @@
 /**
- * Zero, One, and the Bubbles That Blow Between — site-wide constants.
+ * Eternal Integration: The Two Infinities and the Double Pendulum — site-wide constants.
  *
  * The framework is James Alexander Matthew Rankin's, written between the
  * 2nd and 19th of June 2026 and revised to r3.5. This site is its reading
  * room: the same house style as EGregoRA, turned from the wood to the sky.
  */
 export default {
-  name: "Zero, One, and the Bubbles That Blow Between",
-  longName: "Zero, One, and the Bubbles That Blow Between",
-  titleSuffix: "Zero, One & Bubbles",
+  name: "Eternal Integration: The Two Infinities and the Double Pendulum",
+  longName: "Eternal Integration: The Two Infinities and the Double Pendulum",
+  titleSuffix: "Eternal Integration",
   legacyName: "The Two Infinities (and Beyond)",
   tagline: "A Geometry of Existence",
   url: "https://the-two-infinities.hatchable.site",
@@ -24,7 +24,7 @@ export default {
   revised: "2026-06-20",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
   description:
-    "Zero, One, and the Bubbles That Blow Between: a geometry of existence — π as the constant of closure, " +
+    "Eternal Integration: The Two Infinities and the Double Pendulum — a geometry of existence with π as the constant of closure, " +
     "i as the half-turn that opens a dimension, consciousness as the integral, gravity as the curvature " +
     "itself, and the Cosmic Ledger that measures all three. Twenty papers, eleven essays and the " +
     "χ-field dark-sector model, drawn as plates.",

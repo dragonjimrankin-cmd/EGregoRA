@@ -1,9 +1,9 @@
-# Hatchable project manifest — Zero, One, and the Bubbles That Blow Between
+# Hatchable project manifest — Eternal Integration: The Two Infinities and the Double Pendulum
 # Deployment refreshed 2026-10-09 after repository-secret configuration (retry 2).
 # Reference: https://hatchable.com/docs/developers/config
-name        = "Zero, One, and the Bubbles That Blow Between"
+name        = "Eternal Integration: The Two Infinities and the Double Pendulum"
 tagline     = "A geometry of existence, from zero and one to the Cosmic Ledger"
-description = "Zero, One, and the Bubbles That Blow Between: the Unified Edition set out page by page — the asymmetry between the infinity below one and the infinity above it, closure at pi, the integral self, gravity as curvature of the geometry, the galactic torus, Mobius parity, the cosmic ledger of three residues, the seams, eleven plain-language essays, matter as residue with complementary antimatter out of phase, one Prime role per universe-instance, an orientation-reversing torus mapping-space universe, and an attributed analysis of The Channeling Circle. ShakDrah, a green dragon, keeps the current papers and answers questions from them."
+description = "Eternal Integration: The Two Infinities and the Double Pendulum — the Unified Edition set out page by page — the asymmetry between the infinity below one and the infinity above it, closure at pi, the integral self, gravity as curvature of the geometry, the galactic torus, Mobius parity, the cosmic ledger of three residues, the seams, eleven plain-language essays, matter as residue with complementary antimatter out of phase, one Prime role per universe-instance, an orientation-reversing torus mapping-space universe, and an attributed analysis of The Channeling Circle. ShakDrah, a green dragon, keeps the current papers and answers questions from them."
 category    = "Publishing"
 tags        = ["astronomy", "cosmology", "mathematics", "philosophy", "geometry", "physics"]
 

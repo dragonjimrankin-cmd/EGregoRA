@@ -1,4 +1,4 @@
-name: Deploy Zero, One, and the Bubbles
+name: Deploy Eternal Integration
 
 on:
   workflow_dispatch:
@@ -43,6 +43,7 @@ jobs:
           node scripts/test-oracle-knowledge.mjs
           node scripts/test-neural-voice.mjs
           npm run build:tti:hatchable
+          test -s tti/hatchable/public/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
           test -s tti/hatchable/public/ask-shakdrah/index.html
@@ -53,6 +54,7 @@ jobs:
           test "$(wc -c < tti/hatchable/public/assets/js/headtts/voices/bm_george.bin)" -gt 500000
           test "$(wc -c < tti/hatchable/public/assets/js/headtts/voices/am_fenrir.bin)" -gt 500000
           test -s tti/hatchable/public/assets/js/headtts/LICENSE-Kokoro.txt
+          grep -Fq 'Eternal Integration: The Two Infinities and the Double Pendulum' tti/hatchable/public/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
@@ -107,7 +109,7 @@ jobs:
             node scripts/hatchable-deploy.mjs \
               --bundle tti/hatchable \
               --project "$PROJECT_ID" \
-              --name "Zero, One, and the Bubbles That Blow Between" \
+              --name "Eternal Integration: The Two Infinities and the Double Pendulum" \
               --slug two-infinities 2>&1 | tee /tmp/hatchable-deploy.log
             STATUS=${PIPESTATUS[0]}
             set -e
@@ -131,6 +133,10 @@ jobs:
         run: |
           node <<'NODE'
           const pages = [
+            {
+              url: 'https://the-two-infinities.hatchable.site/',
+              markers: ['Eternal Integration:', 'The Two Infinities and the Double Pendulum']
+            },
             {
               url: 'https://the-two-infinities.hatchable.site/time-and-residue/',
               markers: ['The One Residue That Travels', 'One Source Per Universe, Every Being Eligible',
