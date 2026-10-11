@@ -12,6 +12,10 @@ ours:         80
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
 
    changed live vs our bundle : 46
      ~ api/twin-member.js
