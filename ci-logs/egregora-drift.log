@@ -1,11 +1,11 @@
 project proj_eiuxpFfTnwwx
-live version: 222
-ours:         220
+live version: 225
+ours:         222
 
-✖ 2 deploy(s) landed since ours (v220 → v222).
+✖ 3 deploy(s) landed since ours (v222 → v225).
    Reading the live files so the two can be merged rather than one buried.
 
-   live project holds 218 files
+   live project holds 221 files
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
@@ -13,15 +13,12 @@ ours:         220
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 38
-     ~ api/edit.js
+   changed live vs our bundle : 35
      ~ api/media.js
-     ~ pages/feed.js
      ~ public/404.html
      ~ public/account/index.html
      ~ public/artwork/index.html
      ~ public/ask-ed/index.html
-     ~ public/assets/js/admin-edit.js
      ~ public/assets/js/media-admin.js
      ~ public/astrology/index.html
      ~ public/astronomy/index.html
@@ -52,9 +49,10 @@ ours:         220
      ~ public/sitemap.xml
      ~ public/videos/index.html
      ~ public/wizardry/index.html
-   present live, absent here  : 2
-     + migrations/0030_purported_creation_dates.sql
-     + migrations/0031_speaker_bootstrap.sql
+   present live, absent here  : 3
+     + migrations/0032_speaker_inference_fallback.sql
+     + migrations/0033_consenting_voiceprints.sql
+     + public/assets/js/voiceprint.js
    present here, absent live  : 1
      - README.md
 
