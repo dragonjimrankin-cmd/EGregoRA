@@ -22,4 +22,10 @@ Current patch:
   real deployment and audit timestamps are preserved.
 - `migrations/0030_purported_creation_dates.sql` stores page/media date claims
   separately and appends every change to an audit log. `pages/feed.js` uses a
-  podcast episode's claimed date when one has been set.
+  podcast episode's claimed date when one has been set. Every generated HTML
+  page cache-busts the shared Admin Edit script so the Date tab is available
+  throughout the site immediately.
+- `migrations/0031_speaker_bootstrap.sql` and the guarded one-shot media action
+  recover the latest named podcast transcript when the speech provider returns
+  diarized segments, without exposing the admin passcode or creating a general
+  public transcription proxy.

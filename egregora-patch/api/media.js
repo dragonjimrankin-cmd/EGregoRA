@@ -36,6 +36,7 @@
  */
 import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
+import { doors as freeDoors } from '../lib/freeai.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -228,6 +229,97 @@ async function ensureSpeakerPatterns(mediaId, raw, supplied) {
   return { speakers, stored };
 }
 
+function turnStamp(seconds) {
+  const n = Math.max(0, Math.round(Number(seconds) || 0));
+  const h = Math.floor(n / 3600);
+  const m = Math.floor((n % 3600) / 60);
+  const s = String(n % 60).padStart(2, '0');
+  return h ? h + ':' + String(m).padStart(2, '0') + ':' + s : m + ':' + s;
+}
+
+function diarizedTranscript(data) {
+  const roots = [data, data && data.data, data && data.result].filter(Boolean);
+  let pieces = [];
+  for (const root of roots) {
+    for (const key of ['segments', 'words', 'chunks', 'utterances']) {
+      if (Array.isArray(root[key]) && root[key].length) {
+        const labelled = root[key].filter((part) => part &&
+          (part.speaker != null || part.speaker_id != null || part.speaker_label != null));
+        if (labelled.length > pieces.length) pieces = labelled;
+      }
+    }
+  }
+  if (!pieces.length) return '';
+
+  const labels = [];
+  const turns = [];
+  for (const part of pieces) {
+    const label = String(part.speaker ?? part.speaker_id ?? part.speaker_label ?? '').trim();
+    if (!label) continue;
+    if (!labels.includes(label)) labels.push(label);
+    if (labels.length > 2) return '';
+    const speaker = labels.indexOf(label) + 1;
+    const text = clean(part.text ?? part.word ?? part.transcript, 4000);
+    if (!text) continue;
+    const at = Number(part.start ?? part.start_time ?? part.timestamp?.[0] ?? 0) || 0;
+    const active = turns[turns.length - 1];
+    if (active && active.speaker === speaker) {
+      const punctuation = /^[,.;:!?)]/.test(text) ? '' : ' ';
+      active.text += punctuation + text;
+    } else {
+      turns.push({ speaker, at, text });
+    }
+  }
+  if (labels.length !== 2 || turns.length < 2) return '';
+  return turns.map((turn) => '[' + turnStamp(turn.at) + '] Speaker ' +
+    turn.speaker + ' — ' + turn.text.trim()).join('\n\n');
+}
+
+async function recoverNamedTranscript(row) {
+  const url = await sign(row.storage_key);
+  if (!url) return { transcript: '', status: 'no-signed-audio' };
+  const doors = freeDoors();
+  for (const door of doors) {
+    const response = await fetch('https://api.free.ai/v1/stt/transcribe/', {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer ' + door.key,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        url,
+        model: 'whisper',
+        language: 'en',
+        diarize: true,
+        speaker_diarization: true,
+        word_timestamps: true,
+        timestamps: true
+      })
+    }).catch(() => null);
+    if (!response) continue;
+    const raw = await response.text().catch(() => '');
+    if (!response.ok) {
+      if ([400, 404, 422].includes(response.status)) {
+        return { transcript: '', status: 'provider-rejected-diarization-' + response.status };
+      }
+      continue;
+    }
+    let data = null;
+    try { data = JSON.parse(raw); } catch { data = null; }
+    const transcript = diarizedTranscript(data);
+    if (transcript) {
+      return { transcript, status: 'stored-diarized', provider: 'free.ai/' + door.label };
+    }
+    const keys = data && typeof data === 'object' ? Object.keys(data).slice(0, 12) : [];
+    return {
+      transcript: '',
+      status: 'provider-returned-no-speakers',
+      shape: keys
+    };
+  }
+  return { transcript: '', status: 'no-provider-door-answered' };
+}
+
 /* An episode number nobody has to think about: the highest on the shelf or
    in the committed run, plus one. */
 async function nextNumber(after) {
@@ -341,6 +433,60 @@ export default async function (req, res) {
     } catch (err) {
       console.error('media: the transcript could not be read', err && err.message);
       return res.status(500).json({ error: 'The shelf could not be read.' });
+    }
+  }
+
+  /* One narrow recovery for the already identified latest podcast. It is
+     public only as an idempotent trigger: it cannot accept audio, choose an
+     episode, or run more than once. The database mapping must already name
+     speaker 1 and 2 exactly, and the episode must still lack a transcript. */
+  if (action === 'bootstrap-speakers') {
+    try {
+      const { rows } = await db.query(
+        `SELECT * FROM media
+          WHERE kind = 'audio' AND state = 'published'
+          ORDER BY created_at DESC, id DESC LIMIT 1`);
+      const row = rows && rows[0];
+      if (!row) return res.json({ ok: true, done: false, status: 'no-published-podcast' });
+      if (row.transcript && String(row.transcript).trim()) {
+        const profile = await ensureSpeakerPatterns(Number(row.id), row.transcript);
+        return res.json({ ok: true, done: true, status: 'already-transcribed',
+          speaker_patterns_stored: profile.stored });
+      }
+      const speakers = await speakersFor(Number(row.id));
+      const expected = new Map(speakers.map((s) => [Number(s.speaker_no), s.name]));
+      if (expected.get(1) !== 'Edward Gregory' || expected.get(2) !== 'Jim Rankin') {
+        return res.status(409).json({ error: 'The guarded speaker map is not present.' });
+      }
+      if (row.speaker_bootstrap_at) {
+        return res.json({ ok: true, done: false,
+          status: row.speaker_bootstrap_status || 'already-attempted' });
+      }
+      const { rows: claimed } = await db.query(
+        `UPDATE media SET speaker_bootstrap_at = NOW(), speaker_bootstrap_status = 'running'
+          WHERE id = $1 AND speaker_bootstrap_at IS NULL RETURNING id`, [row.id]);
+      if (!claimed || !claimed.length) {
+        return res.json({ ok: true, done: false, status: 'already-running' });
+      }
+
+      const heard = await recoverNamedTranscript(row);
+      if (!heard.transcript) {
+        await db.query('UPDATE media SET speaker_bootstrap_status = $2 WHERE id = $1',
+          [row.id, heard.status]);
+        return res.json({ ok: true, done: false, status: heard.status,
+          response_shape: heard.shape || [] });
+      }
+      await db.query(
+        `UPDATE media SET transcript = $2, speaker_bootstrap_status = $3, updated_at = NOW()
+          WHERE id = $1`, [row.id, heard.transcript, heard.status]);
+      await db.query('UPDATE media_speakers SET profiled_chars = NULL WHERE media_id = $1', [row.id]);
+      const profile = await ensureSpeakerPatterns(Number(row.id), heard.transcript, speakers);
+      return res.json({ ok: true, done: true, status: heard.status,
+        provider: heard.provider, turns: transcriptTurns(heard.transcript, speakers).length,
+        speaker_patterns_stored: profile.stored });
+    } catch (err) {
+      console.error('media: guarded speaker recovery failed', err && err.message);
+      return res.status(500).json({ error: 'The guarded speaker recovery failed.' });
     }
   }
 
