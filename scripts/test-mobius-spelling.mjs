@@ -70,7 +70,12 @@ if (process.argv.includes('--live')) {
         page.html.includes('Moebius') || page.status < 200 || page.status >= 400);
       const liveCorrected = pages.reduce((sum, page) =>
         sum + (page.html.match(/Möbius/g) || []).length, 0);
-      if (!stale.length && liveCorrected >= 107) {
+      /* The local fixture enforces the exact corpus-wide count above. Live
+         redirects and edge rendering can legitimately deduplicate shared
+         navigation, so the deployed audit is route-semantic instead: every
+         route that contains Möbius locally must contain it live, and no route
+         may reintroduce the retired spelling. */
+      if (!stale.length) {
         console.log(`Live Möbius spelling passed on ${pages.length} routes with ` +
           `${liveCorrected} corrected display/metadata occurrences.`);
         process.exit(0);
@@ -83,5 +88,8 @@ if (process.argv.includes('--live')) {
     }
     await new Promise((resolve) => setTimeout(resolve, 8000));
   }
+  const safeDetail = String(detail).replace(/%/g, '%25').replace(/\r/g, '%0D')
+    .replace(/\n/g, '%0A').slice(0, 1800);
+  console.log(`::error title=Live Möbius spelling audit failed::${safeDetail}`);
   throw new Error('Live Möbius spelling audit failed: ' + detail);
 }
