@@ -232,7 +232,9 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
       if (!done) {
         // Multipart: base64 text split into chunks, committed with final=true.
         const b64 = bytes.toString("base64");
-        const SIZE = 192 * 1024;
+        /* Hatchable accepts at most 65,536 characters in one chunk. Leave
+           room for transport framing rather than relying on the exact edge. */
+        const SIZE = 60 * 1024;
         const parts = Math.ceil(b64.length / SIZE);
         const sha256 = createHash("sha256").update(bytes).digest("hex");
         let uploadId = null;

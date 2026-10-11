@@ -146,6 +146,8 @@ assert.match(deployer, /extension === "\.mjs"/,
   "Valid browser modules must bypass Hatchable's classic-script parser");
 assert.match(deployer, /includes\("import\.meta"\)/,
   "JavaScript using import.meta must use Hatchable's byte uploader");
+assert.match(deployer, /const SIZE = 60 \* 1024/,
+  "Byte chunks must remain below Hatchable's 65,536-character limit");
 
 const ttiVendor = path.join(root, "tti", "src", "assets", "js", "headtts");
 const patchVendor = path.join(root, "egregora-patch", "public", "assets", "js", "headtts");
