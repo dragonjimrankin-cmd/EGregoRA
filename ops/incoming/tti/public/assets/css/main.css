@@ -1072,11 +1072,66 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
   .oracle-msg { max-width: 100%; }
 }
 
-/* --- limb cards as links --- */
-.card h3 .card-link { color: var(--bright); text-decoration: none; border: 0; }
-.card h3 .card-link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
-.card:hover h3 .card-link { color: var(--gold); }
-.card .mt-1 a { position: relative; z-index: 3; }
+/* --- linked cards ------------------------------------------------------
+   Keep one real, descriptive heading link for semantics and keyboard use,
+   then extend its hit area over the whole card. Secondary links sit above
+   that transparent layer and keep their own destinations. */
+.card--linked {
+  cursor: pointer;
+  transition: transform 0.35s ease, border-color 0.35s ease,
+              box-shadow 0.35s ease, background 0.35s ease;
+}
+.card--linked::before,
+.card--linked::after {
+  transition: width 0.35s ease, height 0.35s ease,
+              opacity 0.35s ease, filter 0.35s ease;
+}
+.card--linked .card-link {
+  color: var(--bright); text-decoration: none; border: 0;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+.card--linked .card-link::after {
+  content: ""; position: absolute; inset: 0; z-index: 2;
+}
+.card--linked:hover,
+.card--linked:focus-within {
+  transform: translateY(-6px);
+  border-color: rgba(205,239,255,0.88);
+  background: linear-gradient(170deg, rgba(28,32,61,0.96), rgba(7,12,27,0.96));
+  box-shadow: inset 0 0 70px rgba(118,207,238,0.1),
+              0 24px 60px rgba(0,0,0,0.58),
+              0 0 30px rgba(118,207,238,0.18);
+}
+.card--linked:hover::before,
+.card--linked:hover::after,
+.card--linked:focus-within::before,
+.card--linked:focus-within::after {
+  width: 24px; height: 24px; opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(205,239,255,0.75));
+}
+.card--linked:hover .card-link,
+.card--linked:focus-within .card-link {
+  color: var(--gold-bright);
+  text-shadow: 0 0 15px rgba(118,207,238,0.42);
+}
+.card--linked:active { transform: translateY(-2px); }
+.card--linked .card-link:focus-visible { outline: none; }
+.card--linked a:not(.card-link),
+.card--linked button,
+.card--linked input,
+.card--linked select,
+.card--linked textarea {
+  position: relative; z-index: 3;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card--linked,
+  .card--linked::before,
+  .card--linked::after,
+  .card--linked .card-link { transition: none; }
+  .card--linked:hover,
+  .card--linked:focus-within,
+  .card--linked:active { transform: none; }
+}
 
 /* --- oracle: links inside answers and in the source footnote --- */
 .oracle-text a { color: var(--gold-bright); text-decoration: underline; text-underline-offset: 2px; }
