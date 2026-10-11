@@ -3645,3 +3645,24 @@ textarea.am-ear[readonly] { opacity: 0.92; }
   white-space: pre;
   overflow-x: auto;
 }
+
+/* The transcript, opened where the episode stands — on the public shelf
+   and in the editing room alike. */
+.ep-transcript {
+  margin: 0.9rem 0 0.2rem;
+  border: 1px solid rgba(215, 176, 90, 0.3);
+  border-left: 3px solid rgba(215, 176, 90, 0.55);
+  background: rgba(215, 176, 90, 0.04);
+  padding: 0.7rem 0.9rem;
+}
+.ep-tr-text {
+  max-height: 22rem;
+  overflow-y: auto;
+  margin: 0.4rem 0 0;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #e6d6ac;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

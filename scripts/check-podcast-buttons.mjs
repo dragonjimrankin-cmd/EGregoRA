@@ -122,6 +122,21 @@ await tick(20);
 click("[data-mx-tr]");
 await tick(20);
 
+/* ---- read the transcript where you stand ----------------------------- */
+click("[data-mx-readtr]");
+await tick(40);
+const trBox = w.document.querySelector("[data-mx-trbox]");
+const trBtn = w.document.querySelector("[data-mx-readtr]");
+say("read transcript: " + (trBox && !trBox.hidden ? "opened — " + trBox.textContent.replace(/\s+/g, " ").trim() : "did not open"));
+if (!trBox || trBox.hidden) problems.push("the transcript box did not open on the shelf");
+else if (!/some words/.test(trBox.textContent)) problems.push("the transcript box opened but holds no words");
+if (trBtn && trBox && !trBox.hidden) {
+  click("[data-mx-readtr]");                       /* press again — it closes */
+  await tick(20);
+  say("read transcript again: " + (trBox.hidden ? "closed" : "still open"));
+  if (!trBox.hidden) problems.push("the transcript box would not close again");
+}
+
 /* ---- the house player's transport ----------------------------------- */
 const fxBar = w.document.querySelector(".fx-player .fx-bar");
 if (!fxBar) {
@@ -181,6 +196,12 @@ say("editor opened: " + ($(".am-editor") ? "yes" : "no"));
 click("[data-ed=sum-from-tr]");
 await tick(20);
 say("sum-from-tr: " + msg("[data-ed=state]"));
+click('[data-ed="read-tr"]');
+await tick(40);
+const edBox = w.document.querySelector('[data-ed="trbox"]');
+say("editor transcript: " + (edBox && !edBox.hidden ? "opened — " + edBox.textContent.replace(/\s+/g, " ").trim() : "did not open"));
+if (!edBox || edBox.hidden) problems.push("the transcript box did not open in the editor");
+else if (!/some words/.test(edBox.textContent)) problems.push("the editor transcript box holds no words");
 click("[data-ed=drop-here]");
 click("[data-ed=drop-go]");
 await tick(20);

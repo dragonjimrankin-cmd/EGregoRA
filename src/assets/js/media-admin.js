@@ -1687,7 +1687,9 @@ function setup(root) {
       '<label for="' + KIND + '-ed-summary">Summary</label>' +
       '<textarea id="' + KIND + '-ed-summary" data-ed="summary" rows="3">' + esc(item.summary) + "</textarea>" +
       '<div class="btn-row"><button class="btn btn--small" type="button" data-ed="save">Save the writing</button>' +
-      '<button class="btn btn--small btn--ghost" type="button" data-ed="sum-from-tr">Write the summary from its transcript</button></div>' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="sum-from-tr">Write the summary from its transcript</button>' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="read-tr">Read its transcript</button></div>' +
+      '<div class="ep-transcript" data-ed="trbox" hidden></div>' +
 
       '<div class="divider">\u2726</div>' +
       '<p class="kicker">Cut</p>' +
@@ -1828,6 +1830,42 @@ function setup(root) {
       ed("summary").value = dd.summary || ed("summary").value;
       tellEd("A summary is written from the transcript by " + (dd.by || "a model") +
         " \u2014 read it, then save the writing.");
+    });
+
+    /* Read the kept transcript where you stand — the words the ear wrote
+       when the episode was posted. Press again and they close. */
+    ed("read-tr").addEventListener("click", async () => {
+      const box = ed("trbox");
+      if (!box.hidden) {
+        box.hidden = true;
+        ed("read-tr").textContent = "Read its transcript";
+        return;
+      }
+      tellEd("Fetching the kept transcript\u2026");
+      try {
+        const r = await fetch("/api/media", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "transcript", id: item.id })
+        });
+        const d = await r.json();
+        if (!d || !d.ok) throw new Error((d && d.error) || "the transcript would not open");
+        const words = String(d.transcript || "").trim();
+        box.innerHTML = "";
+        const head = document.createElement("p");
+        head.className = "kicker";
+        head.textContent = "The transcript \u2014 as it was heard";
+        const pre = document.createElement("pre");
+        pre.className = "ep-tr-text";
+        pre.textContent = words || "(no words were kept)";
+        box.append(head, pre);
+        box.hidden = false;
+        ed("read-tr").textContent = "Close the transcript";
+        tellEd(words ? "The transcript is open below." : "No transcript is kept with this episode.",
+          !words);
+      } catch (err) {
+        tellEd((err && err.message) || "It would not open.", true);
+      }
     });
 
     /* Drop another voice in at any point. Both heard at once lays the new
@@ -2313,10 +2351,16 @@ function setup(root) {
             '<button type="button" class="btn btn--small" data-mx-dl="' + i.id +
             '" data-mx-url="' + esc(i.url) + '">Download the episode</button>' +
             (i.has_transcript
-              ? '<button type="button" class="btn btn--small btn--ghost" data-mx-tr="' + i.id +
+              ? '<button type="button" class="btn btn--small btn--ghost" data-mx-readtr="' + i.id +
+                '" data-mx-title="' + esc(i.title) + '">Read the transcript</button>' +
+                '<button type="button" class="btn btn--small btn--ghost" data-mx-tr="' + i.id +
                 '" data-mx-title="' + esc(i.title) + '">Download the transcript</button>'
               : "") +
-            "</p>" : "") +
+            "</p>" +
+            (i.has_transcript
+              ? '<div class="ep-transcript" data-mx-trbox="' + i.id + '" hidden></div>'
+              : "")
+            : "") +
           "</div></details>"
         : '<article class="frame card' + (i.pinned ? " is-pinned" : "") + '">' +
           (i.pinned ? '<p class="pin-mark">pinned</p>' : "") +
@@ -2469,6 +2513,49 @@ function setup(root) {
         }
       } catch { /* a failed fetch is a quiet no-op; the button returns */ }
       tr.disabled = false;
+    }
+
+    /* Read the transcript where you stand: the words kept with the upload,
+       opened in the episode itself — no download, no new page. Press again
+       and they close. */
+    const rd = ev.target.closest && ev.target.closest("[data-mx-readtr]");
+    if (rd) {
+      const id = Number(rd.getAttribute("data-mx-readtr"));
+      const box = slot.querySelector('[data-mx-trbox="' + id + '"]');
+      if (!box) return;
+      if (!box.hidden) {
+        box.hidden = true;
+        rd.textContent = "Read the transcript";
+        return;
+      }
+      rd.disabled = true;
+      rd.textContent = "Fetching the words\u2026";
+      try {
+        const r = await fetch("/api/media", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "transcript", id })
+        });
+        const d = await r.json();
+        if (!d || !d.ok) throw new Error((d && d.error) || "the transcript would not open");
+        const words = String(d.transcript || "").trim();
+        box.innerHTML = "";
+        const head = document.createElement("p");
+        head.className = "kicker";
+        head.textContent = "The transcript \u2014 as it was heard";
+        const pre = document.createElement("pre");
+        pre.className = "ep-tr-text";
+        pre.textContent = words || "(no words were kept)";
+        box.append(head, pre);
+        box.hidden = false;
+        rd.textContent = "Close the transcript";
+        if (box.scrollIntoView) {
+          try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch { /* no scroll */ }
+        }
+      } catch (err) {
+        rd.textContent = (err && err.message) || "It would not open";
+      }
+      rd.disabled = false;
     }
   });
 
