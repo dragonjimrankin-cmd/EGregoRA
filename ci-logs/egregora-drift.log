@@ -1,8 +1,34 @@
 project proj_eiuxpFfTnwwx
-live version: 254
-ours:         254
-✓ no foreign deploy since ours. Safe to deploy.
-project proj_eiuxpFfTnwwx
-live version: 255
-ours:         254
-recorded version 255 in ops/egregora-deployed.json
+live version: 256
+ours:         255
+
+✖ 1 deploy(s) landed since ours (v255 → v256).
+   Reading the live files so the two can be merged rather than one buried.
+
+   live project holds 262 files
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+
+   changed live vs our bundle : 11
+     ~ api/media.js
+     ~ public/assets/css/forum.css
+     ~ public/assets/js/headtts/utils.mjs
+     ~ public/assets/js/headtts/voices/am_fenrir.bin
+     ~ public/assets/js/headtts/voices/am_michael.bin
+     ~ public/assets/js/headtts/voices/am_puck.bin
+     ~ public/assets/js/headtts/voices/bm_fable.bin
+     ~ public/assets/js/headtts/voices/bm_george.bin
+     ~ public/assets/js/headtts/voices/bm_lewis.bin
+     ~ public/assets/js/media-admin.js
+     ~ public/podcast/index.html
+   present live, absent here  : 0
+   present here, absent live  : 2
+     - README.md
+     - public/assets/js/vendor/flac-encoder.js
+
+   their versions are saved under ops/incoming/egregora/
+   DEPLOY SKIPPED. Merge, then deploy.
