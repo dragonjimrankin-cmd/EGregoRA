@@ -44,6 +44,18 @@ function lameJS() {
   return lamePromise;
 }
 
+/* The FLAC door has its own encoder, served from this site like lamejs and
+   loaded once, lazily, the first time something asks for FLAC. */
+let flacPromise = null;
+function flacEnc() {
+  if (!flacPromise) {
+    flacPromise = import("./vendor/flac-encoder.js")
+      .then((mod) => (mod && mod.encodeFlac ? mod : (mod && mod.default) || mod))
+      .catch((err) => { flacPromise = null; throw err; });
+  }
+  return flacPromise;
+}
+
 const panels = document.querySelectorAll("[data-admin-media]");
 panels.forEach(setup);
 
@@ -476,6 +488,14 @@ function setup(root) {
       target: el.loud ? Number(el.loud.value) : -18,
       grade: on("grade"), shrink: on("shrink")
     };
+  };
+
+  /* The form the take is published in: MP3 or FLAC. The choice lives in
+     "Four — the work"; where a page offers no choice (the film door), the
+     default stands: MP3. */
+  const fmtChoice = () => {
+    const picked = root.querySelector('[data-am="fmt"]:checked');
+    return picked && picked.value === "flac" ? "flac" : "mp3";
   };
 
   /* ---------------------------------------------------------- the vocabulary
@@ -1091,6 +1111,20 @@ function setup(root) {
         ? "That file cannot be cleaned in this browser \u2014 publish it as it arrived."
         : "Choose a file first.", true);
     }
+
+    /* The chosen form first: whatever arrived is converted to the chosen
+       format — MP3 or FLAC — the moment the button is pressed, and all of
+       the work after runs on the converted take. What is published at the
+       end is the same format again. */
+    const fmt = fmtChoice();
+    step("Converting to " + (fmt === "flac" ? "FLAC" : "MP3") + "\u2026", 0.04);
+    const conv = await encode(fileBuf, fmt);
+    const c1 = new (window.AudioContext || window.webkitAudioContext)();
+    fileBuf = await c1.decodeAudioData(await conv.blob.arrayBuffer());
+    c1.close();
+    fileLook = inspect(fileBuf);
+    const convNote = "converted to " + conv.label + " before the work";
+
     step("Rendering\u2026", 0.1);
     const rate = fileBuf.sampleRate;
 
@@ -1195,8 +1229,9 @@ function setup(root) {
       (notes.length ? '<p class="muted xsmall">' + notes.join("; ") + ".</p>" : "");
 
     step("Encoding\u2026", 0.85);
-    const made = await encode(done);
+    const made = await encode(done, fmt);
     const treatment = [
+      convNote,
       want.rumble && "rumble filtered below 72 Hz",
       want.gate && "hiss shelved",
       want.tone && "tone shaped (mud down, presence and air up)",
@@ -1221,10 +1256,31 @@ function setup(root) {
     if (el.pubrow) el.pubrow.hidden = false;   /* the publish door appears */
   }
 
-  /* MP3 if lamejs will load, WAV if it will not. An hour of WAV is half a
-     gigabyte, so the MP3 route matters; failing over to WAV is better than
-     failing. */
-  async function encode(buf) {
+  /* MP3 or FLAC by the chosen door; MP3 if lamejs will load, FLAC through
+     the site's own encoder, WAV if neither will load. An hour of WAV is
+     half a gigabyte, so a compressed door matters; failing over to WAV is
+     better than failing. */
+  async function encode(buf, fmt) {
+    if (fmt === "flac") {
+      try {
+        const mod = await flacEnc();
+        const chans = Math.min(2, buf.numberOfChannels);
+        const list = [];
+        for (let c = 0; c < chans; c++) list.push(buf.getChannelData(c));
+        const made = mod.encodeFlac({
+          sampleRate: buf.sampleRate,
+          channels: list,
+          progress: (done, total) => {
+            if (done % 64 === 0 || done === total)
+              step("Encoding\u2026 " + Math.round((done / total) * 100) + "%",
+                0.85 + (done / total) * 0.14);
+          }
+        });
+        return { blob: new Blob([made], { type: "audio/flac" }), mime: "audio/flac", label: "FLAC" };
+      } catch {
+        return { blob: wav(buf), mime: "audio/wav", label: "WAV (the FLAC encoder would not load)" };
+      }
+    }
     try {
       const lame = await lameJS();
       const chans = Math.min(2, buf.numberOfChannels);
@@ -2389,7 +2445,7 @@ function setup(root) {
         }
         c1.close();
         tellEd("Encoding the new master\u2026");
-        const made = await encode(outBuf);
+        const made = await encode(outBuf, fmtChoice());
         const upload = await sendBlob(made.blob, (t) => tellEd(t));
         await post({
           action: "replace", id: item.id, upload, mime: made.mime,
@@ -2477,7 +2533,7 @@ function setup(root) {
         at += len;
       });
       const done = await off.startRendering();
-      const made = await encode(done);
+      const made = await encode(done, fmtChoice());
       edit.made = { blob: made.blob, mime: made.mime, seconds: done.duration,
         treatment: "cut and merged from " + keep.length + " snippet(s)" };
       showMerged(made.blob, "audio", done.duration);
@@ -2895,6 +2951,7 @@ function setup(root) {
     window.setTimeout(() => URL.revokeObjectURL(a.href), 20000);
   };
   const extFor = (t) => String(t || "").includes("mpeg") ? ".mp3"
+    : String(t || "").includes("flac") ? ".flac"
     : String(t || "").includes("wav") ? ".wav"
       : String(t || "").includes("ogg") ? ".ogg"
         : String(t || "").includes("mp4") ? ".mp4"

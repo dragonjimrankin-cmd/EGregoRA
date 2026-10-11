@@ -1179,8 +1179,9 @@ export default async function (req, res) {
         const whole = glued;
 
         const mime = clean(body.mime, 80) || (was.kind === 'video' ? 'video/webm' : 'audio/mpeg');
-        const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('wav') ? 'wav'
-          : mime.includes('webm') ? 'webm' : mime.includes('mp4') ? 'mp4' : 'bin';
+        const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('flac') ? 'flac'
+          : mime.includes('wav') ? 'wav'
+            : mime.includes('webm') ? 'webm' : mime.includes('mp4') ? 'mp4' : 'bin';
         const key = (was.kind === 'video' ? 'films/' : 'episodes/') +
           Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.' + ext;
 

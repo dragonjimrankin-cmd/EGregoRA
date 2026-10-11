@@ -1100,6 +1100,17 @@
       <label for="audio-loud">Target loudness (dB RMS)</label>
       <input type="range" id="audio-loud" data-am="loud" min="-28" max="-10" step="1" value="-18">
 
+      <label>The form it is published in</label>
+      <div class="btn-row">
+        <label class="muted xsmall"><input type="radio" name="audio-fmt" data-am="fmt" value="mp3" checked>
+          MP3 &mdash; small, plays everywhere</label>
+        <label class="muted xsmall"><input type="radio" name="audio-fmt" data-am="fmt" value="flac">
+          FLAC &mdash; lossless, weighs more</label>
+      </div>
+      <p class="muted xsmall">Whichever is chosen, the recording is converted to that form first
+      &mdash; before any of the work is done &mdash; and the enhanced take is published in the
+      same form.</p>
+
       <div class="btn-row">
         <button type="button" class="btn btn--small" data-am="run">
           Enhance it
