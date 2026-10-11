@@ -60,7 +60,12 @@
 }
 #forum-root .fm-thread.fm-pinned { border-color: rgba(200, 162, 74, 0.5); }
 #forum-root .fm-ttop { display: flex; align-items: baseline; gap: 10px; }
-#forum-root .fm-thread h3 { margin: 0; font-size: 1.05rem; color: var(--fm-ink); }
+#forum-root .fm-thread h3 {
+  margin: 0; font-size: 1.05rem;
+  /* Follow the page's body-text hue, with just 10% black mixed in. */
+  color: var(--vellum-dim, #d7d0bd);
+  color: color-mix(in srgb, var(--vellum, #efe7d2) 90%, black);
+}
 #forum-root .fm-pin {
   font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--fm-gold); border: 1px solid var(--fm-line);

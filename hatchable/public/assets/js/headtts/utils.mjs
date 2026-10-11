@@ -1,5 +1,3 @@
-
-
 /**
 * Test if we are in Node.js environment
 * @return {boolean} If true, we are in Node.js
