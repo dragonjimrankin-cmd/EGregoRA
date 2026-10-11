@@ -1,7 +1,6 @@
 {
   "project": "proj_eiuxpFfTnwwx",
-  "version": 239,
-  "recorded_at": "2026-10-11T13:20:00.000Z",
-  "deployed_at": null,
-  "note": "Adopted the foreign live bundle (v239) wholesale via the drift mirror; podcast removal re-applied on top."
+  "version": 240,
+  "recorded_at": "2026-10-11T12:04:10.682Z",
+  "deployed_at": null
 }
