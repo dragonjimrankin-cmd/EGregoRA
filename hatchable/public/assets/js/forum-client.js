@@ -139,7 +139,7 @@
         var door = el('div', 'fm-door');
         door.appendChild(el('p', null, 'Sign in to reply — one account covers both houses.'));
         var link = el('a', 'fm-btn', 'Sign in or join');
-        link.href = '/account/';
+        link.href = window.__forumAccount || '/account/';
         door.appendChild(link);
         root.appendChild(door);
       }

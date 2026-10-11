@@ -131,7 +131,7 @@ That paragraph reports the group's own account. TTI does **not** certify the att
 
 Symbolically, if p(u) names the Prime Being in universe u, then each u has one p(u), but p(u₁), p(u₂) and p(u₃) need not be the same being. “Prime” is therefore a position selected by an instance's boundary conditions, not a superior species, permanent soul rank, prophet, ruler or eternally favoured person.
 
-There is a further philosophical debt: strict identity across possible worlds is not automatic. “The same being elsewhere” may require counterpart theory rather than literal numerical identity. And no mechanism has yet shown that residues cross between separate universe-instances. The proposal is modal and metaphysical, not an empirical discovery. See [The Prime Being changes with the instance](https://the-two-infinities.hatchable.site/time-and-residue/#t-instances).`,
+There is a further philosophical debt: strict identity across possible worlds is not automatic. “The same being elsewhere” may require counterpart theory rather than literal numerical identity. No mechanism has yet demonstrated that residues cross between separate universe-instances. The newer Zero-Seam proposal names a candidate crossing kernel and conservation test, but does not derive or observe one. The Prime-role proposal remains modal and metaphysical, not an empirical discovery. See [The Prime Being changes with the instance](https://the-two-infinities.hatchable.site/time-and-residue/#t-instances).`,
       followups: [
         "What does one Prime Being per universe-instance mean?",
         "What is the one residue that travels?",
@@ -149,7 +149,7 @@ There is a further philosophical debt: strict identity across possible worlds is
 
 The uniqueness is local to the instance. It is not a claim that one identity is eternally privileged across all possible universes. In another instance, another being can occupy the role. This preserves “one Prime Being” without turning Prime into a caste or proper name.
 
-The essay also separates several meanings of transmission. Ordinary physical effects remain inside causal spacetime. Information requires a carrier. Philosophical ideas travel through people, speech, texts and institutions. A possible-world counterpart is a modal relation, not a signal. The strongest residue proposal adds a common mode within one universe, but it has not supplied a mechanism for crossing between separate universe-instances. Read [One Source Per Universe, Every Being Eligible](https://the-two-infinities.hatchable.site/time-and-residue/#t-proposal).`,
+The essay also separates several meanings of transmission. Ordinary physical effects remain inside causal spacetime. Information requires a carrier. Philosophical ideas travel through people, speech, texts and institutions. A possible-world counterpart is a modal relation, not a signal. The common-mode proposal remains inside one universe. The separate Zero-Seam extension asks about inter-universe inheritance, but its kernel is a research debt rather than an established carrier. Read [One Source Per Universe, Every Being Eligible](https://the-two-infinities.hatchable.site/time-and-residue/#t-proposal).`,
       followups: [
         "Could every being be the Prime Being somewhere?",
         "What is the one residue that travels?",
@@ -167,7 +167,7 @@ The essay also separates several meanings of transmission. Ordinary physical eff
 
 That is why the receiving equation includes more than the residue. Interpretation, inherited culture, material conditions, novelty, accident and error all contribute. Even if a global residue existed, no philosophy or channeled text could be reduced to it.
 
-Three readings are kept apart. Historically, traces travel through ordinary causal chains and cultural transmission. Structurally, similar embodied minds may converge on similar questions without a cosmic sender. Metaphysically, the Prime Being's residue occupies a nonlocal common mode inside its own universe-instance. The third reading is the distinctive conjecture and the least evidenced. It must not be used to erase differences between traditions or to claim transmission between separate universes without another mechanism. Read [The One Residue That Travels](https://the-two-infinities.hatchable.site/time-and-residue/).`,
+Four readings are now kept apart. Historically, traces travel through ordinary causal chains and cultural transmission. Structurally, similar embodied minds may converge without a cosmic sender. Metaphysically, the Prime Being's residue occupies a common mode inside its own universe-instance. The newer inherited-boundary reading adds a proposed crossing from a preceding universe and carries the greatest mathematical and evidential debt. None may erase differences between traditions or promote inter-universe transmission without a derived mechanism. Read [The One Residue That Travels](https://the-two-infinities.hatchable.site/time-and-residue/).`,
       followups: [
         "What does one Prime Being per universe-instance mean?",
         "How does The Channeling Circle relate to the one-residue essay?",
@@ -207,7 +207,7 @@ In the seam-world model, one spatial circuit can reverse a transported frame's o
 Accordingly, the inverted-torus essay treats any matter/antimatter connection as an additional hypothesis with its own mechanism and conservation ledger. Geometry can organise a conjecture; it cannot silently manufacture particle physics. Read [Handedness Reversal Is Not Time Reversal](https://the-two-infinities.hatchable.site/inverted-toruses/#t-not-time).`,
       followups: [
         "What is an orientation-reversing torus mapping space?",
-        "How can matter be residue while antimatter is out of phase?",
+        "Why can the smaller and bigger infinities never fully synchronise?",
         "Can reversible mixing create a matter-antimatter imbalance?"
       ]
     },
@@ -289,7 +289,65 @@ In the **base-5 to base-4** alternative, the return plane has a shorter fourfold
 Neither numeral base is known to be a physical plane, frequency or dimension. Changing notation does not create dynamics. To become more than numerology, either version must identify a measurable state space, evolution rule, coupling and observable that changes when 8 is replaced by 4. Until then the comparison is mathematical speculation, not evidence about cosmology. Read [Prime Plane Phase Arithmetic](https://the-two-infinities.hatchable.site/prime-plane/).`,
       followups: [
         "How can matter be residue while antimatter is out of phase?",
-        "What does one Prime Being per universe-instance mean?",
+        "Why can the smaller and bigger infinities never fully synchronise?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "little-red-dots-residue",
+      question: "Could little red dots be remnants of a previous universe?",
+      patterns: [
+        /little red dots?.*(?:previous universe|prior universe|remnant|inherited residue|minus one|negative interval)/,
+        /(?:previous universe|prior universe|inherited residue|negative interval).*(?:little red dots?|jwst)/
+      ],
+      answer: `That is the new TTI conjecture, not an astronomical conclusion. The observed sources remain compact early objects whose spectra increasingly support accreting black holes inside dense gas. TTI asks whether that ordinary machinery is the positive-side body of something older: one global residue left by a prior cosmic closure and projected into many local seeds.
+
+The proposed interval −1 < ξ < 0 is a residue coordinate, not automatically a place, epoch, negative-energy reservoir or hidden sky. In the established Cosmic Ledger, R∞ = −1 is bookkeeping. Promoting it into transferable boundary data requires a state space, a crossing kernel, locality and conservation. The earlier local χ-front remains necessary: inherited residue would bias where a dark scaffold integrates into a luminous host rather than replace gas, gravity or accretion.
+
+Many dots do not mean many Prime Beings. The coherent form is one global source condition sampled at many emergence points; the dots share an ancestry, not an identity. They are neither preserved ancient galaxies nor fragments of a person. Read [JWST's Little Red Dots, Through TTI](https://the-two-infinities.hatchable.site/little-red-dots/) and keep its speculative grading attached.`,
+      followups: [
+        "What is the Zero-Seam Test?",
+        "What is the one residue that travels?",
+        "Does orientation reversal reverse time or create antimatter?"
+      ]
+    },
+    {
+      id: "zero-seam-test",
+      question: "What is the Zero-Seam Test?",
+      patterns: [
+        /(?:what|explain|describe).*(?:zero seam test|zero-seam test)/,
+        /zero seam.*(?:research|proposal|test|jwst|little red dot)/,
+        /little red dots?.*(?:research proposal|falsif|preregister|held out)/
+      ],
+      answer: `The Zero-Seam Test is a staged research proposal designed to stop the inherited-residue idea from surviving by metaphor alone. It compares three nested models: conventional black-hole, gas and host physics H_A; that baseline plus a local integration front H_χ; and both plus one inherited-residue crossing law H_−+.
+
+The theory must first derive a finite, conserved kernel shared by every source. The observing team then builds a selection-aware JWST census and freezes the outcomes, priors and exclusions before opening fields withheld by observing programme. The primary test is joint out-of-sample prediction of the redshift-dependent population clock, the lag between compact central growth and extended host growth, and a prespecified shared covariance. Energy accounting and any resolvable orientation trace are consistency tests, not escape routes.
+
+The programme starts with public archival data and earns new telescope time only through successful prediction. It rejects the tested implementation if no crossing law can be derived, conservation fails, the held-out population relation is absent, or ordinary astrophysics predicts as well with fewer assumptions. Even success would establish an unexplained regularity consistent with the model, not prove a previous universe. Read [the complete proposal](https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/).`,
+      followups: [
+        "Could little red dots be remnants of a previous universe?",
+        "How should I grade these new claims?",
+        "What is the one residue that travels?"
+      ]
+    },
+    {
+      id: "temporal-antipodes",
+      question: "Why can the smaller and bigger infinities never fully synchronise?",
+      patterns: [
+        /(?:smaller|smallward).*(?:bigger|larger|largeward).*infinit.*(?:synchron|sync|same time|clock)/,
+        /(?:two infinities|infinities).*(?:opposite ends of time|temporal antipodes|synchron|share.*clock)/,
+        /temporal antipode.*(?:infin|time|phase|clock)/
+      ],
+      answer: `This is the **Temporal Antipodes conjecture**. “Smaller” and “bigger” name directions of scale, not cardinal sizes: smallward tends toward zero, while largeward tends through unbounded magnitudes. In fact, the real interval between zero and one is uncountable and therefore has greater cardinality than the countable outward sequence of natural numbers. Cantor's theorem establishes that distinction; it does not put either infinity at an end of time.
+
+TTI adds the speculative temporal assignment. Write u(t) = (2/π) arctan(t), so every finite time lies between −1 and +1 while the endpoints are reached only as t tends to opposite infinities. Under the convention suggested by TTI's arrow, the largeward boundary is u = −1 and the smallward boundary is u = +1. Reversing those labels changes nothing essential. A reflection u ↦ −u pairs the endpoints on paper, but it does not carry a signal, transport a clock or make them simultaneous.
+
+Full synchronisation means more than two projected phases crossing once. After a lawful transport to one comparison surface, equal phase and equal rate must persist through a non-zero interval: Δφ = 2πk and dΔφ/dt = 0. If the two endpoint states remain asymptotic, are not physically identified, and may be compared only through an ordinary causal protocol, they have no shared finite event or round-trip clock channel. Under those assumptions, complete endpoint synchrony is structurally excluded. Interior echoes may still align periodically or come arbitrarily close quasiperiodically.
+
+The word **cannot** remains conditional. The conjecture would fail if a consistent temporal gluing gave the endpoints a common clock, or if a derived model produced exact phase-and-rate locking over an interval. Ordinary propagation delays and unsynchronised astrophysical sources are not evidence for it. Read [Temporal Antipodes](https://the-two-infinities.hatchable.site/temporal-antipodes/) and its [declared stress test](https://the-two-infinities.hatchable.site/stress-tests/#t-temporal-antipodes).`,
+      followups: [
+        "How can matter be residue while antimatter is out of phase?",
+        "Does orientation reversal reverse time or create antimatter?",
         "How should I grade these new claims?"
       ]
     },
@@ -302,7 +360,7 @@ Neither numeral base is known to be a physical plane, frequency or dimension. Ch
       ],
       answer: `Use four separate ledgers rather than one mood of belief.
 
-**Established mathematics or physics:** a mapping torus can be defined precisely; determinant −1 records orientation reversal; two reversals restore orientation; reversible symmetric dynamics do not create a global asymmetry from nothing.
+**Established mathematics or physics:** a mapping torus can be defined precisely; determinant −1 records orientation reversal; two reversals restore orientation; arctangent can compactify an infinite coordinate without reaching its boundary; reversible symmetric dynamics do not create a global asymmetry from nothing.
 
 **Historical or source evidence:** The Channeling Circle publishes a dated transcript archive in the L/L Research tradition. That establishes the publication record and the group's self-description, not the identity of its attributed speakers.
 
@@ -340,7 +398,7 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
   };
 
   window.EGOracleKnowledge = Object.freeze({
-    version: "2026-10-11.2",
+    version: "2026-10-11.4",
     reviewed: "2026-10-11",
     entries: Object.freeze(entries.slice()),
     find

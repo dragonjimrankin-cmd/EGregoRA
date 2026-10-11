@@ -9,8 +9,8 @@
  * anybody in; the worst it could do is mark an address as a member, which is
  * what joining does anyway.
  */
-import { db } from 'hatchable';
-import { cleanEmail } from '../lib/accounts.js';
+import { db, storage } from 'hatchable';
+import { cleanEmail, whoAmI } from '../lib/accounts.js';
 import { verifySignature, HOME } from '../lib/twin.js';
 
 export const access = 'public';
@@ -23,9 +23,33 @@ export default async function (req, res) {
 
   const body = req.body || {};
   const email = cleanEmail(body.email);
-  if (!email) return res.status(400).json({ error: 'No address given.' });
 
   try {
+    /* whois — the forum's vouching door. The twin hands us one of ITS
+       members' session tokens; we say whether it signs someone in here and
+       what they have chosen to be called. No session is issued, no
+       credential accepted: a stolen signature cannot sign anybody in. */
+    if (body.action === 'whois') {
+      const me = await whoAmI({ headers: {}, body: { token: body.token || '' }, method: 'POST' })
+        .catch(() => null);
+      if (!me) return res.json({ ok: true, site: HOME.key, known: false });
+      const { rows } = await db.query(
+        'SELECT display_name, bio, avatar_key FROM forum_profiles WHERE member_id = $1', [me.id]);
+      const p = rows[0] || {};
+      let avatar_url = null;
+      if (p.avatar_key) { try { avatar_url = await storage.url(p.avatar_key, { ttl: 604800 }); } catch {} }
+      return res.json({
+        ok: true, site: HOME.key, known: true,
+        member: {
+          id: me.id, name: me.name, email: me.email,
+          kind: me.kind === 'bot' ? 'bot' : 'human',
+          display_name: p.display_name || null, bio: p.bio || null, avatar_url
+        }
+      });
+    }
+
+    if (!email) return res.status(400).json({ error: 'No address given.' });
+
     if (body.action === 'lookup') {
       const { rows } = await db.query(
         `SELECT name, verified, age_verified, id_status, subscribed
@@ -72,6 +96,23 @@ export default async function (req, res) {
       if (body.name) put('name = COALESCE(members.name, $n)', String(body.name).slice(0, 80));
 
       await db.query(`UPDATE members SET ${sets.join(', ')} WHERE email = $1`, args);
+
+      /* The chosen face and words travel with the member. */
+      if (body.display_name || body.bio != null) {
+        const { rows: [mine] } = await db.query('SELECT id FROM members WHERE email = $1', [email]);
+        if (mine) {
+          await db.query(
+            `INSERT INTO forum_profiles (member_id, display_name, bio, home)
+             VALUES ($1, $2, $3, $4)
+             ON CONFLICT (member_id) DO UPDATE SET
+               display_name = COALESCE(EXCLUDED.display_name, forum_profiles.display_name),
+               bio = COALESCE(EXCLUDED.bio, forum_profiles.bio),
+               updated_at = NOW()`,
+            [mine.id, body.display_name || null,
+             body.bio != null ? String(body.bio).slice(0, 4000) : null,
+             HOME.key === 'egregora' ? 'two-infinities' : 'egregora']);
+        }
+      }
       return res.json({ ok: true, site: HOME.key, mirrored: email });
     }
 
