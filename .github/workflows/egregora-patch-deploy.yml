@@ -10,6 +10,7 @@ on:
       - "ops/egregora-project.txt"
       - "scripts/hatchable-deploy.mjs"
       - "scripts/test-voiceprint.mjs"
+      - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
       - ".github/workflows/egregora-patch-deploy.yml"
 
@@ -38,10 +39,18 @@ jobs:
           node --check egregora-patch/public/assets/js/voiceprint.js
           node --check egregora-patch/public/assets/js/admin-edit.js
           node --check egregora-patch/public/assets/js/oracle-knowledge.js
+          node --check egregora-patch/public/assets/js/neural-voice.js
+          node --check egregora-patch/public/assets/js/fox.js
           node scripts/test-voiceprint.mjs
           node scripts/test-oracle-knowledge.mjs
+          node scripts/test-neural-voice.mjs
+          test -s egregora-patch/public/assets/js/headtts/worker-tts.mjs
+          test -s egregora-patch/public/assets/js/headtts/dictionaries/en-us.txt
           grep -q 'Sixteen prepared answers' egregora-patch/public/ask-ed/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
+          grep -q 'Natural voice: off' egregora-patch/public/ask-ed/index.html
+          grep -q 'Answer text stays on this device' egregora-patch/public/ask-ed/index.html
+          grep -q 'bm_fable' egregora-patch/public/assets/js/neural-voice.js
           node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
 
       - name: Deploy to the existing EGregoRA project
@@ -85,12 +94,26 @@ jobs:
             {
               url: 'https://egregora.hatchable.site/ask-ed/',
               markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
-                'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js']
+                'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js',
+                'Natural voice: off', 'Answer text stays on this device', 'fox.js?v=natural-voice-1']
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
                 'baryogenesis-boundary', 'epistemic-grading']
+            },
+            {
+              url: 'https://egregora.hatchable.site/assets/js/neural-voice.js',
+              markers: ['NaturalVoiceEngine', 'bm_george', 'bm_fable',
+                'headtts/headtts.mjs', 'generated privately on this device']
+            },
+            {
+              url: 'https://egregora.hatchable.site/assets/js/headtts/worker-tts.mjs',
+              markers: ['StyleTextToSpeech2Model', 'updateTimestamps', 'audioEncoding']
+            },
+            {
+              url: 'https://egregora.hatchable.site/assets/js/fox.js',
+              markers: ['eg-gink-natural-voice', 'naturalVoice.speak', 'rankNativeVoices']
             }
           ];
           let detail = 'Gink did not become current';

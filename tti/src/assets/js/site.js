@@ -409,10 +409,10 @@
         if (history.length > MAX_KEPT) history = history.slice(-MAX_KEPT);
         if (window.EGVoiceMuted && window.EGVoiceMuted()) {
           /* The familiar's voice is off; the answer is read with the eyes. */
-        } else if (window.EGFox && window.EGFox.available) {
-          window.EGFox.speak(data.answer);
         } else {
-          window.__EG_PENDING_SPEECH__ = data.answer;
+          const avatar = window.EGDragon || window.EGFox;
+          if (avatar && avatar.available) avatar.speak(data.answer);
+          else window.__EG_PENDING_SPEECH__ = data.answer;
         }
       }
     } catch {
@@ -490,7 +490,8 @@
       "What does a psychedelic actually do to a brain?",
       "Is magic real, in one paragraph?"
     ]);
-    if (window.EGFox) window.EGFox.stop();
+    const avatar = window.EGDragon || window.EGFox;
+    if (avatar) avatar.stop();
     box.value = "";
     box.style.height = "";
     box.focus();
@@ -535,7 +536,10 @@
   let gotSpeech = false;
   let holdStart = 0;
 
-  const fox = () => (window.EGFox && typeof window.EGFox.listen === "function") ? window.EGFox : null;
+  const fox = () => {
+    const avatar = window.EGDragon || window.EGFox;
+    return avatar && typeof avatar.listen === "function" ? avatar : null;
+  };
 
   const start = () => {
     if (active) return;
@@ -4661,10 +4665,12 @@
 
   window.EGVoiceMuted = () => muted;
 
+  const avatarVoice = () => window.EGDragon || window.EGFox || null;
   const applyToFox = () => {
-    if (window.EGFox) {
-      window.EGFox.muted = muted;
-      if (muted && window.EGFox.stop) window.EGFox.stop();
+    const avatar = avatarVoice();
+    if (avatar) {
+      avatar.muted = muted;
+      if (muted && avatar.stop) avatar.stop();
       if (muted) window.__EG_PENDING_SPEECH__ = "";
       return true;
     }
@@ -4696,7 +4702,7 @@
   const againBtn = document.getElementById("o-again");
   const paintHold = () => {
     if (!holdBtn) return;
-    const fox = window.EGFox;
+    const fox = avatarVoice();
     const isPaused = Boolean(fox && fox.paused);
     holdBtn.textContent = isPaused ? "Carry on" : "Pause";
     holdBtn.setAttribute("aria-pressed", isPaused ? "true" : "false");
@@ -4704,13 +4710,13 @@
     if (againBtn) againBtn.disabled = muted || !(fox && fox.lastText);
   };
   if (holdBtn) holdBtn.addEventListener("click", () => {
-    const fox = window.EGFox;
+    const fox = avatarVoice();
     if (!fox) return;
     if (fox.paused) fox.resume(); else fox.hold();
     paintHold();
   });
   if (againBtn) againBtn.addEventListener("click", () => {
-    const fox = window.EGFox;
+    const fox = avatarVoice();
     if (fox && fox.again) fox.again();
     paintHold();
   });

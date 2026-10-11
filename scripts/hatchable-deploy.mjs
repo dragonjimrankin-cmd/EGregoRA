@@ -17,8 +17,8 @@
  * Notes:
  *  - Hatchable runs NO build step, so we upload the *compiled* site from
  *    hatchable/public plus hatchable/hatchable.toml. Nothing else is sent.
- *  - Text files go through write_files; binary files (jpg/png/ico/woff) go
- *    through upload_file as base64, with argument names probed from the
+ *  - Ordinary text files go through write_files; binary files and text over
+ *    1 MB go through upload_file as bytes, with argument names probed from the
  *    server's own tool schema so this keeps working if the API shifts.
  *  - The token is read from the environment and never written to disk.
  */
@@ -134,7 +134,11 @@ function collect() {
     .filter((f) => f.path !== "README.md" && !f.path.endsWith(".DS_Store"));
   const text = [], binary = [];
   for (const f of files) {
-    (BINARY.has(extname(f.path).toLowerCase()) ? binary : text).push(f);
+    /* write_files is ideal for ordinary source, but a multi-megabyte text
+       dictionary can exceed a single MCP JSON request. Send oversized text
+       through the same chunked byte uploader as media instead. */
+    const oversized = statSync(f.abs).size > 1024 * 1024;
+    (BINARY.has(extname(f.path).toLowerCase()) || oversized ? binary : text).push(f);
   }
   return { text, binary };
 }

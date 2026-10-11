@@ -18,6 +18,7 @@
     "check:mobile": "python3 scripts/check-mobile.py",
     "build:tti": "npx @11ty/eleventy --config=tti/eleventy.config.js",
     "build:tti:hatchable": "npm run build:tti && rm -rf tti/hatchable/public && mkdir -p tti/hatchable/public && cp -r tti/_site/* tti/hatchable/public/",
+    "sync:neural-voice": "node scripts/sync-neural-voice-assets.mjs",
     "lint:tti": "html-validate \"tti/_site/**/*.html\""
   },
   "repository": {
@@ -33,6 +34,8 @@
   "homepage": "https://github.com/dragonjimrankin-cmd/EGregoRA#readme",
   "devDependencies": {
     "@11ty/eleventy": "^3.1.6",
+    "@huggingface/transformers": "4.3.1",
+    "@met4citizen/headtts": "1.3.0",
     "cheerio": "^1.2.0",
     "esbuild": "^0.28.2",
     "html-validate": "^11.16.2",

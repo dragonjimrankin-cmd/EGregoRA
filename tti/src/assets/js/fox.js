@@ -17,14 +17,20 @@
 
    He breathes, blinks asymmetrically, flicks and swivels his ears, tracks
    the cursor with head, neck and eyes separately, swishes a seven-segment
-   tail, and lip-syncs to the browser's speech synthesiser word by word:
-   the visemes are read off the text actually being spoken, timed to the
-   boundary events the synthesiser reports, not improvised at random.
+   tail, and lip-syncs either to HeadTTS's true phoneme timestamps or, on
+   the immediate native fallback, to the browser synthesiser's word
+   boundaries. Neither mouth track is improvised at random.
 
    Exposes window.EGFox = { speak(text), stop(), available, muted }.
    =========================================================================== */
 
 import * as THREE from "./vendor/three.module.js";
+import {
+  AVATAR_VOICE_PROFILES,
+  NaturalVoiceEngine,
+  normaliseSpeechText,
+  rankNativeVoices
+} from "./neural-voice.js";
 
 (() => {
   "use strict";
@@ -35,6 +41,7 @@ import * as THREE from "./vendor/three.module.js";
   const statusEl = document.getElementById("fox-status");
   const btnSpeak = document.getElementById("fox-speak");
   const btnStop = document.getElementById("fox-stop");
+  const btnNatural = document.getElementById("fox-natural");
   const setStatus = (s) => { if (statusEl) statusEl.textContent = s; };
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -1098,37 +1105,34 @@ import * as THREE from "./vendor/three.module.js";
   animate();
 
   /* ======================================================== the voice */
+  const VOICE_KEY = "gink";
+  const voiceProfile = AVATAR_VOICE_PROFILES[VOICE_KEY];
   const synth = window.speechSynthesis;
   const canSpeak = !!synth && typeof SpeechSynthesisUtterance === "function";
+  const canSpeakNaturally = NaturalVoiceEngine.isSupported();
+  const naturalPreferenceKey = "eg-gink-natural-voice";
   let chosenVoice = null;
-
-  const BRITISH_MALE = [
-    "daniel", "arthur", "oliver", "george", "ryan", "thomas", "jamie",
-    "google uk english male", "microsoft george", "microsoft ryan",
-    "en-gb-language", "british"
-  ];
-  const FEMALE_HINT = /female|zira|hazel|susan|kate|serena|fiona|martha|amelie|libby|sonia|moira|karen|tessa/i;
+  let naturalVoice = null;
+  let naturalWanted = false;
+  try { naturalWanted = localStorage.getItem(naturalPreferenceKey) === "1"; } catch { naturalWanted = false; }
 
   const pickVoice = () => {
     if (!canSpeak) return null;
-    const voices = synth.getVoices();
-    if (!voices.length) return null;
-    const gb = voices.filter((v) => /^en[-_]GB/i.test(v.lang));
-    const byName = (list) => list.find((v) => BRITISH_MALE.some((n) => v.name.toLowerCase().includes(n)));
-    chosenVoice =
-      byName(gb) || byName(voices) ||
-      gb.find((v) => !FEMALE_HINT.test(v.name)) || gb[0] ||
-      voices.find((v) => /^en/i.test(v.lang) && !FEMALE_HINT.test(v.name)) ||
-      voices.find((v) => /^en/i.test(v.lang)) || voices[0] || null;
+    chosenVoice = rankNativeVoices(synth.getVoices(), VOICE_KEY)[0] || null;
     return chosenVoice;
   };
 
   const readyLine = () => {
+    if (naturalWanted && canSpeakNaturally) {
+      return naturalVoice?.ready
+        ? "Ready — Gink's natural neural voice is generated privately on this device."
+        : "Natural voice selected — it will load only when Gink next speaks.";
+    }
     if (!canSpeak) return "No speech synthesiser here — Gink will mouth the words silently.";
     if (!chosenVoice) return "Ready. Ask the oracle and Gink will read the answer aloud.";
     return /^en[-_]GB/i.test(chosenVoice.lang)
-      ? `Ready — speaking as ${chosenVoice.name}, British English.`
-      : `Ready — no British voice is installed on this device, so ${chosenVoice.name} stands in.`;
+      ? `Ready — using ${chosenVoice.name}, the best British voice installed here.`
+      : `Ready — no British voice is installed, so ${chosenVoice.name} stands in.`;
   };
 
   if (canSpeak) {
@@ -1233,8 +1237,78 @@ import * as THREE from "./vendor/three.module.js";
 
   let queue = [], muted = false, lastText = "", silentTimer = null, paused = false;
   let mimeTimer = null;
-  const RATE = 0.95;
+  let speechRequest = 0;
+  const RATE = voiceProfile.nativeRate;
+  const PITCH = voiceProfile.nativePitch;
   const CPS = 13.5 * RATE;      // characters per second at this speaking rate
+
+  /* HeadTTS supplies Oculus viseme names and true phoneme timings. These
+     character-specific jaw/width targets replace spelling-based guesses
+     whenever the natural voice is active. */
+  const NEURAL_SHAPES = {
+    sil: [0.02, 0.25], PP: [0.03, 0.32], FF: [0.14, 0.64], TH: [0.18, 0.58],
+    DD: [0.23, 0.58], kk: [0.31, 0.42], CH: [0.28, 0.68], SS: [0.14, 0.8],
+    nn: [0.2, 0.55], RR: [0.34, 0.35], aa: [0.94, 0.53], E: [0.56, 0.84],
+    I: [0.38, 0.9], O: [0.8, 0.12], U: [0.54, 0.06]
+  };
+  const mouthViseme = ({ viseme, duration }) => {
+    const shape = NEURAL_SHAPES[viseme] || NEURAL_SHAPES.sil;
+    visQueue = [{ jaw: shape[0], wide: shape[1], dur: Math.max(0.035, duration || 0.08) }];
+    visHold = 0;
+  };
+
+  naturalVoice = new NaturalVoiceEngine({
+    profile: VOICE_KEY,
+    onStatus: ({ text }) => { if (naturalWanted && !muted) setStatus(text); },
+    onStart: () => {
+      speaking = true;
+      paused = false;
+      if (btnStop) btnStop.disabled = false;
+      setStatus("Speaking — Gink's local neural voice.");
+    },
+    onEnd: ({ cancelled }) => {
+      speaking = false;
+      paused = false;
+      visQueue.length = 0; visHold = 0;
+      if (btnStop) btnStop.disabled = true;
+      if (!cancelled) setStatus("Finished. Test everything kindly.");
+    },
+    onViseme: mouthViseme,
+    onWord: ({ word }) => { emphasis = /[.!?]$/.test(word) ? 1 : 0.35; },
+    onError: (error) => console.warn("Gink natural voice:", error)
+  });
+
+  const paintNatural = () => {
+    if (!btnNatural) return;
+    btnNatural.hidden = !canSpeakNaturally;
+    btnNatural.disabled = !canSpeakNaturally;
+    btnNatural.setAttribute("aria-pressed", naturalWanted ? "true" : "false");
+    btnNatural.textContent = naturalWanted ? "Natural voice: on" : "Natural voice: off";
+    btnNatural.title = naturalWanted
+      ? "Use the immediate voice installed on this device instead"
+      : "Download and run Gink's more realistic neural voice in this browser";
+  };
+  btnNatural?.addEventListener("click", async () => {
+    naturalWanted = !naturalWanted;
+    try { localStorage.setItem(naturalPreferenceKey, naturalWanted ? "1" : "0"); } catch { /* private window */ }
+    speechRequest += 1;
+    naturalVoice.stop({ notify: false });
+    if (canSpeak) synth.cancel();
+    paintNatural();
+    if (!naturalWanted) { setStatus(readyLine()); return; }
+    btnNatural.disabled = true;
+    try {
+      await naturalVoice.connect();
+      setStatus(readyLine());
+    } catch (error) {
+      naturalWanted = false;
+      try { localStorage.setItem(naturalPreferenceKey, "0"); } catch { /* private window */ }
+      setStatus(`Natural voice could not load (${String(error?.message || error).slice(0, 90)}). The installed voice remains ready.`);
+    } finally {
+      paintNatural();
+    }
+  });
+  paintNatural();
 
   /* Mouth a text without a synthesiser: walk the words on a timer at the
      same pace the voice would have used. Used on devices with no speech. */
@@ -1253,16 +1327,19 @@ import * as THREE from "./vendor/three.module.js";
   };
 
   const stop = () => {
+    speechRequest += 1;
     queue = []; speaking = false; paused = false;
     visQueue.length = 0; visHold = 0;
     clearTimeout(silentTimer);
     clearTimeout(mimeTimer); mimeTimer = null;
+    naturalVoice.stop({ notify: false });
     if (canSpeak) synth.cancel();
     if (btnStop) btnStop.disabled = true;
     setStatus(readyLine());
   };
 
-  const sayNext = () => {
+  const sayNext = (request) => {
+    if (request !== speechRequest) return;
     clearTimeout(mimeTimer); mimeTimer = null;
     if (!queue.length) {
       speaking = false;
@@ -1275,23 +1352,26 @@ import * as THREE from "./vendor/three.module.js";
     if (item && item.wait) {
       /* A beat before the verdict. The mouth rests; the queue goes on. */
       speaking = true;
-      mimeTimer = setTimeout(sayNext, item.wait);
+      mimeTimer = setTimeout(() => sayNext(request), item.wait);
       return;
     }
-    const line = typeof item === "string" ? item : item.line;
-    if (!line || !line.trim()) { sayNext(); return; }
+    const sourceLine = typeof item === "string" ? item : item.line;
+    const line = normaliseSpeechText(sourceLine, VOICE_KEY);
+    if (!line) { sayNext(request); return; }
     const u = new SpeechSynthesisUtterance(line);
     if (chosenVoice) { u.voice = chosenVoice; u.lang = chosenVoice.lang; } else u.lang = "en-GB";
-    u.rate = RATE; u.pitch = 0.86; u.volume = 1;
+    u.rate = RATE; u.pitch = PITCH; u.volume = 1;
     let sawBoundary = false;
     u.onstart = () => {
+      if (request !== speechRequest) return;
       speaking = true;
       /* Chrome and Safari fire word boundaries; Firefox often does not. Give
          it a moment, and if nothing arrives, mime the line on a timer so the
          mouth still follows the words instead of inventing them. */
-      setTimeout(() => { if (speaking && !sawBoundary) mimeText(line); }, 320);
+      setTimeout(() => { if (request === speechRequest && speaking && !sawBoundary) mimeText(line); }, 320);
     };
     u.onboundary = (e) => {
+      if (request !== speechRequest) return;
       /* A real boundary: take the word at this character index and give the
          jaw exactly that word to shape, spread over how long it will take. */
       sawBoundary = true;
@@ -1304,9 +1384,40 @@ import * as THREE from "./vendor/three.module.js";
         emphasis = /[.!?]$/.test(word) ? 1 : 0.45;
       }
     };
-    u.onend = sayNext;
-    u.onerror = sayNext;
+    u.onend = () => sayNext(request);
+    u.onerror = () => sayNext(request);
     synth.speak(u);
+  };
+
+  const speakNative = (text, request, fallbackNote = "") => {
+    naturalVoice.stop({ notify: false });
+    if (!canSpeak) {
+      speaking = true;
+      if (btnStop) btnStop.disabled = false;
+      setStatus(fallbackNote || "Mouthing the answer — this device has no speech synthesiser.");
+      clearTimeout(silentTimer);
+      clearTimeout(mimeTimer); mimeTimer = null;
+      const performance = normaliseSpeechText(
+        scriptFrom(text).filter((item) => item.line).map((item) => item.line).join(" "),
+        VOICE_KEY
+      );
+      mimeText(performance);
+      silentTimer = setTimeout(() => {
+        if (request !== speechRequest) return;
+        speaking = false;
+        if (btnStop) btnStop.disabled = true;
+        setStatus(readyLine());
+      }, Math.min(45000, 55 * text.length));
+      return;
+    }
+    synth.cancel();
+    if (!chosenVoice) pickVoice();
+    queue = scriptFrom(text);
+    speaking = true;
+    paused = false;
+    if (btnStop) btnStop.disabled = false;
+    setStatus(fallbackNote || (chosenVoice ? `Speaking — ${chosenVoice.name}.` : "Speaking."));
+    sayNext(request);
   };
 
   const speak = (text) => {
@@ -1315,23 +1426,28 @@ import * as THREE from "./vendor/three.module.js";
     if (btnSpeak) btnSpeak.disabled = false;
     if (muted) return;
 
-    if (!canSpeak) {
-      speaking = true;
-      setStatus("Mouthing the answer — this device has no speech synthesiser.");
-      clearTimeout(silentTimer);
-      clearTimeout(mimeTimer); mimeTimer = null;
-      mimeText(scriptFrom(text).filter((i) => i.line).map((i) => i.line).join(" "));
-      silentTimer = setTimeout(() => { speaking = false; setStatus(readyLine()); },
-        Math.min(45000, 55 * text.length));
+    const request = ++speechRequest;
+    clearTimeout(silentTimer);
+    clearTimeout(mimeTimer); mimeTimer = null;
+    queue = [];
+    if (canSpeak) synth.cancel();
+
+    if (naturalWanted && canSpeakNaturally) {
+      speaking = false; // model preparation is not mouth movement
+      paused = false;
+      if (btnStop) btnStop.disabled = false;
+      naturalVoice.speak(scriptFrom(text)).catch((error) => {
+        if (request !== speechRequest || muted) return;
+        naturalWanted = false;
+        try { localStorage.setItem(naturalPreferenceKey, "0"); } catch { /* private window */ }
+        paintNatural();
+        const reason = String(error?.message || error || "unavailable").slice(0, 90);
+        speakNative(text, request,
+          `Natural voice unavailable (${reason}); continuing with the best installed voice.`);
+      });
       return;
     }
-    synth.cancel();
-    if (!chosenVoice) pickVoice();
-    queue = scriptFrom(text);
-    speaking = true;
-    if (btnStop) btnStop.disabled = false;
-    setStatus(chosenVoice ? `Speaking — ${chosenVoice.name}.` : "Speaking.");
-    sayNext();
+    speakNative(text, request);
   };
 
   btnSpeak?.addEventListener("click", () => {
@@ -1345,10 +1461,15 @@ import * as THREE from "./vendor/three.module.js";
   if (btnStop) btnStop.disabled = true;
   document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
 
-  /* Hold him mid-sentence and let him go on again. The browser's own
-     synthesiser can do this; a device without one is mouthing the words on
-     a timer, so there the pause simply stops him. */
+  /* Hold him mid-sentence and let him go on again. Neural audio resumes
+     from its exact Web Audio offset; native speech uses the browser engine. */
   const hold = () => {
+    if (naturalWanted && naturalVoice.pause()) {
+      paused = true;
+      speaking = false;
+      setStatus("Paused.");
+      return true;
+    }
     if (!canSpeak || !speaking) return false;
     try { synth.pause(); } catch { return false; }
     paused = true;
@@ -1356,9 +1477,17 @@ import * as THREE from "./vendor/three.module.js";
     return true;
   };
   const resume = () => {
-    if (!canSpeak || !paused) return false;
+    if (!paused) return false;
+    if (naturalWanted && naturalVoice.resume()) {
+      paused = false;
+      speaking = true;
+      setStatus("Speaking — Gink's local neural voice.");
+      return true;
+    }
+    if (!canSpeak) return false;
     try { synth.resume(); } catch { return false; }
     paused = false;
+    speaking = true;
     setStatus(chosenVoice ? `Speaking — ${chosenVoice.name}.` : "Speaking.");
     return true;
   };

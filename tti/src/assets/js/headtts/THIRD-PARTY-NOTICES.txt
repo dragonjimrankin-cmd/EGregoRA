@@ -1,0 +1,12 @@
+Vendored neural-voice runtime
+==============================
+
+HeadTTS 1.3.0
+Source: https://github.com/met4citizen/HeadTTS
+License: MIT (LICENSE-HeadTTS.txt)
+
+Transformers.js 4.3.1
+Source: https://github.com/huggingface/transformers.js
+License: Apache-2.0 (LICENSE-Transformers.txt)
+
+Kokoro-82M-v1.0-ONNX-timestamped model and voices are fetched only after the visitor opts in. They are not distributed in this repository. Model source: https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX-timestamped
