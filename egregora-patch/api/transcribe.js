@@ -29,6 +29,7 @@ import { openChat } from '../lib/openchat.js';
 import { doors as freeDoors, models as freeModels, freeChat } from '../lib/freeai.js';
 import { SECTIONS, SECTION_LINES, PRESET_TAGS } from '../lib/site-map.js';
 import { storedHuggingFaceKey } from '../lib/key-store.js';
+import { assembleUpload } from '../lib/upload-parts.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -252,15 +253,13 @@ export default async function (req, res) {
     if (action === 'hear') {
       const upload = clean(body.upload, 64);
       if (!upload) return res.status(400).json({ error: 'No upload name.' });
-      const { rows } = await db.query(
-        'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
+      const bytes = await assembleUpload(db, upload, {
+        maxBytes: 26 * 1024 * 1024,
+        emptyMessage: 'No sound arrived.',
+        tooLargeMessage: 'That stretch is too long to hear in one piece. ' +
+          'Ten minutes at a time is the right size.'
+      });
       await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]).catch(() => {});
-      if (!rows || !rows.length) return res.status(400).json({ error: 'No sound arrived.' });
-      const bytes = Buffer.concat(rows.map((r) => Buffer.from(r.part, 'base64')));
-      if (bytes.length > 26 * 1024 * 1024) {
-        return res.status(413).json({ error: 'That stretch is too long to hear in one piece. ' +
-          'Ten minutes at a time is the right size.' });
-      }
 
       const tries = [hearWithFreeAI, hearWithOpenAI, hearWithHF];
       const why = [];
@@ -345,6 +344,10 @@ export default async function (req, res) {
     return res.status(400).json({ error: 'No such action.' });
   } catch (err) {
     console.error('transcribe:', err && err.message);
+    const status = Number(err && err.status);
+    if (err && err.expose && Number.isInteger(status) && status >= 400 && status <= 599) {
+      return res.status(status).json({ error: err.message });
+    }
     return res.status(500).json({ error: (err && err.message) || 'That failed.' });
   }
 }

@@ -8,14 +8,20 @@ import {
 } from '../egregora-patch/lib/upload-parts.js';
 
 const source = await readFile(new URL('../egregora-patch/api/media.js', import.meta.url), 'utf8');
+const transcribe = await readFile(new URL(
+  '../egregora-patch/api/transcribe.js', import.meta.url), 'utf8');
 const client = await readFile(new URL(
   '../egregora-patch/public/assets/js/media-admin.js', import.meta.url), 'utf8');
-assert.doesNotMatch(source, /Buffer\.concat\([^\n]*media_chunks/,
+assert.doesNotMatch(source + transcribe, /Buffer\.concat\([^\n]*media_chunks/,
   'media uploads must not decode every database row before concatenation');
 assert.doesNotMatch(source, /SELECT\s+(?:seq,\s*)?part\s+FROM\s+media_chunks[^;]*ORDER BY/,
   'media uploads must not fetch every encoded part in one result');
 assert.ok(source.includes('assembleUpload(db, upload'),
   'publishing must use bounded upload assembly');
+assert.ok(transcribe.includes('assembleUpload(db, upload'),
+  'transcription audio must use bounded upload assembly');
+assert.doesNotMatch(transcribe, /SELECT\s+part\s+FROM\s+media_chunks[^;]*ORDER BY/,
+  'transcription must not fetch every encoded audio part in one result');
 assert.ok(client.includes('blob.slice(from, to).arrayBuffer()'),
   'the browser must read one outgoing Blob slice at a time');
 assert.doesNotMatch(client, /new Uint8Array\(await blob\.arrayBuffer\(\)\)/,
