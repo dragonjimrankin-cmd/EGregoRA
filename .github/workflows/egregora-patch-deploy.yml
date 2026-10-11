@@ -143,7 +143,14 @@ jobs:
             throw new Error('The live transcript did not display the two named voices.');
           }
           if (!heard.speaker_patterns_stored) {
-            throw new Error('The live transcript did not store both speech-pattern profiles.');
+            const samples = {};
+            for (const block of heard.transcript.split(/\n\s*\n/).filter(Boolean)) {
+              const turn = /\]\s+(.+?)\s+—\s*(.*)/s.exec(block);
+              if (turn) samples[turn[1]] = (samples[turn[1]] || 0) +
+                ((turn[2].match(/[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*/g) || []).length);
+            }
+            throw new Error('The live transcript did not store both speech-pattern profiles; ' +
+              'attributed word counts=' + JSON.stringify(samples));
           }
           const turns = heard.transcript.split(/\n\s*\n/).filter(Boolean);
           for (let index = 1; index < turns.length; index += 1) {

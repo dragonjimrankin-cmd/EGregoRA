@@ -160,7 +160,7 @@ function speechPatterns(turns) {
   const result = new Map();
   for (const [name, group] of groups) {
     const all = wordsOf(group.turns.map((t) => t.text).join(' '));
-    if (all.length < 8) continue;
+    if (!all.length) continue;
     const counts = new Map();
     for (const word of all) {
       if (word.length < 3 || COMMON_WORDS.has(word)) continue;
@@ -176,6 +176,9 @@ function speechPatterns(turns) {
     const mean = (n) => Math.round(n * 100) / 100;
     result.set(name, {
       kind: 'aggregate linguistic cadence; not a voiceprint',
+      sample_quality: all.length < 50
+        ? 'provisional; small attributed sample'
+        : all.length < 250 ? 'limited' : 'substantial',
       turns: group.turns.length,
       words: all.length,
       mean_words_per_turn: mean(all.length / group.turns.length),
