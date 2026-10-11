@@ -1,0 +1,55 @@
+name: Deploy EGregoRA patch
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - arena/c016ca5c-egregora
+    paths:
+      - "egregora-patch/**"
+      - "ops/egregora-project.txt"
+      - "scripts/hatchable-deploy.mjs"
+      - ".github/workflows/egregora-patch-deploy.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Validate the patch
+        run: |
+          node --check egregora-patch/api/transcribe.js
+          node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
+
+      - name: Deploy to the existing EGregoRA project
+        run: |
+          if [ -z "$HATCHABLE_TOKEN" ]; then
+            echo "::error title=Hatchable deployment unavailable::HATCHABLE_TOKEN is not configured as a repository secret."
+            exit 1
+          fi
+
+          PROJECT_ID=$(tr -d ' \n\r' < ops/egregora-project.txt)
+          set +e
+          node scripts/hatchable-deploy.mjs \
+            --bundle egregora-patch \
+            --project "$PROJECT_ID" \
+            --name "EGregoRA" \
+            --slug egregora 2>&1 | tee /tmp/egregora-patch-deploy.log
+          STATUS=${PIPESTATUS[0]}
+          set -e
+
+          if [ "$STATUS" -ne 0 ]; then
+            MESSAGE=$(tail -20 /tmp/egregora-patch-deploy.log | tr '\n' ' ' | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g' | cut -c1-1800)
+            echo "::error title=EGregoRA patch deployment failed::$MESSAGE"
+            exit "$STATUS"
+          fi
