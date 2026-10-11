@@ -1051,13 +1051,13 @@
         <label><input type="checkbox" data-want="rumble" checked> Filter the rumble below 72&nbsp;Hz</label>
         <label><input type="checkbox" data-want="gate" checked> Shelve the hiss</label>
         <label><input type="checkbox" data-want="tone" checked> Shape the tone &mdash; mud down, presence and air up</label>
-        <label><input type="checkbox" data-want="deess"> De-ess the sibilance</label>
+        <label><input type="checkbox" data-want="deess" checked> De-ess the sibilance</label>
         <label><input type="checkbox" data-want="level" checked> Level it &mdash; gentle compression</label>
         <label><input type="checkbox" data-want="loud" checked> Match the loudness, then limit the peaks</label>
 
         <label><input type="checkbox" data-want="denoise" checked> Gate the silences &mdash; sniffs and coughs out, every word left whole</label>
         <label><input type="checkbox" data-want="roomtone" checked> Lay the room&rsquo;s tone under the silences &mdash; the background stays continuous</label>
-        <label><input type="checkbox" data-want="destutter"> Remove stuttering &mdash; a syllable repeated in place is muted; the word itself is never touched</label>
+        <label><input type="checkbox" data-want="destutter" checked> Remove stuttering &mdash; a syllable repeated in place is muted; the word itself is never touched</label>
         <label><input type="checkbox" data-want="trim" checked> Trim the silence from both ends</label>
         <label><input type="checkbox" data-want="gaps" checked> Close the long speechless stretches</label>
         <label><input type="checkbox" data-want="fade" checked> Fade in and out</label>
@@ -1083,7 +1083,7 @@
       not deleted. The gate opens just <em>before</em> each word and holds across it, so speech is
       never clipped; only noise that stands alone between phrases &mdash; a cough, a sniff, a chair
       knock &mdash; gets shut out.</p>
-      <p class="muted xsmall">Stuttering removal is off by default and deliberately shy. It looks
+      <p class="muted xsmall">Stuttering removal is on by default and deliberately shy. It looks
       for one pattern only &mdash; the same short syllable landing two or more times in a row, then
       the word itself &mdash; and mutes only the repeats before it: the last repeat and the word
       always stand, so a word a person chose to say twice survives. If the pattern fires too often
