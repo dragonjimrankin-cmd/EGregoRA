@@ -36,6 +36,7 @@ export default {
     { url: "/decoherence/", label: "Decoherence", glyph: "spiral" },
     { url: "/locality/", label: "Local & Non-Local", glyph: "metatron" },
     { url: "/extraterrestrials/", label: "Extraterrestrials", glyph: "eye" },
+    { url: "/law-of-one/", label: "The Law of One", glyph: "star" },
     { url: "/music/", label: "Sound & Music", glyph: "spiral" },
     { url: "/wizardry/", label: "Wizardry", glyph: "star" },
     { url: "/runes/", label: "Runes & Charms", glyph: "tree" },

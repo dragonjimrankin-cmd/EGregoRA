@@ -95,7 +95,9 @@ export default [
     body: 'Non-duality across traditions; the Ra material read as a philosophical text rather than ' +
       'scripture; Fermi, Drake, Avi Loeb, the UAP record and the discipline of holding a question open ' +
       'without filling it.',
-    subs: []
+    subs: [
+      { num: 'VII\u00b7i', title: 'The Law of One &mdash; the Ra Material', href: '/law-of-one/' }
+    ]
   },
   {
     num: 'VIII',
