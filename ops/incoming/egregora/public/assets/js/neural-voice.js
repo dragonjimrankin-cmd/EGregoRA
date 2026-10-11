@@ -253,14 +253,8 @@ export class NaturalVoiceEngine {
     if (selected.id === this.voice) return true;
     this.stop({ notify: false });
     this.voice = selected.id;
-    if (this.tts) {
-      this.tts.setup({
-        voice: this.voice,
-        language: "en-us",
-        speed: this.profile.neuralSpeed,
-        audioEncoding: "wav"
-      });
-    }
+    /* HeadTTS setup is deliberately deferred to speak(). Calling setup here
+       without awaiting it lets the next stop/clear discard the queued change. */
     return true;
   }
 
@@ -310,7 +304,7 @@ export class NaturalVoiceEngine {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       this.audioContext = this.audioContext || new AudioContextClass();
       this.prepareOutput();
-      const modulePromise = import("./headtts/headtts.mjs");
+      const modulePromise = import("./headtts/headtts.mjs?v=male-voices-2");
       await this.audioContext.resume();
       const { HeadTTS } = await modulePromise;
 
@@ -447,6 +441,17 @@ export class NaturalVoiceEngine {
     this.stop({ notify: false });
     const session = ++this.session;
     await this.connect();
+    if (session !== this.session) return false;
+
+    /* HeadTTS maintains its own setup queue and, in worker mode, consults
+       that state when dispatching synthesis. Await the selected voice here so
+       a just-changed chooser value cannot be lost to clear() or the old setup. */
+    await this.tts.setup({
+      voice: this.voice,
+      language: "en-us",
+      speed: this.profile.neuralSpeed,
+      audioEncoding: "wav"
+    });
     if (session !== this.session) return false;
 
     this.generating = true;
