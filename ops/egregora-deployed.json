@@ -1,7 +1,7 @@
 {
   "project": "proj_eiuxpFfTnwwx",
-  "version": 220,
-  "recorded_at": "2026-10-11T05:20:00.000Z",
+  "version": 222,
+  "recorded_at": "2026-10-11T05:30:00.000Z",
   "deployed_at": null,
-  "note": "merged the foreign speaker-profiles deploy (v218-v220) with our whisper single-thread fix; recorded at 220 so the drift guard deploys the merge"
+  "note": "merged the foreign speaker-profiles deploy (through v222) with our whisper single-thread fix; recorded at 222 so the drift guard deploys the merge"
 }

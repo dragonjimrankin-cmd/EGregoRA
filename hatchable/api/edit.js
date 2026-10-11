@@ -37,6 +37,22 @@ export const methods = ['POST'];
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
 const MAX_NODES = 40;
+
+function cleanDate(value) {
+  const raw = clean(value, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return '';
+  const made = new Date(raw + 'T00:00:00Z');
+  return Number.isFinite(made.getTime()) && made.toISOString().slice(0, 10) === raw ? raw : '';
+}
+
+function dateOnly(value) {
+  if (!value) return '';
+  const raw = String(value);
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
+  const made = new Date(value);
+  return Number.isFinite(made.getTime()) ? made.toISOString().slice(0, 10) : '';
+}
+
 const MAX_OPS = 60;
 
 /* The only operations that exist. Anything else is refused, which is what
@@ -269,7 +285,7 @@ async function byModel(prompt, nodes, page) {
 
 export default async function (req, res) {
   const body = req.body || {};
-  const action = clean(body.action || 'overrides', 12);
+  const action = clean(body.action || 'overrides', 24);
   const page = clean(body.page || '/', 200);
 
   /* The one public action: what a visitor should see. It returns published
@@ -305,12 +321,65 @@ export default async function (req, res) {
     }
   }
 
+  /* A purported creation date is public metadata, like the page itself.
+     It is deliberately separate from deployment, edit and audit timestamps:
+     administrators can change the claim without rewriting what really
+     happened or when it happened. */
+  if (action === 'date') {
+    try {
+      const { rows } = await db.query(
+        'SELECT purported_date, updated_at FROM page_dates WHERE page = $1', [page]);
+      const row = rows && rows[0];
+      return res.json({
+        ok: true,
+        page,
+        date: row ? dateOnly(row.purported_date) : '',
+        updated_at: row && row.updated_at || null
+      });
+    } catch {
+      return res.json({ ok: true, page, date: '', updated_at: null });
+    }
+  }
+
   /* Everything else is behind the publishing passcode, with the same three
      tries and twenty-minute lockout as the other admin doors. */
   const door = await adminDoor(req, clean(body.pass, 120));
   if (!door.ok) return res.status(door.status || 401).json({ error: door.error });
 
   try {
+    if (action === 'set-date') {
+      if (!/^\/[a-z0-9-/]*\/?$/.test(page)) {
+        return res.status(400).json({ error: 'That is not a page this site can date.' });
+      }
+      const clearing = body.clear === true;
+      const date = cleanDate(body.date);
+      if (!clearing && !date) {
+        return res.status(400).json({ error: 'Use a real date in YYYY-MM-DD form.' });
+      }
+      const who = clean(door.who, 120) || 'admin';
+      const { rows: before } = await db.query(
+        'SELECT purported_date FROM page_dates WHERE page = $1', [page]);
+      const previous = before && before[0]
+        ? dateOnly(before[0].purported_date) || null : null;
+
+      if (clearing) {
+        await db.query('DELETE FROM page_dates WHERE page = $1', [page]);
+      } else {
+        await db.query(
+          `INSERT INTO page_dates (page, purported_date, who, updated_at)
+           VALUES ($1,$2,$3,NOW())
+           ON CONFLICT (page) DO UPDATE SET purported_date = EXCLUDED.purported_date,
+             who = EXCLUDED.who, updated_at = NOW()`,
+          [page, date, who]);
+      }
+      await db.query(
+        `INSERT INTO creation_date_log
+           (scope, object_key, previous_date, purported_date, who)
+         VALUES ('page',$1,$2,$3,$4)`,
+        [page, previous, clearing ? null : date, who]);
+      return res.json({ ok: true, page, date: clearing ? '' : date, previous });
+    }
+
     if (action === 'draft') {
       const prompt = clean(body.prompt, 600);
       if (!prompt) return res.status(400).json({ error: 'Say what should change inside the box.' });

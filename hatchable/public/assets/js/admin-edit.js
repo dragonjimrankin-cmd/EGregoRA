@@ -178,6 +178,83 @@
   if (document.readyState === "complete") setTimeout(applyPublished, 0);
   else addEventListener("load", function () { setTimeout(applyPublished, 0); });
 
+  /* A page may carry a claimed creation date chosen by an administrator.
+     It is shown on the page and repeated in ordinary metadata and JSON-LD,
+     while the real deployment and audit clocks remain untouched. */
+  function dateLabel(value) {
+    var d = new Date(String(value || "") + "T12:00:00Z");
+    if (!isFinite(d.getTime())) return String(value || "");
+    try {
+      return new Intl.DateTimeFormat("en-GB", {
+        day: "numeric", month: "long", year: "numeric", timeZone: "UTC"
+      }).format(d);
+    } catch (e) { return String(value || ""); }
+  }
+
+  function datedMeta(selector, attrs) {
+    var node = document.head.querySelector(selector);
+    if (!node) {
+      node = document.createElement("meta");
+      Object.keys(attrs).forEach(function (key) { node.setAttribute(key, attrs[key]); });
+      document.head.appendChild(node);
+    }
+    return node;
+  }
+
+  function applyPageDate(value) {
+    var date = /^\d{4}-\d{2}-\d{2}$/.test(String(value || "")) ? String(value) : "";
+    if (!date) return;
+    document.documentElement.setAttribute("data-purported-created", date);
+
+    var published = datedMeta('meta[property="article:published_time"]', {
+      property: "article:published_time"
+    });
+    published.setAttribute("content", date);
+    datedMeta('meta[name="date"]', { name: "date" }).setAttribute("content", date);
+    datedMeta('meta[itemprop="dateCreated"]', { itemprop: "dateCreated" }).setAttribute("content", date);
+
+    document.querySelectorAll('script[type="application/ld+json"]').forEach(function (script) {
+      try {
+        var data = JSON.parse(script.textContent || "{}");
+        var graph = Array.isArray(data["@graph"]) ? data["@graph"] : [data];
+        graph.forEach(function (part) {
+          var type = part && part["@type"];
+          var types = Array.isArray(type) ? type : [type];
+          if (types.indexOf("WebPage") >= 0 || types.indexOf("Article") >= 0) {
+            part.dateCreated = date;
+            part.datePublished = date;
+          }
+        });
+        script.textContent = JSON.stringify(data);
+      } catch (e) { /* not every structured-data block needs to be rewritten */ }
+    });
+
+    var holder = document.querySelector(".page-head") || document.querySelector("main");
+    if (!holder) return;
+    var line = holder.querySelector(".page-created");
+    if (!line) {
+      line = document.createElement("p");
+      line.className = "page-created muted xsmall";
+      var time = document.createElement("time");
+      line.appendChild(document.createTextNode("Date of creation \u2014 "));
+      line.appendChild(time);
+      var lede = holder.querySelector(".lede");
+      if (lede && lede.nextSibling) holder.insertBefore(line, lede.nextSibling);
+      else holder.appendChild(line);
+    }
+    var clock = line.querySelector("time");
+    if (clock) { clock.setAttribute("datetime", date); clock.textContent = dateLabel(date); }
+  }
+
+  function loadPageDate() {
+    return post({ action: "date", page: PAGE }).then(function (d) {
+      if (d && d.date) applyPageDate(d.date);
+      return (d && d.date) || "";
+    }).catch(function () { return ""; });
+  }
+  if (document.readyState === "complete") setTimeout(loadPageDate, 0);
+  else addEventListener("load", function () { setTimeout(loadPageDate, 0); });
+
   /* A page whose source was saved through the Source tab is served in place
      of the built file: the browser writes it over the document, exactly as
      if the file itself had been edited on the platform. The written page
@@ -269,6 +346,7 @@
       '  <button type="button" class="ae-tab is-on" data-tab="words" role="tab">Words</button>',
       '  <button type="button" class="ae-tab" data-tab="look" role="tab">Look</button>',
       '  <button type="button" class="ae-tab" data-tab="ask" role="tab">Ask</button>',
+      '  <button type="button" class="ae-tab" data-tab="date" role="tab">Date</button>',
       '  <button type="button" class="ae-tab" data-tab="source" role="tab">Source</button>',
       '</div>',
 
@@ -320,6 +398,18 @@
       '  </div>',
       '</section>',
 
+      /* ---- purported date, separate from the audit clock ------------- */
+      '<section class="ae-pane" data-pane="date" hidden>',
+      '  <p class="muted xsmall">The date this page purports to have been created. It appears on the ',
+      '  page and in its metadata. The real publish, edit and backup times remain in the audit log.</p>',
+      '  <label class="ae-label" for="ae-created">Purported date of creation</label>',
+      '  <input type="date" id="ae-created" class="ae-prompt ae-created">',
+      '  <div class="ae-row">',
+      '    <button type="button" class="btn btn--small ae-date-save">Save the date</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-date-clear">Use no purported date</button>',
+      '  </div>',
+      '</section>',
+
       /* ---- source: the whole page, edited like a file ----------------- */
       '<section class="ae-pane" data-pane="source" hidden>',
       '  <p class="muted xsmall">The entire page as one document, edited the way the platform edits a ',
@@ -365,8 +455,11 @@
     q(".ae-undo-pub").addEventListener("click", function () { pubStep("undo"); });
     q(".ae-redo-pub").addEventListener("click", function () { pubStep("redo"); });
     q(".ae-signins").addEventListener("click", showSignins);
+    q(".ae-date-save").addEventListener("click", function () { savePageDate(false); });
+    q(".ae-date-clear").addEventListener("click", function () { savePageDate(true); });
     q(".ae-src-load").addEventListener("click", loadSource);
     q(".ae-src-save").addEventListener("click", saveSource);
+    loadDateEditor();
     panel.querySelectorAll(".ae-tab").forEach(function (b) {
       b.addEventListener("click", function () {
         panel.querySelectorAll(".ae-tab").forEach(function (o) { o.classList.remove("is-on"); });
@@ -880,6 +973,31 @@
     }).catch(function (err) {
       out.innerHTML = "<p class=\"ae-msg is-bad\">" + (err.message || "The ledger would not open.") + "</p>";
     });
+  }
+
+  /* ------------------------------------------ purported creation date */
+  function loadDateEditor() {
+    var input = q(".ae-created");
+    if (!input) return;
+    loadPageDate().then(function (date) { input.value = date || ""; });
+  }
+
+  function savePageDate(clear) {
+    var input = q(".ae-created");
+    var date = input && input.value || "";
+    if (!clear && !date) return say("Choose a date first.", true);
+    post({ action: "set-date", pass: pass, page: PAGE, date: date, clear: !!clear })
+      .then(function (d) {
+        if (input) input.value = d.date || "";
+        if (d.date) {
+          applyPageDate(d.date);
+          say("The page now purports to have been created on " + dateLabel(d.date) +
+            ". The real audit times were not changed.");
+        } else {
+          say("The purported creation date was cleared. Reloading the built metadata.");
+          setTimeout(function () { location.reload(); }, 500);
+        }
+      }).catch(function (err) { say(err.message || "The date would not save.", true); });
   }
 
   /* ------------------------------------------------- the page as a file */

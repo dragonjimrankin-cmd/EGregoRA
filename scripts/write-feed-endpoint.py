@@ -83,16 +83,16 @@ export default async function (req, res) {
   /* The shelf first — newest published sound, signed and ready. */
   try {
     const { rows } = await db.query(
-      `SELECT id, number, title, summary, created_at, storage_key, mime, bytes
+      `SELECT id, number, title, summary, created_at, purported_date, storage_key, mime, bytes
          FROM media WHERE kind = 'audio' AND state = 'published'
-        ORDER BY created_at DESC LIMIT 100`);
+        ORDER BY COALESCE(purported_date, created_at::date) DESC, created_at DESC LIMIT 100`);
     for (const r of rows || []) {
       let url = null;
       try { url = await storage.url(r.storage_key, { ttl: 604800 }); } catch { url = null; }
       items.push({
         title: (r.number ? r.number + ' — ' : '') + r.title,
         summary: r.summary || '',
-        date: r.created_at,
+        date: r.purported_date || r.created_at,
         url, mime: r.mime || 'audio/mpeg', bytes: Number(r.bytes) || 0,
         guid: 'egregora-live-' + r.id
       });

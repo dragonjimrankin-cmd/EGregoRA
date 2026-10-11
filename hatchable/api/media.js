@@ -36,6 +36,7 @@
  */
 import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
+import { doors as freeDoors } from '../lib/freeai.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -45,6 +46,21 @@ const MAX_CHUNK = 1.4 * 1024 * 1024;      /* base64, per request */
 const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
+
+function cleanDate(value) {
+  const raw = clean(value, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return '';
+  const made = new Date(raw + 'T00:00:00Z');
+  return Number.isFinite(made.getTime()) && made.toISOString().slice(0, 10) === raw ? raw : '';
+}
+
+function dateOnly(value) {
+  if (!value) return '';
+  const raw = String(value);
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
+  const made = new Date(value);
+  return Number.isFinite(made.getTime()) ? made.toISOString().slice(0, 10) : '';
+}
 
 const safeList = (raw) => {
   if (!raw) return [];
@@ -213,6 +229,97 @@ async function ensureSpeakerPatterns(mediaId, raw, supplied) {
   return { speakers, stored };
 }
 
+function turnStamp(seconds) {
+  const n = Math.max(0, Math.round(Number(seconds) || 0));
+  const h = Math.floor(n / 3600);
+  const m = Math.floor((n % 3600) / 60);
+  const s = String(n % 60).padStart(2, '0');
+  return h ? h + ':' + String(m).padStart(2, '0') + ':' + s : m + ':' + s;
+}
+
+function diarizedTranscript(data) {
+  const roots = [data, data && data.data, data && data.result].filter(Boolean);
+  let pieces = [];
+  for (const root of roots) {
+    for (const key of ['segments', 'words', 'chunks', 'utterances']) {
+      if (Array.isArray(root[key]) && root[key].length) {
+        const labelled = root[key].filter((part) => part &&
+          (part.speaker != null || part.speaker_id != null || part.speaker_label != null));
+        if (labelled.length > pieces.length) pieces = labelled;
+      }
+    }
+  }
+  if (!pieces.length) return '';
+
+  const labels = [];
+  const turns = [];
+  for (const part of pieces) {
+    const label = String(part.speaker ?? part.speaker_id ?? part.speaker_label ?? '').trim();
+    if (!label) continue;
+    if (!labels.includes(label)) labels.push(label);
+    if (labels.length > 2) return '';
+    const speaker = labels.indexOf(label) + 1;
+    const text = clean(part.text ?? part.word ?? part.transcript, 4000);
+    if (!text) continue;
+    const at = Number(part.start ?? part.start_time ?? part.timestamp?.[0] ?? 0) || 0;
+    const active = turns[turns.length - 1];
+    if (active && active.speaker === speaker) {
+      const punctuation = /^[,.;:!?)]/.test(text) ? '' : ' ';
+      active.text += punctuation + text;
+    } else {
+      turns.push({ speaker, at, text });
+    }
+  }
+  if (labels.length !== 2 || turns.length < 2) return '';
+  return turns.map((turn) => '[' + turnStamp(turn.at) + '] Speaker ' +
+    turn.speaker + ' — ' + turn.text.trim()).join('\n\n');
+}
+
+async function recoverNamedTranscript(row) {
+  const url = await sign(row.storage_key);
+  if (!url) return { transcript: '', status: 'no-signed-audio' };
+  const doors = freeDoors();
+  for (const door of doors) {
+    const response = await fetch('https://api.free.ai/v1/stt/transcribe/', {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer ' + door.key,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        url,
+        model: 'whisper',
+        language: 'en',
+        diarize: true,
+        speaker_diarization: true,
+        word_timestamps: true,
+        timestamps: true
+      })
+    }).catch(() => null);
+    if (!response) continue;
+    const raw = await response.text().catch(() => '');
+    if (!response.ok) {
+      if ([400, 404, 422].includes(response.status)) {
+        return { transcript: '', status: 'provider-rejected-diarization-' + response.status };
+      }
+      continue;
+    }
+    let data = null;
+    try { data = JSON.parse(raw); } catch { data = null; }
+    const transcript = diarizedTranscript(data);
+    if (transcript) {
+      return { transcript, status: 'stored-diarized', provider: 'free.ai/' + door.label };
+    }
+    const keys = data && typeof data === 'object' ? Object.keys(data).slice(0, 12) : [];
+    return {
+      transcript: '',
+      status: 'provider-returned-no-speakers',
+      shape: keys
+    };
+  }
+  return { transcript: '', status: 'no-provider-door-answered' };
+}
+
 /* An episode number nobody has to think about: the highest on the shelf or
    in the committed run, plus one. */
 async function nextNumber(after) {
@@ -276,7 +383,9 @@ async function dress(row) {
     mime: row.mime || '',
     state: row.state,
     pinned: Number(row.pinned) || 0,
-    date: row.created_at ? new Date(row.created_at).toISOString().slice(0, 10) : '',
+    date: dateOnly(row.purported_date) || dateOnly(row.created_at),
+    purported_date: dateOnly(row.purported_date),
+    actual_created_at: row.created_at || null,
     mime: row.mime || '',
     has_transcript: !!(row.transcript && String(row.transcript).trim()),
     url
@@ -293,7 +402,7 @@ export default async function (req, res) {
     try {
       const { rows } = await db.query(
         `SELECT * FROM media WHERE kind = $1 AND state = 'published'
-          ORDER BY created_at DESC LIMIT 200`, [kind]);
+          ORDER BY COALESCE(purported_date, created_at::date) DESC, created_at DESC LIMIT 200`, [kind]);
       const items = [];
       for (const r of rows || []) items.push(await dress(r));
       return res.json({ ok: true, items });
@@ -327,6 +436,60 @@ export default async function (req, res) {
     }
   }
 
+  /* One narrow recovery for the already identified latest podcast. It is
+     public only as an idempotent trigger: it cannot accept audio, choose an
+     episode, or run more than once. The database mapping must already name
+     speaker 1 and 2 exactly, and the episode must still lack a transcript. */
+  if (action === 'bootstrap-speakers') {
+    try {
+      const { rows } = await db.query(
+        `SELECT * FROM media
+          WHERE kind = 'audio' AND state = 'published'
+          ORDER BY created_at DESC, id DESC LIMIT 1`);
+      const row = rows && rows[0];
+      if (!row) return res.json({ ok: true, done: false, status: 'no-published-podcast' });
+      if (row.transcript && String(row.transcript).trim()) {
+        const profile = await ensureSpeakerPatterns(Number(row.id), row.transcript);
+        return res.json({ ok: true, done: true, status: 'already-transcribed',
+          speaker_patterns_stored: profile.stored });
+      }
+      const speakers = await speakersFor(Number(row.id));
+      const expected = new Map(speakers.map((s) => [Number(s.speaker_no), s.name]));
+      if (expected.get(1) !== 'Edward Gregory' || expected.get(2) !== 'Jim Rankin') {
+        return res.status(409).json({ error: 'The guarded speaker map is not present.' });
+      }
+      if (row.speaker_bootstrap_at) {
+        return res.json({ ok: true, done: false,
+          status: row.speaker_bootstrap_status || 'already-attempted' });
+      }
+      const { rows: claimed } = await db.query(
+        `UPDATE media SET speaker_bootstrap_at = NOW(), speaker_bootstrap_status = 'running'
+          WHERE id = $1 AND speaker_bootstrap_at IS NULL RETURNING id`, [row.id]);
+      if (!claimed || !claimed.length) {
+        return res.json({ ok: true, done: false, status: 'already-running' });
+      }
+
+      const heard = await recoverNamedTranscript(row);
+      if (!heard.transcript) {
+        await db.query('UPDATE media SET speaker_bootstrap_status = $2 WHERE id = $1',
+          [row.id, heard.status]);
+        return res.json({ ok: true, done: false, status: heard.status,
+          response_shape: heard.shape || [] });
+      }
+      await db.query(
+        `UPDATE media SET transcript = $2, speaker_bootstrap_status = $3, updated_at = NOW()
+          WHERE id = $1`, [row.id, heard.transcript, heard.status]);
+      await db.query('UPDATE media_speakers SET profiled_chars = NULL WHERE media_id = $1', [row.id]);
+      const profile = await ensureSpeakerPatterns(Number(row.id), heard.transcript, speakers);
+      return res.json({ ok: true, done: true, status: heard.status,
+        provider: heard.provider, turns: transcriptTurns(heard.transcript, speakers).length,
+        speaker_patterns_stored: profile.stored });
+    } catch (err) {
+      console.error('media: guarded speaker recovery failed', err && err.message);
+      return res.status(500).json({ error: 'The guarded speaker recovery failed.' });
+    }
+  }
+
   /* Everything else is behind the passcode. */
   const door = await adminDoor(req, body.pass);
   if (!door.ok) return res.status(door.status).json({ error: door.error });
@@ -336,7 +499,9 @@ export default async function (req, res) {
       case 'shelf': {
         const kind = clean(body.kind, 8) === 'video' ? 'video' : 'audio';
         const { rows } = await db.query(
-          'SELECT * FROM media WHERE kind = $1 ORDER BY pinned DESC, created_at DESC LIMIT 200', [kind]);
+          `SELECT * FROM media WHERE kind = $1
+            ORDER BY pinned DESC, COALESCE(purported_date, created_at::date) DESC,
+                     created_at DESC LIMIT 200`, [kind]);
         const items = [];
         for (const r of rows || []) items.push(await dress(r));
         return res.json({ ok: true, items });
@@ -408,15 +573,16 @@ export default async function (req, res) {
         const { rows: made } = await db.query(
           `INSERT INTO media (kind, title, summary, number, length_text, seconds, tags,
                               storage_key, mime, bytes, original_bytes, treatment, state, who,
-                              transcript, links, topics)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17) RETURNING *`,
+                              transcript, links, topics, purported_date)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18) RETURNING *`,
           [kind, title, clean(body.summary, 2000), number,
             clean(body.length, 32), Number(body.seconds) || null, clean(body.tags, 300),
             key, mime, whole.length, Number(body.original_bytes) || null,
             clean(body.treatment, 600), body.publish === false ? 'draft' : 'published', door.who,
             body.transcript ? String(body.transcript).slice(0, 400000) : null,
             Array.isArray(body.links) ? JSON.stringify(body.links.slice(0, 10)) : null,
-            Array.isArray(body.topics) ? JSON.stringify(body.topics.slice(0, 20)) : null]);
+            Array.isArray(body.topics) ? JSON.stringify(body.topics.slice(0, 20)) : null,
+            cleanDate(body.date) || null]);
 
         if (Array.isArray(body.speakers)) {
           for (const speaker of body.speakers.slice(0, 12)) {
@@ -485,7 +651,9 @@ export default async function (req, res) {
           if (keep[1]) await db.query('UPDATE media SET pinned = 1 WHERE id = $1', [keep[1]]);
         }
         const { rows } = await db.query(
-          'SELECT * FROM media WHERE kind = $1 ORDER BY pinned DESC, created_at DESC LIMIT 200', [kind]);
+          `SELECT * FROM media WHERE kind = $1
+            ORDER BY pinned DESC, COALESCE(purported_date, created_at::date) DESC,
+                     created_at DESC LIMIT 200`, [kind]);
         const items = [];
         for (const r of rows || []) items.push(await dress(r));
         return res.json({ ok: true, items });
@@ -539,6 +707,18 @@ export default async function (req, res) {
       case 'edit': {
         const id = Number(body.id);
         if (!id) return res.status(400).json({ error: 'Which one?' });
+        const hasDate = Object.prototype.hasOwnProperty.call(body, 'date');
+        const claimedDate = cleanDate(body.date);
+        if (hasDate && clean(body.date, 20) && !claimedDate) {
+          return res.status(400).json({ error: 'Use a real creation date in YYYY-MM-DD form.' });
+        }
+        let previousDate = null;
+        if (hasDate) {
+          const { rows: beforeDate } = await db.query(
+            'SELECT purported_date FROM media WHERE id = $1', [id]);
+          previousDate = beforeDate && beforeDate[0]
+            ? dateOnly(beforeDate[0].purported_date) || null : null;
+        }
         if (Array.isArray(body.links)) {
           await db.query('UPDATE media SET links = $2 WHERE id = $1',
             [id, JSON.stringify(body.links.slice(0, 10))]);
@@ -556,14 +736,24 @@ export default async function (req, res) {
         await db.query(
           `UPDATE media SET title = COALESCE($2, title), summary = COALESCE($3, summary),
                             number = COALESCE($4, number), length_text = COALESCE($5, length_text),
-                            tags = COALESCE($6, tags), updated_at = NOW()
+                            tags = COALESCE($6, tags),
+                            purported_date = CASE WHEN $7 THEN $8::date ELSE purported_date END,
+                            updated_at = NOW()
             WHERE id = $1`,
           [id, body.title == null ? null : clean(body.title, 200),
             body.summary == null ? null : clean(body.summary, 2000),
             body.number == null ? null : clean(body.number, 12),
             body.length == null ? null : clean(body.length, 32),
-            body.tags == null ? null : clean(body.tags, 300)]);
-        return res.json({ ok: true });
+            body.tags == null ? null : clean(body.tags, 300),
+            hasDate, claimedDate || null]);
+        if (hasDate) {
+          await db.query(
+            `INSERT INTO creation_date_log
+               (scope, object_key, previous_date, purported_date, who)
+             VALUES ('media',$1,$2,$3,$4)`,
+            [String(id), previousDate, claimedDate || null, clean(door.who, 120) || 'admin']);
+        }
+        return res.json({ ok: true, date: claimedDate || '' });
       }
 
       case 'delete': {
