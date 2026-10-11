@@ -253,14 +253,8 @@ export class NaturalVoiceEngine {
     if (selected.id === this.voice) return true;
     this.stop({ notify: false });
     this.voice = selected.id;
-    if (this.tts) {
-      this.tts.setup({
-        voice: this.voice,
-        language: "en-us",
-        speed: this.profile.neuralSpeed,
-        audioEncoding: "wav"
-      });
-    }
+    /* HeadTTS setup is deliberately deferred to speak(). Calling setup here
+       without awaiting it lets the next stop/clear discard the queued change. */
     return true;
   }
 
@@ -310,7 +304,7 @@ export class NaturalVoiceEngine {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       this.audioContext = this.audioContext || new AudioContextClass();
       this.prepareOutput();
-      const modulePromise = import("./headtts/headtts.mjs");
+      const modulePromise = import("./headtts/headtts.mjs?v=male-voices-3");
       await this.audioContext.resume();
       const { HeadTTS } = await modulePromise;
 
@@ -318,11 +312,16 @@ export class NaturalVoiceEngine {
       this.tts = new HeadTTS({
         endpoints: navigator.gpu ? ["webgpu", "wasm"] : ["wasm"],
         audioCtx: this.audioContext,
-        workerModule: new URL("worker-tts.mjs", root).href,
+        workerModule: new URL("worker-tts.mjs?v=male-voices-3", root).href,
         transformersModule: new URL("transformers.min.js", root).href,
         dictionaryURL: new URL("dictionaries/", root).href,
-        voiceURL: new URL("voices/", root).href,
-        voices: [this.voice],
+        /* Version the small embeddings separately from the model so a browser
+           cannot keep an older deployment that made several options alike. */
+        voiceURL: new URL("voices/?v=male-voices-3", root).href,
+        /* Preload the complete curated range. A later chooser change then
+           selects an already verified embedding instead of relying on a
+           background fetch racing the first utterance. */
+        voices: MALE_NEURAL_VOICES.map(({ id }) => id),
         defaultVoice: this.voice,
         defaultLanguage: "en-us",
         defaultSpeed: this.profile.neuralSpeed,
@@ -446,7 +445,19 @@ export class NaturalVoiceEngine {
     if (!input.length) return false;
     this.stop({ notify: false });
     const session = ++this.session;
+    const selectedVoice = this.voice;
     await this.connect();
+    if (session !== this.session) return false;
+
+    /* HeadTTS maintains its own setup queue and, in worker mode, consults
+       that state when dispatching synthesis. Await the selected voice here so
+       a just-changed chooser value cannot be lost to clear() or the old setup. */
+    await this.tts.setup({
+      voice: selectedVoice,
+      language: "en-us",
+      speed: this.profile.neuralSpeed,
+      audioEncoding: "wav"
+    });
     if (session !== this.session) return false;
 
     this.generating = true;
@@ -455,7 +466,7 @@ export class NaturalVoiceEngine {
     try {
       await this.tts.synthesize({
         input,
-        voice: this.voice,
+        voice: selectedVoice,
         language: "en-us",
         speed: this.profile.neuralSpeed,
         audioEncoding: "wav",
@@ -463,6 +474,12 @@ export class NaturalVoiceEngine {
       }, (message) => {
         if (session !== this.session) return;
         if (message?.type === "audio" && message.data?.audio) {
+          if (message.data.voice !== selectedVoice) {
+            generationError = new Error(
+              `neural voice routing mismatch: requested ${selectedVoice}, received ${message.data.voice || "unknown"}`
+            );
+            return;
+          }
           this.audioQueue.push(message.data);
           this.playNext(session);
         } else if (message?.type === "error") {
