@@ -16,9 +16,11 @@ const PROFILE_DATA = {
     key: "shakdrah",
     label: "ShakDrah",
     neuralVoice: "bm_george",
-    neuralSpeed: 0.88,
-    nativeRate: 0.9,
+    neuralSpeed: 0.91,
+    pauseScale: 1.12,
+    nativeRate: 0.91,
     nativePitch: 0.82,
+    audioTone: { lowHz: 180, lowGain: 1.6, presenceHz: 2800, presenceGain: -0.6 },
     preferredNames: [
       "ryan natural", "george natural", "daniel", "arthur", "george",
       "ryan", "thomas", "microsoft george", "google uk english male"
@@ -28,9 +30,11 @@ const PROFILE_DATA = {
     key: "gink",
     label: "Gink",
     neuralVoice: "bm_fable",
-    neuralSpeed: 1.02,
-    nativeRate: 0.98,
-    nativePitch: 0.96,
+    neuralSpeed: 1.0,
+    pauseScale: 0.94,
+    nativeRate: 1.0,
+    nativePitch: 0.97,
+    audioTone: { lowHz: 210, lowGain: -0.5, presenceHz: 2600, presenceGain: 1.1 },
     preferredNames: [
       "oliver natural", "jamie natural", "oliver", "jamie", "lewis",
       "james", "microsoft ryan", "google uk english male", "daniel"
@@ -134,9 +138,14 @@ export function normaliseSpeechText(value, profileName = "gink") {
     .replace(/±/g, " plus or minus ")
     .replace(/×/g, " times ")
     .replace(/\bTTI\b/g, "T T I")
+    .replace(/\b(CPT|QFT|DNA|RNA|EEG|MRI|AI)\b/g,
+      (letters) => letters.split("").join(" "))
+    .replace(/\b([2458])D\b/g, "$1 D")
+    .replace(/\bbase[- ]([2458])\b/gi, "base $1")
     .replace(/\bEGregoRA\b/g, "E Greg or ah")
     .replace(/\bShakDrah\b/gi, "Shack Draah")
     .replace(/\bMöbius\b/gi, "Moebius")
+    .replace(/\bbaryogenesis\b/gi, "barry-oh-jen-uh-sis")
     .replace(/\bquasiperiodic\b/gi, "quasi-periodic")
     .replace(/\s+([,.;:!?])/g, "$1")
     .replace(/([,.;:!?])(?=\S)/g, "$1 ")
@@ -153,10 +162,12 @@ export function normaliseSpeechText(value, profileName = "gink") {
 /** Convert the avatar's grade-aware running order to HeadTTS input items.
  *  Explicit breaks are real silent samples, not punctuation guesses. */
 export function buildPerformanceInput(script, profileName = "gink") {
+  const profile = AVATAR_VOICE_PROFILES[profileName] || AVATAR_VOICE_PROFILES.gink;
   const input = [];
   for (const item of Array.from(script || [])) {
     if (item && Number(item.wait) > 0) {
-      input.push({ type: "break", value: Math.min(5000, Math.max(80, Number(item.wait))) });
+      const scaled = Number(item.wait) * (profile.pauseScale || 1);
+      input.push({ type: "break", value: Math.round(Math.min(5000, Math.max(80, scaled))) });
       continue;
     }
     const line = normaliseSpeechText(typeof item === "string" ? item : item?.line, profileName);
@@ -188,6 +199,7 @@ export class NaturalVoiceEngine {
     this.onError = onError || (() => {});
     this.tts = null;
     this.audioContext = null;
+    this.outputNode = null;
     this.connectPromise = null;
     this.connected = false;
     this.audioQueue = [];
@@ -210,6 +222,40 @@ export class NaturalVoiceEngine {
   get ready() { return this.connected; }
   get speaking() { return Boolean(this.source || this.current || this.audioQueue.length || this.generating); }
 
+  /* A very gentle, character-specific mastering chain. It does not disguise
+     the model or add theatrical effects: it controls sentence-to-sentence
+     level changes and gives ShakDrah a little weight while preserving Gink's
+     lighter consonants. */
+  prepareOutput() {
+    if (this.outputNode || !this.audioContext) return;
+    const context = this.audioContext;
+    if (typeof context.createBiquadFilter !== "function" ||
+        typeof context.createDynamicsCompressor !== "function") {
+      this.outputNode = context.destination;
+      return;
+    }
+    const tone = this.profile.audioTone || {};
+    const low = context.createBiquadFilter();
+    low.type = "lowshelf";
+    low.frequency.value = tone.lowHz || 200;
+    low.gain.value = tone.lowGain || 0;
+    const presence = context.createBiquadFilter();
+    presence.type = "peaking";
+    presence.frequency.value = tone.presenceHz || 2700;
+    presence.Q.value = 0.75;
+    presence.gain.value = tone.presenceGain || 0;
+    const compressor = context.createDynamicsCompressor();
+    compressor.threshold.value = -19;
+    compressor.knee.value = 18;
+    compressor.ratio.value = 2.1;
+    compressor.attack.value = 0.008;
+    compressor.release.value = 0.16;
+    low.connect(presence);
+    presence.connect(compressor);
+    compressor.connect(context.destination);
+    this.outputNode = low;
+  }
+
   async connect() {
     if (this.connected) return true;
     if (this.connectPromise) return this.connectPromise;
@@ -221,6 +267,7 @@ export class NaturalVoiceEngine {
          gesture unlocks playback on mobile Safari as well as desktop. */
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       this.audioContext = this.audioContext || new AudioContextClass();
+      this.prepareOutput();
       const modulePromise = import("./headtts/headtts.mjs");
       await this.audioContext.resume();
       const { HeadTTS } = await modulePromise;
@@ -325,7 +372,7 @@ export class NaturalVoiceEngine {
     const offset = Math.min(this.current.offset || 0, Math.max(0, buffer.duration - 0.005));
     const source = this.audioContext.createBufferSource();
     source.buffer = buffer;
-    source.connect(this.audioContext.destination);
+    source.connect(this.outputNode || this.audioContext.destination);
     this.source = source;
     this.current.startedAt = this.audioContext.currentTime - offset;
     this.scheduleCues(data, offset);

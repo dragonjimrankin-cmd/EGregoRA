@@ -1,8 +1,8 @@
 /* ===========================================================================
    The Two Infinities — ShakDrah, the oracle's keeper.
 
-   A green dragon built entirely in code, on the same rig as EGregoRA's dragon
-   and shaded for realism rather than for charm:
+   A green dragon built entirely in code, using the shared avatar controls but
+   with reptilian anatomy, motion and shading rather than a recoloured fox:
 
      · procedurally generated scale, roughness and fringe-alpha textures,
        drawn on canvases at load — no image files, no CDN assets beyond
@@ -35,7 +35,7 @@ import {
   NaturalVoiceEngine,
   normaliseSpeechText,
   rankNativeVoices
-} from "./neural-voice.js";
+} from "./neural-voice.js?v=model-voice-2";
 
 (() => {
   "use strict";
@@ -49,6 +49,17 @@ import {
   const btnNatural = document.getElementById("dragon-natural");
   const setStatus = (s) => { if (statusEl) statusEl.textContent = s; };
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* Stable procedural detail gives ShakDrah the same scale pattern and
+     facial identity on every visit while retaining organic motion. */
+  const random = (() => {
+    let state = 0xbb67ae85;
+    return () => {
+      state |= 0; state = (state + 0x6d2b79f5) | 0;
+      let n = Math.imul(state ^ (state >>> 15), 1 | state);
+      n ^= n + Math.imul(n ^ (n >>> 7), 61 | n);
+      return ((n ^ (n >>> 14)) >>> 0) / 4294967296;
+    };
+  })();
 
   /* ----------------------------------------------------------- palette */
   const C = {
@@ -90,16 +101,16 @@ import {
     g.fillStyle = bg;
     g.fillRect(0, 0, w, h);
     for (let i = 0; i < strokes; i++) {
-      const x = Math.random() * w;
-      const y = Math.random() * h;
-      const len = 4 + Math.random() * 16;
-      const a = (-Math.PI / 2) + (Math.random() - 0.5) * 0.8;
-      const t = Math.random();
+      const x = random() * w;
+      const y = random() * h;
+      const len = 4 + random() * 16;
+      const a = (-Math.PI / 2) + (random() - 0.5) * 0.8;
+      const t = random();
       g.strokeStyle = alpha
         ? `rgba(255,255,255,${0.35 + t * 0.65})`
         : (t > 0.5 ? light : dark);
-      g.globalAlpha = alpha ? 1 : 0.14 + Math.random() * 0.3;
-      g.lineWidth = alpha ? 0.8 + Math.random() * 1.6 : 0.6 + Math.random() * 1.4;
+      g.globalAlpha = alpha ? 1 : 0.14 + random() * 0.3;
+      g.lineWidth = alpha ? 0.8 + random() * 1.6 : 0.6 + random() * 1.4;
       g.lineCap = "round";
       g.beginPath();
       g.moveTo(x, y);
@@ -176,9 +187,9 @@ import {
     g.fillStyle = "#b8b8b8";
     g.fillRect(0, 0, 256, 256);
     for (let i = 0; i < 2600; i++) {
-      const v = 120 + Math.floor(Math.random() * 110);
+      const v = 120 + Math.floor(random() * 110);
       g.fillStyle = `rgb(${v},${v},${v})`;
-      g.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 3, 1 + Math.random() * 6);
+      g.fillRect(random() * 256, random() * 256, 1 + random() * 3, 1 + random() * 6);
     }
     return c;
   })();
@@ -203,13 +214,13 @@ import {
 
     // stromal fibres
     for (let i = 0; i < 320; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const r0 = 16 + Math.random() * 26;
-      const r1 = 72 + Math.random() * 50;
-      g.strokeStyle = Math.random() > 0.5
+      const a = random() * Math.PI * 2;
+      const r0 = 16 + random() * 26;
+      const r1 = 72 + random() * 50;
+      g.strokeStyle = random() > 0.5
         ? "rgba(255,238,190,0.36)"
         : "rgba(54,30,6,0.40)";
-      g.lineWidth = 0.6 + Math.random() * 2.2;
+      g.lineWidth = 0.6 + random() * 2.2;
       g.beginPath();
       g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
       g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
@@ -249,6 +260,7 @@ import {
   const M = {
     fur: physical({
       color: 0xffffff, map: furMap, roughnessMap: roughMap,
+      bumpMap: furMap, bumpScale: 0.052,
       sheenColor: new THREE.Color(0x9fe6b4)
     }),
     furDeep: physical({
@@ -258,16 +270,19 @@ import {
     furShade: physical({ color: C.furShade, roughness: 0.96, sheen: 0.7 }),
     cream: physical({
       color: 0xffffff, map: creamMap, roughnessMap: roughMap,
+      bumpMap: creamMap, bumpScale: 0.036,
       sheenColor: new THREE.Color(0xeaf4c2)
     }),
     creamDim: physical({ color: C.creamDim, roughness: 0.95, sheenColor: new THREE.Color(0xd7e4a6) }),
     black: physical({ color: C.black, roughness: 0.62, sheen: 0.5 }),
     nose: new THREE.MeshPhysicalMaterial({
       color: 0x16281a, roughness: 0.18, metalness: 0,
+      bumpMap: roughMap, bumpScale: 0.014,
       clearcoat: 1, clearcoatRoughness: 0.06
     }),
     horn: new THREE.MeshPhysicalMaterial({
       color: 0xc9b488, roughness: 0.52, metalness: 0.08,
+      bumpMap: roughMap, bumpScale: 0.024,
       clearcoat: 0.3, clearcoatRoughness: 0.5
     }),
     membrane: new THREE.MeshPhysicalMaterial({
@@ -398,7 +413,9 @@ import {
     setStatus("ShakDrah cannot be drawn here — this browser has no WebGL. The written answer stands on its own.");
     return;
   }
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  const constrainedGPU = window.matchMedia("(max-width: 680px)").matches ||
+    (Number(navigator.deviceMemory) > 0 && Number(navigator.deviceMemory) <= 4);
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, constrainedGPU ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.12;
@@ -413,16 +430,16 @@ import {
     const envC = makeCanvas(512, 256);
     const g = envC.getContext("2d");
     const sky = g.createLinearGradient(0, 0, 0, 256);
-    sky.addColorStop(0, "#ffe6bd");
-    sky.addColorStop(0.42, "#6b5a6e");
-    sky.addColorStop(0.62, "#2a2030");
-    sky.addColorStop(1, "#140f1c");
+    sky.addColorStop(0, "#dff4d5");
+    sky.addColorStop(0.42, "#48676a");
+    sky.addColorStop(0.62, "#172f2c");
+    sky.addColorStop(1, "#081411");
     g.fillStyle = sky; g.fillRect(0, 0, 512, 256);
     const lamp = g.createRadialGradient(130, 70, 4, 130, 70, 78);
-    lamp.addColorStop(0, "#fffdf4"); lamp.addColorStop(1, "rgba(255,245,220,0)");
+    lamp.addColorStop(0, "#f2ffe9"); lamp.addColorStop(1, "rgba(210,255,220,0)");
     g.fillStyle = lamp; g.fillRect(0, 0, 512, 256);
     const cool = g.createRadialGradient(400, 120, 4, 400, 120, 96);
-    cool.addColorStop(0, "#b9c9ff"); cool.addColorStop(1, "rgba(150,170,255,0)");
+    cool.addColorStop(0, "#93dcff"); cool.addColorStop(1, "rgba(90,195,235,0)");
     g.fillStyle = cool; g.fillRect(0, 0, 512, 256);
 
     const envTex = new THREE.CanvasTexture(envC);
@@ -436,12 +453,12 @@ import {
     pmrem.dispose();
   } catch (e) { /* IBL is an enhancement, not a requirement */ }
 
-  scene.add(new THREE.HemisphereLight(0xffe9c4, 0x1a1420, 0.35));
+  scene.add(new THREE.HemisphereLight(0xdfffd9, 0x081712, 0.38));
 
-  const key = new THREE.DirectionalLight(0xffd9a4, 2.4);
+  const key = new THREE.DirectionalLight(0xe4ffd9, 2.3);
   key.position.set(3.0, 4.2, 4.0);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(constrainedGPU ? 1024 : 2048, constrainedGPU ? 1024 : 2048);
   key.shadow.camera.near = 1; key.shadow.camera.far = 22;
   key.shadow.camera.left = -4.5; key.shadow.camera.right = 4.5;
   key.shadow.camera.top = 4.5; key.shadow.camera.bottom = -4.5;
@@ -449,11 +466,11 @@ import {
   key.shadow.radius = 2.4;
   scene.add(key);
 
-  const rim = new THREE.DirectionalLight(0xa8c0ff, 2.6);
+  const rim = new THREE.DirectionalLight(0x78d9ff, 2.85);
   rim.position.set(-3.4, 2.2, -3.6);
   scene.add(rim);
 
-  const fill = new THREE.DirectionalLight(0xffcf9a, 0.5);
+  const fill = new THREE.DirectionalLight(0xa9d88f, 0.48);
   fill.position.set(-2.4, -0.6, 3.4);
   scene.add(fill);
 
@@ -490,7 +507,8 @@ import {
   chest.position.y = -1.74;
   chest.castShadow = true; chest.receiveShadow = true;
   body.add(chest);
-  furShells(chest, { depth: 0.1, tint: 0xffffff, tipDark: 0.5 });
+  /* The scaled hide stays crisp; unlike Gink's coat it does not need a
+     stack of hair shells. Relief now comes from the keeled bump map. */
 
   // cream bib down the front
   const bibGeo = sculpt(new THREE.SphereGeometry(1.1, 36, 26), (v) => {
@@ -503,10 +521,30 @@ import {
   bib.scale.set(0.78, 0.92, 1);
   bib.castShadow = true;
   body.add(bib);
-  furShells(bib, { depth: 0.085, map: creamMap, tipDark: 0.3 });
+  /* A restrained three-layer fringe remains only at the soft dewlap. */
+  furShells(bib, { depth: 0.025, shells: 3, map: creamMap, tipDark: 0.2 });
 
-  // shoulder and ruff tufts
-  const tuft = (x, y, z, s, rot, matl) => {
+  /* Raised throat scutes break the old smooth fox-bib silhouette into broad,
+     overlapping reptilian armour without adding a downloaded model. */
+  const throatScutes = [];
+  for (let i = 0; i < 7; i++) {
+    const plate = new THREE.Mesh(
+      sculpt(new THREE.SphereGeometry(0.28, 24, 14), (v) => {
+        v.x *= 1.55 - i * 0.055;
+        v.y *= 0.34;
+        v.z *= 0.32;
+      }),
+      i % 2 ? M.creamDim : M.cream
+    );
+    plate.position.set(0, -0.83 - i * 0.27, 1.06 - i * 0.075);
+    plate.rotation.x = -0.12 - i * 0.018;
+    plate.castShadow = true;
+    body.add(plate);
+    throatScutes.push(plate);
+  }
+
+  // faceted shoulder armour and lateral neck spines
+  const armourSpike = (x, y, z, s, rot, matl) => {
     const g = sculpt(new THREE.ConeGeometry(0.3, 0.98, 6, 3), (v) => {
       v.z *= 0.45;
       v.x += Math.sin(v.y * 3.0) * 0.04;
@@ -519,11 +557,11 @@ import {
   for (let i = 0; i < 15; i++) {
     const a = (i / 14) * Math.PI - Math.PI / 2;
     const r = 1.02;
-    body.add(tuft(
+    body.add(armourSpike(
       Math.sin(a) * r * 1.1, -1.0 + Math.cos(a) * 0.1, Math.cos(a) * r * 0.62,
       0.46 + 0.2 * Math.cos(a),
       [0.5 + 0.15 * Math.cos(a), 0, -Math.sin(a) * 0.95],
-      i % 3 === 0 ? M.creamDim : M.furDeep
+      i % 3 === 0 ? M.horn : M.furDeep
     ));
   }
 
@@ -537,16 +575,15 @@ import {
   for (let i = 0; i < 7; i++) {
     const seg = new THREE.Group();
     seg.position.y = i === 0 ? 0 : 0.46;
-    const r = 0.47 - i * 0.042;
-    const g = sculpt(new THREE.SphereGeometry(r, 20, 16), (v) => { v.y *= 1.26; v.z *= 0.94; });
-    const mesh = new THREE.Mesh(g, i >= 5 ? M.cream : M.fur);
-    mesh.castShadow = true;
-    furShells(mesh, {
-      depth: 0.13, shells: 6,
-      map: i >= 5 ? creamMap : furMap,
-      tint: i >= 5 ? 0xffffff : 0xffffff,
-      tipDark: i >= 5 ? 0.25 : 0.45
+    const r = Math.max(0.14, 0.45 - i * 0.05);
+    const g = sculpt(new THREE.SphereGeometry(r, 24, 18), (v) => {
+      v.y *= 1.28; v.z *= 0.9;
+      /* a low dorsal keel continues the spine into the tail */
+      const dorsal = smoothstep(0.0, 0.8, v.y / Math.max(r, 0.001)) * smoothstep(0.1, -0.7, v.z / Math.max(r, 0.001));
+      v.z -= dorsal * 0.045;
     });
+    const mesh = new THREE.Mesh(g, M.fur);
+    mesh.castShadow = true;
     seg.add(mesh);
     parent.add(seg);
     parent = seg;
@@ -590,13 +627,13 @@ import {
   const skull = new THREE.Mesh(skullGeo, M.fur);
   skull.castShadow = true; skull.receiveShadow = true;
   head.add(skull);
-  furShells(skull, { depth: 0.062, tipDark: 0.48 });
+  /* The bump-mapped scale rows stay visible right to the silhouette. */
 
-  // cream muzzle wrap and chin
+  // pale scaled muzzle wrap and chin
   const snoutGeo = sculpt(new THREE.SphereGeometry(0.52, 36, 26), (v) => {
     const fwd = smoothstep(-0.2, 0.52, v.z);
     /* The muzzle stops short of the nose and is buried inside it. It used to
-       run to z 1.34, which put its tip — and five shells of cream fur — out
+       run to z 1.34, which put its tip — and five copied shell layers — out
        in front of the nose leather, so orange hair appeared to grow through
        the black. It now ends at 1.08, well behind the leather's front face. */
     v.z += fwd * 0.56;
@@ -608,11 +645,7 @@ import {
   snout.position.set(0, -0.3, 0.86);
   snout.castShadow = true;
   head.add(snout);
-  furShells(snout, {
-    depth: 0.04, map: creamMap, shells: 5, tipDark: 0.28,
-    /* bare from z 0.72 forward: that is the part the nose sits over */
-    fade: (x, y, z) => 1 - smoothstep(0.72, 1.0, z)
-  });
+  /* Smooth throat plates transition cleanly into the bare nostril ridge. */
 
   // dark bridge stripe along the top of the muzzle
   const bridge = new THREE.Mesh(
@@ -638,6 +671,17 @@ import {
   nose.castShadow = true;
   head.add(nose);
 
+  /* Deep nostril apertures and a slow flare make the muzzle read as living
+     reptile anatomy rather than the fox rig with a green material. */
+  const nostrils = [-1, 1].map((side) => {
+    const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.052, 16, 10), M.mouth);
+    nostril.scale.set(1.12, 0.48, 0.26);
+    nostril.position.set(0.108 * side, -0.19, 2.105);
+    nostril.rotation.z = -0.2 * side;
+    head.add(nostril);
+    return nostril;
+  });
+
   /* ---------- the jaw (the part that lip-syncs) ----------------------- */
   const jaw = new THREE.Group();
   jaw.position.set(0, -0.42, 0.28);
@@ -658,11 +702,7 @@ import {
   lowerJaw.position.set(0, -0.04, 0.52);
   lowerJaw.castShadow = true;
   jaw.add(lowerJaw);
-  furShells(lowerJaw, {
-    depth: 0.035, map: creamMap, shells: 4, tipDark: 0.25,
-    /* and no hair at all on the last of it, under the leather */
-    fade: (x, y, z) => 1 - smoothstep(0.95, 1.25, z)
-  });
+  /* Lower-jaw scutes remain hard-edged rather than fox-like and furry. */
 
   // dark mouth cavity so an open mouth reads as depth, not a gap
   const cavity = new THREE.Mesh(
@@ -733,7 +773,7 @@ import {
     // the pupil: black, dead centre, and on the surface so nothing can bury it
     const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000, toneMapped: false });
     const pupil = eyeCap(0.2035, 0.44, pupilMat);
-    pupil.scale.set(0.78, 1.0, 1);        // a broad vertical oval
+    pupil.scale.set(0.34, 1.08, 1);       // a true reptilian slit, not the old fox oval
     pupil.renderOrder = 3;
     globe.add(pupil);
 
@@ -1054,6 +1094,8 @@ import {
   let listening = false;
   let jawNow = 0, jawTarget = 0;
   let wideNow = 0, wideTarget = 0;
+  let roundNow = 0, roundTarget = 0;
+  let pressNow = 0, pressTarget = 0;
 
   /* ---- visemes -------------------------------------------------------
      The jaw is driven by the letters actually being spoken rather than by
@@ -1061,21 +1103,22 @@ import {
      how wide the muzzle spreads. Crude next to a real phoneme aligner, but
      English orthography is regular enough that an open A reads as an open
      mouth and an M reads as a closed one, which is all the eye checks. */
+  /* jaw, lateral spread, muzzle rounding, bilabial pressure */
   const SHAPES = {
-    a: [0.95, 0.55], A: [0.95, 0.55],
-    o: [0.80, 0.10], u: [0.55, 0.05], w: [0.40, 0.00],
-    e: [0.55, 0.85], i: [0.38, 0.90], y: [0.38, 0.80],
-    m: [0.02, 0.35], b: [0.05, 0.35], p: [0.05, 0.35],
-    f: [0.16, 0.65], v: [0.16, 0.65],
-    s: [0.14, 0.80], z: [0.14, 0.80], c: [0.18, 0.75], x: [0.20, 0.70],
-    t: [0.22, 0.60], d: [0.24, 0.55], n: [0.20, 0.55], l: [0.30, 0.60],
-    r: [0.34, 0.35], g: [0.30, 0.40], k: [0.30, 0.45], q: [0.35, 0.15],
-    h: [0.30, 0.45], j: [0.28, 0.65]
+    a: [0.95, 0.55, 0.08, 0], A: [0.95, 0.55, 0.08, 0],
+    o: [0.80, 0.10, 1.0, 0], u: [0.55, 0.05, 0.88, 0], w: [0.40, 0.00, 0.78, 0],
+    e: [0.55, 0.85, 0.05, 0], i: [0.38, 0.90, 0, 0], y: [0.38, 0.80, 0.08, 0],
+    m: [0.02, 0.35, 0, 1], b: [0.05, 0.35, 0, 0.92], p: [0.05, 0.35, 0, 1],
+    f: [0.16, 0.65, 0, 0.3], v: [0.16, 0.65, 0, 0.26],
+    s: [0.14, 0.80, 0, 0], z: [0.14, 0.80, 0, 0], c: [0.18, 0.75, 0, 0], x: [0.20, 0.70, 0, 0],
+    t: [0.22, 0.60, 0, 0], d: [0.24, 0.55, 0, 0], n: [0.20, 0.55, 0, 0], l: [0.30, 0.60, 0, 0],
+    r: [0.34, 0.35, 0.24, 0], g: [0.30, 0.40, 0, 0], k: [0.30, 0.45, 0, 0], q: [0.35, 0.15, 0.66, 0],
+    h: [0.30, 0.45, 0, 0], j: [0.28, 0.65, 0, 0]
   };
   const VOWELS = "aeiouy";
-  let visQueue = [];          // [{ jaw, wide, dur }]
+  let visQueue = [];          // [{ jaw, wide, round, press, dur }]
   let visHold = 0;            // time left on the current shape
-  let visJaw = 0, visWide = 0;
+  let visJaw = 0, visWide = 0, visRound = 0, visPress = 0;
 
   /* Turn a word into a short run of mouth shapes and spread them over the
      time the synthesiser will plausibly take to say it. Consonant clusters
@@ -1097,7 +1140,10 @@ import {
         prev.weight += 0.6;                                 // collapse a cluster
         continue;
       }
-      shapes.push({ jaw: sh[0], wide: sh[1], v: isVowel, weight: isVowel ? 1.5 : 0.8 });
+      shapes.push({
+        jaw: sh[0], wide: sh[1], round: sh[2] || 0, press: sh[3] || 0,
+        v: isVowel, weight: isVowel ? 1.5 : 0.8
+      });
     }
     if (!shapes.length) shapes.push({ jaw: 0.4, wide: 0.5, weight: 1 });
     const total = shapes.reduce((n, sh) => n + sh.weight, 0);
@@ -1105,21 +1151,24 @@ import {
     visQueue = shapes.map((sh) => ({
       jaw: sh.jaw,
       wide: sh.wide,
+      round: sh.round || 0,
+      press: sh.press || 0,
       dur: Math.max(0.035, (sh.weight / total) * span)
     }));
     // every word ends by closing a little, which is what separates words
-    visQueue.push({ jaw: 0.06, wide: 0.3, dur: 0.045 });
+    visQueue.push({ jaw: 0.06, wide: 0.3, round: 0, press: 0, dur: 0.045 });
     visHold = 0;
   };
   let emphasis = 0;
-  let blinkTimer = 1.5 + Math.random() * 3, blink = 0, blinkSkew = 0;
+  let blinkTimer = 1.5 + random() * 3, blink = 0, blinkSkew = 0;
   let earPerk = 0;
   const earFlick = [
-    { wait: 0.6 + Math.random() * 1.9, on: 0 },
-    { wait: 0.6 + Math.random() * 1.9, on: 0 }
+    { wait: 0.6 + random() * 1.9, on: 0 },
+    { wait: 0.6 + random() * 1.9, on: 0 }
   ];
   let headTilt = 0;
   const pointer = { x: 0, y: 0, active: false };
+  const microGaze = { x: 0, y: 0, tx: 0, ty: 0, wait: 1.4 };
 
   mount.addEventListener("pointermove", (e) => {
     const r = mount.getBoundingClientRect();
@@ -1138,14 +1187,22 @@ import {
     requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
     const dt = Math.min(t - last, 0.05); last = t;
+    if (document.hidden) return;
 
     if (!reduceMotion) {
       // breathing: faster and shallower while he talks, as it would be
       const rate = speaking ? 1.7 : 1.05;
       const breath = Math.sin(t * rate);
-      chest.scale.set(1 + breath * 0.02, 1 + breath * 0.013, 1 + breath * 0.024);
-      dragon.position.y = DRAGON_Y + Math.sin(t * 0.95) * 0.035;
-      neck.rotation.z = Math.sin(t * 0.47) * 0.03;
+      chest.scale.set(1 + breath * 0.021, 1 + breath * 0.012, 1 + breath * 0.027);
+      throatScutes.forEach((plate, i) => {
+        plate.position.z = 1.06 - i * 0.075 + breath * (0.008 + i * 0.001);
+      });
+      nostrils.forEach((nostril, i) => {
+        nostril.scale.y = 0.48 + (breath + 1) * 0.026 + (speaking ? 0.025 : 0);
+        nostril.rotation.z = (i ? -1 : 1) * 0.2;
+      });
+      dragon.position.y = DRAGON_Y + Math.sin(t * 0.72) * 0.025;
+      neck.rotation.z = Math.sin(t * 0.38) * 0.022;
 
       tail.rotation.z = 0.92 + Math.sin(t * 0.8) * 0.15;
       tailSegs.forEach((seg, i) => {
@@ -1164,25 +1221,45 @@ import {
          65% less often: the same flick, at a little under a third of the rate. */
       earFlick.forEach((e, i) => {
         e.wait -= dt;
-        if (e.wait <= 0) { e.on = 0.2; e.wait = 1.1 + Math.random() * 1.9; }
+        if (e.wait <= 0) { e.on = 0.2; e.wait = 1.1 + random() * 1.9; }
         if (e.on > 0) e.on = Math.max(0, e.on - dt);
       });
       ears.forEach((ear, i) => {
         const s = i === 0 ? -1 : 1;
-        const flick = Math.sin((earFlick[i].on / 0.2) * Math.PI) * 0.24;
-        const swivel = listening ? Math.sin(t * 0.9 + i * 1.7) * 0.08 : 0;
-        ear.rotation.z = (-0.3 + earPerk * 0.12) * s + (Math.sin(t * 1.21 + i * 2) * 0.025 + flick) * s;
-        ear.rotation.x = -0.12 - earPerk * 0.12 + Math.sin(t * 0.9 + i) * 0.02;
-        ear.rotation.y = 0.3 * s + swivel * s;
+        const flick = Math.sin((earFlick[i].on / 0.2) * Math.PI) * 0.13;
+        const swivel = listening ? Math.sin(t * 0.7 + i * 1.7) * 0.055 : 0;
+        /* Preserve the broad frill's sculpted resting angles; the old fox
+           constants folded both fans too far into the skull each frame. */
+        ear.rotation.z = (-0.42 + earPerk * 0.07) * s + (Math.sin(t * 0.82 + i * 2) * 0.018 + flick) * s;
+        ear.rotation.x = -0.2 - earPerk * 0.07 + Math.sin(t * 0.62 + i) * 0.014;
+        ear.rotation.y = 0.62 * s + swivel * s;
+      });
+      wings.forEach((wing, i) => {
+        const side = i ? 1 : -1;
+        wing.rotation.x = Math.sin(t * 0.52 + i * 0.8) * 0.025 - (speaking ? 0.018 : 0);
+        wing.rotation.z = (-0.5 + breath * 0.012) * side;
+      });
+      crest.forEach((spine, i) => {
+        const base = spine.userData.restX ?? spine.rotation.x;
+        spine.userData.restX = base;
+        spine.rotation.x = base + Math.sin(t * 0.55 - i * 0.22) * 0.012;
       });
     }
 
     // a quizzical head tilt while he is being asked something
     headTilt += ((listening ? 0.16 : 0) - headTilt) * 0.04;
 
-    // gaze: head, neck and eyes move on different lags, as real heads do
-    const tx = pointer.active ? pointer.x * 0.3 : Math.sin(t * 0.31) * 0.07;
-    const ty = pointer.active ? pointer.y * 0.2 : Math.cos(t * 0.24) * 0.045;
+    // ShakDrah's gaze settles slowly, with sparse deliberate micro-saccades
+    microGaze.wait -= dt;
+    if (microGaze.wait <= 0) {
+      microGaze.tx = (random() - 0.5) * 0.03;
+      microGaze.ty = (random() - 0.5) * 0.018;
+      microGaze.wait = 1.8 + random() * 2.8;
+    }
+    microGaze.x += (microGaze.tx - microGaze.x) * (1 - Math.exp(-dt * 9));
+    microGaze.y += (microGaze.ty - microGaze.y) * (1 - Math.exp(-dt * 9));
+    const tx = (pointer.active ? pointer.x * 0.27 : Math.sin(t * 0.25) * 0.055) + microGaze.x;
+    const ty = (pointer.active ? pointer.y * 0.17 : Math.cos(t * 0.2) * 0.036) + microGaze.y;
     head.rotation.y += (tx - head.rotation.y) * 0.055;
     head.rotation.x += (ty * 0.55 - head.rotation.x) * 0.055;
     head.rotation.z += (headTilt - head.rotation.z) * 0.06;
@@ -1192,16 +1269,18 @@ import {
          turns the gaze stays on the viewer — the trick portrait painters use. */
       e.globe.rotation.y = e.restY - head.rotation.y * 0.55 - tx * 0.18;
       e.globe.rotation.x = -head.rotation.x * 0.45 + ty * 0.14;
-      // the pupil widens when he is listening and in the lower light
-      const target = listening ? 0.95 : 0.78;
-      e.pupil.scale.x += (target - e.pupil.scale.x) * 0.05;
+      // ShakDrah keeps a narrow reptilian slit, dilating only with attention
+      const target = listening ? 0.55 : (speaking ? 0.44 : 0.34);
+      e.pupil.scale.x += (target - e.pupil.scale.x) * 0.045;
+      e.pupil.scale.y += ((speaking ? 1.1 : 1.08) - e.pupil.scale.y) * 0.035;
+      e.iris.material.emissiveIntensity = 0.09 + emphasis * 0.055;
     });
 
     // blinking — fast close, slower open, the two lids very slightly offset
     blinkTimer -= dt;
     if (blinkTimer <= 0) {
-      blink = 1; blinkSkew = (Math.random() - 0.5) * 0.12;
-      blinkTimer = 2.2 + Math.random() * 5;
+      blink = 1; blinkSkew = (random() - 0.5) * 0.12;
+      blinkTimer = 2.2 + random() * 5;
     }
     if (blink > 0) blink = Math.max(0, blink - dt * 6.5);
     const closed = Math.sin(blink * Math.PI);
@@ -1228,6 +1307,7 @@ import {
       while (visHold <= 0 && visQueue.length) {
         const nextShape = visQueue.shift();
         visJaw = nextShape.jaw; visWide = nextShape.wide;
+        visRound = nextShape.round || 0; visPress = nextShape.press || 0;
         visHold += nextShape.dur;
       }
       if (!visQueue.length && visHold <= 0) {
@@ -1235,24 +1315,40 @@ import {
            keeps a low murmur going rather than freezing mid-word. */
         visJaw = 0.26 + 0.22 * Math.abs(Math.sin(t * 5.4));
         visWide = 0.45 + 0.15 * Math.sin(t * 3.1);
+        visRound = 0.12 + 0.1 * Math.abs(Math.sin(t * 2.6));
+        visPress = 0;
       }
       emphasis = Math.max(0, emphasis - dt * 3.2);
       jawTarget = 0.035 + 0.42 * visJaw + emphasis * 0.05;
       wideTarget = visWide;
-      tongue.position.y = -0.02 - jawNow * 0.08;
+      roundTarget = visRound;
+      pressTarget = visPress;
+      tongue.position.y = -0.02 - jawNow * 0.08 + roundNow * 0.018;
     } else {
       emphasis = 0;
-      visQueue.length = 0; visHold = 0; visJaw = 0; visWide = 0;
+      visQueue.length = 0; visHold = 0; visJaw = 0; visWide = 0; visRound = 0; visPress = 0;
       jawTarget = 0.012 + Math.sin(t * 0.9) * 0.008;
-      wideTarget = 0;
+      wideTarget = 0; roundTarget = 0; pressTarget = 0;
     }
     const opening = jawTarget > jawNow;
     const kJaw = 1 - Math.exp(-dt * (opening ? 34 : 19));
     jawNow += (jawTarget - jawNow) * kJaw;
     wideNow += (wideTarget - wideNow) * (1 - Math.exp(-dt * 22));
-    jaw.rotation.x = jawNow;
-    snout.scale.x = 1 + jawNow * 0.06 + wideNow * 0.05;
-    cavity.scale.y = 1 + jawNow * 1.9;
+    roundNow += (roundTarget - roundNow) * (1 - Math.exp(-dt * 20));
+    pressNow += (pressTarget - pressNow) * (1 - Math.exp(-dt * 28));
+    jaw.rotation.x = jawNow * (1 - pressNow * 0.27);
+    jaw.position.y = -0.42 - jawNow * 0.062 + pressNow * 0.008;
+    jaw.position.z = 0.28 + roundNow * 0.018;
+    /* Reptilian articulation is weightier and less lip-led than Gink's, but
+       rounded vowels and bilabials still need visibly different silhouettes. */
+    snout.scale.x = 1 + jawNow * 0.038 + wideNow * 0.046 - roundNow * 0.018;
+    snout.scale.y = 1 + roundNow * 0.052 - pressNow * 0.026;
+    snout.scale.z = 1 + roundNow * 0.064;
+    nose.position.y = -0.2 + roundNow * 0.007;
+    nose.position.z = 1.98 + roundNow * 0.016;
+    cavity.scale.x = 1 + wideNow * 0.045 - roundNow * 0.08;
+    cavity.scale.y = 1 + jawNow * 2.05;
+    tongue.scale.x = 1 + wideNow * 0.045 - roundNow * 0.07;
 
     renderer.render(scene, camera);
   };
@@ -1400,14 +1496,17 @@ import {
      character-specific jaw/width targets replace spelling-based guesses
      whenever the natural voice is active. */
   const NEURAL_SHAPES = {
-    sil: [0.02, 0.25], PP: [0.03, 0.32], FF: [0.14, 0.64], TH: [0.18, 0.58],
-    DD: [0.23, 0.58], kk: [0.31, 0.42], CH: [0.28, 0.68], SS: [0.14, 0.8],
-    nn: [0.2, 0.55], RR: [0.34, 0.35], aa: [0.94, 0.53], E: [0.56, 0.84],
-    I: [0.38, 0.9], O: [0.8, 0.12], U: [0.54, 0.06]
+    sil: [0.02, 0.25, 0, 0], PP: [0.03, 0.32, 0, 1], FF: [0.14, 0.64, 0, 0.3], TH: [0.18, 0.58, 0, 0],
+    DD: [0.23, 0.58, 0, 0], kk: [0.31, 0.42, 0, 0], CH: [0.28, 0.68, 0, 0], SS: [0.14, 0.8, 0, 0],
+    nn: [0.2, 0.55, 0, 0], RR: [0.34, 0.35, 0.24, 0], aa: [0.94, 0.53, 0.08, 0], E: [0.56, 0.84, 0.04, 0],
+    I: [0.38, 0.9, 0, 0], O: [0.8, 0.12, 1, 0], U: [0.54, 0.06, 0.88, 0]
   };
   const mouthViseme = ({ viseme, duration }) => {
     const shape = NEURAL_SHAPES[viseme] || NEURAL_SHAPES.sil;
-    visQueue = [{ jaw: shape[0], wide: shape[1], dur: Math.max(0.035, duration || 0.08) }];
+    visQueue = [{
+      jaw: shape[0], wide: shape[1], round: shape[2], press: shape[3],
+      dur: Math.max(0.035, duration || 0.08)
+    }];
     visHold = 0;
   };
 

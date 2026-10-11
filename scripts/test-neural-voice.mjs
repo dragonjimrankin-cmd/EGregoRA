@@ -29,8 +29,40 @@ assert.notEqual(AVATAR_VOICE_PROFILES.shakdrah.neuralVoice, AVATAR_VOICE_PROFILE
   "The two characters must not share a neural voice");
 assert.notEqual(AVATAR_VOICE_PROFILES.shakdrah.nativeRate, AVATAR_VOICE_PROFILES.gink.nativeRate,
   "The two native performances must remain distinct");
+assert.notEqual(AVATAR_VOICE_PROFILES.shakdrah.pauseScale, AVATAR_VOICE_PROFILES.gink.pauseScale,
+  "The two characters must pace explicit dramatic pauses differently");
+assert.notDeepEqual(AVATAR_VOICE_PROFILES.shakdrah.audioTone, AVATAR_VOICE_PROFILES.gink.audioTone,
+  "The two characters must use distinct, restrained mastering profiles");
 assert.equal(NaturalVoiceEngine.isSupported(), false,
   "Importing the helper in Node must not try to create browser workers or audio contexts");
+
+const audioNodes = [];
+const audioNode = () => {
+  const node = {
+    type: "", frequency: { value: 0 }, gain: { value: 0 }, Q: { value: 0 },
+    threshold: { value: 0 }, knee: { value: 0 }, ratio: { value: 0 },
+    attack: { value: 0 }, release: { value: 0 },
+    connect(target) { this.target = target; return target; }
+  };
+  audioNodes.push(node);
+  return node;
+};
+const mastered = new NaturalVoiceEngine({ profile: "shakdrah" });
+mastered.audioContext = {
+  destination: { destination: true },
+  createBiquadFilter: audioNode,
+  createDynamicsCompressor: audioNode
+};
+mastered.prepareOutput();
+assert.equal(audioNodes.length, 3, "The neural voice must use two gentle tone stages and compression");
+assert.equal(audioNodes[0].type, "lowshelf");
+assert.equal(audioNodes[1].type, "peaking");
+assert.equal(mastered.outputNode, audioNodes[0]);
+const unmastered = new NaturalVoiceEngine({ profile: "gink" });
+unmastered.audioContext = { destination: { destination: true } };
+unmastered.prepareOutput();
+assert.equal(unmastered.outputNode, unmastered.audioContext.destination,
+  "Older Web Audio implementations must fall back directly to the destination");
 
 /* Cancellation is testable without loading a model: every active queue,
    source and timing callback must be invalidated atomically. */
@@ -70,14 +102,18 @@ assert.match(performed, /1 divided by 5 times infinity/);
 assert.match(performed, /T T I is not equal to E Greg or ah/);
 assert.match(performed, /Moebius seam/);
 assert.ok(!performed.includes("$"), "Display maths delimiters must not be spoken");
+const technical = normaliseSpeechText("CPT and QFT compare base-5 with 5D baryogenesis.", "gink");
+assert.match(technical, /C P T and Q F T compare base 5 with 5 D barry-oh-jen-uh-sis/);
 
 assert.deepEqual(buildPerformanceInput([
   { line: "First claim." }, { wait: 1000 }, { line: "$x^2$" }
 ], "gink"), [
   { type: "text", value: "First claim." },
-  { type: "break", value: 1000 },
+  { type: "break", value: 940 },
   { type: "text", value: "x to the power of 2" }
 ], "Grade pauses and mathematical speech must survive performance preparation");
+assert.deepEqual(buildPerformanceInput([{ wait: 1000 }], "shakdrah"),
+  [{ type: "break", value: 1120 }], "ShakDrah should hold deliberate pauses longer");
 
 const ranked = rankNativeVoices([
   { name: "Samantha", lang: "en-GB", localService: true },
@@ -130,8 +166,22 @@ for (const [source, key, voice, button] of [
   assert.match(source, /naturalVoice\.resume\(\)/, `${key} must resume neural playback`);
   assert.match(source, /rankNativeVoices/);
   assert.match(source, /normaliseSpeechText/);
+  assert.match(source, /const random = \(\(\) =>/, `${key} needs a stable procedural identity`);
+  assert.match(source, /bumpMap:/, `${key} needs material-scale surface relief`);
+  assert.match(source, /microGaze/, `${key} needs character-specific micro-saccades`);
+  assert.match(source, /roundNow[\s\S]*pressNow/, `${key} needs four-channel facial articulation`);
+  assert.match(source, /const nostrils =/, `${key} needs modeled, breathing nostril apertures`);
+  assert.match(source, /document\.hidden/, `${key} must stop rendering while its page is hidden`);
   assert.match(helper, new RegExp(`neuralVoice: "${voice}"`));
 }
+assert.match(dragon, /const throatScutes =/,
+  "ShakDrah needs overlapping reptilian throat armour rather than a fox bib alone");
+assert.match(dragon, /wings\.forEach[\s\S]*crest\.forEach/,
+  "ShakDrah's wings and crest must participate in the living rig");
+assert.match(dragon, /const target = listening \? 0\.55/,
+  "ShakDrah must retain a reptilian slit pupil");
+assert.match(fox, /const target = listening \? 0\.88/,
+  "Gink's fox pupil must dilate separately from ShakDrah's");
 for (const page of [shakPage, ginkPage]) {
   assert.match(page, /Natural voice: off/);
   assert.match(page, /100(?:&ndash;|–)350/);

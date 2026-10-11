@@ -30,7 +30,7 @@ import {
   NaturalVoiceEngine,
   normaliseSpeechText,
   rankNativeVoices
-} from "./neural-voice.js";
+} from "./neural-voice.js?v=model-voice-2";
 
 (() => {
   "use strict";
@@ -44,6 +44,17 @@ import {
   const btnNatural = document.getElementById("fox-natural");
   const setStatus = (s) => { if (statusEl) statusEl.textContent = s; };
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* Stable procedural detail gives Gink a recognisable coat and face on
+     every visit while retaining organic, non-repeating-looking motion. */
+  const random = (() => {
+    let state = 0x6a09e667;
+    return () => {
+      state |= 0; state = (state + 0x6d2b79f5) | 0;
+      let n = Math.imul(state ^ (state >>> 15), 1 | state);
+      n ^= n + Math.imul(n ^ (n >>> 7), 61 | n);
+      return ((n ^ (n >>> 14)) >>> 0) / 4294967296;
+    };
+  })();
 
   /* ----------------------------------------------------------- palette */
   const C = {
@@ -85,16 +96,16 @@ import {
     g.fillStyle = bg;
     g.fillRect(0, 0, w, h);
     for (let i = 0; i < strokes; i++) {
-      const x = Math.random() * w;
-      const y = Math.random() * h;
-      const len = 4 + Math.random() * 16;
-      const a = (-Math.PI / 2) + (Math.random() - 0.5) * 0.8;
-      const t = Math.random();
+      const x = random() * w;
+      const y = random() * h;
+      const len = 4 + random() * 16;
+      const a = (-Math.PI / 2) + (random() - 0.5) * 0.8;
+      const t = random();
       g.strokeStyle = alpha
         ? `rgba(255,255,255,${0.35 + t * 0.65})`
         : (t > 0.5 ? light : dark);
-      g.globalAlpha = alpha ? 1 : 0.14 + Math.random() * 0.3;
-      g.lineWidth = alpha ? 0.8 + Math.random() * 1.6 : 0.6 + Math.random() * 1.4;
+      g.globalAlpha = alpha ? 1 : 0.14 + random() * 0.3;
+      g.lineWidth = alpha ? 0.8 + random() * 1.6 : 0.6 + random() * 1.4;
       g.lineCap = "round";
       g.beginPath();
       g.moveTo(x, y);
@@ -122,9 +133,9 @@ import {
     g.fillStyle = "#b8b8b8";
     g.fillRect(0, 0, 256, 256);
     for (let i = 0; i < 2600; i++) {
-      const v = 120 + Math.floor(Math.random() * 110);
+      const v = 120 + Math.floor(random() * 110);
       g.fillStyle = `rgb(${v},${v},${v})`;
-      g.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 3, 1 + Math.random() * 6);
+      g.fillRect(random() * 256, random() * 256, 1 + random() * 3, 1 + random() * 6);
     }
     return c;
   })();
@@ -149,13 +160,13 @@ import {
 
     // stromal fibres
     for (let i = 0; i < 320; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const r0 = 16 + Math.random() * 26;
-      const r1 = 72 + Math.random() * 50;
-      g.strokeStyle = Math.random() > 0.5
+      const a = random() * Math.PI * 2;
+      const r0 = 16 + random() * 26;
+      const r1 = 72 + random() * 50;
+      g.strokeStyle = random() > 0.5
         ? "rgba(214,238,255,0.34)"
         : "rgba(9,26,54,0.38)";
-      g.lineWidth = 0.6 + Math.random() * 2.2;
+      g.lineWidth = 0.6 + random() * 2.2;
       g.beginPath();
       g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
       g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
@@ -190,6 +201,7 @@ import {
   const M = {
     fur: physical({
       color: 0xffffff, map: furMap, roughnessMap: roughMap,
+      bumpMap: furMap, bumpScale: 0.026,
       sheenColor: new THREE.Color(0xffc98a)
     }),
     furDeep: physical({
@@ -199,12 +211,14 @@ import {
     furShade: physical({ color: C.furShade, roughness: 0.96, sheen: 0.7 }),
     cream: physical({
       color: 0xffffff, map: creamMap, roughnessMap: roughMap,
+      bumpMap: creamMap, bumpScale: 0.018,
       sheenColor: new THREE.Color(0xfff3dd)
     }),
     creamDim: physical({ color: C.creamDim, roughness: 0.95, sheenColor: new THREE.Color(0xfff1d6) }),
     black: physical({ color: C.black, roughness: 0.62, sheen: 0.5 }),
     nose: new THREE.MeshPhysicalMaterial({
       color: 0x241614, roughness: 0.22, metalness: 0,
+      bumpMap: roughMap, bumpScale: 0.012,
       clearcoat: 1, clearcoatRoughness: 0.08
     }),
     tongue: new THREE.MeshPhysicalMaterial({
@@ -330,7 +344,9 @@ import {
     setStatus("Gink cannot be drawn here — this browser has no WebGL. The written answer stands on its own.");
     return;
   }
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  const constrainedGPU = window.matchMedia("(max-width: 680px)").matches ||
+    (Number(navigator.deviceMemory) > 0 && Number(navigator.deviceMemory) <= 4);
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, constrainedGPU ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.12;
@@ -373,7 +389,7 @@ import {
   const key = new THREE.DirectionalLight(0xffd9a4, 2.4);
   key.position.set(3.0, 4.2, 4.0);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(constrainedGPU ? 1024 : 2048, constrainedGPU ? 1024 : 2048);
   key.shadow.camera.near = 1; key.shadow.camera.far = 22;
   key.shadow.camera.left = -4.5; key.shadow.camera.right = 4.5;
   key.shadow.camera.top = 4.5; key.shadow.camera.bottom = -4.5;
@@ -570,6 +586,18 @@ import {
   nose.castShadow = true;
   head.add(nose);
 
+  /* Actual recessed nostrils hold up in profile better than dimples painted
+     only into the nose mesh. Their tiny breathing motion is deliberately
+     subtler than the chest movement. */
+  const nostrils = [-1, 1].map((side) => {
+    const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.046, 16, 10), M.mouth);
+    nostril.scale.set(1.0, 0.42, 0.24);
+    nostril.position.set(0.102 * side, -0.198, 2.105);
+    nostril.rotation.z = -0.18 * side;
+    head.add(nostril);
+    return nostril;
+  });
+
   /* ---------- the jaw (the part that lip-syncs) ----------------------- */
   const jaw = new THREE.Group();
   jaw.position.set(0, -0.42, 0.28);
@@ -665,7 +693,7 @@ import {
     // the pupil: black, dead centre, and on the surface so nothing can bury it
     const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000, toneMapped: false });
     const pupil = eyeCap(0.2035, 0.44, pupilMat);
-    pupil.scale.set(0.78, 1.0, 1);        // a broad vertical oval
+    pupil.scale.set(0.58, 1.0, 1);        // fox slit, able to dilate while listening
     pupil.renderOrder = 3;
     globe.add(pupil);
 
@@ -811,7 +839,7 @@ import {
 
     // pale inner-ear fuzz, a fringe of fine hairs along the leading edge
     for (let i = 0; i < 12; i++) {
-      const fz = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.22 + Math.random() * 0.12, 4), M.cream);
+      const fz = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.22 + random() * 0.12, 4), M.cream);
       const u = i / 11;
       fz.position.set((-0.2 + u * 0.4) * 1, 0.2 + Math.sin(u * Math.PI) * 0.42, 0.19);
       fz.rotation.z = (u - 0.5) * 1.1;
@@ -900,6 +928,8 @@ import {
   let listening = false;
   let jawNow = 0, jawTarget = 0;
   let wideNow = 0, wideTarget = 0;
+  let roundNow = 0, roundTarget = 0;
+  let pressNow = 0, pressTarget = 0;
 
   /* ---- visemes -------------------------------------------------------
      The jaw is driven by the letters actually being spoken rather than by
@@ -907,21 +937,22 @@ import {
      how wide the muzzle spreads. Crude next to a real phoneme aligner, but
      English orthography is regular enough that an open A reads as an open
      mouth and an M reads as a closed one, which is all the eye checks. */
+  /* jaw, lateral spread, muzzle rounding, bilabial pressure */
   const SHAPES = {
-    a: [0.95, 0.55], A: [0.95, 0.55],
-    o: [0.80, 0.10], u: [0.55, 0.05], w: [0.40, 0.00],
-    e: [0.55, 0.85], i: [0.38, 0.90], y: [0.38, 0.80],
-    m: [0.02, 0.35], b: [0.05, 0.35], p: [0.05, 0.35],
-    f: [0.16, 0.65], v: [0.16, 0.65],
-    s: [0.14, 0.80], z: [0.14, 0.80], c: [0.18, 0.75], x: [0.20, 0.70],
-    t: [0.22, 0.60], d: [0.24, 0.55], n: [0.20, 0.55], l: [0.30, 0.60],
-    r: [0.34, 0.35], g: [0.30, 0.40], k: [0.30, 0.45], q: [0.35, 0.15],
-    h: [0.30, 0.45], j: [0.28, 0.65]
+    a: [0.95, 0.55, 0.08, 0], A: [0.95, 0.55, 0.08, 0],
+    o: [0.80, 0.10, 1.0, 0], u: [0.55, 0.05, 0.88, 0], w: [0.40, 0.00, 0.78, 0],
+    e: [0.55, 0.85, 0.05, 0], i: [0.38, 0.90, 0, 0], y: [0.38, 0.80, 0.08, 0],
+    m: [0.02, 0.35, 0, 1], b: [0.05, 0.35, 0, 0.92], p: [0.05, 0.35, 0, 1],
+    f: [0.16, 0.65, 0, 0.3], v: [0.16, 0.65, 0, 0.26],
+    s: [0.14, 0.80, 0, 0], z: [0.14, 0.80, 0, 0], c: [0.18, 0.75, 0, 0], x: [0.20, 0.70, 0, 0],
+    t: [0.22, 0.60, 0, 0], d: [0.24, 0.55, 0, 0], n: [0.20, 0.55, 0, 0], l: [0.30, 0.60, 0, 0],
+    r: [0.34, 0.35, 0.24, 0], g: [0.30, 0.40, 0, 0], k: [0.30, 0.45, 0, 0], q: [0.35, 0.15, 0.66, 0],
+    h: [0.30, 0.45, 0, 0], j: [0.28, 0.65, 0, 0]
   };
   const VOWELS = "aeiouy";
-  let visQueue = [];          // [{ jaw, wide, dur }]
+  let visQueue = [];          // [{ jaw, wide, round, press, dur }]
   let visHold = 0;            // time left on the current shape
-  let visJaw = 0, visWide = 0;
+  let visJaw = 0, visWide = 0, visRound = 0, visPress = 0;
 
   /* Turn a word into a short run of mouth shapes and spread them over the
      time the synthesiser will plausibly take to say it. Consonant clusters
@@ -943,7 +974,10 @@ import {
         prev.weight += 0.6;                                 // collapse a cluster
         continue;
       }
-      shapes.push({ jaw: sh[0], wide: sh[1], v: isVowel, weight: isVowel ? 1.5 : 0.8 });
+      shapes.push({
+        jaw: sh[0], wide: sh[1], round: sh[2] || 0, press: sh[3] || 0,
+        v: isVowel, weight: isVowel ? 1.5 : 0.8
+      });
     }
     if (!shapes.length) shapes.push({ jaw: 0.4, wide: 0.5, weight: 1 });
     const total = shapes.reduce((n, sh) => n + sh.weight, 0);
@@ -951,21 +985,24 @@ import {
     visQueue = shapes.map((sh) => ({
       jaw: sh.jaw,
       wide: sh.wide,
+      round: sh.round || 0,
+      press: sh.press || 0,
       dur: Math.max(0.035, (sh.weight / total) * span)
     }));
     // every word ends by closing a little, which is what separates words
-    visQueue.push({ jaw: 0.06, wide: 0.3, dur: 0.045 });
+    visQueue.push({ jaw: 0.06, wide: 0.3, round: 0, press: 0, dur: 0.045 });
     visHold = 0;
   };
   let emphasis = 0;
-  let blinkTimer = 1.5 + Math.random() * 3, blink = 0, blinkSkew = 0;
+  let blinkTimer = 1.5 + random() * 3, blink = 0, blinkSkew = 0;
   let earPerk = 0;
   const earFlick = [
-    { wait: 0.6 + Math.random() * 1.9, on: 0 },
-    { wait: 0.6 + Math.random() * 1.9, on: 0 }
+    { wait: 0.6 + random() * 1.9, on: 0 },
+    { wait: 0.6 + random() * 1.9, on: 0 }
   ];
   let headTilt = 0;
   const pointer = { x: 0, y: 0, active: false };
+  const microGaze = { x: 0, y: 0, tx: 0, ty: 0, wait: 0.7 };
 
   mount.addEventListener("pointermove", (e) => {
     const r = mount.getBoundingClientRect();
@@ -984,12 +1021,17 @@ import {
     requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
     const dt = Math.min(t - last, 0.05); last = t;
+    if (document.hidden) return;
 
     if (!reduceMotion) {
       // breathing: faster and shallower while he talks, as it would be
       const rate = speaking ? 1.7 : 1.05;
       const breath = Math.sin(t * rate);
       chest.scale.set(1 + breath * 0.02, 1 + breath * 0.013, 1 + breath * 0.024);
+      nostrils.forEach((nostril, i) => {
+        nostril.scale.y = 0.42 + (breath + 1) * 0.018 + (speaking ? 0.015 : 0);
+        nostril.rotation.z = (i ? -1 : 1) * 0.18;
+      });
       fox.position.y = FOX_Y + Math.sin(t * 0.95) * 0.035;
       neck.rotation.z = Math.sin(t * 0.47) * 0.03;
 
@@ -1010,7 +1052,7 @@ import {
          65% less often: the same flick, at a little under a third of the rate. */
       earFlick.forEach((e, i) => {
         e.wait -= dt;
-        if (e.wait <= 0) { e.on = 0.2; e.wait = 1.1 + Math.random() * 1.9; }
+        if (e.wait <= 0) { e.on = 0.2; e.wait = 1.1 + random() * 1.9; }
         if (e.on > 0) e.on = Math.max(0, e.on - dt);
       });
       ears.forEach((ear, i) => {
@@ -1026,9 +1068,17 @@ import {
     // a quizzical head tilt while he is being asked something
     headTilt += ((listening ? 0.16 : 0) - headTilt) * 0.04;
 
-    // gaze: head, neck and eyes move on different lags, as real heads do
-    const tx = pointer.active ? pointer.x * 0.3 : Math.sin(t * 0.31) * 0.07;
-    const ty = pointer.active ? pointer.y * 0.2 : Math.cos(t * 0.24) * 0.045;
+    // gaze: quick fox micro-saccades ride over the slower head tracking
+    microGaze.wait -= dt;
+    if (microGaze.wait <= 0) {
+      microGaze.tx = (random() - 0.5) * 0.055;
+      microGaze.ty = (random() - 0.5) * 0.035;
+      microGaze.wait = 0.75 + random() * 1.65;
+    }
+    microGaze.x += (microGaze.tx - microGaze.x) * (1 - Math.exp(-dt * 18));
+    microGaze.y += (microGaze.ty - microGaze.y) * (1 - Math.exp(-dt * 18));
+    const tx = (pointer.active ? pointer.x * 0.3 : Math.sin(t * 0.31) * 0.07) + microGaze.x;
+    const ty = (pointer.active ? pointer.y * 0.2 : Math.cos(t * 0.24) * 0.045) + microGaze.y;
     head.rotation.y += (tx - head.rotation.y) * 0.055;
     head.rotation.x += (ty * 0.55 - head.rotation.x) * 0.055;
     head.rotation.z += (headTilt - head.rotation.z) * 0.06;
@@ -1038,16 +1088,17 @@ import {
          turns the gaze stays on the viewer — the trick portrait painters use. */
       e.globe.rotation.y = e.restY - head.rotation.y * 0.55 - tx * 0.18;
       e.globe.rotation.x = -head.rotation.x * 0.45 + ty * 0.14;
-      // the pupil widens when he is listening and in the lower light
-      const target = listening ? 0.95 : 0.78;
+      // fox pupils move from a daylight slit to a rounder attentive aperture
+      const target = listening ? 0.88 : (speaking ? 0.7 : 0.58);
       e.pupil.scale.x += (target - e.pupil.scale.x) * 0.05;
+      e.pupil.scale.y += ((speaking ? 1.04 : 1) - e.pupil.scale.y) * 0.04;
     });
 
     // blinking — fast close, slower open, the two lids very slightly offset
     blinkTimer -= dt;
     if (blinkTimer <= 0) {
-      blink = 1; blinkSkew = (Math.random() - 0.5) * 0.12;
-      blinkTimer = 2.2 + Math.random() * 5;
+      blink = 1; blinkSkew = (random() - 0.5) * 0.12;
+      blinkTimer = 2.2 + random() * 5;
     }
     if (blink > 0) blink = Math.max(0, blink - dt * 6.5);
     const closed = Math.sin(blink * Math.PI);
@@ -1074,6 +1125,7 @@ import {
       while (visHold <= 0 && visQueue.length) {
         const nextShape = visQueue.shift();
         visJaw = nextShape.jaw; visWide = nextShape.wide;
+        visRound = nextShape.round || 0; visPress = nextShape.press || 0;
         visHold += nextShape.dur;
       }
       if (!visQueue.length && visHold <= 0) {
@@ -1081,24 +1133,40 @@ import {
            keeps a low murmur going rather than freezing mid-word. */
         visJaw = 0.26 + 0.22 * Math.abs(Math.sin(t * 5.4));
         visWide = 0.45 + 0.15 * Math.sin(t * 3.1);
+        visRound = 0.12 + 0.1 * Math.abs(Math.sin(t * 2.6));
+        visPress = 0;
       }
       emphasis = Math.max(0, emphasis - dt * 3.2);
       jawTarget = 0.035 + 0.42 * visJaw + emphasis * 0.05;
       wideTarget = visWide;
-      tongue.position.y = -0.02 - jawNow * 0.08;
+      roundTarget = visRound;
+      pressTarget = visPress;
+      tongue.position.y = -0.02 - jawNow * 0.08 + roundNow * 0.018;
     } else {
       emphasis = 0;
-      visQueue.length = 0; visHold = 0; visJaw = 0; visWide = 0;
+      visQueue.length = 0; visHold = 0; visJaw = 0; visWide = 0; visRound = 0; visPress = 0;
       jawTarget = 0.012 + Math.sin(t * 0.9) * 0.008;
-      wideTarget = 0;
+      wideTarget = 0; roundTarget = 0; pressTarget = 0;
     }
     const opening = jawTarget > jawNow;
     const kJaw = 1 - Math.exp(-dt * (opening ? 34 : 19));
     jawNow += (jawTarget - jawNow) * kJaw;
     wideNow += (wideTarget - wideNow) * (1 - Math.exp(-dt * 22));
-    jaw.rotation.x = jawNow;
-    snout.scale.x = 1 + jawNow * 0.06 + wideNow * 0.05;
+    roundNow += (roundTarget - roundNow) * (1 - Math.exp(-dt * 20));
+    pressNow += (pressTarget - pressNow) * (1 - Math.exp(-dt * 28));
+    jaw.rotation.x = jawNow * (1 - pressNow * 0.32);
+    jaw.position.y = -0.42 - jawNow * 0.052 + pressNow * 0.012;
+    jaw.position.z = 0.28 + roundNow * 0.032;
+    /* Four-channel articulation: spread is not the same gesture as rounding,
+       and M/B/P now compress the muzzle instead of merely closing the jaw. */
+    snout.scale.x = 1 + jawNow * 0.045 + wideNow * 0.07 - roundNow * 0.032;
+    snout.scale.y = 1 + roundNow * 0.105 - pressNow * 0.05;
+    snout.scale.z = 1 + roundNow * 0.12;
+    nose.position.y = -0.2 + roundNow * 0.012 - pressNow * 0.01;
+    nose.position.z = 1.98 + roundNow * 0.027;
+    cavity.scale.x = 1 + wideNow * 0.07 - roundNow * 0.14;
     cavity.scale.y = 1 + jawNow * 1.9;
+    tongue.scale.x = 1 + wideNow * 0.08 - roundNow * 0.12;
 
     renderer.render(scene, camera);
   };
@@ -1246,14 +1314,17 @@ import {
      character-specific jaw/width targets replace spelling-based guesses
      whenever the natural voice is active. */
   const NEURAL_SHAPES = {
-    sil: [0.02, 0.25], PP: [0.03, 0.32], FF: [0.14, 0.64], TH: [0.18, 0.58],
-    DD: [0.23, 0.58], kk: [0.31, 0.42], CH: [0.28, 0.68], SS: [0.14, 0.8],
-    nn: [0.2, 0.55], RR: [0.34, 0.35], aa: [0.94, 0.53], E: [0.56, 0.84],
-    I: [0.38, 0.9], O: [0.8, 0.12], U: [0.54, 0.06]
+    sil: [0.02, 0.25, 0, 0], PP: [0.03, 0.32, 0, 1], FF: [0.14, 0.64, 0, 0.3], TH: [0.18, 0.58, 0, 0],
+    DD: [0.23, 0.58, 0, 0], kk: [0.31, 0.42, 0, 0], CH: [0.28, 0.68, 0, 0], SS: [0.14, 0.8, 0, 0],
+    nn: [0.2, 0.55, 0, 0], RR: [0.34, 0.35, 0.24, 0], aa: [0.94, 0.53, 0.08, 0], E: [0.56, 0.84, 0.04, 0],
+    I: [0.38, 0.9, 0, 0], O: [0.8, 0.12, 1, 0], U: [0.54, 0.06, 0.88, 0]
   };
   const mouthViseme = ({ viseme, duration }) => {
     const shape = NEURAL_SHAPES[viseme] || NEURAL_SHAPES.sil;
-    visQueue = [{ jaw: shape[0], wide: shape[1], dur: Math.max(0.035, duration || 0.08) }];
+    visQueue = [{
+      jaw: shape[0], wide: shape[1], round: shape[2], press: shape[3],
+      dur: Math.max(0.035, duration || 0.08)
+    }];
     visHold = 0;
   };
 

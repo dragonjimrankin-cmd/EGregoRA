@@ -51,6 +51,9 @@ jobs:
           grep -q 'Natural voice: off' egregora-patch/public/ask-ed/index.html
           grep -q 'Answer text stays on this device' egregora-patch/public/ask-ed/index.html
           grep -q 'bm_fable' egregora-patch/public/assets/js/neural-voice.js
+          grep -q 'prepareOutput' egregora-patch/public/assets/js/neural-voice.js
+          grep -q 'microGaze' egregora-patch/public/assets/js/fox.js
+          grep -q 'roundNow' egregora-patch/public/assets/js/fox.js
           node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
 
       - name: Deploy to the existing EGregoRA project
@@ -97,7 +100,7 @@ jobs:
               url: 'https://egregora.hatchable.site/ask-ed/',
               markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
                 'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js',
-                'Natural voice: off', 'Answer text stays on this device', 'fox.js?v=natural-voice-1']
+                'Natural voice: off', 'Answer text stays on this device', 'fox.js?v=model-voice-2']
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/oracle-knowledge.js',
@@ -106,8 +109,8 @@ jobs:
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/neural-voice.js',
-              markers: ['NaturalVoiceEngine', 'bm_george', 'bm_fable',
-                'headtts/headtts.mjs', 'generated privately on this device']
+              markers: ['NaturalVoiceEngine', 'bm_george', 'bm_fable', 'prepareOutput',
+                'audioTone', 'headtts/headtts.mjs', 'generated privately on this device']
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/headtts/worker-tts.mjs',
@@ -115,7 +118,8 @@ jobs:
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/fox.js',
-              markers: ['eg-gink-natural-voice', 'naturalVoice.speak', 'rankNativeVoices']
+              markers: ['eg-gink-natural-voice', 'naturalVoice.speak', 'rankNativeVoices',
+                'microGaze', 'roundNow', 'const nostrils']
             }
           ];
           let detail = 'Gink did not become current';

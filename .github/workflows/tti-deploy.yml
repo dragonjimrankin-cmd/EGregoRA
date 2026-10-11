@@ -61,6 +61,9 @@ jobs:
           grep -q 'Natural voice: off' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Answer text stays on this device' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'bm_george' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'prepareOutput' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'const throatScutes' tti/hatchable/public/assets/js/dragon.js
+          grep -q 'roundNow' tti/hatchable/public/assets/js/dragon.js
           grep -q 'Kokoro-82M-v1.0-ONNX-timestamped' tti/hatchable/public/assets/js/headtts/headtts.mjs
           grep -q 'const avatarName' tti/hatchable/public/assets/js/site.js
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
@@ -147,8 +150,13 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/neural-voice.js',
-              markers: ['NaturalVoiceEngine', 'bm_george', 'bm_fable',
-                'headtts/headtts.mjs', 'generated privately on this device']
+              markers: ['NaturalVoiceEngine', 'bm_george', 'bm_fable', 'prepareOutput',
+                'audioTone', 'headtts/headtts.mjs', 'generated privately on this device']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/assets/js/dragon.js',
+              markers: ['const throatScutes', 'microGaze', 'roundNow',
+                'wings.forEach', 'const nostrils']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/headtts/worker-tts.mjs',

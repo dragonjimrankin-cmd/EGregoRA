@@ -29,8 +29,8 @@ Kokoro does not accept free-form acting prompts or SSML. Pretending otherwise wo
 
 | Character | Kokoro voice | Speed | Direction |
 | --- | --- | ---: | --- |
-| ShakDrah | `bm_george` | 0.88 | older, slower British keeper; longer room around claims |
-| Gink | `bm_fable` | 1.02 | quicker, lighter British familiar |
+| ShakDrah | `bm_george` | 0.91 | older British keeper; longer explicit pauses and gently weighted low register |
+| Gink | `bm_fable` | 1.00 | lighter British familiar; shorter explicit pauses and restrained presence lift |
 
 The spoken-only preparation layer:
 
@@ -42,6 +42,12 @@ The spoken-only preparation layer:
 - leaves the written answer entirely unchanged.
 
 The native fallback independently ranks installed voices, preferring British voices marked natural, neural, premium, enhanced or studio; then known masculine names; and rejecting novelty voices. Its rate and pitch are character-specific rather than shared.
+
+Each neural performance now passes through a deliberately mild local Web Audio chain: low-shelf and presence shaping specific to the character, followed by gentle compression to reduce sentence-to-sentence level jumps. This is mastering rather than a synthetic effect. Explicit dramatic pauses are also character-scaled. The visual rigs consume four articulation channels—jaw opening, lateral spread, rounding and bilabial pressure—so an O/U or M/B/P no longer looks like a generic jaw flap.
+
+## Visual model refinements
+
+Both procedural Three.js sculpts use stable seeded surface detail, bump-mapped materials, modeled nostril apertures with breathing motion, micro-saccades and four-channel articulation. Gink retains layered shell fur and now has fox-specific pupil dilation and muzzle compression. ShakDrah no longer wears the copied fox fur treatment over his hide: his scale relief stays crisp, his tail is scaled rather than cream-tipped, his pupil is a narrow reptilian slit, and his throat scutes, frills, wings and crest participate in the living rig. Desktop rendering keeps full shadows and up to a 2× pixel ratio; constrained mobile GPUs use a lighter budget, and hidden pages do not keep rendering.
 
 ## Privacy, failure and controls
 
