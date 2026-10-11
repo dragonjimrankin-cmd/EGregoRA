@@ -906,10 +906,76 @@ function setup(root) {
     };
   }
 
-  /* The browser's ear: the enhanced episode plays out loud and the
-     microphone writes what it hears, stamped with the playhead. A pause
-     longer than two and a half seconds is read as a change of voice; the
-     names are guesses, kept plainly in the transcript so they can be fixed. */
+  /* The browser's own ear, properly: a small whisper model runs in the page
+     (fetched from a CDN the first time), reads the enhanced audio straight
+     from memory — no playing out loud, no real-time wait — and returns the
+     words with their timestamps. A pause longer than two and a half seconds
+     between segments is read as a change of voice; the names are guesses the
+     transcript keeps plainly so they can be fixed. */
+  let whisperPipe = null;
+  function whisper() {
+    if (!whisperPipe) {
+      whisperPipe = import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2")
+        .then(function (m) {
+          return m.pipeline("automatic-speech-recognition", "Xenova/whisper-tiny.en", {
+            quantized: true,
+            progress_callback: function (p) {
+              if (p && p.status === "progress" && p.progress != null)
+                step("Loading the ear \u2014 " + Math.round(p.progress) + "%", 0.05);
+            }
+          });
+        })
+        .catch(function (e) { whisperPipe = null; throw e; });
+    }
+    return whisperPipe;
+  }
+
+  function resample16k(buf) {
+    const frames = Math.max(1, Math.floor(buf.duration * 16000));
+    const off = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, frames, 16000);
+    const src = off.createBufferSource();
+    src.buffer = buf;
+    src.connect(off.destination);
+    src.start(0);
+    return off.startRendering().then(function (done) { return done.getChannelData(0); });
+  }
+
+  function listenWhisper(buf, typer) {
+    return whisper().then(function (pipe) {
+      step("Listening \u2014 the ear reads the file itself\u2026", 0.15);
+      return resample16k(buf).then(function (audio) {
+        return pipe(audio, {
+          return_timestamps: true,
+          chunk_length_s: 30,
+          stride_length_s: 5
+        });
+      }).then(function (res) {
+        let out = "", speaker = 1, lastEnd = 0;
+        const chunks = (res && res.chunks) || [];
+        if (chunks.length) {
+          chunks.forEach(function (c) {
+            const start = (c.timestamp && c.timestamp[0]) || 0;
+            const end = (c.timestamp && c.timestamp[1]) || start + 2;
+            if (start - lastEnd > 2.5) speaker = speaker === 1 ? 2 : 1;
+            lastEnd = end;
+            const line = "[" + clock(start) + "] Speaker " + speaker + " \u2014 " +
+              String(c.text || "").trim() + "\n";
+            out += line;
+            typer.add(line);
+          });
+        } else if (res && res.text) {
+          out = "[0:00] Speaker 1 \u2014 " + res.text.trim() + "\n";
+          typer.add(out);
+        }
+        typer.ghost("");
+        return out;
+      });
+    });
+  }
+
+  /* The browser's microphone ear, the last resort: the episode plays out
+     loud and the microphone writes what it hears, stamped with the
+     playhead. */
   function listenLive(blob, typer) {
     return new Promise((go, no) => {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1058,17 +1124,42 @@ function setup(root) {
     hearBtn.disabled = true;
     const typer = makeTyper(earShow());
     try {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SR) {
-        earBy = "the browser's ear, listening out loud";
-        say("Listening \u2014 the episode plays out loud and the ear writes it below.");
-        lastTranscript = await listenLive(blob, typer);
-      } else if (fileBuf) {
-        earBy = "the server's ear";
-        say("This browser has no ear of its own \u2014 the server is listening instead.");
-        lastTranscript = await listenServer(fileBuf, fileBuf.duration, typer);
-      } else {
-        throw new Error("this browser has no ear, and the file would not decode for the server's");
+      /* The in-page ear first: it reads the file itself, with timestamps,
+         in a few passes rather than in real time. */
+      let buf = fileBuf;
+      if (!buf) {
+        try {
+          const c0 = new (window.AudioContext || window.webkitAudioContext)();
+          buf = await c0.decodeAudioData(await blob.arrayBuffer());
+          c0.close();
+        } catch { buf = null; }
+      }
+      if (buf) {
+        try {
+          earBy = "the browser's own whisper ear";
+          say("Listening \u2014 the ear reads the file itself and types what it finds.");
+          lastTranscript = await listenWhisper(buf, typer);
+        } catch (e) {
+          say("The in-page ear could not load (" + ((e && e.message) || "no road to it") +
+            ") \u2014 trying the other ears.");
+        }
+      }
+      if (!lastTranscript && buf) {
+        try {
+          earBy = "the server's ear";
+          say("The server is listening instead, stretch by stamped stretch.");
+          lastTranscript = await listenServer(buf, buf.duration, typer);
+        } catch { /* fall through to the microphone */ }
+      }
+      if (!lastTranscript) {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SR) {
+          earBy = "the browser's ear, listening out loud";
+          say("Listening out loud \u2014 the episode plays and the microphone writes it below.");
+          lastTranscript = await listenLive(blob, typer);
+        } else {
+          throw new Error("this browser has no ear, and none of the other ears could be reached");
+        }
       }
       if (sumBtn) sumBtn.disabled = lastTranscript.trim().length < 40;
       if (lastTranscript.trim().length >= 40) await describeListing(lastTranscript, false);
