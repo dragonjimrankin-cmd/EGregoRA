@@ -33,6 +33,10 @@
  *   { action: 'one', pass, id }                    one item, freshly signed
  *   { action: 'pin'|'unpin', pass, id }            hold it at the top of the
  *                                                  page — three at most
+ *   { action: 'voiceprints', pass }                 encrypted consenting templates
+ *   { action: 'enrol-voiceprint', pass, … }         store a browser-sealed template
+ *   { action: 'delete-voiceprint', pass, name }     revoke and erase a template
+ *   { action: 'voiceprint-labels', pass, id, … }    apply local biometric matches
  */
 import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
@@ -46,6 +50,22 @@ const MAX_CHUNK = 1.4 * 1024 * 1024;      /* base64, per request */
 const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
+const CONSENTING_VOICES = new Set(['Edward Gregory', 'Jim Rankin']);
+const B64 = /^[A-Za-z0-9+/]+={0,2}$/;
+
+function consentingVoice(value) {
+  const name = clean(value, 80);
+  return CONSENTING_VOICES.has(name) ? name : '';
+}
+
+function sealedPart(value, max) {
+  const part = clean(value, max);
+  return part && B64.test(part) ? part : '';
+}
+
+function sealedBytes(value) {
+  try { return Buffer.from(value, 'base64').length; } catch { return 0; }
+}
 
 function cleanDate(value) {
   const raw = clean(value, 10);
@@ -870,6 +890,172 @@ export default async function (req, res) {
           transcript: displayTranscript(rows[0].transcript || '', profile.speakers),
           speakers: profile.speakers.map((s) => ({ number: Number(s.speaker_no), name: s.name })),
           speaker_patterns_stored: profile.stored
+        });
+      }
+
+      /* Browser-encrypted biometric templates for the two speakers who have
+         explicitly consented. The API cannot decrypt them and never receives
+         raw audio or a plaintext embedding. They are for podcast labels only;
+         adminDoor remains the sole authentication mechanism. */
+      case 'voiceprints': {
+        const { rows } = await db.query(
+          `SELECT name, ciphertext, salt, iv, kdf, kdf_iterations, cipher,
+                  feature_version, sample_seconds, sample_frames,
+                  source_media_id, consented_at, consented_by, updated_at
+             FROM speaker_voiceprints ORDER BY name`);
+        return res.json({
+          ok: true,
+          purpose: 'podcast speaker labelling only; never authentication',
+          voiceprints: (rows || []).map((row) => ({
+            name: row.name,
+            ciphertext: row.ciphertext,
+            salt: row.salt,
+            iv: row.iv,
+            kdf: row.kdf,
+            iterations: Number(row.kdf_iterations),
+            cipher: row.cipher,
+            feature_version: row.feature_version,
+            sample_seconds: Number(row.sample_seconds) || 0,
+            sample_frames: Number(row.sample_frames) || 0,
+            source_media_id: Number(row.source_media_id) || null,
+            consented_at: row.consented_at,
+            consented_by: row.consented_by,
+            updated_at: row.updated_at
+          }))
+        });
+      }
+
+      case 'enrol-voiceprint': {
+        const name = consentingVoice(body.name);
+        if (!name) return res.status(400).json({ error: 'Only the two consenting podcast speakers may be enrolled.' });
+        if (body.consent !== true) {
+          return res.status(400).json({ error: 'Explicit speaker consent must be confirmed for this enrollment.' });
+        }
+        const ciphertext = sealedPart(body.ciphertext, 20000);
+        const salt = sealedPart(body.salt, 128);
+        const iv = sealedPart(body.iv, 128);
+        const kdf = clean(body.kdf, 40);
+        const cipher = clean(body.cipher, 40);
+        const version = clean(body.feature_version, 60);
+        const iterations = Number(body.iterations);
+        const seconds = Number(body.sample_seconds);
+        const frames = Number(body.sample_frames);
+        if (!ciphertext || sealedBytes(ciphertext) < 32 || !salt || sealedBytes(salt) !== 16 ||
+            !iv || sealedBytes(iv) !== 12 || kdf !== 'PBKDF2-SHA-256' ||
+            cipher !== 'AES-256-GCM' || version !== 'eg-vp-mfsc-1' ||
+            iterations !== 210000 || !Number.isFinite(seconds) || seconds <= 0 || seconds > 180 ||
+            !Number.isInteger(frames) || frames < 80 || frames > 10000) {
+          return res.status(400).json({ error: 'The encrypted voiceprint envelope is not valid.' });
+        }
+        const sourceId = Number(body.source_media_id) || null;
+        if (sourceId) {
+          const { rows: source } = await db.query(
+            `SELECT 1 FROM media_speakers
+              WHERE media_id = $1 AND name = $2 LIMIT 1`, [sourceId, name]);
+          if (!source || !source.length) {
+            return res.status(409).json({ error: 'That recording is not mapped to the consenting speaker.' });
+          }
+        }
+        await db.query(
+          `INSERT INTO speaker_voiceprints
+             (name, ciphertext, salt, iv, kdf, kdf_iterations, cipher,
+              feature_version, sample_seconds, sample_frames, source_media_id,
+              consented_at, consented_by, updated_at)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW(),$12,NOW())
+           ON CONFLICT (name) DO UPDATE SET
+             ciphertext = EXCLUDED.ciphertext, salt = EXCLUDED.salt,
+             iv = EXCLUDED.iv, kdf = EXCLUDED.kdf,
+             kdf_iterations = EXCLUDED.kdf_iterations, cipher = EXCLUDED.cipher,
+             feature_version = EXCLUDED.feature_version,
+             sample_seconds = EXCLUDED.sample_seconds,
+             sample_frames = EXCLUDED.sample_frames,
+             source_media_id = EXCLUDED.source_media_id,
+             consented_at = NOW(), consented_by = EXCLUDED.consented_by,
+             updated_at = NOW()`,
+          [name, ciphertext, salt, iv, kdf, iterations, cipher, version,
+            Math.round(seconds * 100) / 100, frames, sourceId,
+            clean(door.who, 120) || 'admin']);
+        await db.query(
+          `INSERT INTO voiceprint_audit (name, action, media_id, who, detail)
+           VALUES ($1,'enrolled',$2,$3,$4)`,
+          [name, sourceId, clean(door.who, 120) || 'admin',
+            JSON.stringify({ feature_version: version,
+              sample_seconds: Math.round(seconds * 100) / 100 })]);
+        return res.json({ ok: true, name, enrolled: true,
+          purpose: 'podcast speaker labelling only' });
+      }
+
+      case 'delete-voiceprint': {
+        const name = consentingVoice(body.name);
+        if (!name) return res.status(400).json({ error: 'Which consenting voiceprint?' });
+        const { rows } = await db.query(
+          'DELETE FROM speaker_voiceprints WHERE name = $1 RETURNING source_media_id', [name]);
+        await db.query(
+          `INSERT INTO voiceprint_audit (name, action, media_id, who, detail)
+           VALUES ($1,'deleted',$2,$3,$4)`,
+          [name, rows && rows[0] && rows[0].source_media_id || null,
+            clean(door.who, 120) || 'admin',
+            JSON.stringify({ ciphertext_erased: !!(rows && rows.length) })]);
+        return res.json({ ok: true, name, deleted: !!(rows && rows.length) });
+      }
+
+      case 'voiceprint-labels': {
+        const id = Number(body.id);
+        const labels = Array.isArray(body.labels) ? body.labels.slice(0, 2) : [];
+        const margin = Number(body.assignment_margin);
+        if (!id || labels.length !== 2 || !Number.isFinite(margin) || margin < 0.03 ||
+            clean(body.feature_version, 60) !== 'eg-vp-mfsc-1') {
+          return res.status(400).json({ error: 'Two confident local biometric matches are required.' });
+        }
+        const numbers = new Set();
+        const names = new Set();
+        for (const label of labels) {
+          const no = Number(label && label.number);
+          const name = consentingVoice(label && label.name);
+          const score = Number(label && label.score);
+          if (!Number.isInteger(no) || no < 1 || no > 19 || !name ||
+              !Number.isFinite(score) || score < 0.7 || score > 1) {
+            return res.status(400).json({ error: 'A biometric match was missing or below the labelling threshold.' });
+          }
+          numbers.add(no); names.add(name);
+        }
+        if (numbers.size !== 2 || names.size !== 2) {
+          return res.status(400).json({ error: 'Each consenting speaker must map to one distinct transcript voice.' });
+        }
+        const { rows: enrolled } = await db.query(
+          'SELECT name FROM speaker_voiceprints WHERE name IN ($1,$2)',
+          ['Edward Gregory', 'Jim Rankin']);
+        if (!enrolled || new Set(enrolled.map((row) => row.name)).size !== 2) {
+          return res.status(409).json({ error: 'Both consenting voiceprints must be enrolled first.' });
+        }
+        const { rows: mediaRows } = await db.query(
+          'SELECT transcript FROM media WHERE id = $1', [id]);
+        if (!mediaRows || !mediaRows[0] || !String(mediaRows[0].transcript || '').trim()) {
+          return res.status(404).json({ error: 'That recording has no transcript turns to label.' });
+        }
+        for (const label of labels) {
+          await db.query(
+            `INSERT INTO media_speakers (media_id, speaker_no, name, profiled_chars, updated_at)
+             VALUES ($1,$2,$3,NULL,NOW())
+             ON CONFLICT (media_id, speaker_no) DO UPDATE SET
+               name = EXCLUDED.name, profiled_chars = NULL, updated_at = NOW()`,
+            [id, Number(label.number), consentingVoice(label.name)]);
+          await db.query(
+            `INSERT INTO voiceprint_audit (name, action, media_id, who, detail)
+             VALUES ($1,'label-applied',$2,$3,$4)`,
+            [consentingVoice(label.name), id, clean(door.who, 120) || 'admin',
+              JSON.stringify({ speaker_no: Number(label.number),
+                feature_version: 'eg-vp-mfsc-1' })]);
+        }
+        const profile = await ensureSpeakerPatterns(id, mediaRows[0].transcript);
+        return res.json({
+          ok: true,
+          speakers: profile.speakers.map((speaker) => ({
+            number: Number(speaker.speaker_no), name: speaker.name
+          })),
+          transcript: displayTranscript(mediaRows[0].transcript, profile.speakers),
+          speaker_patterns_stored: profile.stored,
+          purpose: 'podcast speaker labelling only'
         });
       }
 

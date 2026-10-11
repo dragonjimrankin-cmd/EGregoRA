@@ -9,6 +9,7 @@ on:
       - "egregora-patch/**"
       - "ops/egregora-project.txt"
       - "scripts/hatchable-deploy.mjs"
+      - "scripts/test-voiceprint.mjs"
       - ".github/workflows/egregora-patch-deploy.yml"
 
 permissions:
@@ -33,7 +34,9 @@ jobs:
           node --check egregora-patch/api/edit.js
           node --check egregora-patch/pages/feed.js
           node --check egregora-patch/public/assets/js/media-admin.js
+          node --check egregora-patch/public/assets/js/voiceprint.js
           node --check egregora-patch/public/assets/js/admin-edit.js
+          node scripts/test-voiceprint.mjs
           node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
 
       - name: Deploy to the existing EGregoRA project
@@ -161,6 +164,46 @@ jobs:
             }
           }
           console.log('Live transcript names, turn timestamps, and stored pattern profiles verified.');
+          NODE
+
+      - name: Verify the live consenting voiceprint controls
+        run: |
+          node <<'NODE'
+          const fail = (reason) => {
+            const message = String(reason && reason.message || reason || 'unknown voiceprint verification error')
+              .replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A').slice(0, 1400);
+            console.log(`::error title=Live voiceprint verification failed::${message}`);
+            process.exit(1);
+          };
+          const [page, admin, voiceprint] = await Promise.all([
+            fetch('https://egregora.hatchable.site/podcast/'),
+            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=voiceprints-1'),
+            fetch('https://egregora.hatchable.site/assets/js/voiceprint.js')
+          ]);
+          const [html, adminText, voiceprintText] = await Promise.all([
+            page.text(), admin.text(), voiceprint.text()
+          ]);
+          if (!page.ok || !html.includes('media-admin.js?v=voiceprints-1')) {
+            fail(`The podcast page does not load the voiceprint editor (HTTP ${page.status}).`);
+          }
+          if (!admin.ok || !adminText.includes('Consenting voiceprints') ||
+              !adminText.includes('voiceprint-labels')) {
+            fail(`The biometric admin controls are stale (HTTP ${admin.status}).`);
+          }
+          if (!voiceprint.ok || !voiceprintText.includes('AES-GCM') ||
+              !voiceprintText.includes('voiceSimilarity')) {
+            fail(`The local encrypted-template module is missing (HTTP ${voiceprint.status}).`);
+          }
+          const denied = await fetch('https://egregora.hatchable.site/api/media', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ action: 'voiceprints' })
+          });
+          const deniedData = await denied.json().catch(() => ({}));
+          if (denied.ok || Array.isArray(deniedData.voiceprints)) {
+            fail('Encrypted biometric templates were readable without the admin door.');
+          }
+          console.log('Live consent UI, local AES-GCM module, and admin-only template boundary verified.');
           NODE
 
       - name: Verify the live creation-date controls
