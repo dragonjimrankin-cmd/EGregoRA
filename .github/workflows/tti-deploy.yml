@@ -34,11 +34,16 @@ jobs:
           npm ci
           npm run build:tti:hatchable
           test -s tti/hatchable/public/time-and-residue/index.html
+          test -s tti/hatchable/public/inverted-toruses/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Earned, Chosen, Refused' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'The Universe of Inverted Tori' tti/hatchable/public/inverted-toruses/index.html
+          grep -q 'Handedness Reversal Is Not Time Reversal' tti/hatchable/public/inverted-toruses/index.html
+          grep -q 'Earned, Chosen, Refused' tti/hatchable/public/inverted-toruses/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
+            tti/hatchable/public/inverted-toruses/index.html \
+            tti/hatchable/public/torus/index.html \
             tti/hatchable/public/essays/index.html \
             tti/hatchable/public/out-of-phase/index.html
 
@@ -78,27 +83,37 @@ jobs:
             exit "$STATUS"
           fi
 
-      - name: Verify the live time-and-residue essay
+      - name: Verify the live speculative essays
         run: |
           node <<'NODE'
-          const url = 'https://the-two-infinities.hatchable.site/time-and-residue/';
-          let detail = 'the page did not become current';
+          const pages = [
+            {
+              url: 'https://the-two-infinities.hatchable.site/time-and-residue/',
+              markers: ['The One Residue That Travels', 'One Source Per Universe, Every Being Eligible',
+                'The Prime Being Changes With the Instance', 'Distribution Is Interpretation']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/inverted-toruses/',
+              markers: ['The Universe of Inverted Tori', 'A World Built From Reversed Returns',
+                'Handedness Reversal Is Not Time Reversal', 'Earned, Chosen, Refused']
+            }
+          ];
+          let detail = 'the pages did not become current';
           for (let attempt = 1; attempt <= 10; attempt++) {
             try {
-              const response = await fetch(`${url}?deploy=${process.env.GITHUB_SHA || Date.now()}`, {
-                headers: { 'cache-control': 'no-cache' }
-              });
-              const html = await response.text();
-              if (response.ok &&
-                  html.includes('The One Residue That Travels') &&
-                  html.includes('One Source Per Universe, Every Being Eligible') &&
-                  html.includes('The Prime Being Changes With the Instance') &&
-                  html.includes('Distribution Is Interpretation') &&
-                  html.includes('Earned, Chosen, Refused')) {
-                console.log('Live time-and-residue essay and philosophical transmission model verified.');
+              const checked = await Promise.all(pages.map(async (page) => {
+                const response = await fetch(`${page.url}?deploy=${process.env.GITHUB_SHA || Date.now()}`, {
+                  headers: { 'cache-control': 'no-cache' }
+                });
+                const html = await response.text();
+                return { page, response, current: response.ok && page.markers.every((marker) => html.includes(marker)) };
+              }));
+              if (checked.every((result) => result.current)) {
+                console.log('Live time-residue and inverted-torus essays verified.');
                 process.exit(0);
               }
-              detail = `HTTP ${response.status}; expected essay markers were absent`;
+              detail = checked.map((result) =>
+                `${result.page.url} HTTP ${result.response.status}; current=${result.current}`).join(' | ');
             } catch (error) {
               detail = error && error.message || String(error);
             }

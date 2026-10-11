@@ -53,7 +53,7 @@
         {% endfor %}
         <ellipse cx="100" cy="100" rx="55" ry="18" stroke-dasharray="2 6"/>
         <circle cx="155" cy="100" r="3.5"/>
-      {% elif slug == "torus" %}
+      {% elif slug == "torus" or slug == "inverted-toruses" %}
         {# an accretion torus seen at a low angle #}
         {% for i in range(0, 7) %}
         <ellipse cx="100" cy="100" rx="{{ 30 + i * 10 }}" ry="{{ 10 + i * 3.4 }}" opacity="{{ 0.8 - i * 0.08 }}"/>
