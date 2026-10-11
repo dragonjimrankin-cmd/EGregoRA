@@ -7,8 +7,9 @@
    The cleaning happens *here*, in the browser, and that is a deliberate
    choice rather than a shortcut. A server function has no ffmpeg and a
    strict clock; a browser has the whole Web Audio engine sitting idle. So
-   the file is decoded, run through a real chain — rumble filter, gate,
-   compressor, tone, loudness match, limiter, trimmed silence, fades — and
+ the file is decoded, run through a real chain — rumble filter, gate,
+ compressor, tone, loudness match, limiter, denoise gate (sniffs and
+ coughs out, words left whole), trimmed silence, fades — and
    rendered offline, usually faster than real time. Nothing leaves the
    machine until it has been listened to.
 
@@ -318,7 +319,7 @@ function setup(root) {
     return {
       rumble: on("rumble"), gate: on("gate"), tone: on("tone"), deess: on("deess"),
       level: on("level"), loud: on("loud"), trim: on("trim"), fade: on("fade"),
-      gaps: on("gaps"),
+      gaps: on("gaps"), denoise: on("denoise"),
       gapHold: Number((root.querySelector("[data-am=gaphold]") || {}).value || 1.5),
       gapLeave: Number((root.querySelector("[data-am=gapleave]") || {}).value || 0.45),
       target: el.loud ? Number(el.loud.value) : -18,
@@ -577,6 +578,128 @@ function setup(root) {
     }
   });
 
+  /* ---------------------------------------------------- the denoise gate
+     A real gate, done where a real gate can only be done: over the
+     rendered samples, frame by frame. The node chain above cannot gate
+     honestly — WebAudio has no expander node — so this measures the
+     file's own noise floor and voice level, opens the gate just *before*
+     each word (so consonants survive), holds it across the short breaths
+     inside a phrase, and shuts only on what stands alone: a cough, a
+     sniff, a chair knock. Speech itself is never turned down — the gate
+     either passes it untouched or silences what is not speech at all.
+     A burst is only dropped when it is short, alone on both sides, *and*
+     unvoiced by its zero-crossings, so a one-word answer like "Yes." is
+     kept while a cough is not. */
+  function denoiseGate(buf) {
+    const rate = buf.sampleRate;
+    const chans = buf.numberOfChannels;
+    const n = buf.length;
+    const FRAME = Math.max(1, Math.round(rate * 0.02)); /* 20 ms frames */
+    const frames = Math.max(1, Math.ceil(n / FRAME));
+
+    const ch = [];
+    for (let c = 0; c < chans; c++) ch.push(buf.getChannelData(c));
+
+    const rms = new Float64Array(frames);
+    const zcr = new Float64Array(frames);
+    for (let f = 0; f < frames; f++) {
+      const a = f * FRAME, b = Math.min(n, a + FRAME);
+      let sum = 0, k = 0, cross = 0, last = 0;
+      for (let i = a; i < b; i++) {
+        let v = 0;
+        for (let c = 0; c < chans; c++) { const s = ch[c][i]; v += s * s; }
+        sum += v / chans; k++;
+        const mono = ch[0][i];
+        if (i > a && ((mono >= 0) !== (last >= 0))) cross++;
+        last = mono;
+      }
+      rms[f] = Math.sqrt(sum / Math.max(1, k));
+      zcr[f] = cross / Math.max(1, b - a - 1);
+    }
+
+    const sorted = Float64Array.from(rms).sort();
+    const floor = sorted[Math.floor(frames * 0.15)] || 0;
+    const voice = sorted[Math.floor(frames * 0.85)] || 0;
+    /* A file with no speech in it gets no gate at all — there would be
+       nothing to protect and everything to lose. */
+    if (voice < 1e-4 || voice <= floor * 1.6) return { buf, bursts: 0 };
+
+    const openTh = Math.max(floor * 3.2, voice * 0.10);
+    const closeTh = openTh * 0.55; /* hysteresis: shut lower than we open */
+
+    const open = new Uint8Array(frames);
+    let held = 0;
+    for (let f = 0; f < frames; f++) {
+      if (rms[f] >= openTh) held = 1;
+      else if (rms[f] < closeTh) held = 0;
+      open[f] = held;
+    }
+
+    /* What stands alone — gone within a quarter of a second, no speech
+       within 300 ms either side, and noisy by its zero-crossings — is a
+       cough or a knock, not a word. Those the gate shuts on. */
+    const ALONE = 15, SHORT = 12, NOISY = 0.20;
+    let bursts = 0;
+    let f = 0;
+    while (f < frames) {
+      if (!open[f]) { f++; continue; }
+      let g = f;
+      while (g < frames && open[g]) g++;
+      const len = g - f;
+      let near = false;
+      for (let i = Math.max(0, f - ALONE); !near && i < f; i++) near = open[i] === 1;
+      for (let i = g; !near && i < Math.min(frames, g + ALONE); i++) near = open[i] === 1;
+      if (len <= SHORT && !near) {
+        let z = 0;
+        for (let i = f; i < g; i++) z += zcr[i];
+        if (z / len >= NOISY) { for (let i = f; i < g; i++) open[i] = 0; bursts++; }
+      }
+      f = g;
+    }
+
+    /* Hold across the short breaths inside a phrase, so words are never
+       separated from each other. */
+    const HOLD = 11; /* 220 ms */
+    for (let i = 0; i < frames - 1; i++) {
+      if (!open[i]) continue;
+      let j = i + 1;
+      while (j < frames && !open[j]) j++;
+      if (j < frames && j - i - 1 <= HOLD) for (let k = i + 1; k < j; k++) open[k] = 1;
+    }
+
+    /* Open just before each word and let it ring out after. Measured from
+       a snapshot of the boundaries — extending the live array would let
+       each fresh frame extend the next, and the gate would creep open
+       across the whole episode. */
+    const PRE = 5, POST = 4; /* 100 ms in, 80 ms out */
+    const edges = Uint8Array.from(open);
+    for (let i = 0; i < frames; i++) {
+      if (!edges[i]) continue;
+      if (i === 0 || !edges[i - 1])
+        for (let k = Math.max(0, i - PRE); k < i; k++) open[k] = 1;
+      if (i === frames - 1 || !edges[i + 1])
+        for (let k = i + 1; k < Math.min(frames, i + 1 + POST); k++) open[k] = 1;
+    }
+
+    /* Write the gain: fast attack, slower release, so nothing clicks. */
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const out = ctx.createBuffer(chans, n, rate);
+    ctx.close();
+    const atk = 1 - Math.exp(-1 / (rate * 0.008));
+    const rel = 1 - Math.exp(-1 / (rate * 0.014));
+    for (let c = 0; c < chans; c++) {
+      const srcD = ch[c];
+      const dst = out.getChannelData(c);
+      let gNow = 0;
+      for (let i = 0; i < n; i++) {
+        const target = open[(i / FRAME) | 0] ? 1 : 0;
+        gNow += (target - gNow) * (target > gNow ? atk : rel);
+        dst[i] = srcD[i] * gNow;
+      }
+    }
+    return { buf: out, bursts };
+  }
+
   async function enhanceAudio(want) {
     if (!fileBuf) {
       return say(source
@@ -646,11 +769,21 @@ function setup(root) {
     }
     src.start(0, from, to - from);
 
-    const done = await off.startRendering();
-    step("Measuring\u2026", 0.7);
+    let done = await off.startRendering();
+    let gateNote = "";
+    if (want.denoise) {
+      step("Gating \u2014 sniffs and coughs out, words left whole\u2026", 0.7);
+      const gated = denoiseGate(done);
+      done = gated.buf;
+      if (gated.bursts)
+        gateNote = gated.bursts + " isolated noise burst" + (gated.bursts === 1 ? "" : "s") +
+          " gated out";
+    }
+    step("Measuring\u2026", 0.75);
     const look = inspect(done);
+    const notes = [cutNote, gateNote].filter(Boolean);
     el.after.innerHTML = reading(look, "After the work") +
-      (cutNote ? '<p class="muted xsmall">' + cutNote + ".</p>" : "");
+      (notes.length ? '<p class="muted xsmall">' + notes.join("; ") + ".</p>" : "");
 
     step("Encoding\u2026", 0.85);
     const made = await encode(done);
@@ -662,6 +795,9 @@ function setup(root) {
       want.level && "levelled",
       want.loud && ("matched to " + want.target + " dB RMS"),
       want.gaps && cutNote,
+      want.denoise && (gateNote
+        ? "sniffs and coughs gated out \u2014 " + gateNote
+        : "silences gated, no stray bursts found"),
       want.trim && "silence trimmed from both ends",
       want.fade && "faded in and out"
     ].filter(Boolean).join(", ") || "left as it was";

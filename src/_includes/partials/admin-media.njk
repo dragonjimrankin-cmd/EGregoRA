@@ -107,6 +107,7 @@
         <label><input type="checkbox" data-want="level" checked> Level it &mdash; gentle compression</label>
         <label><input type="checkbox" data-want="loud" checked> Match the loudness, then limit the peaks</label>
         {% if amKind == "audio" %}
+        <label><input type="checkbox" data-want="denoise" checked> Gate the silences &mdash; sniffs and coughs out, every word left whole</label>
         <label><input type="checkbox" data-want="trim" checked> Trim the silence from both ends</label>
         <label><input type="checkbox" data-want="gaps" checked> Close the long speechless stretches</label>
         <label><input type="checkbox" data-want="fade" checked> Fade in and out</label>
@@ -129,7 +130,9 @@
       </div>
       <p class="muted xsmall">A pause is not a fault &mdash; silence removed completely sounds wrong,
       because conversation has rhythm. Long stretches are shortened to the breath you leave here,
-      not deleted.</p>
+      not deleted. The gate opens just <em>before</em> each word and holds across it, so speech is
+      never clipped; only noise that stands alone between phrases &mdash; a cough, a sniff, a chair
+      knock &mdash; gets shut out.</p>
       {% endif %}
 
       <label for="{{ amKind }}-loud">Target loudness (dB RMS)</label>
