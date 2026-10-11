@@ -60,8 +60,9 @@ const MAX_OPS = 60;
 const OPS = ['text', 'colour', 'background', 'border', 'font-size', 'align', 'hide', 'show', 'style',
   'span-text', 'span-style',
   /* the wider toolset: point a link, swap a picture, reorder and duplicate
-     blocks, add a block beside the selection, and take styling back off */
-  'link', 'image', 'move-up', 'move-down', 'clone',
+     blocks, add a block beside the selection, erase a block, and take
+     styling back off */
+  'link', 'image', 'move-up', 'move-down', 'clone', 'delete',
   'insert-before', 'insert-after', 'unstyle', 'clear-styles'];
 
 /* Styles an op may set, and nothing outside this list. No url(), no
@@ -83,10 +84,18 @@ const SAFE_VALUE = /^[#a-zA-Z0-9 ,.()%'"+/-]{1,120}$/;
    shape of the address is checked before anything is stored. */
 const SAFE_URL = /^(\/[^\s"'<>]*|#[A-Za-z0-9_-]{1,120}|https?:\/\/[^\s"'<>]{1,400}|mailto:[^\s"'<>@]+@[^\s"'<>]{1,120})$/i;
 
-/* The tags the editor may insert. A small fixed palette — no raw HTML is
-   ever taken from the administrator or the model, only a tag name from
-   this list and plain text to go inside it. */
-const INSERT_TAGS = ['p', 'h2', 'h3', 'h4', 'blockquote', 'hr', 'figure', 'img'];
+/* The tags the editor may insert. A fixed palette — no raw HTML is ever
+   taken from the administrator or the model, only a tag name from this
+   list and plain text (or a shape-checked address) to go inside it. */
+const INSERT_TAGS = [
+  'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code',
+  'small', 'mark', 'strong', 'em', 'span', 'div', 'section',
+  'ul', 'ol', 'li', 'a', 'button', 'img', 'video', 'audio', 'iframe',
+  'hr', 'figure', 'figcaption', 'table'
+];
+
+/* The insert tags whose address comes from src rather than from words. */
+const MEDIA_TAGS = ['img', 'video', 'audio', 'iframe'];
 
 function tidyOps(list, allowed) {
   const out = [];
@@ -155,18 +164,28 @@ function tidyOps(list, allowed) {
       const tag = clean(raw.tag, 12).toLowerCase();
       if (INSERT_TAGS.indexOf(tag) < 0) continue;
       entry.tag = tag;
-      if (tag === 'img') {
+      if (MEDIA_TAGS.indexOf(tag) >= 0) {
+        /* A picture, video, sound or embed: its address is shape-checked,
+           and the words become its alt text or title. */
         const src = clean(raw.src, 420);
         if (!SAFE_URL.test(src)) continue;
         entry.src = src;
         entry.alt = clean(raw.alt, 300);
+        entry.value = clean(raw.value, 2000);
+      } else if (tag === 'a') {
+        /* A link: the address is shape-checked; the words are its label. */
+        const href = clean(raw.href, 420);
+        if (!SAFE_URL.test(href)) continue;
+        entry.href = href;
+        entry.value = clean(raw.value, 300);
       } else if (tag === 'hr') {
         entry.value = '';
       } else {
         entry.value = clean(raw.value, 2000);
         if (!entry.value) continue;
       }
-    } else if (op === 'move-up' || op === 'move-down' || op === 'clone' || op === 'clear-styles') {
+    } else if (op === 'delete' || op === 'move-up' || op === 'move-down' ||
+      op === 'clone' || op === 'clear-styles') {
       entry.value = '';
     } else {
       const value = clean(raw.value, 80);
@@ -217,7 +236,11 @@ function byRules(prompt, nodes) {
     if (words && target) ops.push({ ref: target.ref, op: 'text', value: words });
   }
 
-  if (/\bhide\b|\bremove\b|\bdelete\b|\btake (it|that) (out|away)\b/.test(p)) {
+  /* "Erase" or "delete" takes the element off the page altogether; "hide"
+     or "remove" only conceals it, so it can be brought back. */
+  if (/\berase\b|\bdelete\b/.test(p)) {
+    for (const r of refs) ops.push({ ref: r, op: 'delete' });
+  } else if (/\bhide\b|\bremove\b|\btake (it|that) (out|away)\b/.test(p)) {
     for (const r of refs) ops.push({ ref: r, op: 'hide' });
   }
 
@@ -277,13 +300,21 @@ function byRules(prompt, nodes) {
     for (const r of refs) ops.push({ ref: r, op: 'clear-styles' });
   }
 
-  /* Add a block beside the selection: "add a paragraph after saying
-     \u201c\u2026\u201d", "insert a heading before: \u201c\u2026\u201d". */
-  const ins = prompt.match(/\b(?:add|insert|put)\s+(?:a|an)\s+(paragraph|heading|quote|blockquote|divider)\b[^"\u201c]*["\u201c]?([^"\u201d]{0,400})["\u201d]?/i);
+  /* Add an element beside the selection: "add a paragraph after saying
+     \u201c\u2026\u201d", "insert a heading before: \u201c\u2026\u201d", "add a list:
+     \u201c\u2026\u201d". Only the text-bearing kinds are recognised here; links,
+     pictures and the rest are added from the panel, where their address
+     can be given properly. */
+  const ins = prompt.match(/\b(?:add|insert|put)\s+(?:a|an)\s+(paragraph|heading|quote|blockquote|divider|rule|numbered list|bulleted list|list|code|table)\b[^"\u201c]*["\u201c]?([^"\u201d]{0,400})["\u201d]?/i);
   if (ins) {
-    const tag = /head/i.test(ins[1]) ? 'h3'
-      : /quote/i.test(ins[1]) ? 'blockquote'
-        : /divider/i.test(ins[1]) ? 'hr' : 'p';
+    const kind = ins[1].toLowerCase();
+    const tag = /head/.test(kind) ? 'h3'
+      : /quote/.test(kind) ? 'blockquote'
+        : /divider|rule/.test(kind) ? 'hr'
+          : /numbered/.test(kind) ? 'ol'
+            : /list/.test(kind) ? 'ul'
+              : /code/.test(kind) ? 'code'
+                : /table/.test(kind) ? 'table' : 'p';
     const where = /\bafter\b/.test(p) ? 'insert-after' : 'insert-before';
     for (const r of refs) {
       ops.push(tag === 'hr'
@@ -360,14 +391,18 @@ async function byModel(prompt, nodes, page) {
     '"hide" and "show" take an element off the page or bring it back.',
     '"link" points the link in (or that is) the element at href, optionally setting its words to value.',
     '"image" swaps the picture in the element to src, with alt text alt.',
-    '"move-up" and "move-down" reorder the element among its neighbours; "clone" duplicates it.',
-    '"insert-before" and "insert-after" add a new block beside the element: tag is one of',
-    'p, h2, h3, h4, blockquote, hr, figure, img; value is the plain text inside it',
-    '(for img use src and alt instead; hr needs no value).',
+    '"move-up" and "move-down" reorder the element among its neighbours; "clone" duplicates it;',
+    '"delete" erases the element from the page altogether (prefer "hide" unless erasure was asked for).',
+    '"insert-before" and "insert-after" add a new element beside the target: tag is one of',
+    'p, h1, h2, h3, h4, h5, h6, blockquote, pre, code, small, mark, strong, em, span, div, section,',
+    'ul, ol, li, a, button, img, video, audio, iframe, hr, figure, figcaption, table.',
+    'For most tags value is the plain text inside; for a list (ul/ol) put one item per line in value;',
+    'for a table put one row per line and separate the cells with a pipe; for img, video, audio and',
+    'iframe use src (and alt for img) instead of value; for a use href and value; hr needs nothing.',
     '"unstyle" takes one inline property (prop) back off; "clear-styles" resets the element\'s inline look.',
     'Colours must be hex or rgb(); sizes must carry a unit, usually px.',
     'Items of kind "words" accept only text and style. The structural ops — hide, show, link,',
-    'image, move, clone, insert, clear-styles — are for elements.',
+    'image, move, clone, delete, insert, clear-styles — are for elements.',
     'Never invent a ref, never name anything not in the list, and prefer the smallest change',
     'that does what was asked. If it cannot be done with these operations, reply {"ops":[]}.'
   ].join(' ');

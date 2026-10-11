@@ -28,9 +28,11 @@
  *           one-touch presets in the house colours and faces, and a mirror
  *           button that takes the same looks back off.
  *   Do    — the structural work: move a block among its neighbours,
- *           duplicate it, hide or restore it, reset its look, point a
- *           link, swap an image, and insert a new paragraph, heading,
- *           quotation, divider or image beside it.
+ *           duplicate it, hide, restore or erase it altogether, reset its
+ *           look, point a link, swap an image, and insert a new element
+ *           beside it — headings, paragraphs, quotations, lists, tables,
+ *           code, links, buttons, pictures, video, audio, embeds, figures,
+ *           dividers and plain containers.
  *   Ask   — a sentence, sent to the same model stack the oracle uses, which
  *           may only answer with operations against what was selected.
  *
@@ -218,18 +220,17 @@
     }
     if (op.op === "insert-before" || op.op === "insert-after") {
       if (!node.parentNode) return false;
-      var made;
-      if (op.tag === "hr") made = document.createElement("hr");
-      else if (op.tag === "img") {
-        made = document.createElement("img");
-        made.setAttribute("src", op.src || "");
-        made.setAttribute("alt", op.alt || "");
-      } else {
-        made = document.createElement(op.tag || "p");
-        made.textContent = op.value || "";
-      }
+      var made = buildInsert(op);
+      if (!made) return false;
       if (op.op === "insert-before") node.parentNode.insertBefore(made, node);
       else node.parentNode.insertBefore(made, node.nextSibling);
+      return true;
+    }
+    /* Erase: take the element off the page altogether, not merely hide it.
+       The parent is what undo photographs, so the element comes back. */
+    if (op.op === "delete") {
+      if (!node.parentNode) return false;
+      node.parentNode.removeChild(node);
       return true;
     }
     if (op.op === "unstyle") {
@@ -252,6 +253,104 @@
     else if (op.op === "font-size") node.style.setProperty("font-size", op.value);
     else if (op.op === "align") node.style.setProperty("text-align", op.value);
     return true;
+  }
+
+  /* The palette of elements the editor may insert. A fixed list, mirrored
+     by the server, so nothing outside it can ever be created. */
+  var INSERT_OK = {
+    p: 1, h1: 1, h2: 1, h3: 1, h4: 1, h5: 1, h6: 1, blockquote: 1, pre: 1,
+    code: 1, small: 1, mark: 1, strong: 1, em: 1, span: 1, div: 1, section: 1,
+    ul: 1, ol: 1, li: 1, a: 1, button: 1, img: 1, video: 1, audio: 1, iframe: 1,
+    hr: 1, figure: 1, figcaption: 1, table: 1
+  };
+
+  /* Build the one element an insert op asks for. Every kind comes from the
+     fixed palette above; the words always go in as text, never as markup,
+     so nothing typed here can itself become a tag. A list splits its words
+     on newlines into items; a table splits on newlines into rows and on a
+     pipe or tab into cells; a link takes its address from href; a picture,
+     video, sound or embed takes its address from src. */
+  function buildInsert(op) {
+    var tag = String(op.tag || "p").toLowerCase();
+    if (!INSERT_OK[tag]) return null;
+    var value = op.value == null ? "" : String(op.value);
+    var made, i, parts;
+
+    if (tag === "hr") return document.createElement("hr");
+
+    if (tag === "img" || tag === "video" || tag === "audio" || tag === "iframe") {
+      made = document.createElement(tag);
+      made.setAttribute("src", op.src || "");
+      if (tag === "img") made.setAttribute("alt", op.alt || "");
+      if (tag === "video" || tag === "audio") made.setAttribute("controls", "");
+      if (tag === "iframe") {
+        made.setAttribute("title", op.alt || "Embedded page");
+        made.setAttribute("loading", "lazy");
+      }
+      return made;
+    }
+
+    if (tag === "a") {
+      made = document.createElement("a");
+      made.setAttribute("href", op.href || "#");
+      made.textContent = value || op.href || "#";
+      return made;
+    }
+
+    if (tag === "ul" || tag === "ol") {
+      made = document.createElement(tag);
+      parts = value.split(/\r?\n/);
+      var items = [];
+      for (i = 0; i < parts.length; i++) {
+        if (parts[i].replace(/^\s+|\s+$/g, "").length) items.push(parts[i].replace(/^\s+|\s+$/g, ""));
+      }
+      if (!items.length) items = [""];
+      for (i = 0; i < items.length; i++) {
+        var li = document.createElement("li");
+        li.textContent = items[i];
+        made.appendChild(li);
+      }
+      return made;
+    }
+
+    if (tag === "table") {
+      made = document.createElement("table");
+      var body = document.createElement("tbody");
+      var rows = value.split(/\r?\n/);
+      var anyRow = false;
+      for (i = 0; i < rows.length; i++) {
+        if (!rows[i].replace(/^\s+|\s+$/g, "").length) continue;
+        anyRow = true;
+        var tr = document.createElement("tr");
+        var cells = rows[i].split(/\s*\|\s*|\t/);
+        for (var c = 0; c < cells.length; c++) {
+          var td = document.createElement("td");
+          td.textContent = cells[c].replace(/^\s+|\s+$/g, "");
+          tr.appendChild(td);
+        }
+        body.appendChild(tr);
+      }
+      if (!anyRow) {
+        var emptyTr = document.createElement("tr");
+        emptyTr.appendChild(document.createElement("td"));
+        body.appendChild(emptyTr);
+      }
+      made.appendChild(body);
+      return made;
+    }
+
+    if (tag === "figure") {
+      made = document.createElement("figure");
+      var cap = document.createElement("figcaption");
+      cap.textContent = value;
+      made.appendChild(cap);
+      return made;
+    }
+
+    /* Everything else is a plain container of words. */
+    made = document.createElement(tag);
+    made.textContent = value;
+    return made;
   }
 
   /* To undo a preview exactly, the whole element is photographed before it
@@ -531,8 +630,9 @@
       '    <button type="button" class="btn btn--small ae-mv-up" title="Move the block up among its neighbours">&#9650; Move up</button>',
       '    <button type="button" class="btn btn--small ae-mv-down" title="Move the block down among its neighbours">&#9660; Move down</button>',
       '    <button type="button" class="btn btn--small ae-clone" title="Duplicate the block">Duplicate</button>',
-      '    <button type="button" class="btn btn--small btn--ghost ae-hide" title="Take it off the page for everyone">Hide</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-hide" title="Take it off the page for everyone, but keep it to bring back">Hide</button>',
       '    <button type="button" class="btn btn--small btn--ghost ae-show" title="Bring back a hidden block">Bring back</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-del" title="Erase it from the page altogether">Erase</button>',
       '    <button type="button" class="btn btn--small btn--ghost ae-reset" title="Take every inline style off the block">Reset its look</button>',
       '  </div>',
       '  <p class="ae-label">Point a link</p>',
@@ -547,19 +647,44 @@
       '    <label>Alt text<input type="text" class="ae-imgalt" placeholder="what the picture shows"></label>',
       '  </div>',
       '  <div class="ae-row"><button type="button" class="btn btn--small ae-img">Swap the image</button></div>',
-      '  <p class="ae-label">Add a new block beside the selection</p>',
+      '  <p class="ae-label">Add a new element beside the selection</p>',
       '  <div class="ae-grid">',
       '    <label>Kind<select class="ae-ins-tag">',
-      '      <option value="p">paragraph</option><option value="h3">heading</option>',
-      '      <option value="blockquote">quotation</option><option value="hr">divider</option>',
-      '      <option value="img">image</option></select></label>',
+      '      <optgroup label="Text">',
+      '        <option value="p">paragraph</option>',
+      '        <option value="h1">heading 1</option><option value="h2">heading 2</option>',
+      '        <option value="h3">heading 3</option><option value="h4">heading 4</option>',
+      '        <option value="h5">heading 5</option><option value="h6">heading 6</option>',
+      '        <option value="blockquote">quotation</option>',
+      '        <option value="pre">preformatted</option><option value="code">code</option>',
+      '        <option value="small">small print</option><option value="mark">highlighted</option>',
+      '        <option value="strong">strong</option><option value="em">emphasis</option>',
+      '      </optgroup>',
+      '      <optgroup label="Lists">',
+      '        <option value="ul">bulleted list</option><option value="ol">numbered list</option>',
+      '        <option value="li">list item</option>',
+      '      </optgroup>',
+      '      <optgroup label="Links and media">',
+      '        <option value="a">link</option><option value="button">button</option>',
+      '        <option value="img">image</option><option value="video">video</option>',
+      '        <option value="audio">audio</option><option value="iframe">embed</option>',
+      '      </optgroup>',
+      '      <optgroup label="Layout">',
+      '        <option value="hr">divider</option><option value="div">container</option>',
+      '        <option value="section">section</option><option value="figure">figure</option>',
+      '        <option value="figcaption">caption</option><option value="table">table</option>',
+      '      </optgroup>',
+      '    </select></label>',
       '    <label>Where<select class="ae-ins-where">',
       '      <option value="insert-after">after it</option>',
       '      <option value="insert-before">before it</option></select></label>',
+      '    <label>Address <span class="muted xsmall">(link, image, video, audio, embed)</span>',
+      '      <input type="text" class="ae-ins-href" placeholder="/path/ or https://\\u2026"></label>',
       '  </div>',
-      '  <label class="ae-label" for="ae-ins-text">Its words (or the image address, for an image)</label>',
-      '  <textarea id="ae-ins-text" class="ae-prompt ae-ins-text" rows="2"></textarea>',
-      '  <div class="ae-row"><button type="button" class="btn btn--small ae-insert">Add the block</button></div>',
+      '  <label class="ae-label" for="ae-ins-text">Its words \\u2014 for a list, one item per line; ',
+      '  for a table, one row per line with a pipe between cells</label>',
+      '  <textarea id="ae-ins-text" class="ae-prompt ae-ins-text" rows="3"></textarea>',
+      '  <div class="ae-row"><button type="button" class="btn btn--small ae-insert">Add the element</button></div>',
       '</section>',
 
       /* ---- ask ------------------------------------------------------- */
@@ -644,6 +769,7 @@
     q(".ae-clone").addEventListener("click", function () { doStruct("clone"); });
     q(".ae-hide").addEventListener("click", function () { doStruct("hide"); });
     q(".ae-show").addEventListener("click", function () { doStruct("show"); });
+    q(".ae-del").addEventListener("click", function () { doStruct("delete"); });
     q(".ae-reset").addEventListener("click", function () { doStruct("clear-styles"); });
     q(".ae-link").addEventListener("click", setLink);
     q(".ae-img").addEventListener("click", swapImage);
@@ -1030,7 +1156,7 @@
      element. Their undo photograph is the parent, because that is the node
      whose children they change. */
   var STRUCTURAL = { "move-up": 1, "move-down": 1, "clone": 1,
-    "insert-before": 1, "insert-after": 1 };
+    "insert-before": 1, "insert-after": 1, "delete": 1 };
 
   function preview(ops, how, via) {
     revertPreview();
@@ -1262,16 +1388,25 @@
     var tag = q(".ae-ins-tag").value;
     var where = q(".ae-ins-where").value;
     var body = q(".ae-ins-text").value.trim();
-    if (tag === "img" && !SAFE_URL.test(body)) {
-      return say("For an image, put its address in the box.", true);
+    var addr = q(".ae-ins-href").value.trim();
+    var MEDIA = { img: 1, video: 1, audio: 1, iframe: 1 };
+    if (MEDIA[tag] && !SAFE_URL.test(addr)) {
+      return say("For " + tag + ", put its address in the Address box.", true);
     }
-    if (tag !== "hr" && tag !== "img" && !body) return say("Give the new block some words.", true);
+    if (tag === "a" && !SAFE_URL.test(addr)) {
+      return say("For a link, put its address in the Address box.", true);
+    }
+    if (tag !== "hr" && !MEDIA[tag] && tag !== "a" && !body) {
+      return say("Give the new element some words.", true);
+    }
     preview(refs.map(function (ref) {
       var op = { ref: ref, op: where, tag: tag };
-      if (tag === "img") { op.src = body; op.alt = ""; }
+      if (MEDIA[tag]) { op.src = addr; op.alt = body; }
+      else if (tag === "a") { op.href = addr; op.value = body; }
       else if (tag !== "hr") op.value = body;
       return op;
-    }), where + ": " + tag + (body ? " \u2014 " + body.slice(0, 60) : ""), "");
+    }), where + ": " + tag +
+      (body ? " \u2014 " + body.slice(0, 60) : (addr ? " \u2014 " + addr.slice(0, 60) : "")), "");
   }
 
   /* Widen the selection to the block around it, or narrow it to the first
