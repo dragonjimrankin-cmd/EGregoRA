@@ -38,12 +38,15 @@ jobs:
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Universe of Inverted Tori' tti/hatchable/public/inverted-toruses/index.html
+          grep -q 'One Seam, Seen as Many Tori' tti/hatchable/public/inverted-toruses/index.html
+          grep -q 'The Universe Is the Möbius Seam' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Handedness Reversal Is Not Time Reversal' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Earned, Chosen, Refused' tti/hatchable/public/inverted-toruses/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
             tti/hatchable/public/torus/index.html \
+            tti/hatchable/public/moebius/index.html \
             tti/hatchable/public/essays/index.html \
             tti/hatchable/public/out-of-phase/index.html
 
@@ -94,8 +97,9 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/inverted-toruses/',
-              markers: ['The Universe of Inverted Tori', 'A World Built From Reversed Returns',
-                'Handedness Reversal Is Not Time Reversal', 'Earned, Chosen, Refused']
+              markers: ['The Universe of Inverted Tori', 'One Seam, Seen as Many Tori',
+                'The Universe Is the Möbius Seam', 'Handedness Reversal Is Not Time Reversal',
+                'Earned, Chosen, Refused']
             }
           ];
           let detail = 'the pages did not become current';
