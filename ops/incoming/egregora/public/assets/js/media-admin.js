@@ -134,6 +134,15 @@ function setup(root) {
     }
   };
   const mb = (n) => (n / 1048576).toFixed(1) + " MB";
+  /* Read only the piece being sent. Keeping the complete Blob in an
+     ArrayBuffer as well as the decoded episode made long podcasts needlessly
+     consume another file's worth of browser memory at publish time. */
+  const blobPartBase64 = async (blob, from, to) => {
+    const bytes = new Uint8Array(await blob.slice(from, to).arrayBuffer());
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+  };
   const clock = (s) => {
     s = Math.round(s || 0);
     const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
@@ -1857,14 +1866,12 @@ function setup(root) {
       const begun = await post({ action: "begin", upload, mime: blob.type });
       const CH = Math.min(900000, begun.chunk_max || 900000);
       const raw = Math.floor(CH * 0.74);   /* base64 grows a third */
-      const whole = new Uint8Array(await blob.arrayBuffer());
-      const pieces = Math.ceil(whole.length / raw);
+      const pieces = Math.ceil(blob.size / raw);
 
       for (let i = 0; i < pieces; i++) {
-        const slice = whole.subarray(i * raw, (i + 1) * raw);
-        let bin = "";
-        for (let j = 0; j < slice.length; j++) bin += String.fromCharCode(slice[j]);
-        await post({ action: "chunk", upload, seq: i, part: btoa(bin) });
+        const from = i * raw;
+        const part = await blobPartBase64(blob, from, Math.min(blob.size, from + raw));
+        await post({ action: "chunk", upload, seq: i, part });
         step("Sending \u2014 " + (i + 1) + " of " + pieces, (i + 1) / pieces);
       }
 
@@ -2790,13 +2797,11 @@ function setup(root) {
     const upload = "u" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
     const begun = await post({ action: "begin", upload, mime: blob.type });
     const raw = Math.floor(Math.min(900000, begun.chunk_max || 900000) * 0.74);
-    const whole = new Uint8Array(await blob.arrayBuffer());
-    const pieces = Math.ceil(whole.length / raw);
+    const pieces = Math.ceil(blob.size / raw);
     for (let i = 0; i < pieces; i++) {
-      const slice = whole.subarray(i * raw, (i + 1) * raw);
-      let bin = "";
-      for (let j = 0; j < slice.length; j++) bin += String.fromCharCode(slice[j]);
-      await post({ action: "chunk", upload, seq: i, part: btoa(bin) });
+      const from = i * raw;
+      const part = await blobPartBase64(blob, from, Math.min(blob.size, from + raw));
+      await post({ action: "chunk", upload, seq: i, part });
       if (onStep) onStep("Sending \u2014 " + (i + 1) + " of " + pieces, (i + 1) / pieces);
     }
     return upload;
