@@ -44,23 +44,29 @@ console.log(`Möbius spelling passed: ${corrected} corrected display/metadata oc
   `${htmlFiles.length} EGregoRA pages; the stable /moebius-seam/ URL is preserved.`);
 
 if (process.argv.includes('--live')) {
-  const routes = htmlFiles
-    .map((file) => relative(root, file).replaceAll('\\', '/'))
-    .filter((file) => file !== '404.html')
-    .map((file) => file === 'index.html' ? '/'
-      : file.endsWith('/index.html') ? '/' + file.slice(0, -10) : '/' + file);
+  const routes = [];
+  for (const file of htmlFiles) {
+    const name = relative(root, file).replaceAll('\\', '/');
+    if (name === '404.html') continue;
+    routes.push({
+      route: name === 'index.html' ? '/'
+        : name.endsWith('/index.html') ? '/' + name.slice(0, -10) : '/' + name,
+      expectsRight: (await readFile(file, 'utf8')).includes('Möbius')
+    });
+  }
   let detail = 'live pages did not become current';
   for (let attempt = 0; attempt < 10; attempt += 1) {
     try {
-      const pages = await Promise.all(routes.map(async (route) => {
+      const pages = await Promise.all(routes.map(async ({ route, expectsRight }) => {
         const joiner = route.includes('?') ? '&' : '?';
         const response = await fetch('https://egregora.hatchable.site' + route + joiner +
           'mobius-audit=' + (process.env.GITHUB_SHA || Date.now()), {
           headers: { 'cache-control': 'no-cache' }
         });
-        return { route, status: response.status, html: await response.text() };
+        return { route, expectsRight, status: response.status, html: await response.text() };
       }));
-      const stale = pages.filter((page) => !page.html.includes('Möbius') ||
+      const stale = pages.filter((page) =>
+        (page.expectsRight && !page.html.includes('Möbius')) ||
         page.html.includes('Moebius') || page.status < 200 || page.status >= 400);
       const liveCorrected = pages.reduce((sum, page) =>
         sum + (page.html.match(/Möbius/g) || []).length, 0);
@@ -70,8 +76,8 @@ if (process.argv.includes('--live')) {
         process.exit(0);
       }
       detail = `corrected=${liveCorrected}; stale=` + stale.map((page) =>
-        `${page.route} HTTP ${page.status} right=${page.html.includes('Möbius')} ` +
-        `wrong=${page.html.includes('Moebius')}`).join(' | ');
+        `${page.route} HTTP ${page.status} expected=${page.expectsRight} ` +
+        `right=${page.html.includes('Möbius')} wrong=${page.html.includes('Moebius')}`).join(' | ');
     } catch (error) {
       detail = error && error.message || String(error);
     }

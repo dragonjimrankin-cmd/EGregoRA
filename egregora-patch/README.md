@@ -62,7 +62,11 @@ Current patch:
   workflow and each existing episode editor. Private-model download/cache,
   local decoding, worker transcription, turn consolidation, transcript saving,
   known-name restoration and voiceprint checks each report their stage and
-  percentage; failures remain visible instead of silently clearing the bar.
+  measured percentage. During any quiet stage, `progress-live.js` adds a
+  once-per-second elapsed-time heartbeat, an animated sheen and explicit
+  “still working” text after four seconds rather than leaving one percentage
+  looking frozen; reduced-motion users retain the textual heartbeat without
+  animation. Failures remain visible instead of silently clearing the bar.
   The main podcast button performs the whole transcript-to-summary sequence in
   one click, shows a prominent “busy—do not click again or close the page”
   notice beside its dedicated progress bar, and highlights the completed

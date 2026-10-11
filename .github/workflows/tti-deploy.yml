@@ -66,9 +66,9 @@ jobs:
           test "$(wc -c < tti/hatchable/public/assets/js/headtts/voices/am_fenrir.bin)" -gt 500000
           test -s tti/hatchable/public/assets/js/headtts/LICENSE-Kokoro.txt
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
-          grep -Fq 'A Geometry of the Cosmos' tti/hatchable/public/index.html
+          grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r3.7' tti/hatchable/public/index.html
+          grep -Fq 'r3.8' tti/hatchable/public/index.html
           grep -q 'Why the two infinities never fully synchronise' tti/hatchable/public/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
@@ -131,7 +131,7 @@ jobs:
           grep -q 'data-plate-source="/temporal-antipodes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/little-red-dots/"' tti/hatchable/public/plates/index.html
           grep -Fq 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/' tti/hatchable/public/sitemap.xml
-          grep -Fq '<subtitle>A Geometry of the Cosmos</subtitle>' tti/hatchable/public/feed.xml
+          grep -Fq '<subtitle>A speculative cosmology by Jim Rankin, UK, 2026</subtitle>' tti/hatchable/public/feed.xml
           grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
           grep -q 'Read the Zero-Seam research proposal' tti/hatchable/public/essays/index.html
           grep -q 'little red dots are compact' tti/hatchable/public/cosmic-ledger/index.html
@@ -191,7 +191,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
-                'A Geometry of the Cosmos', 'r3.7', 'Why the two infinities never fully synchronise',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r3.8', 'Why the two infinities never fully synchronise',
                 'The Zero-Seam Test']
             },
             {

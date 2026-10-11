@@ -14,6 +14,7 @@ on:
       - "scripts/test-oracle-knowledge.mjs"
       - "scripts/test-media-upload.mjs"
       - "scripts/test-private-whisper.mjs"
+      - "scripts/test-progress-liveness.mjs"
       - "scripts/test-mobius-spelling.mjs"
       - "scripts/sync-private-whisper-assets.mjs"
       - "package.json"
@@ -46,6 +47,7 @@ jobs:
           node --check egregora-patch/api/edit.js
           node --check egregora-patch/pages/feed.js
           node --check egregora-patch/public/assets/js/media-admin.js
+          node --check egregora-patch/public/assets/js/progress-live.js
           node --check egregora-patch/public/assets/js/private-whisper/browser-whisper.js
           node --check egregora-patch/public/assets/js/voiceprint.js
           node --check egregora-patch/public/assets/js/admin-edit.js
@@ -57,6 +59,7 @@ jobs:
           node scripts/test-neural-voice.mjs
           node scripts/test-media-upload.mjs
           node scripts/test-private-whisper.mjs
+          node scripts/test-progress-liveness.mjs
           node scripts/test-mobius-spelling.mjs
           test -s egregora-patch/public/assets/js/private-whisper/LICENSE-BrowserWhisper.txt
           test -s egregora-patch/public/assets/js/private-whisper/LICENSE-MediaBunny.txt
@@ -240,29 +243,34 @@ jobs:
       - name: Verify Möbius spelling on every live EGregoRA page
         run: node scripts/test-mobius-spelling.mjs --live
 
-      - name: Verify live bounded upload and private transcription
+      - name: Verify live bounded upload, private transcription and active progress
         run: |
           node <<'NODE'
           const targets = [
             ['https://egregora.hatchable.site/podcast/', [
-              'media-admin.js?v=private-whisper-1', 'Transcribe privately, then write the summary',
-              'Private local Whisper:', 'recording is never sent to a'
+              'media-admin.js?v=progress-live-1', 'Transcribe privately, then write the summary',
+              'Private local Whisper:', 'recording is never sent to a',
+              '@keyframes am-progress-sweep', '.am-bar.is-waiting'
             ]],
             ['https://egregora.hatchable.site/videos/', [
-              'media-admin.js?v=private-whisper-1'
+              'media-admin.js?v=progress-live-1'
             ]],
             ['https://egregora.hatchable.site/assets/js/media-admin.js', [
               'blobPartBase64', 'blob.slice(from, to).arrayBuffer()',
               'const pieces = Math.ceil(blob.size / raw)',
               '/assets/js/private-whisper/browser-whisper.js?v=private-whisper-1',
+              './progress-live.js?v=progress-live-1', 'createProgressLiveness',
               'new module.BrowserWhisper', 'model: "whisper-base"'
+            ]],
+            ['https://egregora.hatchable.site/assets/js/progress-live.js', [
+              'still working', 'elapsed', 'aria-valuetext', 'is-waiting'
             ]],
             ['https://egregora.hatchable.site/assets/js/private-whisper/browser-whisper.js', [
               'BrowserWhisper', 'whisper-base', 'onnx-community/whisper-base',
               'Origin Private File System'
             ]]
           ];
-          let detail = 'the bounded upload and private transcription clients did not become current';
+          let detail = 'the bounded upload, private transcription and active progress clients did not become current';
           for (let attempt = 0; attempt < 10; attempt += 1) {
             try {
               const results = await Promise.all(targets.map(async ([url, markers]) => {
@@ -274,7 +282,7 @@ jobs:
                   ok: response.ok && markers.every((marker) => text.includes(marker)) };
               }));
               if (results.every((result) => result.ok)) {
-                console.log('Live media pages use bounded upload memory and the separate private BrowserWhisper app.');
+                console.log('Live media pages use bounded uploads, private BrowserWhisper, and elapsed-time progress heartbeats.');
                 process.exit(0);
               }
               detail = results.map((result) =>
@@ -398,13 +406,13 @@ jobs:
           };
           const [page, admin, voiceprint] = await Promise.all([
             fetch('https://egregora.hatchable.site/podcast/'),
-            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=private-whisper-1'),
+            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=progress-live-1'),
             fetch('https://egregora.hatchable.site/assets/js/voiceprint.js')
           ]);
           const [html, adminText, voiceprintText] = await Promise.all([
             page.text(), admin.text(), voiceprint.text()
           ]);
-          if (!page.ok || !html.includes('media-admin.js?v=private-whisper-1') ||
+          if (!page.ok || !html.includes('media-admin.js?v=progress-live-1') ||
               !html.includes('Transcribe privately, then write the summary') ||
               !html.includes('data-am="transcribe-callout"') ||
               !html.includes('data-am="transcribe-progress"')) {

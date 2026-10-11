@@ -6,7 +6,7 @@ import * as cheerio from 'cheerio';
 const projectRoot = path.resolve(process.cwd());
 const siteRoot = path.join(projectRoot, 'tti', '_site');
 const expectedTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
-const expectedTagline = 'A Geometry of the Cosmos';
+const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const errors = [];
@@ -56,7 +56,9 @@ for (const file of htmlFiles) {
 
   if (!$('.brand-name').text().includes(expectedTitle)) fail(`${relative}: masthead is missing the exact project title`);
   if (!$('.brand-tag').text().includes(expectedTagline)) fail(`${relative}: masthead is missing the exact tagline`);
-  if (html.includes('A Geometry of Existence')) fail(`${relative}: contains the retired tagline`);
+  if (html.includes('A Geometry of Existence') || html.includes('A Geometry of the Cosmos')) {
+    fail(`${relative}: contains a retired tagline`);
+  }
   if (/\b(?:localhost|127\.0\.0\.1)\b/.test(html)) fail(`${relative}: contains a browser-facing local address`);
 
   const ids = new Set();
@@ -126,6 +128,9 @@ if (!home) {
   if (home.$('title').text().trim() !== expectedTitle) fail('homepage title metadata is not the exact project title');
   const heroTitle = home.$('h1').text().replace(/:\s*/g, ': ').replace(/\s+/g, ' ').trim();
   if (!heroTitle.includes(expectedTitle)) fail('homepage hero is missing the exact project title');
+  if (!home.$('.hero-sub').text().trim().startsWith(expectedTagline)) {
+    fail('homepage hero is missing the exact attribution tagline');
+  }
   for (const href of ['/little-red-dots/', '/little-red-dots/research-proposal/']) {
     if (!home.$(`a[href="${href}"]`).length) fail(`homepage does not expose ${href}`);
   }

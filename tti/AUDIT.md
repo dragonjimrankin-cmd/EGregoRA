@@ -1,8 +1,8 @@
 # TTI Site Audit
 
 **Project:** The Shape of Becoming: Infinity, Gravity and Existence  
-**Tagline:** A Geometry of the Cosmos  
-**Revision:** r3.7
+**Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
+**Revision:** r3.8
 **Audit date:** 11 October 2026
 
 ## Scope
@@ -16,6 +16,11 @@ npm run audit:tti
 ```
 
 The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+
+## Maintenance added in r3.8
+
+- Replaced the former geometry tagline with the exact attribution line **“A speculative cosmology by Jim Rankin, UK, 2026”** across the masthead, homepage hero, metadata, structured-data slogan, manifest, Atom feed, deployment configuration and live smoke checks.
+- Removed the duplicate hard-coded masthead phrase while retaining the compact revision mark and slim responsive header.
 
 ## Current audited result
 

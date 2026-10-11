@@ -21,6 +21,7 @@
    ======================================================================== */
 
 import { countdown } from "./live.js";
+import { createProgressLiveness } from "./progress-live.js?v=progress-live-1";
 import {
   voiceTemplate,
   sealVoiceprint,
@@ -90,23 +91,13 @@ function setup(root) {
     el.msg.textContent = t || "";
     el.msg.className = "auth-msg" + (bad ? " is-bad" : "");
   };
-  const showProgress = (node, text, fraction, bad) => {
-    if (!node) return;
-    const previous = Number(node.getAttribute("aria-valuenow")) / 100;
-    const requested = fraction == null ? previous : Number(fraction);
-    const value = Math.max(0, Math.min(1, Number.isFinite(requested) ? requested : 0));
-    const percent = Math.round(value * 100);
-    node.hidden = false;
-    node.textContent = String(text || "Working\u2026") + " \u2014 " + percent + "%";
-    node.style.setProperty("--done", percent + "%");
-    node.setAttribute("role", "progressbar");
-    if (!node.hasAttribute("aria-label")) node.setAttribute("aria-label", "Media processing progress");
-    node.setAttribute("aria-valuemin", "0");
-    node.setAttribute("aria-valuemax", "100");
-    node.setAttribute("aria-valuenow", String(percent));
-    node.setAttribute("aria-valuetext", String(text || "Working"));
-    node.classList.toggle("is-bad", !!bad);
-  };
+  /* Percentages remain measured rather than invented. If a render, model load,
+     transcription pass, summary request or upload is quiet for four seconds,
+     the common reporter adds an elapsed-time heartbeat and moving sheen so it
+     is visibly alive until the next real measurement arrives. */
+  const progressLiveness = createProgressLiveness();
+  const showProgress = (node, text, fraction, bad) =>
+    progressLiveness.update(node, text, fraction, bad);
   const step = (text, fraction) => showProgress(el.bar, text, fraction, false);
   const transcriptionStep = (text, fraction, bad) => {
     showProgress(el.transcribeBar || el.bar, text, fraction, bad);
