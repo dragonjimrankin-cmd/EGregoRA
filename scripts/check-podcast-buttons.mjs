@@ -85,6 +85,8 @@ w.fetch = async (url, opts) => {
 w.prompt = () => "8===D";
 w.confirm = () => true;
 w.URL.createObjectURL = () => "blob:fake";
+/* jsdom has no layout, so scrolling is a no-op the page can still call. */
+w.Element.prototype.scrollIntoView = function () {};
 w.URL.revokeObjectURL = () => {};
 if (!w.navigator.mediaDevices) {
   Object.defineProperty(w.navigator, "mediaDevices", { value: { getUserMedia: async () => { throw new Error("no mic in harness"); } } });

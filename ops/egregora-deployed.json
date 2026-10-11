@@ -1,7 +1,7 @@
 {
   "project": "proj_eiuxpFfTnwwx",
-  "version": 226,
-  "recorded_at": "2026-10-11T06:20:00.000Z",
+  "version": 228,
+  "recorded_at": "2026-10-11T06:45:00.000Z",
   "deployed_at": null,
-  "note": "merged the foreign deploy through v226 with our whisper single-thread fix and the upload progress meter; recorded at 226 so the drift guard deploys the merge"
+  "note": "merged the foreign deploy through v228 with our whisper fix and the upload progress meter; recorded at 228 so the drift guard deploys the merge"
 }

@@ -62,6 +62,10 @@ function setup(root) {
     opts: $("[data-am=opts]"),
     run: $("[data-am=run]"),
     bar: $("[data-am=bar]"),
+    transcribeBar: $("[data-am=transcribe-progress]"),
+    transcribeCallout: $("[data-am=transcribe-callout]"),
+    transcribeHeading: $("[data-am=transcribe-heading]"),
+    transcribeDetail: $("[data-am=transcribe-detail]"),
     preview: $("[data-am=preview]"),
     pubrow: $("[data-am=pubrow]"),
     pubnow: $("[data-am=pubnow]"),
@@ -69,6 +73,7 @@ function setup(root) {
     title: $("[data-am=title]"),
     number: $("[data-am=number]"),
     summary: $("[data-am=summary]"),
+    summaryState: $("[data-am=summary-state]"),
     tags: $("[data-am=tags]"),
     send: $("[data-am=send]"),
     shelf: $("[data-am=shelf]"),
@@ -85,11 +90,48 @@ function setup(root) {
     el.msg.textContent = t || "";
     el.msg.className = "auth-msg" + (bad ? " is-bad" : "");
   };
-  const step = (t, frac) => {
-    if (!el.bar) return;
-    el.bar.hidden = false;
-    el.bar.textContent = t + " \u2014 " + Math.round((frac || 0) * 100) + "%";
-    el.bar.style.setProperty("--done", Math.round((frac || 0) * 100) + "%");
+  const showProgress = (node, text, fraction, bad) => {
+    if (!node) return;
+    const previous = Number(node.getAttribute("aria-valuenow")) / 100;
+    const requested = fraction == null ? previous : Number(fraction);
+    const value = Math.max(0, Math.min(1, Number.isFinite(requested) ? requested : 0));
+    const percent = Math.round(value * 100);
+    node.hidden = false;
+    node.textContent = String(text || "Working\u2026") + " \u2014 " + percent + "%";
+    node.style.setProperty("--done", percent + "%");
+    node.setAttribute("role", "progressbar");
+    if (!node.hasAttribute("aria-label")) node.setAttribute("aria-label", "Media processing progress");
+    node.setAttribute("aria-valuemin", "0");
+    node.setAttribute("aria-valuemax", "100");
+    node.setAttribute("aria-valuenow", String(percent));
+    node.setAttribute("aria-valuetext", String(text || "Working"));
+    node.classList.toggle("is-bad", !!bad);
+  };
+  const step = (text, fraction) => showProgress(el.bar, text, fraction, false);
+  const transcriptionStep = (text, fraction, bad) => {
+    showProgress(el.transcribeBar || el.bar, text, fraction, bad);
+    if (!el.transcribeCallout) return;
+    const done = !bad && Number(fraction) >= 1;
+    el.transcribeCallout.hidden = false;
+    el.transcribeCallout.classList.toggle("is-working", !bad && !done);
+    el.transcribeCallout.classList.toggle("is-ready", done);
+    el.transcribeCallout.classList.toggle("is-bad", !!bad);
+    if (el.transcribeHeading) {
+      const heading = bad
+        ? "This run has stopped"
+        : done
+          ? "Transcript and summary ready"
+          : "Working now: transcript first, summary next";
+      if (el.transcribeHeading.textContent !== heading) el.transcribeHeading.textContent = heading;
+    }
+    if (el.transcribeDetail) {
+      const detail = bad
+        ? "Nothing will be published. Read the error below, then try again."
+        : done
+          ? "The summary box below was filled automatically. Review it before publishing."
+          : "This area is busy. Please do not click again or close this page while it works.";
+      if (el.transcribeDetail.textContent !== detail) el.transcribeDetail.textContent = detail;
+    }
   };
   const mb = (n) => (n / 1048576).toFixed(1) + " MB";
   const clock = (s) => {
@@ -1430,8 +1472,9 @@ function setup(root) {
     if (window.EGTransformersLoader) return window.EGTransformersLoader();
     return import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2");
   }
-  function whisper() {
+  function whisper(report = step) {
     if (!whisperPipe) {
+      report("Loading the transcription model", 0.03);
       whisperPipe = transformersLoader()
         .then(function (m) {
           /* The CDN bundle is an ES module with named exports, but reach for
@@ -1458,8 +1501,10 @@ function setup(root) {
           return T.pipeline("automatic-speech-recognition", "Xenova/whisper-tiny.en", {
             quantized: true,
             progress_callback: function (p) {
-              if (p && p.status === "progress" && p.progress != null)
-                step("Loading the ear \u2014 " + Math.round(p.progress) + "%", 0.05);
+              if (p && p.status === "progress" && p.progress != null) {
+                const loaded = Math.max(0, Math.min(100, Number(p.progress) || 0));
+                report("Loading the transcription model", 0.03 + loaded / 100 * 0.27);
+              }
             }
           });
         })
@@ -1478,16 +1523,18 @@ function setup(root) {
     return off.startRendering().then(function (done) { return done.getChannelData(0); });
   }
 
-  function listenWhisper(buf, typer) {
-    return whisper().then(function (pipe) {
-      step("Listening \u2014 the ear reads the file itself\u2026", 0.15);
+  function listenWhisper(buf, typer, report = step) {
+    return whisper(report).then(function (pipe) {
+      report("Preparing 16 kHz speech audio", 0.32);
       return resample16k(buf).then(function (audio) {
+        report("Transcribing speech and timestamps", 0.42);
         return pipe(audio, {
           return_timestamps: true,
           chunk_length_s: 30,
           stride_length_s: 5
         });
       }).then(function (res) {
+        report("Consolidating speaker turns", 0.88);
         let speaker = 1, lastEnd = 0;
         const turns = [];
         const chunks = (res && res.chunks) || [];
@@ -1511,6 +1558,7 @@ function setup(root) {
         }).join("\n\n") + (turns.length ? "\n" : "");
         typer.add(out);
         typer.ghost("");
+        report("Transcript assembled", 0.92);
         return out;
       });
     });
@@ -1519,10 +1567,11 @@ function setup(root) {
   /* The browser's microphone ear, the last resort: the episode plays out
      loud and the microphone writes what it hears, stamped with the
      playhead. */
-  function listenLive(blob, typer) {
+  function listenLive(blob, typer, report = step) {
     return new Promise((go, no) => {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       const a = new Audio(URL.createObjectURL(blob));
+      report("Opening the live transcription fallback", 0.05);
       const rec = new SR();
       rec.continuous = true;
       rec.interimResults = true;
@@ -1564,9 +1613,19 @@ function setup(root) {
       rec.onend = () => {
         if (!a.ended && !a.paused) { try { rec.start(); } catch { /* restarting */ } }
       };
-      a.onended = () => { typer.ghost(""); window.setTimeout(() => finish(null), 600); };
+      a.ontimeupdate = () => {
+        const fraction = a.duration ? a.currentTime / a.duration : 0;
+        report("Live transcription \u2014 " + clock(a.currentTime) + " of " + clock(a.duration || 0),
+          0.08 + fraction * 0.84);
+      };
+      a.onended = () => {
+        typer.ghost("");
+        report("Transcript assembled", 0.92);
+        window.setTimeout(() => finish(null), 600);
+      };
       a.onerror = () => finish(new Error("the episode would not play for the ear"));
       a.play().then(() => {
+        report("Live transcription has started", 0.08);
         try { rec.start(); } catch (err) { finish(err); }
       }).catch((err) => finish(err));
     });
@@ -1576,14 +1635,19 @@ function setup(root) {
      ten-minute transport pieces are joined as one transcript. The provider
      does not return speaker turns, so it gets one opening timestamp rather
      than inventing a change of voice at every upload boundary. */
-  async function listenServer(buf, seconds, typer) {
+  async function listenServer(buf, seconds, typer, report = step) {
     const parts = Math.max(1, Math.ceil(seconds / SEG));
     let out = "";
     for (let i = 0; i < parts; i++) {
       const from = i * SEG, to = Math.min(seconds, (i + 1) * SEG);
-      step("Reducing stretch " + (i + 1) + " of " + parts + "\u2026", i / parts);
+      const base = 0.04 + (i / parts) * 0.86;
+      const span = 0.86 / parts;
+      report("Preparing transcription stretch " + (i + 1) + " of " + parts, base);
       const small = await smallCopy(buf, from, to);
-      const upload = await sendBlob(small, () => {});
+      const upload = await sendBlob(small, (text, fraction) =>
+        report("Uploading transcription stretch " + (i + 1) + " of " + parts,
+          base + span * (0.15 + fraction * 0.25)));
+      report("Transcribing stretch " + (i + 1) + " of " + parts, base + span * 0.5);
       const heard = await fetch("/api/transcribe", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -1596,16 +1660,18 @@ function setup(root) {
       const line = (i ? "\n\n" : "[" + clock(0) + "] ") + heard.text;
       out += line;
       typer.add(line);
-      step("Heard " + (i + 1) + " of " + parts, (i + 1) / parts);
+      report("Transcribed stretch " + (i + 1) + " of " + parts, base + span);
     }
     typer.stop();
+    report("Transcript assembled", 0.92);
     return out;
   }
 
   /* The archivist writes the listing from a transcript. summaryOnly touches
      nothing but the summary field. */
-  async function describeListing(transcript, summaryOnly) {
-    step("Writing the listing\u2026", 0.95);
+  async function describeListing(transcript, summaryOnly, report = step) {
+    report(summaryOnly ? "Writing the summary from the transcript" : "Writing the summary and listing",
+      summaryOnly ? 0.12 : 0.95);
     const d = await fetch("/api/transcribe", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -1622,7 +1688,14 @@ function setup(root) {
       topics: d.topics || [],
       tags: d.tags || []
     };
-    if (el.summary) el.summary.value = d.summary || el.summary.value;
+    if (el.summary) {
+      el.summary.value = d.summary || el.summary.value;
+      el.summary.classList.add("am-summary-ready");
+    }
+    if (el.summaryState) {
+      el.summaryState.hidden = false;
+      el.summaryState.textContent = "Summary ready \u2014 written automatically from the transcript. Read and edit it before publishing.";
+    }
     if (!summaryOnly) {
       if (el.title) el.title.value = d.title || el.title.value;
       if (el.tags) { el.tags.value = (d.tags || []).join(", "); if (el.markTags) el.markTags(); }
@@ -1649,7 +1722,7 @@ function setup(root) {
         '<details class="scroll"><summary>The transcript</summary><pre class="code-block am-script">' +
         esc(transcript.slice(0, 40000)) + "</pre></details>";
     }
-    step("The listing is written", 1);
+    report(summaryOnly ? "The summary is ready" : "The transcript, summary and listing are ready", 1);
     if (!summaryOnly)
       say("Listed: " + (d.title || "") + " \u2014 " + (d.tags || []).length + " tags, " +
         (d.links || []).length + " links into the site. Change anything you disagree with.");
@@ -1662,12 +1735,22 @@ function setup(root) {
   if (sumBtn) sumBtn.addEventListener("click", async () => {
     if (!lastTranscript) return say("There is no transcript yet \u2014 transcribe first.", true);
     sumBtn.disabled = true;
+    sumBtn.setAttribute("aria-busy", "true");
+    sumBtn.textContent = "Writing the summary\u2026";
+    transcriptionStep("Starting the summary", 0.03);
     try {
-      await describeListing(lastTranscript, true);
+      await describeListing(lastTranscript, true, transcriptionStep);
       say("The summary is written from the transcript. Read it before you publish.");
+      if (el.summary) el.summary.scrollIntoView({ behavior: "smooth", block: "center" });
     } catch (err) {
-      say((err && err.message) || "No model would write the summary just now.", true);
-    } finally { sumBtn.disabled = false; }
+      const message = (err && err.message) || "No model would write the summary just now.";
+      transcriptionStep("Summary stopped \u2014 " + message, null, true);
+      say(message, true);
+    } finally {
+      sumBtn.disabled = false;
+      sumBtn.setAttribute("aria-busy", "false");
+      sumBtn.textContent = "Rewrite only the summary";
+    }
   });
 
   if (hearBtn) hearBtn.addEventListener("click", async () => {
@@ -1675,6 +1758,14 @@ function setup(root) {
     const blob = (ready && ready.blob) || source;
     if (!blob) return say("Choose a recording first.", true);
     hearBtn.disabled = true;
+    hearBtn.setAttribute("aria-busy", "true");
+    hearBtn.textContent = "Transcribing now \u2014 summary follows\u2026";
+    if (sumBtn) sumBtn.disabled = true;
+    if (el.summaryState) el.summaryState.hidden = true;
+    if (el.summary) el.summary.classList.remove("am-summary-ready");
+    lastTranscript = "";
+    let completed = false;
+    transcriptionStep("Starting transcription", 0.01);
     const typer = makeTyper(earShow());
     try {
       /* The in-page ear first: it reads the file itself, with timestamps,
@@ -1691,17 +1782,18 @@ function setup(root) {
         try {
           earBy = "the browser's own whisper ear";
           say("Listening \u2014 the ear reads the file itself and types what it finds.");
-          lastTranscript = await listenWhisper(buf, typer);
+          lastTranscript = await listenWhisper(buf, typer, transcriptionStep);
         } catch (e) {
           say("The in-page ear could not load (" + ((e && e.message) || "no road to it") +
             ") \u2014 trying the other ears.");
+          transcriptionStep("Switching to the server transcription route", 0.03);
         }
       }
       if (!lastTranscript && buf) {
         try {
           earBy = "the server's ear";
           say("The server is listening instead, stretch by stamped stretch.");
-          lastTranscript = await listenServer(buf, buf.duration, typer);
+          lastTranscript = await listenServer(buf, buf.duration, typer, transcriptionStep);
         } catch { /* fall through to the microphone */ }
       }
       if (!lastTranscript) {
@@ -1709,29 +1801,42 @@ function setup(root) {
         if (SR) {
           earBy = "the browser's ear, listening out loud";
           say("Listening out loud \u2014 the episode plays and the microphone writes it below.");
-          lastTranscript = await listenLive(blob, typer);
+          lastTranscript = await listenLive(blob, typer, transcriptionStep);
         } else {
           throw new Error("this browser has no ear, and none of the other ears could be reached");
         }
       }
       if (sumBtn) sumBtn.disabled = lastTranscript.trim().length < 40;
       if (lastTranscript.trim().length >= 40) {
+        transcriptionStep("Checking enrolled voiceprints", 0.94);
         pendingNewVoiceMatches = buf
           ? await localVoiceMatches(buf, lastTranscript, []).catch((error) => ({
             labels: [], uncertain: [], reason: (error && error.message) || "voiceprint comparison unavailable"
           }))
           : { labels: [], uncertain: [], reason: "the audio could not be decoded locally" };
-        await describeListing(lastTranscript, false);
+        await describeListing(lastTranscript, false, transcriptionStep);
+        completed = true;
+        if (el.summary) el.summary.scrollIntoView({ behavior: "smooth", block: "center" });
         if (pendingNewVoiceMatches.labels.length) {
           say("The listing is ready. Voiceprints found " + voiceMatchReport(pendingNewVoiceMatches) +
             (pendingNewVoiceMatches.uncertain.length ? "; uncertain voices remain unnamed." : "."));
         }
-      } else say("The ear kept almost nothing \u2014 the listing is yours to write by hand.", true);
+      } else {
+        transcriptionStep("Transcription stopped \u2014 too few words were heard", null, true);
+        say("The ear kept almost nothing \u2014 the listing is yours to write by hand.", true);
+      }
     } catch (err) {
       typer.stop();
-      say((err && err.message) || "It could not be transcribed.", true);
+      transcriptionStep("Transcription or summary stopped \u2014 " +
+        ((err && err.message) || "the work could not be completed"), null, true);
+      say((err && err.message) || "The transcript and summary could not be completed.", true);
     } finally {
       hearBtn.disabled = false;
+      hearBtn.setAttribute("aria-busy", "false");
+      hearBtn.textContent = completed
+        ? "Transcribe again and rewrite the summary"
+        : "Try transcription and summary again";
+      if (sumBtn) sumBtn.disabled = lastTranscript.trim().length < 40;
     }
   });
 
@@ -1891,6 +1996,7 @@ function setup(root) {
       '<button class="btn btn--small btn--ghost" type="button" data-ed="transcribe">Transcribe this episode</button>' +
       '<button class="btn btn--small btn--ghost" type="button" data-ed="sum-from-tr">Write the summary from its transcript</button>' +
       '<button class="btn btn--small btn--ghost" type="button" data-ed="read-tr">Read its transcript</button></div>' +
+      '<p class="am-bar" data-ed="tr-progress" aria-label="Transcription progress" hidden></p>' +
       '<div class="ep-transcript" data-ed="trbox" hidden></div>' +
 
       (KIND === "audio"
@@ -1974,6 +2080,8 @@ function setup(root) {
 
     const ed = (name) => box.querySelector('[data-ed="' + name + '"]');
     const tellEd = (t, bad) => { const n = ed("state"); if (n) { n.textContent = t; n.className = "muted small" + (bad ? " is-bad" : ""); } };
+    const transcribeStep = (text, fraction, bad) =>
+      showProgress(ed("tr-progress"), text, fraction, bad);
     let autoMatchCurrent = async () => ({ labels: [], uncertain: [], reason: "not ready" });
 
     /* The player everything else is measured against. */
@@ -2271,6 +2379,7 @@ function setup(root) {
       const button = ed("transcribe");
       if (!edit.buf) return tellEd("The audio is still loading. Try again when the player says Ready.", true);
       button.disabled = true;
+      button.setAttribute("aria-busy", "true");
       const transcriptBox = ed("trbox");
       transcriptBox.innerHTML = "";
       const area = document.createElement("textarea");
@@ -2282,24 +2391,29 @@ function setup(root) {
       transcriptBox.hidden = false;
       const typer = makeTyper(area);
       let transcript = "";
+      transcribeStep("Starting transcription", 0.01);
       try {
         tellEd("Listening to the stored episode in this browser\u2026");
         try {
-          transcript = await listenWhisper(edit.buf, typer);
+          transcript = await listenWhisper(edit.buf, typer, transcribeStep);
         } catch {
           tellEd("The browser ear could not load; the server is listening in reduced stretches\u2026");
-          transcript = await listenServer(edit.buf, edit.buf.duration, typer);
+          transcribeStep("Switching to the server transcription route", 0.03);
+          transcript = await listenServer(edit.buf, edit.buf.duration, typer, transcribeStep);
         }
         typer.stop();
         if (!transcript || transcript.trim().length < 40) {
           throw new Error("The ear did not keep enough words to save.");
         }
+        transcribeStep("Saving the transcript", 0.94);
         await post({ action: "edit", id: item.id, transcript });
         const known = Array.isArray(item.speakers) ? item.speakers : [];
         let named = null;
         if (known.length) {
+          transcribeStep("Restoring known speaker names", 0.96);
           named = await post({ action: "name-speakers", id: item.id, speakers: known });
         }
+        transcribeStep("Checking enrolled voiceprints", 0.98);
         const biometric = await autoMatchCurrent(transcript).catch((error) => ({
           labels: [], uncertain: [], reason: (error && error.message) || "voiceprint comparison unavailable"
         }));
@@ -2314,12 +2428,16 @@ function setup(root) {
               biometric.reason + ")."
             : "Transcript saved. Its turns are kept; voiceprints made no assignment (" +
               biometric.reason + ").");
+        transcribeStep("Transcription saved", 1);
         button.textContent = "Transcribe it again";
       } catch (err) {
         typer.stop();
+        transcribeStep("Transcription stopped \u2014 " +
+          ((err && err.message) || "the episode could not be transcribed"), null, true);
         tellEd((err && err.message) || "The episode could not be transcribed.", true);
       } finally {
         button.disabled = false;
+        button.setAttribute("aria-busy", "false");
       }
     });
 
