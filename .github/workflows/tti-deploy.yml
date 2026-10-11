@@ -94,9 +94,10 @@ jobs:
           grep -q 'Handedness Reversal Is Not Time Reversal' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Earned, Chosen, Refused' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'JWST&rsquo;s Little Red Dots, Through TTI' tti/hatchable/public/little-red-dots/index.html
-          grep -q 'A Little Red Dot Is an Integration Front' tti/hatchable/public/little-red-dots/index.html
-          grep -q 'Not a Fourth Pole, but Traffic Between Two' tti/hatchable/public/little-red-dots/index.html
-          grep -q 'Where the Dot Would Live Mathematically' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'An Integration Front Carrying an Older Residue' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'What Could Exist Between Minus One and Zero?' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'Not a Fourth Pole, but a Boundary Condition' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'The conservation fork' tti/hatchable/public/little-red-dots/index.html
           grep -q 'Six Debts the Sky Can Collect' tti/hatchable/public/little-red-dots/index.html
           grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
           grep -q 'little red dots are compact' tti/hatchable/public/cosmic-ledger/index.html
@@ -158,7 +159,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/cosmic-ledger/',
               markers: ['The Cosmic Ledger', 'JWST&rsquo;s little red dots are compact',
-                'a conjecture, not a result of the equations above']
+                'carrying an inherited', 'not a result of the equations above']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/time-and-residue/',
@@ -176,10 +177,11 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/little-red-dots/',
               markers: ['JWST&rsquo;s Little Red Dots, Through TTI',
-                'A Little Red Dot Is an Integration Front',
-                'Not a Fourth Pole, but Traffic Between Two',
-                'Where the Dot Would Live Mathematically', 'Six Debts the Sky Can Collect',
-                'The Dot Is the Moment the Scaffold Learns to Shine']
+                'An Integration Front Carrying an Older Residue',
+                'What Could Exist Between Minus One and Zero?',
+                'Not a Fourth Pole, but a Boundary Condition', 'The conservation fork',
+                'Six Debts the Sky Can Collect',
+                'The Dot May Be a Memory Learning to Shine Again']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/essays/',
