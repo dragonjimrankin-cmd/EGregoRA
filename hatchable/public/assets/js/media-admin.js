@@ -8,8 +8,8 @@
    choice rather than a shortcut. A server function has no ffmpeg and a
    strict clock; a browser has the whole Web Audio engine sitting idle. So
  the file is decoded, run through a real chain — rumble filter, gate,
- compressor, tone, loudness match, limiter, denoise gate (sniffs and
- coughs out, words left whole), trimmed silence, fades — and
+ compressor, tone, loudness match, limiter, de-stutter, denoise gate
+ (sniffs and coughs out, words left whole), trimmed silence, fades — and
    rendered offline, usually faster than real time. Nothing leaves the
    machine until it has been listened to.
 
@@ -319,7 +319,7 @@ function setup(root) {
     return {
       rumble: on("rumble"), gate: on("gate"), tone: on("tone"), deess: on("deess"),
       level: on("level"), loud: on("loud"), trim: on("trim"), fade: on("fade"),
-      gaps: on("gaps"), denoise: on("denoise"),
+      gaps: on("gaps"), denoise: on("denoise"), destutter: on("destutter"),
       gapHold: Number((root.querySelector("[data-am=gaphold]") || {}).value || 1.5),
       gapLeave: Number((root.querySelector("[data-am=gapleave]") || {}).value || 0.45),
       target: el.loud ? Number(el.loud.value) : -18,
@@ -590,20 +590,20 @@ function setup(root) {
      A burst is only dropped when it is short, alone on both sides, *and*
      unvoiced by its zero-crossings, so a one-word answer like "Yes." is
      kept while a cough is not. */
-  function denoiseGate(buf) {
+  /* The shared eyes: 20 ms frames of loudness and noisiness, measured on
+     the samples themselves. Both the gate and the de-stutter look
+     through this and nothing else. */
+  function frameEnvelope(buf) {
     const rate = buf.sampleRate;
     const chans = buf.numberOfChannels;
-    const n = buf.length;
-    const FRAME = Math.max(1, Math.round(rate * 0.02)); /* 20 ms frames */
-    const frames = Math.max(1, Math.ceil(n / FRAME));
-
+    const FRAME = Math.max(1, Math.round(rate * 0.02));
+    const frames = Math.max(1, Math.ceil(buf.length / FRAME));
     const ch = [];
     for (let c = 0; c < chans; c++) ch.push(buf.getChannelData(c));
-
     const rms = new Float64Array(frames);
     const zcr = new Float64Array(frames);
     for (let f = 0; f < frames; f++) {
-      const a = f * FRAME, b = Math.min(n, a + FRAME);
+      const a = f * FRAME, b = Math.min(buf.length, a + FRAME);
       let sum = 0, k = 0, cross = 0, last = 0;
       for (let i = a; i < b; i++) {
         let v = 0;
@@ -616,10 +616,25 @@ function setup(root) {
       rms[f] = Math.sqrt(sum / Math.max(1, k));
       zcr[f] = cross / Math.max(1, b - a - 1);
     }
+    return { ch, FRAME, frames, rate, rms, zcr };
+  }
 
-    const sorted = Float64Array.from(rms).sort();
-    const floor = sorted[Math.floor(frames * 0.15)] || 0;
-    const voice = sorted[Math.floor(frames * 0.85)] || 0;
+  /* The floor of the room and the level of the voice, measured from the
+     file itself — every threshold in here hangs off these two. */
+  function floorAndVoice(E) {
+    const sorted = Float64Array.from(E.rms).sort();
+    return {
+      floor: sorted[Math.floor(E.frames * 0.15)] || 0,
+      voice: sorted[Math.floor(E.frames * 0.85)] || 0
+    };
+  }
+
+  function denoiseGate(buf) {
+    const E = frameEnvelope(buf);
+    const { ch, FRAME, frames, rate, rms, zcr } = E;
+    const n = buf.length;
+
+    const { floor, voice } = floorAndVoice(E);
     /* A file with no speech in it gets no gate at all — there would be
        nothing to protect and everything to lose. */
     if (voice < 1e-4 || voice <= floor * 1.6) return { buf, bursts: 0 };
@@ -683,11 +698,11 @@ function setup(root) {
 
     /* Write the gain: fast attack, slower release, so nothing clicks. */
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const out = ctx.createBuffer(chans, n, rate);
+    const out = ctx.createBuffer(ch.length, n, rate);
     ctx.close();
     const atk = 1 - Math.exp(-1 / (rate * 0.008));
     const rel = 1 - Math.exp(-1 / (rate * 0.014));
-    for (let c = 0; c < chans; c++) {
+    for (let c = 0; c < ch.length; c++) {
       const srcD = ch[c];
       const dst = out.getChannelData(c);
       let gNow = 0;
@@ -698,6 +713,163 @@ function setup(root) {
       }
     }
     return { buf: out, bursts };
+  }
+
+  /* ------------------------------------------------------- the de-stutter
+     A stutter has a signature: the same short syllable, landing two or
+     three times in a row, each landing nearly the length, loudness and
+     pitch of the last, with a breath between — and then the word itself,
+     spoken once, longer. Only that exact pattern is touched, and only
+     the repeats: the word at the end is never cut, nothing longer than a
+     syllable is ever cut, and a word a speaker chose to say twice on
+     purpose ("wait — wait") stands, because a chosen repeat is longer
+     than a syllable and sits behind a longer pause.
+
+     The repeats are silenced where they stand rather than spliced out.
+     A splice would move everything after it, and plates are cued to
+     moments in this episode; a silenced repeat leaves the timeline
+     exactly where it was, and the gate mops up what is left.
+
+     The guard rail matters more than the detection. If the pattern
+     fires often enough that speech itself must be in doubt — singing,
+     applause, a room full of cutlery — the whole pass is abandoned and
+     nothing at all is touched. A stutter kept is a small harm; a
+     sentence eaten is not. */
+  function pitchOf(data, a, b, rate) {
+    /* The roughest honest pitch: autocorrelation over the stretch, the
+       lag between 60 and 400 Hz that agrees with itself best. */
+    const n = b - a;
+    if (n < Math.floor(rate / 200)) return 0;
+    const minLag = Math.floor(rate / 400), maxLag = Math.min(n - 1, Math.floor(rate / 60));
+    let best = 0, bestV = 0;
+    for (let lag = minLag; lag <= maxLag; lag++) {
+      let s = 0;
+      for (let i = a; i + lag < b; i++) s += data[i] * data[i + lag];
+      if (s > bestV) { bestV = s; best = lag; }
+    }
+    return best ? rate / best : 0;
+  }
+
+  function destutter(buf) {
+    const E = frameEnvelope(buf);
+    const { ch, FRAME, frames, rate, rms, zcr } = E;
+    const { floor, voice } = floorAndVoice(E);
+    if (voice < 1e-4 || voice <= floor * 1.6)
+      return { buf, events: [], skipped: "" };
+
+    const th = Math.max(floor * 3.2, voice * 0.10);
+    const closeTh = th * 0.55;
+    const ms = (f) => f * FRAME * 1000 / rate;
+
+    /* Syllables: runs of voiced frames, split by breaths. */
+    const segs = [];
+    let held = 0, start = -1;
+    for (let f = 0; f <= frames; f++) {
+      const on = f < frames && (rms[f] >= th || (held && rms[f] >= closeTh));
+      held = on ? 1 : 0;
+      if (on && start < 0) start = f;
+      if (!on && start >= 0) {
+        let r = 0, z = 0;
+        for (let i = start; i < f; i++) { r += rms[i]; z += zcr[i]; }
+        segs.push({ from: start, to: f, rms: r / (f - start), zcr: z / (f - start), pitch: 0 });
+        start = -1;
+      }
+    }
+
+    const similar = (a, b, tolDur, tolPitch) => {
+      const la = a.to - a.from, lb = b.to - b.from;
+      if (Math.max(la, lb) / Math.min(la, lb) > tolDur) return false;
+      if (Math.max(a.rms, b.rms) / Math.max(1e-9, Math.min(a.rms, b.rms)) > 2.2) return false;
+      if (Math.max(a.zcr, b.zcr) / Math.max(1e-6, Math.min(a.zcr, b.zcr)) > 3) return false;
+      if (a.pitch > 0 && b.pitch > 0) {
+        const cents = Math.abs(1200 * Math.log2(a.pitch / b.pitch));
+        if (cents > tolPitch) return false;
+      }
+      return true;
+    };
+
+    /* Walk the syllables and find the pattern: repeats, then the word. */
+    const events = [];
+    const doomed = [];
+    let i = 0;
+    while (i < segs.length - 1) {
+      const a = segs[i];
+      const dur = ms(a.to - a.from);
+      const gap = ms(segs[i + 1].from - a.to);
+      /* A repeat is shorter than a word — a syllable, not a word — and
+         hurries into the next. Anything 220 ms or longer could be a
+         word a person meant to say, and words are not ours to remove. */
+      if (dur < 50 || dur > 220 || gap < 25 || gap > 250) { i++; continue; }
+      if (!a.pitch) a.pitch = pitchOf(ch[0], a.from * FRAME, Math.min(buf.length, a.to * FRAME), rate);
+
+      /* Gather the run of repeats behind it. */
+      let j = i + 1;
+      while (j < segs.length) {
+        const s = segs[j];
+        const g = j + 1 < segs.length ? ms(segs[j + 1].from - s.to) : Infinity;
+        if (!similar(a, s, 1.35, 400)) break;
+        if (g !== Infinity && (g < 25 || g > 250)) break;
+        j++;
+      }
+      const repeats = j - i; /* candidates, at least one */
+      const anchor = segs[j];
+
+      /* The word the stutter was reaching for: it must be there, clearly
+         longer than a repeat, and kin — the same pitch family, arriving
+         straight out of the last repeat. A chosen repetition
+         ("wait — wait") has no such anchor and stands. */
+      const anchorGap = anchor ? ms(anchor.from - segs[j - 1].to) : Infinity;
+      const anchorDur = anchor ? ms(anchor.to - anchor.from) : 0;
+      if (!anchor || repeats < 2 || anchorGap > 250 ||
+          anchorDur < Math.max(250, dur * 1.3)) { i++; continue; }
+      if (!anchor.pitch)
+        anchor.pitch = pitchOf(ch[0], anchor.from * FRAME, Math.min(buf.length, anchor.to * FRAME), rate);
+      if (a.pitch > 0 && anchor.pitch > 0 &&
+          Math.abs(1200 * Math.log2(a.pitch / anchor.pitch)) > 500) { i++; continue; }
+
+      /* Two repeats minimum — one echo of a syllable is prosody, not a
+         stutter. And the LAST repeat always stands: in "I — I — I mean"
+         the last "I" is the word itself, and in "b — b — but" keeping it
+         costs a faint hesitation where cutting it would cost a word. */
+      doomed.push(segs.slice(i, i + repeats - 1));
+      events.push({ at: segs[i].from * FRAME / rate, n: repeats - 1 });
+      i = j + 1;
+    }
+
+    /* The guard rail: too much "stuttering" means this is not speech. */
+    let speech = 0, drop = 0;
+    for (const s of segs) speech += s.to - s.from;
+    for (const grp of doomed) for (const s of grp) drop += s.to - s.from;
+    if (doomed.length > 30 || (speech > 0 && drop > speech * 0.03)) {
+      return {
+        buf, events: [],
+        skipped: "the stutter check found " + doomed.length +
+          " places — too many to trust, so nothing was touched"
+      };
+    }
+    if (!doomed.length) return { buf, events: [], skipped: "" };
+
+    /* Silence the repeats where they stand: 5 ms ramps, timeline intact. */
+    const mute = new Uint8Array(frames);
+    for (const grp of doomed) for (const s of grp)
+      for (let t = s.from; t < s.to; t++) mute[t] = 1;
+
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const out = ctx.createBuffer(ch.length, buf.length, rate);
+    ctx.close();
+    const atk = 1 - Math.exp(-1 / (rate * 0.005));
+    const rel = 1 - Math.exp(-1 / (rate * 0.010));
+    for (let c = 0; c < ch.length; c++) {
+      const srcD = ch[c];
+      const dst = out.getChannelData(c);
+      let gNow = 1;
+      for (let t = 0; t < buf.length; t++) {
+        const target = mute[(t / FRAME) | 0] ? 0 : 1;
+        gNow += (target - gNow) * (target > gNow ? atk : rel);
+        dst[t] = srcD[t] * gNow;
+      }
+    }
+    return { buf: out, events, skipped: "" };
   }
 
   async function enhanceAudio(want) {
@@ -770,6 +942,20 @@ function setup(root) {
     src.start(0, from, to - from);
 
     let done = await off.startRendering();
+    let stutterNote = "";
+    if (want.destutter) {
+      step("Listening for stuttering\u2026", 0.62);
+      const st = destutter(done);
+      done = st.buf;
+      if (st.skipped) stutterNote = st.skipped;
+      else if (st.events.length) {
+        const reps = st.events.reduce((s, e) => s + e.n, 0);
+        stutterNote = reps + " repeated syllable" + (reps === 1 ? "" : "s") + " muted at " +
+          st.events.length + " place" + (st.events.length === 1 ? "" : "s") +
+          " (" + st.events.slice(0, 6).map((e) => clock(e.at) + " \u00d7" + e.n).join(", ") +
+          (st.events.length > 6 ? ", \u2026" : "") + ")";
+      } else stutterNote = "no stuttering found";
+    }
     let gateNote = "";
     if (want.denoise) {
       step("Gating \u2014 sniffs and coughs out, words left whole\u2026", 0.7);
@@ -781,7 +967,7 @@ function setup(root) {
     }
     step("Measuring\u2026", 0.75);
     const look = inspect(done);
-    const notes = [cutNote, gateNote].filter(Boolean);
+    const notes = [cutNote, stutterNote, gateNote].filter(Boolean);
     el.after.innerHTML = reading(look, "After the work") +
       (notes.length ? '<p class="muted xsmall">' + notes.join("; ") + ".</p>" : "");
 
@@ -795,6 +981,7 @@ function setup(root) {
       want.level && "levelled",
       want.loud && ("matched to " + want.target + " dB RMS"),
       want.gaps && cutNote,
+      want.destutter && stutterNote,
       want.denoise && (gateNote
         ? "sniffs and coughs gated out \u2014 " + gateNote
         : "silences gated, no stray bursts found"),
