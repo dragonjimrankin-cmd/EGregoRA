@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-11T17:26:43Z
+# Hatchable deploy — 2026-10-11T17:59:04Z
 
 token present: 43 chars, prefix hb_
 
@@ -26,8 +26,6 @@ hatchable.com/mcp -> HTTP 200
 ▸ uploading 41 binary assets (server-side URL import)
   ✓ public/assets/img/apple-touch-icon.png (47 KB) via url import
   ✓ public/assets/img/art-inner-cosmos.jpg (361 KB) via url import
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/img/art-ouroboros-elements.jpg (471 KB) via url import
   ✓ public/assets/img/art-solstice-circle.jpg (249 KB) via url import
   ✓ public/assets/img/art-tree-of-stars.jpg (404 KB) via url import
@@ -45,8 +43,6 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/img/product-earrings.jpg (103 KB) via url import
   ✓ public/assets/img/product-elements.jpg (153 KB) via url import
   ✓ public/assets/img/product-glass.jpg (181 KB) via url import
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/img/product-hoodie.jpg (87 KB) via url import
   ✓ public/assets/img/product-journal.jpg (293 KB) via url import
   ✓ public/assets/img/product-member.jpg (168 KB) via url import
@@ -76,18 +72,16 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/js/headtts/voices/am_puck.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/bm_fable.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
   ✓ public/assets/js/headtts/voices/bm_george.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-  ✓ public/assets/js/headtts/voices/bm_lewis.bin (510 KB, 12 chunks)
-▸ dry_run_deploy
    … 429 on tools/call, waiting 20s (attempt 1/5)
    … 429 on tools/call, waiting 40s (attempt 2/5)
+  ✓ public/assets/js/headtts/voices/bm_lewis.bin (510 KB, 12 chunks)
+▸ dry_run_deploy
   {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintUndeclaredEnvReads","
 ▸ openai key probe: HTTP 429 — You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.
 ▸ vision probe hf-router [Qwen/Qwen2.5-VL-7B-Instruct]: HTTP 401 — <!DOCTYPE html> <html class="" lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, ini
@@ -100,14 +94,14 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 253,
+  "version": 254,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v252.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v253.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v253.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v254.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
   "files_deployed": 261,
   "functions_deployed": 31,
