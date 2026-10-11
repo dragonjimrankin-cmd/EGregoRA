@@ -116,7 +116,7 @@
    A conversational client for /api/ask. Keeps the thread in memory, sends the
    last turns with each question so the oracle can follow a line of enquiry,
    renders a transcript, streams the answer in word by word, offers follow-up
-   chips, and hands the finished text to Gink to read aloud. */
+   chips, and hands the finished text to the page's familiar to read aloud. */
 (() => {
   "use strict";
   const form = document.getElementById("oracle-form");
@@ -408,11 +408,11 @@
         history.push({ role: "oracle", text: data.answer });
         if (history.length > MAX_KEPT) history = history.slice(-MAX_KEPT);
         if (window.EGVoiceMuted && window.EGVoiceMuted()) {
-          /* Gink's voice is off; the answer is read with the eyes. */
-        } else if (window.EGFox && window.EGFox.available) {
-          window.EGFox.speak(data.answer);
+          /* The familiar's voice is off; the answer is read with the eyes. */
         } else {
-          window.__EG_PENDING_SPEECH__ = data.answer;
+          const avatar = window.EGDragon || window.EGFox;
+          if (avatar && avatar.available) avatar.speak(data.answer);
+          else window.__EG_PENDING_SPEECH__ = data.answer;
         }
       }
     } catch {
@@ -473,7 +473,7 @@
   });
 
   /* Full Reset is the old "begin again": the thread is forgotten, the
-     opening chips come back, Gink stops talking and the box is emptied. */
+     opening chips come back, the familiar stops talking and the box is emptied. */
   if (wipe) wipe.addEventListener("click", () => {
     history = [];
     attachments = [];
@@ -490,7 +490,8 @@
       "What does a psychedelic actually do to a brain?",
       "Is magic real, in one paragraph?"
     ]);
-    if (window.EGFox) window.EGFox.stop();
+    const avatar = window.EGDragon || window.EGFox;
+    if (avatar) avatar.stop();
     box.value = "";
     box.style.height = "";
     box.focus();
@@ -535,7 +536,10 @@
   let gotSpeech = false;
   let holdStart = 0;
 
-  const fox = () => (window.EGFox && typeof window.EGFox.listen === "function") ? window.EGFox : null;
+  const fox = () => {
+    const avatar = window.EGDragon || window.EGFox;
+    return avatar && typeof avatar.listen === "function" ? avatar : null;
+  };
 
   const start = () => {
     if (active) return;
@@ -698,7 +702,7 @@
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", onScroll);
   addEventListener("load", update);
-  // the page grows as reveal animations and Gink's canvas settles in
+  // the page grows as reveal animations and the avatar's canvas settles in
   if (window.ResizeObserver) {
     new ResizeObserver(onScroll).observe(document.body);
   }
@@ -4646,24 +4650,27 @@
   });
 })();
 
-/* ---------------------------------------------- Gink's voice, on and off
+/* --------------------------------------------- Avatar voice, on and off
    A switch in the corner of the answer box. The choice is remembered, and
-   it is applied to the fox as soon as he wakes — he may well be still
-   loading his three.js when the page settles. */
+   it is applied to the familiar as soon as the model wakes — it may still
+   be loading three.js when the page settles. */
 (() => {
   "use strict";
   const btn = document.getElementById("o-mute");
-  const KEY = "eg-gink-muted";
+  const avatarName = (document.querySelector(".dragon-name, .fox-name")?.textContent || "Gink").trim();
+  const KEY = avatarName === "ShakDrah" ? "tti-shakdrah-muted" : "eg-gink-muted";
 
   let muted = false;
   try { muted = localStorage.getItem(KEY) === "1"; } catch { muted = false; }
 
   window.EGVoiceMuted = () => muted;
 
+  const avatarVoice = () => window.EGDragon || window.EGFox || null;
   const applyToFox = () => {
-    if (window.EGFox) {
-      window.EGFox.muted = muted;
-      if (muted && window.EGFox.stop) window.EGFox.stop();
+    const avatar = avatarVoice();
+    if (avatar) {
+      avatar.muted = muted;
+      if (muted && avatar.stop) avatar.stop();
       if (muted) window.__EG_PENDING_SPEECH__ = "";
       return true;
     }
@@ -4684,10 +4691,10 @@
   const paint = () => {
     btn.classList.toggle("is-muted", muted);
     btn.setAttribute("aria-pressed", muted ? "true" : "false");
-    if (label) label.textContent = muted ? "Gink's voice is off" : "Gink's voice is on";
-    btn.setAttribute("aria-label", muted
-      ? "Gink's voice is off. Turn it on."
-      : "Gink's voice is on. Turn it off.");
+    if (label) label.textContent = avatarName + (muted ? "'s voice is off" : "'s voice is on");
+    btn.setAttribute("aria-label", avatarName + (muted
+      ? "'s voice is off. Turn it on."
+      : "'s voice is on. Turn it off."));
   };
 
   /* Pause and carry on, and read it again from the top. */
@@ -4695,7 +4702,7 @@
   const againBtn = document.getElementById("o-again");
   const paintHold = () => {
     if (!holdBtn) return;
-    const fox = window.EGFox;
+    const fox = avatarVoice();
     const isPaused = Boolean(fox && fox.paused);
     holdBtn.textContent = isPaused ? "Carry on" : "Pause";
     holdBtn.setAttribute("aria-pressed", isPaused ? "true" : "false");
@@ -4703,13 +4710,13 @@
     if (againBtn) againBtn.disabled = muted || !(fox && fox.lastText);
   };
   if (holdBtn) holdBtn.addEventListener("click", () => {
-    const fox = window.EGFox;
+    const fox = avatarVoice();
     if (!fox) return;
     if (fox.paused) fox.resume(); else fox.hold();
     paintHold();
   });
   if (againBtn) againBtn.addEventListener("click", () => {
-    const fox = window.EGFox;
+    const fox = avatarVoice();
     if (fox && fox.again) fox.again();
     paintHold();
   });

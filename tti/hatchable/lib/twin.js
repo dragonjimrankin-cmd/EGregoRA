@@ -18,7 +18,7 @@ import { db } from 'hatchable';
 /* This project, and the one on the other side of the mirror. */
 export const HOME = {
   key: 'two-infinities',
-  label: 'The Eternal Integration: Two Infinities (and beyond)',
+  label: 'The Two Infinities (and beyond)',
   url: 'https://the-two-infinities.hatchable.site'
 };
 export const TWIN = {
@@ -51,12 +51,12 @@ export const BRAND = {
     ['/plates/', 'The plates', 'every figure on the site, drawn as live vector art, gathered in one place.'],
     ['/ask-shakdrah/', 'ShakDrah', 'a green dragon who will answer in writing, at length, and say so when there is no good answer.']
   ],
-  youAreIn: 'Your address is confirmed and you are a member of The Eternal Integration: Two Infinities (and beyond).'
+  youAreIn: 'Your address is confirmed and you are a member of The Two Infinities (and beyond).'
 };
 
 /** One sentence, used in every letter either site sends. */
 export const PAIR_LINE =
-  'One account covers The Eternal Integration: Two Infinities (and beyond) and EGregoRA — ' +
+  'One account covers The Two Infinities (and beyond) and EGregoRA — ' +
   'sign in at either with the same address.';
 
 const TIMEOUT_MS = 6000;

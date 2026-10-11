@@ -1,5 +1,5 @@
 /* ==========================================================================
-   The Eternal Integration: Two Infinities (and beyond) — Galactic Stylesheet
+   The Shape of Becoming: Eternal Integration and the Cosmic Torus — Galactic Stylesheet
    Palette: deep space, ion blue, torus teal, nebula violet, hydrogen rose
    Structure, type and spacing are the EGregoRA house style; only the
    colours and the sky behind them have been changed.
@@ -109,8 +109,9 @@ img { max-width: 100%; height: auto; display: block; }
 .brand-sigil { width: 58px; height: 58px; color: var(--gold); flex: none; animation: slow-spin 120s linear infinite; }
 @keyframes slow-spin { to { transform: rotate(360deg); } }
 .brand-name {
-  display: block; font-family: var(--display); font-weight: 900;
-  font-size: clamp(1.25rem, 6vw, 2.5rem); letter-spacing: 0.06em; line-height: 1;
+  display: block; max-width: 32ch;
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(0.9rem, 2.8vw, 1.7rem); letter-spacing: 0.04em; line-height: 1.12;
   background: linear-gradient(180deg, #fff6dd, var(--gold) 45%, var(--gold-deep));
   -webkit-background-clip: text; background-clip: text; color: transparent;
   text-shadow: 0 0 34px rgba(118,207,238,0.25);
@@ -212,7 +213,7 @@ h1, h2, h3, h4 { font-family: var(--title); font-weight: 600; line-height: 1.15;
 h1 {
   font-family: var(--display); font-weight: 700;
   font-size: clamp(1.7rem, 7.6vw, 4.1rem); margin: 0.6rem 0 0.4rem;
-  overflow-wrap: break-word; hyphens: manual;
+  overflow-wrap: break-word; hyphens: auto;
   background: linear-gradient(180deg, #fffaf0, var(--gold) 60%, var(--gold-deep));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -234,7 +235,15 @@ h3 { font-size: 1.15rem; color: var(--gold-bright); margin: 0 0 0.4rem; letter-s
   position: relative; top: -2rem; animation: slow-spin 220s linear infinite reverse;
 }
 .hero-inner { position: relative; }
-.hero h1 { font-size: clamp(2.8rem, 10vw, 6.4rem); letter-spacing: 0.04em; }
+.hero h1 {
+  max-width: 18ch; margin-inline: auto;
+  font-size: clamp(2rem, 7vw, 5.2rem); letter-spacing: 0.035em;
+}
+.hero-title em {
+  display: inline-block; margin-top: 0.18em;
+  font-family: var(--title); font-size: 0.62em; font-weight: 400;
+  line-height: 1.25; letter-spacing: 0.055em;
+}
 .hero .sub {
   font-family: var(--caps); letter-spacing: 0.5em; text-transform: uppercase;
   font-size: clamp(0.62rem, 1.6vw, 0.85rem); color: var(--vellum-dim);
@@ -292,8 +301,11 @@ h3 { font-size: 1.15rem; color: var(--gold-bright); margin: 0 0 0.4rem; letter-s
   text-align: right;
 }
 
-/* illuminated first letter */
-.illuminated > p:first-of-type::first-letter {
+/* Illuminated initials belong to body copy, never to compact labels or
+   displayed mathematics. Without these exclusions, the first character of a
+   kicker becomes an oversized gold drop cap instead of staying with its green
+   sentence. */
+.illuminated > p:first-of-type:not(.kicker):not(.formula)::first-letter {
   font-family: var(--display); font-size: 3.6em; float: left; line-height: 0.82;
   padding: 0.08em 0.14em 0 0; color: var(--gold-bright);
   text-shadow: 0 0 22px rgba(118,207,238,0.45);
@@ -575,10 +587,28 @@ details.scroll[open] summary { margin-bottom: 0.8rem; }
 .dragon-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.9rem 0 0.5rem; }
 .dragon-controls .btn { padding: 0.45rem 0.9rem; font-size: 0.7rem; }
 .dragon-controls .btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+.avatar-voice-picker {
+  display: grid; grid-template-columns: max-content minmax(10rem, 1fr); align-items: center;
+  gap: 0.35rem 0.65rem; margin: 0.65rem 0 0.55rem;
+}
+.avatar-voice-picker label {
+  color: var(--gold-bright); font-family: var(--display); font-size: 0.72rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.avatar-voice-picker select {
+  min-width: 0; padding: 0.48rem 2rem 0.48rem 0.65rem;
+  color: var(--ivory); background: rgba(8, 12, 18, 0.9); border: 1px solid rgba(118,207,238,0.35);
+  border-radius: 0.35rem; font: inherit; font-size: 0.82rem;
+}
+.avatar-voice-picker select:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
+.avatar-voice-picker select:disabled { opacity: 0.45; cursor: not-allowed; }
+.avatar-voice-picker .xsmall { grid-column: 1 / -1; margin: 0; }
 #dragon-status { min-height: 2.2em; }
 @media (max-width: 640px) {
   .dragon-panel { grid-template-columns: 1fr; }
   .dragon-stage { max-width: 320px; margin: 0 auto; }
+  .avatar-voice-picker { grid-template-columns: 1fr; }
+  .avatar-voice-picker .xsmall { grid-column: auto; }
 }
 
 /* ---------- Additional wandering geometry layers -------------------------- */
@@ -1438,7 +1468,7 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   font-size: .82rem; letter-spacing: .04em; text-transform: none;
   max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.acct-email { font-family: 'EB Garamond', serif; color: #76cfee; margin: .1rem 0 1rem; overflow-wrap: anywhere; }
+.acct-email { font-family: 'EB Garamond', serif; color: #76cfee; margin: .1rem 0 1rem; word-break: break-all; }
 .acct-grid {
   display: grid; grid-template-columns: auto 1fr; gap: .45rem 1.2rem;
   margin: 0 0 1.2rem; font-family: 'EB Garamond', serif;
@@ -3351,17 +3381,9 @@ th, td { overflow-wrap: break-word; }
 html { overflow-x: hidden; }
 body { max-width: 100%; }
 
-/* 7. Never split a word to fill a line. Hyphenation is off everywhere, at
-      every width, so a word that does not fit always moves to the next line
-      whole rather than being broken with a hyphen. `overflow-wrap` above
-      still lets a genuinely unbreakable token (a long URL, a key, a file
-      name) break so it cannot push the page sideways. */
-html { hyphens: manual; }
-
 @media (max-width: 640px) {
-  /* On a phone the long prose wraps whole words — never hyphenated, never
-     split — so a word that does not fit always moves to the next line intact. */
-  .frame p, .lede, .biblio li, .glossary dd, .timeline li { hyphens: manual; }
+  /* On a phone, hyphenate the long prose rather than leaving rivers. */
+  .frame p, .lede, .biblio li, .glossary dd, .timeline li { hyphens: auto; }
   /* Buttons and chips wrap their label instead of growing past the screen. */
   .btn, .chip { white-space: normal; }
   .btn-row { flex-wrap: wrap; }
@@ -3476,9 +3498,59 @@ body.is-picking * { cursor: crosshair !important; user-select: none; }
   .ae-grid { grid-template-columns: 1fr; }
 }
 
-/* Formulae ------------------------------------------------------------- */
-.formula{font-family:"EB Garamond",Georgia,serif;font-size:1.08rem;letter-spacing:.01em;color:var(--gold-bright)}
-.formula-inline{font-family:"EB Garamond",Georgia,serif;color:var(--gold-bright);white-space:nowrap}
+/* Formulae -------------------------------------------------------------
+   TeX remains legible before MathJax arrives, then becomes responsive SVG.
+   Long derivations scroll inside their own measure instead of widening the
+   chapter or clipping on a phone. */
+.formula {
+  max-width: 100%;
+  margin: 1.35rem auto;
+  padding: 0.45rem 0.25rem 0.65rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  color: var(--gold-bright);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  text-align: center;
+  scrollbar-color: rgba(255,217,121,0.42) transparent;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.formula-inline {
+  color: var(--gold-bright);
+  font-family: "EB Garamond", Georgia, serif;
+  white-space: nowrap;
+}
+.formula mjx-container[display="true"] {
+  width: max-content;
+  min-width: 100%;
+  margin: 0 !important;
+  text-align: center !important;
+}
+.formula mjx-container svg { max-width: none; }
+.formula-inline mjx-container,
+mjx-container:not([display="true"]) {
+  margin: 0 0.06em;
+  color: inherit;
+}
+mjx-container {
+  color: var(--gold-bright);
+  font-size: 1.04em;
+}
+@media (max-width: 640px) {
+  .formula {
+    margin: 1rem -0.2rem;
+    padding-inline: 0.2rem;
+    font-size: 1rem;
+    text-align: left;
+  }
+  .formula mjx-container[display="true"] {
+    min-width: 0;
+    padding-inline: 0.25rem;
+    text-align: left !important;
+  }
+}
 
 /* ---------- The geometry field, once the physics takes over ---------------
    geo-field.js pins every layer to the origin and drives translate/rotate/
@@ -3521,232 +3593,70 @@ table.ledger thead th {
 }
 table.ledger tbody tr + tr td { border-top: 1px solid rgba(118,207,238,0.12); }
 table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-nums; }
+table.ledger.ledger--prose th,
+table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 
-/* A kicker sitting directly above a plate, centred on it. */
-.kicker--plate {
-  text-align: center;
-  margin: 0 0 0.75rem;
-}
+/* ---------- Compact desktop masthead -------------------------------------
+   The desktop header gets the width of the screen instead of the reading
+   column. This lets the navigation keep comfortable space between labels
+   while shedding a second row on most desktop displays. */
+@media (min-width: 901px) {
+  .site-head .rule { height: 9px; }
+  .site-head .rule::before,
+  .site-head .rule::after { font-size: 0.58rem; }
 
-/* ---------------------- the fundamentals callout ---------------------- */
-.fundamental {
-  position: relative;
-  margin: 2.4rem 0 2rem;
-  padding: 2.2rem clamp(1rem, 3vw, 2.2rem) 1.6rem;
-  border: 1px solid rgba(255, 217, 121, 0.38);
-  border-left: 3px solid var(--star, #ffd979);
-  border-radius: 3px;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255, 217, 121, 0.07), transparent 60%),
-    linear-gradient(180deg, rgba(118, 207, 238, 0.05), rgba(0, 0, 0, 0.28));
-  box-shadow: 0 0 60px rgba(255, 217, 121, 0.06), 0 18px 48px rgba(0, 0, 0, 0.45);
-}
-.fundamental-tag {
-  position: absolute;
-  top: -0.72rem;
-  left: clamp(1rem, 3vw, 2.2rem);
-  margin: 0;
-  padding: 0.2em 0.85em;
-  background: var(--ink-2, #070b1a);
-  border: 1px solid rgba(255, 217, 121, 0.55);
-  border-radius: 2px;
-  font-family: var(--caps);
-  font-size: 0.64rem;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--star, #ffd979);
-  white-space: nowrap;
-}
-.fundamental-head { max-width: 64ch; margin: 0 auto 1.6rem; text-align: center; }
-.fundamental-head h3 {
-  font-family: var(--title);
-  font-size: clamp(1.1rem, 2.4vw, 1.4rem);
-  letter-spacing: 0.04em;
-  color: var(--gold-bright);
-  margin: 0 0 0.7rem;
-}
-.fundamental-head p { margin: 0; color: var(--vellum-dim); line-height: 1.8; }
-.fundamental-head strong { color: var(--star, #ffd979); }
-.fundamental .plate--fundamental {
-  margin-bottom: 0;
-  border-color: rgba(255, 217, 121, 0.3);
-  background: linear-gradient(180deg, rgba(255, 217, 121, 0.05), rgba(0, 0, 0, 0.3));
-}
-.fundamental-foot {
-  max-width: 64ch;
-  margin: 1.5rem auto 0;
-  padding-top: 1.1rem;
-  border-top: 1px solid rgba(255, 217, 121, 0.22);
-  text-align: center;
-  font-size: 0.95rem;
-  line-height: 1.8;
-  color: var(--vellum-dim);
-}
-.fundamental-foot strong { color: var(--gold-bright); }
-@media (max-width: 600px) {
-  .fundamental { padding-top: 2.4rem; }
-  .fundamental-tag { letter-spacing: 0.22em; left: 0.8rem; }
+  .brand-row {
+    max-width: 1680px;
+    min-height: 40px;
+    padding: 0.12rem 1.25rem;
+    gap: 0.8rem;
+  }
+  .brand { gap: 0.65rem; }
+  .brand-sigil { width: 36px; height: 36px; }
+  .brand-text {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .brand-line { flex-wrap: nowrap; gap: 0; }
+  .brand-name {
+    max-width: none;
+    white-space: nowrap;
+    font-size: clamp(0.9rem, 1.45vw, 1.22rem);
+    letter-spacing: 0.035em;
+    line-height: 1;
+  }
+  .brand-order { display: none; }
+  .brand-tag {
+    margin: 0;
+    white-space: nowrap;
+    font-size: 0.54rem;
+    letter-spacing: 0.24em;
+    line-height: 1;
+  }
+  .head-join {
+    margin-right: 0;
+    padding: 0.32rem 0.62rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+  }
+
+  .site-nav ul {
+    max-width: 1680px;
+    padding: 0 1rem 0.18rem;
+    gap: 0.06rem 0.35rem;
+  }
+  .site-nav a {
+    gap: 0;
+    padding: 0.3rem 0.52rem;
+    font-size: 0.7rem;
+    line-height: 1.1;
+    letter-spacing: 0.14em;
+  }
+  .site-nav a i { display: none; }
 }
 
-.fundamental-list {
-  max-width: 68ch;
-  margin: 1.6rem auto 0;
-  padding-top: 1.2rem;
-  border-top: 1px solid rgba(255, 217, 121, 0.22);
-}
-.fundamental-list .kicker { text-align: center; display: block; margin-bottom: 0.9rem; }
-.fundamental-list ol { margin: 0; padding-left: 1.4rem; }
-.fundamental-list li {
-  margin-bottom: 0.65rem;
-  color: var(--vellum-dim);
-  line-height: 1.75;
-  font-size: 0.93rem;
-}
-.fundamental-list li strong { color: var(--gold-bright); }
-.fundamental-list li a { text-decoration: none; }
-.fundamental-list li a:hover strong { color: var(--star, #ffd979); }
-.fundamental-list .muted { text-align: center; margin: 1rem 0 0; }
-
-.fundamental-thesis {
-  max-width: 68ch;
-  margin: 1.4rem auto 0;
-  text-align: center;
-  color: var(--vellum-dim);
-  line-height: 1.85;
-}
-.fundamental-thesis strong { color: var(--star, #ffd979); font-style: italic; }
-
-/* ---- the twelve claims, under the hero title ------------------------- */
-.claims {
-  max-width: 74ch;
-  margin: 2.1rem auto 1.9rem;
-  padding: 1.5rem 1.6rem 1.3rem;
-  text-align: left;
-  border: 1px solid rgba(118, 207, 238, 0.26);
-  border-radius: 3px;
-  background:
-    linear-gradient(180deg, rgba(13, 20, 48, 0.55), rgba(3, 4, 12, 0.3));
-  box-shadow: inset 0 0 44px rgba(118, 207, 238, 0.06);
-}
-.claims-kicker {
-  margin: 0 0 1.1rem;
-  text-align: center;
-  font-family: Cinzel, serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.claims-list {
-  counter-reset: claim;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.claims-list > li {
-  counter-increment: claim;
-  position: relative;
-  margin: 0 0 0.85rem;
-  padding: 0 0 0.85rem 3.1rem;
-  font-size: 0.97rem;
-  line-height: 1.62;
-  color: var(--vellum-dim);
-  border-bottom: 1px solid rgba(118, 207, 238, 0.1);
-}
-.claims-list > li:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
-.claims-list > li::before {
-  content: counter(claim, decimal-leading-zero);
-  position: absolute;
-  left: 0;
-  top: 0.12rem;
-  width: 2.2rem;
-  text-align: right;
-  font-family: Cinzel, serif;
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  color: var(--gold);
-  opacity: 0.85;
-}
-.claims-list > li strong { color: var(--vellum); font-weight: 600; }
-.claim-tag {
-  display: inline-block;
-  margin-left: 0.4rem;
-  padding: 0.05rem 0.5rem;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  font-family: Cinzel, serif;
-  font-size: 0.58rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  vertical-align: 0.1em;
-  white-space: nowrap;
-  opacity: 0.85;
-}
-.claim-tag--known { color: var(--verdant); }
-.claim-tag--chosen { color: var(--gold); }
-.claim-tag--weak { color: var(--rose); }
-.claim-tag--test { color: var(--star); }
-.claims-foot {
-  margin: 1.1rem 0 0;
-  font-size: 0.86rem;
-  line-height: 1.6;
-  color: var(--vellum-dim);
-  opacity: 0.86;
-}
-@media (max-width: 640px) {
-  .claims { padding: 1.1rem 0.95rem 1rem; }
-  .claims-list > li { padding-left: 2.4rem; font-size: 0.93rem; }
-  .claims-list > li::before { width: 1.7rem; }
-  .claim-tag { margin-left: 0; display: inline-block; margin-top: 0.25rem; }
-}
-
-/* ---- the summary page and the site index ---------------------------- */
-.sum-chain { counter-reset: link; list-style: none; margin: 1.2rem 0 0; padding: 0; }
-.sum-chain > li {
-  counter-increment: link;
-  position: relative;
-  margin: 0 0 1rem;
-  padding-left: 3rem;
-  line-height: 1.7;
-}
-.sum-chain > li::before {
-  content: counter(link);
-  position: absolute; left: 0; top: 0;
-  width: 2rem; height: 2rem; line-height: 1.95rem;
-  text-align: center;
-  font-family: Cinzel, serif; font-size: 0.78rem;
-  color: var(--gold);
-  border: 1px solid rgba(118, 207, 238, 0.4);
-  border-radius: 50%;
-}
-.sitemap-toc { columns: 2; column-gap: 2rem; margin: 1.2rem 0 0; padding-left: 1.1rem; }
-.sitemap-toc li { break-inside: avoid; margin-bottom: 0.3rem; }
-.sitemap-page h2 { margin-bottom: 0.2rem; }
-.sitemap-note { margin: 0 0 0.9rem; font-size: 0.9rem; }
-.sitemap-fund {
-  margin: 0 0 0.8rem;
-  font-family: Cinzel, serif; font-size: 0.62rem;
-  letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--star);
-}
-.sitemap-sections { margin: 0; padding-left: 1.4rem; }
-.sitemap-sections li { margin-bottom: 0.28rem; line-height: 1.5; }
-.sitemap-sections .sitemap-h3 {
-  list-style: none;
-  padding-left: 1.1rem;
-  font-size: 0.92rem;
-  opacity: 0.84;
-}
-.sitemap-sections .sitemap-h3::before { content: "\2014\00a0"; color: var(--gold-deep); }
-.sitemap-plates {
-  margin: 0.9rem 0 0;
-  font-size: 0.86rem;
-  color: var(--vellum-dim);
-  border-top: 1px solid rgba(118, 207, 238, 0.14);
-  padding-top: 0.7rem;
-}
-.sitemap-also { columns: 2; margin: 0.6rem 0 0; }
-@media (max-width: 640px) {
-  .sitemap-toc, .sitemap-also { columns: 1; }
-  .sum-chain > li { padding-left: 2.5rem; }
+@media (min-width: 901px) and (max-width: 1100px) {
+  .brand-tag { display: none; }
 }

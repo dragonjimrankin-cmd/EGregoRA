@@ -1,0 +1,17 @@
+Vendored neural-voice runtime
+==============================
+
+HeadTTS 1.3.0
+Source: https://github.com/met4citizen/HeadTTS
+License: MIT (LICENSE-HeadTTS.txt)
+
+Transformers.js 4.3.1
+Source: https://github.com/huggingface/transformers.js
+License: Apache-2.0 (LICENSE-Transformers.txt)
+
+Kokoro.js 1.2.1 male voice embeddings
+Source: https://github.com/hexgrad/kokoro
+License: Apache-2.0 (LICENSE-Kokoro.txt)
+Vendored voices: bm_george.bin, bm_fable.bin, bm_lewis.bin, am_fenrir.bin, am_michael.bin, am_puck.bin
+
+The Kokoro-82M-v1.0-ONNX-timestamped model is fetched only after the visitor opts in. The large model is not distributed in this repository. Model source: https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX-timestamped

@@ -30,6 +30,17 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 24
+    - name: Fetch the Kokoro voice embeddings the live ShakDrah voice ships
+      run: |
+        set -e
+        mkdir -p tti/hatchable/public/assets/js/headtts/voices
+        base="https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/resolve/main/voices"
+        for v in am_fenrir am_michael am_puck bm_fable bm_george bm_lewis; do
+          curl -fsSL --max-time 180 -o "tti/hatchable/public/assets/js/headtts/voices/$v.bin" "$base/$v.bin"
+          sz=$(wc -c < "tti/hatchable/public/assets/js/headtts/voices/$v.bin")
+          echo "$v.bin: $sz bytes"
+          if [ "$sz" -lt 1000 ]; then echo "ERROR: $v.bin too small ($sz bytes) — refusing to deploy without the real voice"; exit 1; fi
+        done
     - name: Gink and ShakDrah must carry the same corpus
       run: python3 scripts/oracle-sync.py --check
     - name: The corpus must be well formed and in step
