@@ -166,6 +166,31 @@ if (!gated) {
   if (!/gated/i.test(after + readout)) problems.push("the treatment text never mentions the gate");
 }
 
+/* ---- the publish door that appears, and its question ----------------- */
+const pubrow = w.document.querySelector("[data-am=pubrow]");
+if (!pubrow) {
+  problems.push("no publish row in the page");
+} else if (pubrow.hidden) {
+  problems.push("the publish row did not appear after enhancing");
+} else {
+  say("publish row: appeared after enhance");
+  const pubnow = w.document.querySelector("[data-am=pubnow]");
+
+  w.confirm = () => false;                       /* answer "n" */
+  pubnow.dispatchEvent(new w.Event("click", { bubbles: true }));
+  await tick(60);
+  const refused = $("[data-am=msg]").textContent.trim();
+  say("publish, answered n: " + refused);
+  if (!/Not published/.test(refused)) problems.push("'n' did not stop the publish");
+
+  w.confirm = () => true;                        /* answer "y" */
+  pubnow.dispatchEvent(new w.Event("click", { bubbles: true }));
+  await tick(150);
+  const done = $("[data-am=msg]").textContent.trim();
+  say("publish, answered y: " + done);
+  if (!/Published/.test(done)) problems.push("'y' did not publish it");
+}
+
 await tick(50);
 console.log("--- notes ---");
 for (const n of notes) console.log("  " + n);

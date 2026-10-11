@@ -57,6 +57,8 @@ function setup(root) {
     run: $("[data-am=run]"),
     bar: $("[data-am=bar]"),
     preview: $("[data-am=preview]"),
+    pubrow: $("[data-am=pubrow]"),
+    pubnow: $("[data-am=pubnow]"),
     meta: $("[data-am=meta]"),
     title: $("[data-am=title]"),
     number: $("[data-am=number]"),
@@ -80,7 +82,7 @@ function setup(root) {
   const step = (t, frac) => {
     if (!el.bar) return;
     el.bar.hidden = false;
-    el.bar.textContent = t;
+    el.bar.textContent = t + " \u2014 " + Math.round((frac || 0) * 100) + "%";
     el.bar.style.setProperty("--done", Math.round((frac || 0) * 100) + "%");
   };
   const mb = (n) => (n / 1048576).toFixed(1) + " MB";
@@ -512,6 +514,7 @@ function setup(root) {
     const f = el.file.files && el.file.files[0];
     ready = null;
     if (el.meta) el.meta.hidden = true;
+    if (el.pubrow) el.pubrow.hidden = true;   /* a new file starts over */
     if (el.after) el.after.innerHTML = "";
     if (!f) return;
     source = f;
@@ -568,6 +571,7 @@ function setup(root) {
     if (!source) return say("Choose a file first.", true);
     const want = wants();
     el.run.disabled = true;
+    step("Starting the work\u2026", 0);   /* the bar appears at once */
     try {
       if (KIND === "audio") await enhanceAudio(want);
       else await enhanceVideo(want);
@@ -994,6 +998,7 @@ function setup(root) {
     step("Done \u2014 " + mb(made.blob.size) + " as " + made.label, 1);
     say("Enhanced: " + treatment + ". Listen to it, then publish.");
     if (el.meta) el.meta.hidden = false;
+    if (el.pubrow) el.pubrow.hidden = false;   /* the publish door appears */
   }
 
   /* MP3 if lamejs will load, WAV if it will not. An hour of WAV is half a
@@ -1131,6 +1136,8 @@ function setup(root) {
     showPreview(blob, "video");
     step("Done \u2014 " + mb(blob.size), 1);
     say("Graded: " + treatment + ". Watch it, then publish.");
+    if (el.meta) el.meta.hidden = false;
+    if (el.pubrow) el.pubrow.hidden = false;   /* the publish door appears */
   }
 
   function showPreview(blob, how) {
@@ -1506,13 +1513,21 @@ function setup(root) {
   }
 
   /* -------------------------------------------------------------- the upload */
-  if (el.send) el.send.addEventListener("click", async () => {
+  /* One publish routine, two doors to it: the standing button below the
+     listing, and the one that appears under the preview when the
+     enhancement is done. Both ask the same plain question first. */
+  async function publishIt(btn) {
     const blob = (ready && ready.blob) || source;
     if (!blob) return say("Nothing to publish yet.", true);
     const title = (el.title && el.title.value.trim()) || "";
     if (!title) return say("It needs a title.", true);
 
-    el.send.disabled = true;
+    if (!window.confirm("Do you want to publish \u201c" + title +
+        "\u201d to the site? (y/n)"))
+      return say("Not published \u2014 it stays here, unfinished business.");
+
+    if (btn) btn.disabled = true;
+    if (el.send && btn !== el.send) el.send.disabled = true;
     try {
       const upload = "u" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
       const begun = await post({ action: "begin", upload, mime: blob.type });
@@ -1557,9 +1572,12 @@ function setup(root) {
     } catch (err) {
       say((err && err.message) || "The upload failed.", true);
     } finally {
-      el.send.disabled = false;
+      if (btn) btn.disabled = false;
+      if (el.send && btn !== el.send) el.send.disabled = false;
     }
-  });
+  }
+  if (el.send) el.send.addEventListener("click", () => publishIt(el.send));
+  if (el.pubnow) el.pubnow.addEventListener("click", () => publishIt(el.pubnow));
 
   /* ========================================================= the editing room
      What an editor actually needs, and nothing it does not: cut a piece out,
