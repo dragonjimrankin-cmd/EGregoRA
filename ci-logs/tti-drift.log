@@ -1,13 +1,11 @@
 project proj_U95i5y493z9x
-live version: 70
+live version: 79
 ours:         65
 
-✖ 5 deploy(s) landed since ours (v65 → v70).
+✖ 14 deploy(s) landed since ours (v65 → v79).
    Reading the live files so the two can be merged rather than one buried.
 
-   live project holds 190 files
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
+   live project holds 209 files
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
@@ -15,11 +13,14 @@ ours:         65
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 25
+   changed live vs our bundle : 28
      ~ hatchable.toml
      ~ lib/twin.js
      ~ public/ask-shakdrah/index.html
      ~ public/assets/css/main.css
+     ~ public/assets/js/dragon.js
+     ~ public/assets/js/fox.js
+     ~ public/assets/js/site.js
      ~ public/base-ten/index.html
      ~ public/cosmic-ledger/index.html
      ~ public/dx/index.html
@@ -41,8 +42,27 @@ ours:         65
      ~ public/summary/index.html
      ~ public/the-self/index.html
      ~ public/torus/index.html
-   present live, absent here  : 23
+   present live, absent here  : 42
      + public/ask-shakdragon/index.html
+     + public/assets/js/headtts/dictionaries/en-us.txt
+     + public/assets/js/headtts/headtts.mjs
+     + public/assets/js/headtts/language-en-us.mjs
+     + public/assets/js/headtts/language.mjs
+     + public/assets/js/headtts/LICENSE-HeadTTS.txt
+     + public/assets/js/headtts/LICENSE-Kokoro.txt
+     + public/assets/js/headtts/LICENSE-Transformers.txt
+     + public/assets/js/headtts/THIRD-PARTY-NOTICES.txt
+     + public/assets/js/headtts/transformers.min.js
+     + public/assets/js/headtts/utils.mjs
+     + public/assets/js/headtts/voices/am_fenrir.bin
+     + public/assets/js/headtts/voices/am_michael.bin
+     + public/assets/js/headtts/voices/am_puck.bin
+     + public/assets/js/headtts/voices/bm_fable.bin
+     + public/assets/js/headtts/voices/bm_george.bin
+     + public/assets/js/headtts/voices/bm_lewis.bin
+     + public/assets/js/headtts/worker-tts.mjs
+     + public/assets/js/neural-voice.js
+     + public/assets/js/oracle-knowledge.js
      + public/assets/js/pendulum.js
      + public/corrections/index.html
      + public/essays/a-number-made-of-itself/index.html
@@ -63,8 +83,6 @@ ours:         65
      + public/out-of-phase/index.html
      + public/pendulum/index.html
      + public/prime-plane/index.html
-     + public/reading/index.html
-     + public/time-and-residue/index.html
    present here, absent live  : 0
 
    their versions are saved under ops/incoming/tti/
