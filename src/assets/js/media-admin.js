@@ -1487,9 +1487,9 @@ function setup(root) {
              SharedArrayBuffer, which a browser only hands over behind
              cross-origin-isolation headers this site does not send — so the
              threaded WASM would never start and the ear would sit silent.
-             Pinning it to one thread on the main thread is what lets it run
-             anywhere. The model itself is cached in the browser, so only the
-             first listen pays the download. */
+             Pinning it to a single thread on the main thread is what lets it
+             run anywhere. The model itself is cached in the browser, so only
+             the first listen pays the download. */
           try {
             if (T.env) {
               T.env.allowLocalModels = false;
