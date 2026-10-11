@@ -10,6 +10,7 @@ on:
       - "ops/egregora-project.txt"
       - "scripts/hatchable-deploy.mjs"
       - "scripts/test-voiceprint.mjs"
+      - "scripts/test-oracle-knowledge.mjs"
       - ".github/workflows/egregora-patch-deploy.yml"
 
 permissions:
@@ -36,7 +37,11 @@ jobs:
           node --check egregora-patch/public/assets/js/media-admin.js
           node --check egregora-patch/public/assets/js/voiceprint.js
           node --check egregora-patch/public/assets/js/admin-edit.js
+          node --check egregora-patch/public/assets/js/oracle-knowledge.js
           node scripts/test-voiceprint.mjs
+          node scripts/test-oracle-knowledge.mjs
+          grep -q 'Sixteen prepared answers' egregora-patch/public/ask-ed/index.html
+          grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
           node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
 
       - name: Deploy to the existing EGregoRA project
@@ -72,6 +77,52 @@ jobs:
             echo "::error title=EGregoRA patch deployment failed::$MESSAGE"
             exit "$STATUS"
           fi
+
+      - name: Verify Gink's live prepared knowledge
+        run: |
+          node <<'NODE'
+          const targets = [
+            {
+              url: 'https://egregora.hatchable.site/ask-ed/',
+              markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+                'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js']
+            },
+            {
+              url: 'https://egregora.hatchable.site/assets/js/oracle-knowledge.js',
+              markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
+                'baryogenesis-boundary', 'epistemic-grading']
+            }
+          ];
+          let detail = 'Gink did not become current';
+          for (let attempt = 1; attempt <= 10; attempt += 1) {
+            try {
+              const checks = await Promise.all(targets.map(async (target) => {
+                const response = await fetch(`${target.url}?deploy=${process.env.GITHUB_SHA || Date.now()}`, {
+                  headers: { 'cache-control': 'no-cache' }
+                });
+                const text = await response.text();
+                return {
+                  target,
+                  response,
+                  current: response.ok && target.markers.every((marker) => text.includes(marker))
+                };
+              }));
+              if (checks.every((check) => check.current)) {
+                console.log('Live Gink questions and prepared answers verified.');
+                process.exit(0);
+              }
+              detail = checks.map((check) =>
+                `${check.target.url} HTTP ${check.response.status}; current=${check.current}`).join(' | ');
+            } catch (error) {
+              detail = error && error.message || String(error);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 8000));
+          }
+          const safe = String(detail).replace(/%/g, '%25').replace(/\r/g, '%0D')
+            .replace(/\n/g, '%0A').slice(0, 1200);
+          console.log(`::error title=Live Gink knowledge verification failed::${safe}`);
+          process.exit(1);
+          NODE
 
       - name: Recover the named latest-podcast transcript
         run: |

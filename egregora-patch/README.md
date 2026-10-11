@@ -7,6 +7,12 @@ credential-bearing bundle.
 
 Current patch:
 
+- `public/assets/js/oracle-knowledge.js` updates both Gink and ShakDrah with sixteen
+  substantial prepared answers covering The Channeling Circle review, one Prime
+  role per universe-instance, the one residue, the universe-as-Möbius-seam model,
+  matter–antimatter phase relations, baryogenesis limits and Prime Plane base
+  shifts. Matching questions are answered locally and exactly; attached or
+  unrelated questions still pass to the existing oracle unchanged.
 - `api/transcribe.js` adds the existing admin-only Free.ai doors as fallbacks
   for podcast transcription and listing generation when separate OpenAI or
   Hugging Face routes are unavailable.

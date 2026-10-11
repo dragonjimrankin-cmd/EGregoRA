@@ -10,6 +10,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - "scripts/hatchable-deploy.mjs"
+      - "scripts/test-oracle-knowledge.mjs"
       - "ops/tti-project.txt"
       - ".github/workflows/tti-deploy.yml"
 
@@ -32,13 +33,21 @@ jobs:
       - name: Build and validate the static site
         run: |
           npm ci
+          node --check tti/src/assets/js/oracle-knowledge.js
+          node scripts/test-oracle-knowledge.mjs
           npm run build:tti:hatchable
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
+          test -s tti/hatchable/public/ask-shakdrah/index.html
+          test -s tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'Sixteen prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
+          grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'The Universe of Inverted Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'One Seam, Seen as Many Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'The Universe Is the Möbius Seam' tti/hatchable/public/inverted-toruses/index.html
@@ -47,6 +56,7 @@ jobs:
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
+            tti/hatchable/public/ask-shakdrah/index.html \
             tti/hatchable/public/torus/index.html \
             tti/hatchable/public/moebius/index.html \
             tti/hatchable/public/essays/index.html \
@@ -88,7 +98,7 @@ jobs:
             exit "$STATUS"
           fi
 
-      - name: Verify the live speculative essays
+      - name: Verify the live essays and ShakDrah knowledge
         run: |
           node <<'NODE'
           const pages = [
@@ -104,6 +114,16 @@ jobs:
               markers: ['The Universe of Inverted Tori', 'One Seam, Seen as Many Tori',
                 'The Universe Is the Möbius Seam', 'Handedness Reversal Is Not Time Reversal',
                 'Earned, Chosen, Refused']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
+              markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+                'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
+              markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
+                'baryogenesis-boundary', 'epistemic-grading']
             }
           ];
           let detail = 'the pages did not become current';
@@ -117,7 +137,7 @@ jobs:
                 return { page, response, current: response.ok && page.markers.every((marker) => html.includes(marker)) };
               }));
               if (checked.every((result) => result.current)) {
-                console.log('Live time-residue and inverted-torus essays verified.');
+                console.log('Live essays and ShakDrah prepared knowledge verified.');
                 process.exit(0);
               }
               detail = checked.map((result) =>
