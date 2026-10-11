@@ -1,11 +1,17 @@
 project proj_U95i5y493z9x
-live version: 85
+live version: 89
 ours:         80
 
-✖ 5 deploy(s) landed since ours (v80 → v85).
+✖ 9 deploy(s) landed since ours (v80 → v89).
    Reading the live files so the two can be merged rather than one buried.
 
-   live project holds 210 files
+   live project holds 212 files
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
@@ -13,11 +19,12 @@ ours:         80
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 34
+   changed live vs our bundle : 38
      ~ hatchable.toml
      ~ lib/oracle-corpus.js
      ~ public/ask-shakdrah/index.html
      ~ public/assets/css/main.css
+     ~ public/assets/img/torus.svg
      ~ public/assets/js/dragon.js
      ~ public/assets/js/fox.js
      ~ public/assets/js/headtts/voices/am_fenrir.bin
@@ -28,6 +35,7 @@ ours:         80
      ~ public/assets/js/headtts/voices/bm_lewis.bin
      ~ public/assets/js/headtts/worker-tts.mjs
      ~ public/assets/js/neural-voice.js
+     ~ public/assets/js/oracle-knowledge.js
      ~ public/cosmic-ledger/index.html
      ~ public/dx/index.html
      ~ public/essays/index.html
@@ -40,17 +48,22 @@ ours:         80
      ~ public/out-of-phase/index.html
      ~ public/plates/index.html
      ~ public/prime-plane/index.html
+     ~ public/robots.txt
      ~ public/seams/index.html
      ~ public/site.webmanifest
+     ~ public/sitemap.xml
      ~ public/skeletal-splice/index.html
      ~ public/spiral/index.html
      ~ public/stress-tests/index.html
      ~ public/the-self/index.html
      ~ public/time-and-residue/index.html
      ~ public/torus/index.html
-   present live, absent here  : 1
+   present live, absent here  : 3
+     + public/feed.xml
      + public/little-red-dots/index.html
-   present here, absent live  : 0
+     + public/little-red-dots/research-proposal/index.html
+   present here, absent live  : 1
+     - lib/oracle-corpus-xl.js
 
    their versions are saved under ops/incoming/tti/
    DEPLOY SKIPPED. Merge, then deploy.
