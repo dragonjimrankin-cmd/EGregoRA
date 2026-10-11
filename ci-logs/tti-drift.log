@@ -1,75 +1,8 @@
 project proj_U95i5y493z9x
 live version: 94
-ours:         80
-
-✖ 14 deploy(s) landed since ours (v80 → v94).
-   Reading the live files so the two can be merged rather than one buried.
-
-   live project holds 213 files
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-
-   changed live vs our bundle : 46
-     ~ api/twin-member.js
-     ~ hatchable.toml
-     ~ lib/oracle-corpus-xxiii.js
-     ~ lib/oracle-corpus-xxiv.js
-     ~ lib/oracle-corpus-xxv.js
-     ~ lib/oracle-corpus.js
-     ~ public/ask-shakdragon/index.html
-     ~ public/ask-shakdrah/index.html
-     ~ public/assets/css/main.css
-     ~ public/assets/js/headtts/voices/am_fenrir.bin
-     ~ public/assets/js/headtts/voices/am_michael.bin
-     ~ public/assets/js/headtts/voices/am_puck.bin
-     ~ public/assets/js/headtts/voices/bm_fable.bin
-     ~ public/assets/js/headtts/voices/bm_george.bin
-     ~ public/assets/js/headtts/voices/bm_lewis.bin
-     ~ public/base-ten/index.html
-     ~ public/corrections/index.html
-     ~ public/cosmic-ledger/index.html
-     ~ public/dx/index.html
-     ~ public/essays/index.html
-     ~ public/foundations/index.html
-     ~ public/gravity/index.html
-     ~ public/index.html
-     ~ public/inverted-toruses/index.html
-     ~ public/join/index.html
-     ~ public/library/index.html
-     ~ public/live/index.html
-     ~ public/megatubule/index.html
-     ~ public/moebius/index.html
-     ~ public/notation/index.html
-     ~ public/out-of-phase/index.html
-     ~ public/pendulum/index.html
-     ~ public/plates/index.html
-     ~ public/prime-plane/index.html
-     ~ public/reading/index.html
-     ~ public/seams/index.html
-     ~ public/site-index/index.html
-     ~ public/site.webmanifest
-     ~ public/sitemap.xml
-     ~ public/skeletal-splice/index.html
-     … and 6 more
-   present live, absent here  : 4
-     + public/feed.xml
-     + public/little-red-dots/index.html
-     + public/little-red-dots/research-proposal/index.html
-     + public/temporal-antipodes/index.html
-   present here, absent live  : 5
-     - lib/oracle-corpus-xl.js
-     - migrations/0028_forum_mirror.sql
-     - public/assets/css/forum.css
-     - public/assets/js/forum-client.js
-     - public/forum/index.html
-
-   their versions are saved under ops/incoming/tti/
-   DEPLOY SKIPPED. Merge, then deploy.
+ours:         94
+✓ no foreign deploy since ours. Safe to deploy.
+project proj_U95i5y493z9x
+live version: 95
+ours:         94
+recorded version 95 in ops/tti-deployed.json
