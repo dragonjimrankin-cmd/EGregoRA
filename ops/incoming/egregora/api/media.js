@@ -39,15 +39,32 @@
  *   { action: 'voiceprint-labels', pass, id, … }    apply local biometric matches
  */
 import { db, storage } from 'hatchable';
+import { assembleUpload, UploadAssemblyError } from '../lib/upload-parts.js';
 import { adminDoor } from '../lib/door.js';
 import { doors as freeDoors, freeChat } from '../lib/freeai.js';
-import { assembleUpload } from '../lib/upload-parts.js';
 
 export const access = 'public';
 export const methods = ['POST'];
 
-const MAX_BYTES = 220 * 1024 * 1024;      /* a long episode, comfortably */
+const MAX_BYTES = 460 * 1024 * 1024;      /* a long episode as raw WAV, comfortably */
 const MAX_CHUNK = 1.4 * 1024 * 1024;      /* base64, per request */
+
+/* Gluing an upload's chunks together lives in lib/upload-parts.js, shared
+   with the transcription door: measure from the base64 lengths alone,
+   allocate the finished buffer once, decode each piece into place. */
+async function assemble(db, upload, tooLargeMessage) {
+  try {
+    return await assembleUpload(db, upload, { maxBytes: MAX_BYTES, tooLargeMessage });
+  } catch (e) {
+    if (e instanceof UploadAssemblyError || (e && e.expose)) {
+      if (e.status === 413 || e.status === 507) {
+        await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]).catch(() => {});
+      }
+      return { error: e, status: e.status || 400 };
+    }
+    throw e;
+  }
+}
 const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
@@ -726,12 +743,7 @@ export default async function (req, res) {
         const upload = clean(body.upload, 64);
         const seq = Number(body.seq);
         const part = String(body.part || '');
-        if (!upload || !Number.isInteger(seq) || seq < 0) {
-          return res.status(400).json({ error: 'A piece with no place.' });
-        }
-        if (!part || part.length % 4 !== 0 || !B64.test(part)) {
-          return res.status(400).json({ error: 'That upload piece is damaged.' });
-        }
+        if (!upload || !Number.isFinite(seq)) return res.status(400).json({ error: 'A piece with no place.' });
         if (part.length > MAX_CHUNK * 1.1) return res.status(413).json({ error: 'That piece is too large.' });
         await db.query(
           `INSERT INTO media_chunks (upload_id, seq, part) VALUES ($1, $2, $3)
@@ -747,12 +759,10 @@ export default async function (req, res) {
         if (!upload) return res.status(400).json({ error: 'No upload name.' });
         if (!title) return res.status(400).json({ error: 'It needs a title before it can be published.' });
 
-        const whole = await assembleUpload(db, upload, {
-          maxBytes: MAX_BYTES,
-          emptyMessage: 'Nothing arrived. Try the upload again.',
-          tooLargeMessage: 'That file is larger than the ' +
-            Math.round(MAX_BYTES / 1048576) + ' MB the shelf will take.'
-        });
+        const glued = await assemble(db, upload, 'That file is larger than the ' +
+          Math.round(MAX_BYTES / 1048576) + ' MB the shelf will take.');
+        if (glued.error) return res.status(glued.status).json({ error: glued.error.message });
+        const whole = glued;
 
         const mime = clean(body.mime, 80) || (kind === 'video' ? 'video/webm' : 'audio/mpeg');
         const ext = mime.includes('mpeg') ? 'mp3'
@@ -1164,11 +1174,9 @@ export default async function (req, res) {
         const was = rows && rows[0];
         if (!was) return res.status(404).json({ error: 'There is no such item.' });
 
-        const whole = await assembleUpload(db, upload, {
-          maxBytes: MAX_BYTES,
-          emptyMessage: 'Nothing arrived.',
-          tooLargeMessage: 'That is too large for the shelf.'
-        });
+        const glued = await assemble(db, upload, 'That is too large for the shelf.');
+        if (glued.error) return res.status(glued.status).json({ error: glued.error.message });
+        const whole = glued;
 
         const mime = clean(body.mime, 80) || (was.kind === 'video' ? 'video/webm' : 'audio/mpeg');
         const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('wav') ? 'wav'
@@ -1199,11 +1207,11 @@ export default async function (req, res) {
         if (!id || !upload) return res.status(400).json({ error: 'Which one, and from what?' });
         const role = clean(body.role, 8) === 'cover' ? 'cover' : 'cue';
 
-        const whole = await assembleUpload(db, upload, {
-          maxBytes: 12 * 1024 * 1024,
-          emptyMessage: 'No picture arrived.',
-          tooLargeMessage: 'That picture is over 12 MB.'
-        });
+        const { rows: parts } = await db.query(
+          'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
+        if (!parts || !parts.length) return res.status(400).json({ error: 'No picture arrived.' });
+        const whole = Buffer.concat(parts.map((r) => Buffer.from(r.part, 'base64')));
+        if (whole.length > 12 * 1024 * 1024) return res.status(413).json({ error: 'That picture is over 12 MB.' });
 
         const mime = clean(body.mime, 60) || 'image/jpeg';
         const ext = mime.includes('png') ? 'png' : mime.includes('webp') ? 'webp'
@@ -1257,17 +1265,6 @@ export default async function (req, res) {
     }
   } catch (err) {
     console.error('media:', err && err.message);
-    const status = Number(err && err.status);
-    if (err && err.expose && Number.isInteger(status) && status >= 400 && status <= 599) {
-      return res.status(status).json({ error: err.message });
-    }
-    const detail = String((err && err.message) || 'unknown');
-    const allocation = /array buffer allocation|allocation failed|invalid typed array length/i.test(detail);
-    return res.status(allocation ? 507 : 500).json({
-      error: allocation
-        ? 'The upload arrived, but the shelf ran out of memory while assembling it. ' +
-          'Please try publishing the enhanced MP3 again.'
-        : 'The shelf refused that: ' + detail
-    });
+    return res.status(500).json({ error: 'The shelf refused that: ' + ((err && err.message) || 'unknown') });
   }
 }
