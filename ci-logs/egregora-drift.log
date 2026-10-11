@@ -1,8 +1,78 @@
 project proj_eiuxpFfTnwwx
-live version: 249
-ours:         249
-✓ no foreign deploy since ours. Safe to deploy.
-project proj_eiuxpFfTnwwx
-live version: 250
-ours:         249
-recorded version 250 in ops/egregora-deployed.json
+live version: 252
+ours:         250
+
+✖ 2 deploy(s) landed since ours (v250 → v252).
+   Reading the live files so the two can be merged rather than one buried.
+
+   live project holds 251 files
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+
+   changed live vs our bundle : 48
+     ~ api/edit.js
+     ~ api/media.js
+     ~ api/twin-member.js
+     ~ lib/twin.js
+     ~ pages/feed.js
+     ~ public/404.html
+     ~ public/account/index.html
+     ~ public/artwork/index.html
+     ~ public/ask-ed/index.html
+     ~ public/assets/css/main.css
+     ~ public/assets/js/admin-edit.js
+     ~ public/assets/js/headtts/voices/am_fenrir.bin
+     ~ public/assets/js/headtts/voices/am_michael.bin
+     ~ public/assets/js/headtts/voices/am_puck.bin
+     ~ public/assets/js/headtts/voices/bm_fable.bin
+     ~ public/assets/js/headtts/voices/bm_george.bin
+     ~ public/assets/js/headtts/voices/bm_lewis.bin
+     ~ public/assets/js/media-admin.js
+     ~ public/astrology/index.html
+     ~ public/astronomy/index.html
+     ~ public/consciousness/index.html
+     ~ public/cosmic-aether/index.html
+     ~ public/cosmic-ledger/index.html
+     ~ public/decoherence/index.html
+     ~ public/druids/index.html
+     ~ public/elemental-alchemy/index.html
+     ~ public/entropy/index.html
+     ~ public/extraterrestrials/index.html
+     ~ public/index.html
+     ~ public/infographics/index.html
+     ~ public/join/index.html
+     ~ public/law-of-one/index.html
+     ~ public/live/index.html
+     ~ public/locality/index.html
+     ~ public/moebius-seam/index.html
+     ~ public/music/index.html
+     ~ public/neurobiology/index.html
+     ~ public/occult/index.html
+     ~ public/podcast/index.html
+     ~ public/products/index.html
+     … and 8 more
+   present live, absent here  : 6
+     + public/assets/js/private-whisper/browser-whisper.js
+     + public/assets/js/private-whisper/LICENSE-BrowserWhisper.txt
+     + public/assets/js/private-whisper/LICENSE-MediaBunny.txt
+     + public/assets/js/private-whisper/THIRD-PARTY-NOTICES.txt
+     + public/assets/js/progress-live.js
+     + public/feed.xml
+   present here, absent live  : 10
+     - README.md
+     - api/forum.js
+     - api/profile.js
+     - lib/forum-mind.js
+     - migrations/0036_the_forum.sql
+     - migrations/0037_forum_seed.sql
+     - public/assets/css/forum.css
+     - public/assets/js/forum-client.js
+     - public/assets/js/profile-client.js
+     - public/forum/index.html
+
+   their versions are saved under ops/incoming/egregora/
+   DEPLOY SKIPPED. Merge, then deploy.
