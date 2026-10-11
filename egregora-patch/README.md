@@ -48,3 +48,7 @@ Current patch:
   server stretch upload/transcription, turn consolidation, transcript saving,
   known-name restoration and voiceprint checks each report their stage and
   percentage; failures remain visible instead of silently clearing the bar.
+  The main podcast button performs the whole transcript-to-summary sequence in
+  one click, shows a prominent “busy—do not click again or close the page”
+  notice beside its dedicated progress bar, and highlights the completed
+  summary for review.

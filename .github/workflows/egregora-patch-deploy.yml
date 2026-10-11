@@ -177,19 +177,24 @@ jobs:
           };
           const [page, admin, voiceprint] = await Promise.all([
             fetch('https://egregora.hatchable.site/podcast/'),
-            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=transcription-progress-1'),
+            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=transcription-summary-2'),
             fetch('https://egregora.hatchable.site/assets/js/voiceprint.js')
           ]);
           const [html, adminText, voiceprintText] = await Promise.all([
             page.text(), admin.text(), voiceprint.text()
           ]);
-          if (!page.ok || !html.includes('media-admin.js?v=transcription-progress-1')) {
-            fail(`The podcast page does not load the voiceprint editor (HTTP ${page.status}).`);
+          if (!page.ok || !html.includes('media-admin.js?v=transcription-summary-2') ||
+              !html.includes('Transcribe it, then write the summary') ||
+              !html.includes('data-am="transcribe-callout"') ||
+              !html.includes('data-am="transcribe-progress"')) {
+            fail(`The podcast transcription-and-summary controls are stale (HTTP ${page.status}).`);
           }
           if (!admin.ok || !adminText.includes('Consenting voiceprints') ||
               !adminText.includes('every further enrolled voice') ||
               !adminText.includes('voiceprint-labels') ||
               !adminText.includes('tr-progress') ||
+              !adminText.includes('transcribe-progress') ||
+              !adminText.includes('Transcript and summary ready') ||
               !adminText.includes('Starting transcription')) {
             fail(`The biometric or transcription-progress controls are stale (HTTP ${admin.status}).`);
           }

@@ -62,6 +62,10 @@ function setup(root) {
     opts: $("[data-am=opts]"),
     run: $("[data-am=run]"),
     bar: $("[data-am=bar]"),
+    transcribeBar: $("[data-am=transcribe-progress]"),
+    transcribeCallout: $("[data-am=transcribe-callout]"),
+    transcribeHeading: $("[data-am=transcribe-heading]"),
+    transcribeDetail: $("[data-am=transcribe-detail]"),
     preview: $("[data-am=preview]"),
     pubrow: $("[data-am=pubrow]"),
     pubnow: $("[data-am=pubnow]"),
@@ -69,6 +73,7 @@ function setup(root) {
     title: $("[data-am=title]"),
     number: $("[data-am=number]"),
     summary: $("[data-am=summary]"),
+    summaryState: $("[data-am=summary-state]"),
     tags: $("[data-am=tags]"),
     send: $("[data-am=send]"),
     shelf: $("[data-am=shelf]"),
@@ -103,6 +108,31 @@ function setup(root) {
     node.classList.toggle("is-bad", !!bad);
   };
   const step = (text, fraction) => showProgress(el.bar, text, fraction, false);
+  const transcriptionStep = (text, fraction, bad) => {
+    showProgress(el.transcribeBar || el.bar, text, fraction, bad);
+    if (!el.transcribeCallout) return;
+    const done = !bad && Number(fraction) >= 1;
+    el.transcribeCallout.hidden = false;
+    el.transcribeCallout.classList.toggle("is-working", !bad && !done);
+    el.transcribeCallout.classList.toggle("is-ready", done);
+    el.transcribeCallout.classList.toggle("is-bad", !!bad);
+    if (el.transcribeHeading) {
+      const heading = bad
+        ? "This run has stopped"
+        : done
+          ? "Transcript and summary ready"
+          : "Working now: transcript first, summary next";
+      if (el.transcribeHeading.textContent !== heading) el.transcribeHeading.textContent = heading;
+    }
+    if (el.transcribeDetail) {
+      const detail = bad
+        ? "Nothing will be published. Read the error below, then try again."
+        : done
+          ? "The summary box below was filled automatically. Review it before publishing."
+          : "This area is busy. Please do not click again or close this page while it works.";
+      if (el.transcribeDetail.textContent !== detail) el.transcribeDetail.textContent = detail;
+    }
+  };
   const mb = (n) => (n / 1048576).toFixed(1) + " MB";
   const clock = (s) => {
     s = Math.round(s || 0);
@@ -1611,8 +1641,9 @@ function setup(root) {
 
   /* The archivist writes the listing from a transcript. summaryOnly touches
      nothing but the summary field. */
-  async function describeListing(transcript, summaryOnly) {
-    step("Writing the listing\u2026", 0.95);
+  async function describeListing(transcript, summaryOnly, report = step) {
+    report(summaryOnly ? "Writing the summary from the transcript" : "Writing the summary and listing",
+      summaryOnly ? 0.12 : 0.95);
     const d = await fetch("/api/transcribe", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -1629,7 +1660,14 @@ function setup(root) {
       topics: d.topics || [],
       tags: d.tags || []
     };
-    if (el.summary) el.summary.value = d.summary || el.summary.value;
+    if (el.summary) {
+      el.summary.value = d.summary || el.summary.value;
+      el.summary.classList.add("am-summary-ready");
+    }
+    if (el.summaryState) {
+      el.summaryState.hidden = false;
+      el.summaryState.textContent = "Summary ready \u2014 written automatically from the transcript. Read and edit it before publishing.";
+    }
     if (!summaryOnly) {
       if (el.title) el.title.value = d.title || el.title.value;
       if (el.tags) { el.tags.value = (d.tags || []).join(", "); if (el.markTags) el.markTags(); }
@@ -1656,7 +1694,7 @@ function setup(root) {
         '<details class="scroll"><summary>The transcript</summary><pre class="code-block am-script">' +
         esc(transcript.slice(0, 40000)) + "</pre></details>";
     }
-    step("The listing is written", 1);
+    report(summaryOnly ? "The summary is ready" : "The transcript, summary and listing are ready", 1);
     if (!summaryOnly)
       say("Listed: " + (d.title || "") + " \u2014 " + (d.tags || []).length + " tags, " +
         (d.links || []).length + " links into the site. Change anything you disagree with.");
@@ -1669,12 +1707,22 @@ function setup(root) {
   if (sumBtn) sumBtn.addEventListener("click", async () => {
     if (!lastTranscript) return say("There is no transcript yet \u2014 transcribe first.", true);
     sumBtn.disabled = true;
+    sumBtn.setAttribute("aria-busy", "true");
+    sumBtn.textContent = "Writing the summary\u2026";
+    transcriptionStep("Starting the summary", 0.03);
     try {
-      await describeListing(lastTranscript, true);
+      await describeListing(lastTranscript, true, transcriptionStep);
       say("The summary is written from the transcript. Read it before you publish.");
+      if (el.summary) el.summary.scrollIntoView({ behavior: "smooth", block: "center" });
     } catch (err) {
-      say((err && err.message) || "No model would write the summary just now.", true);
-    } finally { sumBtn.disabled = false; }
+      const message = (err && err.message) || "No model would write the summary just now.";
+      transcriptionStep("Summary stopped \u2014 " + message, null, true);
+      say(message, true);
+    } finally {
+      sumBtn.disabled = false;
+      sumBtn.setAttribute("aria-busy", "false");
+      sumBtn.textContent = "Rewrite only the summary";
+    }
   });
 
   if (hearBtn) hearBtn.addEventListener("click", async () => {
@@ -1683,7 +1731,13 @@ function setup(root) {
     if (!blob) return say("Choose a recording first.", true);
     hearBtn.disabled = true;
     hearBtn.setAttribute("aria-busy", "true");
-    step("Starting transcription", 0.01);
+    hearBtn.textContent = "Transcribing now \u2014 summary follows\u2026";
+    if (sumBtn) sumBtn.disabled = true;
+    if (el.summaryState) el.summaryState.hidden = true;
+    if (el.summary) el.summary.classList.remove("am-summary-ready");
+    lastTranscript = "";
+    let completed = false;
+    transcriptionStep("Starting transcription", 0.01);
     const typer = makeTyper(earShow());
     try {
       /* The in-page ear first: it reads the file itself, with timestamps,
@@ -1700,18 +1754,18 @@ function setup(root) {
         try {
           earBy = "the browser's own whisper ear";
           say("Listening \u2014 the ear reads the file itself and types what it finds.");
-          lastTranscript = await listenWhisper(buf, typer);
+          lastTranscript = await listenWhisper(buf, typer, transcriptionStep);
         } catch (e) {
           say("The in-page ear could not load (" + ((e && e.message) || "no road to it") +
             ") \u2014 trying the other ears.");
-          step("Switching to the server transcription route", 0.03);
+          transcriptionStep("Switching to the server transcription route", 0.03);
         }
       }
       if (!lastTranscript && buf) {
         try {
           earBy = "the server's ear";
           say("The server is listening instead, stretch by stamped stretch.");
-          lastTranscript = await listenServer(buf, buf.duration, typer);
+          lastTranscript = await listenServer(buf, buf.duration, typer, transcriptionStep);
         } catch { /* fall through to the microphone */ }
       }
       if (!lastTranscript) {
@@ -1719,36 +1773,42 @@ function setup(root) {
         if (SR) {
           earBy = "the browser's ear, listening out loud";
           say("Listening out loud \u2014 the episode plays and the microphone writes it below.");
-          lastTranscript = await listenLive(blob, typer);
+          lastTranscript = await listenLive(blob, typer, transcriptionStep);
         } else {
           throw new Error("this browser has no ear, and none of the other ears could be reached");
         }
       }
       if (sumBtn) sumBtn.disabled = lastTranscript.trim().length < 40;
       if (lastTranscript.trim().length >= 40) {
-        step("Checking enrolled voiceprints", 0.94);
+        transcriptionStep("Checking enrolled voiceprints", 0.94);
         pendingNewVoiceMatches = buf
           ? await localVoiceMatches(buf, lastTranscript, []).catch((error) => ({
             labels: [], uncertain: [], reason: (error && error.message) || "voiceprint comparison unavailable"
           }))
           : { labels: [], uncertain: [], reason: "the audio could not be decoded locally" };
-        await describeListing(lastTranscript, false);
+        await describeListing(lastTranscript, false, transcriptionStep);
+        completed = true;
+        if (el.summary) el.summary.scrollIntoView({ behavior: "smooth", block: "center" });
         if (pendingNewVoiceMatches.labels.length) {
           say("The listing is ready. Voiceprints found " + voiceMatchReport(pendingNewVoiceMatches) +
             (pendingNewVoiceMatches.uncertain.length ? "; uncertain voices remain unnamed." : "."));
         }
       } else {
-        showProgress(el.bar, "Transcription stopped \u2014 too few words were heard", null, true);
+        transcriptionStep("Transcription stopped \u2014 too few words were heard", null, true);
         say("The ear kept almost nothing \u2014 the listing is yours to write by hand.", true);
       }
     } catch (err) {
       typer.stop();
-      showProgress(el.bar, "Transcription stopped \u2014 " +
-        ((err && err.message) || "it could not be transcribed"), null, true);
-      say((err && err.message) || "It could not be transcribed.", true);
+      transcriptionStep("Transcription or summary stopped \u2014 " +
+        ((err && err.message) || "the work could not be completed"), null, true);
+      say((err && err.message) || "The transcript and summary could not be completed.", true);
     } finally {
       hearBtn.disabled = false;
       hearBtn.setAttribute("aria-busy", "false");
+      hearBtn.textContent = completed
+        ? "Transcribe again and rewrite the summary"
+        : "Try transcription and summary again";
+      if (sumBtn) sumBtn.disabled = lastTranscript.trim().length < 40;
     }
   });
 
