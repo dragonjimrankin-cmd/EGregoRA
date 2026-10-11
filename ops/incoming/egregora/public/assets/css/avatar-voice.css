@@ -1,3 +1,8 @@
+/* Keep Gink's question form before the conversation/output region even when
+   the inherited Ask Ed layout switches between block, flex and grid modes. */
+.fox-panel--ask > .fox-ask { order: 1; }
+.fox-panel--ask > .oracle-chat { order: 2; }
+
 /* Curated local Kokoro voice chooser shared by the avatar controls. */
 .avatar-voice-picker {
   display: grid;
