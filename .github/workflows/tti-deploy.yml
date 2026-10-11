@@ -223,7 +223,7 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/stress-tests/',
               markers: ['Where It Might Break', 'The Entropy Objection',
                 'The Zero-Seam Test, With the Null Model Kept in the Room',
-                'It may not retreat into metaphor after entering as physics']
+                'The clean loss:', 'inherited-residue implementation is rejected']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/plates/',
