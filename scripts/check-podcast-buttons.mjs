@@ -67,7 +67,15 @@ w.fetch = async (url, opts) => {
     if (body.action === "paraphrase") return fake({ ok: true, paraphrase: "A rewritten line.", via: "harness", checked: 2 });
     return fake({ ok: true });
   }
-  if (u.includes("/api/transcribe")) return fake({ error: "nothing could hear it (harness)" }, 503);
+  if (u.includes("/api/transcribe")) {
+    /* The server's hearing ear is dead (no credit, no token), but the
+       describing ear still writes a listing from words it is handed. */
+    if (body.action === "describe") return fake({
+      ok: true, title: "A heard title", summary: "A summary from the ear.",
+      tags: ["heard"], links: [], topics: [], by: "the harness"
+    });
+    return fake({ error: "nothing could hear it (harness)" }, 503);
+  }
   return fake({ ok: true });
 };
 w.prompt = () => "8===D";
@@ -213,20 +221,58 @@ await tick(20);
 click("[data-am=hear]");
 await tick(30);
 say("hear without file: " + msg("[data-am=msg]"));
+if (!/Choose a recording/.test(msg("[data-am=msg]"))) problems.push("hear with no file did not ask for a recording");
 click("[data-am=summarise]");
 await tick(20);
 
-/* choose a file the browser 'cannot decode' (no Web Audio in jsdom) */
+/* Now give the page a working ear and a file it can decode, and prove the
+   whole road: file -> in-page whisper -> transcript typed -> listing
+   written. The seam (EGTransformersLoader) stands in the CDN library; the
+   Web Audio stubs let the file decode and resample as they would live. */
+function fakeBuf(seconds, rate) {
+  const len = Math.max(1, Math.floor(seconds * rate));
+  const data = new Float32Array(len);
+  for (let i = 0; i < len; i++) data[i] = 0.08 * Math.sin(2 * Math.PI * 220 * i / rate);
+  return { duration: seconds, sampleRate: rate, numberOfChannels: 1, length: len,
+           getChannelData: () => data };
+}
+w.AudioContext = w.webkitAudioContext = function () {
+  return { decodeAudioData: async () => fakeBuf(3, 8000), close() {}, currentTime: 0,
+           createBufferSource: () => ({ buffer: null, connect() {}, start() {} }),
+           destination: {} };
+};
+w.OfflineAudioContext = w.webkitOfflineAudioContext = function (ch, len, rate) {
+  return { createBufferSource: () => ({ buffer: null, connect() {}, start() {} }),
+           destination: {}, startRendering: async () => fakeBuf(len / rate, rate) };
+};
+w.EGTransformersLoader = () => Promise.resolve({
+  env: { backends: { onnx: { wasm: {} } } },
+  pipeline: (task, model, opts) => {
+    if (opts && opts.progress_callback) opts.progress_callback({ status: "progress", progress: 100 });
+    return Promise.resolve(() => Promise.resolve({
+      chunks: [
+        { timestamp: [0, 2.4], text: "hello world" },
+        { timestamp: [3, 5.5], text: "the ear heard the file itself" }
+      ]
+    }));
+  }
+});
+
 const fileInput = $("[data-am=file]");
 if (fileInput) {
-  const f = new w.File([new w.Blob(["fake"])], "ep.wma", { type: "audio/x-ms-wma" });
+  const f = new w.File([new w.Blob(["fake"])], "ep.mp3", { type: "audio/mpeg" });
   Object.defineProperty(fileInput, "files", { value: [f] });
   fileInput.dispatchEvent(new w.Event("change", { bubbles: true }));
-  await tick(40);
+  await tick(60);
   say("file chosen msg: " + msg("[data-am=msg]"));
   click("[data-am=hear]");
-  await tick(40);
-  say("hear with undecodable file: " + msg("[data-am=msg]"));
+  await tick(320);
+  const earBox = w.document.querySelector(".am-ear");
+  const heard = earBox ? earBox.value.replace(/\s+/g, " ").trim() : "(no ear box)";
+  say("hear with file: " + msg("[data-am=msg]"));
+  say("ear box: " + heard.slice(0, 90));
+  if (!/hello world/.test(heard)) problems.push("the in-page ear did not type the transcript it heard");
+  if (!/Listed/i.test(msg("[data-am=msg]"))) problems.push("the listing was not written from the heard transcript");
 }
 
 /* ---- admin summary on the public page ------------------------------- */

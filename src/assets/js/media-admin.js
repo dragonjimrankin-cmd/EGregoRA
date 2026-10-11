@@ -1313,11 +1313,39 @@ function setup(root) {
      between segments is read as a change of voice; the names are guesses the
      transcript keeps plainly so they can be fixed. */
   let whisperPipe = null;
+  /* The library is fetched from a CDN the first time. A seam — a loader the
+     page can override — lets the test harness stand in a fake ear; in the
+     browser it is a plain dynamic import. */
+  function transformersLoader() {
+    if (window.EGTransformersLoader) return window.EGTransformersLoader();
+    return import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2");
+  }
   function whisper() {
     if (!whisperPipe) {
-      whisperPipe = import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2")
+      whisperPipe = transformersLoader()
         .then(function (m) {
-          return m.pipeline("automatic-speech-recognition", "Xenova/whisper-tiny.en", {
+          /* The CDN bundle is an ES module with named exports, but reach for
+             a default export too in case the shape ever changes. */
+          const T = (m && typeof m.pipeline === "function") ? m
+                  : (m && m.default && typeof m.default.pipeline === "function") ? m.default
+                  : null;
+          if (!T) throw new Error("the ear loaded but carried no pipeline");
+          /* Run the model single-threaded, on this thread. The default wants
+             SharedArrayBuffer, which a browser only hands over behind
+             cross-origin-isolation headers this site does not send — so the
+             threaded WASM would never start and the ear would sit silent.
+             Pinning it to one thread on the main thread is what lets it run
+             anywhere. The model itself is cached in the browser, so only the
+             first listen pays the download. */
+          try {
+            if (T.env) {
+              T.env.allowLocalModels = false;
+              T.env.useBrowserCache = true;
+              const wasm = T.env.backends && T.env.backends.onnx && T.env.backends.onnx.wasm;
+              if (wasm) { wasm.numThreads = 1; wasm.proxy = false; }
+            }
+          } catch (e) { /* the env is best-effort; the defaults may still serve */ }
+          return T.pipeline("automatic-speech-recognition", "Xenova/whisper-tiny.en", {
             quantized: true,
             progress_callback: function (p) {
               if (p && p.status === "progress" && p.progress != null)
