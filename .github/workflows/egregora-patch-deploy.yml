@@ -29,6 +29,8 @@ jobs:
       - name: Validate the patch
         run: |
           node --check egregora-patch/api/transcribe.js
+          node --check egregora-patch/api/media.js
+          node --check egregora-patch/public/assets/js/media-admin.js
           node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
 
       - name: Deploy to the existing EGregoRA project
@@ -53,3 +55,57 @@ jobs:
             echo "::error title=EGregoRA patch deployment failed::$MESSAGE"
             exit "$STATUS"
           fi
+
+      - name: Verify the live speaker turns
+        run: |
+          node <<'NODE'
+          const endpoint = 'https://egregora.hatchable.site/api/media';
+          const post = async (body) => {
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify(body)
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok || !data.ok) throw new Error(data.error || `HTTP ${response.status}`);
+            return data;
+          };
+
+          let shelf;
+          for (let attempt = 0; attempt < 6; attempt += 1) {
+            try {
+              shelf = await post({ action: 'list', kind: 'audio' });
+              const latest = shelf.items && shelf.items[0];
+              const names = new Map((latest && latest.speakers || []).map((s) => [s.number, s.name]));
+              if (names.get(1) === 'Edward Gregory' && names.get(2) === 'Jim Rankin') break;
+            } catch { /* allow the new deployment a moment to become live */ }
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+
+          const latest = shelf && shelf.items && shelf.items[0];
+          if (!latest) throw new Error('The live podcast shelf is empty.');
+          const names = new Map((latest.speakers || []).map((s) => [s.number, s.name]));
+          if (names.get(1) !== 'Edward Gregory' || names.get(2) !== 'Jim Rankin') {
+            throw new Error('The latest podcast speaker map was not stored.');
+          }
+          if (!latest.has_transcript) {
+            throw new Error('The latest podcast has no stored transcript from which to derive speech patterns.');
+          }
+
+          const heard = await post({ action: 'transcript', id: latest.id });
+          if (!heard.transcript.includes('Edward Gregory') || !heard.transcript.includes('Jim Rankin')) {
+            throw new Error('The live transcript did not display the two named voices.');
+          }
+          if (!heard.speaker_patterns_stored) {
+            throw new Error('The live transcript did not store both speech-pattern profiles.');
+          }
+          const turns = heard.transcript.split(/\n\s*\n/).filter(Boolean);
+          for (let index = 1; index < turns.length; index += 1) {
+            const before = /\]\s+(.+?)\s+—/.exec(turns[index - 1]);
+            const now = /\]\s+(.+?)\s+—/.exec(turns[index]);
+            if (before && now && before[1] === now[1]) {
+              throw new Error('A timestamp changed without a change of speaker.');
+            }
+          }
+          console.log('Live transcript names, turn timestamps, and stored pattern profiles verified.');
+          NODE
