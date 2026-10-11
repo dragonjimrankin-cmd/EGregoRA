@@ -16,29 +16,7 @@ import { db, storage } from 'hatchable';
 export const access = 'public';
 export const methods = ['GET'];
 
-const STATIC = [
-  {
-    "number": "001",
-    "title": "What Is an Egregore? Building a Mind Out of Many Minds",
-    "summary": "Edward opens the order: thought-forms, group minds, the sociology of belief, and why naming a thing accurately is the first act of magic.",
-    "date": "2026-09-05",
-    "audio": ""
-  },
-  {
-    "number": "002",
-    "title": "The Grove and the Particle Accelerator",
-    "summary": "Why druidry and high-energy physics are asking the same question in different dialects \u2014 pattern, persistence and the behaviour of energy under constraint.",
-    "date": "2026-09-19",
-    "audio": ""
-  },
-  {
-    "number": "003",
-    "title": "Entropic Brains: Psychedelics, Prediction and the Loosening of the Model",
-    "summary": "Predictive processing, the default mode network, and what the visionary state actually does to the machinery of perception. With a long caution on set, setting and law.",
-    "date": "2026-10-03",
-    "audio": ""
-  }
-];
+const STATIC = [];
 
 const esc = (s) => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;')
