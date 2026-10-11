@@ -46,6 +46,9 @@ jobs:
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Sixteen prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'ASK SHAKDRAH TO DRAW' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'ASK SHAKDRAH TO FILM' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'const avatarName' tti/hatchable/public/assets/js/site.js
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'The Universe of Inverted Tori' tti/hatchable/public/inverted-toruses/index.html
@@ -118,12 +121,17 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
               markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
-                'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js']
+                'Can reversible mixing create a matter-antimatter imbalance?',
+                'ASK SHAKDRAH TO DRAW', 'ASK SHAKDRAH TO FILM', 'oracle-knowledge.js']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
                 'baryogenesis-boundary', 'epistemic-grading']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',
+              markers: ['const avatarName', 'tti-shakdrah-muted', "'s voice is on"]
             }
           ];
           let detail = 'the pages did not become current';
