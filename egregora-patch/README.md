@@ -43,3 +43,8 @@ Current patch:
   passcode-derived AES-GCM ciphertext is stored, raw enrollment audio is
   discarded, templates are revocable and the feature is technically excluded
   from login or access control.
+- Transcription now has visible, accessible progress bars in both the new-upload
+  workflow and each existing episode editor. Model loading, audio preparation,
+  server stretch upload/transcription, turn consolidation, transcript saving,
+  known-name restoration and voiceprint checks each report their stage and
+  percentage; failures remain visible instead of silently clearing the bar.

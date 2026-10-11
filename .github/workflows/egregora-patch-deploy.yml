@@ -177,19 +177,21 @@ jobs:
           };
           const [page, admin, voiceprint] = await Promise.all([
             fetch('https://egregora.hatchable.site/podcast/'),
-            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=voiceprints-2'),
+            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=transcription-progress-1'),
             fetch('https://egregora.hatchable.site/assets/js/voiceprint.js')
           ]);
           const [html, adminText, voiceprintText] = await Promise.all([
             page.text(), admin.text(), voiceprint.text()
           ]);
-          if (!page.ok || !html.includes('media-admin.js?v=voiceprints-2')) {
+          if (!page.ok || !html.includes('media-admin.js?v=transcription-progress-1')) {
             fail(`The podcast page does not load the voiceprint editor (HTTP ${page.status}).`);
           }
           if (!admin.ok || !adminText.includes('Consenting voiceprints') ||
               !adminText.includes('every further enrolled voice') ||
-              !adminText.includes('voiceprint-labels')) {
-            fail(`The biometric admin controls are stale (HTTP ${admin.status}).`);
+              !adminText.includes('voiceprint-labels') ||
+              !adminText.includes('tr-progress') ||
+              !adminText.includes('Starting transcription')) {
+            fail(`The biometric or transcription-progress controls are stale (HTTP ${admin.status}).`);
           }
           if (!voiceprint.ok || !voiceprintText.includes('AES-GCM') ||
               !voiceprintText.includes('assignVoiceprints')) {
@@ -204,7 +206,7 @@ jobs:
           if (denied.ok || Array.isArray(deniedData.voiceprints)) {
             fail('Encrypted biometric templates were readable without the admin door.');
           }
-          console.log('Live consent UI, local AES-GCM module, and admin-only template boundary verified.');
+          console.log('Live consent UI, transcription progress bars, AES-GCM module, and admin-only boundary verified.');
           NODE
 
       - name: Verify the live creation-date controls
