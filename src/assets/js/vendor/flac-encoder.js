@@ -4,8 +4,9 @@
  * (the browser's own decodeAudioData included) reads back sample-exact:
  * fixed predictors of order 0–4 chosen per frame per channel, Rice-partitioned
  * residuals with the parameter searched around its analytic optimum, 4096
- * sample frames, one STREAMINFO block. No seek table, no MD5 — nothing a
- * decoder needs, everything a decoder checks.
+ * sample frames, a STREAMINFO block and a SEEKTABLE (a seek point about every
+ * second and a half). No MD5 — nothing a decoder needs, everything a decoder
+ * checks.
  *
  *   encodeFlac({ sampleRate, channels: [Float32Array, ...], progress })
  *     -> Uint8Array
@@ -54,8 +55,10 @@ const CRC16 = (() => {
 const crc8 = (bytes) => { let c = 0; for (let i = 0; i < bytes.length; i++) c = CRC8[c ^ bytes[i]]; return c; };
 const crc16 = (bytes) => { let c = 0; for (let i = 0; i < bytes.length; i++) c = ((c << 8) & 0xffff) ^ CRC16[((c >> 8) ^ bytes[i]) & 0xff]; return c; };
 
-/* The frame header is not a whole number of bytes — the CRC-8 sits on a raw
-   bit boundary — so the CRCs must run over the bit stream itself. */
+/* The frame header is a whole number of bytes, but the frame as a whole is
+   not: the subframes inside it are bit-packed. So the header CRC-8 runs over
+   the bits pushed so far, and the frame CRC-16 over everything that follows
+   once the frame has been aligned at its end. */
 function crc8Bits(bits) {
   let c = 0;
   const total = bits.bytes.length * 8 + bits.n;
