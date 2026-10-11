@@ -14,6 +14,7 @@ on:
       - "scripts/test-oracle-knowledge.mjs"
       - "scripts/test-media-upload.mjs"
       - "scripts/test-private-whisper.mjs"
+      - "scripts/test-mobius-spelling.mjs"
       - "scripts/sync-private-whisper-assets.mjs"
       - "package.json"
       - "package-lock.json"
@@ -56,6 +57,7 @@ jobs:
           node scripts/test-neural-voice.mjs
           node scripts/test-media-upload.mjs
           node scripts/test-private-whisper.mjs
+          node scripts/test-mobius-spelling.mjs
           test -s egregora-patch/public/assets/js/private-whisper/LICENSE-BrowserWhisper.txt
           test -s egregora-patch/public/assets/js/private-whisper/LICENSE-MediaBunny.txt
           test -s egregora-patch/public/assets/js/headtts/worker-tts.mjs
@@ -234,6 +236,9 @@ jobs:
           console.log(`::error title=Live Gink knowledge verification failed::${safe}`);
           process.exit(1);
           NODE
+
+      - name: Verify Möbius spelling on every live EGregoRA page
+        run: node scripts/test-mobius-spelling.mjs --live
 
       - name: Verify live bounded upload and private transcription
         run: |
