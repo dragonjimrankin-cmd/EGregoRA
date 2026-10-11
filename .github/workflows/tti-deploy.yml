@@ -35,7 +35,7 @@ jobs:
           npm run build:tti:hatchable
           test -s tti/hatchable/public/time-and-residue/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'One Source, Many Receivers' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Earned, Chosen, Refused' tti/hatchable/public/time-and-residue/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
@@ -91,7 +91,8 @@ jobs:
               const html = await response.text();
               if (response.ok &&
                   html.includes('The One Residue That Travels') &&
-                  html.includes('One Source, Many Receivers') &&
+                  html.includes('One Source Per Universe, Every Being Eligible') &&
+                  html.includes('The Prime Being Changes With the Instance') &&
                   html.includes('Distribution Is Interpretation') &&
                   html.includes('Earned, Chosen, Refused')) {
                 console.log('Live time-and-residue essay and philosophical transmission model verified.');
