@@ -23,6 +23,7 @@ const pages = [
   ['stress-tests/index.html', '/stress-tests/', 'Stress Tests', 'stress-tests'],
   ['essays/index.html', '/essays/', 'Essays', 'essays'],
   ['prime-plane/index.html', '/prime-plane/', 'The Prime Plane', 'prime-plane'],
+  ['temporal-antipodes/index.html', '/temporal-antipodes/', 'Temporal Antipodes', 'temporal-antipodes'],
   ['time-and-residue/index.html', '/time-and-residue/', 'Time and Residue', 'time-and-residue'],
   ['inverted-toruses/index.html', '/inverted-toruses/', 'Inverted Tori', 'inverted-toruses'],
   ['out-of-phase/index.html', '/out-of-phase/', 'Matter and Antimatter Out of Phase', 'out-of-phase'],

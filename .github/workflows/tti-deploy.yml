@@ -50,6 +50,7 @@ jobs:
           test -s tti/hatchable/public/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
+          test -s tti/hatchable/public/temporal-antipodes/index.html
           test -s tti/hatchable/public/little-red-dots/index.html
           test -s tti/hatchable/public/little-red-dots/research-proposal/index.html
           test -s tti/hatchable/public/stress-tests/index.html
@@ -67,15 +68,17 @@ jobs:
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
           grep -Fq 'A Geometry of the Cosmos' tti/hatchable/public/index.html
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r3.6' tti/hatchable/public/index.html
+          grep -Fq 'r3.7' tti/hatchable/public/index.html
+          grep -q 'Why the two infinities never fully synchronise' tti/hatchable/public/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Four readings, in order of increasing risk' tti/hatchable/public/time-and-residue/index.html
           grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Eighteen prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Nineteen prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Why can the smaller and bigger infinities never fully synchronise?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Could little red dots be remnants of a previous universe?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is the Zero-Seam Test?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO DRAW' tti/hatchable/public/ask-shakdrah/index.html
@@ -103,11 +106,15 @@ jobs:
           grep -q 'const avatarName' tti/hatchable/public/assets/js/site.js
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
+          grep -q 'temporal-antipodes' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'The Universe of Inverted Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'One Seam, Seen as Many Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'The Universe Is the Möbius Seam' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Handedness Reversal Is Not Time Reversal' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Earned, Chosen, Refused' tti/hatchable/public/inverted-toruses/index.html
+          grep -q 'They Are Not Two Clocks That Happen to Disagree' tti/hatchable/public/temporal-antipodes/index.html
+          grep -q 'Smallward Is Not Mathematically Smaller' tti/hatchable/public/temporal-antipodes/index.html
+          grep -q 'What Must Be Derived Before “Cannot” Means Physics' tti/hatchable/public/temporal-antipodes/index.html
           grep -q 'JWST&rsquo;s Little Red Dots, Through TTI' tti/hatchable/public/little-red-dots/index.html
           grep -q 'An Integration Front Carrying an Older Residue' tti/hatchable/public/little-red-dots/index.html
           grep -q 'What Could Exist Between Minus One and Zero?' tti/hatchable/public/little-red-dots/index.html
@@ -118,8 +125,10 @@ jobs:
           grep -q 'A Two-Phase, Twenty-Four-Month Study' tti/hatchable/public/little-red-dots/research-proposal/index.html
           grep -q 'Three Models Must Enter, and Any May Lose' tti/hatchable/public/little-red-dots/research-proposal/index.html
           grep -q 'Choose What Crosses Before Counting What Shines' tti/hatchable/public/little-red-dots/research-proposal/index.html
+          grep -q 'The Temporal-Antipode Synchronisation Challenge' tti/hatchable/public/stress-tests/index.html
           grep -q 'The Zero-Seam Test, With the Null Model Kept in the Room' tti/hatchable/public/stress-tests/index.html
-          grep -q 'The Visual Compendium &middot; 27 plates' tti/hatchable/public/plates/index.html
+          grep -q 'The Visual Compendium &middot; 28 plates' tti/hatchable/public/plates/index.html
+          grep -q 'data-plate-source="/temporal-antipodes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/little-red-dots/"' tti/hatchable/public/plates/index.html
           grep -Fq 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/' tti/hatchable/public/sitemap.xml
           grep -Fq '<subtitle>A Geometry of the Cosmos</subtitle>' tti/hatchable/public/feed.xml
@@ -129,6 +138,7 @@ jobs:
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
+            tti/hatchable/public/temporal-antipodes/index.html \
             tti/hatchable/public/little-red-dots/index.html \
             tti/hatchable/public/little-red-dots/research-proposal/index.html \
             tti/hatchable/public/ask-shakdrah/index.html \
@@ -181,7 +191,8 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
-                'A Geometry of the Cosmos', 'r3.6', 'The Zero-Seam Test']
+                'A Geometry of the Cosmos', 'r3.7', 'Why the two infinities never fully synchronise',
+                'The Zero-Seam Test']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/cosmic-ledger/',
@@ -203,6 +214,12 @@ jobs:
                 'negative-interval conjecture', 'Earned, Chosen, Refused']
             },
             {
+              url: 'https://the-two-infinities.hatchable.site/temporal-antipodes/',
+              markers: ['Temporal Antipodes', 'They Are Not Two Clocks That Happen to Disagree',
+                'Smallward Is Not Mathematically Smaller', 'An Instantaneous Match Is Not Full Synchronisation',
+                'What Must Be Derived Before “Cannot” Means Physics', 'Earned, Chosen, Refused']
+            },
+            {
               url: 'https://the-two-infinities.hatchable.site/little-red-dots/',
               markers: ['JWST&rsquo;s Little Red Dots, Through TTI',
                 'An Integration Front Carrying an Older Residue',
@@ -222,28 +239,32 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/stress-tests/',
               markers: ['Where It Might Break', 'The Entropy Objection',
+                'The Temporal-Antipode Synchronisation Challenge',
                 'The Zero-Seam Test, With the Null Model Kept in the Room',
                 'The clean loss:', 'inherited-residue implementation is rejected']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/plates/',
-              markers: ['The Visual Compendium &middot; 27 plates', 'JWST’s Little Red Dots',
+              markers: ['The Visual Compendium &middot; 28 plates', 'Temporal Antipodes',
+                'Opposite Ends, Finite Projections', 'JWST’s Little Red Dots',
                 'From the previous closure to a']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/sitemap.xml',
-              markers: ['https://the-two-infinities.hatchable.site/little-red-dots/',
+              markers: ['https://the-two-infinities.hatchable.site/temporal-antipodes/',
+                'https://the-two-infinities.hatchable.site/little-red-dots/',
                 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/',
                 'https://the-two-infinities.hatchable.site/stress-tests/']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/essays/',
-              markers: ['JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture',
+              markers: ['Temporal Antipodes', 'JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture',
                 'Read the Zero-Seam research proposal']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
-              markers: ['Eighteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+              markers: ['Nineteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+                'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
                 'Can reversible mixing create a matter-antimatter imbalance?',
                 'ASK SHAKDRAH TO DRAW', 'ASK SHAKDRAH TO FILM', 'oracle-knowledge.js',
@@ -254,8 +275,8 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
-                'baryogenesis-boundary', 'little-red-dots-residue', 'zero-seam-test',
-                'epistemic-grading']
+                'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
+                'zero-seam-test', 'epistemic-grading']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/neural-voice.js',

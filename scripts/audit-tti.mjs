@@ -26,7 +26,7 @@ const htmlFiles = names
   .map((name) => path.join(siteRoot, name))
   .sort();
 
-if (htmlFiles.length < 22) fail(`expected at least 22 HTML documents, found ${htmlFiles.length}`);
+if (htmlFiles.length < 23) fail(`expected at least 23 HTML documents, found ${htmlFiles.length}`);
 
 const documents = new Map();
 const canonicals = new Map();
@@ -130,11 +130,11 @@ if (!home) {
     if (!home.$(`a[href="${href}"]`).length) fail(`homepage does not expose ${href}`);
   }
   const homeLinkedCards = home.$('.card--linked > h3 > a.card-link').length;
-  if (homeLinkedCards !== 16) {
-    fail(`homepage exposes ${homeLinkedCards} whole-card links, expected 16`);
+  if (homeLinkedCards !== 17) {
+    fail(`homepage exposes ${homeLinkedCards} whole-card links, expected 17`);
   }
 }
-if (linkedCardCount < 22) fail(`expected at least 22 whole-card destinations, found ${linkedCardCount}`);
+if (linkedCardCount < 24) fail(`expected at least 24 whole-card destinations, found ${linkedCardCount}`);
 else note(`${linkedCardCount} navigation cards expose their full surface as a link`);
 
 const manifestPath = path.join(siteRoot, 'site.webmanifest');
@@ -169,6 +169,7 @@ try {
   if (!feed.includes(`<title>${expectedTitle}</title>`)) fail('feed title is incorrect');
   if (!feed.includes(`<subtitle>${expectedTagline}</subtitle>`)) fail('feed tagline is incorrect');
   if (!feed.includes(`${expectedOrigin}/little-red-dots/research-proposal/`)) fail('feed omits the research proposal');
+  if (!feed.includes(`${expectedOrigin}/temporal-antipodes/`)) fail('feed omits Temporal Antipodes');
 } catch {}
 
 const plates = documents.get('/plates/');
@@ -195,6 +196,26 @@ for (const pathname of proposalLinks) {
   }
 }
 
+const temporalAntipodeLinks = [
+  '/', '/foundations/', '/seams/', '/stress-tests/', '/essays/', '/prime-plane/',
+  '/time-and-residue/', '/inverted-toruses/', '/out-of-phase/'
+];
+for (const pathname of temporalAntipodeLinks) {
+  const doc = documents.get(pathname);
+  if (!doc?.$(`a[href="/temporal-antipodes/"]`).length) {
+    fail(`${pathname} does not link to the Temporal Antipodes conjecture`);
+  }
+}
+const temporalAntipodes = documents.get('/temporal-antipodes/');
+if (!temporalAntipodes) {
+  fail('Temporal Antipodes was not built');
+} else {
+  for (const id of ['t-proposal', 't-names', 't-compact-time', 't-synchrony', 't-test', 't-ledger']) {
+    if (!temporalAntipodes.$(`[id="${id}"]`).length) fail(`Temporal Antipodes omits #${id}`);
+  }
+  if (!temporalAntipodes.$('figure.plate').length) fail('Temporal Antipodes has no plate');
+}
+
 if (errors.length) {
   console.error(`TTI audit failed with ${errors.length} issue${errors.length === 1 ? '' : 's'}:`);
   for (const error of errors) console.error(`  - ${error}`);
@@ -203,4 +224,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact title, tagline, metadata, manifest, sitemap, feed, links, fragments, JSON-LD and proposal discovery passed.');
+console.log('  Exact identity, metadata, discovery, links, fragments, JSON-LD, Temporal Antipodes and proposal surfaces passed.');

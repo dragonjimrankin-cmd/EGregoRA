@@ -2,7 +2,7 @@
 
 **Project:** The Shape of Becoming: Infinity, Gravity and Existence  
 **Tagline:** A Geometry of the Cosmos  
-**Revision:** r3.6  
+**Revision:** r3.7
 **Audit date:** 11 October 2026
 
 ## Scope
@@ -19,18 +19,28 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 ## Current audited result
 
-- 22 HTML documents built.
-- 22 unique canonical URLs verified.
+- 23 HTML documents built.
+- 23 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, masthead, metadata and manifest.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.
 - Nested breadcrumbs verified for the Zero-Seam research proposal.
 - `sitemap.xml`, Atom `feed.xml`, `robots.txt` and the SVG favicon verified.
-- 27 source plates reconciled with 27 gathered plates; SVG IDs and marker references are namespaced in the compendium.
+- 28 source plates reconciled with 28 gathered plates; SVG IDs and marker references are namespaced in the compendium.
 - The research proposal is discoverable from the homepage, parent conjecture, Essays, Stress Tests, Time and Residue, and Inverted Tori.
-- 18 prepared answers and 18 paraphrase routes verified for both ShakDrah and Gink, including fallback and attachment bypass.
+- Temporal Antipodes is discoverable from the homepage, Foundations, Seams, Essays, Stress Tests, Prime Plane, Time and Residue, Inverted Tori, and the matter–antimatter essay.
+- 19 prepared answers and 19 paraphrase routes verified for both ShakDrah and Gink, including fallback and attachment bypass.
 - Six male neural voices, per-voice dispatch, prosody, consent and lip-sync metadata remain covered by the existing neural-voice test.
 - Workflow YAML and focused Hatchable build markers are validated before deployment.
+
+## Integration added in r3.7
+
+1. The temporal-antipode idea now has a standalone essay that distinguishes scale from cardinality and makes its temporal assignment explicitly conjectural.
+2. Full synchronisation is defined as persistent phase-and-rate locking after lawful transport to one comparison surface; an isolated phase crossing is not counted as synchrony.
+3. The compactified-time scaffold states its assumptions and refuses to treat coordinate compactification, endpoint reflection or spatial orientation reversal as a physical clock channel.
+4. The stress test supplies derivation gates, conventional null explanations and three explicit loss conditions, including a physical temporal gluing that provides a shared clock.
+5. Foundations, Seams, Essays, Prime Plane, Time and Residue, Inverted Tori, the matter–antimatter essay and homepage now cross-link the conjecture without conflating it with entropy, baryogenesis or information transfer.
+6. Both avatars carry a nineteenth prepared answer, and the new plate is gathered into the compendium and syndication/discovery surfaces.
 
 ## Findings repaired in r3.6
 
@@ -46,6 +56,6 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 ## Boundaries of this audit
 
-The local audit does not claim that the TTI physics is correct, that a previous universe exists, or that the negative interval is a physical domain. It checks the site’s internal integrity and whether those claims retain their declared speculative status.
+The local audit does not claim that the TTI physics is correct, that a previous universe exists, that the negative interval is a physical domain, or that the two scale-infinities are physical clocks at opposite temporal ends. It checks the site’s internal integrity and whether those claims retain their declared speculative status.
 
 External scientific links are preserved but are not treated as automatically valid forever. The deployment workflow separately verifies selected live pages after Hatchable publishes them. Visual and audible quality still require human inspection even when markup, voice routing and timing metadata pass automated tests.
