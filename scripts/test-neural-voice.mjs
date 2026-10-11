@@ -74,13 +74,21 @@ assert.equal(unmastered.outputNode, unmastered.audioContext.destination,
   "Older Web Audio implementations must fall back directly to the destination");
 const selectable = new NaturalVoiceEngine({ profile: "gink", voice: "am_fenrir" });
 assert.equal(selectable.voiceLabel, "Fenrir (American)");
-let selectedSetup = null;
-selectable.tts = { clear() {}, setup(settings) { selectedSetup = settings; } };
+selectable.tts = { clear() {} };
 assert.equal(selectable.setVoice("am_puck"), true);
 assert.equal(selectable.voiceId, "am_puck");
-assert.equal(selectedSetup.voice, "am_puck");
 assert.equal(selectable.setVoice("af_heart"), false);
 assert.equal(selectable.voiceId, "am_puck", "An invalid or female voice must not replace the selection");
+const voiceDispatch = [];
+selectable.connected = true;
+selectable.tts = {
+  clear() { voiceDispatch.push("clear"); },
+  async setup(settings) { voiceDispatch.push(`setup:${settings.voice}`); },
+  async synthesize(settings) { voiceDispatch.push(`synthesize:${settings.voice}`); }
+};
+await selectable.speak([{ line: "This voice must really change." }]);
+assert.deepEqual(voiceDispatch, ["clear", "setup:am_puck", "synthesize:am_puck"],
+  "A newly selected voice must be awaited before HeadTTS dispatches synthesis");
 
 /* Cancellation is testable without loading a model: every active queue,
    source and timing callback must be invalidated atomically. */
@@ -160,8 +168,8 @@ assert.equal(patchFox, fox, "The deployed Gink sculpt must match the canonical G
 assert.equal(patchHelper, helper, "Both sites must use the same neural engine");
 assert.doesNotMatch(helper, /import\.meta/,
   "The neural adapter must remain valid under Hatchable's static parser");
-assert.match(helper, /import\("\.\/headtts\/headtts\.mjs"\)/,
-  "HeadTTS must stay lazy and load only after consent");
+assert.match(helper, /import\("\.\/headtts\/headtts\.mjs\?v=male-voices-2"\)/,
+  "The fixed HeadTTS dispatcher must load lazily with a fresh cache key");
 assert.doesNotMatch(helper, /^import .*headtts/m,
   "The multi-megabyte runtime must not enter the initial page payload");
 assert.match(helper, /endpoints: navigator\.gpu \? \["webgpu", "wasm"\] : \["wasm"\]/);
@@ -254,15 +262,27 @@ for (const relative of files) {
 }
 assert.doesNotMatch(await text("tti/src/assets/js/headtts/worker-tts.mjs"), /node:worker_threads/,
   "The vendored worker must remain browser-only");
+const headTtsSource = await text("tti/src/assets/js/headtts/headtts.mjs");
+assert.match(headTtsSource,
+  /item\.message\.data\.voice = \(item\.message\.data\.voice \|\| this\.ttsSetup\.voice\)\.slice\(\)/,
+  "HeadTTS worker dispatch must preserve the visitor's explicit voice selection");
+assert.doesNotMatch(headTtsSource,
+  /item\.message\.data\.voice = this\.ttsSetup\.voice\.slice\(\)/,
+  "The upstream overwrite that made every selector option sound alike must not return");
 for (const required of [
   "headtts.mjs", "worker-tts.mjs", "language.mjs", "language-en-us.mjs", "utils.mjs",
   "transformers.min.js", "dictionaries/en-us.txt", "LICENSE-HeadTTS.txt",
   "LICENSE-Transformers.txt", "LICENSE-Kokoro.txt", "THIRD-PARTY-NOTICES.txt",
   ...MALE_NEURAL_VOICES.map(({ id }) => `voices/${id}.bin`)
 ]) assert.ok(files.includes(required), `Missing vendored neural asset: ${required}`);
+const voiceHashes = [];
 for (const { id } of MALE_NEURAL_VOICES) {
-  assert.ok((await stat(path.join(ttiVendor, "voices", `${id}.bin`))).size > 500000,
+  const voicePath = path.join(ttiVendor, "voices", `${id}.bin`);
+  assert.ok((await stat(voicePath)).size > 500000,
     `Vendored voice is missing or is only a Git LFS pointer: ${id}`);
+  voiceHashes.push(await hash(voicePath));
 }
+assert.equal(new Set(voiceHashes).size, MALE_NEURAL_VOICES.length,
+  "Every chooser option must point to a genuinely different voice embedding");
 
-console.log("Neural engine, six local male voices, consent, fallback, prosody, lip-sync assets, and parity verified.");
+console.log("Neural engine, six local male voices, real voice switching, consent, prosody, lip-sync, and parity verified.");

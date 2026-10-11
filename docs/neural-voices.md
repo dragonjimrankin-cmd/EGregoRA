@@ -38,7 +38,7 @@ Visitors can change either default with the accessible male-voice chooser. The c
 - British: George, Fable and Lewis;
 - American: Fenrir, Michael and Puck.
 
-These are the model card's stronger or most useful male voices, not a promise that every voice suits every passage. Selection is saved locally per character, does not preload the model, and can be auditioned with the existing **Speak** control. Changing voice does not weaken phoneme-timed lip sync.
+These are the model card's stronger or most useful male voices, not a promise that every voice suits every passage. Selection is saved locally per character, does not preload the model, and can be auditioned with the existing **Speak** control. Before every utterance the adapter awaits the selected HeadTTS setup and preserves the explicit voice through worker dispatch, so changing the menu changes the generated speaker without weakening phoneme-timed lip sync.
 
 The spoken-only preparation layer:
 

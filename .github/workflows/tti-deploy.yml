@@ -72,6 +72,7 @@ jobs:
           grep -q 'const throatScutes' tti/hatchable/public/assets/js/dragon.js
           grep -q 'roundNow' tti/hatchable/public/assets/js/dragon.js
           grep -q 'Kokoro-82M-v1.0-ONNX-timestamped' tti/hatchable/public/assets/js/headtts/headtts.mjs
+          grep -Fq 'item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice()' tti/hatchable/public/assets/js/headtts/headtts.mjs
           grep -q 'const avatarName' tti/hatchable/public/assets/js/site.js
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
@@ -161,6 +162,10 @@ jobs:
               markers: ['NaturalVoiceEngine', 'MALE_NEURAL_VOICES', 'am_fenrir', 'bm_lewis',
                 'voiceURL: new URL("voices/", root).href', 'prepareOutput', 'audioTone',
                 'headtts/headtts.mjs', 'generated privately on this device']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/assets/js/headtts/headtts.mjs',
+              markers: ['item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice()']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/headtts/voices/bm_george.bin',

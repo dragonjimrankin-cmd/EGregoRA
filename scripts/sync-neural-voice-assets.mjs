@@ -80,6 +80,20 @@ const copyText = async (source, destination) => {
     .replaceAll("typeof import.meta", "typeof globalThis.location")
     .replaceAll("import('node:fs')", "import('node:' + 'fs')")
     .replaceAll("import('node:readline')", "import('node:' + 'readline')");
+
+  /* HeadTTS 1.3 copies its stored setup over an explicit per-request voice
+     immediately before posting to the browser worker. Preserve the explicit
+     voice instead; otherwise the visible chooser always sounds like the first
+     voice despite synthesize({ voice }). Keep this as a reviewed, reproducible
+     upstream patch until HeadTTS fixes the worker dispatch. */
+  if (path.basename(source) === "headtts.mjs") {
+    const staleVoiceDispatch = "item.message.data.voice = this.ttsSetup.voice.slice();";
+    if (!normalised.includes(staleVoiceDispatch)) {
+      throw new Error("HeadTTS voice dispatch changed; review the local chooser patch");
+    }
+    normalised = normalised.replace(staleVoiceDispatch,
+      "item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice();");
+  }
   await writeFile(destination, normalised);
 };
 

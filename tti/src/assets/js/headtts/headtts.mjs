@@ -874,7 +874,7 @@ class HeadTTS {
 
           // Set default values
           if ( item.message.type === "synthesize" ) {
-            item.message.data.voice = this.ttsSetup.voice.slice();
+            item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice();
             item.message.data.language = this.ttsSetup.language.slice();
             item.message.data.speed = this.ttsSetup.speed;
             item.message.data.audioEncoding = this.ttsSetup.audioEncoding.slice();

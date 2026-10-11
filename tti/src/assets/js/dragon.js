@@ -36,7 +36,7 @@ import {
   getMaleNeuralVoice,
   normaliseSpeechText,
   rankNativeVoices
-} from "./neural-voice.js?v=male-voices-1";
+} from "./neural-voice.js?v=male-voices-2";
 
 (() => {
   "use strict";
