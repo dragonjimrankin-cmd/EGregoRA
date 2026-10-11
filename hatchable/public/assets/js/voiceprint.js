@@ -270,3 +270,123 @@ export function voiceSimilarity(left, right) {
   if (!aa || !bb) return 0;
   return clamp((dot / Math.sqrt(aa * bb) + 1) / 2, 0, 1);
 }
+
+const CORE_NAMES = ["Edward Gregory", "Jim Rankin"];
+
+/* Minimum-cost Hungarian assignment on a square matrix. It lets every
+   diarized voice compare with every enrolled template instead of greedily
+   taking a name that belongs more strongly to another turn group. */
+function hungarian(cost) {
+  const size = cost.length;
+  const u = new Array(size + 1).fill(0);
+  const v = new Array(size + 1).fill(0);
+  const p = new Array(size + 1).fill(0);
+  const way = new Array(size + 1).fill(0);
+  for (let row = 1; row <= size; row++) {
+    p[0] = row;
+    let column0 = 0;
+    const minimum = new Array(size + 1).fill(Infinity);
+    const used = new Array(size + 1).fill(false);
+    do {
+      used[column0] = true;
+      const row0 = p[column0];
+      let delta = Infinity;
+      let column1 = 0;
+      for (let column = 1; column <= size; column++) {
+        if (used[column]) continue;
+        const current = cost[row0 - 1][column - 1] - u[row0] - v[column];
+        if (current < minimum[column]) {
+          minimum[column] = current;
+          way[column] = column0;
+        }
+        if (minimum[column] < delta) {
+          delta = minimum[column];
+          column1 = column;
+        }
+      }
+      for (let column = 0; column <= size; column++) {
+        if (used[column]) {
+          u[p[column]] += delta;
+          v[column] -= delta;
+        } else {
+          minimum[column] -= delta;
+        }
+      }
+      column0 = column1;
+    } while (p[column0] !== 0);
+    do {
+      const column1 = way[column0];
+      p[column0] = p[column1];
+      column0 = column1;
+    } while (column0);
+  }
+  const assignment = new Array(size).fill(-1);
+  for (let column = 1; column <= size; column++) {
+    if (p[column]) assignment[p[column] - 1] = column - 1;
+  }
+  return assignment;
+}
+
+/**
+ * Compare every diarized voice group with every consented enrollment.
+ * Edward and Jim are ordered first for reporting, but never receive a score
+ * bonus: identity is assigned only by the acoustic evidence. An ambiguous
+ * result abstains instead of silently attaching the wrong person's name.
+ */
+export function assignVoiceprints(candidateTemplates, enrolledTemplates, options = {}) {
+  const minimumScore = Number(options.minimumScore ?? 0.7);
+  const minimumMargin = Number(options.minimumMargin ?? 0.04);
+  const candidates = [...candidateTemplates.entries()]
+    .filter(([, template]) => template && Array.isArray(template.embedding));
+  const enrolled = [...enrolledTemplates.entries()]
+    .filter(([, template]) => template && Array.isArray(template.embedding))
+    .sort((left, right) => {
+      const li = CORE_NAMES.indexOf(left[0]);
+      const ri = CORE_NAMES.indexOf(right[0]);
+      return (li < 0 ? 99 : li) - (ri < 0 ? 99 : ri) || left[0].localeCompare(right[0]);
+    });
+  if (!candidates.length || !enrolled.length) {
+    return { labels: [], uncertain: candidates.map(([number]) => number), comparisons: [] };
+  }
+
+  const similarities = candidates.map(([, candidate]) =>
+    enrolled.map(([, template]) => voiceSimilarity(candidate, template)));
+  const size = Math.max(candidates.length, enrolled.length);
+  const cost = Array.from({ length: size }, (_, row) =>
+    Array.from({ length: size }, (_, column) =>
+      row < candidates.length && column < enrolled.length
+        ? 1 - similarities[row][column]
+        : 1));
+  const assignment = hungarian(cost);
+  const labels = [];
+  const uncertain = [];
+  for (let row = 0; row < candidates.length; row++) {
+    const column = assignment[row];
+    if (column < 0 || column >= enrolled.length) {
+      uncertain.push(candidates[row][0]);
+      continue;
+    }
+    const score = similarities[row][column];
+    const nextName = Math.max(0, ...similarities[row].filter((_, index) => index !== column));
+    const nextVoice = Math.max(0, ...similarities
+      .map((line, index) => index === row ? 0 : line[column]));
+    const margin = score - Math.max(nextName, nextVoice);
+    const label = {
+      number: Number(candidates[row][0]),
+      name: enrolled[column][0],
+      score: Math.round(score * 1000000) / 1000000,
+      margin: Math.round(margin * 1000000) / 1000000
+    };
+    if (score >= minimumScore && margin >= minimumMargin) labels.push(label);
+    else uncertain.push(label.number);
+  }
+  return {
+    labels,
+    uncertain,
+    core_checked: CORE_NAMES.filter((name) => enrolled.some(([got]) => got === name)),
+    comparisons: candidates.map(([number], row) => ({
+      number: Number(number),
+      scores: enrolled.map(([name], column) => ({ name, score: similarities[row][column] }))
+    }))
+  };
+}

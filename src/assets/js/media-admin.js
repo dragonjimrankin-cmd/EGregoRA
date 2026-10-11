@@ -25,7 +25,7 @@ import {
   voiceTemplate,
   sealVoiceprint,
   openVoiceprint,
-  voiceSimilarity
+  assignVoiceprints
 } from "./voiceprint.js";
 
 /* The MP3 encoder is served from this site, not from a CDN. It used to be
@@ -110,6 +110,106 @@ function setup(root) {
     if (!r.ok) throw new Error(data.error || "the shelf refused that");
     return data;
   });
+
+  const voiceStampSeconds = (stamp) => {
+    const value = String(stamp || "").trim().toLowerCase();
+    if (/[hms]/.test(value)) {
+      const found = /^(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?$/.exec(value.replace(/\s+/g, ""));
+      return found ? Number(found[1] || 0) * 3600 + Number(found[2] || 0) * 60 + Number(found[3] || 0) : 0;
+    }
+    const parts = value.split(":").map(Number);
+    if (parts.some((part) => !Number.isFinite(part))) return 0;
+    return parts.length > 2 ? parts[0] * 3600 + parts[1] * 60 + parts[2]
+      : (parts[0] || 0) * 60 + (parts[1] || 0);
+  };
+
+  function voiceTurns(text, knownSpeakers, duration) {
+    const known = new Map((knownSpeakers || []).map((speaker) =>
+      [String(speaker.name).toLowerCase(), Number(speaker.number)]));
+    const byNumber = new Map((knownSpeakers || []).map((speaker) =>
+      [Number(speaker.number), speaker.name]));
+    const turns = [];
+    String(text || "").split(/\n\s*\n/).forEach((block) => {
+      const found = /^\[([^\]]+)\]\s+(.+?)\s+—\s*([\s\S]*)$/.exec(block.trim());
+      if (!found) return;
+      const label = found[2].trim();
+      const numbered = /^Speaker\s+(\d+)$/i.exec(label);
+      const number = numbered ? Number(numbered[1]) : (known.get(label.toLowerCase()) || null);
+      turns.push({
+        at: voiceStampSeconds(found[1]),
+        stamp: found[1],
+        number,
+        name: numbered ? (byNumber.get(number) || "") : label,
+        text: found[3].trim()
+      });
+    });
+    turns.forEach((turn, index) => {
+      const next = turns[index + 1];
+      turn.to = next ? next.at : Math.min(Number(duration) || turn.at + 30, turn.at + 45);
+    });
+    return turns;
+  }
+
+  /* Every authenticated audio path uses this same matcher. It tests Edward
+     Gregory and Jim Rankin first in the report, then every additional
+     explicitly enrolled voiceprint. Low-score or low-margin results abstain;
+     an unknown voice remains Speaker N rather than receiving the wrong name. */
+  async function localVoiceMatches(buffer, transcript, knownSpeakers) {
+    if (!buffer || !String(transcript || "").trim()) {
+      return { labels: [], uncertain: [], reason: "no decoded audio or timestamped transcript" };
+    }
+    const data = await post({ action: "voiceprints" });
+    const records = data.voiceprints || [];
+    if (!records.length) return { labels: [], uncertain: [], reason: "no enrolled voiceprints" };
+    const enrolled = new Map();
+    const locked = [];
+    for (const record of records) {
+      try {
+        enrolled.set(record.name, await openVoiceprint(record, pass));
+      } catch {
+        locked.push(record.name);
+      }
+    }
+    if (!enrolled.size) {
+      return { labels: [], uncertain: [], locked,
+        reason: "no enrolled template could be opened with this admin passcode" };
+    }
+    const turns = voiceTurns(transcript, knownSpeakers || [], buffer.duration);
+    const numbers = [...new Set(turns.map((turn) => turn.number).filter(Number.isInteger))];
+    if (!numbers.length) {
+      return { labels: [], uncertain: [], reason: "the transcript has no diarized speaker numbers" };
+    }
+    const candidates = new Map();
+    const tooShort = [];
+    for (const number of numbers) {
+      const intervals = turns.filter((turn) => turn.number === number)
+        .map((turn) => ({ from: turn.at, to: turn.to }));
+      try {
+        candidates.set(number, voiceTemplate(buffer, intervals));
+      } catch {
+        tooShort.push(number);
+      }
+    }
+    const result = assignVoiceprints(candidates, enrolled, {
+      minimumScore: 0.7,
+      minimumMargin: 0.04
+    });
+    result.uncertain = [...new Set((result.uncertain || []).concat(tooShort))];
+    result.locked = locked;
+    result.reason = result.labels.length ? "matched" : "no unambiguous enrolled voice was found";
+    return result;
+  }
+
+  const voiceMatchReport = (result) => {
+    const labels = (result.labels || []).map((label) =>
+      "Speaker " + label.number + " → " + label.name + " (similarity " +
+      Math.round(label.score * 100) + "%, margin " + Math.round(label.margin * 100) + "%)")
+      .join("; ");
+    const locked = result.locked && result.locked.length
+      ? "; re-enrol locked template" + (result.locked.length === 1 ? " " : "s ") + result.locked.join(", ")
+      : "";
+    return labels + locked;
+  };
 
   /* ------------------------------------------------------------- the door */
   el.open.addEventListener("click", () => {
@@ -488,6 +588,7 @@ function setup(root) {
       /* Hand it to the same path a chosen file takes. */
       source = blob;
       ready = null;
+      pendingNewVoiceMatches = null;
       if (el.title && !el.title.value) {
         el.title.value = (KIND === "audio" ? "Recorded " : "Filmed ") +
           new Date().toLocaleDateString([], { day: "numeric", month: "long", year: "numeric" });
@@ -520,6 +621,7 @@ function setup(root) {
   if (el.file) el.file.addEventListener("change", async () => {
     const f = el.file.files && el.file.files[0];
     ready = null;
+    pendingNewVoiceMatches = null;
     if (el.meta) el.meta.hidden = true;
     if (el.pubrow) el.pubrow.hidden = true;   /* a new file starts over */
     if (el.after) el.after.innerHTML = "";
@@ -1272,6 +1374,7 @@ function setup(root) {
 
   let listing = null;     /* what the archivist wrote, kept for the upload */
   let earBy = "";         /* which ear heard the episode */
+  let pendingNewVoiceMatches = null; /* local-only matches until the media row exists */
 
   /* The ear, opened directly beneath the button: a read-only box the
      transcript is typed into as it is heard. */
@@ -1612,8 +1715,18 @@ function setup(root) {
         }
       }
       if (sumBtn) sumBtn.disabled = lastTranscript.trim().length < 40;
-      if (lastTranscript.trim().length >= 40) await describeListing(lastTranscript, false);
-      else say("The ear kept almost nothing \u2014 the listing is yours to write by hand.", true);
+      if (lastTranscript.trim().length >= 40) {
+        pendingNewVoiceMatches = buf
+          ? await localVoiceMatches(buf, lastTranscript, []).catch((error) => ({
+            labels: [], uncertain: [], reason: (error && error.message) || "voiceprint comparison unavailable"
+          }))
+          : { labels: [], uncertain: [], reason: "the audio could not be decoded locally" };
+        await describeListing(lastTranscript, false);
+        if (pendingNewVoiceMatches.labels.length) {
+          say("The listing is ready. Voiceprints found " + voiceMatchReport(pendingNewVoiceMatches) +
+            (pendingNewVoiceMatches.uncertain.length ? "; uncertain voices remain unnamed." : "."));
+        }
+      } else say("The ear kept almost nothing \u2014 the listing is yours to write by hand.", true);
     } catch (err) {
       typer.stop();
       say((err && err.message) || "It could not be transcribed.", true);
@@ -1649,6 +1762,20 @@ function setup(root) {
     if (btn) btn.disabled = true;
     if (el.send && btn !== el.send) el.send.disabled = true;
     try {
+      let pendingVoiceMatches = pendingNewVoiceMatches ||
+        { labels: [], uncertain: [], reason: "not an audio transcript" };
+      if (!pendingNewVoiceMatches && KIND === "audio" && fileBuf && listing && listing.transcript) {
+        try {
+          step("Checking every enrolled voiceprint, with Ed and Jim first", 0.02);
+          pendingVoiceMatches = await localVoiceMatches(fileBuf, listing.transcript, []);
+        } catch (error) {
+          /* Identification may abstain or a passcode may have changed. Neither
+             is a reason to lose a finished recording; it stays generically
+             labelled and the editor explains what needs review. */
+          pendingVoiceMatches = { labels: [], uncertain: [],
+            reason: (error && error.message) || "voiceprint comparison unavailable" };
+        }
+      }
       const upload = "u" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
       const begun = await post({ action: "begin", upload, mime: blob.type });
       const CH = Math.min(900000, begun.chunk_max || 900000);
@@ -1683,7 +1810,26 @@ function setup(root) {
         publish: true
       });
 
-      say("Published. It is on the page now \u2014 reload to see it in the list.");
+      if (d && d.item && pendingVoiceMatches.labels.length) {
+        try {
+          const identified = await post({
+            action: "voiceprint-labels",
+            id: d.item.id,
+            labels: pendingVoiceMatches.labels,
+            feature_version: "eg-vp-mfsc-1"
+          });
+          d.item.speakers = identified.speakers || d.item.speakers;
+        } catch (error) {
+          pendingVoiceMatches = { labels: [], uncertain: pendingVoiceMatches.uncertain || [],
+            reason: (error && error.message) || "the matched labels could not be stored" };
+        }
+      }
+      const matchNote = pendingVoiceMatches.labels.length
+        ? " Voiceprints assigned " + voiceMatchReport(pendingVoiceMatches) + "."
+        : (KIND === "audio" && listing && listing.transcript
+          ? " Voiceprints made no automatic assignment: " + pendingVoiceMatches.reason + "."
+          : "");
+      say("Published. It is on the page now \u2014 reload to see it in the list." + matchNote);
       step("Published", 1);
       const shelf = await post({ action: "shelf", kind: KIND });
       drawShelf(shelf.items || []);
@@ -1750,18 +1896,18 @@ function setup(root) {
       (KIND === "audio"
         ? '<div class="divider">\u2726</div>' +
           '<p class="kicker">Consenting voiceprints</p>' +
-          '<p class="muted small">Biometric acoustic templates can label Edward Gregory and Jim Rankin in later podcasts. ' +
-          'The audio is analysed on this device; only a passcode-encrypted, revocable template is stored. ' +
-          '<strong>It is never used to sign in.</strong></p>' +
+          '<p class="muted small">Every audio transcript is checked for Edward Gregory and Jim Rankin first, then every further enrolled voice. ' +
+          'The audio is analysed on this device; only passcode-encrypted, revocable templates are stored. ' +
+          '<strong>It is never used to sign in, and an uncertain voice stays unnamed.</strong></p>' +
           '<label class="ae-pair"><input type="checkbox" data-ed="vp-consent"> ' +
-          'I confirm that Edward Gregory and Jim Rankin explicitly consent to biometric enrollment and podcast labelling.</label>' +
+          'I confirm that every person I enrol explicitly consents to biometric enrollment and podcast labelling.</label>' +
           '<div class="btn-row">' +
-          '<button class="btn btn--small" type="button" data-ed="vp-from-turns">Enrol both from these named turns</button>' +
-          '<button class="btn btn--small btn--ghost" type="button" data-ed="vp-match">Match and label these turns</button></div>' +
-          '<p class="muted xsmall">For a cleaner enrollment, choose one speaker and record fifteen seconds alone. ' +
+          '<button class="btn btn--small" type="button" data-ed="vp-from-turns">Enrol consenting named turns</button>' +
+          '<button class="btn btn--small btn--ghost" type="button" data-ed="vp-match">Check every voiceprint now</button></div>' +
+          '<p class="muted xsmall">For a cleaner enrollment, type one consenting speaker’s full name and record fifteen seconds alone. ' +
           'Read naturally: “Every changing pattern leaves a trace; careful listening separates the voice from the room.”</p>' +
-          '<div class="am-cut"><select data-ed="vp-name" aria-label="Speaker to enrol">' +
-          '<option>Edward Gregory</option><option>Jim Rankin</option></select>' +
+          '<div class="am-cut"><input type="text" data-ed="vp-name" maxlength="80" ' +
+          'value="Edward Gregory" aria-label="Consenting speaker to enrol">' +
           '<button class="btn btn--small btn--ghost" type="button" data-ed="vp-record">Record 15-second enrollment</button></div>' +
           '<div data-ed="vp-list" class="muted small"></div>' +
           '<p data-ed="vp-state" class="muted small"></p>'
@@ -1828,6 +1974,7 @@ function setup(root) {
 
     const ed = (name) => box.querySelector('[data-ed="' + name + '"]');
     const tellEd = (t, bad) => { const n = ed("state"); if (n) { n.textContent = t; n.className = "muted small" + (bad ? " is-bad" : ""); } };
+    let autoMatchCurrent = async () => ({ labels: [], uncertain: [], reason: "not ready" });
 
     /* The player everything else is measured against. */
     const player = document.createElement(KIND === "audio" ? "audio" : "video");
@@ -1859,6 +2006,13 @@ function setup(root) {
         ctx.close();
         edit.seconds = edit.buf.duration;
         tellEd("Ready. " + clock(edit.buf.duration) + " of audio, cut to the sample.");
+        if (item.has_transcript) {
+          const matched = await autoMatchCurrent().catch(() => null);
+          if (matched && matched.labels && matched.labels.length) {
+            tellEd("Ready. Voiceprints automatically assigned " + voiceMatchReport(matched) +
+              (matched.uncertain.length ? "; uncertain voices stayed unnamed." : "."));
+          }
+        }
       }).catch(() => tellEd("The audio could not be fetched for cutting. The writing and the pictures still work.", true));
     } else {
       tellEd("Ready. Cutting a film re-records the stretch at playback speed.");
@@ -1877,43 +2031,6 @@ function setup(root) {
         node.textContent = text || "";
         node.className = "muted small" + (bad ? " is-bad" : "");
       };
-      const stampSeconds = (stamp) => {
-        const value = String(stamp || "").trim().toLowerCase();
-        if (/[hms]/.test(value)) {
-          const found = /^(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?$/.exec(value.replace(/\s+/g, ""));
-          return found ? Number(found[1] || 0) * 3600 + Number(found[2] || 0) * 60 + Number(found[3] || 0) : 0;
-        }
-        const parts = value.split(":").map(Number);
-        if (parts.some((part) => !Number.isFinite(part))) return 0;
-        return parts.length > 2 ? parts[0] * 3600 + parts[1] * 60 + parts[2]
-          : (parts[0] || 0) * 60 + (parts[1] || 0);
-      };
-      const transcriptTurnsForVoice = (text) => {
-        const known = new Map((item.speakers || []).map((speaker) =>
-          [String(speaker.name).toLowerCase(), Number(speaker.number)]));
-        const byNumber = new Map((item.speakers || []).map((speaker) =>
-          [Number(speaker.number), speaker.name]));
-        const turns = [];
-        String(text || "").split(/\n\s*\n/).forEach((block) => {
-          const found = /^\[([^\]]+)\]\s+(.+?)\s+—\s*([\s\S]*)$/.exec(block.trim());
-          if (!found) return;
-          const label = found[2].trim();
-          const numbered = /^Speaker\s+(\d+)$/i.exec(label);
-          const number = numbered ? Number(numbered[1]) : (known.get(label.toLowerCase()) || null);
-          turns.push({
-            at: stampSeconds(found[1]),
-            stamp: found[1],
-            number,
-            name: numbered ? (byNumber.get(number) || "") : label,
-            text: found[3].trim()
-          });
-        });
-        turns.forEach((turn, index) => {
-          const next = turns[index + 1];
-          turn.to = next ? next.at : Math.min(edit.buf ? edit.buf.duration : turn.at + 30, turn.at + 45);
-        });
-        return turns;
-      };
       const keptTranscript = async () => {
         const response = await fetch("/api/media", {
           method: "POST",
@@ -1926,13 +2043,30 @@ function setup(root) {
         }
         return data;
       };
+      autoMatchCurrent = async (transcriptOverride) => {
+        const transcriptData = transcriptOverride
+          ? { transcript: transcriptOverride }
+          : await keptTranscript();
+        const result = await localVoiceMatches(edit.buf, transcriptData.transcript, item.speakers || []);
+        if (result.labels.length) {
+          const applied = await post({
+            action: "voiceprint-labels",
+            id: item.id,
+            labels: result.labels,
+            feature_version: "eg-vp-mfsc-1"
+          });
+          item.speakers = applied.speakers || item.speakers;
+          result.applied = applied;
+        }
+        return result;
+      };
       const consented = () => {
         if (!ed("vp-consent").checked) {
-          vpTell("Confirm both speakers' explicit consent before enrollment.", true);
+          vpTell("Confirm every selected speaker's explicit consent before enrollment.", true);
           return false;
         }
-        return window.confirm("Confirm biometric enrollment for podcast speaker labelling only. " +
-          "The templates are revocable and will never be used to sign in.");
+        return window.confirm("Confirm that every selected person explicitly consents to biometric enrollment " +
+          "for podcast speaker labelling only. Templates are revocable and never used to sign in.");
       };
       const saveVoiceprint = async (name, template, sourceId) => {
         const envelope = await sealVoiceprint(name, template, pass);
@@ -1985,21 +2119,30 @@ function setup(root) {
         if (!consented()) return;
         button.disabled = true;
         try {
-          vpTell("Measuring the two consenting voices on this device\u2026");
+          vpTell("Measuring every consenting named voice on this device, with Ed and Jim first\u2026");
           const data = await keptTranscript();
-          const turns = transcriptTurnsForVoice(data.transcript);
+          const turns = voiceTurns(data.transcript, item.speakers || [], edit.buf.duration);
+          const core = ["Edward Gregory", "Jim Rankin"];
+          const names = [...new Set(turns.map((turn) => turn.name).filter((name) =>
+            name && !/^Speaker\s+\d+$/i.test(name)))]
+            .sort((left, right) => {
+              const li = core.indexOf(left), ri = core.indexOf(right);
+              return (li < 0 ? 99 : li) - (ri < 0 ? 99 : ri) || left.localeCompare(right);
+            });
+          if (!names.length) throw new Error("Name the consenting transcript voices before enrolling them.");
           const templates = [];
-          for (const name of ["Edward Gregory", "Jim Rankin"]) {
+          for (const name of names) {
             const intervals = turns.filter((turn) => turn.name === name)
               .map((turn) => ({ from: turn.at, to: turn.to }));
             templates.push({ name, template: voiceTemplate(edit.buf, intervals) });
           }
-          /* Both must be measurable before either is written, so enrollment
-             cannot silently stop halfway through. */
+          /* Every selected voice must be measurable before any is written, so
+             a multi-speaker enrollment cannot silently stop halfway through. */
           for (const measured of templates) {
             await saveVoiceprint(measured.name, measured.template, item.id);
           }
-          vpTell("Both consenting voiceprints were encrypted and stored for podcast labelling only.");
+          vpTell(names.length + " consenting voiceprint" + (names.length === 1 ? " was" : "s were") +
+            " encrypted and stored for podcast labelling only.");
           await refreshVoiceprints();
         } catch (error) {
           vpTell((error && error.message) || "The voiceprints could not be enrolled.", true);
@@ -2010,7 +2153,10 @@ function setup(root) {
 
       ed("vp-record").addEventListener("click", async () => {
         const button = ed("vp-record");
-        const name = ed("vp-name").value;
+        const name = String(ed("vp-name").value || "").trim();
+        if (name.length < 2 || /^Speaker\s+\d+$/i.test(name)) {
+          return vpTell("Enter the consenting person's full name before recording.", true);
+        }
         if (!consented()) return;
         button.disabled = true;
         let stream = null;
@@ -2066,60 +2212,28 @@ function setup(root) {
         if (!edit.buf) return vpTell("Wait until the episode audio is decoded.", true);
         button.disabled = true;
         try {
-          vpTell("Opening the encrypted voiceprints and comparing turns on this device\u2026");
-          const data = await post({ action: "voiceprints" });
-          vpRecords = data.voiceprints || [];
-          if (vpRecords.length !== 2) throw new Error("Enrol both consenting speakers first.");
-          const enrolled = new Map();
-          for (const record of vpRecords) enrolled.set(record.name, await openVoiceprint(record, pass));
-
+          vpTell("Checking Edward Gregory, Jim Rankin, then every further enrolled voiceprint\u2026");
           const transcriptData = await keptTranscript();
-          const turns = transcriptTurnsForVoice(transcriptData.transcript);
-          const numbers = [...new Set(turns.map((turn) => turn.number).filter(Number.isInteger))];
-          if (numbers.length !== 2) throw new Error("The transcript must contain exactly two numbered voices to match.");
-          const candidates = new Map();
-          for (const number of numbers) {
-            const intervals = turns.filter((turn) => turn.number === number)
-              .map((turn) => ({ from: turn.at, to: turn.to }));
-            candidates.set(number, voiceTemplate(edit.buf, intervals));
+          const result = await localVoiceMatches(edit.buf, transcriptData.transcript, item.speakers || []);
+          const report = voiceMatchReport(result);
+          if (!result.labels.length) {
+            throw new Error("No labels were changed: " + result.reason +
+              (result.uncertain.length ? "; uncertain Speaker " + result.uncertain.join(", ") : "") + ".");
           }
-          const names = ["Edward Gregory", "Jim Rankin"];
-          const score = (number, name) => voiceSimilarity(candidates.get(number), enrolled.get(name));
-          const direct = {
-            labels: [
-              { number: numbers[0], name: names[0], score: score(numbers[0], names[0]) },
-              { number: numbers[1], name: names[1], score: score(numbers[1], names[1]) }
-            ]
-          };
-          const crossed = {
-            labels: [
-              { number: numbers[0], name: names[1], score: score(numbers[0], names[1]) },
-              { number: numbers[1], name: names[0], score: score(numbers[1], names[0]) }
-            ]
-          };
-          direct.total = direct.labels.reduce((sum, label) => sum + label.score, 0);
-          crossed.total = crossed.labels.reduce((sum, label) => sum + label.score, 0);
-          const best = direct.total >= crossed.total ? direct : crossed;
-          const other = best === direct ? crossed : direct;
-          const margin = best.total - other.total;
-          const report = best.labels.map((label) => "Speaker " + label.number + " \u2192 " +
-            label.name + " (similarity " + Math.round(label.score * 100) + "%)").join("; ");
-          if (best.labels.some((label) => label.score < 0.7) || margin < 0.03) {
-            throw new Error("No labels were changed: the biometric comparison was inconclusive (" + report + ").");
-          }
-          if (!window.confirm("Apply this local biometric match? " + report +
-              ". This labels podcast turns only and does not authenticate anyone.")) {
+          if (!window.confirm("Apply these unambiguous local biometric matches? " + report +
+              ". Uncertain voices remain unnamed; voiceprints never authenticate anyone.")) {
             return vpTell("The biometric comparison was not applied: " + report + ".");
           }
           const applied = await post({
             action: "voiceprint-labels",
             id: item.id,
-            labels: best.labels,
-            assignment_margin: margin,
+            labels: result.labels,
             feature_version: "eg-vp-mfsc-1"
           });
           item.speakers = applied.speakers || item.speakers;
-          vpTell("Biometric speaker labels applied: " + report + ". Review the transcript before publishing.");
+          vpTell("Biometric speaker labels applied: " + report +
+            (result.uncertain.length ? ". Uncertain Speaker " + result.uncertain.join(", ") + " stayed unnamed." : ".") +
+            " Review the transcript before publishing.");
         } catch (error) {
           vpTell((error && error.message) || "The biometric comparison failed.", true);
         } finally {
@@ -2186,11 +2300,20 @@ function setup(root) {
         if (known.length) {
           named = await post({ action: "name-speakers", id: item.id, speakers: known });
         }
-        area.value = (named && named.transcript) || transcript;
+        const biometric = await autoMatchCurrent(transcript).catch((error) => ({
+          labels: [], uncertain: [], reason: (error && error.message) || "voiceprint comparison unavailable"
+        }));
+        area.value = (biometric.applied && biometric.applied.transcript) ||
+          (named && named.transcript) || transcript;
         item.has_transcript = true;
-        tellEd(named && named.speaker_patterns_stored
-          ? "Transcript saved. The named voices' speech patterns are stored, with one timestamp per turn."
-          : "Transcript saved. Its speaker turns are kept with the episode.");
+        tellEd(biometric.labels.length
+          ? "Transcript saved. Voiceprints automatically assigned " + voiceMatchReport(biometric) +
+            (biometric.uncertain.length ? "; uncertain voices stayed unnamed." : ".")
+          : named && named.speaker_patterns_stored
+            ? "Transcript saved. Named speech patterns are stored; voiceprints made no new assignment (" +
+              biometric.reason + ")."
+            : "Transcript saved. Its turns are kept; voiceprints made no assignment (" +
+              biometric.reason + ").");
         button.textContent = "Transcribe it again";
       } catch (err) {
         typer.stop();

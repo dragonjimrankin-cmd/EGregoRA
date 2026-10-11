@@ -58,6 +58,9 @@ w.fetch = async (url, opts) => {
     if (body.action === "shelf") return fake({ ok: true, items: [EP] });
     if (body.action === "transcript") return fake({ ok: true, title: EP.title, transcript: "some words" });
     if (body.action === "next-number") return fake({ ok: true, number: "005" });
+    /* A small chunk_max so a tiny test file still uploads in several pieces,
+       which is what makes the progress meter step rather than jump. */
+    if (body.action === "begin") return fake({ ok: true, chunk_max: 1200 });
     return fake({ ok: true, item: EP });
   }
   if (u.includes("/api/edit")) {
@@ -266,7 +269,7 @@ w.EGTransformersLoader = () => Promise.resolve({
 const fileInput = $("[data-am=file]");
 if (fileInput) {
   const f = new w.File([new w.Blob(["fake"])], "ep.mp3", { type: "audio/mpeg" });
-  Object.defineProperty(fileInput, "files", { value: [f] });
+  Object.defineProperty(fileInput, "files", { value: [f], configurable: true });
   fileInput.dispatchEvent(new w.Event("change", { bubbles: true }));
   await tick(60);
   say("file chosen msg: " + msg("[data-am=msg]"));
@@ -334,6 +337,43 @@ say("source load: " + msg(".ae-msg"));
 click(".ae-src-save");
 await tick(20);
 say("source save empty: " + msg(".ae-msg"));
+
+/* ---- the upload progress meter -------------------------------------- */
+/* Stage a file, give it a title, and publish it. As the chunks go up the
+   bar must climb --done from 0 to 100% — that is what draws the gold fill
+   behind the words on both the podcast and the video doors. Capture every
+   value the bar is handed, to prove it is a moving meter and not a single
+   jump to "done". */
+{
+  const fi = $("[data-am=file]");
+  if (fi) {
+    const bytes = new Uint8Array(2600);          /* three pieces at the harness chunk_max */
+    for (let i = 0; i < bytes.length; i++) bytes[i] = i & 255;
+    const f = new w.File([new w.Blob([bytes])], "ep.mp3", { type: "audio/mpeg" });
+    Object.defineProperty(fi, "files", { value: [f], configurable: true });
+    fi.dispatchEvent(new w.Event("change", { bubbles: true }));
+    await tick(40);
+    const titleEl = $("[data-am=title]");
+    if (titleEl) titleEl.value = "An uploaded episode";
+    const bar = $("[data-am=bar]");
+    const seen = [];
+    if (bar) {
+      const orig = bar.style.setProperty.bind(bar.style);
+      bar.style.setProperty = (k, v) => { if (k === "--done") seen.push(String(v)); return orig(k, v); };
+    }
+    click("[data-am=pubnow]");
+    await tick(90);
+    const finalDone = bar ? bar.style.getPropertyValue("--done") : "";
+    say("upload meter steps: " + (seen.join(" \u2192 ") || "(none)"));
+    say("upload meter final: " + finalDone + " | " + (bar ? bar.textContent.replace(/\s+/g, " ").trim() : "(no bar)"));
+    if (!bar) problems.push("there is no upload progress bar on the page");
+    else {
+      if (bar.hidden) problems.push("the upload progress bar stayed hidden during the upload");
+      if (seen.length < 2) problems.push("the upload bar did not climb through progress (it should step, not jump)");
+      if (!/100%/.test(finalDone)) problems.push("the upload bar did not reach 100% (got " + finalDone + ")");
+    }
+  }
+}
 
 await tick(50);
 
