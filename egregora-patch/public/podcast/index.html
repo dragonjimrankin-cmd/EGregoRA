@@ -778,11 +778,16 @@
 
 
       <div class="btn-row">
-        <button type="button" class="btn btn--small" data-am="hear">Transcribe it, then write the summary</button>
+        <button type="button" class="btn btn--small" data-am="hear">Transcribe privately, then write the summary</button>
         <button type="button" class="btn btn--small btn--ghost" data-am="summarise"
                 disabled>Rewrite only the summary</button>
         <span class="muted xsmall">One click makes the transcript, summary, title, tags and links from the recording itself.</span>
       </div>
+      <p class="muted small" data-am="private-whisper-note"><strong>Private local Whisper:</strong>
+        the separate transcription app runs on this machine and the recording is never sent to a
+        speech-to-text service. Its Whisper Base model downloads once (about 206&nbsp;MB) and is cached
+        privately by this browser. Only the finished transcript is given to EGregoRA for the summary
+        and, when you publish, storage with the episode.</p>
       <div class="am-transcribe-callout" data-am="transcribe-callout" role="status"
            aria-live="polite" aria-atomic="true" hidden>
         <span class="am-transcribe-sigil" aria-hidden="true">&#10022;</span>
@@ -1272,7 +1277,7 @@
 
 <script type="module" src="/assets/js/player.js?v=mv3bleag"></script>
 <script type="module" src="/assets/js/freeai-admin.js?v=mv3bleag"></script>
-<script type="module" src="/assets/js/media-admin.js?v=upload-memory-1"></script>
+<script type="module" src="/assets/js/media-admin.js?v=private-whisper-1"></script>
 <script type="module" src="/assets/js/device-studio.js?v=mv3bleag"></script>
 
 </main>

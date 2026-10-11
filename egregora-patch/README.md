@@ -7,22 +7,31 @@ credential-bearing bundle.
 
 Current patch:
 
-- `public/assets/js/oracle-knowledge.js` updates both Gink and ShakDrah with sixteen
+- `public/assets/js/oracle-knowledge.js` updates both Gink and ShakDrah with nineteen
   substantial prepared answers covering The Channeling Circle review, one Prime
   role per universe-instance, the one residue, the universe-as-Möbius-seam model,
   matter–antimatter phase relations, baryogenesis limits and Prime Plane base
   shifts. Matching questions are answered locally and exactly; attached or
   unrelated questions still pass to the existing oracle unchanged.
-- `api/transcribe.js` adds the existing admin-only Free.ai doors as fallbacks
-  for podcast transcription and listing generation when separate OpenAI or
-  Hugging Face routes are unavailable.
+- `public/assets/js/private-whisper/browser-whisper.js` supplies a separate,
+  site-hosted BrowserWhisper application. Whisper Base, decoding and inference
+  run in background workers on the administrator's device; the model is fetched
+  once and cached in private browser storage, while episode audio is never sent
+  to a speech-to-text API. The completed transcript alone returns to EGregoRA
+  for its summary and eventual episode storage. The pinned package, sync script,
+  licences and regression test keep this vendored application reproducible.
+- `api/transcribe.js` retains the admin-only transcript-to-listing route. Its
+  older server hearing action remains compatible with staged data, but the
+  podcast interface no longer calls it or silently falls back to a cloud or
+  microphone transcription service.
 - `api/media.js` formats transcripts as speaker turns, maps the two identified
   voices in the latest podcast, and stores compact linguistic cadence profiles.
 - `migrations/0029_speaker_profiles.sql` keeps episode-to-speaker names and
   aggregate patterns. It stores no extra audio or reversible voiceprint.
-- `public/assets/js/media-admin.js` emits one timestamp only when the inferred
-  speaker changes, can transcribe an episode already on the shelf, and lets
-  administrators change its purported creation date.
+- `public/assets/js/media-admin.js` streams bounded segments from private local
+  Whisper Base, emits one timestamp only when the provisional speaker changes,
+  can transcribe an episode already on the shelf, and lets administrators
+  change its purported creation date.
 - `api/edit.js` and `public/assets/js/admin-edit.js` add a Date tab to Admin
   Edit Mode on every page. The claimed date is visible and updates metadata;
   real deployment and audit timestamps are preserved.
@@ -50,8 +59,8 @@ Current patch:
   discarded, templates are revocable and the feature is technically excluded
   from login or access control.
 - Transcription now has visible, accessible progress bars in both the new-upload
-  workflow and each existing episode editor. Model loading, audio preparation,
-  server stretch upload/transcription, turn consolidation, transcript saving,
+  workflow and each existing episode editor. Private-model download/cache,
+  local decoding, worker transcription, turn consolidation, transcript saving,
   known-name restoration and voiceprint checks each report their stage and
   percentage; failures remain visible instead of silently clearing the bar.
   The main podcast button performs the whole transcript-to-summary sequence in

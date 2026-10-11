@@ -13,6 +13,10 @@ on:
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
       - "scripts/test-media-upload.mjs"
+      - "scripts/test-private-whisper.mjs"
+      - "scripts/sync-private-whisper-assets.mjs"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/egregora-patch-deploy.yml"
 
 permissions:
@@ -32,12 +36,16 @@ jobs:
 
       - name: Validate the patch
         run: |
+          npm ci --ignore-scripts
+          node scripts/sync-private-whisper-assets.mjs
+          git diff --exit-code -- egregora-patch/public/assets/js/private-whisper
           node --check egregora-patch/api/transcribe.js
           node --check egregora-patch/api/media.js
           node --check egregora-patch/lib/upload-parts.js
           node --check egregora-patch/api/edit.js
           node --check egregora-patch/pages/feed.js
           node --check egregora-patch/public/assets/js/media-admin.js
+          node --check egregora-patch/public/assets/js/private-whisper/browser-whisper.js
           node --check egregora-patch/public/assets/js/voiceprint.js
           node --check egregora-patch/public/assets/js/admin-edit.js
           node --check egregora-patch/public/assets/js/oracle-knowledge.js
@@ -47,6 +55,9 @@ jobs:
           node scripts/test-oracle-knowledge.mjs
           node scripts/test-neural-voice.mjs
           node scripts/test-media-upload.mjs
+          node scripts/test-private-whisper.mjs
+          test -s egregora-patch/public/assets/js/private-whisper/LICENSE-BrowserWhisper.txt
+          test -s egregora-patch/public/assets/js/private-whisper/LICENSE-MediaBunny.txt
           test -s egregora-patch/public/assets/js/headtts/worker-tts.mjs
           test -s egregora-patch/public/assets/js/headtts/dictionaries/en-us.txt
           test "$(wc -c < egregora-patch/public/assets/js/headtts/voices/bm_fable.bin)" -gt 500000
@@ -224,22 +235,29 @@ jobs:
           process.exit(1);
           NODE
 
-      - name: Verify the live bounded podcast upload path
+      - name: Verify live bounded upload and private transcription
         run: |
           node <<'NODE'
           const targets = [
             ['https://egregora.hatchable.site/podcast/', [
-              'media-admin.js?v=upload-memory-1', 'Transcribe it, then write the summary'
+              'media-admin.js?v=private-whisper-1', 'Transcribe privately, then write the summary',
+              'Private local Whisper:', 'recording is never sent to a'
             ]],
             ['https://egregora.hatchable.site/videos/', [
-              'media-admin.js?v=upload-memory-1'
+              'media-admin.js?v=private-whisper-1'
             ]],
             ['https://egregora.hatchable.site/assets/js/media-admin.js', [
               'blobPartBase64', 'blob.slice(from, to).arrayBuffer()',
-              'const pieces = Math.ceil(blob.size / raw)'
+              'const pieces = Math.ceil(blob.size / raw)',
+              '/assets/js/private-whisper/browser-whisper.js?v=private-whisper-1',
+              'new module.BrowserWhisper', 'model: "whisper-base"'
+            ]],
+            ['https://egregora.hatchable.site/assets/js/private-whisper/browser-whisper.js', [
+              'BrowserWhisper', 'whisper-base', 'onnx-community/whisper-base',
+              'Origin Private File System'
             ]]
           ];
-          let detail = 'the bounded upload client did not become current';
+          let detail = 'the bounded upload and private transcription clients did not become current';
           for (let attempt = 0; attempt < 10; attempt += 1) {
             try {
               const results = await Promise.all(targets.map(async ([url, markers]) => {
@@ -251,7 +269,7 @@ jobs:
                   ok: response.ok && markers.every((marker) => text.includes(marker)) };
               }));
               if (results.every((result) => result.ok)) {
-                console.log('Live podcast and video pages use bounded, slice-at-a-time upload memory.');
+                console.log('Live media pages use bounded upload memory and the separate private BrowserWhisper app.');
                 process.exit(0);
               }
               detail = results.map((result) =>
@@ -263,7 +281,7 @@ jobs:
           }
           const safe = String(detail).replace(/%/g, '%25').replace(/\r/g, '%0D')
             .replace(/\n/g, '%0A').slice(0, 1200);
-          console.log(`::error title=Live bounded upload verification failed::${safe}`);
+          console.log(`::error title=Live upload and private transcription verification failed::${safe}`);
           process.exit(1);
           NODE
 
@@ -375,14 +393,14 @@ jobs:
           };
           const [page, admin, voiceprint] = await Promise.all([
             fetch('https://egregora.hatchable.site/podcast/'),
-            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=upload-memory-1'),
+            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=private-whisper-1'),
             fetch('https://egregora.hatchable.site/assets/js/voiceprint.js')
           ]);
           const [html, adminText, voiceprintText] = await Promise.all([
             page.text(), admin.text(), voiceprint.text()
           ]);
-          if (!page.ok || !html.includes('media-admin.js?v=upload-memory-1') ||
-              !html.includes('Transcribe it, then write the summary') ||
+          if (!page.ok || !html.includes('media-admin.js?v=private-whisper-1') ||
+              !html.includes('Transcribe privately, then write the summary') ||
               !html.includes('data-am="transcribe-callout"') ||
               !html.includes('data-am="transcribe-progress"')) {
             fail(`The podcast transcription-and-summary controls are stale (HTTP ${page.status}).`);
