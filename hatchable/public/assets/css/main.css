@@ -2469,23 +2469,28 @@ body.atlas-focused { overflow: hidden; }
   gap: 0.5rem 1rem;
 }
 .am-fields input { width: 100%; }
+/* The status-and-progress strip. It doubles as the upload meter: while a
+   file is being sent, --done climbs from 0% to 100% and the gold fill grows
+   with it. The fill is a background sized to --done rather than a ::before
+   layer, so it sits behind the words and they stay readable all the way up. */
 .am-bar {
   position: relative;
-  margin: 0.6rem 0;
-  padding: 0.45rem 0.7rem;
-  border: 1px solid rgba(215, 176, 90, 0.3);
-  border-radius: 3px;
-  font-size: 0.88rem;
-  color: #f3ddaa;
+  margin: 0.75rem 0;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgba(215, 176, 90, 0.5);
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  color: #f7e9c4;
+  text-shadow: 0 1px 2px rgba(20, 12, 2, 0.6);
   overflow: hidden;
-}
-.am-bar::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: var(--done, 0%);
-  background: rgba(215, 176, 90, 0.16);
-  transition: width 0.2s linear;
+  background-color: rgba(215, 176, 90, 0.09);
+  background-image: linear-gradient(90deg, rgba(140, 106, 36, 0.92), rgba(215, 176, 90, 0.82));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: var(--done, 0%) 100%;
+  transition: background-size 0.25s ease-out;
 }
 .am-film { width: 100%; border-radius: 3px; background: #000; display: block; }
 @media (max-width: 700px) {
@@ -3666,3 +3671,21 @@ textarea.am-ear[readonly] { opacity: 0.92; }
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+/* ---- account centre: your face & your words ---- */
+.acct-face-row { display: flex; align-items: center; gap: 16px; margin: 10px 0 14px; }
+.acct-face {
+  width: 84px; height: 84px; flex: 0 0 84px; border-radius: 50%;
+  border: 1px solid rgba(200, 162, 74, 0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; color: var(--gold, #c8a24a);
+  background: rgba(200, 162, 74, 0.06) center / cover no-repeat;
+}
+.acct-fields { display: grid; gap: 4px; }
+.acct-fields label { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.acct-fields input, .acct-fields textarea {
+  font: inherit; color: inherit; background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(200, 162, 74, 0.22); border-radius: 3px;
+  padding: 9px 10px; margin-bottom: 10px; width: 100%; box-sizing: border-box;
+}
+#acct-bio-count { text-transform: none; letter-spacing: 0; }

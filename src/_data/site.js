@@ -21,6 +21,7 @@ export default {
     { url: "/videos/", label: "Videos", glyph: "eye" },
     { url: "/live/", label: "Live Cam", glyph: "eye" },
     { url: "/ask-ed/", label: "Ask Ed", glyph: "star" },
+    { url: "/forum/", label: "The Forum", glyph: "metatron" },
     { url: "/infographics/", label: "Infographics", glyph: "metatron" },
     { url: "/astronomy/", label: "Astronomy", glyph: "star" },
     { url: "/cosmic-aether/", label: "Cosmic Aether", glyph: "spiral" },

@@ -43,6 +43,32 @@ robots: "noindex, nofollow"
         <p class="auth-msg" id="acct-list-msg" role="status"></p>
       </div>
 
+      <div class="acct-section" id="acct-profile">
+        <h3>Your face &amp; your words</h3>
+        <p class="muted small">Shown beside your posts in <a href="/forum/">the forum</a>, on both
+        sites. The picture is shrunk in your own browser before it leaves this device; the bio is
+        400 words, and the count is honest.</p>
+        <div class="acct-face-row">
+          <span class="acct-face" id="acct-face">?</span>
+          <span>
+            <label class="btn btn--ghost" for="acct-avatar-file">Choose a photo</label>
+            <input type="file" id="acct-avatar-file" accept="image/*" hidden>
+            <p class="muted xsmall" id="acct-avatar-msg"></p>
+          </span>
+        </div>
+        <div class="acct-fields">
+          <label for="acct-display">Called by <span class="muted xsmall">(how the forum names you)</span></label>
+          <input id="acct-display" type="text" maxlength="60" autocomplete="nickname">
+          <label for="acct-bio">Your bio <span class="muted xsmall" id="acct-bio-count">0 / 400 words</span></label>
+          <textarea id="acct-bio" rows="7" maxlength="4000"
+                    placeholder="Who you are, what brought you, what you are carrying. Four hundred words is plenty."></textarea>
+        </div>
+        <p class="ask-actions">
+          <button class="btn btn--ghost" type="button" id="acct-profile-save">Save face &amp; words</button>
+        </p>
+        <p class="auth-msg" id="acct-profile-msg" role="status"></p>
+      </div>
+
       <div class="acct-section">
         <h3>How you get in</h3>
         <ul class="passkey-list" id="acct-keys"></ul>
@@ -97,3 +123,5 @@ robots: "noindex, nofollow"
     </div>
   </div>
 </section>
+
+<script src="/assets/js/profile-client.js" defer></script>

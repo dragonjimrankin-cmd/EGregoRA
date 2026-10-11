@@ -116,6 +116,15 @@ export async function askTwin(email) {
   return out && out.ok ? out : { known: false };
 }
 
+/** Ask the twin to vouch for one of its own session tokens. The forum uses
+    this so a member signed in over there can post over here; what crosses is
+    only what the member has chosen to show. */
+export async function askTwinWhois(token) {
+  if (!token) return { known: false };
+  const out = await post({ action: 'whois', token, from: HOME.key });
+  return out && out.ok && out.member ? out : { known: false };
+}
+
 /**
  * Pull anything the twin knows that we do not: the name, the verified flag and
  * the age check. Used when an address signs in here for the first time having
