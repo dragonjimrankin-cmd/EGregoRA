@@ -58,7 +58,11 @@ const MAX_OPS = 60;
 /* The only operations that exist. Anything else is refused, which is what
    keeps "change the colour of that heading" from becoming "run this". */
 const OPS = ['text', 'colour', 'background', 'border', 'font-size', 'align', 'hide', 'show', 'style',
-  'span-text', 'span-style'];
+  'span-text', 'span-style',
+  /* the wider toolset: point a link, swap a picture, reorder and duplicate
+     blocks, add a block beside the selection, and take styling back off */
+  'link', 'image', 'move-up', 'move-down', 'clone',
+  'insert-before', 'insert-after', 'unstyle', 'clear-styles'];
 
 /* Styles an op may set, and nothing outside this list. No url(), no
    content, no position — a visual edit, not a redesign of the document. */
@@ -66,13 +70,23 @@ const STYLE_OK = [
   'color', 'background-color', 'border-color', 'border-width', 'border-style',
   'font-family', 'font-size', 'font-weight', 'font-style', 'text-align',
   'letter-spacing', 'word-spacing', 'line-height', 'opacity', 'text-decoration',
-  'text-transform', 'padding', 'margin'
+  'text-transform', 'padding', 'margin', 'border-radius', 'box-shadow'
 ];
 
 /* Hex, rgb(), a length, a keyword, or a font stack with its quotes. No
    url(), no semicolon: nothing that could close one declaration and open
    another. */
 const SAFE_VALUE = /^[#a-zA-Z0-9 ,.()%'"+/-]{1,120}$/;
+
+/* Links and images: a relative path, an in-page anchor, http(s), or a
+   mailto. No quotes, no angle brackets, no spaces, no javascript: — the
+   shape of the address is checked before anything is stored. */
+const SAFE_URL = /^(\/[^\s"'<>]*|#[A-Za-z0-9_-]{1,120}|https?:\/\/[^\s"'<>]{1,400}|mailto:[^\s"'<>@]+@[^\s"'<>]{1,120})$/i;
+
+/* The tags the editor may insert. A small fixed palette — no raw HTML is
+   ever taken from the administrator or the model, only a tag name from
+   this list and plain text to go inside it. */
+const INSERT_TAGS = ['p', 'h2', 'h3', 'h4', 'blockquote', 'hr', 'figure', 'img'];
 
 function tidyOps(list, allowed) {
   const out = [];
@@ -121,6 +135,39 @@ function tidyOps(list, allowed) {
       if (STYLE_OK.indexOf(prop) < 0 || !SAFE_VALUE.test(value)) continue;
       entry.prop = prop;
       entry.value = value;
+    } else if (op === 'link') {
+      /* Point the first link in (or the link that is) the target. The
+         address must fit the safe shape; the new words are optional. */
+      const href = clean(raw.href, 420);
+      if (!SAFE_URL.test(href)) continue;
+      entry.href = href;
+      entry.value = clean(raw.value, 300);
+    } else if (op === 'image') {
+      const src = clean(raw.src, 420);
+      if (!SAFE_URL.test(src)) continue;
+      entry.src = src;
+      entry.alt = clean(raw.alt, 300);
+    } else if (op === 'unstyle') {
+      const prop = clean(raw.prop, 40).toLowerCase();
+      if (STYLE_OK.indexOf(prop) < 0) continue;
+      entry.prop = prop;
+    } else if (op === 'insert-before' || op === 'insert-after') {
+      const tag = clean(raw.tag, 12).toLowerCase();
+      if (INSERT_TAGS.indexOf(tag) < 0) continue;
+      entry.tag = tag;
+      if (tag === 'img') {
+        const src = clean(raw.src, 420);
+        if (!SAFE_URL.test(src)) continue;
+        entry.src = src;
+        entry.alt = clean(raw.alt, 300);
+      } else if (tag === 'hr') {
+        entry.value = '';
+      } else {
+        entry.value = clean(raw.value, 2000);
+        if (!entry.value) continue;
+      }
+    } else if (op === 'move-up' || op === 'move-down' || op === 'clone' || op === 'clear-styles') {
+      entry.value = '';
     } else {
       const value = clean(raw.value, 80);
       if (!SAFE_VALUE.test(value)) continue;
@@ -200,6 +247,51 @@ function byRules(prompt, nodes) {
     for (const r of refs) ops.push({ ref: r, op: 'style', prop: 'text-align', value: 'center' });
   }
 
+  /* Point a link somewhere: "link it to /occult/", "point that at the
+     podcast". The address is shape-checked again by tidyOps. */
+  const linkTo = prompt.match(/\b(?:link|point)\s+(?:it|that|this|them)?\s*(?:to|at)\s+(\S{1,400})/i) ||
+    prompt.match(/\burl\s+(\S{1,400})/i);
+  if (linkTo) {
+    for (const r of refs) ops.push({ ref: r, op: 'link', href: linkTo[1] });
+  }
+
+  /* Swap a picture: "replace the image with /assets/img/plate-iv.png". */
+  const swapImg = prompt.match(/\b(?:swap|replace|change)\s+(?:the\s+)?(?:image|picture|photo|plate)\s+(?:to|with|for)\s+(\S{1,400})/i);
+  if (swapImg) {
+    for (const r of refs) ops.push({ ref: r, op: 'image', src: swapImg[1] });
+  }
+
+  /* Reorder and duplicate. */
+  if (/\bmove\s+(?:it\s+|that\s+|this\s+)?up\b/.test(p)) {
+    for (const r of refs) ops.push({ ref: r, op: 'move-up' });
+  }
+  if (/\bmove\s+(?:it\s+|that\s+|this\s+)?down\b/.test(p)) {
+    for (const r of refs) ops.push({ ref: r, op: 'move-down' });
+  }
+  if (/\b(?:duplicate|clone|copy)\s+(?:it|that|this)\b/.test(p)) {
+    for (const r of refs) ops.push({ ref: r, op: 'clone' });
+  }
+
+  /* Take the styling back off, without touching the words. */
+  if (/\b(?:clear|remove|strip)\s+(?:the\s+)?(?:styling|formatting|look)\b|\breset the look\b/.test(p)) {
+    for (const r of refs) ops.push({ ref: r, op: 'clear-styles' });
+  }
+
+  /* Add a block beside the selection: "add a paragraph after saying
+     \u201c\u2026\u201d", "insert a heading before: \u201c\u2026\u201d". */
+  const ins = prompt.match(/\b(?:add|insert|put)\s+(?:a|an)\s+(paragraph|heading|quote|blockquote|divider)\b[^"\u201c]*["\u201c]?([^"\u201d]{0,400})["\u201d]?/i);
+  if (ins) {
+    const tag = /head/i.test(ins[1]) ? 'h3'
+      : /quote/i.test(ins[1]) ? 'blockquote'
+        : /divider/i.test(ins[1]) ? 'hr' : 'p';
+    const where = /\bafter\b/.test(p) ? 'insert-after' : 'insert-before';
+    for (const r of refs) {
+      ops.push(tag === 'hr'
+        ? { ref: r, op: where, tag }
+        : { ref: r, op: where, tag, value: clean(ins[2], 400) });
+    }
+  }
+
   return ops;
 }
 
@@ -260,12 +352,22 @@ async function byModel(prompt, nodes, page) {
     'as a list of items. An item with kind "words" is a run of text the administrator dragged',
     'across; an item with kind "element" is a whole block, such as a panel or a figure.',
     'You are also given an instruction. Reply with JSON only: {"ops":[...]} and nothing else.',
-    'Each op is {"ref":"<one of the given refs, copied exactly>","op":"text|style|hide|show",',
-    '"value":"...","prop":"<css property, for style only>"}.',
-    'Use op "text" to replace the words of an item, verbatim, with exactly the value given.',
-    'Use op "style" with a prop for anything visual. Allowed props: ' + STYLE_OK.join(', ') + '.',
+    'Each op is {"ref":"<one of the given refs, copied exactly>","op":"<one of the ops below>",',
+    '"value":"...","prop":"<css property, for style/unstyle>","href":"<url, for link>",',
+    '"src":"<url, for image>","alt":"<alt text, for image>","tag":"<tag, for insert ops>"}.',
+    'Ops: "text" replaces the words of an item verbatim with value.',
+    '"style" sets prop to value on the item. Allowed props: ' + STYLE_OK.join(', ') + '.',
+    '"hide" and "show" take an element off the page or bring it back.',
+    '"link" points the link in (or that is) the element at href, optionally setting its words to value.',
+    '"image" swaps the picture in the element to src, with alt text alt.',
+    '"move-up" and "move-down" reorder the element among its neighbours; "clone" duplicates it.',
+    '"insert-before" and "insert-after" add a new block beside the element: tag is one of',
+    'p, h2, h3, h4, blockquote, hr, figure, img; value is the plain text inside it',
+    '(for img use src and alt instead; hr needs no value).',
+    '"unstyle" takes one inline property (prop) back off; "clear-styles" resets the element\'s inline look.',
     'Colours must be hex or rgb(); sizes must carry a unit, usually px.',
-    'Items of kind "words" accept only text and style. hide and show are for elements.',
+    'Items of kind "words" accept only text and style. The structural ops — hide, show, link,',
+    'image, move, clone, insert, clear-styles — are for elements.',
     'Never invent a ref, never name anything not in the list, and prefer the smallest change',
     'that does what was asked. If it cannot be done with these operations, reply {"ops":[]}.'
   ].join(' ');
