@@ -55,6 +55,7 @@ jobs:
           test "$(wc -c < tti/hatchable/public/assets/js/headtts/voices/am_fenrir.bin)" -gt 500000
           test -s tti/hatchable/public/assets/js/headtts/LICENSE-Kokoro.txt
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
+          grep -Fq 'A Geometry of the Cosmos' tti/hatchable/public/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
@@ -135,7 +136,7 @@ jobs:
           const pages = [
             {
               url: 'https://the-two-infinities.hatchable.site/',
-              markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence']
+              markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence', 'A Geometry of the Cosmos']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/time-and-residue/',

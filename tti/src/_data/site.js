@@ -10,7 +10,7 @@ export default {
   longName: "The Shape of Becoming: Infinity, Gravity and Existence",
   titleSuffix: "The Shape of Becoming",
   legacyName: "The Shape of Becoming",
-  tagline: "A Geometry of Existence",
+  tagline: "A Geometry of the Cosmos",
   url: "https://the-two-infinities.hatchable.site",
   lang: "en-GB",
   locale: "en_GB",
