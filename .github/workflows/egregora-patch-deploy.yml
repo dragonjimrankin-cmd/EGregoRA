@@ -12,6 +12,7 @@ on:
       - "scripts/test-voiceprint.mjs"
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
+      - "scripts/test-media-upload.mjs"
       - ".github/workflows/egregora-patch-deploy.yml"
 
 permissions:
@@ -33,6 +34,7 @@ jobs:
         run: |
           node --check egregora-patch/api/transcribe.js
           node --check egregora-patch/api/media.js
+          node --check egregora-patch/lib/upload-parts.js
           node --check egregora-patch/api/edit.js
           node --check egregora-patch/pages/feed.js
           node --check egregora-patch/public/assets/js/media-admin.js
@@ -44,6 +46,7 @@ jobs:
           node scripts/test-voiceprint.mjs
           node scripts/test-oracle-knowledge.mjs
           node scripts/test-neural-voice.mjs
+          node scripts/test-media-upload.mjs
           test -s egregora-patch/public/assets/js/headtts/worker-tts.mjs
           test -s egregora-patch/public/assets/js/headtts/dictionaries/en-us.txt
           test "$(wc -c < egregora-patch/public/assets/js/headtts/voices/bm_fable.bin)" -gt 500000
@@ -221,6 +224,49 @@ jobs:
           process.exit(1);
           NODE
 
+      - name: Verify the live bounded podcast upload path
+        run: |
+          node <<'NODE'
+          const targets = [
+            ['https://egregora.hatchable.site/podcast/', [
+              'media-admin.js?v=upload-memory-1', 'Transcribe it, then write the summary'
+            ]],
+            ['https://egregora.hatchable.site/videos/', [
+              'media-admin.js?v=upload-memory-1'
+            ]],
+            ['https://egregora.hatchable.site/assets/js/media-admin.js', [
+              'blobPartBase64', 'blob.slice(from, to).arrayBuffer()',
+              'const pieces = Math.ceil(blob.size / raw)'
+            ]]
+          ];
+          let detail = 'the bounded upload client did not become current';
+          for (let attempt = 0; attempt < 10; attempt += 1) {
+            try {
+              const results = await Promise.all(targets.map(async ([url, markers]) => {
+                const response = await fetch(`${url}?deploy=${process.env.GITHUB_SHA || Date.now()}`, {
+                  headers: { 'cache-control': 'no-cache' }
+                });
+                const text = await response.text();
+                return { url, status: response.status,
+                  ok: response.ok && markers.every((marker) => text.includes(marker)) };
+              }));
+              if (results.every((result) => result.ok)) {
+                console.log('Live podcast and video pages use bounded, slice-at-a-time upload memory.');
+                process.exit(0);
+              }
+              detail = results.map((result) =>
+                `${result.url} HTTP ${result.status}; current=${result.ok}`).join(' | ');
+            } catch (error) {
+              detail = error && error.message || String(error);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 8000));
+          }
+          const safe = String(detail).replace(/%/g, '%25').replace(/\r/g, '%0D')
+            .replace(/\n/g, '%0A').slice(0, 1200);
+          console.log(`::error title=Live bounded upload verification failed::${safe}`);
+          process.exit(1);
+          NODE
+
       - name: Recover the named latest-podcast transcript
         run: |
           node <<'NODE'
@@ -325,13 +371,13 @@ jobs:
           };
           const [page, admin, voiceprint] = await Promise.all([
             fetch('https://egregora.hatchable.site/podcast/'),
-            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=transcription-summary-2'),
+            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=upload-memory-1'),
             fetch('https://egregora.hatchable.site/assets/js/voiceprint.js')
           ]);
           const [html, adminText, voiceprintText] = await Promise.all([
             page.text(), admin.text(), voiceprint.text()
           ]);
-          if (!page.ok || !html.includes('media-admin.js?v=transcription-summary-2') ||
+          if (!page.ok || !html.includes('media-admin.js?v=upload-memory-1') ||
               !html.includes('Transcribe it, then write the summary') ||
               !html.includes('data-am="transcribe-callout"') ||
               !html.includes('data-am="transcribe-progress"')) {
