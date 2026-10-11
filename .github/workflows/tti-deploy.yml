@@ -29,10 +29,18 @@ jobs:
           node-version: 24
           cache: npm
 
-      - name: Build the static site
+      - name: Build and validate the static site
         run: |
           npm ci
           npm run build:tti:hatchable
+          test -s tti/hatchable/public/time-and-residue/index.html
+          grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'One Source, Many Receivers' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'Earned, Chosen, Refused' tti/hatchable/public/time-and-residue/index.html
+          npx html-validate --rule 'no-trailing-whitespace:off' \
+            tti/hatchable/public/time-and-residue/index.html \
+            tti/hatchable/public/essays/index.html \
+            tti/hatchable/public/out-of-phase/index.html
 
       - name: Deploy the existing Hatchable project
         env:
@@ -44,17 +52,58 @@ jobs:
           fi
 
           PROJECT_ID=$(tr -d ' \n\r' < ops/tti-project.txt)
-          set +e
-          node scripts/hatchable-deploy.mjs \
-            --bundle tti/hatchable \
-            --project "$PROJECT_ID" \
-            --name "Zero, One, and the Bubbles That Blow Between" \
-            --slug two-infinities 2>&1 | tee /tmp/hatchable-deploy.log
-          STATUS=${PIPESTATUS[0]}
-          set -e
+          STATUS=1
+          for ATTEMPT in 1 2 3 4 5 6; do
+            set +e
+            node scripts/hatchable-deploy.mjs \
+              --bundle tti/hatchable \
+              --project "$PROJECT_ID" \
+              --name "Zero, One, and the Bubbles That Blow Between" \
+              --slug two-infinities 2>&1 | tee /tmp/hatchable-deploy.log
+            STATUS=${PIPESTATUS[0]}
+            set -e
+            if [ "$STATUS" -eq 0 ]; then break; fi
+            if [ "$ATTEMPT" -lt 6 ] && grep -Eqi 'HTTP 429|Too Many Attempts' /tmp/hatchable-deploy.log; then
+              WAIT=$((ATTEMPT * 30))
+              echo "Hatchable is rate-limiting deployment; retrying in ${WAIT}s."
+              sleep "$WAIT"
+            else
+              break
+            fi
+          done
 
           if [ "$STATUS" -ne 0 ]; then
             MESSAGE=$(tail -20 /tmp/hatchable-deploy.log | tr '\n' ' ' | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g' | cut -c1-1800)
             echo "::error title=Hatchable deployment failed::$MESSAGE"
             exit "$STATUS"
           fi
+
+      - name: Verify the live time-and-residue essay
+        run: |
+          node <<'NODE'
+          const url = 'https://the-two-infinities.hatchable.site/time-and-residue/';
+          let detail = 'the page did not become current';
+          for (let attempt = 1; attempt <= 10; attempt++) {
+            try {
+              const response = await fetch(`${url}?deploy=${process.env.GITHUB_SHA || Date.now()}`, {
+                headers: { 'cache-control': 'no-cache' }
+              });
+              const html = await response.text();
+              if (response.ok &&
+                  html.includes('The One Residue That Travels') &&
+                  html.includes('One Source, Many Receivers') &&
+                  html.includes('Distribution Is Interpretation') &&
+                  html.includes('Earned, Chosen, Refused')) {
+                console.log('Live time-and-residue essay and philosophical transmission model verified.');
+                process.exit(0);
+              }
+              detail = `HTTP ${response.status}; expected essay markers were absent`;
+            } catch (error) {
+              detail = error && error.message || String(error);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 8000));
+          }
+          const safe = String(detail).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A').slice(0, 1200);
+          console.log(`::error title=Live TTI essay verification failed::${safe}`);
+          process.exit(1);
+          NODE
