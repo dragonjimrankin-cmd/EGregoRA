@@ -82,6 +82,7 @@ jobs:
       - name: Deploy the existing Hatchable project
         env:
           RAW_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/tti/hatchable
+          RAW_SOURCE_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/tti/src
         run: |
           if [ -z "$HATCHABLE_TOKEN" ]; then
             echo "::error title=Hatchable deployment unavailable::HATCHABLE_TOKEN is not configured as a repository secret. The site built successfully, but the live project was not changed."

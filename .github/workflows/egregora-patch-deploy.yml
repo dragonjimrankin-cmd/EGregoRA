@@ -54,6 +54,8 @@ jobs:
           node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
 
       - name: Deploy to the existing EGregoRA project
+        env:
+          RAW_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/egregora-patch
         run: |
           if [ -z "$HATCHABLE_TOKEN" ]; then
             echo "::error title=Hatchable deployment unavailable::HATCHABLE_TOKEN is not configured as a repository secret."

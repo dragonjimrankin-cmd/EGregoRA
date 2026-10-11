@@ -143,6 +143,9 @@ function collect() {
     const oversized = statSync(f.abs).size > 1024 * 1024;
     const browserModule = extension === ".mjs" ||
       (extension === ".js" && readFileSync(f.abs, "utf8").includes("import.meta"));
+    /* A built static site can mirror generated module/text paths from its
+       source tree when the generated output itself is not committed. */
+    f.sourceMirror = browserModule || (oversized && !BINARY.has(extension));
     (BINARY.has(extension) || oversized || browserModule ? binary : text).push(f);
   }
   return { text, binary };
@@ -208,25 +211,34 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
   /* 3 — binary and parser-bypassed byte uploads */
   if (binary.length) {
     const rawBase = process.env.RAW_BASE || opt("raw-base", null);
-    console.log(`▸ uploading ${binary.length} byte-upload assets` + (rawBase ? " (server-side URL import)" : " (chunked base64)"));
+    const rawSourceBase = process.env.RAW_SOURCE_BASE || opt("raw-source-base", null);
+    console.log(`▸ uploading ${binary.length} byte-upload assets` +
+      (rawBase || rawSourceBase ? " (server-side URL import)" : " (chunked base64)"));
 
     for (const f of binary) {
       const bytes = readFileSync(f.abs);
       let done = false;
 
-      // Preferred: let Hatchable fetch the bytes itself — one call, no chunking.
-      if (rawBase && hasTool("import_file_from_url")) {
-        try {
-          await call("import_file_from_url", {
-            project_id: projectId,
-            url: `${rawBase.replace(/\/$/, "")}/${f.path}`,
-            path: f.path
-          });
-          console.log(`  ✓ ${f.path} (${kb(bytes.length)}) via url import`);
-          done = true;
-        } catch (e) {
-          console.log(`  … url import failed (${e.message.slice(0, 80)}), falling back to chunks`);
+      /* Preferred: let Hatchable fetch the bytes itself — one call, no
+         chunking. Generated browser modules can map public/foo to foo beneath
+         RAW_SOURCE_BASE; ordinary media continues to use RAW_BASE. */
+      const urlImports = [];
+      if (rawSourceBase && f.sourceMirror) {
+        urlImports.push(`${rawSourceBase.replace(/\/$/, "")}/${f.path.replace(/^public\//, "")}`);
+      }
+      if (rawBase) urlImports.push(`${rawBase.replace(/\/$/, "")}/${f.path}`);
+      if (hasTool("import_file_from_url")) {
+        for (const url of urlImports) {
+          try {
+            await call("import_file_from_url", { project_id: projectId, url, path: f.path });
+            console.log(`  ✓ ${f.path} (${kb(bytes.length)}) via url import`);
+            done = true;
+            break;
+          } catch (e) {
+            console.log(`  … url import failed (${e.message.slice(0, 80)})`);
+          }
         }
+        if (!done && urlImports.length) console.log("    falling back to chunks");
       }
 
       if (!done) {

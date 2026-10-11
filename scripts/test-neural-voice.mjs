@@ -146,6 +146,8 @@ assert.match(deployer, /extension === "\.mjs"/,
   "Valid browser modules must bypass Hatchable's classic-script parser");
 assert.match(deployer, /includes\("import\.meta"\)/,
   "JavaScript using import.meta must use Hatchable's byte uploader");
+assert.match(deployer, /RAW_SOURCE_BASE/,
+  "Generated neural assets must support one-call imports from their committed source tree");
 assert.match(deployer, /const SIZE = 60 \* 1024/,
   "Byte chunks must remain below Hatchable's 65,536-character limit");
 
