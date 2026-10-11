@@ -1,0 +1,9 @@
+# The Shape of Becoming: Infinity, Gravity and Existence. Everything here is meant to be read.
+User-agent: *
+Allow: /
+Disallow: /account/
+
+# The oracle and the generators are live endpoints, not documents.
+Disallow: /api/
+
+Sitemap: https://the-two-infinities.hatchable.site/sitemap.xml
