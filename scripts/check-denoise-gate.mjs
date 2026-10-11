@@ -104,9 +104,17 @@ w.URL.createObjectURL = () => "blob:fake";
 w.URL.revokeObjectURL = () => {};
 
 let src = readFileSync(ROOT + "hatchable/public/assets/js/media-admin.js", "utf8");
+/* Strip the ES-module imports jsdom cannot resolve — both the multi-line
+   named form (import {\n a,\n b\n} from "./x") and the single-line one. */
+src = src.replace(/import\s+{[^}]*}\s+from\s+["'][^"']*["'];?/g, "");
 src = src.replace(/^\s*import\s[^;]+;?\s*$/gm, "");
 src = src.replace(/^\s*export\s+/gm, "");
-w.eval("(function(){function countdown(){} \n" + src + "\n})();");
+/* media-admin.js imports the progress liveness reporter as an ES module.
+   The harness cannot resolve module paths, so the real module's source —
+   not a stub — is laid into the same scope ahead of it. */
+const progressLive = readFileSync(ROOT + "hatchable/public/assets/js/progress-live.js", "utf8")
+  .replace(/^\s*export\s+/gm, "");
+w.eval("(function(){" + progressLive + "\nfunction countdown(){} \n" + src + "\n})();");
 
 const $ = (s) => w.document.querySelector(s);
 const tick = (ms) => new Promise((go) => setTimeout(go, ms));

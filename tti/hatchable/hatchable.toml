@@ -61,7 +61,7 @@ required = false
 # ---------------------------------------------------------------------------
 # Signing in with an account you already have. Each pair is optional: a door
 # with no key behind it is simply not shown. The redirect URL to register
-# with every provider is https://egregora.hatchable.site/api/oauth?back=<name>
+# with every provider is https://the-two-infinities.hatchable.site/api/oauth?back=<name>
 
 [[secret]]
 key         = "GOOGLE_CLIENT_ID"
@@ -72,6 +72,16 @@ description = "Google sign-in: the client id. console.cloud.google.com → APIs 
 key         = "GOOGLE_CLIENT_SECRET"
 required    = false
 description = "Google sign-in: the client secret that goes with it."
+
+[[secret]]
+key         = "MICROSOFT_CLIENT_ID"
+required    = false
+description = "Microsoft sign-in: the application (client) id. entra.microsoft.com or portal.azure.com -> App registrations -> New registration; supported accounts = personal, work and school."
+
+[[secret]]
+key         = "MICROSOFT_CLIENT_SECRET"
+required    = false
+description = "Microsoft sign-in: a client secret from that registration's Certificates & secrets."
 
 [[secret]]
 key         = "APPLE_CLIENT_ID"

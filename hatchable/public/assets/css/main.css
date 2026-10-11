@@ -3016,6 +3016,7 @@ details.ep:has(.pin-mark) { border-color: rgba(215, 176, 90, 0.55); }
 .social-btn:hover { border-color: #d7b05a; background: rgba(215, 176, 90, 0.12); }
 .social-btn svg { width: 18px; height: 18px; flex: none; }
 .social-btn--google svg { color: #e8e2d4; }
+.social-btn--microsoft svg { color: #7fc0ee; }
 .social-btn--apple svg { color: #f3f1ea; }
 .social-btn--x svg { color: #f3f1ea; }
 .social-btn--facebook svg { color: #8fb6d8; }

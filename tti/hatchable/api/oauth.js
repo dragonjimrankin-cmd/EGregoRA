@@ -1,12 +1,18 @@
 /**
  * GET|POST /api/oauth — signing in with an account you already have.
  *
- * Six doors: Google, Apple, X, Facebook, GitHub and Discord. All six are
- * ordinary OAuth 2.0 authorisation-code flows, which means the shape of the
- * code is the same for each and only the URLs and the field names differ.
- * Apple is the odd one: it posts the callback back as a form and carries the
- * name only once, on the very first consent, so it is read out of the
- * id_token rather than from a profile endpoint.
+ * Seven doors: Google, Microsoft, Apple, X, Facebook, GitHub and Discord.
+ * All seven are ordinary OAuth 2.0 authorisation-code flows, which means the
+ * shape of the code is the same for each and only the URLs and the field
+ * names differ. Apple is the odd one: it posts the callback back as a form
+ * and carries the name only once, on the very first consent, so it is read
+ * out of the id_token rather than from a profile endpoint. Microsoft is the
+ * other particular one: a personal account and a work or school account
+ * keep the address in different places, so both are asked.
+ *
+ * The same file serves both houses — EGregoRA and The Two Infinities. Which
+ * one is speaking is taken from the request and checked, because the
+ * address a provider returns to has to be the one registered with it.
  *
  * What this does and does not do, said plainly:
  *   - it never sees a password;
@@ -33,7 +39,25 @@ import { cleanEmail, findOrCreate, startSession, randomToken } from '../lib/acco
 export const access = 'public';
 export const methods = ['GET', 'POST'];
 
-const SITE = 'https://egregora.hatchable.site';
+/* Both houses run this same file, so the address a provider is sent back to
+   follows the house that was actually asked for. It is checked against the
+   two names this code is allowed to speak for: a Host header cannot be
+   trusted on its own, and an invented one must never be able to carry a
+   finished sign-in off to somewhere else. */
+const HOUSES = {
+  'egregora.hatchable.site': 'EGregoRA',
+  'the-two-infinities.hatchable.site': 'The Two Infinities'
+};
+const FIRST_HOUSE = 'egregora.hatchable.site';
+
+function hostOf(req) {
+  const raw = String((req && req.headers && req.headers.host) || '').toLowerCase();
+  const bare = raw.replace(/:\d+$/, '');
+  return Object.prototype.hasOwnProperty.call(HOUSES, bare) ? bare : FIRST_HOUSE;
+}
+
+const siteFor = (req) => 'https://' + hostOf(req);
+const houseFor = (req) => HOUSES[hostOf(req)];
 
 const PROVIDERS = {
   google: {
@@ -44,6 +68,25 @@ const PROVIDERS = {
     scope: 'openid email profile',
     extra: { access_type: 'online', prompt: 'select_account' },
     read: (p) => ({ email: p.email, name: p.name || p.given_name, id: p.sub, verified: p.email_verified !== false })
+  },
+  /* Microsoft is the one door that can answer from two places. A personal
+     account keeps its address in the id_token; a work or school account
+     keeps it in Graph, where the sign-in name and the mailbox can differ.
+     So both are asked, Graph first, and the token's claims fill whatever
+     Graph left empty — see the merge further down. */
+  microsoft: {
+    label: 'Microsoft',
+    auth: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+    token: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+    who: 'https://graph.microsoft.com/v1.0/me',
+    scope: 'openid email profile User.Read',
+    extra: { prompt: 'select_account' },
+    read: (p) => ({
+      email: p.mail || p.email || p.userPrincipalName || p.preferred_username,
+      name: p.displayName || p.name || [p.givenName, p.surname].filter(Boolean).join(' '),
+      id: p.id || p.oid || p.sub,
+      verified: true
+    })
   },
   apple: {
     label: 'Apple',
@@ -103,7 +146,7 @@ async function creds(name) {
   return { id: id ? String(id).trim() : '', secret: secret ? String(secret).trim() : '' };
 }
 
-const redirectFor = (name) => SITE + '/api/oauth?back=' + name;
+const redirectFor = (req, name) => siteFor(req) + '/api/oauth?back=' + name;
 
 function b64url(bytes) {
   let bin = '';
@@ -129,11 +172,11 @@ function claims(jwt) {
   }
 }
 
-function page(title, body, go) {
+function page(title, body, go, house) {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>${title} — EGregoRA</title>
+<title>${title} — ${house || 'EGregoRA'}</title>
 <style>
  body{background:#0e0c0a;color:#cbbb93;font-family:Georgia,serif;display:grid;place-items:center;
       min-height:100vh;margin:0;text-align:center;padding:1.5rem}
@@ -143,24 +186,26 @@ function page(title, body, go) {
 }
 
 /** Hand the session to the page the way the email flow does, then go home. */
-function handOver(res, token, name, where) {
+function handOver(req, res, token, name, where) {
   res.setHeader('content-type', 'text/html; charset=utf-8');
   return res.send(page(
     'Welcome in',
-    `<p>Signed in with ${name}. Carrying you back to the order&hellip;</p>`,
+    `<p>Signed in with ${name}. Carrying you back&hellip;</p>`,
     `<script>
       try { localStorage.setItem('eg-session', ${JSON.stringify(token)}); } catch (e) {}
       location.replace(${JSON.stringify(where || '/join/#gate')});
     </script>
-    <noscript><p class="small"><a href="/join/">Continue</a></p></noscript>`
+    <noscript><p class="small"><a href="/join/">Continue</a></p></noscript>`,
+    houseFor(req)
   ));
 }
 
-function refuse(res, status, title, why) {
+function refuse(req, res, status, title, why) {
   res.setHeader('content-type', 'text/html; charset=utf-8');
   return res.status(status).send(page(title,
     `<p>${why}</p>`,
-    '<p class="small"><a href="/join/">Back to the door</a> — the six-digit code by email always works.</p>'));
+    '<p class="small"><a href="/join/">Back to the door</a> — the six-digit code by email always works.</p>',
+    houseFor(req)));
 }
 
 export default async function (req, res) {
@@ -176,17 +221,17 @@ export default async function (req, res) {
         const c = await creds(name);
         out.push({ id: name, label: PROVIDERS[name].label, ready: !!(c.id && c.secret) });
       }
-      return res.json({ ok: true, providers: out, redirect: redirectFor('<provider>') });
+      return res.json({ ok: true, providers: out, redirect: redirectFor(req, '<provider>') });
     }
 
     /* ---- leaving for the provider ---- */
     const go = String(q.go || '').toLowerCase();
     if (go) {
       const p = PROVIDERS[go];
-      if (!p) return refuse(res, 404, 'No such door', 'That is not a sign-in this house offers.');
+      if (!p) return refuse(req, res, 404, 'No such door', 'That is not a sign-in this house offers.');
       const c = await creds(go);
       if (!c.id || !c.secret) {
-        return refuse(res, 503, p.label + ' is not wired up yet',
+        return refuse(req, res, 503, p.label + ' is not wired up yet',
           'The owner has not pasted a ' + p.label + ' client id and secret on the Setup page, ' +
           'so this door has no lock to open.');
       }
@@ -201,7 +246,7 @@ export default async function (req, res) {
 
       const u = new URL(p.auth);
       u.searchParams.set('client_id', c.id);
-      u.searchParams.set('redirect_uri', redirectFor(go));
+      u.searchParams.set('redirect_uri', redirectFor(req, go));
       u.searchParams.set('response_type', 'code');
       u.searchParams.set('scope', p.scope);
       u.searchParams.set('state', state);
@@ -218,23 +263,23 @@ export default async function (req, res) {
     const back = String(q.back || body.back || '').toLowerCase();
     if (back) {
       const p = PROVIDERS[back];
-      if (!p) return refuse(res, 404, 'No such door', 'That callback is for a sign-in this house does not offer.');
+      if (!p) return refuse(req, res, 404, 'No such door', 'That callback is for a sign-in this house does not offer.');
 
       const code = String(q.code || body.code || '');
       const state = String(q.state || body.state || '');
       const denied = String(q.error || body.error || '');
       if (denied) {
-        return refuse(res, 400, 'That was turned down',
+        return refuse(req, res, 400, 'That was turned down',
           p.label + ' did not let the sign-in through (' + denied + '). Nothing was changed here.');
       }
-      if (!code || !state) return refuse(res, 400, 'Something is missing', 'The reply came back without its code.');
+      if (!code || !state) return refuse(req, res, 400, 'Something is missing', 'The reply came back without its code.');
 
       const { rows } = await db.query(
         "SELECT * FROM oauth_states WHERE state = $1 AND provider = $2 AND expires_at > NOW()",
         [state, back]);
       const held = rows && rows[0];
       if (!held) {
-        return refuse(res, 400, 'That sign-in has gone stale',
+        return refuse(req, res, 400, 'That sign-in has gone stale',
           'The link it came back on was already used, or it is more than fifteen minutes old. Start again.');
       }
       await db.query('DELETE FROM oauth_states WHERE state = $1', [state]);
@@ -243,7 +288,7 @@ export default async function (req, res) {
       const form = new URLSearchParams();
       form.set('grant_type', 'authorization_code');
       form.set('code', code);
-      form.set('redirect_uri', redirectFor(back));
+      form.set('redirect_uri', redirectFor(req, back));
       if (held.verifier) form.set('code_verifier', held.verifier);
       const headers = { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/json' };
       if (p.basic) headers.authorization = 'Basic ' + btoa(c.id + ':' + c.secret);
@@ -252,7 +297,7 @@ export default async function (req, res) {
       const tr = await fetch(p.token, { method: 'POST', headers, body: form.toString() });
       const tj = await tr.json().catch(() => ({}));
       if (!tr.ok || (!tj.access_token && !tj.id_token)) {
-        return refuse(res, 502, p.label + ' would not finish the exchange',
+        return refuse(req, res, 502, p.label + ' would not finish the exchange',
           'It answered: ' + String(tj.error_description || tj.error || tr.status));
       }
 
@@ -265,9 +310,21 @@ export default async function (req, res) {
       if (p.who) {
         const pr = await fetch(p.who, {
           headers: { authorization: 'Bearer ' + tj.access_token, accept: 'application/json',
-            'user-agent': 'EGregoRA' }
+            'user-agent': houseFor(req) }
         });
         profile = await pr.json().catch(() => ({}));
+        if (!profile || typeof profile !== 'object') profile = {};
+        /* Where the provider also put an id_token in the token response,
+           its claims fill any field the profile endpoint left empty. This
+           is what carries a personal Microsoft account, whose address is
+           in the token while Graph reports only a sign-in name. Nothing
+           already answered is overwritten. */
+        if (tj.id_token) {
+          const inToken = claims(tj.id_token);
+          Object.keys(inToken).forEach((k) => {
+            if (profile[k] == null || profile[k] === '') profile[k] = inToken[k];
+          });
+        }
       } else {
         profile = claims(tj.id_token);
       }
@@ -277,7 +334,7 @@ export default async function (req, res) {
       if (back === 'github' && !read.email && p.mails) {
         const mr = await fetch(p.mails, {
           headers: { authorization: 'Bearer ' + tj.access_token, accept: 'application/json',
-            'user-agent': 'EGregoRA' }
+            'user-agent': houseFor(req) }
         });
         const list = await mr.json().catch(() => []);
         const best = (Array.isArray(list) ? list : []).find((e) => e.primary && e.verified)
@@ -297,7 +354,7 @@ export default async function (req, res) {
 
       const addr = cleanEmail(read.email);
       if (!addr) {
-        return refuse(res, 400, p.label + ' did not share an address',
+        return refuse(req, res, 400, p.label + ' did not share an address',
           'This house signs people in by address, and ' + p.label + ' returned none. ' +
           'Use the six-digit code by email instead, or allow the address when asked.');
       }
@@ -317,11 +374,11 @@ export default async function (req, res) {
         await db.query('UPDATE members SET verified = FALSE WHERE id = $1', [member.id]).catch(() => {});
       }
 
-      return handOver(res, token, p.label, held.back || '/join/#gate');
+      return handOver(req, res, token, p.label, held.back || '/join/#gate');
     }
 
     return res.status(400).json({ error: 'Nothing to do. Ask for ready, or go to a provider.' });
   } catch (err) {
-    return refuse(res, 500, 'That did not go through', String((err && err.message) || err));
+    return refuse(req, res, 500, 'That did not go through', String((err && err.message) || err));
   }
 }
