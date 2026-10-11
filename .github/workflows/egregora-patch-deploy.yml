@@ -44,14 +44,25 @@ jobs:
           fi
 
           PROJECT_ID=$(tr -d ' \n\r' < ops/egregora-project.txt)
-          set +e
-          node scripts/hatchable-deploy.mjs \
-            --bundle egregora-patch \
-            --project "$PROJECT_ID" \
-            --name "EGregoRA" \
-            --slug egregora 2>&1 | tee /tmp/egregora-patch-deploy.log
-          STATUS=${PIPESTATUS[0]}
-          set -e
+          STATUS=1
+          for ATTEMPT in 1 2 3 4; do
+            set +e
+            node scripts/hatchable-deploy.mjs \
+              --bundle egregora-patch \
+              --project "$PROJECT_ID" \
+              --name "EGregoRA" \
+              --slug egregora 2>&1 | tee /tmp/egregora-patch-deploy.log
+            STATUS=${PIPESTATUS[0]}
+            set -e
+            if [ "$STATUS" -eq 0 ]; then break; fi
+            if [ "$ATTEMPT" -lt 4 ] && grep -Eqi 'HTTP 429|Too Many Attempts' /tmp/egregora-patch-deploy.log; then
+              WAIT=$((ATTEMPT * 20))
+              echo "Hatchable is rate-limiting deployment; retrying in ${WAIT}s."
+              sleep "$WAIT"
+            else
+              break
+            fi
+          done
 
           if [ "$STATUS" -ne 0 ]; then
             MESSAGE=$(tail -20 /tmp/egregora-patch-deploy.log | tr '\n' ' ' | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g' | cut -c1-1800)
