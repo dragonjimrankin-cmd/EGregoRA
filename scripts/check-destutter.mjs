@@ -155,7 +155,8 @@ say("enhance msg: " + after);
 const readout = $("[data-am=after]").textContent.replace(/\s+/g, " ").trim();
 say("after readout: " + readout);
 
-const outBuf = created.find((b) => b.length === N);
+/* the last full-length buffer is the final pass's output */
+const outBuf = created.filter((b) => b.length === N).pop();
 if (!outBuf) {
   problems.push("the de-stutter never wrote an output buffer");
 } else {

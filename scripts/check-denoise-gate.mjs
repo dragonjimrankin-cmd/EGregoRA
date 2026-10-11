@@ -143,7 +143,9 @@ const readout = $("[data-am=after]").textContent.replace(/\s+/g, " ").trim();
 say("after readout: " + readout);
 
 /* ---- measure what the gate actually did ------------------------------ */
-const gated = created.find((b) => b.length === N);
+/* the last full-length buffer is the final pass's output (the gate, then
+   the room tone laid over it) */
+const gated = created.filter((b) => b.length === N).pop();
 if (!gated) {
   problems.push("the gate never wrote an output buffer");
 } else {
@@ -159,11 +161,20 @@ if (!gated) {
       "  (" + Math.round(100 * w2 / w2In) + "% kept)");
   say("sniff:  out " + sniff.toFixed(4));
 
+  /* a gated-silent stretch between the cough and word two: with the room
+     tone laid it must breathe at about the room's floor, not sit at
+     digital zero */
+  const hush = rms(out, 1.60, 1.80);
+  say("gated hush:  out " + hush.toFixed(5) + "  (room floor " + rms(chan, 1.60, 1.80).toFixed(5) + ")");
+
   if (cough > 0.02) problems.push("the cough survived the gate (rms " + cough.toFixed(4) + ")");
   if (w1 < 0.8 * w1In) problems.push("word one was chewed (kept " + Math.round(100 * w1 / w1In) + "%)");
   if (w2 < 0.8 * w1In) problems.push("word two was chewed (kept " + Math.round(100 * w2 / w2In) + "%)");
   if (sniff > 0.002) problems.push("the sniff survived the gate (rms " + sniff.toFixed(4) + ")");
+  if (hush < 0.0003) problems.push("the silences are dead air — no room tone was laid (rms " + hush.toFixed(5) + ")");
+  if (hush > 0.005) problems.push("the room tone is louder than the room (rms " + hush.toFixed(5) + ")");
   if (!/gated/i.test(after + readout)) problems.push("the treatment text never mentions the gate");
+  if (!/room tone/i.test(after + readout)) problems.push("the treatment text never mentions the room tone");
 }
 
 /* ---- the publish door that appears, and its question ----------------- */

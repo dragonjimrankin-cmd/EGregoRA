@@ -322,6 +322,7 @@ function setup(root) {
       rumble: on("rumble"), gate: on("gate"), tone: on("tone"), deess: on("deess"),
       level: on("level"), loud: on("loud"), trim: on("trim"), fade: on("fade"),
       gaps: on("gaps"), denoise: on("denoise"), destutter: on("destutter"),
+      roomtone: on("roomtone"),
       gapHold: Number((root.querySelector("[data-am=gaphold]") || {}).value || 1.5),
       gapLeave: Number((root.querySelector("[data-am=gapleave]") || {}).value || 0.45),
       target: el.loud ? Number(el.loud.value) : -18,
@@ -641,7 +642,7 @@ function setup(root) {
     const { floor, voice } = floorAndVoice(E);
     /* A file with no speech in it gets no gate at all — there would be
        nothing to protect and everything to lose. */
-    if (voice < 1e-4 || voice <= floor * 1.6) return { buf, bursts: 0 };
+    if (voice < 1e-4 || voice <= floor * 1.6) return { buf, bursts: 0, floor };
 
     const openTh = Math.max(floor * 3.2, voice * 0.10);
     const closeTh = openTh * 0.55; /* hysteresis: shut lower than we open */
@@ -716,7 +717,7 @@ function setup(root) {
         dst[i] = srcD[i] * gNow;
       }
     }
-    return { buf: out, bursts };
+    return { buf: out, bursts, floor };
   }
 
   /* ------------------------------------------------------- the de-stutter
@@ -876,6 +877,64 @@ function setup(root) {
     return { buf: out, events, skipped: "" };
   }
 
+  /* ------------------------------------------------------- the room tone
+     A gated recording has holes in it: where the gate shut, or a repeat
+     was silenced, the samples are digital zero — and the ear hears
+     those holes as dead air against the room's own breathing. So the
+     silences are re-laid with the room's tone: noise measured from the
+     file's own floor, warmed by a one-pole filter so it is air and not
+     hiss, and breathed by a slow swell so it never sounds like a synth
+     holding one note. Where the room already breathes — an ungated
+     quiet stretch — nothing is added; the fill stops as the real floor
+     is reached. A recording with no floor at all is left alone: studio
+     digital has no continuity to mend, and inventing a room for it
+     would be a lie. */
+  function roomTone(buf, knownFloor) {
+    const E = frameEnvelope(buf);
+    const { ch, FRAME, frames, rate, rms } = E;
+    /* The floor must be the room's level BEFORE the gate scoured it to
+       digital zero — so the gate hands its measurement down. Measuring
+       here would find the holes the gate dug and call them the floor. */
+    const floor = knownFloor != null ? knownFloor : floorAndVoice(E).floor;
+    if (floor < 1e-5) return { buf, filled: 0 };
+    const target = Math.min(floor, 0.01); /* the room's level, never a shout */
+
+    let seed = 1234567;
+    const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff * 2 - 1;
+
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const out = ctx.createBuffer(ch.length, buf.length, rate);
+    ctx.close();
+
+    /* One-pole lowpass at about 3.5 kHz, and the matching divisor so the
+       filtered noise lands on the room's measured level. */
+    const a = 1 - Math.exp(-2 * Math.PI * 3500 / rate);
+    const norm = target / (0.577 * Math.sqrt(a / (2 - a)));
+
+    const filledFrames = new Uint8Array(frames);
+    for (let c = 0; c < ch.length; c++) {
+      const srcD = ch[c];
+      const dst = out.getChannelData(c);
+      let lp = 0, gNow = 0;
+      for (let i = 0; i < buf.length; i++) {
+        const f = (i / FRAME) | 0;
+        /* How much of the floor is missing here: full fill over digital
+           zero, nothing where the room is already present. */
+        const have = rms[f] / target;
+        const wantG = have >= 1 ? 0 : 1 - have;
+        if (c === 0 && wantG > 0.5) filledFrames[f] = 1;
+        /* A slow breath, ±25%, a shade out of step per channel. */
+        const breath = 1 + 0.25 * Math.sin(2 * Math.PI * 0.2 * i / rate + c);
+        gNow += (wantG - gNow) * 0.0005;
+        lp += a * (rnd() - lp);
+        dst[i] = srcD[i] + lp * norm * breath * gNow;
+      }
+    }
+    let filled = 0;
+    for (let f = 0; f < frames; f++) filled += filledFrames[f];
+    return { buf: out, filled: filled * FRAME / rate };
+  }
+
   async function enhanceAudio(want) {
     if (!fileBuf) {
       return say(source
@@ -961,17 +1020,27 @@ function setup(root) {
       } else stutterNote = "no stuttering found";
     }
     let gateNote = "";
+    let preFloor = null;
     if (want.denoise) {
       step("Gating \u2014 sniffs and coughs out, words left whole\u2026", 0.7);
       const gated = denoiseGate(done);
       done = gated.buf;
+      preFloor = gated.floor;   /* the room's level, before the gate scoured it */
       if (gated.bursts)
         gateNote = gated.bursts + " isolated noise burst" + (gated.bursts === 1 ? "" : "s") +
           " gated out";
     }
-    step("Measuring\u2026", 0.75);
+    let toneNote = "";
+    if (want.roomtone) {
+      step("Laying the room's own tone under the silences\u2026", 0.78);
+      const toned = roomTone(done, preFloor);
+      done = toned.buf;
+      if (toned.filled >= 0.05)
+        toneNote = "room tone laid under " + clock(toned.filled) + " of silence";
+    }
+    step("Measuring\u2026", 0.82);
     const look = inspect(done);
-    const notes = [cutNote, stutterNote, gateNote].filter(Boolean);
+    const notes = [cutNote, stutterNote, gateNote, toneNote].filter(Boolean);
     el.after.innerHTML = reading(look, "After the work") +
       (notes.length ? '<p class="muted xsmall">' + notes.join("; ") + ".</p>" : "");
 
@@ -989,6 +1058,7 @@ function setup(root) {
       want.denoise && (gateNote
         ? "sniffs and coughs gated out \u2014 " + gateNote
         : "silences gated, no stray bursts found"),
+      want.roomtone && (toneNote || "room tone checked, silences already continuous"),
       want.trim && "silence trimmed from both ends",
       want.fade && "faded in and out"
     ].filter(Boolean).join(", ") || "left as it was";

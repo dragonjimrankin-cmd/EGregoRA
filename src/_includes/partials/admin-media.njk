@@ -108,6 +108,7 @@
         <label><input type="checkbox" data-want="loud" checked> Match the loudness, then limit the peaks</label>
         {% if amKind == "audio" %}
         <label><input type="checkbox" data-want="denoise" checked> Gate the silences &mdash; sniffs and coughs out, every word left whole</label>
+        <label><input type="checkbox" data-want="roomtone" checked> Lay the room&rsquo;s tone under the silences &mdash; the background stays continuous</label>
         <label><input type="checkbox" data-want="destutter"> Remove stuttering &mdash; a syllable repeated in place is muted; the word itself is never touched</label>
         <label><input type="checkbox" data-want="trim" checked> Trim the silence from both ends</label>
         <label><input type="checkbox" data-want="gaps" checked> Close the long speechless stretches</label>
@@ -140,6 +141,11 @@
       always stand, so a word a person chose to say twice survives. If the pattern fires too often
       to be trusted, nothing is touched at all. Every place it touched is listed under the
       reading, and the original can always be published instead.</p>
+      <p class="muted xsmall">The room&rsquo;s tone is the opposite of the gate&rsquo;s scissors: where
+      the gate shut and left digital zero, noise measured from the recording&rsquo;s own floor is
+      laid back down &mdash; warmed, slowly breathing, never louder than the room itself &mdash; so
+      the background runs unbroken from the first word to the last. Where the room already
+      breathes, nothing is added; a recording with no floor at all is left in its studio silence.</p>
       {% endif %}
 
       <label for="{{ amKind }}-loud">Target loudness (dB RMS)</label>
