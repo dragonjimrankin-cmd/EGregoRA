@@ -552,9 +552,15 @@
         between testimony, cultural transmission, mathematics, physics and conjecture.</p>
         <p class="fox-controls">
           <button class="btn btn--ghost" type="button" id="fox-speak">Speak</button>
+          <button class="btn btn--ghost" type="button" id="fox-natural" aria-pressed="false">Natural voice: off</button>
           <button class="btn btn--ghost" type="button" id="fox-stop">Silence him</button>
         </p>
-        <p class="muted xsmall" id="fox-status">Waking Gink…</p>
+        <p class="muted xsmall" id="fox-status" role="status" aria-live="polite">Waking Gink…</p>
+        <p class="muted xsmall">The optional natural voice uses the open Kokoro neural model entirely in
+        this browser, with true phoneme-timed lip sync. Its first use fetches roughly 100&ndash;350&nbsp;MB,
+        depending on WebGPU support, then the browser can cache it. Answer text stays on this device;
+        only public runtime, model and voice files are downloaded. The immediate installed voice remains
+        available if the download, memory or graphics support is insufficient.</p>
       </div>
       <div class="fox-stage" id="fox-stage" role="img"
            aria-label="Gink, a three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
@@ -1705,7 +1711,7 @@
 </section>
 
 <script type="module" src="/assets/js/freeai-admin.js?v=mv3bleag"></script>
-<script type="module" src="/assets/js/fox.js?v=mv3bleag"></script>
+<script type="module" src="/assets/js/fox.js?v=model-voice-2"></script>
 <script type="module" src="/assets/js/model.js?v=mv3bleag"></script>
 <script type="module" src="/assets/js/scan.js?v=mv3bleag"></script>
 
