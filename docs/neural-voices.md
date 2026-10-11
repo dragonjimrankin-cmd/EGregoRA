@@ -11,7 +11,7 @@ ShakDrah and Gink now have an explicit, optional **Natural voice** mode built on
 
 The model executes in a module worker in the visitor's browser. The answer text does not go to a speech API. The HeadTTS/Transformers runtime, dictionary and six curated male voice embeddings are hosted by the sites. On first use, the browser still has to fetch the large public model and ONNX runtime support. Depending on the backend and quantisation, that is roughly 100–350 MB. Browser caching normally avoids repeating it.
 
-The existing Web Speech implementation remains an immediate progressive fallback. No model is loaded merely by visiting the page. The neural download begins only when the visitor selects **Natural voice**, or later asks an avatar to speak after having selected and remembered that preference.
+The existing Web Speech implementation remains an immediate progressive fallback. No model is loaded merely by visiting the page. The neural download begins only when the visitor selects **Natural voice**, chooses one of the curated neural voices for its immediate audition, or later asks an avatar to speak after having selected and remembered that preference.
 
 ## Why this route
 
@@ -38,7 +38,7 @@ Visitors can change either default with the accessible male-voice chooser. The c
 - British: George, Fable and Lewis;
 - American: Fenrir, Michael and Puck.
 
-These are the model card's stronger or most useful male voices, not a promise that every voice suits every passage. Selection is saved locally per character, does not preload the model, and can be auditioned with the existing **Speak** control. Before every utterance the adapter awaits the selected HeadTTS setup and preserves the explicit voice through worker dispatch, so changing the menu changes the generated speaker without weakening phoneme-timed lip sync.
+These are the model card's stronger or most useful male voices, not a promise that every voice suits every passage. Selection is saved locally per character. Changing the menu now turns Natural voice on and immediately speaks a named audition, so the chooser cannot appear to work while an unchanged native voice is still active. At first opt-in the worker preloads all six small embeddings and waits for them before reporting ready. The embedding URLs carry their own `male-voices-3` cache key so an older bad deployment cannot remain in a visitor's browser. Before every utterance the adapter snapshots and awaits the selected HeadTTS setup, preserves the explicit voice through worker dispatch, and rejects any waveform whose returned embedding identity does not match the request. The browser model remains lazy and phoneme-timed lip sync is preserved.
 
 The spoken-only preparation layer:
 

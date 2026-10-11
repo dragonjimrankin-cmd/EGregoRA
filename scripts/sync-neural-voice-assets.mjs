@@ -81,6 +81,30 @@ const copyText = async (source, destination) => {
     .replaceAll("import('node:fs')", "import('node:' + 'fs')")
     .replaceAll("import('node:readline')", "import('node:' + 'readline')");
 
+  /* HeadTTS starts voice and dictionary preload requests without awaiting
+     them. Await each request so the chooser cannot race its first use. Also
+     return the embedding identity used for each waveform, allowing the adapter
+     to fail closed if a stale worker ever routes the wrong voice. */
+  if (path.basename(source) === "worker-tts.mjs") {
+    const staleVoicePreload = "          loadVoice(x);";
+    const staleLanguagePreload = "          loadLanguage(x);";
+    const audioMarker = "      metadata.audioEncoding = \"wav\";\n    }\n\n    // Sent the TalkingHead object";
+    if (!normalised.includes(staleVoicePreload) ||
+        !normalised.includes(staleLanguagePreload) ||
+        !normalised.includes(audioMarker)) {
+      throw new Error("HeadTTS worker preload or metadata changed; review the local chooser patch");
+    }
+    normalised = normalised
+      .replace(staleVoicePreload, "          await loadVoice(x);")
+      .replace(staleLanguagePreload, "          await loadLanguage(x);")
+      .replace(audioMarker,
+        "      metadata.audioEncoding = \"wav\";\n    }\n" +
+        "    /* Return the exact embedding identity used for this waveform. The adapter\n" +
+        "       can reject stale or misrouted output instead of silently playing the\n" +
+        "       wrong chooser option. */\n" +
+        "    metadata.voice = d.voice;\n\n    // Sent the TalkingHead object");
+  }
+
   /* HeadTTS 1.3 copies its stored setup over an explicit per-request voice
      immediately before posting to the browser worker. Preserve the explicit
      voice instead; otherwise the visible chooser always sounds like the first

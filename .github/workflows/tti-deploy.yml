@@ -66,12 +66,20 @@ jobs:
           grep -q 'ASK SHAKDRAH TO FILM' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Natural voice: off' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Male neural voice' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Choose a voice to turn Natural voice on and hear an immediate audition' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'six site-hosted male voice embeddings' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Answer text stays on this device' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'bm_george' tti/hatchable/public/assets/js/neural-voice.js
-          grep -q 'voiceURL: new URL("voices/", root).href' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'voiceURL: new URL("voices/?v=male-voices-3", root).href' tti/hatchable/public/assets/js/neural-voice.js
           grep -q 'avatar-voice-picker' tti/hatchable/public/assets/css/main.css
           grep -q 'prepareOutput' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'voices: MALE_NEURAL_VOICES.map' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'message.data.voice !== selectedVoice' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'worker-tts.mjs?v=male-voices-3' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'await loadVoice(x)' tti/hatchable/public/assets/js/headtts/worker-tts.mjs
+          grep -q 'metadata.voice = d.voice' tti/hatchable/public/assets/js/headtts/worker-tts.mjs
+          grep -q 'naturalWanted = true' tti/hatchable/public/assets/js/dragon.js
+          grep -q 'voice audition' tti/hatchable/public/assets/js/dragon.js
           grep -q 'const throatScutes' tti/hatchable/public/assets/js/dragon.js
           grep -q 'roundNow' tti/hatchable/public/assets/js/dragon.js
           grep -q 'Kokoro-82M-v1.0-ONNX-timestamped' tti/hatchable/public/assets/js/headtts/headtts.mjs
@@ -156,8 +164,9 @@ jobs:
               markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
                 'Can reversible mixing create a matter-antimatter imbalance?',
                 'ASK SHAKDRAH TO DRAW', 'ASK SHAKDRAH TO FILM', 'oracle-knowledge.js',
-                'Natural voice: off', 'Male neural voice', 'six site-hosted male voice embeddings',
-                'Answer text stays on this device']
+                'Natural voice: off', 'Male neural voice',
+                'Choose a voice to turn Natural voice on and hear an immediate audition',
+                'six site-hosted male voice embeddings', 'Answer text stays on this device']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
@@ -167,25 +176,29 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/neural-voice.js',
               markers: ['NaturalVoiceEngine', 'MALE_NEURAL_VOICES', 'am_fenrir', 'bm_lewis',
-                'voiceURL: new URL("voices/", root).href', 'prepareOutput', 'audioTone',
-                'headtts/headtts.mjs', 'generated privately on this device']
+                'voiceURL: new URL("voices/?v=male-voices-3", root).href', 'voices: MALE_NEURAL_VOICES.map',
+                'message.data.voice !== selectedVoice', 'worker-tts.mjs?v=male-voices-3',
+                'prepareOutput', 'audioTone', 'headtts/headtts.mjs',
+                'generated privately on this device']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/headtts/headtts.mjs',
               markers: ['item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice()']
             },
-            {
-              url: 'https://the-two-infinities.hatchable.site/assets/js/headtts/voices/bm_george.bin',
-              markers: [], minBytes: 500000
-            },
+            ...['bm_george', 'bm_fable', 'bm_lewis', 'am_fenrir', 'am_michael', 'am_puck'].map((voiceId) => ({
+              url: `https://the-two-infinities.hatchable.site/assets/js/headtts/voices/${voiceId}.bin`,
+              markers: [], minBytes: 500000, voiceId
+            })),
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/dragon.js',
               markers: ['tti-shakdrah-neural-male-voice', 'naturalVoice.setVoice',
-                'const throatScutes', 'microGaze', 'roundNow', 'wings.forEach', 'const nostrils']
+                'naturalWanted = true', 'voice audition', 'const throatScutes',
+                'microGaze', 'roundNow', 'wings.forEach', 'const nostrils']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/headtts/worker-tts.mjs',
-              markers: ['StyleTextToSpeech2Model', 'updateTimestamps', 'audioEncoding']
+              markers: ['StyleTextToSpeech2Model', 'updateTimestamps', 'audioEncoding',
+                'await loadVoice(x)', 'metadata.voice = d.voice']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',
@@ -203,14 +216,21 @@ jobs:
                 const html = page.markers.length ? new TextDecoder().decode(body) : '';
                 const current = response.ok && body.byteLength >= (page.minBytes || 1) &&
                   page.markers.every((marker) => html.includes(marker));
-                return { page, response, current };
+                const voiceHash = page.voiceId
+                  ? Buffer.from(await crypto.subtle.digest('SHA-256', body)).toString('hex')
+                  : null;
+                return { page, response, current, voiceHash };
               }));
-              if (checked.every((result) => result.current)) {
-                console.log('Live essays and ShakDrah prepared knowledge verified.');
+              const voiceChecks = checked.filter((result) => result.page.voiceId);
+              const voicesDistinct = voiceChecks.length === 6 &&
+                new Set(voiceChecks.map((result) => result.voiceHash)).size === 6;
+              if (checked.every((result) => result.current) && voicesDistinct) {
+                console.log('Live essays, ShakDrah chooser and six distinct embeddings verified.');
                 process.exit(0);
               }
               detail = checked.map((result) =>
-                `${result.page.url} HTTP ${result.response.status}; current=${result.current}`).join(' | ');
+                `${result.page.url} HTTP ${result.response.status}; current=${result.current}`).join(' | ') +
+                ` | sixDistinctVoices=${voicesDistinct}`;
             } catch (error) {
               detail = error && error.message || String(error);
             }

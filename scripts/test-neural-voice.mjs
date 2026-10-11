@@ -90,6 +90,21 @@ await selectable.speak([{ line: "This voice must really change." }]);
 assert.deepEqual(voiceDispatch, ["clear", "setup:am_puck", "synthesize:am_puck"],
   "A newly selected voice must be awaited before HeadTTS dispatches synthesis");
 
+const misrouted = new NaturalVoiceEngine({ profile: "gink", voice: "bm_lewis" });
+misrouted.connected = true;
+misrouted.tts = {
+  clear() {},
+  async setup() {},
+  async synthesize(settings, onmessage) {
+    onmessage({ type: "audio", data: { audio: true, voice: "bm_fable" } });
+  }
+};
+await assert.rejects(
+  misrouted.speak([{ line: "Reject stale routing." }]),
+  /routing mismatch/,
+  "The adapter must fail closed rather than play a waveform made with a different voice"
+);
+
 /* Cancellation is testable without loading a model: every active queue,
    source and timing callback must be invalidated atomically. */
 let cleared = 0;
@@ -168,13 +183,19 @@ assert.equal(patchFox, fox, "The deployed Gink sculpt must match the canonical G
 assert.equal(patchHelper, helper, "Both sites must use the same neural engine");
 assert.doesNotMatch(helper, /import\.meta/,
   "The neural adapter must remain valid under Hatchable's static parser");
-assert.match(helper, /import\("\.\/headtts\/headtts\.mjs\?v=male-voices-2"\)/,
+assert.match(helper, /import\("\.\/headtts\/headtts\.mjs\?v=male-voices-3"\)/,
   "The fixed HeadTTS dispatcher must load lazily with a fresh cache key");
+assert.match(helper, /worker-tts\.mjs\?v=male-voices-3/,
+  "The worker must not be hidden behind an older browser cache entry");
+assert.match(helper, /voices: MALE_NEURAL_VOICES\.map\(\(\{ id \}\) => id\)/,
+  "Every curated embedding must be loaded before a chooser audition");
+assert.match(helper, /message\.data\.voice !== selectedVoice/,
+  "Generated audio must be checked against the requested embedding identity");
 assert.doesNotMatch(helper, /^import .*headtts/m,
   "The multi-megabyte runtime must not enter the initial page payload");
 assert.match(helper, /endpoints: navigator\.gpu \? \["webgpu", "wasm"\] : \["wasm"\]/);
-assert.match(helper, /voiceURL: new URL\("voices\/", root\)\.href/,
-  "Voice embeddings must load from the site instead of a third-party voice URL");
+assert.match(helper, /voiceURL: new URL\("voices\/\?v=male-voices-3", root\)\.href/,
+  "Voice embeddings must load from the site with a fresh cache key instead of a third-party URL");
 assert.match(helper, /type: "progress"/);
 assert.match(helper, /data\.visemes[\s\S]*this\.onViseme\(\{[\s\S]*viseme/,
   "Generated phoneme visemes must drive the avatar mouth");
@@ -195,6 +216,11 @@ for (const [source, key, voice, button] of [
   assert.match(source, /naturalVoice\.resume\(\)/, `${key} must resume neural playback`);
   assert.match(source, /neuralVoiceSelect[\s\S]*naturalVoice\.setVoice\(selected\.id\)/,
     `${key} must persist and apply a visitor's curated male voice choice`);
+  assert.match(source,
+    /neuralVoiceSelect[\s\S]*naturalWanted = true;[\s\S]*naturalPreferenceKey, "1"[\s\S]*await naturalVoice\.connect\(\)[\s\S]*await naturalVoice\.speak/,
+    `${key}'s chooser must activate neural mode and audibly demonstrate the selected voice`);
+  assert.match(source, /voice audition/,
+    `${key}'s chooser must tell the visitor that it is preparing an audition`);
   assert.match(source, /rankNativeVoices/);
   assert.match(source, /normaliseSpeechText/);
   assert.match(source, /const random = \(\(\) =>/, `${key} needs a stable procedural identity`);
@@ -216,6 +242,7 @@ assert.match(fox, /const target = listening \? 0\.88/,
 for (const page of [shakPage, ginkPage]) {
   assert.match(page, /Natural voice: off/);
   assert.match(page, /Male neural voice/);
+  assert.match(page, /Choose a voice to turn Natural voice on and hear an immediate audition/);
   assert.match(page, /bm_george[\s\S]*bm_fable[\s\S]*bm_lewis/);
   assert.match(page, /am_fenrir[\s\S]*am_michael[\s\S]*am_puck/);
   assert.match(page, /six site-hosted male voice embeddings/);
@@ -230,6 +257,10 @@ assert.match(packageJson, /"@huggingface\/transformers": "4\.3\.1"/);
 assert.match(syncer, /const kokoroVersion = "1\.2\.1"/);
 assert.match(syncer, /kokoroSha512 = "[A-Za-z0-9+/=]+"/,
   "The locally hosted male voice embeddings need an integrity-pinned reproducible source");
+assert.match(syncer, /staleVoicePreload[\s\S]*await loadVoice\(x\)/,
+  "The reproducible vendor step must retain awaited voice preloading");
+assert.match(syncer, /metadata\.voice = d\.voice/,
+  "The reproducible vendor step must retain voice-identity reporting");
 assert.match(syncer, /tarEntries\.get\(`package\/voices\/\$\{voice\}`\)/);
 assert.match(npmrc, /ignore-scripts=true/,
   "The unused Node ONNX postinstall must remain disabled");
@@ -260,8 +291,15 @@ for (const relative of files) {
       `Hatchable-incompatible import.meta remains in ${relative}`);
   }
 }
-assert.doesNotMatch(await text("tti/src/assets/js/headtts/worker-tts.mjs"), /node:worker_threads/,
+const workerTtsSource = await text("tti/src/assets/js/headtts/worker-tts.mjs");
+assert.doesNotMatch(workerTtsSource, /node:worker_threads/,
   "The vendored worker must remain browser-only");
+assert.match(workerTtsSource, /await loadVoice\(x\)/,
+  "Every curated voice preload must finish before the worker announces readiness");
+assert.match(workerTtsSource, /await loadLanguage\(x\)/,
+  "The language preload must finish before the worker announces readiness");
+assert.match(workerTtsSource, /metadata\.voice = d\.voice/,
+  "Each waveform must report the exact embedding used to create it");
 const headTtsSource = await text("tti/src/assets/js/headtts/headtts.mjs");
 assert.match(headTtsSource,
   /item\.message\.data\.voice = \(item\.message\.data\.voice \|\| this\.ttsSetup\.voice\)\.slice\(\)/,

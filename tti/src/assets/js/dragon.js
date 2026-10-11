@@ -36,7 +36,7 @@ import {
   getMaleNeuralVoice,
   normaliseSpeechText,
   rankNativeVoices
-} from "./neural-voice.js?v=male-voices-2";
+} from "./neural-voice.js?v=male-voices-3";
 
 (() => {
   "use strict";
@@ -1560,19 +1560,46 @@ import {
       ? "Use the immediate voice installed on this device instead"
       : "Download and run ShakDrah's more realistic neural voice in this browser";
   };
-  neuralVoiceSelect?.addEventListener("change", () => {
+  let voiceChoiceRequest = 0;
+  neuralVoiceSelect?.addEventListener("change", async () => {
+    const request = ++voiceChoiceRequest;
     const selected = getMaleNeuralVoice(neuralVoiceSelect.value);
     if (!selected) {
       neuralVoiceSelect.value = naturalVoice.voiceId;
       return;
     }
+
+    /* A chooser must do something audible by itself. Selecting a curated
+       voice opts into neural mode, waits for that exact embedding, and speaks
+       a short audition; visitors no longer have to discover that a separate
+       Natural voice switch was silently keeping the native voice active. */
     stop();
     naturalVoice.setVoice(selected.id);
     selectedNeuralVoice = selected.id;
-    try { localStorage.setItem(neuralVoicePreferenceKey, selected.id); } catch { /* private window */ }
-    setStatus(naturalWanted
-      ? `${naturalVoice.voiceLabel} selected — press Speak to hear ShakDrah use it.`
-      : `${naturalVoice.voiceLabel} selected for Natural voice mode.`);
+    naturalWanted = true;
+    try {
+      localStorage.setItem(neuralVoicePreferenceKey, selected.id);
+      localStorage.setItem(naturalPreferenceKey, "1");
+    } catch { /* private window */ }
+    paintNatural();
+    if (btnNatural) btnNatural.disabled = true;
+    neuralVoiceSelect.disabled = true;
+    setStatus(`Preparing ${naturalVoice.voiceLabel} for a voice audition…`);
+
+    try {
+      await naturalVoice.connect();
+      if (request !== voiceChoiceRequest) return;
+      await naturalVoice.speak([{
+        line: `This is ${selected.name}. ShakDrah is now using this ${selected.accent} voice.`
+      }]);
+    } catch (error) {
+      if (request !== voiceChoiceRequest) return;
+      naturalWanted = false;
+      try { localStorage.setItem(naturalPreferenceKey, "0"); } catch { /* private window */ }
+      setStatus(`Could not audition ${selected.name} (${String(error?.message || error).slice(0, 90)}).`);
+    } finally {
+      if (request === voiceChoiceRequest) paintNatural();
+    }
   });
 
   btnNatural?.addEventListener("click", async () => {

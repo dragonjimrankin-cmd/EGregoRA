@@ -55,6 +55,7 @@ jobs:
           grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
           grep -q 'Natural voice: off' egregora-patch/public/ask-ed/index.html
           grep -q 'Male neural voice' egregora-patch/public/ask-ed/index.html
+          grep -q 'Choose a voice to turn Natural voice on and hear an immediate audition' egregora-patch/public/ask-ed/index.html
           grep -q 'six site-hosted male voice embeddings' egregora-patch/public/ask-ed/index.html
           grep -q 'Answer text stays on this device' egregora-patch/public/ask-ed/index.html
           node - <<'NODE'
@@ -67,8 +68,15 @@ jobs:
           }
           NODE
           grep -q 'bm_fable' egregora-patch/public/assets/js/neural-voice.js
-          grep -q 'voiceURL: new URL("voices/", root).href' egregora-patch/public/assets/js/neural-voice.js
+          grep -q 'voiceURL: new URL("voices/?v=male-voices-3", root).href' egregora-patch/public/assets/js/neural-voice.js
           grep -q 'prepareOutput' egregora-patch/public/assets/js/neural-voice.js
+          grep -q 'voices: MALE_NEURAL_VOICES.map' egregora-patch/public/assets/js/neural-voice.js
+          grep -q 'message.data.voice !== selectedVoice' egregora-patch/public/assets/js/neural-voice.js
+          grep -q 'worker-tts.mjs?v=male-voices-3' egregora-patch/public/assets/js/neural-voice.js
+          grep -q 'await loadVoice(x)' egregora-patch/public/assets/js/headtts/worker-tts.mjs
+          grep -q 'metadata.voice = d.voice' egregora-patch/public/assets/js/headtts/worker-tts.mjs
+          grep -q 'naturalWanted = true' egregora-patch/public/assets/js/fox.js
+          grep -q 'voice audition' egregora-patch/public/assets/js/fox.js
           grep -q 'microGaze' egregora-patch/public/assets/js/fox.js
           grep -q 'roundNow' egregora-patch/public/assets/js/fox.js
           grep -Fq 'item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice()' egregora-patch/public/assets/js/headtts/headtts.mjs
@@ -118,9 +126,11 @@ jobs:
               url: 'https://egregora.hatchable.site/ask-ed/',
               markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
                 'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js',
-                'Natural voice: off', 'Male neural voice', 'six site-hosted male voice embeddings',
-                'Answer text stays on this device', 'avatar-voice.css?v=prompt-first-1',
-                'fox.js?v=male-voices-2'],
+                'Natural voice: off', 'Male neural voice',
+                'Choose a voice to turn Natural voice on and hear an immediate audition',
+                'six site-hosted male voice embeddings', 'Answer text stays on this device',
+                'avatar-voice.css?v=prompt-first-1',
+                'fox.js?v=male-voices-3'],
               orderedMarkers: ['class="fox-ask"', 'class="oracle-chat"']
             },
             {
@@ -136,26 +146,29 @@ jobs:
             {
               url: 'https://egregora.hatchable.site/assets/js/neural-voice.js',
               markers: ['NaturalVoiceEngine', 'MALE_NEURAL_VOICES', 'am_fenrir', 'bm_lewis',
-                'voiceURL: new URL("voices/", root).href', 'prepareOutput', 'audioTone',
-                'headtts/headtts.mjs', 'generated privately on this device']
+                'voiceURL: new URL("voices/?v=male-voices-3", root).href', 'voices: MALE_NEURAL_VOICES.map',
+                'message.data.voice !== selectedVoice', 'worker-tts.mjs?v=male-voices-3',
+                'prepareOutput', 'audioTone', 'headtts/headtts.mjs',
+                'generated privately on this device']
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/headtts/headtts.mjs',
               markers: ['item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice()']
             },
-            {
-              url: 'https://egregora.hatchable.site/assets/js/headtts/voices/bm_fable.bin',
-              markers: [], minBytes: 500000
-            },
+            ...['bm_george', 'bm_fable', 'bm_lewis', 'am_fenrir', 'am_michael', 'am_puck'].map((voiceId) => ({
+              url: `https://egregora.hatchable.site/assets/js/headtts/voices/${voiceId}.bin`,
+              markers: [], minBytes: 500000, voiceId
+            })),
             {
               url: 'https://egregora.hatchable.site/assets/js/headtts/worker-tts.mjs',
-              markers: ['StyleTextToSpeech2Model', 'updateTimestamps', 'audioEncoding']
+              markers: ['StyleTextToSpeech2Model', 'updateTimestamps', 'audioEncoding',
+                'await loadVoice(x)', 'metadata.voice = d.voice']
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/fox.js',
               markers: ['eg-gink-natural-voice', 'eg-gink-neural-male-voice',
-                'naturalVoice.speak', 'naturalVoice.setVoice', 'rankNativeVoices',
-                'microGaze', 'roundNow', 'const nostrils']
+                'naturalVoice.speak', 'naturalVoice.setVoice', 'naturalWanted = true',
+                'voice audition', 'rankNativeVoices', 'microGaze', 'roundNow', 'const nostrils']
             }
           ];
           let detail = 'Gink did not become current';
@@ -170,19 +183,27 @@ jobs:
                 const orderedPositions = (target.orderedMarkers || []).map((marker) => text.indexOf(marker));
                 const ordered = orderedPositions.every((position, index) =>
                   position >= 0 && (index === 0 || position > orderedPositions[index - 1]));
+                const voiceHash = target.voiceId
+                  ? Buffer.from(await crypto.subtle.digest('SHA-256', body)).toString('hex')
+                  : null;
                 return {
                   target,
                   response,
+                  voiceHash,
                   current: response.ok && body.byteLength >= (target.minBytes || 1) && ordered &&
                     target.markers.every((marker) => text.includes(marker))
                 };
               }));
-              if (checks.every((check) => check.current)) {
-                console.log('Live Gink questions and prepared answers verified.');
+              const voiceChecks = checks.filter((check) => check.target.voiceId);
+              const voicesDistinct = voiceChecks.length === 6 &&
+                new Set(voiceChecks.map((check) => check.voiceHash)).size === 6;
+              if (checks.every((check) => check.current) && voicesDistinct) {
+                console.log('Live Gink chooser, six distinct embeddings, questions and prepared answers verified.');
                 process.exit(0);
               }
               detail = checks.map((check) =>
-                `${check.target.url} HTTP ${check.response.status}; current=${check.current}`).join(' | ');
+                `${check.target.url} HTTP ${check.response.status}; current=${check.current}`).join(' | ') +
+                ` | sixDistinctVoices=${voicesDistinct}`;
             } catch (error) {
               detail = error && error.message || String(error);
             }
