@@ -90,6 +90,9 @@ if (!w.navigator.mediaDevices) {
 const stub = (name) => "function " + name + "(){} ";
 const run = (file, pre) => {
   let src = readFileSync(ROOT + "hatchable/public/assets/js/" + file, "utf8");
+  /* Strip ES-module imports jsdom cannot resolve — both the multi-line
+     named form (import {\n a,\n b\n} from "./x") and the single-line one. */
+  src = src.replace(/import\s+{[^}]*}\s+from\s+["'][^"']*["'];?/g, "");
   src = src.replace(/^\s*import\s[^;]+;?\s*$/gm, "");
   src = src.replace(/^\s*export\s+/gm, "");
   try {
@@ -101,7 +104,8 @@ const run = (file, pre) => {
 };
 
 run("player.js", "");
-run("media-admin.js", stub("countdown"));
+run("media-admin.js", stub("countdown") + stub("voiceTemplate") + stub("sealVoiceprint") +
+  stub("openVoiceprint") + stub("voiceSimilarity"));
 run("device-studio.js", stub("busyBox") + stub("busyError") + stub("hold") + stub("release") +
   "async function nameTheDevice(){return 'harness'} ");
 run("admin-edit.js", "");

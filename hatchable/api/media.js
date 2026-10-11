@@ -33,10 +33,14 @@
  *   { action: 'one', pass, id }                    one item, freshly signed
  *   { action: 'pin'|'unpin', pass, id }            hold it at the top of the
  *                                                  page — three at most
+ *   { action: 'voiceprints', pass }                 encrypted consenting templates
+ *   { action: 'enrol-voiceprint', pass, … }         store a browser-sealed template
+ *   { action: 'delete-voiceprint', pass, name }     revoke and erase a template
+ *   { action: 'voiceprint-labels', pass, id, … }    apply local biometric matches
  */
 import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
-import { doors as freeDoors } from '../lib/freeai.js';
+import { doors as freeDoors, freeChat } from '../lib/freeai.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -46,6 +50,22 @@ const MAX_CHUNK = 1.4 * 1024 * 1024;      /* base64, per request */
 const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
+const CONSENTING_VOICES = new Set(['Edward Gregory', 'Jim Rankin']);
+const B64 = /^[A-Za-z0-9+/]+={0,2}$/;
+
+function consentingVoice(value) {
+  const name = clean(value, 80);
+  return CONSENTING_VOICES.has(name) ? name : '';
+}
+
+function sealedPart(value, max) {
+  const part = clean(value, max);
+  return part && B64.test(part) ? part : '';
+}
+
+function sealedBytes(value) {
+  try { return Buffer.from(value, 'base64').length; } catch { return 0; }
+}
 
 function cleanDate(value) {
   const raw = clean(value, 10);
@@ -160,7 +180,7 @@ function speechPatterns(turns) {
   const result = new Map();
   for (const [name, group] of groups) {
     const all = wordsOf(group.turns.map((t) => t.text).join(' '));
-    if (all.length < 8) continue;
+    if (!all.length) continue;
     const counts = new Map();
     for (const word of all) {
       if (word.length < 3 || COMMON_WORDS.has(word)) continue;
@@ -176,6 +196,9 @@ function speechPatterns(turns) {
     const mean = (n) => Math.round(n * 100) / 100;
     result.set(name, {
       kind: 'aggregate linguistic cadence; not a voiceprint',
+      sample_quality: all.length < 50
+        ? 'provisional; small attributed sample'
+        : all.length < 250 ? 'limited' : 'substantial',
       turns: group.turns.length,
       words: all.length,
       mean_words_per_turn: mean(all.length / group.turns.length),
@@ -207,7 +230,6 @@ async function ensureSpeakerPatterns(mediaId, raw, supplied) {
   if (speakers.every((s) => Number(s.profiled_chars) === chars)) return { speakers, stored: true };
 
   const patterns = speechPatterns(transcriptTurns(raw, speakers));
-  let stored = false;
   for (const speaker of speakers) {
     const pattern = patterns.get(speaker.name);
     if (!pattern) continue;
@@ -218,15 +240,19 @@ async function ensureSpeakerPatterns(mediaId, raw, supplied) {
          sample_words = EXCLUDED.sample_words, source_media_id = EXCLUDED.source_media_id,
          updated_at = NOW()`,
       [speaker.name, JSON.stringify(pattern), pattern.words, mediaId]);
-    stored = true;
-  }
-  if (stored) {
     await db.query(
-      'UPDATE media_speakers SET profiled_chars = $2, updated_at = NOW() WHERE media_id = $1',
-      [mediaId, chars]);
-    speakers.forEach((s) => { s.profiled_chars = chars; });
+      `UPDATE media_speakers SET profiled_chars = $3, updated_at = NOW()
+        WHERE media_id = $1 AND speaker_no = $2`,
+      [mediaId, Number(speaker.speaker_no), chars]);
+    speaker.profiled_chars = chars;
   }
-  return { speakers, stored };
+  /* `stored` means every declared speaker has enough attributed words for a
+     profile. Never mark all speakers complete merely because one profile was
+     derivable. */
+  return {
+    speakers,
+    stored: speakers.every((s) => Number(s.profiled_chars) === chars)
+  };
 }
 
 function turnStamp(seconds) {
@@ -241,7 +267,7 @@ function diarizedTranscript(data) {
   const roots = [data, data && data.data, data && data.result].filter(Boolean);
   let pieces = [];
   for (const root of roots) {
-    for (const key of ['segments', 'words', 'chunks', 'utterances']) {
+    for (const key of ['segments', 'words', 'chunks', 'utterances', 'speakers']) {
       if (Array.isArray(root[key]) && root[key].length) {
         const labelled = root[key].filter((part) => part &&
           (part.speaker != null || part.speaker_id != null || part.speaker_label != null));
@@ -275,7 +301,152 @@ function diarizedTranscript(data) {
     turn.speaker + ' — ' + turn.text.trim()).join('\n\n');
 }
 
-async function recoverNamedTranscript(row) {
+function timedTranscriptPieces(data) {
+  const roots = [data, data && data.data, data && data.result].filter(Boolean);
+  const candidates = [];
+  for (const root of roots) {
+    for (const key of ['segments', 'utterances', 'chunks', 'words', 'speakers']) {
+      if (!Array.isArray(root[key])) continue;
+      const pieces = root[key].map((part, index) => {
+        if (!part || typeof part !== 'object') return null;
+        const stamp = part.timestamp;
+        const start = Number(part.start ?? part.start_time ??
+          (Array.isArray(stamp) ? stamp[0] : stamp));
+        const end = Number(part.end ?? part.end_time ??
+          (Array.isArray(stamp) ? stamp[1] : start));
+        const text = clean(part.text ?? part.word ?? part.transcript, 4000);
+        if (!text || !Number.isFinite(start)) return null;
+        return {
+          index,
+          start: Math.max(0, start),
+          end: Number.isFinite(end) ? Math.max(start, end) : Math.max(0, start),
+          text
+        };
+      }).filter(Boolean);
+      if (pieces.length) candidates.push(pieces);
+    }
+  }
+  /* Prefer sentence/segment timing to word timing: it carries useful pauses
+     with a much smaller classification surface. */
+  return candidates.sort((a, b) => {
+    const aWords = a.reduce((n, p) => n + wordsOf(p.text).length, 0);
+    const bWords = b.reduce((n, p) => n + wordsOf(p.text).length, 0);
+    return bWords - aWords || a.length - b.length;
+  })[0] || [];
+}
+
+function labelledTranscript(pieces, labels) {
+  const turns = [];
+  pieces.forEach((piece, index) => {
+    const speaker = Number(labels[index]) === 2 ? 2 : 1;
+    const active = turns[turns.length - 1];
+    if (active && active.speaker === speaker) {
+      active.text += (/^[,.;:!?)]/.test(piece.text) ? '' : ' ') + piece.text;
+    } else {
+      turns.push({ speaker, at: piece.start, text: piece.text });
+    }
+  });
+  const enough = [1, 2].every((speaker) => wordsOf(turns
+    .filter((turn) => turn.speaker === speaker)
+    .map((turn) => turn.text).join(' ')).length >= 8);
+  if (!enough || turns.length < 2) return '';
+  return turns.map((turn) => '[' + turnStamp(turn.at) + '] Speaker ' +
+    turn.speaker + ' — ' + turn.text.trim()).join('\n\n');
+}
+
+/* This is the same deliberately modest fallback used by the publishing UI:
+   a silence longer than 2.5 seconds is treated as a possible hand-over. It is
+   dialogue-turn inference, not biometric speaker recognition, and its stored
+   status says so. */
+function pauseInferredTranscript(pieces) {
+  if (pieces.length < 2) return '';
+  const labels = [];
+  let speaker = 1;
+  pieces.forEach((piece, index) => {
+    if (index) {
+      const gap = piece.start - pieces[index - 1].end;
+      if (gap > 2.5) speaker = speaker === 1 ? 2 : 1;
+    }
+    labels.push(speaker);
+  });
+  return labels.includes(2) ? labelledTranscript(pieces, labels) : '';
+}
+
+function jsonObject(raw) {
+  const text = String(raw || '').replace(/```json|```/gi, '').trim();
+  const first = text.indexOf('{');
+  const last = text.lastIndexOf('}');
+  if (first < 0 || last <= first) return null;
+  try { return JSON.parse(text.slice(first, last + 1)); } catch { return null; }
+}
+
+/* If timestamped Whisper segments contain no sufficiently long silence, ask a
+   text model only where likely dialogue hand-overs occur. It returns labels
+   for immutable STT fragments; it never rewrites the transcript and never
+   claims to recognise either person's voice. Batching keeps a long episode
+   within the model window, with labelled overlap preserving continuity. */
+async function dialogueInferredTranscript(pieces) {
+  if (pieces.length < 2) return '';
+  const labels = [];
+  let cursor = 0;
+  while (cursor < pieces.length) {
+    const batch = [];
+    let chars = 0;
+    while (cursor + batch.length < pieces.length && batch.length < 100) {
+      const piece = pieces[cursor + batch.length];
+      const cost = piece.text.length + 80;
+      if (batch.length && chars + cost > 22000) break;
+      batch.push(piece);
+      chars += cost;
+    }
+    if (!batch.length) return '';
+
+    const context = pieces.slice(Math.max(0, cursor - 3), cursor).map((piece, offset) => ({
+      speaker: labels[cursor - Math.min(3, cursor) + offset],
+      at: turnStamp(piece.start),
+      text: piece.text
+    }));
+    const current = batch.map((piece, offset) => ({
+      index: cursor + offset,
+      at: turnStamp(piece.start),
+      gap_before: offset || cursor
+        ? Math.max(0, Math.round((piece.start - pieces[cursor + offset - 1].end) * 100) / 100)
+        : 0,
+      text: piece.text
+    }));
+    const heard = await freeChat({
+      system: `You mark likely turn boundaries in a transcript between exactly two already-declared
+participants. This is linguistic dialogue-structure inference, not voice recognition. Do not identify
+people and do not rewrite, quote, summarise, correct or add any words. Assign each CURRENT fragment
+speaker 1 or 2 using questions and answers, direct address, continuation and the measured pauses.
+Consecutive fragments may have the same speaker. Speaker 1 is the first audible participant, so the
+first fragment of the entire recording is 1. Preserve the numbering in PREVIOUS LABELLED CONTEXT.
+Return JSON only in exactly this shape: {"labels":[1,2]}. The labels array must contain exactly one
+integer for every CURRENT fragment, in order.`,
+      messages: [{
+        role: 'user',
+        content: 'PREVIOUS LABELLED CONTEXT\n' + JSON.stringify(context) +
+          '\nCURRENT\n' + JSON.stringify(current)
+      }],
+      maxTokens: Math.max(300, Math.min(1400, batch.length * 5 + 100)),
+      temperature: 0.1
+    }).catch(() => null);
+    const parsed = heard && jsonObject(heard.text);
+    if (!parsed || !Array.isArray(parsed.labels) || parsed.labels.length !== batch.length ||
+        parsed.labels.some((label) => Number(label) !== 1 && Number(label) !== 2)) return '';
+    labels.push(...parsed.labels.map(Number));
+    cursor += batch.length;
+  }
+
+  /* Speaker numbering is by first appearance, regardless of an accidental
+     inversion in a model response. */
+  if (labels[0] === 2) {
+    for (let index = 0; index < labels.length; index += 1) labels[index] = labels[index] === 1 ? 2 : 1;
+  }
+  return labels.includes(2) ? labelledTranscript(pieces, labels) : '';
+}
+
+async function recoverNamedTranscript(row, allowInference) {
   const url = await sign(row.storage_key);
   if (!url) return { transcript: '', status: 'no-signed-audio' };
   const doors = freeDoors();
@@ -290,6 +461,11 @@ async function recoverNamedTranscript(row) {
         url,
         model: 'whisper',
         language: 'en',
+        /* Providers use both naming conventions in the wild. The first call
+           showed this route accepts unknown options, so send its likely native
+           pair as well as the compatible aliases. */
+        enable_diarization: true,
+        num_speakers: 2,
         diarize: true,
         speaker_diarization: true,
         word_timestamps: true,
@@ -311,6 +487,21 @@ async function recoverNamedTranscript(row) {
       return { transcript, status: 'stored-diarized', provider: 'free.ai/' + door.label };
     }
     const keys = data && typeof data === 'object' ? Object.keys(data).slice(0, 12) : [];
+    if (allowInference) {
+      const pieces = timedTranscriptPieces(data);
+      const paused = pauseInferredTranscript(pieces);
+      if (paused) {
+        return { transcript: paused, status: 'stored-pause-inferred',
+          provider: 'free.ai/' + door.label };
+      }
+      const dialogued = await dialogueInferredTranscript(pieces);
+      if (dialogued) {
+        return { transcript: dialogued, status: 'stored-dialogue-inferred',
+          provider: 'free.ai/' + door.label };
+      }
+      return { transcript: '', status: pieces.length
+        ? 'speaker-inference-inconclusive' : 'provider-returned-no-timestamps', shape: keys };
+    }
     return {
       transcript: '',
       status: 'provider-returned-no-speakers',
@@ -458,18 +649,31 @@ export default async function (req, res) {
       if (expected.get(1) !== 'Edward Gregory' || expected.get(2) !== 'Jim Rankin') {
         return res.status(409).json({ error: 'The guarded speaker map is not present.' });
       }
-      if (row.speaker_bootstrap_at) {
+      /* The original one-shot completed after the provider accepted options
+         but returned no labels. Permit one, and only one, bounded retry for
+         that exact outcome so native option names and the timestamped response
+         can use the transparent
+         pause/dialogue inference fallback. All other completed outcomes stay
+         final, and neither route accepts caller-selected media. */
+      const fallback = !!row.speaker_bootstrap_at &&
+        row.speaker_bootstrap_status === 'provider-returned-no-speakers';
+      if (row.speaker_bootstrap_at && !fallback) {
         return res.json({ ok: true, done: false,
           status: row.speaker_bootstrap_status || 'already-attempted' });
       }
-      const { rows: claimed } = await db.query(
-        `UPDATE media SET speaker_bootstrap_at = NOW(), speaker_bootstrap_status = 'running'
-          WHERE id = $1 AND speaker_bootstrap_at IS NULL RETURNING id`, [row.id]);
+      const claimSql = fallback
+        ? `UPDATE media SET speaker_bootstrap_fallback_at = NOW(),
+             speaker_bootstrap_status = 'fallback-running'
+            WHERE id = $1 AND speaker_bootstrap_fallback_at IS NULL RETURNING id`
+        : `UPDATE media SET speaker_bootstrap_at = NOW(), speaker_bootstrap_status = 'running'
+            WHERE id = $1 AND speaker_bootstrap_at IS NULL RETURNING id`;
+      const { rows: claimed } = await db.query(claimSql, [row.id]);
       if (!claimed || !claimed.length) {
-        return res.json({ ok: true, done: false, status: 'already-running' });
+        return res.json({ ok: true, done: false,
+          status: fallback ? 'fallback-already-attempted' : 'already-running' });
       }
 
-      const heard = await recoverNamedTranscript(row);
+      const heard = await recoverNamedTranscript(row, true);
       if (!heard.transcript) {
         await db.query('UPDATE media SET speaker_bootstrap_status = $2 WHERE id = $1',
           [row.id, heard.status]);
@@ -686,6 +890,172 @@ export default async function (req, res) {
           transcript: displayTranscript(rows[0].transcript || '', profile.speakers),
           speakers: profile.speakers.map((s) => ({ number: Number(s.speaker_no), name: s.name })),
           speaker_patterns_stored: profile.stored
+        });
+      }
+
+      /* Browser-encrypted biometric templates for the two speakers who have
+         explicitly consented. The API cannot decrypt them and never receives
+         raw audio or a plaintext embedding. They are for podcast labels only;
+         adminDoor remains the sole authentication mechanism. */
+      case 'voiceprints': {
+        const { rows } = await db.query(
+          `SELECT name, ciphertext, salt, iv, kdf, kdf_iterations, cipher,
+                  feature_version, sample_seconds, sample_frames,
+                  source_media_id, consented_at, consented_by, updated_at
+             FROM speaker_voiceprints ORDER BY name`);
+        return res.json({
+          ok: true,
+          purpose: 'podcast speaker labelling only; never authentication',
+          voiceprints: (rows || []).map((row) => ({
+            name: row.name,
+            ciphertext: row.ciphertext,
+            salt: row.salt,
+            iv: row.iv,
+            kdf: row.kdf,
+            iterations: Number(row.kdf_iterations),
+            cipher: row.cipher,
+            feature_version: row.feature_version,
+            sample_seconds: Number(row.sample_seconds) || 0,
+            sample_frames: Number(row.sample_frames) || 0,
+            source_media_id: Number(row.source_media_id) || null,
+            consented_at: row.consented_at,
+            consented_by: row.consented_by,
+            updated_at: row.updated_at
+          }))
+        });
+      }
+
+      case 'enrol-voiceprint': {
+        const name = consentingVoice(body.name);
+        if (!name) return res.status(400).json({ error: 'Only the two consenting podcast speakers may be enrolled.' });
+        if (body.consent !== true) {
+          return res.status(400).json({ error: 'Explicit speaker consent must be confirmed for this enrollment.' });
+        }
+        const ciphertext = sealedPart(body.ciphertext, 20000);
+        const salt = sealedPart(body.salt, 128);
+        const iv = sealedPart(body.iv, 128);
+        const kdf = clean(body.kdf, 40);
+        const cipher = clean(body.cipher, 40);
+        const version = clean(body.feature_version, 60);
+        const iterations = Number(body.iterations);
+        const seconds = Number(body.sample_seconds);
+        const frames = Number(body.sample_frames);
+        if (!ciphertext || sealedBytes(ciphertext) < 32 || !salt || sealedBytes(salt) !== 16 ||
+            !iv || sealedBytes(iv) !== 12 || kdf !== 'PBKDF2-SHA-256' ||
+            cipher !== 'AES-256-GCM' || version !== 'eg-vp-mfsc-1' ||
+            iterations !== 210000 || !Number.isFinite(seconds) || seconds <= 0 || seconds > 180 ||
+            !Number.isInteger(frames) || frames < 80 || frames > 10000) {
+          return res.status(400).json({ error: 'The encrypted voiceprint envelope is not valid.' });
+        }
+        const sourceId = Number(body.source_media_id) || null;
+        if (sourceId) {
+          const { rows: source } = await db.query(
+            `SELECT 1 FROM media_speakers
+              WHERE media_id = $1 AND name = $2 LIMIT 1`, [sourceId, name]);
+          if (!source || !source.length) {
+            return res.status(409).json({ error: 'That recording is not mapped to the consenting speaker.' });
+          }
+        }
+        await db.query(
+          `INSERT INTO speaker_voiceprints
+             (name, ciphertext, salt, iv, kdf, kdf_iterations, cipher,
+              feature_version, sample_seconds, sample_frames, source_media_id,
+              consented_at, consented_by, updated_at)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW(),$12,NOW())
+           ON CONFLICT (name) DO UPDATE SET
+             ciphertext = EXCLUDED.ciphertext, salt = EXCLUDED.salt,
+             iv = EXCLUDED.iv, kdf = EXCLUDED.kdf,
+             kdf_iterations = EXCLUDED.kdf_iterations, cipher = EXCLUDED.cipher,
+             feature_version = EXCLUDED.feature_version,
+             sample_seconds = EXCLUDED.sample_seconds,
+             sample_frames = EXCLUDED.sample_frames,
+             source_media_id = EXCLUDED.source_media_id,
+             consented_at = NOW(), consented_by = EXCLUDED.consented_by,
+             updated_at = NOW()`,
+          [name, ciphertext, salt, iv, kdf, iterations, cipher, version,
+            Math.round(seconds * 100) / 100, frames, sourceId,
+            clean(door.who, 120) || 'admin']);
+        await db.query(
+          `INSERT INTO voiceprint_audit (name, action, media_id, who, detail)
+           VALUES ($1,'enrolled',$2,$3,$4)`,
+          [name, sourceId, clean(door.who, 120) || 'admin',
+            JSON.stringify({ feature_version: version,
+              sample_seconds: Math.round(seconds * 100) / 100 })]);
+        return res.json({ ok: true, name, enrolled: true,
+          purpose: 'podcast speaker labelling only' });
+      }
+
+      case 'delete-voiceprint': {
+        const name = consentingVoice(body.name);
+        if (!name) return res.status(400).json({ error: 'Which consenting voiceprint?' });
+        const { rows } = await db.query(
+          'DELETE FROM speaker_voiceprints WHERE name = $1 RETURNING source_media_id', [name]);
+        await db.query(
+          `INSERT INTO voiceprint_audit (name, action, media_id, who, detail)
+           VALUES ($1,'deleted',$2,$3,$4)`,
+          [name, rows && rows[0] && rows[0].source_media_id || null,
+            clean(door.who, 120) || 'admin',
+            JSON.stringify({ ciphertext_erased: !!(rows && rows.length) })]);
+        return res.json({ ok: true, name, deleted: !!(rows && rows.length) });
+      }
+
+      case 'voiceprint-labels': {
+        const id = Number(body.id);
+        const labels = Array.isArray(body.labels) ? body.labels.slice(0, 2) : [];
+        const margin = Number(body.assignment_margin);
+        if (!id || labels.length !== 2 || !Number.isFinite(margin) || margin < 0.03 ||
+            clean(body.feature_version, 60) !== 'eg-vp-mfsc-1') {
+          return res.status(400).json({ error: 'Two confident local biometric matches are required.' });
+        }
+        const numbers = new Set();
+        const names = new Set();
+        for (const label of labels) {
+          const no = Number(label && label.number);
+          const name = consentingVoice(label && label.name);
+          const score = Number(label && label.score);
+          if (!Number.isInteger(no) || no < 1 || no > 19 || !name ||
+              !Number.isFinite(score) || score < 0.7 || score > 1) {
+            return res.status(400).json({ error: 'A biometric match was missing or below the labelling threshold.' });
+          }
+          numbers.add(no); names.add(name);
+        }
+        if (numbers.size !== 2 || names.size !== 2) {
+          return res.status(400).json({ error: 'Each consenting speaker must map to one distinct transcript voice.' });
+        }
+        const { rows: enrolled } = await db.query(
+          'SELECT name FROM speaker_voiceprints WHERE name IN ($1,$2)',
+          ['Edward Gregory', 'Jim Rankin']);
+        if (!enrolled || new Set(enrolled.map((row) => row.name)).size !== 2) {
+          return res.status(409).json({ error: 'Both consenting voiceprints must be enrolled first.' });
+        }
+        const { rows: mediaRows } = await db.query(
+          'SELECT transcript FROM media WHERE id = $1', [id]);
+        if (!mediaRows || !mediaRows[0] || !String(mediaRows[0].transcript || '').trim()) {
+          return res.status(404).json({ error: 'That recording has no transcript turns to label.' });
+        }
+        for (const label of labels) {
+          await db.query(
+            `INSERT INTO media_speakers (media_id, speaker_no, name, profiled_chars, updated_at)
+             VALUES ($1,$2,$3,NULL,NOW())
+             ON CONFLICT (media_id, speaker_no) DO UPDATE SET
+               name = EXCLUDED.name, profiled_chars = NULL, updated_at = NOW()`,
+            [id, Number(label.number), consentingVoice(label.name)]);
+          await db.query(
+            `INSERT INTO voiceprint_audit (name, action, media_id, who, detail)
+             VALUES ($1,'label-applied',$2,$3,$4)`,
+            [consentingVoice(label.name), id, clean(door.who, 120) || 'admin',
+              JSON.stringify({ speaker_no: Number(label.number),
+                feature_version: 'eg-vp-mfsc-1' })]);
+        }
+        const profile = await ensureSpeakerPatterns(id, mediaRows[0].transcript);
+        return res.json({
+          ok: true,
+          speakers: profile.speakers.map((speaker) => ({
+            number: Number(speaker.speaker_no), name: speaker.name
+          })),
+          transcript: displayTranscript(mediaRows[0].transcript, profile.speakers),
+          speaker_patterns_stored: profile.stored,
+          purpose: 'podcast speaker labelling only'
         });
       }
 
