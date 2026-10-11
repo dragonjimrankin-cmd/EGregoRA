@@ -711,8 +711,8 @@ description: "The Cosmic Ledger: the universe as a structured zero on the Rieman
       that the total residue vanish &mdash; which is the precise sense in which the universe is a
       structured zero rather than a nothing. That much is standard complex analysis.
       <span class="sci">&#9670;</span></p>
-      <p class="formula" style="text-align:center">f(z) = (1 / z&thinsp;sin(&pi;z)) &middot;
-      cos(&pi;z/2) &minus; &kappa;z&sup2;</p>
+      <p class="formula" style="text-align:center">f(z) = (1/z) &middot; cos(&pi;z/2) /
+      (sin(&pi;z) &minus; &kappa;z&sup2;)</p>
       <p>The Framework's own content is the choice of that function &mdash; the <strong>Universal Rankin
       Measurement Function</strong> &mdash; and the claim that &kappa; is not fitted but rigid: the
       volume-to-surface-area ratio of a unit torus undergoing a Moebius inversion half-twist,
@@ -733,6 +733,56 @@ description: "The Cosmic Ledger: the universe as a structured zero on the Rieman
       agreement is close but not exact, which is the honest state of it. Two challenges the author records
       against himself remain open: that the residues are computed from an ansatz rather than derived, and
       that the uniqueness of the three poles is asserted rather than proved.</p>
+    </div>
+
+    <div class="frame illuminated">
+      <h3 id="t-kappa-check">The kappa check &mdash; October 2026</h3>
+      <p>&kappa; is now confirmed: 1/4&pi;&sup2; &asymp; 0.025330, fixed and no longer a dial. That
+      confirmation is the most useful thing that could have happened to chapter&nbsp;8, because it turns
+      the claim into a check: with &kappa; pinned, the residues either follow from the function or they
+      do not. The check has been run, and it is recorded here in full &mdash; named, not quietly
+      repaired, the way this page handles everything else. <span class="sci">&#9670;</span></p>
+      <p>Substituting the confirmed &kappa; into the function exactly as printed, in the Unified Edition
+      and on this page:</p>
+      <ul class="tight">
+        <li><strong>z = 1 is not a pole.</strong> cos(&pi;z/2) vanishes there, so f(1) = 0 &mdash; the
+        function has a <em>zero</em> at z&nbsp;=&nbsp;1. A zero carries no residue, so Res(f,1) = 0,
+        not 0.6810.</li>
+        <li><strong>z = &frac12; is not a pole.</strong> f(&frac12;) &asymp; 1.4233 &mdash; an ordinary
+        finite value. Not 0.2695.</li>
+        <li><strong>z = 0 is a double pole</strong> with residue &kappa;/&pi;&sup2; &asymp; 0.002566.
+        Not 0.0495.</li>
+        <li><strong>The real poles are elsewhere:</strong> the roots of sin(&pi;z) = &kappa;z&sup2;
+        &mdash; 0.99206, 2.03340, 2.93021, 4.14319, 4.80150 and onward, an infinite family hugging every
+        integer &mdash; with residues &minus;0.0039, &minus;0.1625, +0.0116, +0.0898, &minus;0.0229. No
+        normalisation of those lands on the claimed triple.</li>
+      </ul>
+      <p>Two structural points sit underneath the arithmetic. First, &sum;&thinsp;Res = 0 on the sphere is
+      the global residue <em>theorem</em>: it holds identically for every &kappa;, so closure cannot
+      single one out &mdash; and since the function is transcendental, its singularity at infinity is
+      essential, which means &ldquo;&minus;1 at infinity&rdquo; is not a residue in the standard sense at
+      all. Second, the torus provenance does not yet reproduce: for a torus, V = 2&pi;&sup2;Rr&sup2; and
+      A = 4&pi;&sup2;Rr, so V/A = r/2 &mdash; a unit torus gives &frac12;, and reaching &kappa; needs
+      r = 1/(2&pi;&sup2;) &asymp; 0.0507. If the Moebius half-twist convention changes the area, that is
+      a derivation the Framework still owes, and it would be a short one. <span class="sci">&#9670;</span></p>
+      <p class="muted">One caveat, stated before any of it is used against the Framework: the check was
+      run against a text extraction of the PDF, and formulae are exactly what extraction mangles &mdash;
+      this page's own display of the function had lost its parentheses, and has been corrected above. If
+      the published original differs from the extraction, the check must be re-run against it. The good
+      news is the real news: the check is five minutes long and completely decisive. That is what
+      confirming &kappa; bought.</p>
+      <p>What survives the check is a genuine contact. The confirmed &kappa; pushed the poles
+      <em>off the integer lattice</em> &mdash; 1 &rarr; 0.99206, 2 &rarr; 2.03340, 3 &rarr; 2.93021
+      &mdash; integers deformed by an interaction, which is precisely the Dyson picture of eigenvalues
+      repelling off a mean lattice. If the Berry&ndash;Keating programme is ever written down as an
+      operator, &kappa; is the natural coupling constant in it, standing where &hbar; stands in
+      quantisation. That is a seat at the table, not evidence. <span class="spec">&#9670;</span></p>
+      <p class="muted">And the standard the Framework sets for itself, restated because the check makes
+      it concrete: a function whose residues are <em>exactly</em> 0.6810, 0.2695 and 0.0495 at 1,
+      &frac12; and 0 is trivial to write down &mdash; 0.6810/(z&minus;1) + 0.2695/(z&minus;&frac12;) +
+      0.0495/z does it by partial fractions. Trivial is the point. Residues can always be encoded; what
+      chapter&nbsp;8 needs is for them to be forced. Until the re-check against the original says
+      otherwise, the three residues stand as the ansatz the author already named them to be.</p>
     </div>
   </div>
 </section>
