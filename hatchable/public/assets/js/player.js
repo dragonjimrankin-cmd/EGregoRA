@@ -56,11 +56,73 @@
     const bar = document.createElement("div");
     bar.className = "fx-bar";
 
+    /* The transport, in full: skip to the previous episode, two speeds of
+       rewind and of forwards, and the play between them. */
+    const stepBtn = (label, aria, fn) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "fx-step";
+      b.setAttribute("aria-label", aria);
+      b.textContent = label;
+      b.addEventListener("click", fn);
+      return b;
+    };
+
+    /* Some browsers (and jsdom) hand back nothing from play(); never let
+       that throw where a button was pressed. */
+    const start = (a) => { const p = a.play(); if (p && p.catch) p.catch(() => {}); };
+
+    /* Whoever starts the sound, the player must be seen: open every
+       closed <details> above it and bring the figure into view. */
+    const reveal = (a) => {
+      let d = a.closest("details");
+      while (d) {
+        d.open = true;
+        d = d.parentElement ? d.parentElement.closest("details") : null;
+      }
+      const f = a.closest(".fx-player");
+      if (f && f.scrollIntoView) {
+        try { f.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+        catch { try { f.scrollIntoView(); } catch { /* nowhere to scroll */ } }
+      }
+    };
+
+    /* Skip to previous: the episode before this one in the page's own
+       order — opened, seen and playing. At the first, start again. */
+    const skipPrev = () => {
+      const all = Array.from(document.querySelectorAll("audio.player"));
+      const i = all.indexOf(audio);
+      const prev = i > 0 ? all[i - 1] : null;
+      if (prev) {
+        reveal(prev);
+        start(prev);
+      } else {
+        try { audio.currentTime = 0; } catch { /* not seekable yet */ }
+        reveal(audio);
+        start(audio);
+      }
+    };
+
+    const nudge = (secs) => () => {
+      try {
+        const d = Number.isFinite(audio.duration) ? audio.duration : Infinity;
+        audio.currentTime = Math.max(0, Math.min(d, (audio.currentTime || 0) + secs));
+      } catch { /* nothing loaded to move through */ }
+      reveal(audio);
+    };
+
+    const prevBtn = stepBtn("⏮", "Skip to the previous episode", skipPrev);
+    const back60 = stepBtn("\u221260", "Back one minute", nudge(-60));
+    const back10 = stepBtn("\u221210", "Back ten seconds", nudge(-10));
+
     const playBtn = document.createElement("button");
     playBtn.type = "button";
     playBtn.className = "fx-play";
     playBtn.setAttribute("aria-label", "Play or pause");
     playBtn.textContent = "►";
+
+    const fwd10 = stepBtn("+10", "Forwards ten seconds", nudge(10));
+    const fwd60 = stepBtn("+60", "Forwards one minute", nudge(60));
 
     const now = document.createElement("span");
     now.className = "fx-time";
@@ -76,7 +138,7 @@
     end.className = "fx-time";
     end.textContent = "0:00";
 
-    bar.append(playBtn, now, seek, end);
+    bar.append(prevBtn, back60, back10, playBtn, fwd10, fwd60, now, seek, end);
     fig.append(cv, audio, bar);
 
     /* --------------------------------------------------------- the sound */
@@ -203,7 +265,7 @@
     /* ------------------------------------------------------ the transport */
     const toggle = () => {
       wire();
-      if (audio.paused) audio.play().catch(() => {});
+      if (audio.paused) { reveal(audio); start(audio); }
       else audio.pause();
     };
     playBtn.addEventListener("click", toggle);
@@ -248,4 +310,75 @@
   if (document.readyState === "loading")
     document.addEventListener("DOMContentLoaded", () => sweep());
   else sweep();
+
+  /* Whoever starts the sound — the transport, a shelf row, a cued plate,
+     a dropped file — the player must be seen. The play event does not
+     bubble, so this listens on the way down: open every closed <details>
+     above the sound and bring its figure into view. */
+  document.addEventListener("play", (e) => {
+    const a = e.target;
+    if (!a || !a.classList || !a.classList.contains("player")) return;
+    let d = a.closest("details");
+    while (d) {
+      d.open = true;
+      d = d.parentElement ? d.parentElement.closest("details") : null;
+    }
+    const f = a.closest(".fx-player");
+    if (f && f.scrollIntoView) {
+      try { f.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+      catch { try { f.scrollIntoView(); } catch { /* nowhere to scroll */ } }
+    }
+  }, true);
+
+  /* The drop-audio-here plate: a button that is also a target. A file
+     dropped (or chosen) plays in the house player from this device
+     alone — nothing is uploaded, nothing leaves the page. */
+  const zone = document.querySelector("[data-drop-zone]");
+  if (zone) {
+    const btn = zone.querySelector("[data-drop-audio]");
+    const file = zone.querySelector("[data-drop-file]");
+    const slot = zone.querySelector("[data-drop-slot]");
+    const note = zone.querySelector("[data-drop-note]");
+    const sayDrop = (t, bad) => {
+      if (!note) return;
+      note.textContent = t || "";
+      note.className = "muted small" + (bad ? " is-bad" : "");
+    };
+    const take = (f) => {
+      if (!f) return;
+      const okType = /^audio\//.test(f.type || "") ||
+        /\.(mp3|m4a|aac|ogg|oga|opus|wav|webm|flac)$/i.test(f.name || "");
+      if (!okType) return sayDrop("That is not a sound this page can play.", true);
+      const fig = document.createElement("div");
+      fig.className = "drop-fig";
+      const cap = document.createElement("p");
+      cap.className = "muted small";
+      cap.textContent = f.name + " \u2014 playing from this device alone; nothing was uploaded.";
+      const a = document.createElement("audio");
+      a.className = "player";
+      a.preload = "metadata";
+      a.src = URL.createObjectURL(f);
+      fig.append(cap, a);
+      if (slot) slot.prepend(fig);
+      enhance(a);
+      const p = a.play();
+      if (p && p.catch) p.catch(() => {});
+      sayDrop("");
+    };
+    if (btn && file) {
+      btn.addEventListener("click", () => file.click());
+      file.addEventListener("change", () => {
+        take(file.files && file.files[0]);
+        file.value = "";
+      });
+    }
+    ["dragenter", "dragover"].forEach((ev) =>
+      zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.add("is-over"); }));
+    ["dragleave", "drop"].forEach((ev) =>
+      zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.remove("is-over"); }));
+    zone.addEventListener("drop", (e) => {
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) take(f);
+    });
+  }
 })();

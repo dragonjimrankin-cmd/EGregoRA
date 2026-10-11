@@ -122,6 +122,43 @@ await tick(20);
 click("[data-mx-tr]");
 await tick(20);
 
+/* ---- the house player's transport ----------------------------------- */
+const fxBar = w.document.querySelector(".fx-player .fx-bar");
+if (!fxBar) {
+  problems.push("no enhanced player transport on the page");
+} else {
+  const press = (label) => {
+    const b = [...fxBar.querySelectorAll("button")].find((x) => x.textContent.trim() === label);
+    if (!b) { problems.push("transport button " + label + " missing"); return; }
+    try { b.dispatchEvent(new w.Event("click", { bubbles: true })); }
+    catch (e) { problems.push("transport " + label + " threw: " + e.message); }
+  };
+  ["\u23ee", "\u221260", "\u221210", "\u25ba", "+10", "+60"].forEach(press);
+  await tick(30);
+  say("transport: all six buttons pressed");
+}
+
+/* ---- drop audio here -------------------------------------------------- */
+click("[data-drop-audio]");
+const dropFile = w.document.querySelector("[data-drop-file]");
+if (!dropFile) {
+  problems.push("no drop-audio zone on the page");
+} else {
+  const f = new w.File([new w.Blob(["fake"])], "demo.mp3", { type: "audio/mpeg" });
+  Object.defineProperty(dropFile, "files", { value: [f], configurable: true });
+  dropFile.dispatchEvent(new w.Event("change", { bubbles: true }));
+  await tick(40);
+  const dropped = w.document.querySelector("[data-drop-slot] audio.player");
+  say("drop audio: " + (dropped ? "player spawned and playing" : "nothing spawned"));
+  if (!dropped) problems.push("dropping audio spawned no player");
+  /* a non-audio file must be refused, not played */
+  const bad = new w.File([new w.Blob(["x"])], "notes.txt", { type: "text/plain" });
+  Object.defineProperty(dropFile, "files", { value: [bad], configurable: true });
+  dropFile.dispatchEvent(new w.Event("change", { bubbles: true }));
+  await tick(20);
+  say("drop refusal: " + (w.document.querySelector("[data-drop-note]") || {}).textContent);
+}
+
 /* ---- the admin door ------------------------------------------------- */
 click("[data-am=open]");
 const pass = $("[data-am=pass]");

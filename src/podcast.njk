@@ -41,6 +41,18 @@ description: Long-form conversation from EGregoRA — cosmology, druidry, neuros
 <div class="divider">✦</div>
 
 <section class="wrap" id="episodes">
+  <div class="frame drop-zone" data-drop-zone>
+    <p class="kicker">Hear something of your own</p>
+    <p class="muted small">Drag an audio file onto this panel &mdash; or press the button and choose
+    one &mdash; and it will play here, in the house player, with the full transport under it.
+    Nothing is uploaded; the sound never leaves this page.</p>
+    <div class="btn-row">
+      <button type="button" class="btn" data-drop-audio>Drop audio here</button>
+    </div>
+    <input type="file" accept="audio/*" data-drop-file hidden>
+    <p class="muted small" data-drop-note></p>
+    <div data-drop-slot></div>
+  </div>
   <div class="media-list" id="uploaded-media" data-kind="audio" hidden></div>
   <div class="media-list">
     {% for ep in episodes | reverse %}
