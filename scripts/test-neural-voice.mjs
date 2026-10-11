@@ -88,7 +88,7 @@ const ranked = rankNativeVoices([
 assert.match(ranked[0].name, /Ryan.*Natural/, "A natural British masculine voice should rank first");
 assert.equal(ranked.at(-1).name, "Bells", "Novelty voices must rank last");
 
-const [dragon, fox, patchFox, helper, patchHelper, shakPage, ginkPage, site, packageJson, npmrc] = await Promise.all([
+const [dragon, fox, patchFox, helper, patchHelper, shakPage, ginkPage, site, packageJson, npmrc, deployer] = await Promise.all([
   text("tti/src/assets/js/dragon.js"),
   text("tti/src/assets/js/fox.js"),
   text("egregora-patch/public/assets/js/fox.js"),
@@ -98,7 +98,8 @@ const [dragon, fox, patchFox, helper, patchHelper, shakPage, ginkPage, site, pac
   text("egregora-patch/public/ask-ed/index.html"),
   text("tti/src/assets/js/site.js"),
   text("package.json"),
-  text(".npmrc")
+  text(".npmrc"),
+  text("scripts/hatchable-deploy.mjs")
 ]);
 assert.equal(patchFox, fox, "The deployed Gink sculpt must match the canonical Gink module");
 assert.equal(patchHelper, helper, "Both sites must use the same neural engine");
@@ -141,6 +142,10 @@ assert.match(packageJson, /"@met4citizen\/headtts": "1\.3\.0"/);
 assert.match(packageJson, /"@huggingface\/transformers": "4\.3\.1"/);
 assert.match(npmrc, /ignore-scripts=true/,
   "The unused Node ONNX postinstall must remain disabled");
+assert.match(deployer, /extension === "\.mjs"/,
+  "Valid browser modules must bypass Hatchable's classic-script parser");
+assert.match(deployer, /includes\("import\.meta"\)/,
+  "JavaScript using import.meta must use Hatchable's byte uploader");
 
 const ttiVendor = path.join(root, "tti", "src", "assets", "js", "headtts");
 const patchVendor = path.join(root, "egregora-patch", "public", "assets", "js", "headtts");

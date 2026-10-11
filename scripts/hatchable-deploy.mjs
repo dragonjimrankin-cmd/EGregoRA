@@ -17,9 +17,10 @@
  * Notes:
  *  - Hatchable runs NO build step, so we upload the *compiled* site from
  *    hatchable/public plus hatchable/hatchable.toml. Nothing else is sent.
- *  - Ordinary text files go through write_files; binary files and text over
- *    1 MB go through upload_file as bytes, with argument names probed from the
- *    server's own tool schema so this keeps working if the API shifts.
+ *  - Ordinary text files go through write_files; binary files, browser module
+ *    sources rejected by Hatchable's script parser, and text over 1 MB go
+ *    through upload_file as bytes. Argument names are probed from the server's
+ *    own tool schema so this keeps working if the API shifts.
  *  - The token is read from the environment and never written to disk.
  */
 
@@ -135,10 +136,14 @@ function collect() {
   const text = [], binary = [];
   for (const f of files) {
     /* write_files is ideal for ordinary source, but a multi-megabyte text
-       dictionary can exceed a single MCP JSON request. Send oversized text
-       through the same chunked byte uploader as media instead. */
+       dictionary can exceed a single MCP JSON request. Hatchable's validator
+       also parses .mjs/import.meta as classic scripts and rejects valid browser
+       modules. Send those unchanged through the chunked byte uploader. */
+    const extension = extname(f.path).toLowerCase();
     const oversized = statSync(f.abs).size > 1024 * 1024;
-    (BINARY.has(extname(f.path).toLowerCase()) || oversized ? binary : text).push(f);
+    const browserModule = extension === ".mjs" ||
+      (extension === ".js" && readFileSync(f.abs, "utf8").includes("import.meta"));
+    (BINARY.has(extension) || oversized || browserModule ? binary : text).push(f);
   }
   return { text, binary };
 }
@@ -200,10 +205,10 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
     console.log(`  ✓ ${batch.map((b) => b.path).join(", ").slice(0, 110)}…`);
   }
 
-  /* 3 — binaries */
+  /* 3 — binary and parser-bypassed byte uploads */
   if (binary.length) {
     const rawBase = process.env.RAW_BASE || opt("raw-base", null);
-    console.log(`▸ uploading ${binary.length} binary assets` + (rawBase ? " (server-side URL import)" : " (chunked base64)"));
+    console.log(`▸ uploading ${binary.length} byte-upload assets` + (rawBase ? " (server-side URL import)" : " (chunked base64)"));
 
     for (const f of binary) {
       const bytes = readFileSync(f.abs);
