@@ -136,14 +136,14 @@ async function connect() {
       }),
       ...settings.voices.map( async (x) => {
         try {
-          loadVoice(x);
+          await loadVoice(x);
         } catch(error) {
           // Ignore errors on pre-load
         }
       }),
       ...settings.languages.map( async (x) => {
         try {
-          loadLanguage(x);
+          await loadLanguage(x);
         } catch(error) {
           // Ignore errors on pre-load
         }
@@ -379,6 +379,10 @@ async function process() {
       metadata.audio = utils.encodeAudio(samples, samplerate, true);
       metadata.audioEncoding = "wav";
     }
+    /* Return the exact embedding identity used for this waveform. The adapter
+       can reject stale or misrouted output instead of silently playing the
+       wrong chooser option. */
+    metadata.voice = d.voice;
 
     // Sent the TalkingHead object to the original caller
     item.ref = item.id;
