@@ -50,12 +50,12 @@ const MAX_CHUNK = 1.4 * 1024 * 1024;      /* base64, per request */
 const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
-const CONSENTING_VOICES = new Set(['Edward Gregory', 'Jim Rankin']);
 const B64 = /^[A-Za-z0-9+/]+={0,2}$/;
 
-function consentingVoice(value) {
-  const name = clean(value, 80);
-  return CONSENTING_VOICES.has(name) ? name : '';
+function voiceprintName(value) {
+  const name = clean(value, 80).replace(/\s+/g, ' ');
+  if (name.length < 2 || /^speaker\s+\d+$/i.test(name) || /[<>\u0000-\u001f]/.test(name)) return '';
+  return name;
 }
 
 function sealedPart(value, max) {
@@ -893,16 +893,19 @@ export default async function (req, res) {
         });
       }
 
-      /* Browser-encrypted biometric templates for the two speakers who have
-         explicitly consented. The API cannot decrypt them and never receives
-         raw audio or a plaintext embedding. They are for podcast labels only;
+      /* Browser-encrypted biometric templates for explicitly consenting
+         speakers. Ed and Jim are priority comparison targets, followed by any
+         further enrollment. The API cannot decrypt templates and never
+         receives raw audio or a plaintext embedding. They label podcasts only;
          adminDoor remains the sole authentication mechanism. */
       case 'voiceprints': {
         const { rows } = await db.query(
           `SELECT name, ciphertext, salt, iv, kdf, kdf_iterations, cipher,
                   feature_version, sample_seconds, sample_frames,
                   source_media_id, consented_at, consented_by, updated_at
-             FROM speaker_voiceprints ORDER BY name`);
+             FROM speaker_voiceprints
+            ORDER BY CASE name WHEN 'Edward Gregory' THEN 0 WHEN 'Jim Rankin' THEN 1 ELSE 2 END,
+                     name`);
         return res.json({
           ok: true,
           purpose: 'podcast speaker labelling only; never authentication',
@@ -926,8 +929,15 @@ export default async function (req, res) {
       }
 
       case 'enrol-voiceprint': {
-        const name = consentingVoice(body.name);
-        if (!name) return res.status(400).json({ error: 'Only the two consenting podcast speakers may be enrolled.' });
+        let name = voiceprintName(body.name);
+        if (!name) return res.status(400).json({ error: 'Enter the consenting speaker’s real name, not a generic speaker number.' });
+        const { rows: sameName } = await db.query(
+          'SELECT name FROM speaker_voiceprints WHERE LOWER(name) = LOWER($1) LIMIT 1', [name]);
+        if (sameName && sameName[0] && sameName[0].name !== name) {
+          return res.status(409).json({
+            error: 'That voiceprint already exists as “' + sameName[0].name + '”; use the same spelling and capitals.'
+          });
+        }
         if (body.consent !== true) {
           return res.status(400).json({ error: 'Explicit speaker consent must be confirmed for this enrollment.' });
         }
@@ -986,7 +996,7 @@ export default async function (req, res) {
       }
 
       case 'delete-voiceprint': {
-        const name = consentingVoice(body.name);
+        const name = voiceprintName(body.name);
         if (!name) return res.status(400).json({ error: 'Which consenting voiceprint?' });
         const { rows } = await db.query(
           'DELETE FROM speaker_voiceprints WHERE name = $1 RETURNING source_media_id', [name]);
@@ -1001,50 +1011,55 @@ export default async function (req, res) {
 
       case 'voiceprint-labels': {
         const id = Number(body.id);
-        const labels = Array.isArray(body.labels) ? body.labels.slice(0, 2) : [];
-        const margin = Number(body.assignment_margin);
-        if (!id || labels.length !== 2 || !Number.isFinite(margin) || margin < 0.03 ||
-            clean(body.feature_version, 60) !== 'eg-vp-mfsc-1') {
-          return res.status(400).json({ error: 'Two confident local biometric matches are required.' });
+        const labels = Array.isArray(body.labels) ? body.labels.slice(0, 12) : [];
+        if (!id || !labels.length || clean(body.feature_version, 60) !== 'eg-vp-mfsc-1') {
+          return res.status(400).json({ error: 'At least one unambiguous local biometric match is required.' });
         }
         const numbers = new Set();
         const names = new Set();
         for (const label of labels) {
           const no = Number(label && label.number);
-          const name = consentingVoice(label && label.name);
+          const name = voiceprintName(label && label.name);
           const score = Number(label && label.score);
+          const margin = Number(label && label.margin);
           if (!Number.isInteger(no) || no < 1 || no > 19 || !name ||
-              !Number.isFinite(score) || score < 0.7 || score > 1) {
-            return res.status(400).json({ error: 'A biometric match was missing or below the labelling threshold.' });
+              !Number.isFinite(score) || score < 0.7 || score > 1 ||
+              !Number.isFinite(margin) || margin < 0.04 || margin > 1) {
+            return res.status(400).json({ error: 'A biometric match was missing, ambiguous, or below the labelling threshold.' });
           }
-          numbers.add(no); names.add(name);
+          numbers.add(no); names.add(name.toLowerCase());
         }
-        if (numbers.size !== 2 || names.size !== 2) {
-          return res.status(400).json({ error: 'Each consenting speaker must map to one distinct transcript voice.' });
+        if (numbers.size !== labels.length || names.size !== labels.length) {
+          return res.status(400).json({ error: 'Each enrolled person may map to only one distinct transcript voice.' });
         }
-        const { rows: enrolled } = await db.query(
-          'SELECT name FROM speaker_voiceprints WHERE name IN ($1,$2)',
-          ['Edward Gregory', 'Jim Rankin']);
-        if (!enrolled || new Set(enrolled.map((row) => row.name)).size !== 2) {
-          return res.status(409).json({ error: 'Both consenting voiceprints must be enrolled first.' });
+        const { rows: enrolled } = await db.query('SELECT name FROM speaker_voiceprints');
+        const enrolledNames = new Set((enrolled || []).map((row) => String(row.name).toLowerCase()));
+        if (labels.some((label) => !enrolledNames.has(voiceprintName(label.name).toLowerCase()))) {
+          return res.status(409).json({ error: 'Every applied name must have an active, consented voiceprint.' });
         }
         const { rows: mediaRows } = await db.query(
           'SELECT transcript FROM media WHERE id = $1', [id]);
         if (!mediaRows || !mediaRows[0] || !String(mediaRows[0].transcript || '').trim()) {
           return res.status(404).json({ error: 'That recording has no transcript turns to label.' });
         }
+        const currentSpeakers = await speakersFor(id);
+        const currentNames = new Map(currentSpeakers.map((speaker) =>
+          [Number(speaker.speaker_no), speaker.name]));
         for (const label of labels) {
+          const number = Number(label.number);
+          const name = voiceprintName(label.name);
+          if (currentNames.get(number) === name) continue;
           await db.query(
             `INSERT INTO media_speakers (media_id, speaker_no, name, profiled_chars, updated_at)
              VALUES ($1,$2,$3,NULL,NOW())
              ON CONFLICT (media_id, speaker_no) DO UPDATE SET
                name = EXCLUDED.name, profiled_chars = NULL, updated_at = NOW()`,
-            [id, Number(label.number), consentingVoice(label.name)]);
+            [id, number, name]);
           await db.query(
             `INSERT INTO voiceprint_audit (name, action, media_id, who, detail)
              VALUES ($1,'label-applied',$2,$3,$4)`,
-            [consentingVoice(label.name), id, clean(door.who, 120) || 'admin',
-              JSON.stringify({ speaker_no: Number(label.number),
+            [name, id, clean(door.who, 120) || 'admin',
+              JSON.stringify({ speaker_no: number,
                 feature_version: 'eg-vp-mfsc-1' })]);
         }
         const profile = await ensureSpeakerPatterns(id, mediaRows[0].transcript);

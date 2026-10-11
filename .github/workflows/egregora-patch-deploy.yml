@@ -177,21 +177,22 @@ jobs:
           };
           const [page, admin, voiceprint] = await Promise.all([
             fetch('https://egregora.hatchable.site/podcast/'),
-            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=voiceprints-1'),
+            fetch('https://egregora.hatchable.site/assets/js/media-admin.js?v=voiceprints-2'),
             fetch('https://egregora.hatchable.site/assets/js/voiceprint.js')
           ]);
           const [html, adminText, voiceprintText] = await Promise.all([
             page.text(), admin.text(), voiceprint.text()
           ]);
-          if (!page.ok || !html.includes('media-admin.js?v=voiceprints-1')) {
+          if (!page.ok || !html.includes('media-admin.js?v=voiceprints-2')) {
             fail(`The podcast page does not load the voiceprint editor (HTTP ${page.status}).`);
           }
           if (!admin.ok || !adminText.includes('Consenting voiceprints') ||
+              !adminText.includes('every further enrolled voice') ||
               !adminText.includes('voiceprint-labels')) {
             fail(`The biometric admin controls are stale (HTTP ${admin.status}).`);
           }
           if (!voiceprint.ok || !voiceprintText.includes('AES-GCM') ||
-              !voiceprintText.includes('voiceSimilarity')) {
+              !voiceprintText.includes('assignVoiceprints')) {
             fail(`The local encrypted-template module is missing (HTTP ${voiceprint.status}).`);
           }
           const denied = await fetch('https://egregora.hatchable.site/api/media', {

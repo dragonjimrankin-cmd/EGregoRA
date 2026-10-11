@@ -3,7 +3,8 @@ import {
   voiceTemplate,
   sealVoiceprint,
   openVoiceprint,
-  voiceSimilarity
+  voiceSimilarity,
+  assignVoiceprints
 } from '../egregora-patch/public/assets/js/voiceprint.js';
 
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
@@ -37,6 +38,17 @@ const otherSpeaker = voiceSimilarity(edward, jim);
 if (!(sameSpeaker > otherSpeaker && sameSpeaker > 0.7)) {
   throw new Error(`Synthetic speaker separation failed: ${sameSpeaker} / ${otherSpeaker}`);
 }
+const alice = voiceTemplate(syntheticVoice(302), [{ from: 0, to: 12 }]);
+const aliceAgain = voiceTemplate(syntheticVoice(306, 0.2), [{ from: 0, to: 12 }]);
+const assigned = assignVoiceprints(
+  new Map([[1, edwardAgain], [2, jim], [3, aliceAgain]]),
+  new Map([['Alice Example', alice], ['Jim Rankin', jim], ['Edward Gregory', edward]]));
+if (assigned.labels.length !== 3 ||
+    assigned.labels.find((label) => label.number === 1)?.name !== 'Edward Gregory' ||
+    assigned.labels.find((label) => label.number === 2)?.name !== 'Jim Rankin' ||
+    assigned.labels.find((label) => label.number === 3)?.name !== 'Alice Example') {
+  throw new Error(`One-to-one multi-speaker assignment failed: ${JSON.stringify(assigned)}`);
+}
 
 const testPhrase = 'synthetic-only-key-material';
 const envelope = await sealVoiceprint('Edward Gregory', edward, testPhrase);
@@ -52,4 +64,4 @@ try {
 }
 if (!refused) throw new Error('A wrong passphrase opened the synthetic voiceprint.');
 
-console.log('Synthetic speaker separation and encrypted voiceprint round trip passed.');
+console.log('Synthetic multi-speaker assignment and encrypted voiceprint round trip passed.');

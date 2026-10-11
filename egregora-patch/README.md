@@ -33,9 +33,13 @@ Current patch:
   one bounded fallback uses measurable pauses or text-only dialogue structure;
   that provenance is stored explicitly and is not presented as biometric
   voice recognition.
-- `migrations/0033_consenting_voiceprints.sql`, `public/assets/js/voiceprint.js`,
-  and the podcast editor add explicit-consent biometric voiceprints for Edward
-  Gregory and Jim Rankin. Feature extraction and matching run in the admin's
-  browser. Only passcode-derived AES-GCM ciphertext is stored; raw enrollment
-  audio is discarded, templates are revocable and the feature is technically
-  excluded from login or access control.
+- `migrations/0033_consenting_voiceprints.sql`,
+  `migrations/0034_extensible_voiceprints.sql`, `public/assets/js/voiceprint.js`,
+  and the podcast editor add explicit-consent biometric voiceprints. Every
+  authenticated audio/transcript path checks Edward Gregory and Jim Rankin in
+  particular, then every further enrolled person. Feature extraction,
+  all-template comparison and one-to-one assignment run in the admin's browser;
+  low-score or low-margin comparisons abstain instead of guessing. Only
+  passcode-derived AES-GCM ciphertext is stored, raw enrollment audio is
+  discarded, templates are revocable and the feature is technically excluded
+  from login or access control.
