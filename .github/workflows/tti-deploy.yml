@@ -93,11 +93,12 @@ jobs:
           grep -q 'The Universe Is the Möbius Seam' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Handedness Reversal Is Not Time Reversal' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Earned, Chosen, Refused' tti/hatchable/public/inverted-toruses/index.html
-          grep -q 'JWST&rsquo;s Little Red Dots' tti/hatchable/public/little-red-dots/index.html
-          grep -q 'A Red Dot Is Not a Diagnosis' tti/hatchable/public/little-red-dots/index.html
-          grep -q 'A Broad Line Need Not Be a Fast Orbit' tti/hatchable/public/little-red-dots/index.html
-          grep -q 'A Test of Discipline for The Shape of Becoming' tti/hatchable/public/little-red-dots/index.html
-          grep -q 'Read the current evidence' tti/hatchable/public/essays/index.html
+          grep -q 'JWST&rsquo;s Little Red Dots, Through TTI' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'A Little Red Dot Is an Integration Front' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'Not a Fourth Pole, but Traffic Between Two' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'Where the Dot Would Live Mathematically' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'Six Debts the Sky Can Collect' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
@@ -168,13 +169,15 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/little-red-dots/',
-              markers: ['JWST&rsquo;s Little Red Dots', 'A Red Dot Is Not a Diagnosis',
-                'A Broad Line Need Not Be a Fast Orbit', 'Six Pieces That Now Fit Better',
-                'A Test of Discipline for The Shape of Becoming', '11 October 2026']
+              markers: ['JWST&rsquo;s Little Red Dots, Through TTI',
+                'A Little Red Dot Is an Integration Front',
+                'Not a Fourth Pole, but Traffic Between Two',
+                'Where the Dot Would Live Mathematically', 'Five Debts the Sky Can Collect',
+                'The Dot Is the Moment the Scaffold Learns to Shine']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/essays/',
-              markers: ['JWST&rsquo;s Little Red Dots', 'Read the current evidence']
+              markers: ['JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
