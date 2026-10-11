@@ -35,9 +35,9 @@ vm.runInNewContext(source, { window, URL, console }, { filename: 'oracle-knowled
 
 const kb = window.EGOracleKnowledge;
 assert.ok(kb, 'knowledge API was not exposed');
-assert.equal(kb.entries.length, 16, 'expected sixteen substantial prepared answers');
-assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 16, 'knowledge IDs must be unique');
-assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 16, 'prepared questions must be unique');
+assert.equal(kb.entries.length, 18, 'expected eighteen substantial prepared answers');
+assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 18, 'knowledge IDs must be unique');
+assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 18, 'prepared questions must be unique');
 
 for (const entry of kb.entries) {
   assert.ok(entry.answer.length >= 700, `${entry.id} is too slight for a high-degree answer`);
@@ -68,9 +68,12 @@ const linked = [...new Set(kb.entries.flatMap((entry) =>
     .map((match) => match[1])))];
 for (const href of linked) {
   const url = new URL(href);
-  const relative = url.pathname === '/'
+  const sourceOverrides = new Map([
+    ['/little-red-dots/research-proposal/', 'little-red-dots-research.njk']
+  ]);
+  const relative = sourceOverrides.get(url.pathname) || (url.pathname === '/'
     ? 'index.njk'
-    : url.pathname.replace(/^\//, '').replace(/\/$/, '') + '.njk';
+    : url.pathname.replace(/^\//, '').replace(/\/$/, '') + '.njk');
   const page = await readFile(new URL('../tti/src/' + relative, import.meta.url), 'utf8');
   if (url.hash) {
     const id = decodeURIComponent(url.hash.slice(1));
@@ -94,6 +97,8 @@ const paraphrases = new Map([
   ['Compare permanent orthogonality and quasiperiodic separation.', 'matter-phase'],
   ['Can phase separation generate net baryon number?', 'baryogenesis-boundary'],
   ['Compare base 5, base 8 and base 4 phase shifts.', 'base-shifts'],
+  ['Could JWST little red dots be inherited from a prior universe?', 'little-red-dots-residue'],
+  ['Explain the Zero-Seam research proposal.', 'zero-seam-test'],
   ['How should we grade the new residue and seam claims?', 'epistemic-grading']
 ]);
 for (const [question, id] of paraphrases) {
@@ -121,12 +126,12 @@ for (const [label, page] of [['ShakDrah', ttiPage], ['Gink', egPage]]) {
   const group = page.match(/<div class="oracle-chips" id="oracle-chips">([\s\S]*?)<\/div>/);
   assert.ok(group, `${label} has no opening question group`);
   const chips = [...group[1].matchAll(/<button class="chip" type="button">([^<]+)<\/button>/g)].map((m) => m[1]);
-  assert.equal(chips.length, 16, `${label} should display sixteen current questions`);
-  assert.ok(page.includes('Sixteen prepared answers'), `${label} does not announce the update`);
+  assert.equal(chips.length, 18, `${label} should display eighteen current questions`);
+  assert.ok(page.includes('Eighteen prepared answers'), `${label} does not announce the update`);
   const knowledgeAt = page.indexOf('/assets/js/oracle-knowledge.js');
   const siteAt = page.indexOf('/assets/js/site.js');
   assert.ok(knowledgeAt >= 0, `${label} does not load the knowledge asset`);
   assert.ok(siteAt < 0 || knowledgeAt < siteAt, `${label} loads the knowledge asset after the oracle client`);
 }
 
-console.log('Oracle knowledge passed: 16 exact answers, 16 paraphrases, two avatars, fallback and attachment bypass.');
+console.log('Oracle knowledge passed: 18 exact answers, 18 paraphrases, two avatars, fallback and attachment bypass.');

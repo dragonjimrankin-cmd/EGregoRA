@@ -1,0 +1,189 @@
+#!/usr/bin/env node
+import { readFile, readdir, stat } from 'node:fs/promises';
+import path from 'node:path';
+import * as cheerio from 'cheerio';
+
+const projectRoot = path.resolve(process.cwd());
+const siteRoot = path.join(projectRoot, 'tti', '_site');
+const expectedTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
+const expectedTagline = 'A Geometry of the Cosmos';
+const expectedOrigin = 'https://the-two-infinities.hatchable.site';
+const runtimeRoutes = new Set(['/join/', '/account/']);
+const errors = [];
+const notices = [];
+
+const fail = (message) => errors.push(message);
+const note = (message) => notices.push(message);
+
+async function exists(file) {
+  try { return (await stat(file)).isFile(); } catch { return false; }
+}
+
+const names = await readdir(siteRoot, { recursive: true });
+const htmlFiles = names
+  .filter((name) => name.endsWith('.html'))
+  .map((name) => path.join(siteRoot, name))
+  .sort();
+
+if (htmlFiles.length < 22) fail(`expected at least 22 HTML documents, found ${htmlFiles.length}`);
+
+const documents = new Map();
+const canonicals = new Map();
+for (const file of htmlFiles) {
+  const html = await readFile(file, 'utf8');
+  const relative = path.relative(siteRoot, file).split(path.sep).join('/');
+  const urlPath = relative === 'index.html' ? '/' : `/${relative.replace(/index\.html$/, '')}`;
+  const $ = cheerio.load(html);
+  documents.set(urlPath, { $, html, file, relative });
+
+  if ($('html').attr('lang') !== 'en-GB') fail(`${relative}: html lang must be en-GB`);
+  if ($('h1').length !== 1) fail(`${relative}: expected one h1, found ${$('h1').length}`);
+  if (!$('title').text().trim()) fail(`${relative}: missing title`);
+  if ($('title').text().trim().length > 70) fail(`${relative}: title exceeds 70 characters`);
+  if (!$('meta[name="description"]').attr('content')?.trim()) fail(`${relative}: missing description`);
+  if (!$('link[rel="manifest"][href="/site.webmanifest"]').length) fail(`${relative}: missing manifest link`);
+  if (!$('link[rel="sitemap"][href="/sitemap.xml"]').length) fail(`${relative}: missing sitemap link`);
+  if (!$('link[rel="alternate"][type="application/atom+xml"][href="' + expectedOrigin + '/feed.xml"]').length) {
+    fail(`${relative}: missing canonical Atom feed link`);
+  }
+
+  const canonical = $('link[rel="canonical"]').attr('href');
+  const expectedCanonical = expectedOrigin + urlPath;
+  if (canonical !== expectedCanonical) fail(`${relative}: canonical is ${canonical || 'missing'}, expected ${expectedCanonical}`);
+  if (canonicals.has(canonical)) fail(`${relative}: duplicate canonical also used by ${canonicals.get(canonical)}`);
+  canonicals.set(canonical, relative);
+
+  if (!$('.brand-name').text().includes(expectedTitle)) fail(`${relative}: masthead is missing the exact project title`);
+  if (!$('.brand-tag').text().includes(expectedTagline)) fail(`${relative}: masthead is missing the exact tagline`);
+  if (html.includes('A Geometry of Existence')) fail(`${relative}: contains the retired tagline`);
+  if (/\b(?:localhost|127\.0\.0\.1)\b/.test(html)) fail(`${relative}: contains a browser-facing local address`);
+
+  const ids = new Set();
+  $('[id]').each((_, element) => {
+    const id = $(element).attr('id');
+    if (ids.has(id)) fail(`${relative}: duplicate id #${id}`);
+    ids.add(id);
+  });
+
+  $('script[type="application/ld+json"]').each((index, element) => {
+    try { JSON.parse($(element).text()); } catch (error) {
+      fail(`${relative}: invalid JSON-LD block ${index + 1}: ${error.message}`);
+    }
+  });
+}
+
+function routeToFile(pathname) {
+  if (pathname === '/') return path.join(siteRoot, 'index.html');
+  if (pathname.endsWith('/')) return path.join(siteRoot, pathname.slice(1), 'index.html');
+  return path.join(siteRoot, pathname.slice(1));
+}
+
+for (const [urlPath, { $, relative }] of documents) {
+  const refs = [];
+  $('a[href], link[href], script[src], img[src], source[src], video[src], audio[src]').each((_, element) => {
+    const attr = $(element).attr('href') !== undefined ? 'href' : 'src';
+    refs.push({ element, value: $(element).attr(attr), attr });
+  });
+  for (const { value } of refs) {
+    if (!value || /^(?:https?:|mailto:|tel:|data:|javascript:)/i.test(value)) continue;
+    let target;
+    try { target = new URL(value, expectedOrigin + urlPath); } catch {
+      fail(`${relative}: malformed local reference ${value}`);
+      continue;
+    }
+    if (target.origin !== expectedOrigin) continue;
+    if (target.pathname.startsWith('/api/') || runtimeRoutes.has(target.pathname)) continue;
+    const targetFile = routeToFile(target.pathname);
+    if (!(await exists(targetFile))) {
+      fail(`${relative}: broken local reference ${value}`);
+      continue;
+    }
+    if (target.hash && target.pathname.endsWith('/')) {
+      const targetDoc = documents.get(target.pathname);
+      const fragmentId = decodeURIComponent(target.hash.slice(1));
+      const hasFragment = targetDoc && targetDoc.$('[id]').toArray()
+        .some((element) => targetDoc.$(element).attr('id') === fragmentId);
+      if (targetDoc && !hasFragment) fail(`${relative}: missing fragment ${value}`);
+    }
+  }
+}
+
+const home = documents.get('/');
+if (!home) {
+  fail('homepage was not built');
+} else {
+  if (home.$('title').text().trim() !== expectedTitle) fail('homepage title metadata is not the exact project title');
+  const heroTitle = home.$('h1').text().replace(/:\s*/g, ': ').replace(/\s+/g, ' ').trim();
+  if (!heroTitle.includes(expectedTitle)) fail('homepage hero is missing the exact project title');
+  for (const href of ['/little-red-dots/', '/little-red-dots/research-proposal/']) {
+    if (!home.$(`a[href="${href}"]`).length) fail(`homepage does not expose ${href}`);
+  }
+}
+
+const manifestPath = path.join(siteRoot, 'site.webmanifest');
+try {
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  if (manifest.name !== expectedTitle) fail('web manifest name is not the exact project title');
+  if (!manifest.description.includes(expectedTagline)) fail('web manifest omits the exact tagline');
+} catch (error) {
+  fail(`invalid web manifest: ${error.message}`);
+}
+
+try {
+  const robots = await readFile(path.join(siteRoot, 'robots.txt'), 'utf8');
+  if (!robots.includes(`Sitemap: ${expectedOrigin}/sitemap.xml`)) fail('robots.txt has the wrong sitemap origin');
+  if (robots.includes('egregora.hatchable.site')) fail('robots.txt still points at the EGregoRA host');
+} catch (error) {
+  fail(`robots.txt unavailable: ${error.message}`);
+}
+
+for (const xmlName of ['sitemap.xml', 'feed.xml']) {
+  if (!(await exists(path.join(siteRoot, xmlName)))) fail(`${xmlName} was not built`);
+}
+try {
+  const sitemap = await readFile(path.join(siteRoot, 'sitemap.xml'), 'utf8');
+  for (const pathname of documents.keys()) {
+    if (!sitemap.includes(`<loc>${expectedOrigin}${pathname}</loc>`)) fail(`sitemap omits ${pathname}`);
+  }
+  if (sitemap.includes('egregora.hatchable.site')) fail('sitemap contains the EGregoRA origin');
+} catch {}
+try {
+  const feed = await readFile(path.join(siteRoot, 'feed.xml'), 'utf8');
+  if (!feed.includes(`<title>${expectedTitle}</title>`)) fail('feed title is incorrect');
+  if (!feed.includes(`<subtitle>${expectedTagline}</subtitle>`)) fail('feed tagline is incorrect');
+  if (!feed.includes(`${expectedOrigin}/little-red-dots/research-proposal/`)) fail('feed omits the research proposal');
+} catch {}
+
+const plates = documents.get('/plates/');
+if (!plates) {
+  fail('plate room was not built');
+} else {
+  let sourcePlateCount = 0;
+  for (const [pathname, document] of documents) {
+    if (pathname === '/plates/') continue;
+    sourcePlateCount += document.$('figure.plate').length;
+  }
+  const gathered = plates.$('figure.plate[data-plate-source]').length;
+  if (gathered !== sourcePlateCount) fail(`plate room gathers ${gathered} of ${sourcePlateCount} source plates`);
+  note(`plate room reconciled ${gathered} source plates`);
+}
+
+const proposalLinks = [
+  '/', '/little-red-dots/', '/essays/', '/stress-tests/', '/time-and-residue/', '/inverted-toruses/'
+];
+for (const pathname of proposalLinks) {
+  const doc = documents.get(pathname);
+  if (!doc?.$(`a[href="/little-red-dots/research-proposal/"]`).length) {
+    fail(`${pathname} does not link to the Zero-Seam research proposal`);
+  }
+}
+
+if (errors.length) {
+  console.error(`TTI audit failed with ${errors.length} issue${errors.length === 1 ? '' : 's'}:`);
+  for (const error of errors) console.error(`  - ${error}`);
+  process.exit(1);
+}
+
+console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
+for (const message of notices) console.log(`  ${message}.`);
+console.log('  Exact title, tagline, metadata, manifest, sitemap, feed, links, fragments, JSON-LD and proposal discovery passed.');

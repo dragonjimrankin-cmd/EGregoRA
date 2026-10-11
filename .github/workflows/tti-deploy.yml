@@ -13,6 +13,8 @@ on:
       - "scripts/sync-neural-voice-assets.mjs"
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
+      - "scripts/tti-gather-plates.mjs"
+      - "scripts/audit-tti.mjs"
       - "ops/tti-project.txt"
       - ".github/workflows/tti-deploy.yml"
 
@@ -43,10 +45,17 @@ jobs:
           node scripts/test-oracle-knowledge.mjs
           node scripts/test-neural-voice.mjs
           npm run build:tti:hatchable
+          npm run lint:tti
+          node scripts/audit-tti.mjs
           test -s tti/hatchable/public/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
           test -s tti/hatchable/public/little-red-dots/index.html
+          test -s tti/hatchable/public/little-red-dots/research-proposal/index.html
+          test -s tti/hatchable/public/stress-tests/index.html
+          test -s tti/hatchable/public/plates/index.html
+          test -s tti/hatchable/public/sitemap.xml
+          test -s tti/hatchable/public/feed.xml
           test -s tti/hatchable/public/ask-shakdrah/index.html
           test -s tti/hatchable/public/assets/js/oracle-knowledge.js
           test -s tti/hatchable/public/assets/js/neural-voice.js
@@ -57,12 +66,18 @@ jobs:
           test -s tti/hatchable/public/assets/js/headtts/LICENSE-Kokoro.txt
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
           grep -Fq 'A Geometry of the Cosmos' tti/hatchable/public/index.html
+          grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
+          grep -Fq 'r3.6' tti/hatchable/public/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'Four readings, in order of increasing risk' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Sixteen prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Eighteen prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Could little red dots be remnants of a previous universe?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'What is the Zero-Seam Test?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO DRAW' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO FILM' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Natural voice: off' tti/hatchable/public/ask-shakdrah/index.html
@@ -103,6 +118,11 @@ jobs:
           grep -q 'A Two-Phase, Twenty-Four-Month Study' tti/hatchable/public/little-red-dots/research-proposal/index.html
           grep -q 'Three Models Must Enter, and Any May Lose' tti/hatchable/public/little-red-dots/research-proposal/index.html
           grep -q 'Choose What Crosses Before Counting What Shines' tti/hatchable/public/little-red-dots/research-proposal/index.html
+          grep -q 'The Zero-Seam Test, With the Null Model Kept in the Room' tti/hatchable/public/stress-tests/index.html
+          grep -q 'The Visual Compendium &middot; 27 plates' tti/hatchable/public/plates/index.html
+          grep -q 'data-plate-source="/little-red-dots/"' tti/hatchable/public/plates/index.html
+          grep -Fq 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/' tti/hatchable/public/sitemap.xml
+          grep -Fq '<subtitle>A Geometry of the Cosmos</subtitle>' tti/hatchable/public/feed.xml
           grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
           grep -q 'Read the Zero-Seam research proposal' tti/hatchable/public/essays/index.html
           grep -q 'little red dots are compact' tti/hatchable/public/cosmic-ledger/index.html
@@ -154,13 +174,14 @@ jobs:
             exit "$STATUS"
           fi
 
-      - name: Verify the live essays and ShakDrah knowledge
+      - name: Verify the complete live TTI site
         run: |
           node <<'NODE'
           const pages = [
             {
               url: 'https://the-two-infinities.hatchable.site/',
-              markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence', 'A Geometry of the Cosmos']
+              markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
+                'A Geometry of the Cosmos', 'r3.6', 'The Zero-Seam Test']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/cosmic-ledger/',
@@ -170,7 +191,8 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/time-and-residue/',
               markers: ['The One Residue That Travels', 'One Source Per Universe, Every Being Eligible',
-                'The Prime Being Changes With the Instance', 'Distribution Is Interpretation',
+                'The Prime Being Changes With the Instance', 'Four readings, in order of increasing risk',
+                'inherited boundary residue', 'Distribution Is Interpretation',
                 'The Channeling Circle as a Claimed Reception Archive',
                 'Open the complete 39-session date and attribution index']
             },
@@ -178,7 +200,7 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/inverted-toruses/',
               markers: ['The Universe of Inverted Tori', 'One Seam, Seen as Many Tori',
                 'The Universe Is the Möbius Seam', 'Handedness Reversal Is Not Time Reversal',
-                'Earned, Chosen, Refused']
+                'negative-interval conjecture', 'Earned, Chosen, Refused']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/little-red-dots/',
@@ -198,13 +220,31 @@ jobs:
                 'Twenty-Four Months with Permission to Stop Early']
             },
             {
+              url: 'https://the-two-infinities.hatchable.site/stress-tests/',
+              markers: ['Where It Might Break', 'The Entropy Objection',
+                'The Zero-Seam Test, With the Null Model Kept in the Room',
+                'It may not retreat into metaphor after entering as physics']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/plates/',
+              markers: ['The Visual Compendium &middot; 27 plates', 'JWST’s Little Red Dots',
+                'From the previous closure to a']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/sitemap.xml',
+              markers: ['https://the-two-infinities.hatchable.site/little-red-dots/',
+                'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/',
+                'https://the-two-infinities.hatchable.site/stress-tests/']
+            },
+            {
               url: 'https://the-two-infinities.hatchable.site/essays/',
               markers: ['JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture',
                 'Read the Zero-Seam research proposal']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
-              markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+              markers: ['Eighteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+                'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
                 'Can reversible mixing create a matter-antimatter imbalance?',
                 'ASK SHAKDRAH TO DRAW', 'ASK SHAKDRAH TO FILM', 'oracle-knowledge.js',
                 'Natural voice: off', 'Male neural voice',
@@ -214,7 +254,8 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
-                'baryogenesis-boundary', 'epistemic-grading']
+                'baryogenesis-boundary', 'little-red-dots-residue', 'zero-seam-test',
+                'epistemic-grading']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/neural-voice.js',

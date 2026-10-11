@@ -2,7 +2,7 @@
  * The Shape of Becoming: Infinity, Gravity and Existence — site-wide constants.
  *
  * The framework is James Alexander Matthew Rankin's, written between the
- * 2nd and 19th of June 2026 and revised to r3.5. This site is its reading
+ * 2nd and 19th of June 2026 and revised to r3.6. This site is its reading
  * room: the same house style as EGregoRA, turned from the wood to the sky.
  */
 export default {
@@ -20,18 +20,19 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r3.5",
-  revised: "2026-06-20",
+  revision: "r3.6",
+  revised: "2026-10-11",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
   description:
-    "The Shape of Becoming: Infinity, Gravity and Existence — a geometry of existence with π as the constant of closure, " +
-    "i as the half-turn that opens a dimension, consciousness as the integral, gravity as the curvature " +
-    "itself, and the Cosmic Ledger that measures all three. Twenty papers, eleven essays and the " +
-    "χ-field dark-sector model, drawn as plates.",
+    "The Shape of Becoming: Infinity, Gravity and Existence — A Geometry of the Cosmos with π as the constant of closure, " +
+    "i as the half-turn that opens a dimension, consciousness as the integral, gravity as curvature, " +
+    "the Cosmic Ledger, and a falsifiable Little Red Dots research programme. Twenty papers, eleven " +
+    "essays and the χ-field model, drawn as plates.",
   keywords:
-    "two infinities, geometry of existence, pi, Euler identity, imaginary unit, Cantor, " +
-    "consciousness as integral, microtubules, Orch-OR, galactic torus, Möbius seam, Klein bottle, " +
-    "cosmic ledger, chi field, dark matter, dark energy, flat rotation curves, CMB, Fibonacci splice, " +
+    "The Shape of Becoming, A Geometry of the Cosmos, two infinities, geometry of existence, pi, Euler identity, " +
+    "imaginary unit, Cantor, consciousness as integral, microtubules, Orch-OR, galactic torus, Möbius seam, " +
+    "Klein bottle, cosmic ledger, chi field, dark matter, dark energy, JWST little red dots, inherited residue, " +
+    "zero seam, previous universe conjecture, preregistered research, flat rotation curves, CMB, Fibonacci splice, " +
     "golden ratio, triangular numbers, arrow of time, Hawking radiation, astronomy, cosmology",
   ogImage: "/assets/img/og-two-infinities.jpg",
   ogImageAlt: "A luminous torus of stars, with a spiral climbing from a bright centre",

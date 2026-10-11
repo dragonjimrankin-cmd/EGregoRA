@@ -51,8 +51,10 @@ jobs:
           test -s egregora-patch/public/assets/js/headtts/LICENSE-Kokoro.txt
           test -s egregora-patch/public/assets/css/avatar-voice.css
           grep -q 'avatar-voice-picker' egregora-patch/public/assets/css/avatar-voice.css
-          grep -q 'Sixteen prepared answers' egregora-patch/public/ask-ed/index.html
+          grep -q 'Eighteen prepared answers' egregora-patch/public/ask-ed/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
+          grep -q 'Could little red dots be remnants of a previous universe?' egregora-patch/public/ask-ed/index.html
+          grep -q 'What is the Zero-Seam Test?' egregora-patch/public/ask-ed/index.html
           grep -q 'Natural voice: off' egregora-patch/public/ask-ed/index.html
           grep -q 'Male neural voice' egregora-patch/public/ask-ed/index.html
           grep -q 'Choose a voice to turn Natural voice on and hear an immediate audition' egregora-patch/public/ask-ed/index.html
@@ -124,7 +126,8 @@ jobs:
           const targets = [
             {
               url: 'https://egregora.hatchable.site/ask-ed/',
-              markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+              markers: ['Eighteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+                'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
                 'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js',
                 'Natural voice: off', 'Male neural voice',
                 'Choose a voice to turn Natural voice on and hear an immediate audition',
@@ -141,7 +144,8 @@ jobs:
             {
               url: 'https://egregora.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
-                'baryogenesis-boundary', 'epistemic-grading']
+                'baryogenesis-boundary', 'little-red-dots-residue', 'zero-seam-test',
+                'epistemic-grading']
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/neural-voice.js',

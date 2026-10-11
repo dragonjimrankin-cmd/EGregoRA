@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Torus mark">
+  <rect width="64" height="64" rx="12" fill="#03040c"/>
+  <ellipse cx="32" cy="32" rx="25" ry="14" fill="none" stroke="#76cfee" stroke-width="2"/>
+  <ellipse cx="32" cy="32" rx="10" ry="5" fill="none" stroke="#45d6b4" stroke-width="2"/>
+  <path d="M7 32c7-8 15-11 25-11s18 3 25 11M7 32c7 8 15 11 25 11s18-3 25-11" fill="none" stroke="#a07cf0" stroke-width="1.2" opacity=".8"/>
+  <circle cx="32" cy="32" r="2" fill="#f3dd9c"/>
+</svg>

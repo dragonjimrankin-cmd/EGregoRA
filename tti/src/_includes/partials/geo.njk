@@ -73,7 +73,7 @@
         {% endfor %}
         <circle cx="100" cy="104" r="10"/>
         <ellipse cx="100" cy="104" rx="30" ry="10" stroke-dasharray="1 5"/>
-      {% elif slug == "little-red-dots" %}
+      {% elif slug == "little-red-dots" or slug == "little-red-dots-research" %}
         {# compact early sources: bright cores inside faint host envelopes #}
         {% for i in range(0, 7) %}
         <circle cx="{{ 38 + (i % 4) * 40 }}" cy="{{ 46 + (86 if i > 3 else 0) + (i % 3) * 12 }}"
