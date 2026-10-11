@@ -1,8 +1,64 @@
 project proj_eiuxpFfTnwwx
-live version: 243
-ours:         243
-✓ no foreign deploy since ours. Safe to deploy.
-project proj_eiuxpFfTnwwx
-live version: 244
-ours:         243
-recorded version 244 in ops/egregora-deployed.json
+live version: 245
+ours:         244
+
+✖ 1 deploy(s) landed since ours (v244 → v245).
+   Reading the live files so the two can be merged rather than one buried.
+
+   live project holds 245 files
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+
+   changed live vs our bundle : 44
+     ~ api/edit.js
+     ~ api/media.js
+     ~ pages/feed.js
+     ~ public/404.html
+     ~ public/account/index.html
+     ~ public/artwork/index.html
+     ~ public/ask-ed/index.html
+     ~ public/assets/js/admin-edit.js
+     ~ public/assets/js/headtts/voices/am_fenrir.bin
+     ~ public/assets/js/headtts/voices/am_michael.bin
+     ~ public/assets/js/headtts/voices/am_puck.bin
+     ~ public/assets/js/headtts/voices/bm_fable.bin
+     ~ public/assets/js/headtts/voices/bm_george.bin
+     ~ public/assets/js/headtts/voices/bm_lewis.bin
+     ~ public/assets/js/media-admin.js
+     ~ public/assets/js/oracle-knowledge.js
+     ~ public/astrology/index.html
+     ~ public/astronomy/index.html
+     ~ public/consciousness/index.html
+     ~ public/cosmic-aether/index.html
+     ~ public/cosmic-ledger/index.html
+     ~ public/decoherence/index.html
+     ~ public/druids/index.html
+     ~ public/elemental-alchemy/index.html
+     ~ public/entropy/index.html
+     ~ public/extraterrestrials/index.html
+     ~ public/index.html
+     ~ public/infographics/index.html
+     ~ public/join/index.html
+     ~ public/live/index.html
+     ~ public/locality/index.html
+     ~ public/moebius-seam/index.html
+     ~ public/music/index.html
+     ~ public/neurobiology/index.html
+     ~ public/occult/index.html
+     ~ public/podcast/index.html
+     ~ public/products/index.html
+     ~ public/qabalah/index.html
+     ~ public/research/index.html
+     ~ public/runes/index.html
+     … and 4 more
+   present live, absent here  : 1
+     + public/feed.xml
+   present here, absent live  : 1
+     - README.md
+
+   their versions are saved under ops/incoming/egregora/
+   DEPLOY SKIPPED. Merge, then deploy.
