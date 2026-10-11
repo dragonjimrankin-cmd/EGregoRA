@@ -1,8 +1,8 @@
 project proj_U95i5y493z9x
-live version: 93
+live version: 94
 ours:         80
 
-✖ 13 deploy(s) landed since ours (v80 → v93).
+✖ 14 deploy(s) landed since ours (v80 → v94).
    Reading the live files so the two can be merged rather than one buried.
 
    live project holds 213 files
@@ -13,26 +13,24 @@ ours:         80
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 41
+   changed live vs our bundle : 46
+     ~ api/twin-member.js
      ~ hatchable.toml
      ~ lib/oracle-corpus-xxiii.js
      ~ lib/oracle-corpus-xxiv.js
      ~ lib/oracle-corpus-xxv.js
      ~ lib/oracle-corpus.js
+     ~ public/ask-shakdragon/index.html
      ~ public/ask-shakdrah/index.html
      ~ public/assets/css/main.css
-     ~ public/assets/img/torus.svg
-     ~ public/assets/js/dragon.js
-     ~ public/assets/js/fox.js
      ~ public/assets/js/headtts/voices/am_fenrir.bin
      ~ public/assets/js/headtts/voices/am_michael.bin
      ~ public/assets/js/headtts/voices/am_puck.bin
      ~ public/assets/js/headtts/voices/bm_fable.bin
      ~ public/assets/js/headtts/voices/bm_george.bin
      ~ public/assets/js/headtts/voices/bm_lewis.bin
-     ~ public/assets/js/headtts/worker-tts.mjs
-     ~ public/assets/js/neural-voice.js
-     ~ public/assets/js/oracle-knowledge.js
+     ~ public/base-ten/index.html
+     ~ public/corrections/index.html
      ~ public/cosmic-ledger/index.html
      ~ public/dx/index.html
      ~ public/essays/index.html
@@ -40,28 +38,34 @@ ours:         80
      ~ public/gravity/index.html
      ~ public/index.html
      ~ public/inverted-toruses/index.html
+     ~ public/join/index.html
+     ~ public/library/index.html
+     ~ public/live/index.html
      ~ public/megatubule/index.html
      ~ public/moebius/index.html
+     ~ public/notation/index.html
      ~ public/out-of-phase/index.html
+     ~ public/pendulum/index.html
      ~ public/plates/index.html
      ~ public/prime-plane/index.html
-     ~ public/robots.txt
+     ~ public/reading/index.html
      ~ public/seams/index.html
+     ~ public/site-index/index.html
      ~ public/site.webmanifest
      ~ public/sitemap.xml
      ~ public/skeletal-splice/index.html
-     ~ public/spiral/index.html
-     ~ public/stress-tests/index.html
-     ~ public/the-self/index.html
-     ~ public/time-and-residue/index.html
-     … and 1 more
+     … and 6 more
    present live, absent here  : 4
      + public/feed.xml
      + public/little-red-dots/index.html
      + public/little-red-dots/research-proposal/index.html
      + public/temporal-antipodes/index.html
-   present here, absent live  : 1
+   present here, absent live  : 5
      - lib/oracle-corpus-xl.js
+     - migrations/0028_forum_mirror.sql
+     - public/assets/css/forum.css
+     - public/assets/js/forum-client.js
+     - public/forum/index.html
 
    their versions are saved under ops/incoming/tti/
    DEPLOY SKIPPED. Merge, then deploy.
