@@ -2,6 +2,7 @@
  * POST /api/twin-member — the mirror between EGregoRA and The Two Infinities.
  *
  * Called only by the twin site, signed with the shared secret. Two actions:
+ *   whois   { token }  → who a session token signs in here (the forum's vouch)
  *   lookup  { email }  → what this project knows about the address
  *   upsert  { email, name?, verified?, subscribed?, age_verified?, id_status? }
  *
