@@ -43,7 +43,34 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/main.css?v=mv3bleag"><script type="application/ld+json">
+<link rel="stylesheet" href="/assets/css/main.css?v=mv3bleag">
+<style>
+  .am-transcribe-callout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .8rem;
+    align-items: center;
+    margin: .85rem 0 .55rem;
+    padding: .85rem 1rem;
+    border: 1px solid rgba(203, 166, 86, .72);
+    background: rgba(203, 166, 86, .1);
+    box-shadow: inset 0 0 24px rgba(203, 166, 86, .06), 0 0 18px rgba(203, 166, 86, .08);
+  }
+  .am-transcribe-callout[hidden] { display: none; }
+  .am-transcribe-callout strong { display: block; color: #f0d28c; letter-spacing: .04em; }
+  .am-transcribe-callout .am-transcribe-sigil { color: #e0b95f; font-size: 1.45rem; }
+  .am-transcribe-callout.is-working .am-transcribe-sigil { animation: am-working-pulse 1.1s ease-in-out infinite alternate; }
+  .am-transcribe-callout.is-ready { border-color: rgba(119, 203, 150, .8); background: rgba(82, 166, 112, .12); }
+  .am-transcribe-callout.is-ready strong, .am-transcribe-callout.is-ready .am-transcribe-sigil { color: #a9e3ba; }
+  .am-transcribe-callout.is-bad { border-color: rgba(214, 98, 98, .78); background: rgba(174, 58, 58, .12); }
+  .am-transcribe-callout.is-bad strong, .am-transcribe-callout.is-bad .am-transcribe-sigil { color: #f0a4a4; }
+  .am-transcribe-progress { margin: .45rem 0 1rem; }
+  textarea.am-summary-ready { border-color: #8fcba0; box-shadow: 0 0 0 1px rgba(143, 203, 160, .36), 0 0 20px rgba(82, 166, 112, .12); }
+  .am-summary-state { color: #a9e3ba; margin-top: .35rem; }
+  @keyframes am-working-pulse { from { opacity: .42; transform: scale(.86); } to { opacity: 1; transform: scale(1.12); } }
+  @media (prefers-reduced-motion: reduce) { .am-transcribe-callout.is-working .am-transcribe-sigil { animation: none; } }
+</style>
+<script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":["Organization","EducationalOrganization"],"@id":"https://egregora.hatchable.site/#organization","name":"EGregoRA","alternateName":"The Order of EGregoRA","url":"https://egregora.hatchable.site","email":"shakradragon@gmail.com","slogan":"Life, Love, Magic","description":"EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.","foundingDate":"2026","logo":{"@type":"ImageObject","url":"https://egregora.hatchable.site/assets/img/icon-512.png","width":512,"height":512},"image":"https://egregora.hatchable.site/assets/img/og-egregora.jpg","knowsAbout":["cosmic physics","natural philosophy","sacred geometry","astrology","druidry","consciousness","quantum decoherence","microtubules","the Law of One","Hermetic Qabalah","alchemy","neuroscience","esotericism"],"founder":[{"@type":"Person","name":"Edward Gregory","jobTitle":"Co-founder"},{"@type":"Person","name":"Jim Rankin","jobTitle":"Co-founder"}]},{"@type":"WebSite","@id":"https://egregora.hatchable.site/#website","url":"https://egregora.hatchable.site","name":"EGregoRA","description":"EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.","inLanguage":"en-GB","publisher":{"@id":"https://egregora.hatchable.site/#organization"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://egregora.hatchable.site/ask-ed/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"WebPage","@id":"https://egregora.hatchable.site/podcast/#page","url":"https://egregora.hatchable.site/podcast/","name":"Podcasts · EGregoRA","headline":"Podcasts","description":"Long-form conversation from EGregoRA — cosmology, druidry, neuroscience and the esoteric, argued at length.","inLanguage":"en-GB","isPartOf":{"@id":"https://egregora.hatchable.site/#website"},"about":{"@id":"https://egregora.hatchable.site/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://egregora.hatchable.site/assets/img/og-egregora.jpg","width":1200,"height":630},"author":[{"@type":"Person","name":"Edward Gregory"},{"@type":"Person","name":"Jim Rankin"}],"publisher":{"@id":"https://egregora.hatchable.site/#organization"},"dateModified":"2026-10-11T04:25:35.130Z","keywords":"cosmic physics, natural philosophy, sacred geometry, astrology, druidry, consciousness, quantum decoherence, microtubules, the Law of One, Hermetic Qabalah, alchemy, neuroscience, esotericism"},{"@type":"BreadcrumbList","@id":"https://egregora.hatchable.site/podcast/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Introduction","item":"https://egregora.hatchable.site/"},{"@type":"ListItem","position":2,"name":"Podcasts","item":"https://egregora.hatchable.site/podcast/"}]}]}
 </script>
   <script>
@@ -751,12 +778,21 @@
 
 
       <div class="btn-row">
-        <button type="button" class="btn btn--small" data-am="hear">Transcribe it and write the listing</button>
+        <button type="button" class="btn btn--small" data-am="hear">Transcribe it, then write the summary</button>
         <button type="button" class="btn btn--small btn--ghost" data-am="summarise"
-                disabled>Write the summary from the transcript</button>
-        <span class="muted xsmall">Title, summary, tags and the parts of the site it touches &mdash;
-        written from the recording itself.</span>
+                disabled>Rewrite only the summary</button>
+        <span class="muted xsmall">One click makes the transcript, summary, title, tags and links from the recording itself.</span>
       </div>
+      <div class="am-transcribe-callout" data-am="transcribe-callout" role="status"
+           aria-live="polite" aria-atomic="true" hidden>
+        <span class="am-transcribe-sigil" aria-hidden="true">&#10022;</span>
+        <span>
+          <strong data-am="transcribe-heading">Working now: transcript first, summary next</strong>
+          <span class="muted small" data-am="transcribe-detail">This area is busy. Please do not click again or close this page while it works.</span>
+        </span>
+      </div>
+      <p class="am-bar am-transcribe-progress" data-am="transcribe-progress"
+         aria-label="Transcription and summary progress" hidden></p>
       <div data-am="listing" hidden></div>
 
 
@@ -1038,8 +1074,9 @@
           </div>
         </details>
 
-        <label for="audio-summary">Summary</label>
+        <label for="audio-summary">Summary <span class="muted xsmall">&mdash; written automatically after transcription</span></label>
         <textarea id="audio-summary" data-am="summary" rows="3" maxlength="2000"></textarea>
+        <p class="am-summary-state small" data-am="summary-state" role="status" hidden></p>
 
         <div class="btn-row">
           <button type="button" class="btn" data-am="send" disabled>Publish to the site</button>
@@ -1235,7 +1272,7 @@
 
 <script type="module" src="/assets/js/player.js?v=mv3bleag"></script>
 <script type="module" src="/assets/js/freeai-admin.js?v=mv3bleag"></script>
-<script type="module" src="/assets/js/media-admin.js?v=voiceprints-2"></script>
+<script type="module" src="/assets/js/media-admin.js?v=transcription-summary-2"></script>
 <script type="module" src="/assets/js/device-studio.js?v=mv3bleag"></script>
 
 </main>
