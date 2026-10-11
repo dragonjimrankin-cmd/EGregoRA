@@ -44,6 +44,18 @@ function lameJS() {
   return lamePromise;
 }
 
+/* The FLAC door has its own encoder, served from this site like lamejs and
+   loaded once, lazily, the first time something asks for FLAC. */
+let flacPromise = null;
+function flacEnc() {
+  if (!flacPromise) {
+    flacPromise = import("./vendor/flac-encoder.js")
+      .then((mod) => (mod && mod.encodeFlac ? mod : (mod && mod.default) || mod))
+      .catch((err) => { flacPromise = null; throw err; });
+  }
+  return flacPromise;
+}
+
 const panels = document.querySelectorAll("[data-admin-media]");
 panels.forEach(setup);
 
@@ -85,6 +97,37 @@ function setup(root) {
   let pass = "";
   let source = null;           /* the file as chosen */
   let ready = null;            /* { blob, mime, seconds, treatment, bytes } */
+
+  /* The key remembered from another page of the house: if it checks out,
+     the door stands open without a second asking. */
+  (function rememberedKey() {
+    const m = /(?:^|;\s*)eg-admin=([^;]+)/.exec(document.cookie || "");
+    if (!m) return;
+    const tok = m[1];
+    fetch("/api/owner", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "check", token: tok })
+    }).then((r) => r.json().catch(() => ({})))
+      .then((d) => {
+        if (!(d && d.ok)) { document.cookie = "eg-admin=; path=/; max-age=0; SameSite=Lax"; return; }
+        window.__egDoorToken = tok;
+        el.open.textContent = "Close the admin door";
+        el.open.setAttribute("aria-expanded", "true");
+        el.panel.hidden = false;
+        el.work.hidden = false;
+        window.EGMediaAdminOn = true;
+        if (el.msg) {
+          el.msg.classList.remove("is-bad");
+          el.msg.textContent = "The door is already open — the key was remembered. " +
+            (window.EGToken && window.EGToken() ? "" :
+              "Sign in at /join/ to upload or record; the episode is kept under your account.");
+        }
+        post({ action: "shelf", kind: KIND })
+          .then((d2) => { drawShelf(d2.items || []); fillNumber(); if (window.EGMediaRefresh) window.EGMediaRefresh(); })
+          .catch(() => {});
+      })
+      .catch(() => { document.cookie = "eg-admin=; path=/; max-age=0; SameSite=Lax"; });
+  })();
 
   const say = (t, bad) => {
     if (!el.msg) return;
@@ -146,7 +189,7 @@ function setup(root) {
   const post = (payload) => fetch("/api/media", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(Object.assign({ pass }, payload))
+    body: JSON.stringify(Object.assign({ pass, token: window.__egDoorToken || "" }, payload))
   }).then(async (r) => {
     const data = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(data.error || "the shelf refused that");
@@ -274,11 +317,26 @@ function setup(root) {
       /* The Free.ai panel inside this one needs to know an administrator is
          present. The pass is kept for this tab only, never written to disk. */
       if (window.EGAdminKeep) window.EGAdminKeep(pass);
+      /* Mint the remembered key: no page of the house asks twice. */
+      try {
+        fetch("/api/owner", {
+          method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "unlock", pass: pass })
+        }).then((r) => r.json().catch(() => ({})))
+          .then((d) => {
+            if (d && d.ok && d.token) {
+              window.__egDoorToken = d.token;
+              document.cookie = "eg-admin=" + d.token + "; path=/; max-age=604800; SameSite=Lax";
+            }
+          }).catch(() => {});
+      } catch (e) { /* the key stays in this tab only */ }
       /* The public shelf learns an administrator is present, so summaries
          can be edited where they stand. Kept for this tab only. */
       window.EGMediaAdminOn = true;
       window.EGMediaPass = pass;
-      say("Open. The passcode is not kept \u2014 closing the page locks it again.");
+      say("Open. The key is remembered for this week, on every page. " +
+        (window.EGToken && window.EGToken() ? "" :
+          "Sign in at /join/ to upload or record — the episode is kept under your account."));
       drawShelf(d.items || []);
       fillNumber();
       if (window.EGMediaRefresh) window.EGMediaRefresh();
@@ -478,6 +536,14 @@ function setup(root) {
     };
   };
 
+  /* The form the take is published in: MP3 or FLAC. The choice lives in
+     "Four — the work"; where a page offers no choice (the film door), the
+     default stands: MP3. */
+  const fmtChoice = () => {
+    const picked = root.querySelector('[data-am="fmt"]:checked');
+    return picked && picked.value === "flac" ? "flac" : "mp3";
+  };
+
   /* ---------------------------------------------------------- the vocabulary
      The house's own subject words, as chips. Tapping one adds it to the
      tag field; tapping it again takes it off. The field stays editable \u2014
@@ -557,6 +623,10 @@ function setup(root) {
     }
 
     r("start").addEventListener("click", async () => {
+      if (!(window.EGToken && window.EGToken())) {
+        state("Sign in first — recording for the site needs a signed-in account. The sign-in is at /join/.");
+        return;
+      }
       try {
         const kind = KIND;
         const how = r("source") ? r("source").value : "mic";
@@ -1091,6 +1161,20 @@ function setup(root) {
         ? "That file cannot be cleaned in this browser \u2014 publish it as it arrived."
         : "Choose a file first.", true);
     }
+
+    /* The chosen form first: whatever arrived is converted to the chosen
+       format — MP3 or FLAC — the moment the button is pressed, and all of
+       the work after runs on the converted take. What is published at the
+       end is the same format again. */
+    const fmt = fmtChoice();
+    step("Converting to " + (fmt === "flac" ? "FLAC" : "MP3") + "\u2026", 0.04);
+    const conv = await encode(fileBuf, fmt);
+    const c1 = new (window.AudioContext || window.webkitAudioContext)();
+    fileBuf = await c1.decodeAudioData(await conv.blob.arrayBuffer());
+    c1.close();
+    fileLook = inspect(fileBuf);
+    const convNote = "converted to " + conv.label + " before the work";
+
     step("Rendering\u2026", 0.1);
     const rate = fileBuf.sampleRate;
 
@@ -1195,8 +1279,9 @@ function setup(root) {
       (notes.length ? '<p class="muted xsmall">' + notes.join("; ") + ".</p>" : "");
 
     step("Encoding\u2026", 0.85);
-    const made = await encode(done);
+    const made = await encode(done, fmt);
     const treatment = [
+      convNote,
       want.rumble && "rumble filtered below 72 Hz",
       want.gate && "hiss shelved",
       want.tone && "tone shaped (mud down, presence and air up)",
@@ -1221,10 +1306,31 @@ function setup(root) {
     if (el.pubrow) el.pubrow.hidden = false;   /* the publish door appears */
   }
 
-  /* MP3 if lamejs will load, WAV if it will not. An hour of WAV is half a
-     gigabyte, so the MP3 route matters; failing over to WAV is better than
-     failing. */
-  async function encode(buf) {
+  /* MP3 or FLAC by the chosen door; MP3 if lamejs will load, FLAC through
+     the site's own encoder, WAV if neither will load. An hour of WAV is
+     half a gigabyte, so a compressed door matters; failing over to WAV is
+     better than failing. */
+  async function encode(buf, fmt) {
+    if (fmt === "flac") {
+      try {
+        const mod = await flacEnc();
+        const chans = Math.min(2, buf.numberOfChannels);
+        const list = [];
+        for (let c = 0; c < chans; c++) list.push(buf.getChannelData(c));
+        const made = mod.encodeFlac({
+          sampleRate: buf.sampleRate,
+          channels: list,
+          progress: (done, total) => {
+            if (done % 64 === 0 || done === total)
+              step("Encoding\u2026 " + Math.round((done / total) * 100) + "%",
+                0.85 + (done / total) * 0.14);
+          }
+        });
+        return { blob: new Blob([made], { type: "audio/flac" }), mime: "audio/flac", label: "FLAC" };
+      } catch {
+        return { blob: wav(buf), mime: "audio/wav", label: "WAV (the FLAC encoder would not load)" };
+      }
+    }
     try {
       const lame = await lameJS();
       const chans = Math.min(2, buf.numberOfChannels);
@@ -1432,11 +1538,18 @@ function setup(root) {
   let whisperEngine = null;
   let whisperLoad = null;
 
+  /* A seam \u2014 a loader the page can override \u2014 lets the test harness
+     stand in a fake ear; in the browser it is a plain dynamic import. */
+  function browserWhisperLoader() {
+    if (window.EGBrowserWhisperLoader) return window.EGBrowserWhisperLoader();
+    return import(PRIVATE_WHISPER_MODULE);
+  }
+
   async function whisper(report = step) {
     if (whisperEngine) return whisperEngine;
     if (!whisperLoad) {
       report("Opening private local Whisper \u2014 audio stays on this device", 0.02);
-      whisperLoad = import(PRIVATE_WHISPER_MODULE)
+      whisperLoad = browserWhisperLoader()
         .then(function (module) {
           whisperEngine = new module.BrowserWhisper({
             model: "whisper-base",
@@ -2389,7 +2502,7 @@ function setup(root) {
         }
         c1.close();
         tellEd("Encoding the new master\u2026");
-        const made = await encode(outBuf);
+        const made = await encode(outBuf, fmtChoice());
         const upload = await sendBlob(made.blob, (t) => tellEd(t));
         await post({
           action: "replace", id: item.id, upload, mime: made.mime,
@@ -2477,7 +2590,7 @@ function setup(root) {
         at += len;
       });
       const done = await off.startRendering();
-      const made = await encode(done);
+      const made = await encode(done, fmtChoice());
       edit.made = { blob: made.blob, mime: made.mime, seconds: done.duration,
         treatment: "cut and merged from " + keep.length + " snippet(s)" };
       showMerged(made.blob, "audio", done.duration);
@@ -2895,6 +3008,7 @@ function setup(root) {
     window.setTimeout(() => URL.revokeObjectURL(a.href), 20000);
   };
   const extFor = (t) => String(t || "").includes("mpeg") ? ".mp3"
+    : String(t || "").includes("flac") ? ".flac"
     : String(t || "").includes("wav") ? ".wav"
       : String(t || "").includes("ogg") ? ".ogg"
         : String(t || "").includes("mp4") ? ".mp4"
