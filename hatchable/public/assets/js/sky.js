@@ -145,7 +145,7 @@
            "No observation made from inside the horizon can settle it, and none ever will. This " +
            "is the rung where measurement stops and inference takes over: speculative and " +
            "contested, and marked as such." },
-    { r: 4.65e16 * LY, name: "The Moebius Torus",
+    { r: 4.65e16 * LY, name: "The Möbius Torus",
       kind: "seam", tint: GOLD,
       say: "The order's own figure for the shape of the whole, offered as emblem and not as " +
            "cosmology: a torus seamed like a Möbius band, so that what leaves by one face returns " +
@@ -163,7 +163,7 @@
 
   /* Where measurement ends. Past the observable horizon the map stops being
      a survey and becomes an emblem, and it says so by changing what it
-     draws: the rings fade out and the order's Moebius torus fades in. */
+     draws: the rings fade out and the order's Möbius torus fades in. */
   const HORIZON = RUNGS.find((r) => r.kind === "horizon").at;
   const EMBLEM = RUNGS[RUNGS.length - 1].at;
   const beyondness = () => Math.max(0, Math.min(1, (top - (HORIZON + 0.4)) / (EMBLEM - HORIZON - 0.4)));

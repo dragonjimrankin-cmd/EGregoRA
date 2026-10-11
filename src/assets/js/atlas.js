@@ -47,7 +47,7 @@ function start(data) {
      makes about how the limbs are joined. It is named on the map, and the
      reading panel carries the synopsis. */
   const SEAM = {
-    title: "The Moebius Seam",
+    title: "The Möbius Seam",
     kind: "seam",
     href: "/cosmic-aether/",
     lines: [
@@ -658,7 +658,7 @@ function start(data) {
     if (note) note.textContent = skin.blurb;
     if (name === "cosmos") {
       say(skin.label + ". " + skin.blurb +
-        " The gold band is the Moebius Seam \u2014 click its name for what it is.");
+        " The gold band is the Möbius Seam \u2014 click its name for what it is.");
     }
   }
   document.querySelectorAll("[data-skin]").forEach((b) =>
