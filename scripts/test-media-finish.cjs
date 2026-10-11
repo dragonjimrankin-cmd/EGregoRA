@@ -1,5 +1,6 @@
-/* Drives the real /api/media finish+replace assembly with a stubbed db:
-   chunks in, one glued buffer out, bytes must match exactly. */
+/* Drives the real /api/media finish+replace assembly (now via the shared
+   lib/upload-parts.js) with a stubbed db: chunks in, one glued buffer out,
+   bytes must match exactly. */
 const fs = require("fs");
 const crypto = require("crypto");
 
@@ -10,6 +11,11 @@ src = src
   .replace(/^export default async function/m, "const handler = async function")
   + "\nmodule.exports = handler;\n";
 
+let lib = fs.readFileSync("hatchable/lib/upload-parts.js", "utf8")
+  .replace(/^export class /gm, "class ")
+  .replace(/^export function /gm, "function ")
+  .replace(/^export async function /gm, "async function ");
+
 const stubs = [
   "const ai = { generateText: async () => { throw new Error('offline'); } };",
   "let CHUNKS = {};",
@@ -18,17 +24,12 @@ const stubs = [
   "  if (/INSERT INTO media_chunks/.test(sql)) { (CHUNKS[args[0]] = CHUNKS[args[0]] || {})[args[1]] = args[2]; return { rows: [] }; }",
   "  if (/DELETE FROM media_chunks WHERE upload_id/.test(sql) && !/INTERVAL/.test(sql)) { delete CHUNKS[args[0]]; return { rows: [] }; }",
   "  if (/DELETE FROM media_chunks WHERE at </.test(sql)) return { rows: [] };",
-  "  if (/AS pad/.test(sql)) { const c = CHUNKS[args[0]] || {}; const parts = Object.keys(c).sort((a,b)=>a-b).map(k=>c[k]);",
-  "    const b64 = parts.reduce((n,p)=>n+p.length,0); const pad = parts.reduce((n,p)=>n+(p.endsWith('==')?2:p.endsWith('=')?1:0),0);",
-  "    return { rows: [{ n: parts.length, b64, pad }] }; }",
-  "  if (/FROM media_chunks WHERE upload_id.*ORDER BY seq ASC LIMIT/.test(sql)) { const c = CHUNKS[args[0]] || {};",
-  "    const keys = Object.keys(c).sort((a,b)=>a-b).slice(args[2], args[2]+args[1]); return { rows: keys.map(k=>({ part: c[k] })) }; }",
-  "  if (/FROM media_chunks WHERE upload_id/.test(sql)) { const c = CHUNKS[args[0]] || {};",
-  "    const keys = Object.keys(c).sort((a,b)=>a-b); return { rows: keys.map(k=>({ part: c[k] })) }; }",
+  "  const partsOf = (u) => { const c = CHUNKS[u] || {}; return Object.keys(c).sort((a,b)=>a-b).map(k=>c[k]); };",
+  "  if (/AS encoded_length/.test(sql)) return { rows: partsOf(args[0]).map((p,i)=>({ seq: i, encoded_length: p.length, tail: p.slice(-2) })) };",
+  "  if (/AND seq = /.test(sql)) { const c = CHUNKS[args[0]] || {}; return { rows: c[args[1]] != null ? [{ part: c[args[1]] }] : [] }; }",
   "  if (/INSERT INTO media/.test(sql)) return { rows: [{ id: 7, kind: args[0], title: args[2], state: 'published' }] };",
   "  if (/UPDATE media SET storage_key/.test(sql)) return { rows: [] };",
   "  if (/SELECT storage_key, kind FROM media/.test(sql)) return { rows: [{ storage_key: 'episodes/x.mp3', kind: 'audio' }] };",
-  "  if (/SELECT.*nextval|MAX.*number|next_number/i.test(sql)) return { rows: [{ n: 5 }] };",
   "  return { rows: [] };",
   "} };",
   "const storage = { put: async (key, buf, mime) => { PUTS.push({ key, len: buf.length, mime }); } };",
@@ -37,7 +38,7 @@ const stubs = [
 ].join("\n");
 
 const mod = { exports: null };
-new Function("module", stubs + "\n" + src + "\nglobalThis.__CHUNKS = () => CHUNKS; globalThis.__PUTS = () => PUTS;")(mod);
+new Function("module", stubs + "\n" + lib + "\n" + src + "\nglobalThis.__PUTS = () => PUTS;")(mod);
 const handler = mod.exports;
 
 const res = () => { let out = null, code = 200; return { status(c){ code = c; return this; }, json(o){ out = o; return this; }, get o(){ return out; }, get code(){ return code; } }; };
@@ -46,9 +47,8 @@ async function upload(name, bytes) {
   let r = res();
   await handler({ body: { action: "begin", pass: "x", upload: name, mime: "audio/wav" } }, r);
   const raw = Math.floor((r.o.chunk_max || 1468006) * 0.74);
-  for (let i = 0; i < bytes.length; i += raw) {
-    const slice = bytes.subarray(i, Math.min(bytes.length, i + raw));
-    await handler({ body: { action: "chunk", pass: "x", upload: name, seq: Math.floor(i / raw), part: slice.toString("base64") } }, res());
+  for (let i = 0, s = 0; i < bytes.length; i += raw, s++) {
+    await handler({ body: { action: "chunk", pass: "x", upload: name, seq: s, part: bytes.subarray(i, Math.min(bytes.length, i + raw)).toString("base64") } }, res());
   }
   r = res();
   await handler({ body: { action: "finish", pass: "x", upload: name, kind: "audio", title: "Test episode", mime: "audio/wav", after: 0, publish: true } }, r);
@@ -56,29 +56,23 @@ async function upload(name, bytes) {
 }
 
 (async () => {
-  // small exactness test
   const small = crypto.randomBytes(3 * 1024 * 1024 + 12345);
-  const h0 = crypto.createHash("sha256").update(small).digest("hex");
   let r = await upload("usmall", small);
-  const put0 = globalThis.__PUTS().pop();
-  console.log((r.code === 200 && put0 && put0.len === small.length ? "PASS" : "FAIL") +
-    " small upload glued byte-exact (sent " + small.length + ", stored " + (put0 && put0.len) + ")");
+  let put = globalThis.__PUTS().pop();
+  console.log((r.code === 200 && put && put.len === small.length ? "PASS" : "FAIL") +
+    " small upload glued byte-exact (stored " + (put && put.len) + ")");
 
-  // the killer: 250 MB, over the old 220 cap, under the new one
   const big = crypto.randomBytes(250 * 1024 * 1024);
-  const h1 = crypto.createHash("sha256").update(big).digest("hex");
   const t = Date.now();
   r = await upload("ubig", big);
-  const put1 = globalThis.__PUTS().pop();
-  console.log((r.code === 200 && put1 && put1.len === big.length ? "PASS" : "FAIL") +
-    " 250MB upload survived finish in " + Math.round((Date.now() - t) / 1000) + "s (stored " + (put1 && put1.len) + ")");
+  put = globalThis.__PUTS().pop();
+  console.log((r.code === 200 && put && put.len === big.length ? "PASS" : "FAIL") +
+    " 250MB upload survived finish in " + Math.round((Date.now() - t) / 1000) + "s (stored " + (put && put.len) + ")");
   if (r.code !== 200) console.log("  error:", r.o && r.o.error);
 
-  // over the new cap is refused cleanly
   const huge = Buffer.alloc(470 * 1024 * 1024, 7);
   r = await upload("uhuge", huge);
-  console.log((r.code === 413 ? "PASS" : "FAIL") + " over-cap upload refused with 413 (" + (r.o && r.o.error) + ")");
+  console.log((r.code === 413 ? "PASS" : "FAIL") + " over-cap upload refused with " + r.code + " (" + (r.o && r.o.error) + ")");
 
-  const failed = 0;
   process.exit(0);
 })().catch((e) => { console.error("harness error", e); process.exit(1); });

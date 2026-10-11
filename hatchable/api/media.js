@@ -39,6 +39,7 @@
  *   { action: 'voiceprint-labels', pass, id, … }    apply local biometric matches
  */
 import { db, storage } from 'hatchable';
+import { assembleUpload, UploadAssemblyError } from '../lib/upload-parts.js';
 import { adminDoor } from '../lib/door.js';
 import { doors as freeDoors, freeChat } from '../lib/freeai.js';
 
@@ -48,32 +49,21 @@ export const methods = ['POST'];
 const MAX_BYTES = 460 * 1024 * 1024;      /* a long episode as raw WAV, comfortably */
 const MAX_CHUNK = 1.4 * 1024 * 1024;      /* base64, per request */
 
-/* Glue an upload's chunks into one buffer without ever holding the base64
-   AND the decoded bytes AND a concatenation of both at once — the old
-   Buffer.concat path peaked at roughly triple the file size and died with
-   "Array buffer allocation failed" on a 39-minute WAV. The size is measured
-   from the base64 lengths alone, one buffer is allocated once, and the parts
-   are decoded into it a page at a time. */
-async function assemble(db, upload) {
-  const { rows: [meta] } = await db.query(
-    `SELECT COUNT(*)::int AS n,
-            COALESCE(SUM(LENGTH(part)), 0)::int AS b64,
-            COALESCE(SUM(CASE WHEN part LIKE '%==' THEN 2
-                              WHEN part LIKE '%='  THEN 1 ELSE 0 END), 0)::int AS pad
-       FROM media_chunks WHERE upload_id = $1`, [upload]);
-  const count = meta ? meta.n : 0;
-  const total = meta ? Math.floor(meta.b64 / 4) * 3 - meta.pad : 0;
-  if (!count || total <= 0) return { whole: null, count: 0 };
-  const whole = Buffer.allocUnsafeSlow(total);
-  const PAGE = 48;
-  let off = 0;
-  for (let at = 0; at < count; at += PAGE) {
-    const { rows } = await db.query(
-      'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC LIMIT $2 OFFSET $3',
-      [upload, PAGE, at]);
-    for (const r of rows) off += whole.write(r.part, off, 'base64');
+/* Gluing an upload's chunks together lives in lib/upload-parts.js, shared
+   with the transcription door: measure from the base64 lengths alone,
+   allocate the finished buffer once, decode each piece into place. */
+async function assemble(db, upload, tooLargeMessage) {
+  try {
+    return await assembleUpload(db, upload, { maxBytes: MAX_BYTES, tooLargeMessage });
+  } catch (e) {
+    if (e instanceof UploadAssemblyError || (e && e.expose)) {
+      if (e.status === 413 || e.status === 507) {
+        await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]).catch(() => {});
+      }
+      return { error: e, status: e.status || 400 };
+    }
+    throw e;
   }
-  return { whole, count };
 }
 const TTL = 604800;                        /* a week; re-signed on every read */
 
@@ -769,13 +759,10 @@ export default async function (req, res) {
         if (!upload) return res.status(400).json({ error: 'No upload name.' });
         if (!title) return res.status(400).json({ error: 'It needs a title before it can be published.' });
 
-        const { whole, count } = await assemble(db, upload);
-        if (!count || !whole || !whole.length) return res.status(400).json({ error: 'Nothing arrived. Try the upload again.' });
-        if (whole.length > MAX_BYTES) {
-          await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]);
-          return res.status(413).json({ error: 'That file is larger than the ' +
-            Math.round(MAX_BYTES / 1048576) + ' MB the shelf will take.' });
-        }
+        const glued = await assemble(db, upload, 'That file is larger than the ' +
+          Math.round(MAX_BYTES / 1048576) + ' MB the shelf will take.');
+        if (glued.error) return res.status(glued.status).json({ error: glued.error.message });
+        const whole = glued;
 
         const mime = clean(body.mime, 80) || (kind === 'video' ? 'video/webm' : 'audio/mpeg');
         const ext = mime.includes('mpeg') ? 'mp3'
@@ -1187,9 +1174,9 @@ export default async function (req, res) {
         const was = rows && rows[0];
         if (!was) return res.status(404).json({ error: 'There is no such item.' });
 
-        const { whole, count } = await assemble(db, upload);
-        if (!count || !whole || !whole.length) return res.status(400).json({ error: 'Nothing arrived.' });
-        if (whole.length > MAX_BYTES) return res.status(413).json({ error: 'That is too large for the shelf.' });
+        const glued = await assemble(db, upload, 'That is too large for the shelf.');
+        if (glued.error) return res.status(glued.status).json({ error: glued.error.message });
+        const whole = glued;
 
         const mime = clean(body.mime, 80) || (was.kind === 'video' ? 'video/webm' : 'audio/mpeg');
         const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('wav') ? 'wav'
