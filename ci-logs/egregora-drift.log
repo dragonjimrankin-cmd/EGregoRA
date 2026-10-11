@@ -1,8 +1,63 @@
 project proj_eiuxpFfTnwwx
-live version: 216
-ours:         216
-✓ no foreign deploy since ours. Safe to deploy.
-project proj_eiuxpFfTnwwx
-live version: 217
-ours:         216
-recorded version 217 in ops/egregora-deployed.json
+live version: 220
+ours:         217
+
+✖ 3 deploy(s) landed since ours (v217 → v220).
+   Reading the live files so the two can be merged rather than one buried.
+
+   live project holds 216 files
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+
+   changed live vs our bundle : 36
+     ~ api/media.js
+     ~ api/transcribe.js
+     ~ public/404.html
+     ~ public/account/index.html
+     ~ public/artwork/index.html
+     ~ public/ask-ed/index.html
+     ~ public/assets/js/media-admin.js
+     ~ public/astrology/index.html
+     ~ public/astronomy/index.html
+     ~ public/consciousness/index.html
+     ~ public/cosmic-aether/index.html
+     ~ public/cosmic-ledger/index.html
+     ~ public/decoherence/index.html
+     ~ public/druids/index.html
+     ~ public/elemental-alchemy/index.html
+     ~ public/entropy/index.html
+     ~ public/extraterrestrials/index.html
+     ~ public/index.html
+     ~ public/infographics/index.html
+     ~ public/join/index.html
+     ~ public/live/index.html
+     ~ public/locality/index.html
+     ~ public/moebius-seam/index.html
+     ~ public/music/index.html
+     ~ public/neurobiology/index.html
+     ~ public/occult/index.html
+     ~ public/podcast/index.html
+     ~ public/products/index.html
+     ~ public/qabalah/index.html
+     ~ public/research/index.html
+     ~ public/runes/index.html
+     ~ public/sacred-geometry/index.html
+     ~ public/site-index/index.html
+     ~ public/sitemap.xml
+     ~ public/videos/index.html
+     ~ public/wizardry/index.html
+   present live, absent here  : 5
+     + migrations/0029_speaker_profiles.sql
+     + pages/feed.xml.js
+     + public/assets/audio/PLACE_AUDIO_HERE.txt
+     + public/assets/audio/README/index.html
+     + public/feed.xml
+   present here, absent live  : 1
+     - README.md
+
+   their versions are saved under ops/incoming/egregora/
+   DEPLOY SKIPPED. Merge, then deploy.
