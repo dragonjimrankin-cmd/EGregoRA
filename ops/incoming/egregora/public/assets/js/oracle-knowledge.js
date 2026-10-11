@@ -207,7 +207,7 @@ In the seam-world model, one spatial circuit can reverse a transported frame's o
 Accordingly, the inverted-torus essay treats any matter/antimatter connection as an additional hypothesis with its own mechanism and conservation ledger. Geometry can organise a conjecture; it cannot silently manufacture particle physics. Read [Handedness Reversal Is Not Time Reversal](https://the-two-infinities.hatchable.site/inverted-toruses/#t-not-time).`,
       followups: [
         "What is an orientation-reversing torus mapping space?",
-        "How can matter be residue while antimatter is out of phase?",
+        "Why can the smaller and bigger infinities never fully synchronise?",
         "Can reversible mixing create a matter-antimatter imbalance?"
       ]
     },
@@ -289,7 +289,7 @@ In the **base-5 to base-4** alternative, the return plane has a shorter fourfold
 Neither numeral base is known to be a physical plane, frequency or dimension. Changing notation does not create dynamics. To become more than numerology, either version must identify a measurable state space, evolution rule, coupling and observable that changes when 8 is replaced by 4. Until then the comparison is mathematical speculation, not evidence about cosmology. Read [Prime Plane Phase Arithmetic](https://the-two-infinities.hatchable.site/prime-plane/).`,
       followups: [
         "How can matter be residue while antimatter is out of phase?",
-        "What does one Prime Being per universe-instance mean?",
+        "Why can the smaller and bigger infinities never fully synchronise?",
         "How should I grade these new claims?"
       ]
     },
@@ -331,6 +331,27 @@ The programme starts with public archival data and earns new telescope time only
       ]
     },
     {
+      id: "temporal-antipodes",
+      question: "Why can the smaller and bigger infinities never fully synchronise?",
+      patterns: [
+        /(?:smaller|smallward).*(?:bigger|larger|largeward).*infinit.*(?:synchron|sync|same time|clock)/,
+        /(?:two infinities|infinities).*(?:opposite ends of time|temporal antipodes|synchron|share.*clock)/,
+        /temporal antipode.*(?:infin|time|phase|clock)/
+      ],
+      answer: `This is the **Temporal Antipodes conjecture**. “Smaller” and “bigger” name directions of scale, not cardinal sizes: smallward tends toward zero, while largeward tends through unbounded magnitudes. In fact, the real interval between zero and one is uncountable and therefore has greater cardinality than the countable outward sequence of natural numbers. Cantor's theorem establishes that distinction; it does not put either infinity at an end of time.
+
+TTI adds the speculative temporal assignment. Write u(t) = (2/π) arctan(t), so every finite time lies between −1 and +1 while the endpoints are reached only as t tends to opposite infinities. Under the convention suggested by TTI's arrow, the largeward boundary is u = −1 and the smallward boundary is u = +1. Reversing those labels changes nothing essential. A reflection u ↦ −u pairs the endpoints on paper, but it does not carry a signal, transport a clock or make them simultaneous.
+
+Full synchronisation means more than two projected phases crossing once. After a lawful transport to one comparison surface, equal phase and equal rate must persist through a non-zero interval: Δφ = 2πk and dΔφ/dt = 0. If the two endpoint states remain asymptotic, are not physically identified, and may be compared only through an ordinary causal protocol, they have no shared finite event or round-trip clock channel. Under those assumptions, complete endpoint synchrony is structurally excluded. Interior echoes may still align periodically or come arbitrarily close quasiperiodically.
+
+The word **cannot** remains conditional. The conjecture would fail if a consistent temporal gluing gave the endpoints a common clock, or if a derived model produced exact phase-and-rate locking over an interval. Ordinary propagation delays and unsynchronised astrophysical sources are not evidence for it. Read [Temporal Antipodes](https://the-two-infinities.hatchable.site/temporal-antipodes/) and its [declared stress test](https://the-two-infinities.hatchable.site/stress-tests/#t-temporal-antipodes).`,
+      followups: [
+        "How can matter be residue while antimatter is out of phase?",
+        "Does orientation reversal reverse time or create antimatter?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
       id: "epistemic-grading",
       question: "How should I grade these new claims?",
       patterns: [
@@ -339,7 +360,7 @@ The programme starts with public archival data and earns new telescope time only
       ],
       answer: `Use four separate ledgers rather than one mood of belief.
 
-**Established mathematics or physics:** a mapping torus can be defined precisely; determinant −1 records orientation reversal; two reversals restore orientation; reversible symmetric dynamics do not create a global asymmetry from nothing.
+**Established mathematics or physics:** a mapping torus can be defined precisely; determinant −1 records orientation reversal; two reversals restore orientation; arctangent can compactify an infinite coordinate without reaching its boundary; reversible symmetric dynamics do not create a global asymmetry from nothing.
 
 **Historical or source evidence:** The Channeling Circle publishes a dated transcript archive in the L/L Research tradition. That establishes the publication record and the group's self-description, not the identity of its attributed speakers.
 
@@ -377,7 +398,7 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
   };
 
   window.EGOracleKnowledge = Object.freeze({
-    version: "2026-10-11.3",
+    version: "2026-10-11.4",
     reviewed: "2026-10-11",
     entries: Object.freeze(entries.slice()),
     find
