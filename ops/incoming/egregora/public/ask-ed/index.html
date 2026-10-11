@@ -44,7 +44,7 @@
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/main.css?v=mv3bleag">
-<link rel="stylesheet" href="/assets/css/avatar-voice.css?v=male-voices-1"><script type="application/ld+json">
+<link rel="stylesheet" href="/assets/css/avatar-voice.css?v=prompt-first-1"><script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":["Organization","EducationalOrganization"],"@id":"https://egregora.hatchable.site/#organization","name":"EGregoRA","alternateName":"The Order of EGregoRA","url":"https://egregora.hatchable.site","email":"shakradragon@gmail.com","slogan":"Life, Love, Magic","description":"EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.","foundingDate":"2026","logo":{"@type":"ImageObject","url":"https://egregora.hatchable.site/assets/img/icon-512.png","width":512,"height":512},"image":"https://egregora.hatchable.site/assets/img/og-egregora.jpg","knowsAbout":["cosmic physics","natural philosophy","sacred geometry","astrology","druidry","consciousness","quantum decoherence","microtubules","the Law of One","Hermetic Qabalah","alchemy","neuroscience","esotericism"],"founder":[{"@type":"Person","name":"Edward Gregory","jobTitle":"Co-founder"},{"@type":"Person","name":"Jim Rankin","jobTitle":"Co-founder"}]},{"@type":"WebSite","@id":"https://egregora.hatchable.site/#website","url":"https://egregora.hatchable.site","name":"EGregoRA","description":"EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.","inLanguage":"en-GB","publisher":{"@id":"https://egregora.hatchable.site/#organization"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://egregora.hatchable.site/ask-ed/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"WebPage","@id":"https://egregora.hatchable.site/ask-ed/#page","url":"https://egregora.hatchable.site/ask-ed/","name":"Ask Ed a Question · EGregoRA","headline":"Ask Ed a Question","description":"Put a question to Edward Gregory, co-founder of EGregoRA. Answered publicly on the podcast or privately by letter.","inLanguage":"en-GB","isPartOf":{"@id":"https://egregora.hatchable.site/#website"},"about":{"@id":"https://egregora.hatchable.site/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://egregora.hatchable.site/assets/img/og-egregora.jpg","width":1200,"height":630},"author":[{"@type":"Person","name":"Edward Gregory"},{"@type":"Person","name":"Jim Rankin"}],"publisher":{"@id":"https://egregora.hatchable.site/#organization"},"dateModified":"2026-10-11T04:25:35.130Z","keywords":"cosmic physics, natural philosophy, sacred geometry, astrology, druidry, consciousness, quantum decoherence, microtubules, the Law of One, Hermetic Qabalah, alchemy, neuroscience, esotericism"},{"@type":"BreadcrumbList","@id":"https://egregora.hatchable.site/ask-ed/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Introduction","item":"https://egregora.hatchable.site/"},{"@type":"ListItem","position":2,"name":"Ask Ed a Question","item":"https://egregora.hatchable.site/ask-ed/"}]}]}
 </script>
   <script>
@@ -570,7 +570,7 @@
               <option value="am_puck">Puck — American</option>
             </optgroup>
           </select>
-          <span class="muted xsmall" id="fox-voice-note">Turn Natural voice on, choose a voice, then press Speak to hear it.</span>
+          <span class="muted xsmall" id="fox-voice-note">Choose a voice to turn Natural voice on and hear an immediate audition.</span>
         </div>
         <p class="muted xsmall" id="fox-status" role="status" aria-live="polite">Waking Gink…</p>
         <p class="muted xsmall">The optional natural voice uses the open Kokoro neural model entirely in
@@ -582,57 +582,6 @@
       <div class="fox-stage" id="fox-stage" role="img"
            aria-label="Gink, a three-dimensional fox, the order's familiar, who reads the oracle's answers aloud"></div>
       </div>
-
-    <div class="oracle-chat">
-    <div class="oracle-bar">
-      <p class="oracle-bar-note">A room to talk in — the oracle holds the whole thread, and will talk
-      about anything, not only the limbs.</p>
-      <button class="btn btn--ghost btn--small" type="button" id="o-expand"
-              aria-pressed="false">Expand the space</button>
-    </div>
-    <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
-      <p class="oracle-waiting" id="oracle-waiting">The thread begins when you ask. Everything said
-      stays here, in order.</p>
-    </div>
-
-    <p class="oracle-mute-wrap">
-      <button class="btn btn--ghost btn--small oracle-mute" type="button" id="o-mute"
-              aria-pressed="false" title="Gink reads the answers aloud. Turn his voice off and on.">
-        <span class="mute-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-               stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 9v6h3.5L12 19V5L7.5 9Z"/>
-            <path class="mute-wave" d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"/>
-            <path class="mute-bar" d="M16.5 9.5l5 5M21.5 9.5l-5 5"/>
-          </svg>
-        </span>
-        <span class="mute-label">Gink's voice is on</span>
-      </button>
-      <button class="btn btn--ghost btn--small" type="button" id="o-hold"
-              aria-pressed="false" title="Pause Gink mid-sentence, and set him going again.">Pause</button>
-      <button class="btn btn--ghost btn--small" type="button" id="o-again"
-              title="Read the last answer again from the beginning.">Read it again</button>
-    </p>
-
-    <div class="oracle-chips" id="oracle-chips">
-      <button class="chip" type="button">What is The Channeling Circle, and what does it claim to do?</button>
-      <button class="chip" type="button">What is in The Channeling Circle transcript archive?</button>
-      <button class="chip" type="button">Which practices and themes recur in The Channeling Circle transcripts?</button>
-      <button class="chip" type="button">Are The Channeling Circle's channeled entities scientifically verified?</button>
-      <button class="chip" type="button">How does The Channeling Circle relate to the one-residue essay?</button>
-      <button class="chip" type="button">What should I make of its portal, health, and planetary claims?</button>
-      <button class="chip" type="button">What does one Prime Being per universe-instance mean?</button>
-      <button class="chip" type="button">Could every being be the Prime Being somewhere?</button>
-      <button class="chip" type="button">What is the one residue that travels?</button>
-      <button class="chip" type="button">Could the universe itself be the Möbius seam?</button>
-      <button class="chip" type="button">What is an orientation-reversing torus mapping space?</button>
-      <button class="chip" type="button">Does orientation reversal reverse time or create antimatter?</button>
-      <button class="chip" type="button">How can matter be residue while antimatter is out of phase?</button>
-      <button class="chip" type="button">Can reversible mixing create a matter-antimatter imbalance?</button>
-      <button class="chip" type="button">How do the base-5 to base-8 and base-5 to base-4 shifts differ?</button>
-      <button class="chip" type="button">How should I grade these new claims?</button>
-    </div>
-  </div>
 
       <div class="fox-ask">
     <form class="ornate oracle-form" id="oracle-form">
@@ -702,12 +651,63 @@
                     title="Empty the box, forget the whole thread, and silence Gink.">Full Reset</button>
           </div>
           <p class="muted xsmall" id="o-mic-hint">Press and <strong>hold</strong> the microphone, ask your
-          question out loud, then let go — the words are transcribed into the box below and sent to the order.
+          question out loud, then let go — the words are transcribed into the question box above and sent to the order.
           Recognition happens in your browser; nothing is recorded or stored here. On a phone, hold with your
           thumb. Press <kbd>Space</kbd> while the button is focused to do the same thing.</p>
 
         </form>
       </div>
+
+    <div class="oracle-chat">
+    <div class="oracle-bar">
+      <p class="oracle-bar-note">A room to talk in — the oracle holds the whole thread, and will talk
+      about anything, not only the limbs.</p>
+      <button class="btn btn--ghost btn--small" type="button" id="o-expand"
+              aria-pressed="false">Expand the space</button>
+    </div>
+    <div class="oracle-thread" id="oracle-thread" role="log" aria-live="polite" aria-label="Conversation with the oracle">
+      <p class="oracle-waiting" id="oracle-waiting">The thread begins when you ask. Everything said
+      stays here, in order.</p>
+    </div>
+
+    <p class="oracle-mute-wrap">
+      <button class="btn btn--ghost btn--small oracle-mute" type="button" id="o-mute"
+              aria-pressed="false" title="Gink reads the answers aloud. Turn his voice off and on.">
+        <span class="mute-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9v6h3.5L12 19V5L7.5 9Z"/>
+            <path class="mute-wave" d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"/>
+            <path class="mute-bar" d="M16.5 9.5l5 5M21.5 9.5l-5 5"/>
+          </svg>
+        </span>
+        <span class="mute-label">Gink's voice is on</span>
+      </button>
+      <button class="btn btn--ghost btn--small" type="button" id="o-hold"
+              aria-pressed="false" title="Pause Gink mid-sentence, and set him going again.">Pause</button>
+      <button class="btn btn--ghost btn--small" type="button" id="o-again"
+              title="Read the last answer again from the beginning.">Read it again</button>
+    </p>
+
+    <div class="oracle-chips" id="oracle-chips">
+      <button class="chip" type="button">What is The Channeling Circle, and what does it claim to do?</button>
+      <button class="chip" type="button">What is in The Channeling Circle transcript archive?</button>
+      <button class="chip" type="button">Which practices and themes recur in The Channeling Circle transcripts?</button>
+      <button class="chip" type="button">Are The Channeling Circle's channeled entities scientifically verified?</button>
+      <button class="chip" type="button">How does The Channeling Circle relate to the one-residue essay?</button>
+      <button class="chip" type="button">What should I make of its portal, health, and planetary claims?</button>
+      <button class="chip" type="button">What does one Prime Being per universe-instance mean?</button>
+      <button class="chip" type="button">Could every being be the Prime Being somewhere?</button>
+      <button class="chip" type="button">What is the one residue that travels?</button>
+      <button class="chip" type="button">Could the universe itself be the Möbius seam?</button>
+      <button class="chip" type="button">What is an orientation-reversing torus mapping space?</button>
+      <button class="chip" type="button">Does orientation reversal reverse time or create antimatter?</button>
+      <button class="chip" type="button">How can matter be residue while antimatter is out of phase?</button>
+      <button class="chip" type="button">Can reversible mixing create a matter-antimatter imbalance?</button>
+      <button class="chip" type="button">How do the base-5 to base-8 and base-5 to base-4 shifts differ?</button>
+      <button class="chip" type="button">How should I grade these new claims?</button>
+    </div>
+  </div>
 
     </div>
 
@@ -1728,7 +1728,7 @@
 </section>
 
 <script type="module" src="/assets/js/freeai-admin.js?v=mv3bleag"></script>
-<script type="module" src="/assets/js/fox.js?v=male-voices-2"></script>
+<script type="module" src="/assets/js/fox.js?v=male-voices-3"></script>
 <script type="module" src="/assets/js/model.js?v=mv3bleag"></script>
 <script type="module" src="/assets/js/scan.js?v=mv3bleag"></script>
 
