@@ -41,6 +41,7 @@
 import { db, storage } from 'hatchable';
 import { assembleUpload, UploadAssemblyError } from '../lib/upload-parts.js';
 import { adminDoor } from '../lib/door.js';
+import { whoAmI } from '../lib/accounts.js';
 import { doors as freeDoors, freeChat } from '../lib/freeai.js';
 
 export const access = 'public';
@@ -716,6 +717,14 @@ export default async function (req, res) {
   const door = await adminDoor(req, body.pass);
   if (!door.ok) return res.status(door.status).json({ error: door.error });
 
+  /* And behind an account: the key opens the door, but uploading and
+     recording belong to the signed-in member — the episode is kept under
+     their name, and a suspended account is refused at the threshold. */
+  const publisher = await whoAmI(req);
+  if (!publisher) return res.status(401).json({
+    error: 'The key opened the door, but the shelf needs a signed-in account. Sign in at /join/, then come back through the door.'
+  });
+
   try {
     switch (action) {
       case 'shelf': {
@@ -793,7 +802,7 @@ export default async function (req, res) {
           [kind, title, clean(body.summary, 2000), number,
             clean(body.length, 32), Number(body.seconds) || null, clean(body.tags, 300),
             key, mime, whole.length, Number(body.original_bytes) || null,
-            clean(body.treatment, 600), body.publish === false ? 'draft' : 'published', door.who,
+            clean(body.treatment, 600), body.publish === false ? 'draft' : 'published', publisher.email,
             body.transcript ? String(body.transcript).slice(0, 400000) : null,
             Array.isArray(body.links) ? JSON.stringify(body.links.slice(0, 10)) : null,
             Array.isArray(body.topics) ? JSON.stringify(body.topics.slice(0, 20)) : null,
@@ -1179,8 +1188,9 @@ export default async function (req, res) {
         const whole = glued;
 
         const mime = clean(body.mime, 80) || (was.kind === 'video' ? 'video/webm' : 'audio/mpeg');
-        const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('wav') ? 'wav'
-          : mime.includes('webm') ? 'webm' : mime.includes('mp4') ? 'mp4' : 'bin';
+        const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('flac') ? 'flac'
+          : mime.includes('wav') ? 'wav'
+            : mime.includes('webm') ? 'webm' : mime.includes('mp4') ? 'mp4' : 'bin';
         const key = (was.kind === 'video' ? 'films/' : 'episodes/') +
           Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.' + ext;
 
