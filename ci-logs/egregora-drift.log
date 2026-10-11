@@ -3,6 +3,6 @@ live version: 235
 ours:         235
 ✓ no foreign deploy since ours. Safe to deploy.
 project proj_eiuxpFfTnwwx
-live version: 235
+live version: 236
 ours:         235
-recorded version 235 in ops/egregora-deployed.json
+recorded version 236 in ops/egregora-deployed.json
