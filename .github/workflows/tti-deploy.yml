@@ -99,12 +99,18 @@ jobs:
           grep -q 'Not a Fourth Pole, but a Boundary Condition' tti/hatchable/public/little-red-dots/index.html
           grep -q 'The conservation fork' tti/hatchable/public/little-red-dots/index.html
           grep -q 'Six Debts the Sky Can Collect' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'The Zero-Seam Test' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'A Two-Phase, Twenty-Four-Month Study' tti/hatchable/public/little-red-dots/research-proposal/index.html
+          grep -q 'Three Models Must Enter, and Any May Lose' tti/hatchable/public/little-red-dots/research-proposal/index.html
+          grep -q 'Choose What Crosses Before Counting What Shines' tti/hatchable/public/little-red-dots/research-proposal/index.html
           grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
+          grep -q 'Read the Zero-Seam research proposal' tti/hatchable/public/essays/index.html
           grep -q 'little red dots are compact' tti/hatchable/public/cosmic-ledger/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
             tti/hatchable/public/little-red-dots/index.html \
+            tti/hatchable/public/little-red-dots/research-proposal/index.html \
             tti/hatchable/public/ask-shakdrah/index.html \
             tti/hatchable/public/torus/index.html \
             tti/hatchable/public/moebius/index.html \
@@ -184,8 +190,17 @@ jobs:
                 'The Dot May Be a Memory Learning to Shine Again']
             },
             {
+              url: 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/',
+              markers: ['The Zero-Seam Test', 'A Two-Phase, Twenty-Four-Month Study',
+                'Three Models Must Enter, and Any May Lose',
+                'Five Signatures, One Declared Primary Test',
+                'Choose What Crosses Before Counting What Shines',
+                'Twenty-Four Months with Permission to Stop Early']
+            },
+            {
               url: 'https://the-two-infinities.hatchable.site/essays/',
-              markers: ['JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture']
+              markers: ['JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture',
+                'Read the Zero-Seam research proposal']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
