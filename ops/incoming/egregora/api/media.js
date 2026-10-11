@@ -41,6 +41,7 @@
 import { db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { doors as freeDoors, freeChat } from '../lib/freeai.js';
+import { assembleUpload } from '../lib/upload-parts.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -725,7 +726,12 @@ export default async function (req, res) {
         const upload = clean(body.upload, 64);
         const seq = Number(body.seq);
         const part = String(body.part || '');
-        if (!upload || !Number.isFinite(seq)) return res.status(400).json({ error: 'A piece with no place.' });
+        if (!upload || !Number.isInteger(seq) || seq < 0) {
+          return res.status(400).json({ error: 'A piece with no place.' });
+        }
+        if (!part || part.length % 4 !== 0 || !B64.test(part)) {
+          return res.status(400).json({ error: 'That upload piece is damaged.' });
+        }
         if (part.length > MAX_CHUNK * 1.1) return res.status(413).json({ error: 'That piece is too large.' });
         await db.query(
           `INSERT INTO media_chunks (upload_id, seq, part) VALUES ($1, $2, $3)
@@ -741,17 +747,12 @@ export default async function (req, res) {
         if (!upload) return res.status(400).json({ error: 'No upload name.' });
         if (!title) return res.status(400).json({ error: 'It needs a title before it can be published.' });
 
-        const { rows } = await db.query(
-          'SELECT seq, part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
-        if (!rows || !rows.length) return res.status(400).json({ error: 'Nothing arrived. Try the upload again.' });
-
-        const whole = Buffer.concat(rows.map((r) => Buffer.from(r.part, 'base64')));
-        if (!whole.length) return res.status(400).json({ error: 'The file came through empty.' });
-        if (whole.length > MAX_BYTES) {
-          await db.query('DELETE FROM media_chunks WHERE upload_id = $1', [upload]);
-          return res.status(413).json({ error: 'That file is larger than the ' +
-            Math.round(MAX_BYTES / 1048576) + ' MB the shelf will take.' });
-        }
+        const whole = await assembleUpload(db, upload, {
+          maxBytes: MAX_BYTES,
+          emptyMessage: 'Nothing arrived. Try the upload again.',
+          tooLargeMessage: 'That file is larger than the ' +
+            Math.round(MAX_BYTES / 1048576) + ' MB the shelf will take.'
+        });
 
         const mime = clean(body.mime, 80) || (kind === 'video' ? 'video/webm' : 'audio/mpeg');
         const ext = mime.includes('mpeg') ? 'mp3'
@@ -1163,11 +1164,11 @@ export default async function (req, res) {
         const was = rows && rows[0];
         if (!was) return res.status(404).json({ error: 'There is no such item.' });
 
-        const { rows: parts } = await db.query(
-          'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
-        if (!parts || !parts.length) return res.status(400).json({ error: 'Nothing arrived.' });
-        const whole = Buffer.concat(parts.map((r) => Buffer.from(r.part, 'base64')));
-        if (whole.length > MAX_BYTES) return res.status(413).json({ error: 'That is too large for the shelf.' });
+        const whole = await assembleUpload(db, upload, {
+          maxBytes: MAX_BYTES,
+          emptyMessage: 'Nothing arrived.',
+          tooLargeMessage: 'That is too large for the shelf.'
+        });
 
         const mime = clean(body.mime, 80) || (was.kind === 'video' ? 'video/webm' : 'audio/mpeg');
         const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('wav') ? 'wav'
@@ -1198,11 +1199,11 @@ export default async function (req, res) {
         if (!id || !upload) return res.status(400).json({ error: 'Which one, and from what?' });
         const role = clean(body.role, 8) === 'cover' ? 'cover' : 'cue';
 
-        const { rows: parts } = await db.query(
-          'SELECT part FROM media_chunks WHERE upload_id = $1 ORDER BY seq ASC', [upload]);
-        if (!parts || !parts.length) return res.status(400).json({ error: 'No picture arrived.' });
-        const whole = Buffer.concat(parts.map((r) => Buffer.from(r.part, 'base64')));
-        if (whole.length > 12 * 1024 * 1024) return res.status(413).json({ error: 'That picture is over 12 MB.' });
+        const whole = await assembleUpload(db, upload, {
+          maxBytes: 12 * 1024 * 1024,
+          emptyMessage: 'No picture arrived.',
+          tooLargeMessage: 'That picture is over 12 MB.'
+        });
 
         const mime = clean(body.mime, 60) || 'image/jpeg';
         const ext = mime.includes('png') ? 'png' : mime.includes('webp') ? 'webp'
@@ -1256,6 +1257,17 @@ export default async function (req, res) {
     }
   } catch (err) {
     console.error('media:', err && err.message);
-    return res.status(500).json({ error: 'The shelf refused that: ' + ((err && err.message) || 'unknown') });
+    const status = Number(err && err.status);
+    if (err && err.expose && Number.isInteger(status) && status >= 400 && status <= 599) {
+      return res.status(status).json({ error: err.message });
+    }
+    const detail = String((err && err.message) || 'unknown');
+    const allocation = /array buffer allocation|allocation failed|invalid typed array length/i.test(detail);
+    return res.status(allocation ? 507 : 500).json({
+      error: allocation
+        ? 'The upload arrived, but the shelf ran out of memory while assembling it. ' +
+          'Please try publishing the enhanced MP3 again.'
+        : 'The shelf refused that: ' + detail
+    });
   }
 }
