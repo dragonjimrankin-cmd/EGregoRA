@@ -59,6 +59,15 @@ jobs:
       - name: Verify the live speaker turns
         run: |
           node <<'NODE'
+          const report = (error) => {
+            const message = String(error && error.message || error || 'unknown live verification error')
+              .replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A').slice(0, 1500);
+            console.log(`::error title=Live transcript verification failed::${message}`);
+            process.exit(1);
+          };
+          process.on('uncaughtException', report);
+          process.on('unhandledRejection', report);
+
           const endpoint = 'https://egregora.hatchable.site/api/media';
           const post = async (body) => {
             const response = await fetch(endpoint, {
