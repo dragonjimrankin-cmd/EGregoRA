@@ -67,6 +67,10 @@ export async function assembleUpload(db, upload, options = {}) {
       'Please publish the enhanced MP3 or split the recording into smaller parts.');
   }
 
+  /* The function runtime's Buffer is not always Node's: allocUnsafe has been
+     seen to hand back a plain Uint8Array with no Buffer methods on it. So the
+     pieces are decoded with Buffer.from and laid in with .set, which both a
+     Buffer and a Uint8Array carry, instead of Buffer#write. */
   let offset = 0;
   for (const expected of parts) {
     const { rows } = await db.query(
@@ -78,12 +82,26 @@ export async function assembleUpload(db, upload, options = {}) {
       throw new UploadAssemblyError(400,
         'The upload changed while it was being assembled. Please send it again.');
     }
-    const written = whole.write(encoded, offset, expected.bytes, 'base64');
-    if (written !== expected.bytes) {
+    let decoded;
+    try {
+      decoded = Buffer.from(encoded, 'base64');
+    } catch {
+      decoded = null;
+    }
+    if (!decoded || decoded.length !== expected.bytes) {
       throw new UploadAssemblyError(400,
         'One upload piece could not be decoded. Please send the recording again.');
     }
-    offset += written;
+    whole.set(decoded, offset);
+    offset += decoded.length;
+  }
+
+  /* Whatever the runtime handed back, give the caller a true Buffer when one
+     can be wrapped around the bytes without copying them. */
+  if (typeof whole.write !== 'function') {
+    try {
+      whole = Buffer.from(whole.buffer, whole.byteOffset, whole.byteLength);
+    } catch { /* the Uint8Array itself is still fine for storage.put */ }
   }
 
   return whole;
