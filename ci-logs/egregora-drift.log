@@ -1,11 +1,11 @@
 project proj_eiuxpFfTnwwx
-live version: 245
-ours:         244
+live version: 247
+ours:         245
 
-✖ 1 deploy(s) landed since ours (v244 → v245).
+✖ 2 deploy(s) landed since ours (v245 → v247).
    Reading the live files so the two can be merged rather than one buried.
 
-   live project holds 245 files
+   live project holds 246 files
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
@@ -16,6 +16,7 @@ ours:         244
    changed live vs our bundle : 44
      ~ api/edit.js
      ~ api/media.js
+     ~ api/transcribe.js
      ~ pages/feed.js
      ~ public/404.html
      ~ public/account/index.html
@@ -29,7 +30,6 @@ ours:         244
      ~ public/assets/js/headtts/voices/bm_george.bin
      ~ public/assets/js/headtts/voices/bm_lewis.bin
      ~ public/assets/js/media-admin.js
-     ~ public/assets/js/oracle-knowledge.js
      ~ public/astrology/index.html
      ~ public/astronomy/index.html
      ~ public/consciousness/index.html
@@ -55,7 +55,8 @@ ours:         244
      ~ public/research/index.html
      ~ public/runes/index.html
      … and 4 more
-   present live, absent here  : 1
+   present live, absent here  : 2
+     + lib/upload-parts.js
      + public/feed.xml
    present here, absent live  : 1
      - README.md
