@@ -1380,49 +1380,12 @@ function setup(root) {
   }
 
   /* ================================================== the ear and the archivist
-     The listing writes itself from the recording. The sound is reduced to a
-     small mono copy here \u2014 16 kHz, 32 kbps, in ten-minute stretches \u2014
-     because the services that transcribe take about 25 MB and an hour of
-     stereo is twenty times that. The words come back in order, are joined,
-     and the archivist writes the title, the summary, the tags and the
-     sections of this site the episode actually touches.
-
-     The links are checked against the real index of the site on the server,
-     so the archivist cannot send a listener to a page that is not there. */
-  const SEG = 600;            /* ten minutes a stretch */
-
-  async function smallCopy(buf, from, to) {
-    const rate = 16000;
-    const frames = Math.max(1, Math.floor((to - from) * rate));
-    const off = new OfflineAudioContext(1, frames, rate);
-    const src = off.createBufferSource();
-    src.buffer = buf;
-    /* Speech lives between 90 Hz and 7 kHz; stripping the rest makes a
-       smaller file the transcriber reads no worse. */
-    const hp = off.createBiquadFilter();
-    hp.type = "highpass"; hp.frequency.value = 90;
-    src.connect(hp); hp.connect(off.destination);
-    src.start(0, from, to - from);
-    const done = await off.startRendering();
-
-    const lame = await lameJS();
-    const enc = new lame.Mp3Encoder(1, rate, 32);
-    const f = done.getChannelData(0);
-    const pcm = new Int16Array(f.length);
-    for (let i = 0; i < f.length; i++) {
-      const v = Math.max(-1, Math.min(1, f[i]));
-      pcm[i] = v < 0 ? v * 0x8000 : v * 0x7fff;
-    }
-    const out = [];
-    for (let i = 0; i < pcm.length; i += 1152) {
-      const b = enc.encodeBuffer(pcm.subarray(i, i + 1152));
-      if (b.length) out.push(new Uint8Array(b));
-    }
-    const tail = enc.flush();
-    if (tail.length) out.push(new Uint8Array(tail));
-    return new Blob(out, { type: "audio/mpeg" });
-  }
-
+     Private BrowserWhisper decodes the recording in bounded 16 kHz pieces and
+     runs Whisper Base in background workers on this machine. Episode audio is
+     not uploaded for transcription. Timestamped words arrive in order; then
+     EGregoRA receives the completed text so the archivist can write the title,
+     summary, tags and links. Those links are checked against the real site
+     index, so the archivist cannot invent a destination. */
   let listing = null;     /* what the archivist wrote, kept for the upload */
   let earBy = "";         /* which ear heard the episode */
   let pendingNewVoiceMatches = null; /* local-only matches until the media row exists */
@@ -1466,187 +1429,105 @@ function setup(root) {
     };
   }
 
-  /* The browser's own ear, properly: a small whisper model runs in the page
-     (fetched from a CDN the first time), reads the enhanced audio straight
-     from memory — no playing out loud, no real-time wait — and returns the
-     words with their timestamps. A pause longer than two and a half seconds
-     between segments is read as a change of voice; the names are guesses the
-     transcript keeps plainly so they can be fixed. Consecutive fragments from
-     one voice are one turn, with one timestamp at the change of speaker. */
-  let whisperPipe = null;
-  function whisper(report = step) {
-    if (!whisperPipe) {
-      report("Loading the transcription model", 0.03);
-      whisperPipe = import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2")
-        .then(function (m) {
-          return m.pipeline("automatic-speech-recognition", "Xenova/whisper-tiny.en", {
-            quantized: true,
-            progress_callback: function (p) {
-              if (p && p.status === "progress" && p.progress != null) {
-                const loaded = Math.max(0, Math.min(100, Number(p.progress) || 0));
-                report("Loading the transcription model", 0.03 + loaded / 100 * 0.27);
-              }
-            }
+  /* Private local transcription is a separate in-browser application:
+     BrowserWhisper runs Whisper Base inside two workers, decodes in bounded
+     pieces, caches the model in the browser's private origin storage, and
+     never uploads episode audio to a speech-to-text provider. The first use
+     downloads the model; later uses read the cached copy. A pause longer than
+     two and a half seconds remains the conservative provisional turn change,
+     with one timestamp only when the displayed speaker changes. */
+  const PRIVATE_WHISPER_MODULE =
+    "/assets/js/private-whisper/browser-whisper.js?v=private-whisper-1";
+  let whisperEngine = null;
+  let whisperLoad = null;
+
+  async function whisper(report = step) {
+    if (whisperEngine) return whisperEngine;
+    if (!whisperLoad) {
+      report("Opening private local Whisper \u2014 audio stays on this device", 0.02);
+      whisperLoad = import(PRIVATE_WHISPER_MODULE)
+        .then(function (module) {
+          whisperEngine = new module.BrowserWhisper({
+            model: "whisper-base",
+            language: "en",
+            quantization: "hybrid"
           });
+          return whisperEngine;
         })
-        .catch(function (e) { whisperPipe = null; throw e; });
-    }
-    return whisperPipe;
-  }
-
-  function resample16k(buf) {
-    const frames = Math.max(1, Math.floor(buf.duration * 16000));
-    const off = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, frames, 16000);
-    const src = off.createBufferSource();
-    src.buffer = buf;
-    src.connect(off.destination);
-    src.start(0);
-    return off.startRendering().then(function (done) { return done.getChannelData(0); });
-  }
-
-  function listenWhisper(buf, typer, report = step) {
-    return whisper(report).then(function (pipe) {
-      report("Preparing 16 kHz speech audio", 0.32);
-      return resample16k(buf).then(function (audio) {
-        report("Transcribing speech and timestamps", 0.42);
-        return pipe(audio, {
-          return_timestamps: true,
-          chunk_length_s: 30,
-          stride_length_s: 5
+        .catch(function (error) {
+          whisperLoad = null;
+          throw error;
         });
-      }).then(function (res) {
-        report("Consolidating speaker turns", 0.88);
-        let speaker = 1, lastEnd = 0;
-        const turns = [];
-        const chunks = (res && res.chunks) || [];
-        if (chunks.length) {
-          chunks.forEach(function (c, index) {
-            const start = (c.timestamp && c.timestamp[0]) || 0;
-            const end = (c.timestamp && c.timestamp[1]) || start + 2;
-            if (index && start - lastEnd > 2.5) speaker = speaker === 1 ? 2 : 1;
-            lastEnd = end;
-            const words = String(c.text || "").trim();
-            if (!words) return;
-            const active = turns[turns.length - 1];
-            if (active && active.speaker === speaker) active.text += " " + words;
-            else turns.push({ at: start, speaker, text: words });
-          });
-        } else if (res && res.text) {
-          turns.push({ at: 0, speaker: 1, text: res.text.trim() });
-        }
-        const out = turns.map(function (turn) {
-          return "[" + clock(turn.at) + "] Speaker " + turn.speaker + " \u2014 " + turn.text;
-        }).join("\n\n") + (turns.length ? "\n" : "");
-        typer.add(out);
-        typer.ghost("");
-        report("Transcript assembled", 0.92);
-        return out;
-      });
-    });
-  }
-
-  /* The browser's microphone ear, the last resort: the episode plays out
-     loud and the microphone writes what it hears, stamped with the
-     playhead. */
-  function listenLive(blob, typer, report = step) {
-    return new Promise((go, no) => {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const a = new Audio(URL.createObjectURL(blob));
-      report("Opening the live transcription fallback", 0.05);
-      const rec = new SR();
-      rec.continuous = true;
-      rec.interimResults = true;
-      let speaker = 1, lastAt = null, wroteTurn = false, done = false;
-      const finish = (err) => {
-        if (done) return;
-        done = true;
-        try { rec.stop(); } catch { /* already stopped */ }
-        a.pause();
-        typer.stop();
-        if (err) no(err); else go(typer.text());
-      };
-      rec.onresult = (ev) => {
-        let interim = "";
-        for (let i = ev.resultIndex; i < ev.results.length; i++) {
-          const r = ev.results[i];
-          if (!r.isFinal) { interim += r[0].transcript; continue; }
-          const t = a.currentTime;
-          const changed = lastAt != null && t - lastAt > 2.5;
-          if (changed) speaker = speaker === 1 ? 2 : 1;
-          lastAt = t;
-          const words = r[0].transcript.trim();
-          if (!words) continue;
-          if (!wroteTurn || changed) {
-            typer.add((wroteTurn ? "\n\n" : "") + "[" + clock(t) + "] Speaker " +
-              speaker + " \u2014 " + words);
-            wroteTurn = true;
-          } else {
-            typer.add(" " + words);
-          }
-        }
-        typer.ghost(interim);
-      };
-      rec.onerror = (e) => {
-        if (e.error === "not-allowed" || e.error === "service-not-allowed")
-          finish(new Error("the microphone would not open \u2014 the ear needs it while the episode plays out loud"));
-        /* "no-speech" is only silence; keep listening */
-      };
-      rec.onend = () => {
-        if (!a.ended && !a.paused) { try { rec.start(); } catch { /* restarting */ } }
-      };
-      a.ontimeupdate = () => {
-        const fraction = a.duration ? a.currentTime / a.duration : 0;
-        report("Live transcription \u2014 " + clock(a.currentTime) + " of " + clock(a.duration || 0),
-          0.08 + fraction * 0.84);
-      };
-      a.onended = () => {
-        typer.ghost("");
-        report("Transcript assembled", 0.92);
-        window.setTimeout(() => finish(null), 600);
-      };
-      a.onerror = () => finish(new Error("the episode would not play for the ear"));
-      a.play().then(() => {
-        report("Live transcription has started", 0.08);
-        try { rec.start(); } catch (err) { finish(err); }
-      }).catch((err) => finish(err));
-    });
-  }
-
-  /* The server's ear, for browsers with no SpeechRecognition of their own:
-     ten-minute transport pieces are joined as one transcript. The provider
-     does not return speaker turns, so it gets one opening timestamp rather
-     than inventing a change of voice at every upload boundary. */
-  async function listenServer(buf, seconds, typer, report = step) {
-    const parts = Math.max(1, Math.ceil(seconds / SEG));
-    let out = "";
-    for (let i = 0; i < parts; i++) {
-      const from = i * SEG, to = Math.min(seconds, (i + 1) * SEG);
-      const base = 0.04 + (i / parts) * 0.86;
-      const span = 0.86 / parts;
-      report("Preparing transcription stretch " + (i + 1) + " of " + parts, base);
-      const small = await smallCopy(buf, from, to);
-      const upload = await sendBlob(small, (text, fraction) =>
-        report("Uploading transcription stretch " + (i + 1) + " of " + parts,
-          base + span * (0.15 + fraction * 0.25)));
-      report("Transcribing stretch " + (i + 1) + " of " + parts, base + span * 0.5);
-      const heard = await fetch("/api/transcribe", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pass, action: "hear", upload, mime: "audio/mpeg" })
-      }).then(async (r) => {
-        const d = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(d.error || "it could not be heard");
-        return d;
-      });
-      const line = (i ? "\n\n" : "[" + clock(0) + "] ") + heard.text;
-      out += line;
-      typer.add(line);
-      report("Transcribed stretch " + (i + 1) + " of " + parts, base + span);
     }
-    typer.stop();
-    report("Transcript assembled", 0.92);
-    return out;
+    return whisperLoad;
   }
+
+  async function listenWhisper(blob, seconds, typer, report = step) {
+    const engine = await whisper(report);
+    if (!(blob instanceof Blob) || !blob.size) {
+      throw new Error("private Whisper needs the recording file, but it is not available");
+    }
+    const type = blob.type || "audio/mpeg";
+    const suffix = type.includes("mp4") || type.includes("m4a") ? "m4a"
+      : type.includes("wav") ? "wav"
+        : type.includes("webm") ? "webm" : "mp3";
+    const input = blob instanceof File
+      ? blob
+      : new File([blob], "egregora-private-transcription." + suffix, { type });
+    let speaker = 1, lastEnd = 0, wrote = false, furthest = 0.02;
+
+    const stage = function (event) {
+      const amount = Math.max(0, Math.min(1, Number(event && event.progress) || 0));
+      const name = String((event && event.stage) || "");
+      let fraction = furthest, label = "Private Whisper is preparing locally";
+      if (name === "loading") {
+        fraction = 0.03 + amount * 0.29;
+        label = amount < 1
+          ? "Private Whisper model \u2014 " + Math.round(amount * 100) + "% downloaded or read from cache"
+          : "Private Whisper model ready on this device";
+      } else if (name === "decoding") {
+        fraction = 0.32 + amount * 0.08;
+        label = "Decoding the recording locally \u2014 " + Math.round(amount * 100) + "%";
+      } else if (name === "transcribing") {
+        label = "Private Whisper is transcribing locally";
+      }
+      furthest = Math.max(furthest, fraction);
+      report(label, furthest);
+    };
+
+    const stream = engine.transcribe(input, { onProgress: stage });
+    try {
+      for await (const segment of stream) {
+        const words = String(segment && segment.text || "").trim();
+        if (!words) continue;
+        const start = Math.max(0, Number(segment.start) || 0);
+        const end = Math.max(start, Number(segment.end) || start);
+        const changed = wrote && start - lastEnd > 2.5;
+        if (changed) speaker = speaker === 1 ? 2 : 1;
+        typer.add(!wrote
+          ? "[" + clock(start) + "] Speaker " + speaker + " \u2014 " + words
+          : changed
+            ? "\n\n[" + clock(start) + "] Speaker " + speaker + " \u2014 " + words
+            : " " + words);
+        wrote = true;
+        lastEnd = Math.max(lastEnd, end);
+        const heard = seconds > 0 ? Math.min(1, end / seconds) : 0;
+        furthest = Math.max(furthest, 0.40 + heard * 0.50);
+        report("Private Whisper \u2014 " + clock(end) +
+          (seconds > 0 ? " of " + clock(seconds) : " transcribed"), furthest);
+      }
+    } catch (error) {
+      if (stream && stream.cancel) stream.cancel();
+      const detail = String((error && error.message) || error || "local model failure");
+      throw new Error("private local Whisper could not finish: " + detail);
+    }
+    typer.ghost("");
+    if (!wrote) throw new Error("private local Whisper found no speech in the recording");
+    report("Private transcript assembled on this device", 0.92);
+    return typer.text();
+  }
+
+
 
   /* The archivist writes the listing from a transcript. summaryOnly touches
      nothing but the summary field. */
@@ -1749,8 +1630,9 @@ function setup(root) {
     transcriptionStep("Starting transcription", 0.01);
     const typer = makeTyper(earShow());
     try {
-      /* The in-page ear first: it reads the file itself, with timestamps,
-         in a few passes rather than in real time. */
+      /* The recording goes only to the separate private BrowserWhisper app.
+         It works in background workers; there is no automatic cloud or
+         microphone fallback that could send or play the episode elsewhere. */
       let buf = fileBuf;
       if (!buf) {
         try {
@@ -1759,34 +1641,12 @@ function setup(root) {
           c0.close();
         } catch { buf = null; }
       }
-      if (buf) {
-        try {
-          earBy = "the browser's own whisper ear";
-          say("Listening \u2014 the ear reads the file itself and types what it finds.");
-          lastTranscript = await listenWhisper(buf, typer, transcriptionStep);
-        } catch (e) {
-          say("The in-page ear could not load (" + ((e && e.message) || "no road to it") +
-            ") \u2014 trying the other ears.");
-          transcriptionStep("Switching to the server transcription route", 0.03);
-        }
-      }
-      if (!lastTranscript && buf) {
-        try {
-          earBy = "the server's ear";
-          say("The server is listening instead, stretch by stamped stretch.");
-          lastTranscript = await listenServer(buf, buf.duration, typer, transcriptionStep);
-        } catch { /* fall through to the microphone */ }
-      }
-      if (!lastTranscript) {
-        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SR) {
-          earBy = "the browser's ear, listening out loud";
-          say("Listening out loud \u2014 the episode plays and the microphone writes it below.");
-          lastTranscript = await listenLive(blob, typer, transcriptionStep);
-        } else {
-          throw new Error("this browser has no ear, and none of the other ears could be reached");
-        }
-      }
+      earBy = "private local Whisper Base";
+      say("Private Whisper is listening on this device. The first use downloads its model once; the audio is not uploaded for transcription.");
+      lastTranscript = await listenWhisper(blob,
+        (buf && buf.duration) || (ready && ready.seconds) || 0,
+        typer, transcriptionStep);
+      typer.stop();
       if (sumBtn) sumBtn.disabled = lastTranscript.trim().length < 40;
       if (lastTranscript.trim().length >= 40) {
         transcriptionStep("Checking enrolled voiceprints", 0.94);
@@ -1795,13 +1655,24 @@ function setup(root) {
             labels: [], uncertain: [], reason: (error && error.message) || "voiceprint comparison unavailable"
           }))
           : { labels: [], uncertain: [], reason: "the audio could not be decoded locally" };
-        await describeListing(lastTranscript, false, transcriptionStep);
-        completed = true;
-        if (el.summary) el.summary.scrollIntoView({ behavior: "smooth", block: "center" });
-        if (pendingNewVoiceMatches.labels.length) {
-          say("The listing is ready. Voiceprints found " + voiceMatchReport(pendingNewVoiceMatches) +
-            (pendingNewVoiceMatches.uncertain.length ? "; uncertain voices remain unnamed." : "."));
+        /* A listing model is useful but not allowed to discard a successful
+           private transcript. Keep it for publication before asking the
+           separate text-only archivist to write metadata. */
+        listing = { transcript: lastTranscript, links: [], topics: [], tags: [] };
+        try {
+          await describeListing(lastTranscript, false, transcriptionStep);
+          if (el.summary) el.summary.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (pendingNewVoiceMatches.labels.length) {
+            say("The listing is ready. Voiceprints found " + voiceMatchReport(pendingNewVoiceMatches) +
+              (pendingNewVoiceMatches.uncertain.length ? "; uncertain voices remain unnamed." : "."));
+          }
+        } catch (summaryError) {
+          if (el.meta) el.meta.hidden = false;
+          const why = (summaryError && summaryError.message) || "the text-only archivist is unavailable";
+          transcriptionStep("Private transcript ready \u2014 write or retry the summary: " + why, 1, true);
+          say("The private transcript is safe and will publish with the episode. The summary was not written: " + why, true);
         }
+        completed = true;
       } else {
         transcriptionStep("Transcription stopped \u2014 too few words were heard", null, true);
         say("The ear kept almost nothing \u2014 the listing is yours to write by hand.", true);
@@ -2087,9 +1958,13 @@ function setup(root) {
        only way a browser can do it \u2014 so it costs playback time. */
     if (KIND === "audio") {
       tellEd("Fetching the audio so it can be cut exactly\u2026");
-      fetch(item.url).then((r) => r.arrayBuffer()).then(async (bytes) => {
+      fetch(item.url).then((response) => {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.blob();
+      }).then(async (blob) => {
+        edit.sourceBlob = blob;
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        edit.buf = await ctx.decodeAudioData(bytes);
+        edit.buf = await ctx.decodeAudioData(await blob.arrayBuffer());
         ctx.close();
         edit.seconds = edit.buf.duration;
         tellEd("Ready. " + clock(edit.buf.duration) + " of audio, cut to the sample.");
@@ -2349,11 +2224,10 @@ function setup(root) {
 
     ed("whole").addEventListener("click", () => { edit.snippets = []; drawSnips(); tellEd("Back to the whole thing."); });
 
-    /* Existing uploads can be heard too. This is particularly useful when an
-       episode reached the shelf before the transcription doors were repaired:
-       the browser's timestamped ear is tried first, then the server ear. Known
-       speaker names travel with the transcript and cause their compact speech
-       patterns to be refreshed on the server. */
+    /* Existing uploads use the same separate private local Whisper app. The
+       stored episode is fetched into this browser, transcribed in workers, and
+       only the completed transcript is returned to EGregoRA. Known speaker
+       names then refresh their compact speech patterns on the server. */
     ed("transcribe").addEventListener("click", async () => {
       const button = ed("transcribe");
       if (!edit.buf) return tellEd("The audio is still loading. Try again when the player says Ready.", true);
@@ -2372,14 +2246,9 @@ function setup(root) {
       let transcript = "";
       transcribeStep("Starting transcription", 0.01);
       try {
-        tellEd("Listening to the stored episode in this browser\u2026");
-        try {
-          transcript = await listenWhisper(edit.buf, typer, transcribeStep);
-        } catch {
-          tellEd("The browser ear could not load; the server is listening in reduced stretches\u2026");
-          transcribeStep("Switching to the server transcription route", 0.03);
-          transcript = await listenServer(edit.buf, edit.buf.duration, typer, transcribeStep);
-        }
+        if (!edit.sourceBlob) throw new Error("The stored episode file is not ready for private transcription.");
+        tellEd("Private Whisper is transcribing this stored episode on your device\u2026");
+        transcript = await listenWhisper(edit.sourceBlob, edit.buf.duration, typer, transcribeStep);
         typer.stop();
         if (!transcript || transcript.trim().length < 40) {
           throw new Error("The ear did not keep enough words to save.");
