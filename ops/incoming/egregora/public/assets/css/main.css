@@ -2469,23 +2469,28 @@ body.atlas-focused { overflow: hidden; }
   gap: 0.5rem 1rem;
 }
 .am-fields input { width: 100%; }
+/* The status-and-progress strip. It doubles as the upload meter: while a
+   file is being sent, --done climbs from 0% to 100% and the gold fill grows
+   with it. The fill is a background sized to --done rather than a ::before
+   layer, so it sits behind the words and they stay readable all the way up. */
 .am-bar {
   position: relative;
-  margin: 0.6rem 0;
-  padding: 0.45rem 0.7rem;
-  border: 1px solid rgba(215, 176, 90, 0.3);
-  border-radius: 3px;
-  font-size: 0.88rem;
-  color: #f3ddaa;
+  margin: 0.75rem 0;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgba(215, 176, 90, 0.5);
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  color: #f7e9c4;
+  text-shadow: 0 1px 2px rgba(20, 12, 2, 0.6);
   overflow: hidden;
-}
-.am-bar::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: var(--done, 0%);
-  background: rgba(215, 176, 90, 0.16);
-  transition: width 0.2s linear;
+  background-color: rgba(215, 176, 90, 0.09);
+  background-image: linear-gradient(90deg, rgba(140, 106, 36, 0.92), rgba(215, 176, 90, 0.82));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: var(--done, 0%) 100%;
+  transition: background-size 0.25s ease-out;
 }
 .am-film { width: 100%; border-radius: 3px; background: #000; display: block; }
 @media (max-width: 700px) {
@@ -3665,4 +3670,56 @@ textarea.am-ear[readonly] { opacity: 0.92; }
   color: #e6d6ac;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* ---- account centre: your face & your words ---- */
+.acct-face-row { display: flex; align-items: center; gap: 16px; margin: 10px 0 14px; }
+.acct-face {
+  width: 84px; height: 84px; flex: 0 0 84px; border-radius: 50%;
+  border: 1px solid rgba(200, 162, 74, 0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; color: var(--gold, #c8a24a);
+  background: rgba(200, 162, 74, 0.06) center / cover no-repeat;
+}
+.acct-fields { display: grid; gap: 4px; }
+.acct-fields label { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.acct-fields input, .acct-fields textarea {
+  font: inherit; color: inherit; background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(200, 162, 74, 0.22); border-radius: 3px;
+  padding: 9px 10px; margin-bottom: 10px; width: 100%; box-sizing: border-box;
+}
+#acct-bio-count { text-transform: none; letter-spacing: 0; }
+/* ======================================================================
+   The language of the oracles' answers: a little box in the head of
+   every page. Gink on this side, Shakdrah on the twin's.
+   ====================================================================== */
+.head-lang { display: inline-flex; align-items: center; flex: 0 0 auto; }
+.head-lang select {
+  background: #0e0c0a; color: #cbbb93; border: 1px solid rgba(215, 176, 90, 0.35);
+  border-radius: 3px; font-family: 'EB Garamond', serif; font-size: 0.8rem;
+  padding: 0.16rem 0.2rem; max-width: 8.4rem; cursor: pointer;
+}
+.head-lang select:hover { border-color: #d7b05a; color: #f3ddaa; }
+@media (max-width: 640px) {
+  .head-lang select { max-width: 5.8rem; font-size: 0.72rem; }
+}
+
+/* ======================================================================
+   The people page: the founders, and the members who told their story
+   ====================================================================== */
+.people-founders { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin: 0.6rem 0; }
+@media (max-width: 720px) { .people-founders { grid-template-columns: 1fr; } }
+.person-card {
+  border: 1px solid rgba(215, 176, 90, 0.22); border-radius: 4px;
+  padding: 1rem 1.1rem; background: rgba(0, 0, 0, 0.16);
+}
+.person-card h3 { font-family: Cinzel, serif; font-size: 1.15rem; color: #f3ddaa; margin: 0 0 0.15rem; letter-spacing: 0.04em; }
+.person-card p { font-size: 0.95rem; }
+.people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin: 0.8rem 0; }
+.person-card--member { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.1rem; }
+.person-face {
+  width: 84px; height: 84px; border-radius: 50%; background-color: #15120d;
+  background-size: cover; background-position: center; border: 1px solid rgba(215, 176, 90, 0.4);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 2rem; color: #d7b05a; flex: none;
 }
