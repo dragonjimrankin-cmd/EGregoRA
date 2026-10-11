@@ -43,7 +43,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Unicase:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/main.css?v=mv3bleag"><script type="application/ld+json">
+<link rel="stylesheet" href="/assets/css/main.css?v=mv3bleag">
+<link rel="stylesheet" href="/assets/css/avatar-voice.css?v=male-voices-1"><script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":["Organization","EducationalOrganization"],"@id":"https://egregora.hatchable.site/#organization","name":"EGregoRA","alternateName":"The Order of EGregoRA","url":"https://egregora.hatchable.site","email":"shakradragon@gmail.com","slogan":"Life, Love, Magic","description":"EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.","foundingDate":"2026","logo":{"@type":"ImageObject","url":"https://egregora.hatchable.site/assets/img/icon-512.png","width":512,"height":512},"image":"https://egregora.hatchable.site/assets/img/og-egregora.jpg","knowsAbout":["cosmic physics","natural philosophy","sacred geometry","astrology","druidry","consciousness","quantum decoherence","microtubules","the Law of One","Hermetic Qabalah","alchemy","neuroscience","esotericism"],"founder":[{"@type":"Person","name":"Edward Gregory","jobTitle":"Co-founder"},{"@type":"Person","name":"Jim Rankin","jobTitle":"Co-founder"}]},{"@type":"WebSite","@id":"https://egregora.hatchable.site/#website","url":"https://egregora.hatchable.site","name":"EGregoRA","description":"EGregoRA — an ornate house of enquiry co-founded by Edward Gregory and Jim Rankin, braiding cosmic physics, natural philosophy, astrology, druidry, sacred geometry, neuroscience, biology and the Law of One into one living study of reality.","inLanguage":"en-GB","publisher":{"@id":"https://egregora.hatchable.site/#organization"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://egregora.hatchable.site/ask-ed/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"WebPage","@id":"https://egregora.hatchable.site/ask-ed/#page","url":"https://egregora.hatchable.site/ask-ed/","name":"Ask Ed a Question · EGregoRA","headline":"Ask Ed a Question","description":"Put a question to Edward Gregory, co-founder of EGregoRA. Answered publicly on the podcast or privately by letter.","inLanguage":"en-GB","isPartOf":{"@id":"https://egregora.hatchable.site/#website"},"about":{"@id":"https://egregora.hatchable.site/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://egregora.hatchable.site/assets/img/og-egregora.jpg","width":1200,"height":630},"author":[{"@type":"Person","name":"Edward Gregory"},{"@type":"Person","name":"Jim Rankin"}],"publisher":{"@id":"https://egregora.hatchable.site/#organization"},"dateModified":"2026-10-11T04:25:35.130Z","keywords":"cosmic physics, natural philosophy, sacred geometry, astrology, druidry, consciousness, quantum decoherence, microtubules, the Law of One, Hermetic Qabalah, alchemy, neuroscience, esotericism"},{"@type":"BreadcrumbList","@id":"https://egregora.hatchable.site/ask-ed/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Introduction","item":"https://egregora.hatchable.site/"},{"@type":"ListItem","position":2,"name":"Ask Ed a Question","item":"https://egregora.hatchable.site/ask-ed/"}]}]}
 </script>
   <script>
@@ -555,11 +556,27 @@
           <button class="btn btn--ghost" type="button" id="fox-natural" aria-pressed="false">Natural voice: off</button>
           <button class="btn btn--ghost" type="button" id="fox-stop">Silence him</button>
         </p>
+        <div class="avatar-voice-picker">
+          <label for="fox-voice">Male neural voice</label>
+          <select id="fox-voice" aria-describedby="fox-voice-note">
+            <optgroup label="British voices">
+              <option value="bm_george">George — British</option>
+              <option value="bm_fable" selected>Fable — British</option>
+              <option value="bm_lewis">Lewis — British</option>
+            </optgroup>
+            <optgroup label="American voices">
+              <option value="am_fenrir">Fenrir — American</option>
+              <option value="am_michael">Michael — American</option>
+              <option value="am_puck">Puck — American</option>
+            </optgroup>
+          </select>
+          <span class="muted xsmall" id="fox-voice-note">Turn Natural voice on, choose a voice, then press Speak to hear it.</span>
+        </div>
         <p class="muted xsmall" id="fox-status" role="status" aria-live="polite">Waking Gink…</p>
         <p class="muted xsmall">The optional natural voice uses the open Kokoro neural model entirely in
-        this browser, with true phoneme-timed lip sync. Its first use fetches roughly 100&ndash;350&nbsp;MB,
-        depending on WebGPU support, then the browser can cache it. Answer text stays on this device;
-        only public runtime, model and voice files are downloaded. The immediate installed voice remains
+        this browser, with true phoneme-timed lip sync and six site-hosted male voice embeddings. Its first
+        use fetches the large public model and runtime support&mdash;roughly 100&ndash;350&nbsp;MB depending on WebGPU&mdash;then
+        the browser can cache them. Answer text stays on this device. The immediate installed voice remains
         available if the download, memory or graphics support is insufficient.</p>
       </div>
       <div class="fox-stage" id="fox-stage" role="img"
@@ -1711,7 +1728,7 @@
 </section>
 
 <script type="module" src="/assets/js/freeai-admin.js?v=mv3bleag"></script>
-<script type="module" src="/assets/js/fox.js?v=model-voice-2"></script>
+<script type="module" src="/assets/js/fox.js?v=male-voices-1"></script>
 <script type="module" src="/assets/js/model.js?v=mv3bleag"></script>
 <script type="module" src="/assets/js/scan.js?v=mv3bleag"></script>
 

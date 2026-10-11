@@ -6,8 +6,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   AVATAR_VOICE_PROFILES,
+  MALE_NEURAL_VOICES,
   NaturalVoiceEngine,
   buildPerformanceInput,
+  getMaleNeuralVoice,
   normaliseSpeechText,
   rankNativeVoices
 } from "../tti/src/assets/js/neural-voice.js";
@@ -33,6 +35,13 @@ assert.notEqual(AVATAR_VOICE_PROFILES.shakdrah.pauseScale, AVATAR_VOICE_PROFILES
   "The two characters must pace explicit dramatic pauses differently");
 assert.notDeepEqual(AVATAR_VOICE_PROFILES.shakdrah.audioTone, AVATAR_VOICE_PROFILES.gink.audioTone,
   "The two characters must use distinct, restrained mastering profiles");
+assert.deepEqual(MALE_NEURAL_VOICES.map(({ id }) => id), [
+  "bm_george", "bm_fable", "bm_lewis", "am_fenrir", "am_michael", "am_puck"
+], "The curated chooser must retain three British and three American male voices");
+assert.ok(MALE_NEURAL_VOICES.every(({ id }) => /^[ab]m_/.test(id)),
+  "The avatar chooser must contain male voices only");
+assert.equal(getMaleNeuralVoice("am_fenrir")?.accent, "American");
+assert.equal(getMaleNeuralVoice("af_heart"), null, "Unlisted voices must not bypass the curated chooser");
 assert.equal(NaturalVoiceEngine.isSupported(), false,
   "Importing the helper in Node must not try to create browser workers or audio contexts");
 
@@ -63,6 +72,15 @@ unmastered.audioContext = { destination: { destination: true } };
 unmastered.prepareOutput();
 assert.equal(unmastered.outputNode, unmastered.audioContext.destination,
   "Older Web Audio implementations must fall back directly to the destination");
+const selectable = new NaturalVoiceEngine({ profile: "gink", voice: "am_fenrir" });
+assert.equal(selectable.voiceLabel, "Fenrir (American)");
+let selectedSetup = null;
+selectable.tts = { clear() {}, setup(settings) { selectedSetup = settings; } };
+assert.equal(selectable.setVoice("am_puck"), true);
+assert.equal(selectable.voiceId, "am_puck");
+assert.equal(selectedSetup.voice, "am_puck");
+assert.equal(selectable.setVoice("af_heart"), false);
+assert.equal(selectable.voiceId, "am_puck", "An invalid or female voice must not replace the selection");
 
 /* Cancellation is testable without loading a model: every active queue,
    source and timing callback must be invalidated atomically. */
@@ -124,7 +142,7 @@ const ranked = rankNativeVoices([
 assert.match(ranked[0].name, /Ryan.*Natural/, "A natural British masculine voice should rank first");
 assert.equal(ranked.at(-1).name, "Bells", "Novelty voices must rank last");
 
-const [dragon, fox, patchFox, helper, patchHelper, shakPage, ginkPage, site, packageJson, npmrc, deployer] = await Promise.all([
+const [dragon, fox, patchFox, helper, patchHelper, shakPage, ginkPage, site, packageJson, npmrc, deployer, syncer] = await Promise.all([
   text("tti/src/assets/js/dragon.js"),
   text("tti/src/assets/js/fox.js"),
   text("egregora-patch/public/assets/js/fox.js"),
@@ -135,7 +153,8 @@ const [dragon, fox, patchFox, helper, patchHelper, shakPage, ginkPage, site, pac
   text("tti/src/assets/js/site.js"),
   text("package.json"),
   text(".npmrc"),
-  text("scripts/hatchable-deploy.mjs")
+  text("scripts/hatchable-deploy.mjs"),
+  text("scripts/sync-neural-voice-assets.mjs")
 ]);
 assert.equal(patchFox, fox, "The deployed Gink sculpt must match the canonical Gink module");
 assert.equal(patchHelper, helper, "Both sites must use the same neural engine");
@@ -146,6 +165,8 @@ assert.match(helper, /import\("\.\/headtts\/headtts\.mjs"\)/,
 assert.doesNotMatch(helper, /^import .*headtts/m,
   "The multi-megabyte runtime must not enter the initial page payload");
 assert.match(helper, /endpoints: navigator\.gpu \? \["webgpu", "wasm"\] : \["wasm"\]/);
+assert.match(helper, /voiceURL: new URL\("voices\/", root\)\.href/,
+  "Voice embeddings must load from the site instead of a third-party voice URL");
 assert.match(helper, /type: "progress"/);
 assert.match(helper, /data\.visemes[\s\S]*this\.onViseme\(\{[\s\S]*viseme/,
   "Generated phoneme visemes must drive the avatar mouth");
@@ -164,6 +185,8 @@ for (const [source, key, voice, button] of [
     `${key} must stop retrying failed neural mode until the visitor opts in again`);
   assert.match(source, /naturalVoice\.pause\(\)/, `${key} must pause neural playback`);
   assert.match(source, /naturalVoice\.resume\(\)/, `${key} must resume neural playback`);
+  assert.match(source, /neuralVoiceSelect[\s\S]*naturalVoice\.setVoice\(selected\.id\)/,
+    `${key} must persist and apply a visitor's curated male voice choice`);
   assert.match(source, /rankNativeVoices/);
   assert.match(source, /normaliseSpeechText/);
   assert.match(source, /const random = \(\(\) =>/, `${key} needs a stable procedural identity`);
@@ -184,6 +207,10 @@ assert.match(fox, /const target = listening \? 0\.88/,
   "Gink's fox pupil must dilate separately from ShakDrah's");
 for (const page of [shakPage, ginkPage]) {
   assert.match(page, /Natural voice: off/);
+  assert.match(page, /Male neural voice/);
+  assert.match(page, /bm_george[\s\S]*bm_fable[\s\S]*bm_lewis/);
+  assert.match(page, /am_fenrir[\s\S]*am_michael[\s\S]*am_puck/);
+  assert.match(page, /six site-hosted male voice embeddings/);
   assert.match(page, /100(?:&ndash;|–)350/);
   assert.match(page, /Answer text stays on this device/);
   assert.match(page, /immediate installed voice remains/);
@@ -192,10 +219,18 @@ assert.match(site, /window\.EGDragon \|\| window\.EGFox/g,
   "Shared controls must target ShakDrah as well as Gink");
 assert.match(packageJson, /"@met4citizen\/headtts": "1\.3\.0"/);
 assert.match(packageJson, /"@huggingface\/transformers": "4\.3\.1"/);
+assert.match(syncer, /const kokoroVersion = "1\.2\.1"/);
+assert.match(syncer, /kokoroSha512 = "[A-Za-z0-9+/=]+"/,
+  "The locally hosted male voice embeddings need an integrity-pinned reproducible source");
+assert.match(syncer, /tarEntries\.get\(`package\/voices\/\$\{voice\}`\)/);
 assert.match(npmrc, /ignore-scripts=true/,
   "The unused Node ONNX postinstall must remain disabled");
 assert.match(deployer, /extension === "\.mjs"/,
   "Valid browser modules must bypass Hatchable's classic-script parser");
+assert.match(deployer, /"\.bin"/,
+  "Neural voice embeddings must be uploaded as binary rather than UTF-8 text");
+assert.match(deployer, /sourceMirror = browserModule \|\| extension === "\.bin"/,
+  "Generated TTI voice embeddings must map back to their committed source files");
 assert.match(deployer, /includes\("import\.meta"\)/,
   "JavaScript using import.meta must use Hatchable's byte uploader");
 assert.match(deployer, /RAW_SOURCE_BASE/,
@@ -222,7 +257,12 @@ assert.doesNotMatch(await text("tti/src/assets/js/headtts/worker-tts.mjs"), /nod
 for (const required of [
   "headtts.mjs", "worker-tts.mjs", "language.mjs", "language-en-us.mjs", "utils.mjs",
   "transformers.min.js", "dictionaries/en-us.txt", "LICENSE-HeadTTS.txt",
-  "LICENSE-Transformers.txt", "THIRD-PARTY-NOTICES.txt"
+  "LICENSE-Transformers.txt", "LICENSE-Kokoro.txt", "THIRD-PARTY-NOTICES.txt",
+  ...MALE_NEURAL_VOICES.map(({ id }) => `voices/${id}.bin`)
 ]) assert.ok(files.includes(required), `Missing vendored neural asset: ${required}`);
+for (const { id } of MALE_NEURAL_VOICES) {
+  assert.ok((await stat(path.join(ttiVendor, "voices", `${id}.bin`))).size > 500000,
+    `Vendored voice is missing or is only a Git LFS pointer: ${id}`);
+}
 
-console.log("Neural voice engine, consent, fallback, prosody, distinction, lip-sync assets, and parity verified.");
+console.log("Neural engine, six local male voices, consent, fallback, prosody, lip-sync assets, and parity verified.");

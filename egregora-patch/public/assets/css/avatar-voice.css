@@ -1,0 +1,35 @@
+/* Curated local Kokoro voice chooser shared by the avatar controls. */
+.avatar-voice-picker {
+  display: grid;
+  grid-template-columns: max-content minmax(10rem, 1fr);
+  align-items: center;
+  gap: 0.35rem 0.65rem;
+  margin: 0.65rem 0 0.55rem;
+}
+.avatar-voice-picker label {
+  color: var(--gold-bright, #f2d48b);
+  font-family: var(--display, inherit);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.avatar-voice-picker select {
+  min-width: 0;
+  padding: 0.48rem 2rem 0.48rem 0.65rem;
+  color: var(--ivory, #f5efe3);
+  background: rgba(8, 12, 18, 0.9);
+  border: 1px solid rgba(118, 207, 238, 0.35);
+  border-radius: 0.35rem;
+  font: inherit;
+  font-size: 0.82rem;
+}
+.avatar-voice-picker select:focus-visible {
+  outline: 2px solid var(--aqua, #76cfee);
+  outline-offset: 2px;
+}
+.avatar-voice-picker select:disabled { opacity: 0.45; cursor: not-allowed; }
+.avatar-voice-picker .xsmall { grid-column: 1 / -1; margin: 0; }
+@media (max-width: 640px) {
+  .avatar-voice-picker { grid-template-columns: 1fr; }
+  .avatar-voice-picker .xsmall { grid-column: auto; }
+}

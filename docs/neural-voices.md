@@ -6,15 +6,16 @@ ShakDrah and Gink now have an explicit, optional **Natural voice** mode built on
 
 - [HeadTTS 1.3.0](https://github.com/met4citizen/HeadTTS) (MIT), which adds phoneme timestamps and Oculus visemes;
 - [Kokoro 82M v1.0 ONNX, timestamped](https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX-timestamped) (Apache-2.0 model), a compact open neural TTS model;
-- [Transformers.js 4.3.1](https://github.com/huggingface/transformers.js) (Apache-2.0), running with WebGPU/fp32 where available and WASM/q4 as the fallback.
+- [Transformers.js 4.3.1](https://github.com/huggingface/transformers.js) (Apache-2.0), running with WebGPU/fp32 where available and WASM/q4 as the fallback;
+- [Kokoro.js 1.2.1](https://github.com/hexgrad/kokoro) (Apache-2.0), used as the reproducible source for six locally hosted male voice embeddings.
 
-The model executes in a module worker in the visitor's browser. The answer text does not go to a speech API. On first use, the browser still has to fetch the public runtime, model and selected voice files. Depending on the backend and quantisation, that is roughly 100–350 MB. Browser caching normally avoids repeating it.
+The model executes in a module worker in the visitor's browser. The answer text does not go to a speech API. The HeadTTS/Transformers runtime, dictionary and six curated male voice embeddings are hosted by the sites. On first use, the browser still has to fetch the large public model and ONNX runtime support. Depending on the backend and quantisation, that is roughly 100–350 MB. Browser caching normally avoids repeating it.
 
 The existing Web Speech implementation remains an immediate progressive fallback. No model is loaded merely by visiting the page. The neural download begins only when the visitor selects **Natural voice**, or later asks an avatar to speak after having selected and remembered that preference.
 
 ## Why this route
 
-HeadTTS was chosen over using Kokoro.js directly because these avatars need more than audio. Its timestamped Kokoro graph returns word and phoneme/viseme timings, so jaw shapes follow the generated sound rather than estimated spelling. It also already isolates inference in a worker and supports WebGPU with WASM fallback.
+HeadTTS/Kokoro is the strongest practical free synthesiser for these static browser avatars, rather than a claim that one model is universally best. It combines open licensing, high-quality neural speech, private browser inference, WebGPU/WASM fallback and exact lip-sync data without a paid server. HeadTTS was chosen over using Kokoro.js directly because these avatars need more than audio: its timestamped Kokoro graph returns word and phoneme/viseme timings, so jaw shapes follow the generated sound rather than estimated spelling.
 
 Other researched routes were not selected as the primary implementation:
 
@@ -31,6 +32,13 @@ Kokoro does not accept free-form acting prompts or SSML. Pretending otherwise wo
 | --- | --- | ---: | --- |
 | ShakDrah | `bm_george` | 0.91 | older British keeper; longer explicit pauses and gently weighted low register |
 | Gink | `bm_fable` | 1.00 | lighter British familiar; shorter explicit pauses and restrained presence lift |
+
+Visitors can change either default with the accessible male-voice chooser. The curated, locally hosted range is:
+
+- British: George, Fable and Lewis;
+- American: Fenrir, Michael and Puck.
+
+These are the model card's stronger or most useful male voices, not a promise that every voice suits every passage. Selection is saved locally per character, does not preload the model, and can be auditioned with the existing **Speak** control. Changing voice does not weaken phoneme-timed lip sync.
 
 The spoken-only preparation layer:
 
@@ -62,9 +70,9 @@ Both procedural Three.js sculpts use stable seeded surface detail, bump-mapped m
 
 ## Vendoring and updates
 
-The small browser modules, US-English pronunciation dictionary, licences and Transformers.js loader are vendored under both sites' `assets/js/headtts/` directories. Model weights and ONNX runtime binaries are deliberately not in Git.
+The browser modules, US-English pronunciation dictionary, licences, Transformers.js loader and six selected Kokoro voice embeddings are vendored under both sites' `assets/js/headtts/` directories. Each voice is roughly 510 KB. They are reproduced from the pinned Apache-2.0 `kokoro-js` package rather than copied from an untracked download. Large model weights and ONNX runtime binaries are deliberately not in Git.
 
-Pinned development packages and the synchronisation command are:
+Pinned development packages are HeadTTS 1.3.0 and Transformers.js 4.3.1. The synchroniser fetches the integrity-pinned Kokoro.js 1.2.1 npm tarball directly and extracts only the selected voices and licence, avoiding installation of an unused second inference stack. The synchronisation command is:
 
 ```sh
 npm ci

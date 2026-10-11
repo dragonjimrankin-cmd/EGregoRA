@@ -50,6 +50,9 @@ jobs:
           test -s tti/hatchable/public/assets/js/neural-voice.js
           test -s tti/hatchable/public/assets/js/headtts/worker-tts.mjs
           test -s tti/hatchable/public/assets/js/headtts/dictionaries/en-us.txt
+          test "$(wc -c < tti/hatchable/public/assets/js/headtts/voices/bm_george.bin)" -gt 500000
+          test "$(wc -c < tti/hatchable/public/assets/js/headtts/voices/am_fenrir.bin)" -gt 500000
+          test -s tti/hatchable/public/assets/js/headtts/LICENSE-Kokoro.txt
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
@@ -59,8 +62,12 @@ jobs:
           grep -q 'ASK SHAKDRAH TO DRAW' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO FILM' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Natural voice: off' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Male neural voice' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'six site-hosted male voice embeddings' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Answer text stays on this device' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'bm_george' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'voiceURL: new URL("voices/", root).href' tti/hatchable/public/assets/js/neural-voice.js
+          grep -q 'avatar-voice-picker' tti/hatchable/public/assets/css/main.css
           grep -q 'prepareOutput' tti/hatchable/public/assets/js/neural-voice.js
           grep -q 'const throatScutes' tti/hatchable/public/assets/js/dragon.js
           grep -q 'roundNow' tti/hatchable/public/assets/js/dragon.js
@@ -141,7 +148,8 @@ jobs:
               markers: ['Sixteen prepared answers', 'What is in The Channeling Circle transcript archive?',
                 'Can reversible mixing create a matter-antimatter imbalance?',
                 'ASK SHAKDRAH TO DRAW', 'ASK SHAKDRAH TO FILM', 'oracle-knowledge.js',
-                'Natural voice: off', 'Answer text stays on this device']
+                'Natural voice: off', 'Male neural voice', 'six site-hosted male voice embeddings',
+                'Answer text stays on this device']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
@@ -150,13 +158,18 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/neural-voice.js',
-              markers: ['NaturalVoiceEngine', 'bm_george', 'bm_fable', 'prepareOutput',
-                'audioTone', 'headtts/headtts.mjs', 'generated privately on this device']
+              markers: ['NaturalVoiceEngine', 'MALE_NEURAL_VOICES', 'am_fenrir', 'bm_lewis',
+                'voiceURL: new URL("voices/", root).href', 'prepareOutput', 'audioTone',
+                'headtts/headtts.mjs', 'generated privately on this device']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/assets/js/headtts/voices/bm_george.bin',
+              markers: [], minBytes: 500000
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/dragon.js',
-              markers: ['const throatScutes', 'microGaze', 'roundNow',
-                'wings.forEach', 'const nostrils']
+              markers: ['tti-shakdrah-neural-male-voice', 'naturalVoice.setVoice',
+                'const throatScutes', 'microGaze', 'roundNow', 'wings.forEach', 'const nostrils']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/headtts/worker-tts.mjs',
@@ -174,8 +187,11 @@ jobs:
                 const response = await fetch(`${page.url}?deploy=${process.env.GITHUB_SHA || Date.now()}`, {
                   headers: { 'cache-control': 'no-cache' }
                 });
-                const html = await response.text();
-                return { page, response, current: response.ok && page.markers.every((marker) => html.includes(marker)) };
+                const body = await response.arrayBuffer();
+                const html = page.markers.length ? new TextDecoder().decode(body) : '';
+                const current = response.ok && body.byteLength >= (page.minBytes || 1) &&
+                  page.markers.every((marker) => html.includes(marker));
+                return { page, response, current };
               }));
               if (checked.every((result) => result.current)) {
                 console.log('Live essays and ShakDrah prepared knowledge verified.');

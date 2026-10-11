@@ -43,11 +43,27 @@ description: "Put a question to ShakDrah, who keeps the Two Infinities papers �
           <button class="btn btn--ghost" type="button" id="dragon-natural" aria-pressed="false">Natural voice: off</button>
           <button class="btn btn--ghost" type="button" id="dragon-stop">Silence him</button>
         </p>
+        <div class="avatar-voice-picker">
+          <label for="dragon-voice">Male neural voice</label>
+          <select id="dragon-voice" aria-describedby="dragon-voice-note">
+            <optgroup label="British voices">
+              <option value="bm_george" selected>George — British</option>
+              <option value="bm_fable">Fable — British</option>
+              <option value="bm_lewis">Lewis — British</option>
+            </optgroup>
+            <optgroup label="American voices">
+              <option value="am_fenrir">Fenrir — American</option>
+              <option value="am_michael">Michael — American</option>
+              <option value="am_puck">Puck — American</option>
+            </optgroup>
+          </select>
+          <span class="muted xsmall" id="dragon-voice-note">Turn Natural voice on, choose a voice, then press Speak to hear it.</span>
+        </div>
         <p class="muted xsmall" id="dragon-status" role="status" aria-live="polite">Waking ShakDrah…</p>
         <p class="muted xsmall">The optional natural voice uses the open Kokoro neural model entirely in
-        this browser, with true phoneme-timed lip sync. Its first use fetches roughly 100&ndash;350&nbsp;MB,
-        depending on WebGPU support, then the browser can cache it. Answer text stays on this device;
-        only public runtime, model and voice files are downloaded. The immediate installed voice remains
+        this browser, with true phoneme-timed lip sync and six site-hosted male voice embeddings. Its first
+        use fetches the large public model and runtime support&mdash;roughly 100&ndash;350&nbsp;MB depending on WebGPU&mdash;then
+        the browser can cache them. Answer text stays on this device. The immediate installed voice remains
         available if the download, memory or graphics support is insufficient.</p>
       </div>
       <div class="dragon-stage" id="dragon-stage" role="img"

@@ -43,7 +43,7 @@ const opt = (n, d = null) => {
 const BUNDLE = join(ROOT, opt("bundle", "hatchable"));
 const PROJECT_NAME = opt("name", "EGregoRA");
 const PROJECT_SLUG = opt("slug", "egregora");
-const BINARY = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".ico", ".woff", ".woff2", ".mp3", ".m4a", ".mp4"]);
+const BINARY = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".ico", ".woff", ".woff2", ".mp3", ".m4a", ".mp4", ".bin"]);
 
 if (!TOKEN) {
   console.error("✖ HATCHABLE_TOKEN is not set.\n  export HATCHABLE_TOKEN=hb_… (console → Settings → API keys)");
@@ -148,7 +148,7 @@ function collect() {
       ));
     /* A built static site can mirror generated module/text paths from its
        source tree when the generated output itself is not committed. */
-    f.sourceMirror = browserModule || (oversized && !BINARY.has(extension));
+    f.sourceMirror = browserModule || extension === ".bin" || (oversized && !BINARY.has(extension));
     (BINARY.has(extension) || oversized || browserModule ? binary : text).push(f);
   }
   return { text, binary };

@@ -2,13 +2,13 @@
    Private, opt-in neural speech for ShakDrah and Gink.
 
    HeadTTS runs the Kokoro 82M model in a module worker, on WebGPU when it is
-   available and WASM otherwise. The model, voice and runtime are downloaded
-   only after a visitor explicitly selects the natural voice. Transformers.js
-   uses the browser cache, so a later visit normally reuses those files.
+   available and WASM otherwise. The synthesiser, lip-sync runtime and curated
+   male voice embeddings are hosted with the site. The large model/runtime
+   support downloads only after a visitor explicitly selects Natural voice,
+   and browser caching normally avoids repeating that first-use download.
 
    No answer text is sent to a speech API: inference and audio playback happen
-   in this browser. Model/runtime files still have to be fetched from their
-   public CDNs on first use. Native Web Speech remains the immediate fallback.
+   in this browser. Native Web Speech remains the immediate fallback.
    =========================================================================== */
 
 const PROFILE_DATA = {
@@ -45,6 +45,25 @@ const PROFILE_DATA = {
 export const AVATAR_VOICE_PROFILES = Object.freeze(Object.fromEntries(
   Object.entries(PROFILE_DATA).map(([key, value]) => [key, Object.freeze({ ...value })])
 ));
+
+/* A curated range of male Kokoro voices for these English-speaking avatars,
+ * balancing published quality with contrasting delivery. Voice embeddings are
+ * small, Apache-2.0 assets vendored with the
+ * site; the much larger shared model remains an explicit first-use download. */
+export const MALE_NEURAL_VOICES = Object.freeze([
+  { id: "bm_george", name: "George", accent: "British" },
+  { id: "bm_fable", name: "Fable", accent: "British" },
+  { id: "bm_lewis", name: "Lewis", accent: "British" },
+  { id: "am_fenrir", name: "Fenrir", accent: "American" },
+  { id: "am_michael", name: "Michael", accent: "American" },
+  { id: "am_puck", name: "Puck", accent: "American" }
+].map((voice) => Object.freeze(voice)));
+
+const MALE_NEURAL_VOICE_MAP = new Map(MALE_NEURAL_VOICES.map((voice) => [voice.id, voice]));
+
+export function getMaleNeuralVoice(id) {
+  return MALE_NEURAL_VOICE_MAP.get(String(id || "")) || null;
+}
 
 const FEMALE_HINT = /female|zira|hazel|susan|kate|serena|fiona|martha|amelie|libby|sonia|moira|karen|tessa|samantha|victoria/i;
 const MALE_HINT = /male|daniel|arthur|oliver|george|ryan|thomas|jamie|lewis|james|aaron|alastair|matthew/i;
@@ -189,8 +208,9 @@ const conciseError = (error) => {
  *  buffers into Web Audio, schedules HeadTTS's true phoneme/viseme timings,
  *  and supports cancellation plus pause/resume without discarding the model. */
 export class NaturalVoiceEngine {
-  constructor({ profile = "gink", onStatus, onStart, onEnd, onViseme, onWord, onError } = {}) {
+  constructor({ profile = "gink", voice, onStatus, onStart, onEnd, onViseme, onWord, onError } = {}) {
     this.profile = AVATAR_VOICE_PROFILES[profile] || AVATAR_VOICE_PROFILES.gink;
+    this.voice = getMaleNeuralVoice(voice)?.id || this.profile.neuralVoice;
     this.onStatus = onStatus || (() => {});
     this.onStart = onStart || (() => {});
     this.onEnd = onEnd || (() => {});
@@ -221,6 +241,28 @@ export class NaturalVoiceEngine {
 
   get ready() { return this.connected; }
   get speaking() { return Boolean(this.source || this.current || this.audioQueue.length || this.generating); }
+  get voiceId() { return this.voice; }
+  get voiceLabel() {
+    const selected = getMaleNeuralVoice(this.voice);
+    return selected ? `${selected.name} (${selected.accent})` : this.voice;
+  }
+
+  setVoice(id) {
+    const selected = getMaleNeuralVoice(id);
+    if (!selected) return false;
+    if (selected.id === this.voice) return true;
+    this.stop({ notify: false });
+    this.voice = selected.id;
+    if (this.tts) {
+      this.tts.setup({
+        voice: this.voice,
+        language: "en-us",
+        speed: this.profile.neuralSpeed,
+        audioEncoding: "wav"
+      });
+    }
+    return true;
+  }
 
   /* A very gentle, character-specific mastering chain. It does not disguise
      the model or add theatrical effects: it controls sentence-to-sentence
@@ -262,7 +304,7 @@ export class NaturalVoiceEngine {
     if (!NaturalVoiceEngine.isSupported()) throw new Error("this browser cannot run local neural speech");
 
     this.connectPromise = (async () => {
-      this.onStatus({ type: "loading", text: `Preparing ${this.profile.label}'s natural voice…` });
+      this.onStatus({ type: "loading", text: `Preparing ${this.profile.label}'s ${this.voiceLabel} neural voice…` });
       /* Create/resume audio before the first await so the button or Speak
          gesture unlocks playback on mobile Safari as well as desktop. */
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -279,8 +321,9 @@ export class NaturalVoiceEngine {
         workerModule: new URL("worker-tts.mjs", root).href,
         transformersModule: new URL("transformers.min.js", root).href,
         dictionaryURL: new URL("dictionaries/", root).href,
-        voices: [this.profile.neuralVoice],
-        defaultVoice: this.profile.neuralVoice,
+        voiceURL: new URL("voices/", root).href,
+        voices: [this.voice],
+        defaultVoice: this.voice,
         defaultLanguage: "en-us",
         defaultSpeed: this.profile.neuralSpeed,
         defaultAudioEncoding: "wav",
@@ -302,7 +345,7 @@ export class NaturalVoiceEngine {
         });
       });
       await this.tts.setup({
-        voice: this.profile.neuralVoice,
+        voice: this.voice,
         language: "en-us",
         speed: this.profile.neuralSpeed,
         audioEncoding: "wav"
@@ -310,7 +353,7 @@ export class NaturalVoiceEngine {
       this.connected = true;
       this.onStatus({
         type: "ready",
-        text: `Natural neural voice ready — generated privately on this device.`
+        text: `${this.voiceLabel} neural voice ready — generated privately on this device.`
       });
       return true;
     })().catch((error) => {
@@ -412,7 +455,7 @@ export class NaturalVoiceEngine {
     try {
       await this.tts.synthesize({
         input,
-        voice: this.profile.neuralVoice,
+        voice: this.voice,
         language: "en-us",
         speed: this.profile.neuralSpeed,
         audioEncoding: "wav",
