@@ -618,6 +618,34 @@
         <p class="auth-msg" id="acct-profile-msg" role="status"></p>
       </div>
 
+      <div class="acct-section" id="acct-house" hidden>
+        <h3>Your biography on the people page</h3>
+        <p class="muted small">The house keeps a page of who is in it —
+        <a href="/people/">the people page</a>. Submit your own story with a picture, and it goes
+        on the page once the owner has read it and given the nod. You may withdraw it at any time.
+        The picture is shrunk in your own browser before it leaves this device.</p>
+        <div class="acct-face-row">
+          <span class="acct-face" id="acct-house-face">?</span>
+          <span>
+            <label class="btn btn--ghost" for="acct-house-file">Choose a picture</label>
+            <input type="file" id="acct-house-file" accept="image/*" hidden>
+            <p class="muted xsmall" id="acct-house-msg"></p>
+          </span>
+        </div>
+        <div class="acct-fields">
+          <label for="acct-house-name">Signed</label>
+          <input id="acct-house-name" type="text" maxlength="60" autocomplete="nickname">
+          <label for="acct-house-bio">Your story <span class="muted xsmall" id="acct-house-count">0 / 400 words</span></label>
+          <textarea id="acct-house-bio" rows="7" maxlength="4000"
+                    placeholder="Who you are, what brought you to the house, what you carry. Four hundred words is plenty."></textarea>
+        </div>
+        <p class="ask-actions">
+          <button class="btn" type="button" id="acct-house-send">Submit for the people page</button>
+          <button class="btn btn--ghost" type="button" id="acct-house-drop">Withdraw it</button>
+        </p>
+        <p class="auth-msg" id="acct-house-status" role="status"></p>
+      </div>
+
       <div class="acct-section">
         <h3>How you get in</h3>
         <ul class="passkey-list" id="acct-keys"></ul>

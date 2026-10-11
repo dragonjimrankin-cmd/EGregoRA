@@ -67,6 +67,7 @@
   }
 
   function post(payload) {
+    if (doorToken) payload.token = doorToken; /* the remembered key rides along; the server checks it before anything else */
     return fetch("/api/edit", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -99,7 +100,20 @@
       ".ae-mini button { background: #0e0c0a; color: #e7dcc4; border: 1px solid rgba(215,176,90,.3);",
       "  border-radius: 3px; font-size: .78rem; padding: .18rem .5rem; cursor: pointer;",
       "  font-family: 'EB Garamond', serif; }",
-      ".ae-mini button:hover { border-color: #d7b05a; color: #f3ddaa; }"
+      ".ae-mini button:hover { border-color: #d7b05a; color: #f3ddaa; }",
+      ".ae-mini-x { position: absolute; top: -9px; right: -9px; width: 1.25rem; height: 1.25rem;",
+      "  border-radius: 50%; padding: 0; background: #0e0c0a; color: #cbbb93;",
+      "  border: 1px solid rgba(215,176,90,.65); cursor: pointer; font-size: .62rem; line-height: 1; }",
+      ".ae-mini-x:hover { color: #f3ddaa; border-color: #d7b05a; }",
+      ".ae-mini select { background: #0e0c0a; color: #e7dcc4; border: 1px solid rgba(215,176,90,.3);",
+      "  border-radius: 3px; font-size: .72rem; padding: .16rem .1rem;",
+      "  font-family: 'EB Garamond', serif; max-width: 7.4rem; }",
+      ".ae-mini input[type=color] { width: 1.5rem; height: 1.5rem; padding: 0;",
+      "  border: 1px solid rgba(215,176,90,.3); border-radius: 3px; background: #0e0c0a; cursor: pointer; }",
+      ".ae-mini-row { flex-basis: 100%; display: flex; gap: .25rem; }",
+      ".ae-mini-row input[type=url] { flex: 1; min-width: 0; background: #0e0c0a;",
+      "  border: 1px solid rgba(215,176,90,.3); border-radius: 3px; color: #e7dcc4;",
+      "  font-size: .72rem; padding: .18rem .3rem; font-family: 'EB Garamond', serif; }"
     ].join("\n");
     var style = document.createElement("style");
     style.id = "ae-extra-style";
@@ -498,9 +512,53 @@
   if (document.readyState === "loading") addEventListener("DOMContentLoaded", place);
   else place();
 
+  /* The key remembered from another page of the house: verified quietly,
+     and if it is true the door stands open without a second asking. */
+  (function rememberedKey() {
+    var tok = cookie("eg-admin");
+    if (!tok) return;
+    fetch("/api/owner", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "check", token: tok })
+    }).then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (d) {
+        if (d && d.ok) {
+          doorToken = tok;
+          openPanel();
+          document.body.classList.add("is-editing");
+          if (button) button.setAttribute("aria-expanded", "true");
+          say("The door is already open — the key was remembered.");
+          loadOwnerPanel();
+        } else {
+          doorToken = "";
+          clearCookie("eg-admin");
+        }
+      })
+      .catch(function () { doorToken = ""; clearCookie("eg-admin"); });
+  })();
+
   /* ----------------------------------------------------------- the state */
   var pass = "";
+  var doorToken = "";        /* the key remembered in a cookie, if the door was opened once already */
   var panel = null;
+
+  function cookie(name) {
+    var m = new RegExp("(?:^|;\\s*)" + name + "=([^;]+)").exec(document.cookie || "");
+    return m ? m[1] : "";
+  }
+  function setCookie(name, value, days) {
+    document.cookie = name + "=" + value + "; path=/; max-age=" + Math.floor(days * 86400) + "; SameSite=Lax";
+  }
+  function clearCookie(name) {
+    document.cookie = name + "=; path=/; max-age=0; SameSite=Lax";
+  }
+  function loadOwnerPanel() {
+    if (window.EGOwn || document.getElementById("og-owner-script")) return;
+    var s = document.createElement("script");
+    s.id = "og-owner-script";
+    s.src = "/assets/js/owner-panel.js?v=owner-1";
+    document.head.appendChild(s);
+  }
   var picking = false;
   var boxEl = null;          /* the rectangle on screen */
   var hoverEl = null;        /* the outline that follows the pointer */
@@ -548,6 +606,8 @@
       '  <button type="button" class="btn btn--small btn--ghost ae-undo-pub" title="Undo the last published change on this page">Undo</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-redo-pub" title="Bring back the last undone change">Redo</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-signins">Sign-ins</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-owner" title="The deeper door: the traffic of the house, and the people">Owner mode</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-door-close" title="Burn the remembered key and lock the door again">Close the door</button>',
       '</div>',
       '<p class="ae-steps"><span class="ae-step is-on">1 Pick</span> &rarr; ',
       '<span class="ae-step">2 Change</span> &rarr; <span class="ae-step">3 Confirm</span></p>',
@@ -756,6 +816,25 @@
     q(".ae-undo-pub").addEventListener("click", function () { pubStep("undo"); });
     q(".ae-redo-pub").addEventListener("click", function () { pubStep("redo"); });
     q(".ae-signins").addEventListener("click", showSignins);
+    q(".ae-owner").addEventListener("click", function () {
+      loadOwnerPanel();
+      if (window.EGOwn && window.EGOwn.enterOwner) window.EGOwn.enterOwner();
+      else say("The owner room is waking.", false);
+    });
+    q(".ae-door-close").addEventListener("click", function () {
+      pass = "";
+      if (doorToken) {
+        fetch("/api/owner", {
+          method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "close", token: doorToken })
+        }).then(function (r) { return r.json().catch(function () { return {}; }); }).catch(function () {});
+      }
+      doorToken = "";
+      clearCookie("eg-admin");
+      if (window.EGOwn) window.EGOwn.forget("admin");
+      closeAll();
+      say("The door is shut, and the key is burned.", false);
+    });
     q(".ae-date-save").addEventListener("click", function () { savePageDate(false); });
     q(".ae-date-clear").addEventListener("click", function () { savePageDate(true); });
     q(".ae-src-load").addEventListener("click", loadSource);
@@ -1091,24 +1170,105 @@
     if (!panel || (!runs.length && !blocks.length)) return hideMini();
     if (!mini) {
       mini = el("div", "ae-mini");
-      [
-        ["B", "Bold the selection", function () { miniLook([["font-weight", "700"]], "bold"); }],
-        ["I", "Italicise the selection", function () { miniLook([["font-style", "italic"]], "italic"); }],
-        ["\u25c6 gold", "House gold", function () { miniLook([["color", "#d7b05a"]], "gold"); }],
-        ["\u25b2", "Move the block up", function () { doStruct("move-up"); }],
-        ["\u25bc", "Move the block down", function () { doStruct("move-down"); }],
-        ["\u2398", "Duplicate the block", function () { doStruct("clone"); }],
-        ["hide", "Take it off the page", function () { doStruct("hide"); }],
-        ["words\u2026", "Edit the words", function () { openTab("words"); }],
-        ["look\u2026", "Set the look", function () { openTab("look"); }],
-        ["ask\u2026", "Ask for a change", function () { openTab("ask"); }]
-      ].forEach(function (b) {
-        var n = el("button", "", b[0]);
+      var mk = function (label, title, fn) {
+        var n = el("button", "", label);
         n.type = "button";
-        n.title = b[1];
-        n.addEventListener("click", b[2]);
+        n.title = title;
+        n.addEventListener("click", fn);
         mini.appendChild(n);
+        return n;
+      };
+      mk("B", "Bold the selection", function () { miniLook([["font-weight", "700"]], "bold"); }).style.fontWeight = "700";
+      mk("I", "Italicise the selection", function () { miniLook([["font-style", "italic"]], "italic"); }).style.fontStyle = "italic";
+      mk("U", "Underline the selection", function () { miniLook([["text-decoration", "underline"]], "underline"); }).style.textDecoration = "underline";
+      mk("S", "Strike through the selection", function () { miniLook([["text-decoration", "line-through"]], "strikethrough"); }).style.textDecoration = "line-through";
+      var fontSel = el("select", "ae-mini-font");
+      fontSel.title = "Choose the face";
+      ["EB Garamond, serif", "Cinzel, serif", "Georgia, serif",
+       "'Helvetica Neue', Arial, sans-serif", "'Courier New', monospace"].forEach(function (f) {
+        var o = el("option");
+        o.value = f;
+        o.textContent = f.split(",")[0].replace(/'/g, "");
+        fontSel.appendChild(o);
       });
+      fontSel.addEventListener("change", function () {
+        if (fontSel.value) miniLook([["font-family", fontSel.value]], "face");
+      });
+      mini.appendChild(fontSel);
+      var sizeSel = el("select", "ae-mini-size");
+      sizeSel.title = "Choose the size";
+      var sz0 = el("option"); sz0.textContent = "size"; sizeSel.appendChild(sz0);
+      [12, 14, 16, 18, 20, 22, 24, 28, 32, 40, 48].forEach(function (s) {
+        var o = el("option"); o.value = String(s); o.textContent = s + "px"; sizeSel.appendChild(o);
+      });
+      sizeSel.addEventListener("change", function () {
+        if (sizeSel.value) miniLook([["font-size", sizeSel.value + "px"]], "size");
+      });
+      mini.appendChild(sizeSel);
+      var col = el("input", "ae-mini-colour");
+      col.type = "color"; col.value = "#d7b05a";
+      col.title = "Choose the ink colour";
+      col.addEventListener("change", function () { miniLook([["color", col.value]], "ink"); });
+      mini.appendChild(col);
+      mk("\u25c6 gold", "House gold", function () { miniLook([["color", "#d7b05a"]], "gold"); });
+      mk("\u25ad", "Frame it in a gold border \u2014 press again to take it off", function () {
+        if (!runs.length && !blocks.length) return say("Select something first.", true);
+        var t = blocks.length ? blocks[0].el : (runs[0] && runs[0].node);
+        var has = !!(t && getComputedStyle(t).borderTopWidth &&
+          getComputedStyle(t).borderTopWidth !== "0px");
+        if (!has) return miniLook([["border-width", "2px"], ["border-style", "solid"],
+          ["border-color", "#d7b05a"]], "border");
+        var ops = [];
+        runs.forEach(function (r) {
+          ops.push({ ref: r.ref, op: "span-style", node: r.node, start: r.start, end: r.end,
+            prop: "border-width", value: "inherit" });
+        });
+        blocks.forEach(function (b) { ops.push({ ref: b.ref, op: "unstyle", prop: "border-width" }); });
+        if (!ops.length) return say("Select something first.", true);
+        preview(ops, "remove the border", "");
+      });
+      mk("\u25b2", "Move the block up", function () { doStruct("move-up"); });
+      mk("\u25bc", "Move the block down", function () { doStruct("move-down"); });
+      mk("\u2398", "Duplicate the block", function () { doStruct("clone"); });
+      mk("hide", "Take it off the page", function () { doStruct("hide"); });
+      var imgRow = el("div", "ae-mini-row");
+      imgRow.hidden = true;
+      var imgGo, imgUrl;
+      imgUrl = el("input", "ae-mini-imgurl");
+      imgUrl.type = "url";
+      imgUrl.placeholder = "https://\u2026 or /assets/img/\u2026";
+      imgGo = el("button", "", "go");
+      imgGo.type = "button";
+      imgGo.title = "Insert the image beside the selection";
+      function doInsertImage() {
+        var src = imgUrl.value.trim();
+        if (!SAFE_URL.test(src)) return say("That is not an image address this site can use.", true);
+        var refs = doTargets();
+        if (!refs.length) return say("Select the block the picture should sit beside.", true);
+        preview(refs.map(function (ref) {
+          return { ref: ref, op: "insert-after", tag: "img", src: src, alt: "" };
+        }), "insert-after: img \u2014 " + src, "");
+      }
+      imgGo.addEventListener("click", doInsertImage);
+      imgUrl.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); doInsertImage(); }
+      });
+      imgRow.appendChild(imgUrl);
+      imgRow.appendChild(imgGo);
+      mini.appendChild(imgRow);
+      mk("\ud83d\uddbc", "Insert an image beside the selection", function () {
+        imgRow.hidden = !imgRow.hidden;
+        if (!imgRow.hidden) imgUrl.focus();
+      });
+      mk("words\u2026", "Edit the words", function () { openTab("words"); });
+      mk("look\u2026", "Set the look", function () { openTab("look"); });
+      mk("ask\u2026", "Ask for a change", function () { openTab("ask"); });
+      var x = el("button", "ae-mini-x", "\u2715");
+      x.type = "button";
+      x.title = "Close this toolbar";
+      x.setAttribute("aria-label", "Close this toolbar");
+      x.addEventListener("click", hideMini);
+      mini.appendChild(x);
       document.body.appendChild(mini);
     }
     mini.hidden = false;
@@ -1706,6 +1866,15 @@
       say("Trying the door\u2026");
       post({ action: "list", pass: typed, page: PAGE }).then(function () {
         pass = typed;
+        /* Mint the remembered key, so no page of the house asks twice. */
+        fetch("/api/owner", {
+          method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "unlock", pass: typed })
+        }).then(function (r) { return r.json().catch(function () { return {}; }); })
+          .then(function (d) {
+            if (d && d.ok && d.token) { doorToken = d.token; setCookie("eg-admin", d.token, 7); }
+          }).catch(function () {});
+        loadOwnerPanel();
         panel.parentNode.removeChild(panel);
         panel = null;
         openPanel();

@@ -70,6 +70,9 @@ async function sweep() {
     `DELETE FROM live_chunks WHERE feed_id IN (
        SELECT id FROM live_feeds WHERE state = 'ended' AND ended_at < NOW() - INTERVAL '1 hour')`)
     .catch(() => {});
+  /* The director's cursor is a garnish; let stale ones fade like the rest. */
+  await db.query(
+    `DELETE FROM live_cursor WHERE updated_at < NOW() - INTERVAL '10 minutes'`).catch(() => {});
 }
 
 
@@ -266,11 +269,23 @@ export default async function (req, res) {
           'SELECT seq, is_head, part FROM live_chunks WHERE feed_id = $1 AND seq > $2 ORDER BY seq ASC LIMIT 20',
           [id, from]);
 
+      /* The director's cursor, while a picture is on screen: fresh for four
+         seconds, one per feed, in fractions of the frame. */
+      let cursor = null;
+      try {
+        const { rows: cur } = await db.query(
+          `SELECT x, y, name FROM live_cursor
+            WHERE feed_id = $1 AND updated_at > NOW() - INTERVAL '4 seconds'
+            LIMIT 1`, [id]);
+        if (cur && cur[0]) cursor = { x: +cur[0].x, y: +cur[0].y, name: cur[0].name };
+      } catch { /* the cursor is a garnish, not the dish */ }
+
       return res.json({
         ok: true,
         state: feed.state,
         mime: feed.mime || 'video/webm',
-        parts: (want.rows || []).map((r) => ({ seq: r.seq, head: r.is_head, part: r.part }))
+        parts: (want.rows || []).map((r) => ({ seq: r.seq, head: r.is_head, part: r.part })),
+        cursor
       });
     }
 
@@ -395,6 +410,25 @@ export default async function (req, res) {
       return res.json({ ok: true, on });
     }
 
+    /* The director's mouse, while a picture is on screen: hovering the
+       programme on the desk turns into a cursor every watcher sees, so a
+       point can be shown on a plate or a still. Fractions of the frame,
+       0..1; one per feed, fresh for four seconds. */
+    if (action === 'cursor') {
+      const id = Number(body.id);
+      if (!id) return res.status(400).json({ error: 'Which feed?' });
+      const x = Math.min(1, Math.max(0, Number(body.x) || 0));
+      const y = Math.min(1, Math.max(0, Number(body.y) || 0));
+      const who = (admin.member && (admin.member.display_name || admin.member.name)) || 'the director';
+      await db.query(
+        `INSERT INTO live_cursor (feed_id, x, y, name, updated_at)
+         VALUES ($1, $2, $3, $4, NOW())
+         ON CONFLICT (feed_id) DO UPDATE
+           SET x = EXCLUDED.x, y = EXCLUDED.y, name = EXCLUDED.name, updated_at = NOW()`,
+        [id, x, y, String(who).slice(0, 80)]);
+      return res.json({ ok: true });
+    }
+
     if (action === 'open') {
       const title = clean(body.title, 160);
       const word = clean(body.word, 120);
@@ -429,6 +463,7 @@ export default async function (req, res) {
       if (!id) return res.status(400).json({ error: 'Which feed?' });
       await db.query("UPDATE live_feeds SET state = 'ended', ended_at = NOW() WHERE id = $1", [id]);
       await db.query('DELETE FROM live_chunks WHERE feed_id = $1', [id]).catch(() => {});
+      await db.query('DELETE FROM live_cursor WHERE feed_id = $1', [id]).catch(() => {});
       return res.json({ ok: true });
     }
 

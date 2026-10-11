@@ -34,6 +34,10 @@ const stubs = [
   "} };",
   "const storage = { put: async (key, buf, mime) => { PUTS.push({ key, len: buf.length, mime }); } };",
   "const adminDoor = async () => ({ ok: true, who: 'test' });",
+  /* Publishing now belongs to a signed-in member as well as to the key, so
+     the harness stands one in. Shape follows lib/accounts.js whoAmI(). */
+  "const whoAmI = async () => ({ id: 3, email: 'archivist@example.com', name: 'The Archivist',",
+  "  verified: true, age_verified: true, id_status: 'accepted', privilege: 'admin', status: 'active' });",
   "const freeDoors = []; const freeChat = async () => { throw new Error('offline'); };",
 ].join("\n");
 

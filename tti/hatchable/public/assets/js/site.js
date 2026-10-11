@@ -383,11 +383,17 @@
              the Free.ai panel. Nobody else sends any of this. */
           pass: (window.EGAdminPass && window.EGAdminPass()) || undefined,
           free_model: (window.EGFreeWants && window.EGFreeWants().chat) || undefined,
-          free_slot: (window.EGFreeWants && window.EGFreeWants().slot) || undefined
+          free_slot: (window.EGFreeWants && window.EGFreeWants().slot) || undefined,
+          /* The gate-word the oracle's door reads first, and the language
+             the head's little box chose for the answer. */
+          ...(window.EGCaptcha ? window.EGCaptcha('oracle') : {}),
+          lang: (window.EGLanguage ? window.EGLanguage() : '') || undefined
         })
       });
       const data = await res.json().catch(() => ({}));
 
+      /* One word, one asking: the next question gets a fresh gate-word. */
+      if (window.EGCaptchaRenew) window.EGCaptchaRenew('oracle');
       pending.classList.remove("is-thinking");
 
       if (!res.ok || !data.answer) {
@@ -5046,4 +5052,81 @@
       });
     }).catch(function (err) { say(err.message, true); });
   });
+})();
+
+
+/* ------------------------------------------------------------------ Language
+   A little box in the head of every page: the language the oracles answer
+   in. Chosen once, remembered on this device, and sent with every question
+   the oracles receive. Gink on this side, Shakdrah on the twin's. */
+(function () {
+  'use strict';
+  var LANGS = [
+    ['en-GB', 'English (British)'], ['en-US', 'English (American)'],
+    ['es', 'Espa\u00f1ol'], ['fr', 'Fran\u00e7ais'], ['de', 'Deutsch'],
+    ['it', 'Italiano'], ['pt', 'Portugu\u00eas'], ['nl', 'Nederlands'],
+    ['pl', 'Polski'], ['ru', '\u0420\u0443\u0441\u0441\u043a\u0438\u0439'],
+    ['ar', '\u0627\u0644\u0639\u0631\u0628\u064a\u0629'], ['hi', '\u0939\u093f\u0902\u0926\u0940'],
+    ['zh', '\u4e2d\u6587 (\u7b80\u4f53)'], ['ja', '\u65e5\u672c\u8a9e'],
+    ['ko', '\ud55c\uad6d\uc5b4'], ['tr', 'T\u00fcrk\u00e7e'],
+    ['el', '\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac'],
+    ['la', 'Latinum'], ['cy', 'Cymraeg'], ['ga', 'Gaeilge']
+  ];
+  var KEY = 'oracle-lang';
+  function saved() {
+    try { return localStorage.getItem(KEY) || 'en-GB'; } catch (e) { return 'en-GB'; }
+  }
+  window.EGLanguage = function () { return saved(); };
+  window.EGLanguages = function () { return LANGS.slice(); };
+
+  function mount() {
+    var head = document.querySelector('header.site-head');
+    var row = head && head.querySelector('.brand-row');
+    if (!row || document.getElementById('head-lang')) return;
+    var wrap = document.createElement('span');
+    wrap.id = 'head-lang';
+    wrap.className = 'head-lang';
+    var sel = document.createElement('select');
+    sel.setAttribute('aria-label', 'The language the oracles answer in');
+    sel.title = 'The language the oracles answer in';
+    LANGS.forEach(function (l) {
+      var o = document.createElement('option');
+      o.value = l[0];
+      o.textContent = l[1];
+      sel.appendChild(o);
+    });
+    sel.value = saved();
+    sel.addEventListener('change', function () {
+      try { localStorage.setItem(KEY, sel.value); } catch (e) {}
+    });
+    wrap.appendChild(sel);
+    var join = row.querySelector('.head-join');
+    if (join) row.insertBefore(wrap, join); else row.appendChild(wrap);
+  }
+
+  /* The People link, once, beside the Join link — the house's biography
+     page, present on every page without re-cutting each header by hand.
+     This house only; the twin has no shelf of biographies. */
+  function peopleLink() {
+    var nav = document.getElementById('primary-nav');
+    if (!nav || document.getElementById('nav-people-link')) return;
+    if (window.location.origin.indexOf('egregora') < 0) return;
+    var ul = nav.querySelector('ul');
+    if (!ul) return;
+    var li = document.createElement('li');
+    li.id = 'nav-people-link';
+    var a = document.createElement('a');
+    a.href = '/people/';
+    a.textContent = 'People';
+    if (window.location.pathname.replace(/\/$/, '') === '/people') {
+      a.setAttribute('aria-current', 'page');
+    }
+    li.appendChild(a);
+    var items = ul.querySelectorAll('li');
+    if (items.length) ul.insertBefore(li, items[items.length - 1]); else ul.appendChild(li);
+  }
+
+  function all() { mount(); peopleLink(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', all);
+  else all();
 })();

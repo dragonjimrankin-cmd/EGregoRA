@@ -11,6 +11,7 @@
  * device and sends only a signature made by a key that device holds.
  */
 import { db, email } from 'hatchable';
+import { BRAND, PAIR_LINE } from './twin.js';
 
 export const SESSION_DAYS = 30;
 export const CODE_MINUTES = 15;
@@ -144,12 +145,18 @@ export async function whoAmI(req) {
   const { rows } = await db.query(
     `SELECT m.id, m.email, m.name, m.verified, m.age_verified, m.id_status,
             m.legal_name, m.dob, m.id_doc_type, m.created_at, m.verified_at, m.subscribed,
+            m.privilege, m.status,
             s.method, s.expires_at, s.created_at AS session_started
        FROM member_sessions s JOIN members m ON m.id = s.member_id
       WHERE s.token = $1 AND s.expires_at > NOW()`,
     [token]
   );
-  return rows[0] || null;
+  const member = rows[0] || null;
+  /* Suspended: the door forgets the key. Every signed-in path that runs
+     through here — publishing, the studio, the live room, the owner room —
+     refuses without a second thought. */
+  if (member && member.status === 'suspended') return null;
+  return member;
 }
 
 /* ------------------------------------------------------------- passkeys */

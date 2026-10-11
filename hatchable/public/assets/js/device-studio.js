@@ -317,6 +317,10 @@ function setup(root) {
 
   if (el.start) el.start.addEventListener("click", async () => {
     if (rec) return;
+    if (!(window.EGToken && window.EGToken())) {
+      say("Sign in first — recording a podcast needs a signed-in account. The sign-in is at /join/.", true);
+      return;
+    }
     say("");
     try {
       if (KIND === "video" && el.source && el.source.value === "screen") {
@@ -737,10 +741,14 @@ function setup(root) {
      A transcript, if the ear kept one, goes with it.                       */
   const PASS_KEY = "eg-publish-pass";
 
+  const doorTokenFromCookie = () => {
+    const m = /(?:^|;\s*)eg-admin=([^;]+)/.exec(document.cookie || "");
+    return m ? m[1] : "";
+  };
   const mediaCall = (body) => fetch("/api/media", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(body)
+    body: JSON.stringify(Object.assign({ token: doorTokenFromCookie() || "" }, body))
   });
 
   function b64blob(blob) {
@@ -754,6 +762,9 @@ function setup(root) {
   }
 
   async function postToSite(blob, name, seconds, transcript) {
+    if (!(window.EGToken && window.EGToken())) {
+      return { ok: false, why: "Sign in first — posting a podcast needs a signed-in account. The sign-in is at /join/, and nothing was sent." };
+    }
     let pass = window.sessionStorage ? window.sessionStorage.getItem(PASS_KEY) : null;
     if (!pass) pass = window.prompt("The Admin Only passcode, to publish this recording:");
     if (!pass) return { ok: false, why: "No passcode — nothing was sent." };

@@ -437,13 +437,21 @@ The eleven limbs: cosmic physics, druidry and trees, sacred geometry, astrology,
  * @param {boolean} [opts.tools]       tool definitions are being sent.
  */
 export function ginkSystem(opts = {}) {
-  const { tier = 'open', adult = false, grounding = '', tools = true } = opts;
+  const { tier = 'open', adult = false, grounding = '', tools = true, lang = '' } = opts;
+
+  /* The asker's chosen language of reply, if the head's box sent one. */
+  const langLine = (l) =>
+`The asker has chosen the language for the reply: ${l}. Write the entire answer in ${l} —
+every sentence, every list item, every quotation — except proper names, technical terms and
+formulae, which keep their usual spelling. Do not slip back into English.`;
+  const withLang = (text) =>
+    (lang && lang !== 'English (British)') ? text + '\n\n' + langLine(lang) : text;
 
   if (tier === 'compact') {
-    return grounding
+    return withLang(grounding
       ? CORE + '\n\nThe order has already written the following. Anchor to it rather than inventing:\n\n' +
         grounding.slice(0, 1200)
-      : CORE;
+      : CORE);
   }
 
   const parts = [IDENTITY, SCEPTIC, LEDGER];
@@ -467,6 +475,8 @@ that and answer honestly anyway. Never pad an answer with them to look well-read
 
 ${grounding}`);
   }
+
+  if (lang && lang !== 'English (British)') parts.push(langLine(lang));
 
   parts.push(
 `Finally: the written answers above and the conversation below are the order's work and yours.

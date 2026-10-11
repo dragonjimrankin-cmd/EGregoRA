@@ -424,6 +424,9 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
     let body;
     try { body = JSON.parse(String(init.body || "{}")); } catch { body = {}; }
     if (Array.isArray(body.attachments) && body.attachments.length) return nativeFetch(input, init);
+    /* The prepared answers are written in English. If the asker has chosen a
+       language of their own, let the model answer in it. */
+    if (body.lang && body.lang !== 'en-GB') return nativeFetch(input, init);
 
     const entry = find(body.question);
     if (!entry) return nativeFetch(input, init);

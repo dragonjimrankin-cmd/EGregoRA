@@ -16,6 +16,7 @@
  * project code never sees it.
  */
 import { ai, db } from 'hatchable';
+import { solveCaptcha } from '../lib/captcha.js';
 import { bestMatch, nearest, topMatches, relatedQuestions } from '../lib/oracle-corpus.js';
 import { webSearch, readPage } from '../lib/websearch.js';
 import { generateImage } from '../lib/imagegen.js';
@@ -109,6 +110,17 @@ export default async function (req, res) {
     return res.json({ answer: CRISIS_REPLY, source: 'crisis', followups: [] });
   }
 
+  /* The language the head's little box chose for the answer, if any. The
+     name the model is told is the one a human would understand. */
+  const LANG_NAMES = {
+    'en-US': 'English (American)', 'es': 'Spanish', 'fr': 'French', 'de': 'German',
+    'it': 'Italian', 'pt': 'Portuguese', 'nl': 'Dutch', 'pl': 'Polish',
+    'ru': 'Russian', 'ar': 'Arabic', 'hi': 'Hindi', 'zh': 'Chinese (Simplified)',
+    'ja': 'Japanese', 'ko': 'Korean', 'tr': 'Turkish', 'el': 'Greek',
+    'la': 'Classical Latin', 'cy': 'Welsh', 'ga': 'Irish (Gaeilge)'
+  };
+  const replyLang = LANG_NAMES[String(body.lang || '').trim().slice(0, 16)] || '';
+
   const isFollowUp = history.length > 0;
 
   /* 1b ── "be yourself again". The default state is a real place he can be
@@ -120,6 +132,14 @@ export default async function (req, res) {
       source: 'default-state',
       followups: ['What are the eleven limbs?', 'How do you grade a claim?', 'What is Gink thinking with?']
     });
+  }
+
+  /* 1c ── the gate-word. The model's time is the house's time, and the
+     street asks for it with a word it has first read. The crisis net above
+     stays open to everyone, word or no word. */
+  const gate = await solveCaptcha(String(body.captcha_token || ''), String(body.captcha || ''));
+  if (!gate.ok) {
+    return res.status(400).json({ error: gate.error || 'Read the gate-word first.', captcha: true });
   }
 
   /* Greetings, thanks and chit-chat are conversation, not lookups: never let a
@@ -376,7 +396,7 @@ export default async function (req, res) {
   if (body.byok && body.byok.key) {
     try {
       const mine = await chatWithOwnKey(body.byok, {
-        system: ginkSystem({ tier: 'open', adult: studio.ok }),
+        system: ginkSystem({ tier: 'open', adult: studio.ok, lang: replyLang }),
         messages,
         maxTokens: 1200
       });
@@ -403,7 +423,7 @@ export default async function (req, res) {
       const door = await adminDoor(req, String(body.pass));
       if (door.ok) {
         const free = await freeChat({
-          system: ginkSystem({ tier: 'compact', adult: true, grounding, tools: false }),
+          system: ginkSystem({ tier: 'compact', adult: true, grounding, tools: false, lang: replyLang }),
           messages: messages.slice(PRELUDE.length),
           model: String(body.free_model || '').trim() || undefined,
           slot: Number(body.free_slot) || undefined,
@@ -423,7 +443,7 @@ export default async function (req, res) {
           model anyone can download, and this route needs no key at all. */
   try {
     const open = answer ? null : await openChat({
-      system: ginkSystem({ tier: 'open', adult: studio.ok }),
+      system: ginkSystem({ tier: 'open', adult: studio.ok, lang: replyLang }),
       messages,
       tools,
       temperature: 0.72,
@@ -443,7 +463,7 @@ export default async function (req, res) {
   if (!answer) {
     try {
       const oa = await openaiChat({
-        system: ginkSystem({ tier: 'open', adult: studio.ok }),
+        system: ginkSystem({ tier: 'open', adult: studio.ok, lang: replyLang }),
         messages,
         tools,
         temperature: 0.72,
@@ -464,7 +484,7 @@ export default async function (req, res) {
       try {
         const result = await ai.generateText(Object.assign({
           model,
-          system: ginkSystem({ tier: 'open', adult: studio.ok }),
+          system: ginkSystem({ tier: 'open', adult: studio.ok, lang: replyLang }),
           messages,
           maxTokens: 1200,
           temperature: 0.72,
@@ -490,7 +510,7 @@ export default async function (req, res) {
         /* This route caps its system parameter near 2,500 characters and is
            rate-limited to almost nothing, so it gets the compact state with
            the grounding folded in, and none of the prelude. */
-        system: ginkSystem({ tier: 'compact', adult: studio.ok, grounding, tools: false }),
+        system: ginkSystem({ tier: 'compact', adult: studio.ok, grounding, tools: false, lang: replyLang }),
         messages: messages.slice(PRELUDE.length),
         maxTokens: 900
       });

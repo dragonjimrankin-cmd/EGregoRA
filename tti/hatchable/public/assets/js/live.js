@@ -135,6 +135,7 @@ export function busyError(err) {
   if (!root) return;
   const $ = (n) => root.querySelector('[data-lv="' + n + '"]');
   let pass = "";
+  let liveWord = "";                  /* the running feed's watchword, for the cursor */
   let feedId = null, rec = null, stream = null, seq = 0, cancel = null;
   let tapeParts = [], tapeType = "video/webm", tapeFrom = 0;
 
@@ -143,10 +144,18 @@ export function busyError(err) {
     if (n) { n.textContent = t || ""; n.className = "auth-msg" + (bad ? " is-bad" : ""); }
   };
 
+  /* The remembered key from another page of the house: the same cookie the
+     editor and the media shelf read, so a door opened once stands open here
+     too, and the desk needs no second asking. */
+  const doorKey = () => {
+    const m = /(?:^|; )eg-(?:admin|owner)=([^;]+)/.exec(document.cookie || "");
+    return m ? decodeURIComponent(m[1]) : "";
+  };
+
   const post = (payload) => fetch("/api/live", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(Object.assign({ pass }, payload))
+    body: JSON.stringify(Object.assign({ pass, token: doorKey() }, payload))
   }).then(async (r) => {
     const d = await r.json().catch(() => ({}));
     if (!r.ok) {
@@ -212,6 +221,33 @@ export function busyError(err) {
   const desk = (function makeDesk() {
     const deckKey = "eg-live-deck";
     let mixer = null;
+
+  /* The director's cursor: while a picture is on screen — a still, a plate,
+     a tape or a screen — the director's mouse over the programme on this
+     page becomes a cursor every watcher sees, so a point can be shown on a
+     diagram. Fractions of the drawn frame, letterbox for letterbox. */
+  const PICTURE_MODES = { still: 1, plate: 1, tape: 1, screen: 1 };
+  const roomVideo = document.querySelector('[data-lw="video"]');
+  let lastCursorAt = 0;
+  if (roomVideo) roomVideo.addEventListener("mousemove", (e) => {
+    if (!mixer || !feedId || !liveWord || document.hidden) return;
+    if (!PICTURE_MODES[mixer.state.mode]) return;
+    const now = Date.now();
+    if (now - lastCursorAt < 120) return;
+    lastCursorAt = now;
+    const r = roomVideo.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    const ar = (roomVideo.videoWidth && roomVideo.videoHeight)
+      ? roomVideo.videoWidth / roomVideo.videoHeight : 16 / 9;
+    const dw = Math.min(r.width, r.height * ar);
+    const dh = dw / ar;
+    const dx = r.left + (r.width - dw) / 2;
+    const dy = r.top + (r.height - dh) / 2;
+    const x = (e.clientX - dx) / dw;
+    const y = (e.clientY - dy) / dh;
+    if (x < 0 || x > 1 || y < 0 || y > 1) return;
+    post({ action: "cursor", id: feedId, x: +x.toFixed(4), y: +y.toFixed(4) }).catch(() => {});
+  });
     let deck = [];
     try { deck = JSON.parse(localStorage.getItem(deckKey) || "[]"); } catch (e) { deck = []; }
 
@@ -660,6 +696,7 @@ export function busyError(err) {
         .find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm";
       const d = await post({ action: "open", title, word, mime: type, note: $("note").value.trim() });
       feedId = d.id;
+      liveWord = word;
       seq = 0;
 
       rec = new MediaRecorder(desk.out() || stream, {
@@ -789,6 +826,7 @@ export function busyError(err) {
     const title = $("title").value.trim() || "An unnamed broadcast";
     const keep = keeping();
     feedId = null;
+    liveWord = "";
     stopAll();
     if (id) await post({ action: "close", id }).catch(() => {});
     say(keep ? "The feed is ended. Its live segments are deleted; the recording is being filed."
@@ -1199,6 +1237,49 @@ export function busyError(err) {
      the format header; 'sequence' mode lets the rest follow it without
      their own timestamps lining up, which is what makes a recorded stream
      playable as a stream at all. */
+  /* The director's cursor: a small gold point with a name, placed over the
+     drawn frame wherever the director's mouse is. It comes and goes with
+     the director's hover, because the server only serves it for four
+     seconds at a time. */
+  function paintCursor(cursor, video) {
+    const stage = $("stage");
+    if (!stage || !video) return;
+    let mark = stage.querySelector('[data-lw="cursor"]');
+    if (!cursor) { if (mark) mark.hidden = true; return; }
+    if (!mark) {
+      stage.style.position = "relative";
+      mark = document.createElement("div");
+      mark.setAttribute("data-lw", "cursor");
+      mark.className = "live-cursor";
+      mark.hidden = true;
+      const dot = document.createElement("span");
+      dot.setAttribute("aria-hidden", "true");
+      dot.style.cssText = "width:.5rem;height:.5rem;border-radius:50%;background:#d7b05a;" +
+        "box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 10px rgba(215,176,90,.8);flex:none;";
+      const name = document.createElement("span");
+      name.className = "live-cursor-name";
+      name.style.cssText = "white-space:nowrap;font:600 .72rem 'EB Garamond',Georgia,serif;";
+      mark.style.cssText = "position:absolute;display:flex;align-items:center;gap:.35rem;" +
+        "transform:translate(2px,-100%);pointer-events:none;z-index:5;color:#f3ddaa;" +
+        "text-shadow:0 1px 4px rgba(0,0,0,.95),0 0 8px rgba(0,0,0,.7);";
+      mark.appendChild(dot);
+      mark.appendChild(name);
+      stage.appendChild(mark);
+    }
+    mark.hidden = false;
+    mark.querySelector(".live-cursor-name").textContent = cursor.name || "";
+    const sr = stage.getBoundingClientRect();
+    const r = video.getBoundingClientRect();
+    const ar = (video.videoWidth && video.videoHeight)
+      ? video.videoWidth / video.videoHeight : 16 / 9;
+    const dw = Math.min(r.width, r.height * ar);
+    const dh = dw / ar;
+    const dx = r.left - sr.left + (r.width - dw) / 2;
+    const dy = r.top - sr.top + (r.height - dh) / 2;
+    mark.style.left = (dx + cursor.x * dw) + "px";
+    mark.style.top = (dy + cursor.y * dh) + "px";
+  }
+
   function start(id, word, mime) {
     const video = $("video");
     $("stage").hidden = false;
@@ -1242,6 +1323,7 @@ export function busyError(err) {
           if (edge - video.currentTime > 6) video.currentTime = edge - 1.2;
         }
         if (video.paused) video.play().catch(() => {});
+        paintCursor(d.cursor, video);
         if (d.state !== "live") {
           clearInterval(timer);
           say("The feed has ended.");

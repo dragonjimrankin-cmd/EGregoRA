@@ -98,6 +98,37 @@ function setup(root) {
   let source = null;           /* the file as chosen */
   let ready = null;            /* { blob, mime, seconds, treatment, bytes } */
 
+  /* The key remembered from another page of the house: if it checks out,
+     the door stands open without a second asking. */
+  (function rememberedKey() {
+    const m = /(?:^|;\s*)eg-admin=([^;]+)/.exec(document.cookie || "");
+    if (!m) return;
+    const tok = m[1];
+    fetch("/api/owner", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "check", token: tok })
+    }).then((r) => r.json().catch(() => ({})))
+      .then((d) => {
+        if (!(d && d.ok)) { document.cookie = "eg-admin=; path=/; max-age=0; SameSite=Lax"; return; }
+        window.__egDoorToken = tok;
+        el.open.textContent = "Close the admin door";
+        el.open.setAttribute("aria-expanded", "true");
+        el.panel.hidden = false;
+        el.work.hidden = false;
+        window.EGMediaAdminOn = true;
+        if (el.msg) {
+          el.msg.classList.remove("is-bad");
+          el.msg.textContent = "The door is already open — the key was remembered. " +
+            (window.EGToken && window.EGToken() ? "" :
+              "Sign in at /join/ to upload or record; the episode is kept under your account.");
+        }
+        post({ action: "shelf", kind: KIND })
+          .then((d2) => { drawShelf(d2.items || []); fillNumber(); if (window.EGMediaRefresh) window.EGMediaRefresh(); })
+          .catch(() => {});
+      })
+      .catch(() => { document.cookie = "eg-admin=; path=/; max-age=0; SameSite=Lax"; });
+  })();
+
   const say = (t, bad) => {
     if (!el.msg) return;
     el.msg.textContent = t || "";
@@ -158,7 +189,7 @@ function setup(root) {
   const post = (payload) => fetch("/api/media", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(Object.assign({ pass }, payload))
+    body: JSON.stringify(Object.assign({ pass, token: window.__egDoorToken || "" }, payload))
   }).then(async (r) => {
     const data = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(data.error || "the shelf refused that");
@@ -286,11 +317,26 @@ function setup(root) {
       /* The Free.ai panel inside this one needs to know an administrator is
          present. The pass is kept for this tab only, never written to disk. */
       if (window.EGAdminKeep) window.EGAdminKeep(pass);
+      /* Mint the remembered key: no page of the house asks twice. */
+      try {
+        fetch("/api/owner", {
+          method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "unlock", pass: pass })
+        }).then((r) => r.json().catch(() => ({})))
+          .then((d) => {
+            if (d && d.ok && d.token) {
+              window.__egDoorToken = d.token;
+              document.cookie = "eg-admin=" + d.token + "; path=/; max-age=604800; SameSite=Lax";
+            }
+          }).catch(() => {});
+      } catch (e) { /* the key stays in this tab only */ }
       /* The public shelf learns an administrator is present, so summaries
          can be edited where they stand. Kept for this tab only. */
       window.EGMediaAdminOn = true;
       window.EGMediaPass = pass;
-      say("Open. The passcode is not kept \u2014 closing the page locks it again.");
+      say("Open. The key is remembered for this week, on every page. " +
+        (window.EGToken && window.EGToken() ? "" :
+          "Sign in at /join/ to upload or record — the episode is kept under your account."));
       drawShelf(d.items || []);
       fillNumber();
       if (window.EGMediaRefresh) window.EGMediaRefresh();
@@ -577,6 +623,10 @@ function setup(root) {
     }
 
     r("start").addEventListener("click", async () => {
+      if (!(window.EGToken && window.EGToken())) {
+        state("Sign in first — recording for the site needs a signed-in account. The sign-in is at /join/.");
+        return;
+      }
       try {
         const kind = KIND;
         const how = r("source") ? r("source").value : "mic";

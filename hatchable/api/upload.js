@@ -43,6 +43,23 @@ function clean(text) {
 
 export default async function (req, res) {
   const body = req.body || {};
+
+  /* A quiet throttle: twelve files per ten minutes per address, so the shelf
+     serves askers and not scripts. It never blocks when it itself stumbles. */
+  try {
+    const ip = String((req.headers && (
+      req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || '')) || '')
+      .split(',')[0].trim() || req.ip || '0.0.0.0';
+    const { rows: k } = await db.query(
+      `SELECT count(*)::int AS n FROM upload_knock
+        WHERE ip = $1 AND at > NOW() - INTERVAL '10 minutes'`, [ip]);
+    if (k[0] && k[0].n >= 12) {
+      return res.status(429).json({ error: 'Twelve files in ten minutes is the shelf\u2019s limit. Come back a little later.' });
+    }
+    await db.query(`INSERT INTO upload_knock (ip, at) VALUES ($1, NOW())`, [ip]);
+    await db.query(`DELETE FROM upload_knock WHERE at < NOW() - INTERVAL '1 hour'`).catch(() => {});
+  } catch { /* the throttle must never stop a real asker */ }
+
   const name = String(body.name || 'untitled').trim().slice(0, 200);
   const mime = String(body.type || '').trim().slice(0, 120);
   const asker = String(body.asker || '').trim().slice(0, 80) || null;

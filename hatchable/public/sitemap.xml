@@ -127,6 +127,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://egregora.hatchable.site/people/</loc>
+    <lastmod>2026-10-11T23:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://egregora.hatchable.site/neurobiology/</loc>
     <lastmod>2026-10-11T17:00:57.411Z</lastmod>
     <changefreq>monthly</changefreq>

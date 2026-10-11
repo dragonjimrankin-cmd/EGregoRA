@@ -642,6 +642,17 @@ window.MathJax = {
             <textarea id="o-question" name="question" required maxlength="2000" rows="3"
               placeholder="Ask, then follow up — the oracle remembers the thread. Enter to send, Shift+Enter for a new line."></textarea>
           </div>
+          <div class="captcha" data-captcha="oracle">
+            <p class="captcha-label">Read the gate-word and type it back</p>
+            <div class="captcha-row">
+              <div class="captcha-art" data-captcha-art aria-live="polite"></div>
+              <button class="captcha-new" type="button" data-captcha-new
+                      title="Draw another word" aria-label="Draw another gate-word">&#8634;</button>
+            </div>
+            <input type="text" data-captcha-input autocomplete="off" autocapitalize="characters"
+                   spellcheck="false" maxlength="8"
+                   aria-label="The gate-word" placeholder="The five letters above">
+          </div>
           <div class="ask-actions">
             <button class="btn" type="submit" id="o-submit">Ask the Oracle</button>
             <button class="btn btn--mic" type="button" id="o-mic" hidden

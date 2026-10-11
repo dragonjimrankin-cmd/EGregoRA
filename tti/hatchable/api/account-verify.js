@@ -15,13 +15,33 @@ export default async function (req, res) {
     return res.status(400).json({ error: 'Give the address and the six digits from the email.' });
   }
 
+  /* A six-digit code is small enough to guess at, so wrong guesses are
+     counted: five in fifteen minutes and the door rests until a fresh code
+     is asked for. */
+  try {
+    const { rows: tries } = await db.query(
+      `SELECT count(*)::int AS n FROM code_tries
+        WHERE email = $1 AND at > NOW() - INTERVAL '15 minutes'`, [addr]);
+    if (tries[0] && tries[0].n >= 5) {
+      return res.status(429).json({
+        error: 'Too many wrong codes in a row. Ask for a fresh one at the join — the door rests until ' +
+               new Date(Date.now() + 15 * 60000).toTimeString().slice(0, 5) + '.'
+      });
+    }
+  } catch { /* the count must never block a right code */ }
+
   try {
     const { rows } = await db.query('SELECT id, email, name, verified FROM members WHERE email = $1', [addr]);
     const member = rows[0];
     if (!member) return res.status(404).json({ error: 'No one has asked to join with that address.' });
 
     const ok = (await checkCode(member.id, code, 'verify')) || (await checkCode(member.id, code, 'signin'));
-    if (!ok) return res.status(401).json({ error: 'That code is wrong, used, or older than fifteen minutes.' });
+    if (!ok) {
+      await db.query(`INSERT INTO code_tries (email, at) VALUES ($1, NOW())`, [addr]).catch(() => {});
+      await db.query(`DELETE FROM code_tries WHERE at < NOW() - INTERVAL '1 hour'`).catch(() => {});
+      return res.status(401).json({ error: 'That code is wrong, used, or older than fifteen minutes.' });
+    }
+    await db.query(`DELETE FROM code_tries WHERE email = $1`, [addr]).catch(() => {});
 
     const token = await startSession(member.id, 'email');
 
