@@ -11,6 +11,7 @@ const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const errors = [];
 const notices = [];
+let linkedCardCount = 0;
 
 const fail = (message) => errors.push(message);
 const note = (message) => notices.push(message);
@@ -63,6 +64,16 @@ for (const file of htmlFiles) {
     const id = $(element).attr('id');
     if (ids.has(id)) fail(`${relative}: duplicate id #${id}`);
     ids.add(id);
+  });
+
+  $('.card--linked').each((index, element) => {
+    linkedCardCount += 1;
+    const primaryLinks = $(element).find('a.card-link');
+    if (primaryLinks.length !== 1) {
+      fail(`${relative}: linked card ${index + 1} must have exactly one primary card-link`);
+    } else if (!primaryLinks.attr('href')?.trim()) {
+      fail(`${relative}: linked card ${index + 1} has no destination`);
+    }
   });
 
   $('script[type="application/ld+json"]').each((index, element) => {
@@ -118,7 +129,13 @@ if (!home) {
   for (const href of ['/little-red-dots/', '/little-red-dots/research-proposal/']) {
     if (!home.$(`a[href="${href}"]`).length) fail(`homepage does not expose ${href}`);
   }
+  const homeLinkedCards = home.$('.card--linked > h3 > a.card-link').length;
+  if (homeLinkedCards !== 16) {
+    fail(`homepage exposes ${homeLinkedCards} whole-card links, expected 16`);
+  }
 }
+if (linkedCardCount < 22) fail(`expected at least 22 whole-card destinations, found ${linkedCardCount}`);
+else note(`${linkedCardCount} navigation cards expose their full surface as a link`);
 
 const manifestPath = path.join(siteRoot, 'site.webmanifest');
 try {
