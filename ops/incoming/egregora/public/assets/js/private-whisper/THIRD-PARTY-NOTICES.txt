@@ -1,0 +1,13 @@
+EGregoRA private local transcription
+
+BrowserWhisper 1.2.0
+Source: https://github.com/tanpreetjolly/browser-whisper
+Licence: MIT (LICENSE-BrowserWhisper.txt)
+
+MediaBunny (BrowserWhisper decoder dependency)
+Source: https://github.com/Vanilagy/mediabunny
+Licence: Mozilla Public License 2.0 (LICENSE-MediaBunny.txt)
+
+Transformers.js 4.3.1
+Source: https://github.com/huggingface/transformers.js
+Licence: Apache-2.0 (../headtts/LICENSE-Transformers.txt)
