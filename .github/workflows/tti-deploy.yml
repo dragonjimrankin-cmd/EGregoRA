@@ -46,6 +46,7 @@ jobs:
           test -s tti/hatchable/public/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
+          test -s tti/hatchable/public/little-red-dots/index.html
           test -s tti/hatchable/public/ask-shakdrah/index.html
           test -s tti/hatchable/public/assets/js/oracle-knowledge.js
           test -s tti/hatchable/public/assets/js/neural-voice.js
@@ -92,9 +93,15 @@ jobs:
           grep -q 'The Universe Is the Möbius Seam' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Handedness Reversal Is Not Time Reversal' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Earned, Chosen, Refused' tti/hatchable/public/inverted-toruses/index.html
+          grep -q 'JWST&rsquo;s Little Red Dots' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'A Red Dot Is Not a Diagnosis' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'A Broad Line Need Not Be a Fast Orbit' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'A Test of Discipline for The Shape of Becoming' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'Read the current evidence' tti/hatchable/public/essays/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
+            tti/hatchable/public/little-red-dots/index.html \
             tti/hatchable/public/ask-shakdrah/index.html \
             tti/hatchable/public/torus/index.html \
             tti/hatchable/public/moebius/index.html \
@@ -158,6 +165,16 @@ jobs:
               markers: ['The Universe of Inverted Tori', 'One Seam, Seen as Many Tori',
                 'The Universe Is the Möbius Seam', 'Handedness Reversal Is Not Time Reversal',
                 'Earned, Chosen, Refused']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/little-red-dots/',
+              markers: ['JWST&rsquo;s Little Red Dots', 'A Red Dot Is Not a Diagnosis',
+                'A Broad Line Need Not Be a Fast Orbit', 'Six Pieces That Now Fit Better',
+                'A Test of Discipline for The Shape of Becoming', '11 October 2026']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/essays/',
+              markers: ['JWST&rsquo;s Little Red Dots', 'Read the current evidence']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',

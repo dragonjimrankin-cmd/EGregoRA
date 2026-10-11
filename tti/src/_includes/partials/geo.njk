@@ -73,6 +73,16 @@
         {% endfor %}
         <circle cx="100" cy="104" r="10"/>
         <ellipse cx="100" cy="104" rx="30" ry="10" stroke-dasharray="1 5"/>
+      {% elif slug == "little-red-dots" %}
+        {# compact early sources: bright cores inside faint host envelopes #}
+        {% for i in range(0, 7) %}
+        <circle cx="{{ 38 + (i % 4) * 40 }}" cy="{{ 46 + (86 if i > 3 else 0) + (i % 3) * 12 }}"
+                r="{{ 4 + (i % 3) }}"/>
+        <circle cx="{{ 38 + (i % 4) * 40 }}" cy="{{ 46 + (86 if i > 3 else 0) + (i % 3) * 12 }}"
+                r="{{ 12 + (i % 2) * 5 }}" opacity="0.38"/>
+        {% endfor %}
+        <path d="M18 100 Q58 68 98 100 T180 100" stroke-dasharray="2 6" opacity="0.45"/>
+        <ellipse cx="100" cy="100" rx="90" ry="70" stroke-dasharray="1 8" opacity="0.3"/>
       {% elif slug == "cosmic-ledger" %}
         {# three bodies at three distances, with their shares marked #}
         <circle cx="100" cy="100" r="86" stroke-dasharray="3 7"/>
