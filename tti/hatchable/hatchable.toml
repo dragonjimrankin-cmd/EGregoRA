@@ -121,3 +121,5 @@ description = "Discord sign-in: the client id. discord.com/developers → OAuth2
 key         = "DISCORD_CLIENT_SECRET"
 required    = false
 description = "Discord sign-in: the client secret that goes with it."
+
+# drift-refresh trigger 2026-10-11T11:05:16Z
