@@ -1697,6 +1697,11 @@ function setup(root) {
         ? '<div><label for="' + KIND + '-ed-number">Episode number</label>' +
           '<input type="text" id="' + KIND + '-ed-number" data-ed="number" value="' + esc(item.number) + '"></div>'
         : "") +
+      '<div><label for="' + KIND + '-ed-date">Purported creation date</label>' +
+      '<input type="date" id="' + KIND + '-ed-date" data-ed="date" value="' +
+      esc(item.purported_date || "") + '" placeholder="' + esc(item.date || "") + '">' +
+      '<span class="muted xsmall">Actual upload date: ' + esc(item.date || "unknown") +
+      ". Leave blank to show that instead.</span></div>" +
       '<div><label for="' + KIND + '-ed-tags">Tags</label>' +
       '<input type="text" id="' + KIND + '-ed-tags" data-ed="tags" value="' + esc(item.tags.join(", ")) + '"></div>' +
       "</div>" +
@@ -2225,10 +2230,13 @@ function setup(root) {
 
     ed("save").addEventListener("click", async () => {
       try {
-        await post({ action: "edit", id: item.id, title: ed("title").value,
+        const change = { action: "edit", id: item.id, title: ed("title").value,
           summary: ed("summary").value, tags: ed("tags").value,
-          number: KIND === "audio" ? ed("number").value : "" });
-        tellEd("The writing is saved.");
+          number: KIND === "audio" ? ed("number").value : "" };
+        const wantedDate = ed("date").value || "";
+        if (wantedDate !== (item.purported_date || "")) change.date = wantedDate;
+        await post(change);
+        tellEd("The writing and any purported creation date are saved. The actual upload time is unchanged.");
         await refresh();
       } catch (err) {
         tellEd((err && err.message) || "It would not save.", true);

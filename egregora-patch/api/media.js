@@ -46,6 +46,21 @@ const TTL = 604800;                        /* a week; re-signed on every read */
 
 const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
 
+function cleanDate(value) {
+  const raw = clean(value, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return '';
+  const made = new Date(raw + 'T00:00:00Z');
+  return Number.isFinite(made.getTime()) && made.toISOString().slice(0, 10) === raw ? raw : '';
+}
+
+function dateOnly(value) {
+  if (!value) return '';
+  const raw = String(value);
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
+  const made = new Date(value);
+  return Number.isFinite(made.getTime()) ? made.toISOString().slice(0, 10) : '';
+}
+
 const safeList = (raw) => {
   if (!raw) return [];
   try { const v = JSON.parse(raw); return Array.isArray(v) ? v : []; } catch { return []; }
@@ -276,7 +291,9 @@ async function dress(row) {
     mime: row.mime || '',
     state: row.state,
     pinned: Number(row.pinned) || 0,
-    date: row.created_at ? new Date(row.created_at).toISOString().slice(0, 10) : '',
+    date: dateOnly(row.purported_date) || dateOnly(row.created_at),
+    purported_date: dateOnly(row.purported_date),
+    actual_created_at: row.created_at || null,
     mime: row.mime || '',
     has_transcript: !!(row.transcript && String(row.transcript).trim()),
     url
@@ -293,7 +310,7 @@ export default async function (req, res) {
     try {
       const { rows } = await db.query(
         `SELECT * FROM media WHERE kind = $1 AND state = 'published'
-          ORDER BY created_at DESC LIMIT 200`, [kind]);
+          ORDER BY COALESCE(purported_date, created_at::date) DESC, created_at DESC LIMIT 200`, [kind]);
       const items = [];
       for (const r of rows || []) items.push(await dress(r));
       return res.json({ ok: true, items });
@@ -336,7 +353,9 @@ export default async function (req, res) {
       case 'shelf': {
         const kind = clean(body.kind, 8) === 'video' ? 'video' : 'audio';
         const { rows } = await db.query(
-          'SELECT * FROM media WHERE kind = $1 ORDER BY pinned DESC, created_at DESC LIMIT 200', [kind]);
+          `SELECT * FROM media WHERE kind = $1
+            ORDER BY pinned DESC, COALESCE(purported_date, created_at::date) DESC,
+                     created_at DESC LIMIT 200`, [kind]);
         const items = [];
         for (const r of rows || []) items.push(await dress(r));
         return res.json({ ok: true, items });
@@ -408,15 +427,16 @@ export default async function (req, res) {
         const { rows: made } = await db.query(
           `INSERT INTO media (kind, title, summary, number, length_text, seconds, tags,
                               storage_key, mime, bytes, original_bytes, treatment, state, who,
-                              transcript, links, topics)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17) RETURNING *`,
+                              transcript, links, topics, purported_date)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18) RETURNING *`,
           [kind, title, clean(body.summary, 2000), number,
             clean(body.length, 32), Number(body.seconds) || null, clean(body.tags, 300),
             key, mime, whole.length, Number(body.original_bytes) || null,
             clean(body.treatment, 600), body.publish === false ? 'draft' : 'published', door.who,
             body.transcript ? String(body.transcript).slice(0, 400000) : null,
             Array.isArray(body.links) ? JSON.stringify(body.links.slice(0, 10)) : null,
-            Array.isArray(body.topics) ? JSON.stringify(body.topics.slice(0, 20)) : null]);
+            Array.isArray(body.topics) ? JSON.stringify(body.topics.slice(0, 20)) : null,
+            cleanDate(body.date) || null]);
 
         if (Array.isArray(body.speakers)) {
           for (const speaker of body.speakers.slice(0, 12)) {
@@ -485,7 +505,9 @@ export default async function (req, res) {
           if (keep[1]) await db.query('UPDATE media SET pinned = 1 WHERE id = $1', [keep[1]]);
         }
         const { rows } = await db.query(
-          'SELECT * FROM media WHERE kind = $1 ORDER BY pinned DESC, created_at DESC LIMIT 200', [kind]);
+          `SELECT * FROM media WHERE kind = $1
+            ORDER BY pinned DESC, COALESCE(purported_date, created_at::date) DESC,
+                     created_at DESC LIMIT 200`, [kind]);
         const items = [];
         for (const r of rows || []) items.push(await dress(r));
         return res.json({ ok: true, items });
@@ -539,6 +561,18 @@ export default async function (req, res) {
       case 'edit': {
         const id = Number(body.id);
         if (!id) return res.status(400).json({ error: 'Which one?' });
+        const hasDate = Object.prototype.hasOwnProperty.call(body, 'date');
+        const claimedDate = cleanDate(body.date);
+        if (hasDate && clean(body.date, 20) && !claimedDate) {
+          return res.status(400).json({ error: 'Use a real creation date in YYYY-MM-DD form.' });
+        }
+        let previousDate = null;
+        if (hasDate) {
+          const { rows: beforeDate } = await db.query(
+            'SELECT purported_date FROM media WHERE id = $1', [id]);
+          previousDate = beforeDate && beforeDate[0]
+            ? dateOnly(beforeDate[0].purported_date) || null : null;
+        }
         if (Array.isArray(body.links)) {
           await db.query('UPDATE media SET links = $2 WHERE id = $1',
             [id, JSON.stringify(body.links.slice(0, 10))]);
@@ -556,14 +590,24 @@ export default async function (req, res) {
         await db.query(
           `UPDATE media SET title = COALESCE($2, title), summary = COALESCE($3, summary),
                             number = COALESCE($4, number), length_text = COALESCE($5, length_text),
-                            tags = COALESCE($6, tags), updated_at = NOW()
+                            tags = COALESCE($6, tags),
+                            purported_date = CASE WHEN $7 THEN $8::date ELSE purported_date END,
+                            updated_at = NOW()
             WHERE id = $1`,
           [id, body.title == null ? null : clean(body.title, 200),
             body.summary == null ? null : clean(body.summary, 2000),
             body.number == null ? null : clean(body.number, 12),
             body.length == null ? null : clean(body.length, 32),
-            body.tags == null ? null : clean(body.tags, 300)]);
-        return res.json({ ok: true });
+            body.tags == null ? null : clean(body.tags, 300),
+            hasDate, claimedDate || null]);
+        if (hasDate) {
+          await db.query(
+            `INSERT INTO creation_date_log
+               (scope, object_key, previous_date, purported_date, who)
+             VALUES ('media',$1,$2,$3,$4)`,
+            [String(id), previousDate, claimedDate || null, clean(door.who, 120) || 'admin']);
+        }
+        return res.json({ ok: true, date: claimedDate || '' });
       }
 
       case 'delete': {

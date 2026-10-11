@@ -30,7 +30,10 @@ jobs:
         run: |
           node --check egregora-patch/api/transcribe.js
           node --check egregora-patch/api/media.js
+          node --check egregora-patch/api/edit.js
+          node --check egregora-patch/pages/feed.js
           node --check egregora-patch/public/assets/js/media-admin.js
+          node --check egregora-patch/public/assets/js/admin-edit.js
           node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
 
       - name: Deploy to the existing EGregoRA project
@@ -118,4 +121,22 @@ jobs:
             }
           }
           console.log('Live transcript names, turn timestamps, and stored pattern profiles verified.');
+          NODE
+
+      - name: Verify the live creation-date controls
+        run: |
+          node <<'NODE'
+          const response = await fetch('https://egregora.hatchable.site/api/edit', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ action: 'date', page: '/' })
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.ok || data.page !== '/' || typeof data.date !== 'string') {
+            const message = String(data.error || `HTTP ${response.status}`)
+              .replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A').slice(0, 1000);
+            console.log(`::error title=Live creation-date verification failed::${message}`);
+            process.exit(1);
+          }
+          console.log('Live page creation-date metadata endpoint verified.');
           NODE

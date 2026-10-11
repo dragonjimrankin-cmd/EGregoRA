@@ -15,5 +15,11 @@ Current patch:
 - `migrations/0029_speaker_profiles.sql` keeps episode-to-speaker names and
   aggregate patterns. It stores no extra audio or reversible voiceprint.
 - `public/assets/js/media-admin.js` emits one timestamp only when the inferred
-  speaker changes and can transcribe an episode already on the shelf; the
-  podcast HTML cache-busts that browser update.
+  speaker changes, can transcribe an episode already on the shelf, and lets
+  administrators change its purported creation date.
+- `api/edit.js` and `public/assets/js/admin-edit.js` add a Date tab to Admin
+  Edit Mode on every page. The claimed date is visible and updates metadata;
+  real deployment and audit timestamps are preserved.
+- `migrations/0030_purported_creation_dates.sql` stores page/media date claims
+  separately and appends every change to an audit log. `pages/feed.js` uses a
+  podcast episode's claimed date when one has been set.
