@@ -1,7 +1,6 @@
 {
   "project": "proj_U95i5y493z9x",
-  "version": 79,
-  "recorded_at": "2026-10-11T11:30:00.000Z",
-  "deployed_at": null,
-  "note": "Adopted the foreign live bundle (v79) wholesale via the drift mirror; only the title phrase changed."
+  "version": 80,
+  "recorded_at": "2026-10-11T11:24:47.156Z",
+  "deployed_at": null
 }
