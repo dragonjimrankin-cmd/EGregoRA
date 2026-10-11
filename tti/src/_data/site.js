@@ -1,5 +1,5 @@
 /**
- * The Two Infinities (and Beyond) — site-wide constants.
+ * The Eternal Integration: Two Infinities (and beyond) — site-wide constants.
  *
  * The framework is James Alexander Matthew Rankin's, written between the
  * 2nd and 19th of June 2026 and revised to r3.5. This site is its reading
@@ -7,7 +7,7 @@
  */
 export default {
   name: "The Two Infinities",
-  longName: "The Two Infinities (and Beyond)",
+  longName: "The Eternal Integration: Two Infinities (and beyond)",
   tagline: "The Eternal Integration, and the Pendulum That Cannot Settle.",
   url: "https://the-two-infinities.hatchable.site",
   lang: "en-GB",

@@ -23,7 +23,7 @@ export const HOME = {
 };
 export const TWIN = {
   key: 'two-infinities',
-  label: 'The Two Infinities (and beyond)',
+  label: 'The Eternal Integration: Two Infinities (and beyond)',
   url: 'https://the-two-infinities.hatchable.site'
 };
 
@@ -56,7 +56,7 @@ export const BRAND = {
 
 /** One sentence, used in every letter either site sends. */
 export const PAIR_LINE =
-  'One account covers EGregoRA and The Two Infinities (and beyond) — ' +
+  'One account covers EGregoRA and The Eternal Integration: Two Infinities (and beyond) — ' +
   'sign in at either with the same address.';
 
 const TIMEOUT_MS = 6000;
