@@ -3575,6 +3575,8 @@ table.ledger thead th {
 }
 table.ledger tbody tr + tr td { border-top: 1px solid rgba(118,207,238,0.12); }
 table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-nums; }
+table.ledger.ledger--prose th,
+table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 
 /* ---------- Compact desktop masthead -------------------------------------
    The desktop header gets the width of the screen instead of the reading

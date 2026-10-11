@@ -37,6 +37,8 @@ jobs:
           test -s tti/hatchable/public/inverted-toruses/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
+          grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Universe of Inverted Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'One Seam, Seen as Many Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'The Universe Is the Möbius Seam' tti/hatchable/public/inverted-toruses/index.html
@@ -93,7 +95,9 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/time-and-residue/',
               markers: ['The One Residue That Travels', 'One Source Per Universe, Every Being Eligible',
-                'The Prime Being Changes With the Instance', 'Distribution Is Interpretation']
+                'The Prime Being Changes With the Instance', 'Distribution Is Interpretation',
+                'The Channeling Circle as a Claimed Reception Archive',
+                'Open the complete 39-session date and attribution index']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/inverted-toruses/',
