@@ -19,14 +19,28 @@
  * one text node become one run. That is what makes "the three words I
  * dragged over" mean the three words and not the paragraph they live in.
  *
- * THREE WAYS TO CHANGE IT
+ * THE WAYS TO CHANGE IT
  *   Words — the exact selected text, in a box, to edit and apply verbatim.
  *           No model is involved and nothing is interpreted.
  *   Look  — colour, background, font, size in pixels, weight, italic,
- *           letter-spacing, alignment. Applied to the runs if the box holds
- *           words, to the elements if it holds whole blocks.
+ *           letter-spacing, alignment, line height, opacity, decoration,
+ *           case, border, corners, padding, margin and shadow — plus
+ *           one-touch presets in the house colours and faces, and a mirror
+ *           button that takes the same looks back off.
+ *   Do    — the structural work: move a block among its neighbours,
+ *           duplicate it, hide, restore or erase it altogether, reset its
+ *           look, point a link, swap an image, and insert a new element
+ *           beside it — headings, paragraphs, quotations, lists, tables,
+ *           code, links, buttons, pictures, video, audio, embeds, figures,
+ *           dividers and plain containers.
  *   Ask   — a sentence, sent to the same model stack the oracle uses, which
  *           may only answer with operations against what was selected.
+ *
+ * And the quick ways in: double-click anything to select it, a little
+ * toolbar beside the box for the common moves, Widen/Narrow to correct the
+ * selection without re-dragging, Escape to step back, "e" to open the
+ * door, a 1-2-3 guide, a whole-site log, and the backups — every publish
+ * and source save keeps one, and any of them restores in a click.
  *
  * Everything is previewed on the page first, confirmed once, then published
  * and written to a log that can be read, undone and redone.
@@ -53,6 +67,7 @@
   }
 
   function post(payload) {
+    if (doorToken) payload.token = doorToken; /* the remembered key rides along; the server checks it before anything else */
     return fetch("/api/edit", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -64,6 +79,49 @@
       });
     });
   }
+
+  /* The styles for the editor's own furniture, carried in the file itself
+     so the tool never depends on a stylesheet build it cannot see. */
+  function injectStyles() {
+    if (document.getElementById("ae-extra-style")) return;
+    var css = [
+      ".ae-steps { font-size: .74rem; color: #9f947a; margin: .25rem 0 .1rem; letter-spacing: .05em; }",
+      ".ae-step { opacity: .5; }",
+      ".ae-step.is-on { opacity: 1; color: #f3ddaa; }",
+      ".ae-presets { display: flex; flex-wrap: wrap; gap: .3rem; margin: .3rem 0 .55rem; }",
+      ".ae-chip { background: #0e0c0a; border: 1px solid rgba(215,176,90,.35); color: #cbbb93;",
+      "  border-radius: 999px; padding: .16rem .62rem; font-size: .78rem; cursor: pointer;",
+      "  font-family: 'EB Garamond', serif; }",
+      ".ae-chip:hover { border-color: #d7b05a; color: #f3ddaa; }",
+      ".ae-mini { position: fixed; z-index: 1300; display: flex; flex-wrap: wrap; gap: .25rem;",
+      "  max-width: min(20rem, calc(100vw - 1rem)); padding: .3rem; background: #15120d;",
+      "  border: 1px solid rgba(215,176,90,.5); border-radius: 4px;",
+      "  box-shadow: 0 10px 26px rgba(0,0,0,.5); }",
+      ".ae-mini button { background: #0e0c0a; color: #e7dcc4; border: 1px solid rgba(215,176,90,.3);",
+      "  border-radius: 3px; font-size: .78rem; padding: .18rem .5rem; cursor: pointer;",
+      "  font-family: 'EB Garamond', serif; }",
+      ".ae-mini button:hover { border-color: #d7b05a; color: #f3ddaa; }",
+      ".ae-mini-x { position: absolute; top: -9px; right: -9px; width: 1.25rem; height: 1.25rem;",
+      "  border-radius: 50%; padding: 0; background: #0e0c0a; color: #cbbb93;",
+      "  border: 1px solid rgba(215,176,90,.65); cursor: pointer; font-size: .62rem; line-height: 1; }",
+      ".ae-mini-x:hover { color: #f3ddaa; border-color: #d7b05a; }",
+      ".ae-mini select { background: #0e0c0a; color: #e7dcc4; border: 1px solid rgba(215,176,90,.3);",
+      "  border-radius: 3px; font-size: .72rem; padding: .16rem .1rem;",
+      "  font-family: 'EB Garamond', serif; max-width: 7.4rem; }",
+      ".ae-mini input[type=color] { width: 1.5rem; height: 1.5rem; padding: 0;",
+      "  border: 1px solid rgba(215,176,90,.3); border-radius: 3px; background: #0e0c0a; cursor: pointer; }",
+      ".ae-mini-row { flex-basis: 100%; display: flex; gap: .25rem; }",
+      ".ae-mini-row input[type=url] { flex: 1; min-width: 0; background: #0e0c0a;",
+      "  border: 1px solid rgba(215,176,90,.3); border-radius: 3px; color: #e7dcc4;",
+      "  font-size: .72rem; padding: .18rem .3rem; font-family: 'EB Garamond', serif; }"
+    ].join("\n");
+    var style = document.createElement("style");
+    style.id = "ae-extra-style";
+    style.textContent = css;
+    (document.head || document.documentElement).appendChild(style);
+  }
+  if (document.readyState === "loading") addEventListener("DOMContentLoaded", injectStyles);
+  else injectStyles();
 
   /* A selector that survives a reload: tag plus nth-of-type from body down.
      No ids are invented and no classes are relied on, because a class is
@@ -104,6 +162,7 @@
     if (!n) return true;
     if (panel && panel.contains(n)) return true;
     if (mount.contains(n)) return true;
+    if (mini && mini.contains(n)) return true;
     if (n === boxEl || n === hoverEl) return true;
     return false;
   }
@@ -115,7 +174,13 @@
   function apply(op) {
     var node = find(op.ref);
     if (!node) return false;
+    return applyTo(node, op);
+  }
 
+  /* The work of one operation, against an already-resolved node. Batches
+     resolve every ref first and then apply, because a move or an insert
+     changes which node a later selector would find. */
+  function applyTo(node, op) {
     /* ---- a run of characters inside one text node --------------------- */
     if (op.op === "span-style" || op.op === "span-text") {
       var text = childAt(node, Number(op.node));
@@ -139,6 +204,58 @@
       return true;
     }
 
+    /* ---- the wider toolset, all of it addressed to one element --------- */
+    if (op.op === "link") {
+      var a = node.tagName === "A" ? node : node.querySelector("a");
+      if (!a) return false;
+      a.setAttribute("href", op.href || "#");
+      if (op.value) a.textContent = op.value;
+      return true;
+    }
+    if (op.op === "image") {
+      var img = node.tagName === "IMG" ? node : node.querySelector("img");
+      if (!img) return false;
+      img.setAttribute("src", op.src || "");
+      if (op.alt) img.setAttribute("alt", op.alt);
+      return true;
+    }
+    if (op.op === "move-up" || op.op === "move-down") {
+      if (!node.parentNode) return false;
+      var sib = op.op === "move-up" ? node.previousElementSibling : node.nextElementSibling;
+      if (!sib) return false;
+      if (op.op === "move-up") node.parentNode.insertBefore(node, sib);
+      else node.parentNode.insertBefore(sib, node);
+      return true;
+    }
+    if (op.op === "clone") {
+      if (!node.parentNode) return false;
+      node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling);
+      return true;
+    }
+    if (op.op === "insert-before" || op.op === "insert-after") {
+      if (!node.parentNode) return false;
+      var made = buildInsert(op);
+      if (!made) return false;
+      if (op.op === "insert-before") node.parentNode.insertBefore(made, node);
+      else node.parentNode.insertBefore(made, node.nextSibling);
+      return true;
+    }
+    /* Erase: take the element off the page altogether, not merely hide it.
+       The parent is what undo photographs, so the element comes back. */
+    if (op.op === "delete") {
+      if (!node.parentNode) return false;
+      node.parentNode.removeChild(node);
+      return true;
+    }
+    if (op.op === "unstyle") {
+      node.style.removeProperty(op.prop);
+      return true;
+    }
+    if (op.op === "clear-styles") {
+      node.removeAttribute("style");
+      return true;
+    }
+
     /* ---- a whole element ---------------------------------------------- */
     if (op.op === "text") node.textContent = op.value;
     else if (op.op === "hide") node.style.display = "none";
@@ -150,6 +267,104 @@
     else if (op.op === "font-size") node.style.setProperty("font-size", op.value);
     else if (op.op === "align") node.style.setProperty("text-align", op.value);
     return true;
+  }
+
+  /* The palette of elements the editor may insert. A fixed list, mirrored
+     by the server, so nothing outside it can ever be created. */
+  var INSERT_OK = {
+    p: 1, h1: 1, h2: 1, h3: 1, h4: 1, h5: 1, h6: 1, blockquote: 1, pre: 1,
+    code: 1, small: 1, mark: 1, strong: 1, em: 1, span: 1, div: 1, section: 1,
+    ul: 1, ol: 1, li: 1, a: 1, button: 1, img: 1, video: 1, audio: 1, iframe: 1,
+    hr: 1, figure: 1, figcaption: 1, table: 1
+  };
+
+  /* Build the one element an insert op asks for. Every kind comes from the
+     fixed palette above; the words always go in as text, never as markup,
+     so nothing typed here can itself become a tag. A list splits its words
+     on newlines into items; a table splits on newlines into rows and on a
+     pipe or tab into cells; a link takes its address from href; a picture,
+     video, sound or embed takes its address from src. */
+  function buildInsert(op) {
+    var tag = String(op.tag || "p").toLowerCase();
+    if (!INSERT_OK[tag]) return null;
+    var value = op.value == null ? "" : String(op.value);
+    var made, i, parts;
+
+    if (tag === "hr") return document.createElement("hr");
+
+    if (tag === "img" || tag === "video" || tag === "audio" || tag === "iframe") {
+      made = document.createElement(tag);
+      made.setAttribute("src", op.src || "");
+      if (tag === "img") made.setAttribute("alt", op.alt || "");
+      if (tag === "video" || tag === "audio") made.setAttribute("controls", "");
+      if (tag === "iframe") {
+        made.setAttribute("title", op.alt || "Embedded page");
+        made.setAttribute("loading", "lazy");
+      }
+      return made;
+    }
+
+    if (tag === "a") {
+      made = document.createElement("a");
+      made.setAttribute("href", op.href || "#");
+      made.textContent = value || op.href || "#";
+      return made;
+    }
+
+    if (tag === "ul" || tag === "ol") {
+      made = document.createElement(tag);
+      parts = value.split(/\r?\n/);
+      var items = [];
+      for (i = 0; i < parts.length; i++) {
+        if (parts[i].replace(/^\s+|\s+$/g, "").length) items.push(parts[i].replace(/^\s+|\s+$/g, ""));
+      }
+      if (!items.length) items = [""];
+      for (i = 0; i < items.length; i++) {
+        var li = document.createElement("li");
+        li.textContent = items[i];
+        made.appendChild(li);
+      }
+      return made;
+    }
+
+    if (tag === "table") {
+      made = document.createElement("table");
+      var body = document.createElement("tbody");
+      var rows = value.split(/\r?\n/);
+      var anyRow = false;
+      for (i = 0; i < rows.length; i++) {
+        if (!rows[i].replace(/^\s+|\s+$/g, "").length) continue;
+        anyRow = true;
+        var tr = document.createElement("tr");
+        var cells = rows[i].split(/\s*\|\s*|\t/);
+        for (var c = 0; c < cells.length; c++) {
+          var td = document.createElement("td");
+          td.textContent = cells[c].replace(/^\s+|\s+$/g, "");
+          tr.appendChild(td);
+        }
+        body.appendChild(tr);
+      }
+      if (!anyRow) {
+        var emptyTr = document.createElement("tr");
+        emptyTr.appendChild(document.createElement("td"));
+        body.appendChild(emptyTr);
+      }
+      made.appendChild(body);
+      return made;
+    }
+
+    if (tag === "figure") {
+      made = document.createElement("figure");
+      var cap = document.createElement("figcaption");
+      cap.textContent = value;
+      made.appendChild(cap);
+      return made;
+    }
+
+    /* Everything else is a plain container of words. */
+    made = document.createElement(tag);
+    made.textContent = value;
+    return made;
   }
 
   /* To undo a preview exactly, the whole element is photographed before it
@@ -172,7 +387,12 @@
   /* ------------------------------------- what every visitor already sees */
   function applyPublished() {
     post({ action: "overrides", page: PAGE }).then(function (d) {
-      (d.ops || []).forEach(apply);
+      /* Resolve the whole batch against the untouched page first, so an
+         early move or insert cannot change what a later selector finds. */
+      (d.ops || []).slice()
+        .sort(function (a, b) { return (Number(b.start) || 0) - (Number(a.start) || 0); })
+        .map(function (op) { return { op: op, node: find(op.ref) }; })
+        .forEach(function (r) { if (r.node) applyTo(r.node, r.op); });
     }).catch(function () { /* a page that cannot reach the API is still a page */ });
   }
   if (document.readyState === "complete") setTimeout(applyPublished, 0);
@@ -292,9 +512,53 @@
   if (document.readyState === "loading") addEventListener("DOMContentLoaded", place);
   else place();
 
+  /* The key remembered from another page of the house: verified quietly,
+     and if it is true the door stands open without a second asking. */
+  (function rememberedKey() {
+    var tok = cookie("eg-admin");
+    if (!tok) return;
+    fetch("/api/owner", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "check", token: tok })
+    }).then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (d) {
+        if (d && d.ok) {
+          doorToken = tok;
+          openPanel();
+          document.body.classList.add("is-editing");
+          if (button) button.setAttribute("aria-expanded", "true");
+          say("The door is already open — the key was remembered.");
+          loadOwnerPanel();
+        } else {
+          doorToken = "";
+          clearCookie("eg-admin");
+        }
+      })
+      .catch(function () { doorToken = ""; clearCookie("eg-admin"); });
+  })();
+
   /* ----------------------------------------------------------- the state */
   var pass = "";
+  var doorToken = "";        /* the key remembered in a cookie, if the door was opened once already */
   var panel = null;
+
+  function cookie(name) {
+    var m = new RegExp("(?:^|;\\s*)" + name + "=([^;]+)").exec(document.cookie || "");
+    return m ? m[1] : "";
+  }
+  function setCookie(name, value, days) {
+    document.cookie = name + "=" + value + "; path=/; max-age=" + Math.floor(days * 86400) + "; SameSite=Lax";
+  }
+  function clearCookie(name) {
+    document.cookie = name + "=; path=/; max-age=0; SameSite=Lax";
+  }
+  function loadOwnerPanel() {
+    if (window.EGOwn || document.getElementById("og-owner-script")) return;
+    var s = document.createElement("script");
+    s.id = "og-owner-script";
+    s.src = "/assets/js/owner-panel.js?v=owner-1";
+    document.head.appendChild(s);
+  }
   var picking = false;
   var boxEl = null;          /* the rectangle on screen */
   var hoverEl = null;        /* the outline that follows the pointer */
@@ -328,23 +592,31 @@
       '  <strong>Admin Edit Mode</strong>',
       '  <button type="button" class="ae-x" aria-label="Close edit mode">&#215;</button>',
       '</div>',
-      '<p class="ae-note">Drag a box over any part of the page \u2014 whole blocks or just a few ',
-      'words. Only what is inside it can be changed. Nothing takes effect until it is confirmed, ',
+      '<p class="ae-note">Drag a box over any part of the page \u2014 or just double-click it. ',
+      'Only what is inside the box can be changed. Nothing takes effect until it is confirmed, ',
       'and every published change is logged so it can be undone.</p>',
       '<div class="ae-row">',
       '  <button type="button" class="btn btn--small ae-pick">Drag a box</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-one">Click one element</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-clear" disabled>Clear</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-grow" disabled title="Widen the selection to the whole block around it">Widen</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-shrink" disabled title="Narrow the selection to the first thing inside it">Narrow</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-log">Log</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-backups">Backups</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-undo-pub" title="Undo the last published change on this page">Undo</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-redo-pub" title="Bring back the last undone change">Redo</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-signins">Sign-ins</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-owner" title="The deeper door: the traffic of the house, and the people">Owner mode</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-door-close" title="Burn the remembered key and lock the door again">Close the door</button>',
       '</div>',
+      '<p class="ae-steps"><span class="ae-step is-on">1 Pick</span> &rarr; ',
+      '<span class="ae-step">2 Change</span> &rarr; <span class="ae-step">3 Confirm</span></p>',
       '<p class="ae-count muted xsmall">Nothing selected yet.</p>',
 
       '<div class="ae-tabs" role="tablist">',
       '  <button type="button" class="ae-tab is-on" data-tab="words" role="tab">Words</button>',
       '  <button type="button" class="ae-tab" data-tab="look" role="tab">Look</button>',
+      '  <button type="button" class="ae-tab" data-tab="do" role="tab">Do</button>',
       '  <button type="button" class="ae-tab" data-tab="ask" role="tab">Ask</button>',
       '  <button type="button" class="ae-tab" data-tab="date" role="tab">Date</button>',
       '  <button type="button" class="ae-tab" data-tab="source" role="tab">Source</button>',
@@ -364,6 +636,8 @@
 
       /* ---- look ------------------------------------------------------ */
       '<section class="ae-pane" data-pane="look" hidden>',
+      '  <p class="ae-label">One touch, the house colours and faces:</p>',
+      '  <div class="ae-presets"></div>',
       '  <div class="ae-grid">',
       '    <label>Text colour<span class="ae-pair">',
       '      <input type="color" class="ae-colour" value="#d7b05a">',
@@ -382,8 +656,95 @@
       '    <label>Align<select class="ae-align"><option value="">leave</option>',
       '      <option value="left">left</option><option value="center">centre</option>',
       '      <option value="right">right</option></select></label>',
+      '    <label>Line height<input type="number" class="ae-leading" min="0.8" max="3" step="0.05" placeholder="leave"></label>',
+      '    <label>Opacity (%)<input type="number" class="ae-opacity" min="5" max="100" step="5" placeholder="leave"></label>',
+      '    <label>Decoration<select class="ae-deco"><option value="">leave</option>',
+      '      <option value="underline">underline</option><option value="line-through">struck through</option>',
+      '      <option value="none">plain</option></select></label>',
+      '    <label>Case<select class="ae-case"><option value="">leave</option>',
+      '      <option value="uppercase">CAPS</option><option value="lowercase">lower</option>',
+      '      <option value="capitalize">Title Case</option><option value="none">as written</option></select></label>',
+      '    <label>Border (px)<input type="number" class="ae-bw" min="0" max="20" step="1" placeholder="leave"></label>',
+      '    <label>Border style<select class="ae-bs"><option value="">leave</option>',
+      '      <option value="solid">solid</option><option value="dashed">dashed</option>',
+      '      <option value="dotted">dotted</option><option value="double">double</option></select></label>',
+      '    <label>Corners (px)<input type="number" class="ae-radius" min="0" max="80" step="1" placeholder="leave"></label>',
+      '    <label>Padding (px)<input type="number" class="ae-pad" min="0" max="120" step="2" placeholder="leave"></label>',
+      '    <label>Margin (px)<input type="number" class="ae-mar" min="-60" max="120" step="2" placeholder="leave"></label>',
+      '    <label>Shadow<select class="ae-shadow"><option value="">leave</option>',
+      '      <option value="0 0 18px rgba(215,176,90,0.25)">soft gold glow</option>',
+      '      <option value="0 10px 30px rgba(0,0,0,0.45)">deep lift</option>',
+      '      <option value="none">no shadow</option></select></label>',
       '  </div>',
-      '  <div class="ae-row"><button type="button" class="btn btn--small ae-look">Apply this look</button></div>',
+      '  <div class="ae-row"><button type="button" class="btn btn--small ae-look">Apply this look</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-unlook" ',
+      '    title="Take the ticked looks back off the selection, word for word">Remove these looks</button></div>',
+      '</section>',
+
+      /* ---- do: the structural work ----------------------------------- */
+      '<section class="ae-pane" data-pane="do" hidden>',
+      '  <p class="muted xsmall">Whole-block work on what is in the box: move it among its ',
+      '  neighbours, duplicate it, take it off the page or bring it back, and put new blocks ',
+      '  beside it. All of it previews first and publishes on one confirmation.</p>',
+      '  <div class="ae-row">',
+      '    <button type="button" class="btn btn--small ae-mv-up" title="Move the block up among its neighbours">&#9650; Move up</button>',
+      '    <button type="button" class="btn btn--small ae-mv-down" title="Move the block down among its neighbours">&#9660; Move down</button>',
+      '    <button type="button" class="btn btn--small ae-clone" title="Duplicate the block">Duplicate</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-hide" title="Take it off the page for everyone, but keep it to bring back">Hide</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-show" title="Bring back a hidden block">Bring back</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-del" title="Erase it from the page altogether">Erase</button>',
+      '    <button type="button" class="btn btn--small btn--ghost ae-reset" title="Take every inline style off the block">Reset its look</button>',
+      '  </div>',
+      '  <p class="ae-label">Point a link</p>',
+      '  <div class="ae-grid">',
+      '    <label>Address<input type="text" class="ae-href" placeholder="/occult/ or https://\u2026"></label>',
+      '    <label>New words (optional)<input type="text" class="ae-linktext" placeholder="leave the words as they are"></label>',
+      '  </div>',
+      '  <div class="ae-row"><button type="button" class="btn btn--small ae-link">Set the link</button></div>',
+      '  <p class="ae-label">Swap a picture</p>',
+      '  <div class="ae-grid">',
+      '    <label>Image address<input type="text" class="ae-imgsrc" placeholder="/assets/img/\u2026 or https://\u2026"></label>',
+      '    <label>Alt text<input type="text" class="ae-imgalt" placeholder="what the picture shows"></label>',
+      '  </div>',
+      '  <div class="ae-row"><button type="button" class="btn btn--small ae-img">Swap the image</button></div>',
+      '  <p class="ae-label">Add a new element beside the selection</p>',
+      '  <div class="ae-grid">',
+      '    <label>Kind<select class="ae-ins-tag">',
+      '      <optgroup label="Text">',
+      '        <option value="p">paragraph</option>',
+      '        <option value="h1">heading 1</option><option value="h2">heading 2</option>',
+      '        <option value="h3">heading 3</option><option value="h4">heading 4</option>',
+      '        <option value="h5">heading 5</option><option value="h6">heading 6</option>',
+      '        <option value="blockquote">quotation</option>',
+      '        <option value="pre">preformatted</option><option value="code">code</option>',
+      '        <option value="small">small print</option><option value="mark">highlighted</option>',
+      '        <option value="strong">strong</option><option value="em">emphasis</option>',
+      '      </optgroup>',
+      '      <optgroup label="Lists">',
+      '        <option value="ul">bulleted list</option><option value="ol">numbered list</option>',
+      '        <option value="li">list item</option>',
+      '      </optgroup>',
+      '      <optgroup label="Links and media">',
+      '        <option value="a">link</option><option value="button">button</option>',
+      '        <option value="img">image</option><option value="video">video</option>',
+      '        <option value="audio">audio</option><option value="iframe">embed</option>',
+      '      </optgroup>',
+      '      <optgroup label="Layout">',
+      '        <option value="hr">divider</option><option value="div">container</option>',
+      '        <option value="section">section</option><option value="figure">figure</option>',
+      '        <option value="figcaption">caption</option><option value="table">table</option>',
+      '      </optgroup>',
+      '    </select></label>',
+      '    <label>Where<select class="ae-ins-where">',
+      '      <option value="insert-after">after it</option>',
+      '      <option value="insert-before">before it</option></select></label>',
+      '    <label>Address <span class="muted xsmall">(link, image, video, audio, embed)</span>',
+      '      <input type="text" class="ae-ins-href" placeholder="/path/ or https://\\u2026"></label>',
+      '  </div>',
+      '  <label class="ae-label" for="ae-ins-text">Its words \\u2014 for a list, one item per line; ',
+      '  for a table, one row per line with a pipe between cells</label>',
+      '  <textarea id="ae-ins-text" class="ae-prompt ae-ins-text" rows="3"></textarea>',
+      '  <div class="ae-row"><button type="button" class="btn btn--small ae-insert">Add the element</button></div>',
       '</section>',
 
       /* ---- ask ------------------------------------------------------- */
@@ -455,10 +816,44 @@
     q(".ae-undo-pub").addEventListener("click", function () { pubStep("undo"); });
     q(".ae-redo-pub").addEventListener("click", function () { pubStep("redo"); });
     q(".ae-signins").addEventListener("click", showSignins);
+    q(".ae-owner").addEventListener("click", function () {
+      loadOwnerPanel();
+      if (window.EGOwn && window.EGOwn.enterOwner) window.EGOwn.enterOwner();
+      else say("The owner room is waking.", false);
+    });
+    q(".ae-door-close").addEventListener("click", function () {
+      pass = "";
+      if (doorToken) {
+        fetch("/api/owner", {
+          method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "close", token: doorToken })
+        }).then(function (r) { return r.json().catch(function () { return {}; }); }).catch(function () {});
+      }
+      doorToken = "";
+      clearCookie("eg-admin");
+      if (window.EGOwn) window.EGOwn.forget("admin");
+      closeAll();
+      say("The door is shut, and the key is burned.", false);
+    });
     q(".ae-date-save").addEventListener("click", function () { savePageDate(false); });
     q(".ae-date-clear").addEventListener("click", function () { savePageDate(true); });
     q(".ae-src-load").addEventListener("click", loadSource);
     q(".ae-src-save").addEventListener("click", saveSource);
+    q(".ae-grow").addEventListener("click", function () { reshape("grow"); });
+    q(".ae-shrink").addEventListener("click", function () { reshape("shrink"); });
+    q(".ae-backups").addEventListener("click", showBackups);
+    q(".ae-unlook").addEventListener("click", removeLook);
+    q(".ae-mv-up").addEventListener("click", function () { doStruct("move-up"); });
+    q(".ae-mv-down").addEventListener("click", function () { doStruct("move-down"); });
+    q(".ae-clone").addEventListener("click", function () { doStruct("clone"); });
+    q(".ae-hide").addEventListener("click", function () { doStruct("hide"); });
+    q(".ae-show").addEventListener("click", function () { doStruct("show"); });
+    q(".ae-del").addEventListener("click", function () { doStruct("delete"); });
+    q(".ae-reset").addEventListener("click", function () { doStruct("clear-styles"); });
+    q(".ae-link").addEventListener("click", setLink);
+    q(".ae-img").addEventListener("click", swapImage);
+    q(".ae-insert").addEventListener("click", insertBlock);
+    buildPresets();
     loadDateEditor();
     panel.querySelectorAll(".ae-tab").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -509,12 +904,25 @@
     if (boxEl && boxEl.parentNode) boxEl.parentNode.removeChild(boxEl);
     boxEl = null; rect = null; runs = []; blocks = [];
     paintMarks();
+    hideMini();
     var clearBtn = q(".ae-clear");
     var count = q(".ae-count");
     var verbatim = q(".ae-verbatim");
     if (clearBtn) clearBtn.disabled = true;
+    var grow = q(".ae-grow"), shrink = q(".ae-shrink");
+    if (grow) grow.disabled = true;
+    if (shrink) shrink.disabled = true;
     if (count) count.textContent = "Nothing selected yet.";
     if (verbatim) verbatim.value = "";
+    steps(1);
+  }
+
+  /* The little 1-2-3 guide at the top of the panel. */
+  function steps(n) {
+    if (!panel) return;
+    panel.querySelectorAll(".ae-step").forEach(function (s, i) {
+      s.classList.toggle("is-on", i + 1 <= n);
+    });
   }
 
   function point(e) {
@@ -681,6 +1089,11 @@
     paintMarks();
     var clearBtn = q(".ae-clear");
     if (clearBtn) clearBtn.disabled = false;
+    var grow = q(".ae-grow"), shrink = q(".ae-shrink");
+    if (grow) grow.disabled = false;
+    if (shrink) shrink.disabled = false;
+    steps(2);
+    showMini();
     var words = runs.reduce(function (n, r) { return n + r.text.split(/\s+/).length; }, 0);
     var count = q(".ae-count");
     if (count) {
@@ -723,18 +1136,212 @@
     blocks.forEach(function (b) { mark(b.el.getBoundingClientRect(), "admin-edit-mark is-block"); });
   }
 
+  /* ------------------------------------------------ the little toolbar --
+     Once something is selected, the commonest moves sit right beside the
+     box, so the panel does not have to be hunted through. Every button
+     goes through the same preview and the same single confirmation. */
+  var mini = null;
+
+  function hideMini() { if (mini) mini.hidden = true; }
+
+  function miniLook(wants, name) {
+    if (!runs.length && !blocks.length) return say("Select something first.", true);
+    preview(opsForWants(wants), "quick " + name, "");
+  }
+
+  function openTab(name) {
+    if (!panel) return;
+    var tab = panel.querySelector(".ae-tab[data-tab=\"" + name + "\"]");
+    if (tab) tab.click();
+  }
+
+  function placeMini() {
+    if (!mini || mini.hidden || !rect) return;
+    var left = rect.left - scrollX + rect.width;
+    var top = rect.top - scrollY + rect.height + 6;
+    var w = mini.offsetWidth || 280;
+    if (left + w > innerWidth - 8) left = Math.max(8, innerWidth - w - 8);
+    if (top + 40 > innerHeight - 8) top = Math.max(8, rect.top - scrollY - 44);
+    mini.style.left = Math.max(8, left - w) + "px";
+    mini.style.top = top + "px";
+  }
+
+  function showMini() {
+    if (!panel || (!runs.length && !blocks.length)) return hideMini();
+    if (!mini) {
+      mini = el("div", "ae-mini");
+      var mk = function (label, title, fn) {
+        var n = el("button", "", label);
+        n.type = "button";
+        n.title = title;
+        n.addEventListener("click", fn);
+        mini.appendChild(n);
+        return n;
+      };
+      mk("B", "Bold the selection", function () { miniLook([["font-weight", "700"]], "bold"); }).style.fontWeight = "700";
+      mk("I", "Italicise the selection", function () { miniLook([["font-style", "italic"]], "italic"); }).style.fontStyle = "italic";
+      mk("U", "Underline the selection", function () { miniLook([["text-decoration", "underline"]], "underline"); }).style.textDecoration = "underline";
+      mk("S", "Strike through the selection", function () { miniLook([["text-decoration", "line-through"]], "strikethrough"); }).style.textDecoration = "line-through";
+      var fontSel = el("select", "ae-mini-font");
+      fontSel.title = "Choose the face";
+      ["EB Garamond, serif", "Cinzel, serif", "Georgia, serif",
+       "'Helvetica Neue', Arial, sans-serif", "'Courier New', monospace"].forEach(function (f) {
+        var o = el("option");
+        o.value = f;
+        o.textContent = f.split(",")[0].replace(/'/g, "");
+        fontSel.appendChild(o);
+      });
+      fontSel.addEventListener("change", function () {
+        if (fontSel.value) miniLook([["font-family", fontSel.value]], "face");
+      });
+      mini.appendChild(fontSel);
+      var sizeSel = el("select", "ae-mini-size");
+      sizeSel.title = "Choose the size";
+      var sz0 = el("option"); sz0.textContent = "size"; sizeSel.appendChild(sz0);
+      [12, 14, 16, 18, 20, 22, 24, 28, 32, 40, 48].forEach(function (s) {
+        var o = el("option"); o.value = String(s); o.textContent = s + "px"; sizeSel.appendChild(o);
+      });
+      sizeSel.addEventListener("change", function () {
+        if (sizeSel.value) miniLook([["font-size", sizeSel.value + "px"]], "size");
+      });
+      mini.appendChild(sizeSel);
+      var col = el("input", "ae-mini-colour");
+      col.type = "color"; col.value = "#d7b05a";
+      col.title = "Choose the ink colour";
+      col.addEventListener("change", function () { miniLook([["color", col.value]], "ink"); });
+      mini.appendChild(col);
+      mk("\u25c6 gold", "House gold", function () { miniLook([["color", "#d7b05a"]], "gold"); });
+      mk("\u25ad", "Frame it in a gold border \u2014 press again to take it off", function () {
+        if (!runs.length && !blocks.length) return say("Select something first.", true);
+        var t = blocks.length ? blocks[0].el : (runs[0] && runs[0].node);
+        var has = !!(t && getComputedStyle(t).borderTopWidth &&
+          getComputedStyle(t).borderTopWidth !== "0px");
+        if (!has) return miniLook([["border-width", "2px"], ["border-style", "solid"],
+          ["border-color", "#d7b05a"]], "border");
+        var ops = [];
+        runs.forEach(function (r) {
+          ops.push({ ref: r.ref, op: "span-style", node: r.node, start: r.start, end: r.end,
+            prop: "border-width", value: "inherit" });
+        });
+        blocks.forEach(function (b) { ops.push({ ref: b.ref, op: "unstyle", prop: "border-width" }); });
+        if (!ops.length) return say("Select something first.", true);
+        preview(ops, "remove the border", "");
+      });
+      mk("\u25b2", "Move the block up", function () { doStruct("move-up"); });
+      mk("\u25bc", "Move the block down", function () { doStruct("move-down"); });
+      mk("\u2398", "Duplicate the block", function () { doStruct("clone"); });
+      mk("hide", "Take it off the page", function () { doStruct("hide"); });
+      var imgRow = el("div", "ae-mini-row");
+      imgRow.hidden = true;
+      var imgGo, imgUrl;
+      imgUrl = el("input", "ae-mini-imgurl");
+      imgUrl.type = "url";
+      imgUrl.placeholder = "https://\u2026 or /assets/img/\u2026";
+      imgGo = el("button", "", "go");
+      imgGo.type = "button";
+      imgGo.title = "Insert the image beside the selection";
+      function doInsertImage() {
+        var src = imgUrl.value.trim();
+        if (!SAFE_URL.test(src)) return say("That is not an image address this site can use.", true);
+        var refs = doTargets();
+        if (!refs.length) return say("Select the block the picture should sit beside.", true);
+        preview(refs.map(function (ref) {
+          return { ref: ref, op: "insert-after", tag: "img", src: src, alt: "" };
+        }), "insert-after: img \u2014 " + src, "");
+      }
+      imgGo.addEventListener("click", doInsertImage);
+      imgUrl.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); doInsertImage(); }
+      });
+      imgRow.appendChild(imgUrl);
+      imgRow.appendChild(imgGo);
+      mini.appendChild(imgRow);
+      mk("\ud83d\uddbc", "Insert an image beside the selection", function () {
+        imgRow.hidden = !imgRow.hidden;
+        if (!imgRow.hidden) imgUrl.focus();
+      });
+      mk("words\u2026", "Edit the words", function () { openTab("words"); });
+      mk("look\u2026", "Set the look", function () { openTab("look"); });
+      mk("ask\u2026", "Ask for a change", function () { openTab("ask"); });
+      var x = el("button", "ae-mini-x", "\u2715");
+      x.type = "button";
+      x.title = "Close this toolbar";
+      x.setAttribute("aria-label", "Close this toolbar");
+      x.addEventListener("click", hideMini);
+      mini.appendChild(x);
+      document.body.appendChild(mini);
+    }
+    mini.hidden = false;
+    placeMini();
+  }
+
+  addEventListener("scroll", placeMini, true);
+  addEventListener("resize", placeMini);
+
+  /* Double-click anything to select it \u2014 the quick way in, once the door
+     is open. It takes the element under the pointer, exactly like the
+     "Click one element" button. */
+  addEventListener("dblclick", function (e) {
+    if (!pass || !panel || panel.hidden) return;
+    var t = e.target;
+    if (ours(t)) return;
+    e.preventDefault();
+    revertPreview();
+    var r = t.getBoundingClientRect();
+    drawBox({ x: r.left + scrollX, y: r.top + scrollY },
+      { x: r.right + scrollX, y: r.bottom + scrollY });
+    gather();
+  }, true);
+
+  /* Escape steps back: picking, then the preview, then the panel. And "e"
+     opens the door from anywhere on the page, hands off the keyboard. */
+  addEventListener("keydown", function (e) {
+    var tag = (e.target && e.target.tagName || "").toLowerCase();
+    var typing = tag === "input" || tag === "textarea" || tag === "select" ||
+      (e.target && e.target.isContentEditable);
+    if (e.key === "Escape") {
+      if (picking) { stopPicking(); say("Cancelled."); return; }
+      if (draft) { revertPreview(); say("The preview was discarded."); return; }
+      if (panel && !panel.hidden) closeAll();
+      return;
+    }
+    if (!typing && !e.metaKey && !e.ctrlKey && !e.altKey && (e.key === "e" || e.key === "E")) {
+      if (panel && !panel.hidden) return;
+      button.click();
+    }
+  });
+
   /* ------------------------------------------------ proposing a change */
+  /* The operations that rearrange the tree rather than just touching one
+     element. Their undo photograph is the parent, because that is the node
+     whose children they change. */
+  var STRUCTURAL = { "move-up": 1, "move-down": 1, "clone": 1,
+    "insert-before": 1, "insert-after": 1, "delete": 1 };
+
   function preview(ops, how, via) {
     revertPreview();
     if (!ops.length) return say("That would not change anything.", true);
     draft = { prompt: how, ops: ops, source: via ? "model" : "direct", via: via || "" };
     var refs = [];
-    ops.forEach(function (op) { if (refs.indexOf(op.ref) < 0) refs.push(op.ref); });
+    ops.forEach(function (op) {
+      if (refs.indexOf(op.ref) < 0) refs.push(op.ref);
+      if (STRUCTURAL[op.op]) {
+        var n = find(op.ref);
+        var parent = n && n.parentElement;
+        if (parent) {
+          var pr = pathOf(parent);
+          if (refs.indexOf(pr) < 0) refs.push(pr);
+        }
+      }
+    });
     shots = refs.map(function (ref) { return snapshot({ ref: ref }); }).filter(Boolean);
-    /* Later runs in the same text node shift when an earlier one is
-       replaced, so operations are applied from the end backwards. */
+    /* Resolve every ref against the page as it stands now, before anything
+       moves, then apply to the resolved nodes. Later runs in the same text
+       node shift when an earlier one is replaced, so the batch is applied
+       from the end backwards. */
     ops.slice().sort(function (a, b) { return (Number(b.start) || 0) - (Number(a.start) || 0); })
-      .forEach(apply);
+      .map(function (op) { return { op: op, node: find(op.ref) }; })
+      .forEach(function (r) { if (r.node) applyTo(r.node, r.op); });
     var list = ops.map(function (op) {
       var what = op.op === "span-text" || op.op === "text" ? "the words"
         : op.op === "hide" ? "hidden" : (op.prop || op.op);
@@ -747,6 +1354,10 @@
       ops.length + " change(s)" + (via ? " \u2014 " + via : "") + ".</p><ul class=\"ae-ops\">" +
       list + "</ul>";
     q(".ae-confirm").hidden = false;
+    var pub = q(".ae-publish");
+    if (pub) pub.textContent = "Confirm and publish \u2014 " + ops.length +
+      " change" + (ops.length === 1 ? "" : "s");
+    steps(3);
     paintMarks();
     say("This is a preview. It will not take effect until you confirm.");
   }
@@ -777,24 +1388,17 @@
   }
 
   /* ---- look ----------------------------------------------------------- */
-  function applyLook() {
-    if (!runs.length && !blocks.length) return say("Select something first.", true);
-    var wants = [];
-    if (q(".ae-colour-on").checked) wants.push(["color", q(".ae-colour").value]);
-    if (q(".ae-bg-on").checked) wants.push(["background-color", q(".ae-bg").value]);
-    if (q(".ae-font").value) wants.push(["font-family", q(".ae-font").value]);
-    if (q(".ae-size").value) wants.push(["font-size", Number(q(".ae-size").value) + "px"]);
-    if (q(".ae-weight").value) wants.push(["font-weight", q(".ae-weight").value]);
-    if (q(".ae-track").value) wants.push(["letter-spacing", Number(q(".ae-track").value) + "px"]);
-    if (q(".ae-italic").value) wants.push(["font-style", q(".ae-italic").value]);
-    if (q(".ae-align").value) wants.push(["text-align", q(".ae-align").value]);
-    if (!wants.length) return say("Tick a colour or choose a font, a size or a weight.", true);
+  /* Properties that belong to a block rather than to the words themselves. */
+  var BLOCK_ONLY = ["text-align", "background-color", "padding", "margin",
+    "border-width", "border-style", "border-radius", "box-shadow"];
 
+  /* One list of [property, value] pairs becomes operations against whatever
+     is selected: the words where a word-level style fits, the blocks where
+     only a block can carry it. Shared by the Look tab and the presets. */
+  function opsForWants(wants) {
     var ops = [];
     wants.forEach(function (w) {
-      /* Alignment and background belong to a block; a colour, a font and a
-         size can be put on the words themselves. */
-      var blockOnly = w[0] === "text-align" || w[0] === "background-color";
+      var blockOnly = BLOCK_ONLY.indexOf(w[0]) >= 0;
       if (!blockOnly) {
         runs.forEach(function (r) {
           ops.push({ ref: r.ref, op: "span-style", node: r.node, start: r.start, end: r.end,
@@ -813,7 +1417,174 @@
         });
       }
     });
-    preview(ops, "look: " + wants.map(function (w) { return w[0] + " " + w[1]; }).join(", "), "");
+    return ops;
+  }
+
+  /* What the Look tab currently asks for, as pairs. */
+  function readWants() {
+    var wants = [];
+    if (q(".ae-colour-on").checked) wants.push(["color", q(".ae-colour").value]);
+    if (q(".ae-bg-on").checked) wants.push(["background-color", q(".ae-bg").value]);
+    if (q(".ae-font").value) wants.push(["font-family", q(".ae-font").value]);
+    if (q(".ae-size").value) wants.push(["font-size", Number(q(".ae-size").value) + "px"]);
+    if (q(".ae-weight").value) wants.push(["font-weight", q(".ae-weight").value]);
+    if (q(".ae-track").value) wants.push(["letter-spacing", Number(q(".ae-track").value) + "px"]);
+    if (q(".ae-italic").value) wants.push(["font-style", q(".ae-italic").value]);
+    if (q(".ae-align").value) wants.push(["text-align", q(".ae-align").value]);
+    if (q(".ae-leading").value) wants.push(["line-height", String(Number(q(".ae-leading").value))]);
+    if (q(".ae-opacity").value) wants.push(["opacity", String(Number(q(".ae-opacity").value) / 100)]);
+    if (q(".ae-deco").value) wants.push(["text-decoration", q(".ae-deco").value]);
+    if (q(".ae-case").value) wants.push(["text-transform", q(".ae-case").value]);
+    if (q(".ae-bw").value) wants.push(["border-width", Number(q(".ae-bw").value) + "px"]);
+    if (q(".ae-bs").value) wants.push(["border-style", q(".ae-bs").value]);
+    if (q(".ae-radius").value) wants.push(["border-radius", Number(q(".ae-radius").value) + "px"]);
+    if (q(".ae-pad").value) wants.push(["padding", Number(q(".ae-pad").value) + "px"]);
+    if (q(".ae-mar").value) wants.push(["margin", Number(q(".ae-mar").value) + "px"]);
+    if (q(".ae-shadow").value) wants.push(["box-shadow", q(".ae-shadow").value]);
+    return wants;
+  }
+
+  function applyLook() {
+    if (!runs.length && !blocks.length) return say("Select something first.", true);
+    var wants = readWants();
+    if (!wants.length) return say("Tick a colour or choose a font, a size or a weight.", true);
+    preview(opsForWants(wants),
+      "look: " + wants.map(function (w) { return w[0] + " " + w[1]; }).join(", "), "");
+  }
+
+  /* The mirror image: take exactly those properties back off again. */
+  function removeLook() {
+    if (!runs.length && !blocks.length) return say("Select something first.", true);
+    var wants = readWants();
+    if (!wants.length) return say("Tick or choose the looks to remove first.", true);
+    var ops = [];
+    wants.forEach(function (w) {
+      runs.forEach(function (r) {
+        ops.push({ ref: r.ref, op: "span-style", node: r.node, start: r.start, end: r.end,
+          prop: w[0], value: "inherit" });
+      });
+      blocks.forEach(function (b) {
+        ops.push({ ref: b.ref, op: "unstyle", prop: w[0] });
+      });
+    });
+    preview(ops, "remove looks: " + wants.map(function (w) { return w[0]; }).join(", "), "");
+  }
+
+  /* One-touch presets: the house colours and faces, so the common thing
+     never needs a picker. */
+  var PRESETS = [
+    ["House gold", [["color", "#d7b05a"]]],
+    ["Bright", [["color", "#f3ddaa"]]],
+    ["Rose", [["color", "#cf7f8d"]]],
+    ["Verdant", [["color", "#6fae7f"]]],
+    ["Amethyst", [["color", "#9b7ddb"]]],
+    ["Dim it", [["opacity", "0.62"]]],
+    ["Cinzel", [["font-family", "Cinzel, serif"]]],
+    ["Small caps", [["text-transform", "uppercase"], ["letter-spacing", "0.08em"]]],
+    ["Underline", [["text-decoration", "underline"]]],
+    ["Gold glow", [["box-shadow", "0 0 18px rgba(215,176,90,0.25)"]]]
+  ];
+
+  function buildPresets() {
+    var row = q(".ae-presets");
+    if (!row) return;
+    PRESETS.forEach(function (p) {
+      var b = el("button", "ae-chip", p[0]);
+      b.type = "button";
+      b.addEventListener("click", function () {
+        if (!runs.length && !blocks.length) return say("Select something first.", true);
+        preview(opsForWants(p[1]), "preset: " + p[0], "");
+      });
+      row.appendChild(b);
+    });
+  }
+
+  /* ---- do: the structural work ---------------------------------------- */
+  /* What the structural buttons act on: the blocks if the box caught any,
+     otherwise the elements the selected words live in. */
+  function doTargets() {
+    if (blocks.length) return blocks.map(function (b) { return b.ref; });
+    var out = [];
+    runs.forEach(function (r) { if (out.indexOf(r.ref) < 0) out.push(r.ref); });
+    return out;
+  }
+
+  function doStruct(kind) {
+    var refs = doTargets();
+    if (!refs.length) return say("Select a block first \u2014 drag a box or double-click it.", true);
+    var ops = refs.map(function (ref) { return { ref: ref, op: kind }; });
+    preview(ops, kind + " \u00d7 " + refs.length, "");
+  }
+
+  /* The same safe shape the server checks: relative, anchor, http(s),
+     mailto. Checked here so the preview fails fast, and again there. */
+  var SAFE_URL = /^(\/[^\s"'<>]*|#[A-Za-z0-9_-]{1,120}|https?:\/\/[^\s"'<>]{1,400}|mailto:[^\s"'<>@]+@[^\s"'<>]{1,120})$/i;
+
+  function setLink() {
+    var refs = doTargets();
+    if (!refs.length) return say("Select the link, or the block it sits in.", true);
+    var href = q(".ae-href").value.trim();
+    if (!SAFE_URL.test(href)) return say("That is not an address this site can link to.", true);
+    var words = q(".ae-linktext").value.trim();
+    preview(refs.map(function (ref) {
+      return { ref: ref, op: "link", href: href, value: words };
+    }), "link \u2192 " + href, "");
+  }
+
+  function swapImage() {
+    var refs = doTargets();
+    if (!refs.length) return say("Select the picture, or the block it sits in.", true);
+    var src = q(".ae-imgsrc").value.trim();
+    if (!SAFE_URL.test(src)) return say("That is not an image address this site can use.", true);
+    var alt = q(".ae-imgalt").value.trim();
+    preview(refs.map(function (ref) {
+      return { ref: ref, op: "image", src: src, alt: alt };
+    }), "image \u2192 " + src, "");
+  }
+
+  function insertBlock() {
+    var refs = doTargets();
+    if (!refs.length) return say("Select the block the new one should sit beside.", true);
+    var tag = q(".ae-ins-tag").value;
+    var where = q(".ae-ins-where").value;
+    var body = q(".ae-ins-text").value.trim();
+    var addr = q(".ae-ins-href").value.trim();
+    var MEDIA = { img: 1, video: 1, audio: 1, iframe: 1 };
+    if (MEDIA[tag] && !SAFE_URL.test(addr)) {
+      return say("For " + tag + ", put its address in the Address box.", true);
+    }
+    if (tag === "a" && !SAFE_URL.test(addr)) {
+      return say("For a link, put its address in the Address box.", true);
+    }
+    if (tag !== "hr" && !MEDIA[tag] && tag !== "a" && !body) {
+      return say("Give the new element some words.", true);
+    }
+    preview(refs.map(function (ref) {
+      var op = { ref: ref, op: where, tag: tag };
+      if (MEDIA[tag]) { op.src = addr; op.alt = body; }
+      else if (tag === "a") { op.href = addr; op.value = body; }
+      else if (tag !== "hr") op.value = body;
+      return op;
+    }), where + ": " + tag +
+      (body ? " \u2014 " + body.slice(0, 60) : (addr ? " \u2014 " + addr.slice(0, 60) : "")), "");
+  }
+
+  /* Widen the selection to the block around it, or narrow it to the first
+     thing inside \u2014 so the box can be corrected without re-dragging. */
+  function reshape(how) {
+    var base = null;
+    if (blocks.length) base = blocks[0].el;
+    else if (runs.length) base = runs[0].el;
+    if (!base) return say("Select something first.", true);
+    var node = how === "grow" ? base.parentElement
+      : (base.firstElementChild || base);
+    if (!node || node === document.body) {
+      return say("There is nowhere further to " + (how === "grow" ? "widen." : "narrow."), true);
+    }
+    var r = node.getBoundingClientRect();
+    drawBox({ x: r.left + scrollX, y: r.top + scrollY },
+      { x: r.right + scrollX, y: r.bottom + scrollY });
+    gather();
   }
 
   /* ---- ask ------------------------------------------------------------ */
@@ -888,33 +1659,80 @@
   }
 
   /* ------------------------------------------------------------ the log */
-  function showLog() {
+  function showLog(whole) {
     var out = q(".ae-log-out");
     out.hidden = false;
     out.innerHTML = "<p class=\"muted xsmall\">Reading the log\u2026</p>";
-    post({ action: "list", pass: pass, page: PAGE }).then(function (d) {
+    post({ action: "list", pass: pass, page: whole ? "" : PAGE }).then(function (d) {
+      var scope = "<div class=\"ae-row\"><button type=\"button\" class=\"btn btn--small " +
+        (whole ? "btn--ghost " : "") + "ae-scope\" data-whole=\"\">This page</button>" +
+        "<button type=\"button\" class=\"btn btn--small " +
+        (whole ? "" : "btn--ghost ") + "ae-scope\" data-whole=\"1\">Whole site</button></div>";
       var rows = (d.edits || []).map(function (e) {
-        return "<tr><td>#" + e.id + "</td><td>" + String(e.prompt || "")
-          .replace(/[<&]/g, "") + "</td><td>" + e.count + "</td><td>" + e.state +
+        return "<tr><td>#" + e.id + "</td>" +
+          (whole ? "<td>" + String(e.page || "").replace(/[<&]/g, "") + "</td>" : "") +
+          "<td>" + String(e.prompt || "")
+          .replace(/[<&]/g, "").slice(0, 90) + "</td><td>" + e.count + "</td><td>" + e.state +
           "</td><td><button type=\"button\" class=\"btn btn--small btn--ghost ae-flip\" " +
           "data-id=\"" + e.id + "\" data-to=\"" + (e.state === "live" ? "undo" : "redo") + "\">" +
           (e.state === "live" ? "Undo" : "Redo") + "</button></td></tr>";
       }).join("");
-      out.innerHTML = rows
-        ? "<p class=\"muted xsmall\">Every published change on this page. Undo takes it off the " +
-          "page for everyone; redo puts it back. The log itself is never rewritten.</p>" +
-          "<div class=\"table-scroll\"><table class=\"ae-table\"><thead><tr><th>#</th><th>Asked for</th>" +
+      out.innerHTML = scope + (rows
+        ? "<p class=\"muted xsmall\">Every published change" + (whole ? " on the site" : " on this page") +
+          ". Undo takes it off the page for everyone; redo puts it back. The log itself is never rewritten.</p>" +
+          "<div class=\"table-scroll\"><table class=\"ae-table\"><thead><tr><th>#</th>" +
+          (whole ? "<th>Page</th>" : "") + "<th>Asked for</th>" +
           "<th>Ops</th><th>State</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div>"
-        : "<p class=\"muted xsmall\">Nothing has been published on this page yet.</p>";
+        : "<p class=\"muted xsmall\">Nothing has been published " +
+          (whole ? "anywhere yet." : "on this page yet.") + "</p>");
       out.querySelectorAll(".ae-flip").forEach(function (b) {
         b.addEventListener("click", function () {
           post({ action: b.getAttribute("data-to"), pass: pass, id: Number(b.getAttribute("data-id")) })
-            .then(function () { say("Done. Reload to see it as a visitor will."); showLog(); })
+            .then(function () { say("Done. Reload to see it as a visitor will."); showLog(whole); })
             .catch(function (err) { say(err.message || "That did not work.", true); });
         });
       });
+      out.querySelectorAll(".ae-scope").forEach(function (b) {
+        b.addEventListener("click", function () { showLog(b.getAttribute("data-whole") === "1"); });
+      });
     }).catch(function (err) {
       out.innerHTML = "<p class=\"ae-msg is-bad\">" + (err.message || "The log would not open.") + "</p>";
+    });
+  }
+
+  /* The backups: every publish and every source save keeps one, and any of
+     them can be restored. The door was always in the API; this is the
+     handle on it. */
+  function showBackups() {
+    var out = q(".ae-log-out");
+    if (!out) return;
+    out.hidden = false;
+    out.innerHTML = "<p class=\"muted xsmall\">Reading the backups\u2026</p>";
+    post({ action: "backups", pass: pass, page: PAGE }).then(function (d) {
+      var rows = (d.backups || []).map(function (b) {
+        return "<tr><td>#" + b.id + "</td><td>" + String(b.kind || "").replace(/[<&]/g, "") +
+          "</td><td>" + String(b.detail || "").slice(0, 90).replace(/[<&]/g, "") +
+          "</td><td>" + String(b.at || "").slice(0, 16).replace(/[<&]/g, "") +
+          "</td><td><button type=\"button\" class=\"btn btn--small btn--ghost ae-rest\" data-id=\"" +
+          b.id + "\">Restore</button></td></tr>";
+      }).join("");
+      out.innerHTML = rows
+        ? "<p class=\"muted xsmall\">Every publish and every source save on this page kept what " +
+          "stood before it. Restoring puts that moment back exactly.</p>" +
+          "<div class=\"table-scroll\"><table class=\"ae-table\"><thead><tr><th>#</th><th>Kind</th>" +
+          "<th>Detail</th><th>When</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div>"
+        : "<p class=\"muted xsmall\">No backups kept on this page yet.</p>";
+      out.querySelectorAll(".ae-rest").forEach(function (b) {
+        b.addEventListener("click", function () {
+          if (!window.confirm("Restore backup #" + b.getAttribute("data-id") +
+            "? The page returns to exactly how it stood at that moment.")) return;
+          post({ action: "restore", pass: pass, id: Number(b.getAttribute("data-id")) })
+            .then(function () { say("Restored \u2014 reloading."); setTimeout(function () { location.reload(); }, 600); })
+            .catch(function (err) { say(err.message || "It would not restore.", true); });
+        });
+      });
+    }).catch(function (err) {
+      out.innerHTML = "<p class=\"ae-msg is-bad\">" + (err.message || "The backups would not open.") + "</p>";
     });
   }
 
@@ -1048,6 +1866,15 @@
       say("Trying the door\u2026");
       post({ action: "list", pass: typed, page: PAGE }).then(function () {
         pass = typed;
+        /* Mint the remembered key, so no page of the house asks twice. */
+        fetch("/api/owner", {
+          method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "unlock", pass: typed })
+        }).then(function (r) { return r.json().catch(function () { return {}; }); })
+          .then(function (d) {
+            if (d && d.ok && d.token) { doorToken = d.token; setCookie("eg-admin", d.token, 7); }
+          }).catch(function () {});
+        loadOwnerPanel();
         panel.parentNode.removeChild(panel);
         panel = null;
         openPanel();
