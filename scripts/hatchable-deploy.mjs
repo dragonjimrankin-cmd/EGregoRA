@@ -247,7 +247,7 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
       if (!done) {
         // Multipart: base64 text split into chunks, committed with final=true.
         const b64 = bytes.toString("base64");
-        const SIZE = 192 * 1024;
+        const SIZE = 60 * 1024;   // Hatchable's upload_file caps a chunk at 65536 bytes
         const parts = Math.ceil(b64.length / SIZE);
         const sha256 = createHash("sha256").update(bytes).digest("hex");
         let uploadId = null;
