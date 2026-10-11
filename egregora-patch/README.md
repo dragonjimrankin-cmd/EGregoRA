@@ -25,7 +25,11 @@ Current patch:
   podcast episode's claimed date when one has been set. Every generated HTML
   page cache-busts the shared Admin Edit script so the Date tab is available
   throughout the site immediately.
-- `migrations/0031_speaker_bootstrap.sql` and the guarded one-shot media action
-  recover the latest named podcast transcript when the speech provider returns
-  diarized segments, without exposing the admin passcode or creating a general
-  public transcription proxy.
+- `migrations/0031_speaker_bootstrap.sql`,
+  `migrations/0032_speaker_inference_fallback.sql`, and the guarded media action
+  recover the latest named podcast transcript without exposing the admin
+  passcode or creating a general public transcription proxy. Provider speaker
+  labels are preferred. When the provider returns only timestamped fragments,
+  one bounded fallback uses measurable pauses or text-only dialogue structure;
+  that provenance is stored explicitly and is never presented as biometric
+  voice recognition.
