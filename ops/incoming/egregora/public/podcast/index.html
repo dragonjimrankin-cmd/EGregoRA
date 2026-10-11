@@ -608,8 +608,7 @@
   <div class="btn-row">
     <button type="button" class="btn ds-big" data-ds="open" aria-expanded="false">
       Record now on your device</button>
-    <span class="muted xsmall">No account, no upload. Microphone
-    straight into this page &mdash; then play it back, cut it about, and keep it in this
+    <span class="muted xsmall">Sign in to record. The microphone goes straight into this page
     device&rsquo;s archive.</span>
   </div>
 
@@ -1043,20 +1042,21 @@
 
       <p class="muted small">All of this happens in this browser, on this machine, before anything is
       sent. The file is decoded, run through the chain below and rendered offline &mdash; usually faster
-      than real time &mdash; then encoded to MP3. Nothing is uploaded until you have listened to it.</p>
+      than real time &mdash; then encoded to the form chosen below, MP3 or FLAC. Nothing is
+      uploaded until you have listened to it.</p>
 
 
       <div class="am-opts" data-am="opts">
         <label><input type="checkbox" data-want="rumble" checked> Filter the rumble below 72&nbsp;Hz</label>
         <label><input type="checkbox" data-want="gate" checked> Shelve the hiss</label>
         <label><input type="checkbox" data-want="tone" checked> Shape the tone &mdash; mud down, presence and air up</label>
-        <label><input type="checkbox" data-want="deess"> De-ess the sibilance</label>
+        <label><input type="checkbox" data-want="deess" checked> De-ess the sibilance</label>
         <label><input type="checkbox" data-want="level" checked> Level it &mdash; gentle compression</label>
         <label><input type="checkbox" data-want="loud" checked> Match the loudness, then limit the peaks</label>
 
         <label><input type="checkbox" data-want="denoise" checked> Gate the silences &mdash; sniffs and coughs out, every word left whole</label>
         <label><input type="checkbox" data-want="roomtone" checked> Lay the room&rsquo;s tone under the silences &mdash; the background stays continuous</label>
-        <label><input type="checkbox" data-want="destutter"> Remove stuttering &mdash; a syllable repeated in place is muted; the word itself is never touched</label>
+        <label><input type="checkbox" data-want="destutter" checked> Remove stuttering &mdash; a syllable repeated in place is muted; the word itself is never touched</label>
         <label><input type="checkbox" data-want="trim" checked> Trim the silence from both ends</label>
         <label><input type="checkbox" data-want="gaps" checked> Close the long speechless stretches</label>
         <label><input type="checkbox" data-want="fade" checked> Fade in and out</label>
@@ -1082,7 +1082,7 @@
       not deleted. The gate opens just <em>before</em> each word and holds across it, so speech is
       never clipped; only noise that stands alone between phrases &mdash; a cough, a sniff, a chair
       knock &mdash; gets shut out.</p>
-      <p class="muted xsmall">Stuttering removal is off by default and deliberately shy. It looks
+      <p class="muted xsmall">Stuttering removal is on by default and deliberately shy. It looks
       for one pattern only &mdash; the same short syllable landing two or more times in a row, then
       the word itself &mdash; and mutes only the repeats before it: the last repeat and the word
       always stand, so a word a person chose to say twice survives. If the pattern fires too often
@@ -1098,7 +1098,18 @@
 
 
       <label for="audio-loud">Target loudness (dB RMS)</label>
-      <input type="range" id="audio-loud" data-am="loud" min="-28" max="-10" step="1" value="-18">
+      <input type="range" id="audio-loud" data-am="loud" min="-28" max="-10" step="1" value="-12">
+
+      <label>The form it is published in</label>
+      <div class="btn-row">
+        <label class="muted xsmall"><input type="radio" name="audio-fmt" data-am="fmt" value="mp3" checked>
+          MP3 &mdash; small, plays everywhere</label>
+        <label class="muted xsmall"><input type="radio" name="audio-fmt" data-am="fmt" value="flac">
+          FLAC &mdash; lossless, weighs more</label>
+      </div>
+      <p class="muted xsmall">Whichever is chosen, the recording is converted to that form first
+      &mdash; before any of the work is done &mdash; and the enhanced take is published in the
+      same form.</p>
 
       <div class="btn-row">
         <button type="button" class="btn btn--small" data-am="run">
@@ -1206,82 +1217,7 @@
     <div data-drop-slot></div>
   </div>
   <div class="media-list" id="uploaded-media" data-kind="audio" hidden></div>
-  <div class="media-list">
-
-    <details class="frame media ep reveal">
-      <summary>
-        <span class="num">003</span>
-        <span class="ep-head">
-          <span class="meta">2026-10-03 · 1h 26m</span>
-          <span class="ep-title">Entropic Brains: Psychedelics, Prediction and the Loosening of the Model</span>
-          <span class="muted xsmall">neuroscience · meditation · psychology</span>
-        </span>
-      </summary>
-      <div class="ep-body">
-        <p>Predictive processing, the default mode network, and what the visionary state actually does to the machinery of perception. With a long caution on set, setting and law.</p>
-
-        <p class="kicker">Where it meets the rest of the house</p>
-        <ul class="am-links">
-          <li><a href="/extraterrestrials/#t-not-visitors-neighbours">Not Visitors. Neighbours.</a> <span class="muted xsmall">neighbours rather than visitors</span></li>
-          <li><a href="/qabalah/#t-v-densities-chakras-and-the-honest-seam">V · Densities, Chakras and the Honest Seam</a> <span class="muted xsmall">densities, chakras and the honest seam</span></li>
-          <li><a href="/consciousness/#t-why-this-is-not-just-another-hard-problem">Why This Is Not Just Another Hard Problem</a> <span class="muted xsmall">why this is not just another hard problem</span></li>
-        </ul>
-
-
-          <p class="muted pending">⟡ Audio upload pending.</p>
-
-      </div>
-    </details>
-
-    <details class="frame media ep reveal">
-      <summary>
-        <span class="num">002</span>
-        <span class="ep-head">
-          <span class="meta">2026-09-19 · 58m</span>
-          <span class="ep-title">The Grove and the Particle Accelerator</span>
-          <span class="muted xsmall">druids · physics · trees</span>
-        </span>
-      </summary>
-      <div class="ep-body">
-        <p>Why druidry and high-energy physics are asking the same question in different dialects — pattern, persistence and the behaviour of energy under constraint.</p>
-
-        <p class="kicker">Where it meets the rest of the house</p>
-        <ul class="am-links">
-          <li><a href="/druids/#t-who-they-actually-were">Who They Actually Were</a> <span class="muted xsmall">who the druids actually were</span></li>
-          <li><a href="/cosmic-aether/#t-one-field-named-twice">One Field, Named Twice</a> <span class="muted xsmall">the one field under both dialects</span></li>
-          <li><a href="/sacred-geometry/#t-iv-why-nature-keeps-arriving-at-the-same-shape">IV · Why Nature Keeps Arriving at the Same Shapes</a> <span class="muted xsmall">why nature keeps arriving at the same shapes</span></li>
-        </ul>
-
-
-          <p class="muted pending">⟡ Audio upload pending.</p>
-
-      </div>
-    </details>
-
-    <details class="frame media ep reveal">
-      <summary>
-        <span class="num">001</span>
-        <span class="ep-head">
-          <span class="meta">2026-09-05 · 1h 12m</span>
-          <span class="ep-title">What Is an Egregore? Building a Mind Out of Many Minds</span>
-          <span class="muted xsmall">magic · psychology · foundations</span>
-        </span>
-      </summary>
-      <div class="ep-body">
-        <p>Edward opens the order: thought-forms, group minds, the sociology of belief, and why naming a thing accurately is the first act of magic.</p>
-
-        <p class="kicker">Where it meets the rest of the house</p>
-        <ul class="am-links">
-          <li><a href="/occult/#t-what-the-word-has-meant">What the word has meant</a> <span class="muted xsmall">what the word has actually meant</span></li>
-          <li><a href="/wizardry/#t-what-a-wizard-actually-is">What a Wizard Actually Is</a> <span class="muted xsmall">what the implements are really for</span></li>
-          <li><a href="/neurobiology/#t-what-survives-scrutiny">What Survives Scrutiny</a> <span class="muted xsmall">what the brain evidence will and will not carry</span></li>
-        </ul>
-
-
-          <p class="muted pending">⟡ Audio upload pending.</p>
-
-      </div>
-    </details>
+  <div class="media-list"></div>
 
   </div>
 
