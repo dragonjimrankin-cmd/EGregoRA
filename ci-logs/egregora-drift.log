@@ -1,8 +1,8 @@
 project proj_eiuxpFfTnwwx
-live version: 234
-ours:         233
+live version: 235
+ours:         234
 
-✖ 1 deploy(s) landed since ours (v233 → v234).
+✖ 1 deploy(s) landed since ours (v234 → v235).
    Reading the live files so the two can be merged rather than one buried.
 
    live project holds 243 files
@@ -12,16 +12,18 @@ ours:         233
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 36
+   changed live vs our bundle : 40
      ~ public/404.html
+     ~ public/account/index.html
      ~ public/artwork/index.html
      ~ public/ask-ed/index.html
-     ~ public/assets/js/fox.js
-     ~ public/assets/js/headtts/headtts.mjs
-     ~ public/assets/js/headtts/THIRD-PARTY-NOTICES.txt
+     ~ public/assets/js/headtts/voices/am_fenrir.bin
+     ~ public/assets/js/headtts/voices/am_michael.bin
+     ~ public/assets/js/headtts/voices/am_puck.bin
+     ~ public/assets/js/headtts/voices/bm_fable.bin
+     ~ public/assets/js/headtts/voices/bm_george.bin
+     ~ public/assets/js/headtts/voices/bm_lewis.bin
      ~ public/assets/js/media-admin.js
      ~ public/assets/js/neural-voice.js
      ~ public/astrology/index.html
@@ -52,15 +54,7 @@ ours:         233
      ~ public/site-index/index.html
      ~ public/videos/index.html
      ~ public/wizardry/index.html
-   present live, absent here  : 8
-     + public/assets/css/avatar-voice.css
-     + public/assets/js/headtts/LICENSE-Kokoro.txt
-     + public/assets/js/headtts/voices/am_fenrir.bin
-     + public/assets/js/headtts/voices/am_michael.bin
-     + public/assets/js/headtts/voices/am_puck.bin
-     + public/assets/js/headtts/voices/bm_fable.bin
-     + public/assets/js/headtts/voices/bm_george.bin
-     + public/assets/js/headtts/voices/bm_lewis.bin
+   present live, absent here  : 0
    present here, absent live  : 1
      - README.md
 
