@@ -46,7 +46,9 @@ const fake = (obj, status) => ({
   json: async () => obj,
   text: async () => JSON.stringify(obj),
   arrayBuffer: async () => new ArrayBuffer(3),
-  blob: async () => ({ size: 3, type: "audio/mpeg", arrayBuffer: async () => new ArrayBuffer(3) })
+  /* A real Blob, not a lookalike: the private ear checks instanceof, and
+     the editor's fetched episode file must pass that check. */
+  blob: async () => new w.Blob(["fake"], { type: "audio/mpeg" })
 });
 
 w.fetch = async (url, opts) => {
@@ -109,7 +111,12 @@ const run = (file, pre) => {
 };
 
 run("player.js", "");
-run("media-admin.js", stub("countdown") + stub("voiceTemplate") + stub("sealVoiceprint") +
+/* media-admin.js imports the progress liveness reporter as an ES module;
+   the harness cannot resolve module paths, so the real module's source —
+   not a stub — is laid into the same scope ahead of it. */
+const progressLive = readFileSync(ROOT + "hatchable/public/assets/js/progress-live.js", "utf8")
+  .replace(/^\s*export\s+/gm, "");
+run("media-admin.js", progressLive + "\n" + stub("countdown") + stub("voiceTemplate") + stub("sealVoiceprint") +
   stub("openVoiceprint") + stub("voiceSimilarity"));
 run("device-studio.js", stub("busyBox") + stub("busyError") + stub("hold") + stub("release") +
   "async function nameTheDevice(){return 'harness'} ");
@@ -255,16 +262,18 @@ w.OfflineAudioContext = w.webkitOfflineAudioContext = function (ch, len, rate) {
   return { createBufferSource: () => ({ buffer: null, connect() {}, start() {} }),
            destination: {}, startRendering: async () => fakeBuf(len / rate, rate) };
 };
-w.EGTransformersLoader = () => Promise.resolve({
-  env: { backends: { onnx: { wasm: {} } } },
-  pipeline: (task, model, opts) => {
-    if (opts && opts.progress_callback) opts.progress_callback({ status: "progress", progress: 100 });
-    return Promise.resolve(() => Promise.resolve({
-      chunks: [
-        { timestamp: [0, 2.4], text: "hello world" },
-        { timestamp: [3, 5.5], text: "the ear heard the file itself" }
-      ]
-    }));
+/* The in-page ear is the private local Whisper; the seam the page offers
+   lets this harness hand it a fake engine that hears two segments. */
+w.EGBrowserWhisperLoader = () => Promise.resolve({
+  BrowserWhisper: class {
+    async *transcribe(file, opts) {
+      if (opts && opts.onProgress) {
+        opts.onProgress({ stage: "loading", progress: 1 });
+        opts.onProgress({ stage: "transcribing", progress: 0.5 });
+      }
+      yield { text: "hello world", start: 0, end: 2.4 };
+      yield { text: "the ear heard the file itself", start: 3, end: 5.5 };
+    }
   }
 });
 

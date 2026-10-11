@@ -1488,11 +1488,18 @@ function setup(root) {
   let whisperEngine = null;
   let whisperLoad = null;
 
+  /* A seam \u2014 a loader the page can override \u2014 lets the test harness
+     stand in a fake ear; in the browser it is a plain dynamic import. */
+  function browserWhisperLoader() {
+    if (window.EGBrowserWhisperLoader) return window.EGBrowserWhisperLoader();
+    return import(PRIVATE_WHISPER_MODULE);
+  }
+
   async function whisper(report = step) {
     if (whisperEngine) return whisperEngine;
     if (!whisperLoad) {
       report("Opening private local Whisper \u2014 audio stays on this device", 0.02);
-      whisperLoad = import(PRIVATE_WHISPER_MODULE)
+      whisperLoad = browserWhisperLoader()
         .then(function (module) {
           whisperEngine = new module.BrowserWhisper({
             model: "whisper-base",
