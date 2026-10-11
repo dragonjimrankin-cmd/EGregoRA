@@ -15,4 +15,5 @@ Current patch:
 - `migrations/0029_speaker_profiles.sql` keeps episode-to-speaker names and
   aggregate patterns. It stores no extra audio or reversible voiceprint.
 - `public/assets/js/media-admin.js` emits one timestamp only when the inferred
-  speaker changes; the podcast HTML cache-busts that browser update.
+  speaker changes and can transcribe an episode already on the shelf; the
+  podcast HTML cache-busts that browser update.

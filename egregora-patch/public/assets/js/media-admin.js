@@ -1703,6 +1703,7 @@ function setup(root) {
       '<label for="' + KIND + '-ed-summary">Summary</label>' +
       '<textarea id="' + KIND + '-ed-summary" data-ed="summary" rows="3">' + esc(item.summary) + "</textarea>" +
       '<div class="btn-row"><button class="btn btn--small" type="button" data-ed="save">Save the writing</button>' +
+      '<button class="btn btn--small btn--ghost" type="button" data-ed="transcribe">Transcribe this episode</button>' +
       '<button class="btn btn--small btn--ghost" type="button" data-ed="sum-from-tr">Write the summary from its transcript</button>' +
       '<button class="btn btn--small btn--ghost" type="button" data-ed="read-tr">Read its transcript</button></div>' +
       '<div class="ep-transcript" data-ed="trbox" hidden></div>' +
@@ -1823,6 +1824,58 @@ function setup(root) {
     });
 
     ed("whole").addEventListener("click", () => { edit.snippets = []; drawSnips(); tellEd("Back to the whole thing."); });
+
+    /* Existing uploads can be heard too. This is particularly useful when an
+       episode reached the shelf before the transcription doors were repaired:
+       the browser's timestamped ear is tried first, then the server ear. Known
+       speaker names travel with the transcript and cause their compact speech
+       patterns to be refreshed on the server. */
+    ed("transcribe").addEventListener("click", async () => {
+      const button = ed("transcribe");
+      if (!edit.buf) return tellEd("The audio is still loading. Try again when the player says Ready.", true);
+      button.disabled = true;
+      const transcriptBox = ed("trbox");
+      transcriptBox.innerHTML = "";
+      const area = document.createElement("textarea");
+      area.readOnly = true;
+      area.rows = 12;
+      area.className = "am-ear";
+      area.setAttribute("aria-label", "The transcript as it is heard");
+      transcriptBox.appendChild(area);
+      transcriptBox.hidden = false;
+      const typer = makeTyper(area);
+      let transcript = "";
+      try {
+        tellEd("Listening to the stored episode in this browser\u2026");
+        try {
+          transcript = await listenWhisper(edit.buf, typer);
+        } catch {
+          tellEd("The browser ear could not load; the server is listening in reduced stretches\u2026");
+          transcript = await listenServer(edit.buf, edit.buf.duration, typer);
+        }
+        typer.stop();
+        if (!transcript || transcript.trim().length < 40) {
+          throw new Error("The ear did not keep enough words to save.");
+        }
+        await post({ action: "edit", id: item.id, transcript });
+        const known = Array.isArray(item.speakers) ? item.speakers : [];
+        let named = null;
+        if (known.length) {
+          named = await post({ action: "name-speakers", id: item.id, speakers: known });
+        }
+        area.value = (named && named.transcript) || transcript;
+        item.has_transcript = true;
+        tellEd(named && named.speaker_patterns_stored
+          ? "Transcript saved. The named voices' speech patterns are stored, with one timestamp per turn."
+          : "Transcript saved. Its speaker turns are kept with the episode.");
+        button.textContent = "Transcribe it again";
+      } catch (err) {
+        typer.stop();
+        tellEd((err && err.message) || "The episode could not be transcribed.", true);
+      } finally {
+        button.disabled = false;
+      }
+    });
 
     /* A summary written from the kept transcript, by the same models the
        oracle leans on. Nothing is saved until the writing is saved. */
