@@ -46,7 +46,9 @@ async function identity(req) {
       id: me.id, home: 'egregora', kind: me.kind === 'bot' ? 'bot' : 'human',
       name: p.display_name || me.name || me.email,
       tag: me.kind === 'bot' ? 'moderator · construct' : null,
-      bio: p.bio || null, avatar: await avatarUrl(p.avatar_key)
+      bio: p.bio || null, avatar: await avatarUrl(p.avatar_key),
+      /* Carried so the door below can be judged without a second lookup. */
+      email: me.email || null, privilege: me.privilege || null, membership: null
     };
   }
   const token = bearer(req);
@@ -56,11 +58,54 @@ async function identity(req) {
       return {
         id: 'twin-' + t.member.id, home: 'two-infinities', kind: 'human',
         name: t.member.display_name || t.member.name || 'a member of the twin',
-        tag: 'twin member', bio: t.member.bio || null, avatar: t.member.avatar_url || null
+        tag: 'twin member', bio: t.member.bio || null, avatar: t.member.avatar_url || null,
+        /* The twin vouches for the standing as well as the name, because this
+           house has no row of theirs to read. */
+        email: t.member.email || null, privilege: t.member.privilege || null,
+        membership: t.member.membership || null
       };
     }
   }
   return null;
+}
+
+/**
+ * Who may actually speak here.
+ *
+ * The forum is readable by anyone — the link is on every page and the threads
+ * are open. Taking part is narrower: an owner, an administrator, or a member
+ * whose membership is still inside its period. Everyone else can read, and is
+ * told plainly what would let them write, rather than being handed a box that
+ * refuses them after they have typed.
+ *
+ * The house's own constructs are exempt: they are the room's furniture, not
+ * guests, and shutting them out would leave the forum talking to itself.
+ */
+async function canTakePart(who) {
+  if (!who) {
+    return { ok: false, reason: 'sign-in',
+      error: 'Sign in to take part \u2014 one account covers both houses.' };
+  }
+  if (who.kind === 'bot') return { ok: true, by: 'construct' };
+  if (who.privilege === 'owner' || who.privilege === 'admin') {
+    return { ok: true, by: who.privilege };
+  }
+  /* A twin member arrives vouched: their standing crossed with the name, and
+     this house has no row of theirs to read. */
+  if (who.membership) return { ok: true, by: 'member' };
+  if (who.email) {
+    const { rows } = await db.query(
+      'SELECT state, period_end FROM memberships WHERE email = $1', [who.email]);
+    const m = rows[0];
+    const live = m && m.state === 'active' &&
+      (!m.period_end || new Date(m.period_end).getTime() > Date.now());
+    if (live) return { ok: true, by: 'member' };
+  }
+  return {
+    ok: false, reason: 'membership',
+    error: 'The forum is open to read. Writing needs a membership, or the order\u2019s ' +
+           'own key \u2014 both are on the membership page.'
+  };
 }
 
 async function authorRow(who) {
@@ -164,12 +209,24 @@ export default async function (req, res) {
     }
     if (action === 'me') {
       const who = await identity(req);
-      return res.json({ ok: true, member: who });
+      /* The page asks this before it draws the composer, so it can say what is
+         missing rather than let somebody type a post that will be refused. */
+      const door = await canTakePart(who);
+      return res.json({
+        ok: true, member: who,
+        can_post: door.ok, reason: door.ok ? null : door.reason, why: door.error
+      });
     }
 
     if (action === 'new' || action === 'post') {
       const who = await identity(req);
-      if (!who) return res.status(401).json({ error: 'Sign in to take part — one account covers both houses.' });
+      const door = await canTakePart(who);
+      if (!door.ok) {
+        /* 401 when nobody is signed in at all, 403 when they are and simply
+           may not write — the page reads the two differently. */
+        return res.status(door.reason === 'sign-in' ? 401 : 403)
+          .json({ error: door.error, reason: door.reason });
+      }
       const text = clean(body.body, 6000);
       if (!text) return res.status(400).json({ error: 'Say the thing itself.' });
 

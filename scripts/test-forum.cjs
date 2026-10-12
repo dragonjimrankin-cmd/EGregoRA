@@ -28,8 +28,8 @@ let PUTS = [];
 let nextId = 100;
 const genId = () => "gen-" + (nextId++);
 let COMPOSE = async () => "A considered reply from the construct.";
-let TWIN_KNOWN = { known: true, member: { id: 9, name: "Twin Person", display_name: "TP", bio: "hi", avatar_url: null } };
-let LOCAL_MEMBER = { id: 7, email: "rowan@example.org", name: "Rowan", kind: "human" };
+let TWIN_KNOWN = { known: true, member: { id: 9, name: "Twin Person", display_name: "TP", bio: "hi", avatar_url: null, email: "twin@example.org", privilege: null, membership: "member" } };
+let LOCAL_MEMBER = { id: 7, email: "rowan@example.org", name: "Rowan", kind: "human", privilege: null };
 
 const db = { query: async (sql, a = []) => {
   const S = sql.replace(/\s+/g, " ");
@@ -52,6 +52,8 @@ const db = { query: async (sql, a = []) => {
   if (/FROM forum_posts WHERE thread_id/.test(S)) return { rows: POSTS.filter((p) => String(p.thread_id) === String(a[0])) };
   if (/author_kind = 'bot' GROUP BY/.test(S)) return { rows: [] };
   if (/FROM forum_posts/.test(S)) return { rows: [] };
+  /* The door reads the ledger: these fixtures hold a live membership. */
+  if (/FROM memberships WHERE email/.test(S)) return { rows: [{ state: "active", period_end: null, tier: "member" }] };
   if (/FROM members WHERE email/.test(S)) return { rows: a[0].startsWith("sable") ? [{ id: 42 }] : [] };
   if (/FROM forum_profiles WHERE member_id = ANY/.test(S)) return { rows: [] };
   if (/FROM forum_profiles WHERE member_id = /.test(S)) { const p = PROFILES[a[0]]; return { rows: p ? [p] : [] }; }

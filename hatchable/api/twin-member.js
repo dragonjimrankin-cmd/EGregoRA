@@ -39,11 +39,27 @@ export default async function (req, res) {
       const p = rows[0] || {};
       let avatar_url = null;
       if (p.avatar_key) { try { avatar_url = await storage.url(p.avatar_key, { ttl: 604800 }); } catch {} }
+      /* The shared forum has to decide whether this member may write, and it
+         cannot ask our database from over there. So the standing travels with
+         the vouching: privilege, and whether a membership is still inside its
+         period. Neither is a secret the twin is entitled to keep — the member
+         is asking to post under their own name. */
+      let membership = null;
+      try {
+        const { rows: mm } = await db.query(
+          'SELECT tier, period_end FROM memberships WHERE email = $1 AND state = $2',
+          [me.email, 'active']);
+        const m = mm[0];
+        if (m && (!m.period_end || new Date(m.period_end).getTime() > Date.now())) {
+          membership = m.tier || 'member';
+        }
+      } catch { /* a house without the ledger yet simply vouches for the name */ }
       return res.json({
         ok: true, site: HOME.key, known: true,
         member: {
           id: me.id, name: me.name, email: me.email,
           kind: me.kind === 'bot' ? 'bot' : 'human',
+          privilege: me.privilege || null, membership,
           display_name: p.display_name || null, bio: p.bio || null, avatar_url
         }
       });

@@ -238,6 +238,11 @@
       '  <button type="button" class="btn btn--small btn--ghost ae-one">Click one element</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-clear" disabled>Clear</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-log">Log</button>',
+      /* Undo, Redo and Apply changes: the three hands on this mode, kept
+         together and always in sight rather than scattered through the panes. */
+      '  <button type="button" class="btn btn--small btn--ghost ae-undo-top" title="Undo the last change">Undo</button>',
+      '  <button type="button" class="btn btn--small btn--ghost ae-redo-top" title="Bring back the last undone change">Redo</button>',
+      '  <button type="button" class="btn btn--small ae-apply-top" title="Apply what is staged, and publish it">Apply changes</button>',
       '</div>',
       '<p class="ae-count muted xsmall">Nothing selected yet.</p>',
 
@@ -293,7 +298,7 @@
 
       '<div class="ae-draft" hidden></div>',
       '<div class="ae-row ae-confirm" hidden>',
-      '  <button type="button" class="btn btn--small ae-publish">Confirm and publish</button>',
+      '  <button type="button" class="btn btn--small ae-apply ae-publish">Apply changes</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-revert">Discard the preview</button>',
       '</div>',
       '<p class="ae-msg"></p>',
@@ -319,7 +324,10 @@
     q(".ae-go").addEventListener("click", propose);
     q(".ae-undo").addEventListener("click", function () { step(-1); });
     q(".ae-redo").addEventListener("click", function () { step(1); });
-    q(".ae-publish").addEventListener("click", publish);
+    q(".ae-publish").addEventListener("click", applyChanges);
+    q(".ae-apply-top").addEventListener("click", applyChanges);
+    q(".ae-undo-top").addEventListener("click", function () { step(-1); });
+    q(".ae-redo-top").addEventListener("click", function () { step(1); });
     q(".ae-revert").addEventListener("click", revertPreview);
     panel.querySelectorAll(".ae-tab").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -734,6 +742,22 @@
   }
 
   /* --------------------------------------------------------- publishing */
+  /* One press does the whole thing: put what is staged onto the page, then
+     publish it. If nothing is staged yet, take the pane the admin is looking
+     at and stage that first, so the button never asks for a step the person
+     pressing it cannot see. */
+  function applyChanges() {
+    var confirm = q(".ae-confirm");
+    if (!confirm || confirm.hidden) {
+      var tab = q(".ae-tab.is-on");
+      var which = tab ? tab.getAttribute("data-tab") : "words";
+      if (which === "look") applyLook(); else if (which === "words") applyWords();
+    }
+    confirm = q(".ae-confirm");
+    if (!confirm || confirm.hidden) { say("There is nothing staged to apply yet.", true); return; }
+    publish();
+  }
+
   function publish() {
     if (!draft) return say("Propose a change first.", true);
     post({
@@ -832,4 +856,22 @@
   /* The marks are drawn in page coordinates, so they follow a resize only
      if they are redrawn. */
   addEventListener("resize", function () { if (runs.length || blocks.length) paintMarks(); });
+})();
+
+/* ---------------------------------------------------------------------------
+   No walking away from work half done.
+
+   Leaving the page while changes are staged but not applied asks first. The
+   staged state is read straight off the panel: the confirm row is only shown
+   once there is something waiting to be applied.
+   ------------------------------------------------------------------------ */
+(function () {
+  'use strict';
+  window.addEventListener('beforeunload', function (ev) {
+    var c = document.querySelector('.admin-edit-panel .ae-confirm');
+    if (!c || c.hidden) return;
+    ev.preventDefault();
+    ev.returnValue = 'There are changes in Admin Edit Mode that have not been applied.';
+    return ev.returnValue;
+  });
 })();

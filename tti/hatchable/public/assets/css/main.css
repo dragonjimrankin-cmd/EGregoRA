@@ -3451,28 +3451,38 @@ body { max-width: 100%; }
    quiet until it is wanted: a thin outline that only an administrator has
    any reason to press.
    ======================================================================= */
-.admin-edit-mount { display: flex; justify-content: flex-start;
-  padding: 0 1.2rem 0.8rem; }
+.admin-edit-mount { display: block; padding: 0; }
+/* A pill fixed to the left of the screen, in the same manner and the same
+   corner as the owner pill is drawn over at the other house — but in this
+   house's own blue. */
 .admin-edit-open {
+  position: fixed; left: 1.1rem; bottom: 4.4rem; z-index: 900;
   font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6f6652; background: transparent; border: 1px solid rgba(118,207,238,0.25);
-  border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  color: #06121a; background: #76cfee; border: 1px solid rgba(118,207,238,0.7);
+  padding: 0.5rem 0.9rem; cursor: pointer; box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+  transition: background 0.2s ease;
 }
-.admin-edit-open:hover, .admin-edit-open:focus-visible {
-  color: #76cfee; border-color: rgba(118,207,238,0.7);
-}
+.admin-edit-open:hover, .admin-edit-open:focus-visible { background: #cdefff; }
 
 .admin-edit-panel {
-  position: fixed; left: 1rem; bottom: 1rem; z-index: 1200;
-  /* 21.67rem: the old 26rem less a sixth. The phone rule below still
-     overrides this with the full width of the screen. */
-  width: min(21.67rem, calc(100vw - 2rem)); max-height: 80vh; overflow: auto;
+  position: fixed; left: 1.1rem; bottom: 8.2rem; z-index: 1200;
+  /* Widened. At the old width the log and the source pane were each wider
+     than the panel, so the whole thing scrolled sideways. It scrolls down
+     now, and never across. */
+  width: min(31rem, calc(100vw - 2.2rem));
+  max-height: calc(100vh - 10rem); overflow-y: auto; overflow-x: hidden;
   padding: 1rem 1.1rem; border: 1px solid rgba(118,207,238,0.45); border-radius: 4px;
   background: #15120d; box-shadow: 0 18px 50px rgba(0,0,0,0.6);
   font-size: 0.92rem;
 }
+/* Nothing inside may be wider than the panel. */
+.admin-edit-panel > * { min-width: 0; max-width: 100%; }
+.admin-edit-panel input, .admin-edit-panel textarea, .admin-edit-panel select {
+  width: 100%; box-sizing: border-box; }
+.admin-edit-panel pre, .admin-edit-panel .ae-ops,
+.admin-edit-panel .ae-log-out { overflow-x: auto; max-width: 100%; }
+.admin-edit-panel .ae-tabs { flex-wrap: wrap; }
 .ae-head { display: flex; justify-content: space-between; align-items: center;
   gap: 0.6rem; margin-bottom: 0.5rem; }
 .ae-head strong { font-family: 'Cinzel', serif; letter-spacing: 0.1em; color: #cdefff;
@@ -3526,9 +3536,10 @@ body.is-picking * { cursor: crosshair !important; user-select: none; }
 .ae-touched { outline: 1px dashed #ef84b6; outline-offset: 2px; }
 
 @media (max-width: 640px) {
-  .admin-edit-panel { left: 0.5rem; right: 0.5rem; width: auto; bottom: 0.5rem;
-    max-height: 70vh; }
-  .admin-edit-mount { padding: 0 0.8rem 0.6rem; }
+  .admin-edit-panel { left: 0.5rem; right: 0.5rem; width: auto; bottom: 8.2rem;
+    max-height: calc(100vh - 10rem); overflow-y: auto; overflow-x: hidden; }
+  .admin-edit-mount { padding: 0; }
+  .admin-edit-open { left: 0.7rem; bottom: 4.4rem; }
 }
 
 /* What the box has caught, marked on the page itself: a wash under every

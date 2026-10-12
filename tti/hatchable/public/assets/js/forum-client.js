@@ -74,6 +74,63 @@
     return n;
   }
 
+  /* The reply box itself. */
+  function replyForm(threadId) {
+    var form = el('form', 'fm-reply');
+    var ta = el('textarea');
+    ta.placeholder = 'Add to the thread…';
+    ta.maxLength = 6000;
+    ta.rows = 4;
+    var send = el('button', 'fm-btn fm-send', 'Post reply');
+    var msg = el('p', 'fm-note fm-quiet');
+    form.appendChild(ta);
+    var row = el('div', 'fm-row');
+    row.appendChild(send); row.appendChild(msg);
+    form.appendChild(row);
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var bodyText = ta.value.trim();
+      if (!bodyText) { msg.textContent = 'Say something first.'; return; }
+      send.disabled = true; msg.textContent = 'Posting…';
+      call('post', { thread_id: threadId, body: bodyText }).then(function (res) {
+        send.disabled = false;
+        if (!res.ok) { msg.textContent = res.error || 'That did not post.'; return; }
+        renderThread(threadId);
+      }).catch(function () { send.disabled = false; msg.textContent = 'The room did not answer.'; });
+    });
+    return form;
+  }
+
+  /* Three doors: nobody signed in, signed in and able to write, and signed in
+     but not. The third says what is missing rather than leaving a box that
+     only fails. */
+  function drawReply(root, threadId) {
+    if (!token()) {
+      var door = el('div', 'fm-door');
+      door.appendChild(el('p', null, 'Sign in to reply — one account covers both houses.'));
+      var link = el('a', 'fm-btn', 'Sign in or join');
+      link.href = window.__forumAccount || '/account/';
+      door.appendChild(link);
+      root.appendChild(door);
+      return;
+    }
+    call('me').then(function (res) {
+      if (res && res.ok && res.can_post) { root.appendChild(replyForm(threadId)); return; }
+      var gate = el('div', 'fm-door fm-gate');
+      gate.appendChild(el('p', null, (res && res.why) ||
+        'This room is open to read. Writing needs a membership.'));
+      var go = el('a', 'fm-btn', 'See the membership');
+      go.href = window.__forumMembership || '/membership/';
+      gate.appendChild(go);
+      root.appendChild(gate);
+    }).catch(function () {
+      /* If the door cannot be asked, draw the box anyway and let the server
+         be the judge — never leave a member locked out of a room they belong
+         in because one request went unanswered. */
+      root.appendChild(replyForm(threadId));
+    });
+  }
+
   function renderThread(threadId) {
     root.textContent = '';
     var loading = notice('Opening the thread…');
@@ -110,39 +167,11 @@
       });
       root.appendChild(list);
 
-      /* The reply box — or the door, if you are not signed in. */
-      if (token()) {
-        var form = el('form', 'fm-reply');
-        var ta = el('textarea');
-        ta.placeholder = 'Add to the thread…';
-        ta.maxLength = 6000;
-        ta.rows = 4;
-        var send = el('button', 'fm-btn fm-send', 'Post reply');
-        var msg = el('p', 'fm-note fm-quiet');
-        form.appendChild(ta);
-        var row = el('div', 'fm-row');
-        row.appendChild(send); row.appendChild(msg);
-        form.appendChild(row);
-        form.addEventListener('submit', function (ev) {
-          ev.preventDefault();
-          var bodyText = ta.value.trim();
-          if (!bodyText) { msg.textContent = 'Say something first.'; return; }
-          send.disabled = true; msg.textContent = 'Posting…';
-          call('post', { thread_id: threadId, body: bodyText }).then(function (res) {
-            send.disabled = false;
-            if (!res.ok) { msg.textContent = res.error || 'That did not post.'; return; }
-            renderThread(threadId);
-          }).catch(function () { send.disabled = false; msg.textContent = 'The room did not answer.'; });
-        });
-        root.appendChild(form);
-      } else {
-        var door = el('div', 'fm-door');
-        door.appendChild(el('p', null, 'Sign in to reply — one account covers both houses.'));
-        var link = el('a', 'fm-btn', 'Sign in or join');
-        link.href = window.__forumAccount || '/account/';
-        door.appendChild(link);
-        root.appendChild(door);
-      }
+      /* The room is open to read for everybody, and always will be. Writing
+         needs a membership, or the order's own key. So ask who this visitor is
+         before drawing the box: no point letting someone write a reply that
+         will be turned away at the door. */
+      drawReply(root, threadId);
     }).catch(function () {
       root.textContent = '';
       root.appendChild(notice('The forum is quiet just now. Try again shortly.', 'fm-bad'));

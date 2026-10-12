@@ -603,8 +603,11 @@
       '  <button type="button" class="btn btn--small btn--ghost ae-shrink" disabled title="Narrow the selection to the first thing inside it">Narrow</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-log">Log</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-backups">Backups</button>',
+      /* Undo, Redo and Apply changes: the three hands on this mode, kept
+         together and always in sight rather than scattered through the panes. */
       '  <button type="button" class="btn btn--small btn--ghost ae-undo-pub" title="Undo the last published change on this page">Undo</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-redo-pub" title="Bring back the last undone change">Redo</button>',
+      '  <button type="button" class="btn btn--small ae-apply-top" title="Apply what is staged, and publish it">Apply changes</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-signins">Sign-ins</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-owner" title="The deeper door: the traffic of the house, and the people">Owner mode</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-door-close" title="Burn the remembered key and lock the door again">Close the door</button>',
@@ -784,7 +787,7 @@
 
       '<div class="ae-draft" hidden></div>',
       '<div class="ae-row ae-confirm" hidden>',
-      '  <button type="button" class="btn btn--small ae-publish">Confirm and publish</button>',
+      '  <button type="button" class="btn btn--small ae-apply ae-publish">Apply changes</button>',
       '  <button type="button" class="btn btn--small btn--ghost ae-revert">Discard the preview</button>',
       '</div>',
       '<p class="ae-msg"></p>',
@@ -810,7 +813,8 @@
     q(".ae-go").addEventListener("click", propose);
     q(".ae-undo").addEventListener("click", function () { step(-1); });
     q(".ae-redo").addEventListener("click", function () { step(1); });
-    q(".ae-publish").addEventListener("click", publish);
+    q(".ae-publish").addEventListener("click", applyChanges);
+    q(".ae-apply-top").addEventListener("click", applyChanges);
     q(".ae-revert").addEventListener("click", revertPreview);
     q(".ae-para").addEventListener("click", paraphrase);
     q(".ae-undo-pub").addEventListener("click", function () { pubStep("undo"); });
@@ -1355,7 +1359,7 @@
       list + "</ul>";
     q(".ae-confirm").hidden = false;
     var pub = q(".ae-publish");
-    if (pub) pub.textContent = "Confirm and publish \u2014 " + ops.length +
+    if (pub) pub.textContent = "Apply changes \u2014 " + ops.length +
       " change" + (ops.length === 1 ? "" : "s");
     steps(3);
     paintMarks();
@@ -1644,6 +1648,24 @@
   }
 
   /* --------------------------------------------------------- publishing */
+  /* One press does the whole thing: put what is staged onto the page, then
+     publish it. If nothing is staged yet, take the pane the admin is looking
+     at and stage that first, so the button never asks for a step the person
+     pressing it cannot see. */
+  function applyChanges() {
+    /* Whether anything is staged is read off the panel: the confirm row is
+       only shown once there is something waiting to be applied. */
+    var staged = q(".ae-confirm");
+    if (!staged || staged.hidden) {
+      var tab = q(".ae-tab.is-on");
+      var which = tab ? tab.getAttribute("data-tab") : "words";
+      if (which === "look") applyLook(); else if (which === "words") applyWords();
+    }
+    staged = q(".ae-confirm");
+    if (!staged || staged.hidden) { say("There is nothing staged to apply yet.", true); return; }
+    publish();
+  }
+
   function publish() {
     if (!draft) return say("Propose a change first.", true);
     post({
@@ -1904,4 +1926,63 @@
   /* The marks are drawn in page coordinates, so they follow a resize only
      if they are redrawn. */
   addEventListener("resize", function () { if (runs.length || blocks.length) paintMarks(); });
+})();
+
+/* ---------------------------------------------------------------------------
+   Two doors, one at a time — and no walking away from work half done.
+
+   Both the admin panel and the owner room are fixed to the left of the screen,
+   so opening one over the other would bury it. Whichever opens last closes the
+   other, and the two say so to each other over one event rather than reaching
+   into one another's wiring.
+
+   Leaving the page while changes are staged but not applied asks first. The
+   staged state is read straight off the panel: the confirm row is only shown
+   once there is something waiting to be applied.
+   ------------------------------------------------------------------------ */
+(function () {
+  'use strict';
+  function panel() { return document.querySelector('.admin-edit-panel'); }
+  function panelOpen() { var p = panel(); return !!p && !p.hidden; }
+  function staged() {
+    var c = document.querySelector('.admin-edit-panel .ae-confirm');
+    return !!c && !c.hidden;
+  }
+  function closePanel() {
+    var x = document.querySelector('.admin-edit-panel .ae-x');
+    if (x && panelOpen()) x.click();
+  }
+  function closeRoom() {
+    var x = document.querySelector('.og-overlay .og-close');
+    if (x) x.click();
+  }
+
+  /* When this panel opens, ask the owner room to step aside. */
+  if (typeof MutationObserver === 'function') {
+    var was = false;
+    new MutationObserver(function () {
+      var open = panelOpen();
+      if (open && !was) {
+        closeRoom();
+        try {
+          window.dispatchEvent(new CustomEvent('eg-mode-open',
+            { detail: { mode: 'admin' } }));
+        } catch (e) {}
+      }
+      was = open;
+    }).observe(document.documentElement, { childList: true, subtree: true,
+      attributes: true, attributeFilter: ['hidden'] });
+  }
+
+  /* And step aside when the owner room opens. */
+  window.addEventListener('eg-mode-open', function (ev) {
+    if (ev.detail && ev.detail.mode === 'owner') closePanel();
+  });
+
+  window.addEventListener('beforeunload', function (ev) {
+    if (!staged()) return;
+    ev.preventDefault();
+    ev.returnValue = 'There are changes in Admin Edit Mode that have not been applied.';
+    return ev.returnValue;
+  });
 })();

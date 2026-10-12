@@ -209,6 +209,11 @@
       '<button type="button" class="btn btn--small btn--ghost og-tab-btn" data-ogtab="people">The people</button>' +
       '<button type="button" class="btn btn--small btn--ghost og-tab-btn" data-ogtab="bios">The biographies</button>' +
       '<button type="button" class="btn btn--small btn--ghost og-tab-btn" data-ogtab="vault">The vault</button>' +
+      '<span class="og-hands">' +
+      '<button type="button" class="btn btn--small btn--ghost og-undo" title="Undo the last change made in this room" disabled>Undo</button>' +
+      '<button type="button" class="btn btn--small btn--ghost og-redo" title="Bring back the last undone change" disabled>Redo</button>' +
+      '<button type="button" class="btn btn--small og-apply" title="Save what has been changed in this room" disabled>Apply changes</button>' +
+      '</span>' +
       '<button type="button" class="btn btn--small btn--ghost og-leave" title="Burn the owner key on this device">Leave owner mode</button>' +
       '<button type="button" class="btn btn--small btn--ghost og-close" aria-label="Close the owner room">&#215;</button>' +
       '</div>' +
@@ -684,7 +689,7 @@
   function injectStyles() {
     if (document.getElementById("og-extra-style")) return;
     var css = [
-      ".og-pill { position: fixed; right: 1.1rem; bottom: 4.4rem; z-index: 900; font-family: Cinzel, serif; font-size: .72rem; letter-spacing: .14em;",
+      ".og-pill { position: fixed; left: 1.1rem; bottom: 7.9rem; z-index: 900; font-family: Cinzel, serif; font-size: .72rem; letter-spacing: .14em;",
       "  color: #0e0c0a; background: #d7b05a; border: 1px solid rgba(215,176,90,.7); padding: .5rem .9rem; cursor: pointer; box-shadow: 0 4px 18px rgba(0,0,0,.5); }",
       ".og-pill:hover { background: #f3ddaa; }",
       ".og-overlay { position: fixed; inset: 0; z-index: 950; background: rgba(4,3,2,.82); display: flex; align-items: stretch; justify-content: flex-end; }",
@@ -694,6 +699,10 @@
       ".og-kicker { font-family: Cinzel, serif; font-size: .68rem; letter-spacing: .3em; text-transform: uppercase; color: #d7b05a; margin: 0 0 .3rem; }",
       ".og-title { font-family: Cinzel, serif; font-size: 1.35rem; margin: 0; color: #f3ddaa; font-weight: 700; }",
       ".og-head-r { display: flex; gap: .45rem; flex-wrap: wrap; align-items: center; }",
+      ".og-hands { display: flex; gap: .35rem; align-items: center; padding: .1rem .5rem .1rem .1rem; border-right: 1px solid rgba(215,176,90,.25); margin-right: .2rem; }",
+      ".og-hands .btn[disabled] { opacity: .4; cursor: default; }",
+      "@media (max-width: 640px) { .og-pill { left: .7rem; bottom: 4.4rem; } .og-hands { border-right: 0; margin-right: 0; } }",
+
       ".og-tab-btn.is-on { border-color: #d7b05a !important; color: #f3ddaa !important; }",
       ".og-body { padding: 1.2rem 1.4rem 2rem; overflow-y: auto; flex: 1; }",
       ".og-loading, .og-muted { color: #9f947a; font-size: .9rem; }",
@@ -786,4 +795,147 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
+})();
+
+/* ---------------------------------------------------------------------------
+   Undo, Redo and Apply changes for the owner room.
+
+   Every edit made anywhere inside the room is remembered as it happens, so the
+   three hands in the header work the same whichever pane is open. Nothing here
+   reaches into the room's own wiring: it listens from outside, and Apply
+   changes simply presses the pane's own save hand, so whatever that pane does
+   to save is exactly what still happens.
+   ------------------------------------------------------------------------ */
+(function () {
+  'use strict';
+  var done = [], undone = [], applied = false;
+  /* The room the last edit happened in. Normally there is only one, but
+     aiming at it rather than at the first one in the document means the hands
+     light up in the room that was actually touched. */
+  var current = null;
+
+  function room() {
+    if (current && current.querySelector && current.querySelector('.og-undo')) return current;
+    var all = document.querySelectorAll('.og-overlay');
+    return all.length ? all[all.length - 1] : null;
+  }
+  function hands() {
+    var r = room(); if (!r) return null;
+    return { u: r.querySelector('.og-undo'), r: r.querySelector('.og-redo'),
+             a: r.querySelector('.og-apply') };
+  }
+  function paint() {
+    var h = hands(); if (!h) return;
+    if (h.u) h.u.disabled = !done.length;
+    if (h.r) h.r.disabled = !undone.length;
+    if (h.a) h.a.disabled = !done.length;
+  }
+  function value(el) { return el.type === 'checkbox' ? el.checked : el.value; }
+
+  /* An input event arrives after the field has already changed, so the old
+     wording cannot be read off it. Every field is therefore photographed
+     while it is still untouched, and that photograph is what Undo returns
+     to. Taken when a room is drawn, and again whenever one is entered. */
+  function snapshot(root) {
+    if (!root || !root.querySelectorAll) return;
+    var fields = root.querySelectorAll('input, textarea, select');
+    for (var i = 0; i < fields.length; i++) {
+      if (fields[i].__ogKnown === undefined) fields[i].__ogKnown = value(fields[i]);
+    }
+  }
+  function setValue(el, v) {
+    if (el.type === 'checkbox') el.checked = !!v; else el.value = v;
+    el.__ogKnown = v;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  /* A field is recorded once per stretch of editing: the first change stores
+     the photograph, and later typing only updates where it ended up, so one
+     Undo takes the whole stretch back rather than a letter at a time. */
+  document.addEventListener('input', function (ev) {
+    var el = ev.target;
+    if (!el || !el.closest || !el.closest('.og-overlay')) return;
+    if (!('value' in el) && el.type !== 'checkbox') return;
+    applied = false;
+    current = el.closest('.og-overlay');
+    var last = done[done.length - 1];
+    if (last && last.el === el) { last.to = value(el); }
+    else {
+      var from = el.__ogKnown !== undefined ? el.__ogKnown : value(el);
+      done.push({ el: el, from: from, to: value(el) });
+      undone.length = 0;
+    }
+    paint();
+  }, true);
+
+  document.addEventListener('focusin', function (ev) {
+    if (ev.target && ev.target.closest && ev.target.closest('.og-overlay')) snapshot(document);
+  });
+
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest ? ev.target.closest('button') : null;
+    if (!b) return;
+    if (b.classList.contains('og-undo')) {
+      var rec = done.pop(); if (!rec) return;
+      setValue(rec.el, rec.from);
+      undone.push(rec); paint();
+    } else if (b.classList.contains('og-redo')) {
+      var back = undone.pop(); if (!back) return;
+      setValue(back.el, back.to);
+      done.push(back); paint();
+    } else if (b.classList.contains('og-apply')) {
+      /* Press the pane's own save hand, and let it do the saving. */
+      var r = room();
+      var save = r && (r.querySelector('.og-d-save:not([hidden])') ||
+                       r.querySelector('.og-d-save'));
+      if (save) save.click();
+      applied = true;
+      done.forEach(function (rec) { rec.el.__ogKnown = rec.to; });
+      done.length = 0; undone.length = 0; paint();
+    }
+  });
+
+  /* Opening the room again starts from a clean slate. */
+  document.addEventListener('eg-own-admin-remembered', function () {
+    done.length = 0; undone.length = 0; applied = false; paint();
+  });
+
+  /* Two doors, one at a time. When the room opens, ask the admin panel to
+     step aside, and step aside in turn when it opens. Both are fixed to the
+     left of the screen, so one over the other would bury it. */
+  function closeAdmin() {
+    var x = document.querySelector('.admin-edit-panel .ae-x');
+    if (x) x.click();
+  }
+  var roomWas = false;
+  function sweep() {
+    snapshot(document);
+    paint();
+    var open = !!document.querySelector('.og-overlay');
+    if (open && !roomWas) {
+      closeAdmin();
+      try {
+        window.dispatchEvent(new CustomEvent('eg-mode-open', { detail: { mode: 'owner' } }));
+      } catch (e) {}
+    }
+    roomWas = open;
+  }
+  if (typeof MutationObserver === 'function') {
+    new MutationObserver(sweep).observe(document.documentElement,
+      { childList: true, subtree: true });
+  }
+  window.addEventListener('eg-mode-open', function (ev) {
+    if (ev.detail && ev.detail.mode === 'admin') {
+      var x = document.querySelector('.og-overlay .og-close');
+      if (x) x.click();
+    }
+  });
+
+  /* Leaving the page with changes that were never applied. */
+  window.addEventListener('beforeunload', function (ev) {
+    if (!done.length || applied) return;
+    ev.preventDefault();
+    ev.returnValue = 'There are changes in the owner room that have not been applied.';
+    return ev.returnValue;
+  });
 })();
