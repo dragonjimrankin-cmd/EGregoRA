@@ -2881,6 +2881,16 @@ function setup(root) {
   if (!slot) return;
   const KIND = slot.getAttribute("data-kind") === "video" ? "video" : "audio";
   let lastItems = [];
+  const SUB_LANGS = [
+    ["", "Original"], ["en-US", "English (American)"], ["es", "Espa\u00f1ol"],
+    ["fr", "Fran\u00e7ais"], ["de", "Deutsch"], ["it", "Italiano"],
+    ["pt", "Portugu\u00eas"], ["nl", "Nederlands"], ["pl", "Polski"],
+    ["ru", "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"], ["ar", "\u0627\u0644\u0639\u0631\u0628\u064a\u0629"],
+    ["hi", "\u0939\u093f\u0902\u0926\u0940"], ["zh", "\u4e2d\u6587 (\u7b80\u4f53)"],
+    ["ja", "\u65e5\u672c\u8a9e"], ["ko", "\ud55c\uad6d\uc5b4"],
+    ["tr", "T\u00fcrk\u00e7e"], ["el", "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac"],
+    ["la", "Latinum"], ["cy", "Cymraeg"], ["ga", "Gaeilge"]
+  ];
   const esc = (t) => String(t == null ? "" : t)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const stamp = (s) => {
@@ -2945,6 +2955,16 @@ function setup(root) {
             "</p>" +
             (i.has_transcript
               ? '<div class="ep-transcript" data-mx-trbox="' + i.id + '" hidden></div>'
+              : "") +
+            (i.url
+              ? '<div class="ep-subs">' +
+                  '<label class="ep-subs-label"><input type="checkbox" data-mx-subon="' + i.id + '"> Subtitles</label>' +
+                  '<select class="ep-subs-lang" data-mx-sube="' + i.id + '" aria-label="The language of the subtitles">' +
+                  SUB_LANGS.map((l) => '<option value="' + l[0] + '">' + l[1] + "</option>").join("") +
+                  "</select>" +
+                  '<span class="ep-subs-note" data-mx-subnote="' + i.id + '"></span>' +
+                "</div>" +
+                '<div class="ep-caption" data-mx-cap="' + i.id + '" hidden></div>'
               : "")
             : "") +
           "</div></details>"
@@ -2992,6 +3012,98 @@ function setup(root) {
           img.src = pick ? pick.url : (i.cover || cues[0].url);
           if (cap) cap.textContent = pick ? pick.caption || "" : "";
         });
+      });
+
+      /* ------------------------------------------------------- subtitles
+         The words under the sound: on or off, in the language chosen.
+         The original comes from the transcript's turns; another language
+         is translated by the order's own models and kept on the shelf,
+         so a choice is only ever asked once. */
+      const subCache = new Map();    /* id + lang -> response */
+      const subLines = new Map();    /* id    -> current cues */
+      const subCap = (id) => slot.querySelector('[data-mx-cap="' + id + '"]');
+      const subNote = (id) => slot.querySelector('[data-mx-subnote="' + id + '"]');
+
+      const showSubLine = (player, id) => {
+        const box = subCap(id);
+        if (!box) return;
+        const lines = subLines.get(id) || [];
+        const t = player.currentTime || 0;
+        let line = null;
+        for (let k = 0; k < lines.length; k++) {
+          if (t >= lines[k].start && t < lines[k].end) { line = lines[k]; break; }
+        }
+        box.hidden = !line || player.paused;
+        if (line && box.textContent !== line.text) box.textContent = line.text;
+      };
+
+      const wireSubs = (player, id) => {
+        if (player.dataset.subsWired) return;
+        player.dataset.subsWired = "1";
+        player.addEventListener("timeupdate", () => showSubLine(player, id));
+        player.addEventListener("pause", () => showSubLine(player, id));
+        player.addEventListener("play", () => showSubLine(player, id));
+        player.addEventListener("ended", () => { const b = subCap(id); if (b) b.hidden = true; });
+      };
+
+      const drawSubs = (id) => {
+        const on = slot.querySelector('[data-mx-subon="' + id + '"]');
+        const sel = slot.querySelector('[data-mx-sube="' + id + '"]');
+        const player = slot.querySelector('[data-for="' + id + '"]');
+        const note = subNote(id);
+        if (!on || !player) return;
+        if (!on.checked) {
+          subLines.delete(id);
+          const b = subCap(id); if (b) b.hidden = true;
+          if (note) note.textContent = "";
+          return;
+        }
+        if (sel) sel.disabled = true;
+        const lang = sel ? sel.value : "";
+        const key = id + ":" + (lang || "original");
+        const settle = (got) => {
+          if (sel) sel.disabled = false;
+          if (slot.querySelector('[data-mx-subon="' + id + '"]') !== on || !on.checked) return;
+          const lines = (got && got.lines) || [];
+          if (!lines.length) {
+            subLines.delete(id);
+            const b = subCap(id); if (b) b.hidden = true;
+            if (note) note.textContent =
+              (got && got.status === "no-transcript")
+                ? "This episode has no transcript yet — the captions appear the moment its words are taken."
+                : ((got && got.error) || "No words for that language just now.");
+            return;
+          }
+          if (note) note.textContent = "";
+          subLines.set(id, lines);
+          wireSubs(player, id);
+          showSubLine(player, id);
+        };
+        if (subCache.has(key)) { settle(subCache.get(key)); return; }
+        if (note) note.textContent = lang ? "Finding the translation…" : "Gathering the words…";
+        fetch("/api/media", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "subtitles", id: Number(id), lang: lang || "" })
+        }).then((r) => r.json().catch(() => ({})).then((d) => {
+          d._ok = r.ok;
+          return d;
+        })).then((d) => {
+          if (!d._ok && !d.ok) d = { lines: [], status: "error", error: (d && d.error) || "The shelf did not answer." };
+          subCache.set(key, d);
+          settle(d);
+        }).catch(() => {
+          const d = { lines: [], status: "error", error: "The shelf did not answer." };
+          subCache.set(key, d);
+          settle(d);
+        });
+      };
+
+      Array.prototype.forEach.call(slot.querySelectorAll("[data-mx-subon]"), (on) => {
+        const id = on.getAttribute("data-mx-subon");
+        on.addEventListener("change", () => drawSubs(id));
+        const sel = slot.querySelector('[data-mx-sube="' + id + '"]');
+        if (sel) sel.addEventListener("change", () => drawSubs(id));
       });
     } catch {
       slot.hidden = true;
