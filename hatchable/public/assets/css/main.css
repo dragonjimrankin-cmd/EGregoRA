@@ -2629,8 +2629,100 @@ details.ep > summary:hover .ep-title { color: #f3ddaa; }
   border: 1px solid rgba(215, 176, 90, 0.22);
   border-radius: 3px;
 }
-.is-recording .am-rec { border-color: #c98b6a; }
+.is-recording .am-rec {
+  border-color: #c98b6a;
+  box-shadow: 0 0 0 3px rgba(201, 139, 106, 0.18);
+}
 .is-recording .am-rec-state { color: #c98b6a; }
+
+/* The pause hand, and the one-press save.
+   Both belong to a take in progress, and both are deliberately loud: this is
+   the one moment on the page where a button you cannot find costs an hour of
+   somebody's reading aloud. The pause sits on a filled ground with a ring
+   around it, so it reads as the live control rather than as another ghost
+   button in the row, and it changes colour when held so the state of the
+   recording is never in doubt. */
+.am-rec-pause,
+.am-rec-savepub {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.16s ease, box-shadow 0.16s ease, color 0.16s ease;
+}
+.am-rec-pause {
+  color: #1b1409;
+  background: #d7b05a;
+  border: 2px solid #f3ddaa;
+  box-shadow: 0 0 0 4px rgba(215, 176, 90, 0.16);
+}
+.am-rec-pause:hover { background: #e6c471; box-shadow: 0 0 0 6px rgba(215, 176, 90, 0.22); }
+/* Two upright bars: the shape of a held recording. */
+.am-rec-pause::before {
+  content: "";
+  flex: none;
+  width: 0.62rem;
+  height: 0.95rem;
+  background:
+    linear-gradient(currentColor, currentColor) left / 0.22rem 100% no-repeat,
+    linear-gradient(currentColor, currentColor) right / 0.22rem 100% no-repeat;
+}
+/* Held: a different ground and a triangle, so continuing is unmistakable. */
+.am-rec-pause.is-paused {
+  color: #08130f;
+  background: #7fb99a;
+  border-color: #cbe8d8;
+  box-shadow: 0 0 0 4px rgba(127, 185, 154, 0.2);
+}
+.am-rec-pause.is-paused:hover { background: #92c9ac; }
+.am-rec-pause.is-paused::before {
+  width: 0;
+  height: 0;
+  background: none;
+  border: 0.5rem solid transparent;
+  border-left: 0.82rem solid currentColor;
+  border-right-width: 0;
+  box-shadow: none;
+}
+.am-rec-pause:focus-visible,
+.am-rec-savepub:focus-visible {
+  outline: 3px solid #f3ddaa;
+  outline-offset: 3px;
+}
+.am-rec-saverow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(215, 176, 90, 0.18);
+}
+.am-rec-savepub {
+  color: #1b1409;
+  background: #e0c07a;
+  border: 2px solid #f3ddaa;
+}
+.am-rec-savepub:hover { background: #edcf90; }
+.am-rec-savepub[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* A slow breath on the ring, so the live control keeps drawing the eye
+     without asking anything to move across the screen. */
+  .is-recording .am-rec-pause { animation: am-rec-breathe 2.4s ease-in-out infinite; }
+  @keyframes am-rec-breathe {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(215, 176, 90, 0.16); }
+    50% { box-shadow: 0 0 0 9px rgba(215, 176, 90, 0.05); }
+  }
+}
 .live-mirror,
 .live-video {
   width: 100%;

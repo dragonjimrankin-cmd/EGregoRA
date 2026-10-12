@@ -58,7 +58,8 @@
     admin: null,   /* {kind, until} of a checked eg-admin cookie */
     owner: null,   /* {kind, until} of a checked eg-owner cookie */
     panel: null,   /* the open overlay, if any */
-    pill: null
+    pill: null,
+    vaultKind: ""  /* the shelf the vault is currently filtered to */
   };
 
   function check(kind) {
@@ -207,6 +208,7 @@
       '<button type="button" class="btn btn--small btn--ghost og-tab-btn is-on" data-ogtab="traffic">The traffic</button>' +
       '<button type="button" class="btn btn--small btn--ghost og-tab-btn" data-ogtab="people">The people</button>' +
       '<button type="button" class="btn btn--small btn--ghost og-tab-btn" data-ogtab="bios">The biographies</button>' +
+      '<button type="button" class="btn btn--small btn--ghost og-tab-btn" data-ogtab="vault">The vault</button>' +
       '<button type="button" class="btn btn--small btn--ghost og-leave" title="Burn the owner key on this device">Leave owner mode</button>' +
       '<button type="button" class="btn btn--small btn--ghost og-close" aria-label="Close the owner room">&#215;</button>' +
       '</div>' +
@@ -215,6 +217,7 @@
       '<section class="og-pane" data-pane="traffic"><p class="og-loading">Reading the house ledger…</p></section>' +
       '<section class="og-pane" data-pane="people" hidden><p class="og-loading">Reading the roll…</p></section>' +
       '<section class="og-pane" data-pane="bios" hidden><p class="og-loading">Reading the shelf…</p></section>' +
+      '<section class="og-pane" data-pane="vault" hidden><p class="og-loading">Reading the vault…</p></section>' +
       '</div>' +
       '</div>';
     document.body.appendChild(p);
@@ -258,6 +261,7 @@
     });
     if (name === "traffic") loadTraffic();
     else if (name === "bios") loadBios();
+    else if (name === "vault") loadVault();
     else loadPeople();
   }
 
@@ -308,6 +312,136 @@
       });
     }).catch(function () {
       pane.innerHTML = '<p class="og-msg is-bad">The shelf would not answer.</p>';
+    });
+  }
+
+  /* ---------------------------------------------------------------- the vault
+     Every save the podcast and films editors have made, newest first. The
+     rows are the record rather than a pointer at the shelf, so a recording
+     that has since been unpublished, archived or deleted off the media page
+     is still listed here — and, while the file itself survives, still
+     fetchable. Nothing outside owner mode can read this. */
+  function mb(n) {
+    var b = Number(n) || 0;
+    if (b < 1024) return b + " B";
+    if (b < 1048576) return (b / 1024).toFixed(0) + " KB";
+    if (b < 1073741824) return (b / 1048576).toFixed(1) + " MB";
+    return (b / 1073741824).toFixed(2) + " GB";
+  }
+
+  function whatWas(did) {
+    var W = {
+      "saved-published": "Saved and published.",
+      "saved-draft": "Saved as a draft.",
+      "published": "Published.",
+      "unpublished": "Taken off the site.",
+      "archive": "Archived off the shelf.",
+      "restore": "Brought back as a draft.",
+      "edited": "Its notes were changed.",
+      "replaced": "A new master was saved over it.",
+      "deleted": "Deleted."
+    };
+    return W[did] || "Saved.";
+  }
+
+  function vaultFilter(want, label, on) {
+    return '<button type="button" class="btn btn--small btn--ghost og-vault-filter' +
+      (want === on ? " is-on" : "") + '" data-kind="' + esc(want) + '">' + esc(label) + "</button>";
+  }
+
+  function loadVault(kind, before) {
+    var pane = state.panel && $('.og-pane[data-pane="vault"]', state.panel);
+    if (!pane) return;
+    var want = kind == null ? state.vaultKind : kind;
+    var ask = { action: "vault", limit: 60 };
+    if (want) ask.kind = want;
+    if (before) ask.before = before;
+    post(ask).then(function (d) {
+      if (!d || !d.ok) {
+        pane.innerHTML = '<p class="og-msg is-bad">' +
+          esc((d && d.error) || "The vault would not open.") + "</p>";
+        return;
+      }
+      state.vaultKind = want;
+      var items = d.items || [];
+      var html =
+        '<div class="og-people-bar">' +
+        '<p class="og-muted">' + fmtNum(d.total || 0) + " saves kept, " + mb(d.bytes || 0) +
+        " between them. Every save an editor makes is written here, and it stays " +
+        "whether or not the episode does.</p>" +
+        '<p class="og-acts og-vault-filters">' +
+        vaultFilter("", "Everything", want) +
+        vaultFilter("audio", "The podcast", want) +
+        vaultFilter("video", "The films", want) +
+        '<button type="button" class="btn btn--small btn--ghost og-vault-again">Read it again</button>' +
+        "</p></div>";
+
+      if (!items.length) {
+        html += '<p class="og-muted">Nothing has been saved yet. As soon as an episode or a film ' +
+          "is saved from its editor, it is written here.</p>";
+      } else {
+        html += '<div class="og-vault">';
+        items.forEach(function (v) {
+          var when = esc(String(v.saved_at || "").replace("T", " ").slice(0, 16));
+          var flag = v.on_shelf ? "On the site now"
+            : v.shelf_state ? "Off the site (" + esc(v.shelf_state) + ")"
+              : v.media_id == null ? "No longer on the shelf" : "Not published";
+          html += '<div class="og-bio og-vault-row">' +
+            '<div class="og-bio-body">' +
+            '<p><span class="og-who">' + esc(v.title || "Untitled") + "</span>" +
+            '<span class="og-mail">' + when + " \u00b7 " +
+            esc(v.kind === "video" ? "film" : "episode") +
+            (v.bytes ? " \u00b7 " + mb(v.bytes) : "") +
+            (v.saved_by ? " \u00b7 saved by " + esc(v.saved_by) : "") + "</span></p>" +
+            '<p class="og-bio-text">' + esc(whatWas(v.did)) +
+            (v.note ? " " + esc(v.note) : "") + "</p>" +
+            '<p class="og-acts">' +
+            '<span class="og-vault-flag ' + (v.on_shelf ? "is-live" : "is-off") + '">' + flag + "</span> " +
+            (v.fetchable
+              ? '<button type="button" class="btn btn--small og-vault-get" data-id="' + v.id +
+                '">Fetch the file</button>'
+              : '<span class="og-micro">The file went with the shelf entry; the note remains.</span>') +
+            "</p></div></div>";
+        });
+        html += "</div>";
+        if (d.more && items.length) {
+          html += '<p class="og-acts"><button type="button" class="btn btn--small btn--ghost og-vault-more" data-before="' +
+            esc(items[items.length - 1].saved_at) + '">Read older saves</button></p>';
+        }
+      }
+      pane.innerHTML = html;
+
+      Array.prototype.forEach.call(pane.querySelectorAll(".og-vault-filter"), function (b) {
+        b.addEventListener("click", function () {
+          loadVault(b.getAttribute("data-kind") || "", null);
+        });
+      });
+      var again = pane.querySelector(".og-vault-again");
+      if (again) again.addEventListener("click", function () { loadVault(state.vaultKind, null); });
+      var older = pane.querySelector(".og-vault-more");
+      if (older) older.addEventListener("click", function () {
+        loadVault(state.vaultKind, older.getAttribute("data-before"));
+      });
+      Array.prototype.forEach.call(pane.querySelectorAll(".og-vault-get"), function (b) {
+        b.addEventListener("click", function () {
+          b.disabled = true;
+          b.textContent = "Asking the store\u2026";
+          post({ action: "vault-file", id: Number(b.getAttribute("data-id")) }).then(function (dd) {
+            b.disabled = false;
+            if (dd && dd.ok && dd.url) {
+              window.open(dd.url, "_blank", "noopener");
+              b.textContent = "Fetch the file";
+            } else {
+              b.textContent = (dd && dd.error) || "The store would not sign a link.";
+            }
+          }).catch(function () {
+            b.disabled = false;
+            b.textContent = "The store did not answer.";
+          });
+        });
+      });
+    }).catch(function () {
+      pane.innerHTML = '<p class="og-msg is-bad">The vault would not answer.</p>';
     });
   }
 
@@ -613,7 +747,14 @@
       ".og-note { font-size: .88rem; color: #cbbb93; margin: 0 0 .9rem; }",
       ".og-msg { font-size: .82rem; color: #9f947a; min-height: 1rem; margin: .6rem 0 0; }",
       ".og-msg.is-bad { color: #c98b6a; }",
-      ".og-row { display: flex; gap: .6rem; }"
+      ".og-row { display: flex; gap: .6rem; }",
+      ".og-vault { display: flex; flex-direction: column; gap: .55rem; }",
+      ".og-vault-row { padding: .7rem .85rem; border: 1px solid rgba(215,176,90,.22); border-radius: 3px; background: rgba(215,176,90,.04); }",
+      ".og-vault-flag { display: inline-block; font-size: .74rem; letter-spacing: .04em; padding: .16rem .5rem; border-radius: 2px; border: 1px solid rgba(215,176,90,.35); color: #cbbb93; }",
+      ".og-vault-flag.is-live { color: #7fb99a; border-color: rgba(127,185,154,.5); }",
+      ".og-vault-flag.is-off { color: #c98b6a; border-color: rgba(201,139,106,.45); }",
+      ".og-vault-filters, .og-vault .og-acts { display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; }",
+      ".og-vault .og-acts { margin: .45rem 0 0; }"
     ].join("\n");
     var st = document.createElement("style");
     st.id = "og-extra-style";

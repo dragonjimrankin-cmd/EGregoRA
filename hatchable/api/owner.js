@@ -371,6 +371,87 @@ export default async function (req, res) {
       return res.json({ ok: true, member_id: id, status });
     }
 
+    /* ------------------------------------------------------------- the vault
+       Every save the podcast and films editors have made, newest first. The
+       rows are the record rather than a pointer at the shelf, so an episode
+       that has since been unpublished, archived or deleted is still here —
+       and, while the file itself survives, still fetchable. */
+    if (action === 'vault') {
+      const kind = clean(body.kind, 8);
+      const want = kind === 'audio' || kind === 'video' ? kind : null;
+      const limit = Math.min(200, Math.max(1, Number(body.limit) || 60));
+      const before = body.before ? new Date(body.before) : null;
+      const where = [];
+      const args = [];
+      if (want) { args.push(want); where.push('kind = $' + args.length); }
+      if (before && !isNaN(before)) { args.push(before.toISOString()); where.push('saved_at < $' + args.length); }
+      args.push(limit + 1);
+      const { rows } = await db.query(
+        `SELECT a.id, a.media_id, a.kind, a.title, a.storage_key, a.mime, a.bytes, a.seconds,
+                a.state, a.did, a.note, a.saved_by, a.saved_at,
+                m.state AS shelf_state, m.title AS shelf_title
+           FROM owner_archive a
+           LEFT JOIN media m ON m.id = a.media_id
+          ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+          ORDER BY a.saved_at DESC, a.id DESC
+          LIMIT $` + args.length, args);
+
+      const more = rows.length > limit;
+      const items = rows.slice(0, limit).map((r) => ({
+        id: Number(r.id),
+        media_id: r.media_id == null ? null : Number(r.media_id),
+        kind: r.kind,
+        title: r.title,
+        mime: r.mime,
+        bytes: r.bytes == null ? null : Number(r.bytes),
+        seconds: r.seconds == null ? null : Number(r.seconds),
+        state: r.state,
+        did: r.did,
+        note: r.note,
+        saved_by: r.saved_by,
+        saved_at: r.saved_at,
+        /* What the shelf says now, which is the honest test of whether the
+           vault is the only copy left. */
+        on_shelf: r.shelf_state === 'published',
+        shelf_state: r.shelf_state || null,
+        shelf_title: r.shelf_title || null,
+        /* A row with no key is a note about a file that no longer exists. */
+        fetchable: !!r.storage_key
+      }));
+
+      const { rows: tally } = await db.query(
+        `SELECT count(*)::int AS n, COALESCE(sum(bytes), 0)::bigint AS b FROM owner_archive`);
+      return res.json({
+        ok: true, items, more,
+        total: tally[0] ? Number(tally[0].n) : 0,
+        bytes: tally[0] ? Number(tally[0].b) : 0
+      });
+    }
+
+    /* Hand back a short-lived link to the stored file. This is the only path
+       from the vault to the bytes, and it sits behind requireOwner like the
+       rest of the room. */
+    if (action === 'vault-file') {
+      const id = Number(body.id);
+      if (!id) return res.status(400).json({ error: 'Which save?' });
+      const { rows: [r] } = await db.query(
+        'SELECT storage_key, title, mime, kind FROM owner_archive WHERE id = $1', [id]);
+      if (!r) return res.status(404).json({ error: 'There is no such save in the vault.' });
+      if (!r.storage_key) {
+        return res.status(410).json({
+          error: 'The file went with the shelf entry. The vault kept the note, not the sound.'
+        });
+      }
+      let url = null;
+      try { url = await storage.url(r.storage_key, { ttl: 3600 }); } catch (e) {
+        return res.status(502).json({ error: 'The store would not sign a link to it.' });
+      }
+      if (!url) return res.status(502).json({ error: 'The store would not sign a link to it.' });
+      await log(null, 'owner', 'vault-file',
+        'Fetched #' + id + ' — ' + clean(r.title, 120));
+      return res.json({ ok: true, url, title: r.title, mime: r.mime, kind: r.kind });
+    }
+
     return res.status(404).json({ error: 'That is not in the owner room.' });
   } catch (e) {
     console.error('owner room failed', e && e.message);

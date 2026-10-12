@@ -585,8 +585,41 @@ function setup(root) {
 
     const r = (n) => root.querySelector('[data-am="rec-' + n + '"]');
     let stream = null, rec = null, bits = [], started = 0, tick = null, cancel = null, meter = null;
+    /* Pausing is a held state, not a stopped one: the recorder keeps the take
+       open and simply stops taking, so the clock has to hold still with it or
+       the length it reports would be a lie. */
+    let pausedAt = 0, pausedTotal = 0, finishing = null;
 
     const state = (t) => { const n = r("state"); if (n) n.textContent = t || ""; };
+
+    /* Seconds actually recorded, with the held stretches taken back out. */
+    const elapsed = () =>
+      (Date.now() - started - pausedTotal - (pausedAt ? Date.now() - pausedAt : 0)) / 1000;
+
+    /* The two hands that belong to a take in progress: the pause, and the
+       door that saves and publishes in one press. Both sit in the markup
+       hidden and come up only once there is a take to hold or to save. */
+    function liveButtons(on) {
+      const p = r("pause"), s = r("savepub");
+      if (p) p.hidden = !on;
+      if (s) { s.hidden = !on; s.disabled = !on; }
+      if (!on) { pausedAt = 0; pausedTotal = 0; paintPause(); }
+    }
+
+    function paintPause() {
+      const p = r("pause");
+      if (!p) return;
+      p.classList.toggle("is-paused", !!pausedAt);
+      p.setAttribute("aria-pressed", pausedAt ? "true" : "false");
+      p.textContent = pausedAt ? "Continue recording" : "Pause recording";
+    }
+
+    function paintClock() {
+      state(pausedAt
+        ? "Held at " + clock(elapsed()) + " \u2014 press continue to carry on."
+        : "Recording \u2014 " + clock(elapsed()));
+      paintPause();
+    }
 
     open.addEventListener("click", () => {
       const shut = box.hidden;
@@ -674,13 +707,21 @@ function setup(root) {
           ? { audioBitsPerSecond: 128000 }
           : { videoBitsPerSecond: q === "high" ? 6000000 : q === "low" ? 1500000 : 3000000 }));
       rec.ondataavailable = (e) => { if (e.data && e.data.size) bits.push(e.data); };
-      rec.onstop = finish;
+      /* Held on to, so the save-and-publish hand can wait for the take to be
+         read back before it tries to publish something that is not there. */
+      rec.onstop = () => { finishing = finish(); };
       rec.start(1000);
       started = Date.now();
+      pausedAt = 0;
+      pausedTotal = 0;
+      finishing = null;
       r("stop").disabled = false;
       root.classList.add("is-recording");
-      tick = setInterval(() => state("Recording \u2014 " + clock((Date.now() - started) / 1000)), 500);
-      say("Recording. Press stop when you are done; it goes straight to the enhancer.");
+      liveButtons(true);
+      tick = setInterval(paintClock, 250);
+      paintClock();
+      say("Recording. Hold it with the pause if you need to; stop when you are done, " +
+          "or save and publish it from here in one press.");
     }
 
     r("stop").addEventListener("click", () => {
@@ -688,15 +729,61 @@ function setup(root) {
       r("stop").disabled = true;
     });
 
+    /* The pause hand. MediaRecorder holds the take open and simply stops
+       taking, so continuing picks up inside the same file rather than making
+       a second one to be stitched together afterwards. Where a browser offers
+       no pause at all, say so rather than pretending it worked. */
+    const pauseBtn = r("pause");
+    if (pauseBtn) pauseBtn.addEventListener("click", () => {
+      if (!rec || rec.state === "inactive") return;
+      if (typeof rec.pause !== "function" || typeof rec.resume !== "function") {
+        return say("This browser cannot hold a recording mid-take. Stop it and start again.", true);
+      }
+      try {
+        if (pausedAt) { pausedTotal += Date.now() - pausedAt; pausedAt = 0; rec.resume(); }
+        else { pausedAt = Date.now(); rec.pause(); }
+      } catch (err) {
+        return say((err && err.message) || "The recorder would not hold still.", true);
+      }
+      paintClock();
+      say(pausedAt ? "Held. Nothing is being recorded until you press continue."
+        : "Carrying on from where it was held.");
+    });
+
+    /* One press that finishes the take and puts it on the site: stop, wait for
+       it to be read back, then run the very same publish path the shelf uses.
+       The save lands in the owner's vault like any other. */
+    const saveBtn = r("savepub");
+    if (saveBtn) saveBtn.addEventListener("click", async () => {
+      if (!rec && !source) return say("There is no recording to save yet.", true);
+      saveBtn.disabled = true;
+      try {
+        if (rec && rec.state !== "inactive") rec.stop();
+        if (finishing) await finishing;
+      } catch (err) { /* finish reports its own trouble on the page */ }
+      if (!source) { saveBtn.disabled = false; return; }
+      await publishIt(saveBtn);
+      saveBtn.disabled = false;
+    });
+
     async function finish() {
       clearInterval(tick);
+      /* Taken before the counters are cleared, or a take that was held would
+         be reported with the held stretch still counted in it. */
+      const took = elapsed();
       root.classList.remove("is-recording");
       if (stream) stream.getTracks().forEach((t) => t.stop());
       if (meter) { meter.live = false; meter.ctx.close().catch(() => {}); meter = null; }
       r("start").disabled = false;
+      /* The pause hand has nothing left to hold; the save-and-publish door
+         stays up, because the take it offers is now the finished one. */
+      const pauseGone = r("pause");
+      if (pauseGone) { pauseGone.hidden = true; pauseGone.classList.remove("is-paused"); }
+      pausedAt = 0;
+      pausedTotal = 0;
 
       const blob = new Blob(bits, { type: bits[0] ? bits[0].type : "audio/webm" });
-      state("Recorded " + clock((Date.now() - started) / 1000) + " \u2014 " + mb(blob.size) + ".");
+      state("Recorded " + clock(took) + " \u2014 " + mb(blob.size) + ".");
       /* Hand it to the same path a chosen file takes. */
       source = blob;
       ready = null;
@@ -713,14 +800,15 @@ function setup(root) {
           fileLook = inspect(fileBuf);
           el.before.innerHTML = reading(fileLook, "As it was recorded");
         } else {
-          fileLook = { seconds: (Date.now() - started) / 1000 };
+          fileLook = { seconds: took };
           el.before.innerHTML = '<p class="kicker">As it was recorded</p><ul class="am-read">' +
             "<li>Length <strong>" + clock(fileLook.seconds) + "</strong></li>" +
             "<li>Weight <strong>" + mb(blob.size) + "</strong></li></ul>";
         }
         if (el.meta) el.meta.hidden = false;
         if (el.send) el.send.disabled = false;
-        say("Recorded. Enhance it, have it transcribed, then publish.");
+        say("Recorded. Enhance it, have it transcribed, then publish \u2014 or save and " +
+            "publish it from the recorder in one press.");
       } catch (err) {
         say((err && err.message) || "The recording could not be read back.", true);
       }

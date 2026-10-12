@@ -685,6 +685,38 @@ exactly this shape: {"lines":[{"i":1,"text":"..."}]} with one entry per cue, kee
   return cues.map((c, i) => ({ start: c.start, end: c.end, text: results[i] }));
 }
 
+/* The owner's vault.
+   Every save leaves a row here, and the row carries the storage key rather
+   than pointing at the shelf — so the recording can still be fetched from
+   owner mode after the episode has been unpublished, archived or deleted.
+   A refusal from the vault must never cost the save itself: the shelf comes
+   first, the vault is the record of it. */
+async function toVault(row, did, note, who, over) {
+  if (!row) return;
+  const o = over || {};
+  /* A key given as null is not the same as no key at all: a delete passes
+     null on purpose, because the file went with the shelf entry, and the
+     vault must say so rather than keep pointing at bytes that are gone. */
+  const pick = (k, fallback) => (k in o ? o[k] : fallback);
+  try {
+    await db.query(
+      `INSERT INTO owner_archive
+         (media_id, kind, title, storage_key, mime, bytes, seconds, state, did, note, saved_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [Number(row.id) || null,
+        pick('kind', row.kind) || 'audio',
+        String(pick('title', row.title) || 'Untitled').slice(0, 200),
+        pick('storage_key', row.storage_key) || null,
+        pick('mime', row.mime) || null,
+        Number(pick('bytes', row.bytes)) || null,
+        Number(pick('seconds', row.seconds)) || null,
+        pick('state', row.state) || 'published',
+        String(did || 'saved').slice(0, 24),
+        String(note || '').slice(0, 400),
+        String(who || '').slice(0, 200)]);
+  } catch { /* the save stands even when the vault will not take the note */ }
+}
+
 export default async function (req, res) {
   const body = req.body || {};
   const action = clean(body.action || 'list', 24);
@@ -956,6 +988,12 @@ export default async function (req, res) {
           }
         }
 
+        /* One row in the owner's vault for the save itself, carrying the
+           storage key so the recording outlives the shelf entry. */
+        await toVault(made[0], body.publish === false ? 'saved-draft' : 'saved-published',
+          'Saved from the ' + (kind === 'video' ? 'films' : 'podcast') + ' editor.',
+          publisher.email);
+
         return res.json({ ok: true, item: await dress(made[0]) });
       }
 
@@ -963,8 +1001,13 @@ export default async function (req, res) {
       case 'unpublish': {
         const id = Number(body.id);
         if (!id) return res.status(400).json({ error: 'Which one?' });
-        await db.query('UPDATE media SET state = $1, updated_at = NOW() WHERE id = $2',
+        const { rows: turned } = await db.query(
+          'UPDATE media SET state = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
           [action === 'publish' ? 'published' : 'draft', id]);
+        if (turned && turned[0]) {
+          await toVault(turned[0], action === 'publish' ? 'published' : 'unpublished',
+            action === 'publish' ? 'Put on the site.' : 'Taken off the site.', publisher.email);
+        }
         return res.json({ ok: true });
       }
 
@@ -976,8 +1019,13 @@ export default async function (req, res) {
       case 'restore': {
         const id = Number(body.id);
         if (!id) return res.status(400).json({ error: 'Which one?' });
-        await db.query('UPDATE media SET state = $1, updated_at = NOW() WHERE id = $2',
+        const { rows: stepped } = await db.query(
+          'UPDATE media SET state = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
           [action === 'archive' ? 'archived' : 'draft', id]);
+        if (stepped && stepped[0]) {
+          await toVault(stepped[0], action, action === 'archive'
+            ? 'Stepped off the shelf.' : 'Brought back as a draft.', publisher.email);
+        }
         return res.json({ ok: true });
       }
 
@@ -1272,19 +1320,22 @@ export default async function (req, res) {
           await db.query('UPDATE media_speakers SET profiled_chars = NULL WHERE media_id = $1', [id])
             .catch(() => {});
         }
-        await db.query(
+        const { rows: edited } = await db.query(
           `UPDATE media SET title = COALESCE($2, title), summary = COALESCE($3, summary),
                             number = COALESCE($4, number), length_text = COALESCE($5, length_text),
                             tags = COALESCE($6, tags),
                             purported_date = CASE WHEN $7 THEN $8::date ELSE purported_date END,
                             updated_at = NOW()
-            WHERE id = $1`,
+            WHERE id = $1 RETURNING *`,
           [id, body.title == null ? null : clean(body.title, 200),
             body.summary == null ? null : clean(body.summary, 2000),
             body.number == null ? null : clean(body.number, 12),
             body.length == null ? null : clean(body.length, 32),
             body.tags == null ? null : clean(body.tags, 300),
             hasDate, claimedDate || null]);
+        if (edited && edited[0]) {
+          await toVault(edited[0], 'edited', 'The notes beside it were changed.', publisher.email);
+        }
         if (hasDate) {
           await db.query(
             `INSERT INTO creation_date_log
@@ -1298,10 +1349,18 @@ export default async function (req, res) {
       case 'delete': {
         const id = Number(body.id);
         if (!id) return res.status(400).json({ error: 'Which one?' });
-        const { rows } = await db.query('SELECT storage_key FROM media WHERE id = $1', [id]);
-        const k = rows && rows[0] && rows[0].storage_key;
+        const { rows } = await db.query('SELECT * FROM media WHERE id = $1', [id]);
+        const gone = rows && rows[0];
+        const k = gone && gone.storage_key;
         if (k && storage.delete) await storage.delete(k).catch(() => {});
         await db.query('DELETE FROM media WHERE id = $1', [id]);
+        /* The vault keeps the fact of it, with no key: the file went with the
+           shelf entry, so there is nothing left to fetch and saying otherwise
+           would be a lie the owner would discover at the worst moment. */
+        if (gone) {
+          await toVault(gone, 'deleted', 'Deleted off the shelf; the file went with it.',
+            publisher.email, { storage_key: null });
+        }
         return res.json({ ok: true });
       }
 
@@ -1340,6 +1399,10 @@ export default async function (req, res) {
         if (was.storage_key && storage.delete) await storage.delete(was.storage_key).catch(() => {});
 
         const { rows: now } = await db.query('SELECT * FROM media WHERE id = $1', [id]);
+        if (now && now[0]) {
+          await toVault(now[0], 'replaced', 'A new master was saved over the original.',
+            publisher.email);
+        }
         return res.json({ ok: true, item: await dress(now[0]) });
       }
 

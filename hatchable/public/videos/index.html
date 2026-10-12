@@ -756,12 +756,21 @@
           <button type="button" class="btn btn--small" data-am="rec-start">
             Start recording &mdash; ten second countdown</button>
           <button type="button" class="btn btn--small btn--ghost" data-am="rec-stop" disabled>Stop</button>
+          <button type="button" class="am-rec-pause" data-am="rec-pause"
+                  aria-pressed="false" hidden>Pause recording</button>
         </div>
         <div class="countdown" data-am="rec-count" hidden></div>
         <p class="am-rec-state muted small" data-am="rec-state"></p>
         
         <video class="live-mirror" data-am="rec-mirror" muted playsinline
                aria-label="What the camera is seeing" role="img"></video>
+
+        <div class="am-rec-saverow">
+          <button type="button" class="am-rec-savepub" data-am="rec-savepub"
+                  hidden>Save and publish it now</button>
+          <span class="muted xsmall">Stops the take, files it and puts it on the site in one
+          press. Every save is kept in the owner&rsquo;s vault.</span>
+        </div>
         
       </div>
 
