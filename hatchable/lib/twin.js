@@ -148,3 +148,94 @@ export async function adoptFromTwin(email) {
   ).catch((err) => console.error('adoptFromTwin failed', err && err.message));
   return { adopted: true, ...them };
 }
+
+/* ═══════════════════════════════════════════════════════════ the twin's shelf
+   The podcast and films shelves, kept as one shelf across the two houses.
+
+   A recording is stored once, on the house it was published from; the twin
+   holds a listing that points at it. So publishing here publishes there, a
+   title changed on either side is changed on both, and taking an episode down
+   takes it down in both places.
+
+   Nothing here can be reached from the street: every letter is signed with the
+   shared secret, and the receiving end verifies it before it reads a word. */
+
+const MEDIA_TIMEOUT_MS = 9000;
+
+/** POST to any twin endpoint, signed. Never throws: a twin that is down must
+    not cost this house a publish. */
+export async function twinPost(path, payload) {
+  const raw = JSON.stringify(payload);
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), MEDIA_TIMEOUT_MS);
+  try {
+    const r = await fetch(`${TWIN.url}${path}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-twin-sign': sign(raw) },
+      body: raw,
+      signal: ctrl.signal
+    });
+    if (!r.ok) return { ok: false, status: r.status };
+    return await r.json();
+  } catch (err) {
+    console.error('twin unreachable at ' + path, err && err.message);
+    return { ok: false, error: 'unreachable' };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * The stable address the twin should play this item from. It points at this
+ * house's own /api/media-file endpoint rather than at a signed store link,
+ * because those expire in a week — and a shelf that falls silent on a Tuesday
+ * is worse than one that says plainly the file has gone.
+ */
+export function twinFileUrl(id) {
+  return `${HOME.url}/api/media-file?id=${encodeURIComponent(id)}`;
+}
+
+/** What crosses for an episode: the listing and the words, never the bytes. */
+function shelfOf(row, id) {
+  return {
+    twin_key: row.twin_key,
+    kind: row.kind === 'video' ? 'video' : 'audio',
+    title: row.title || '',
+    summary: row.summary || '',
+    number: row.number || '',
+    length: row.length_text || '',
+    seconds: row.seconds == null ? null : Number(row.seconds),
+    tags: row.tags || '',
+    mime: row.mime || '',
+    state: row.state || 'published',
+    transcript: row.transcript || null,
+    links: row.links || null,
+    topics: row.topics || null,
+    purported_date: row.purported_date || null,
+    file_url: row.remote_url || twinFileUrl(id),
+    from: HOME.key
+  };
+}
+
+/**
+ * Tell the twin about a shelf change. Fire and forget from the caller's point
+ * of view; the local save has already happened and must not wait on it.
+ *
+ * @param {'upsert'|'state'|'remove'} action
+ * @param {object} row    the media row as this house has it
+ */
+export async function mirrorMedia(action, row) {
+  if (!row || !row.twin_key) return { ok: false, error: 'no twin_key' };
+  if (action === 'remove') {
+    return twinPost('/api/twin-media', {
+      action: 'remove', twin_key: row.twin_key, from: HOME.key
+    });
+  }
+  return twinPost('/api/twin-media', Object.assign({ action }, shelfOf(row, row.id)));
+}
+
+/** Mint the identity an episode is known by on both sides. */
+export function newTwinKey() {
+  return HOME.key + '-' + Date.now().toString(36) +
+    '-' + crypto.randomBytes(4).toString('hex');
+}

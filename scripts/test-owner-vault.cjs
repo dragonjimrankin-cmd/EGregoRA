@@ -66,6 +66,15 @@ const stubs = [
   "const whoAmI = async () => ({ id: 3, email: 'archivist@example.com', name: 'The Archivist',",
   "  verified: true, age_verified: true, id_status: 'accepted', privilege: 'admin', status: 'active' });",
   "const freeDoors = []; const freeChat = async () => { throw new Error('offline'); };",
+  /* The twin, recorded rather than called: these tests must not put letters on
+     the wire to a live house. */
+  "const TWIN = [];",
+  "globalThis.__TWIN = () => TWIN;",
+  "globalThis.__resetTwin = () => { TWIN.length = 0; };",
+  "const newTwinKey = () => 'egregora-harness-key';",
+  "const mirrorMedia = async (action, row) => {",
+  "  TWIN.push({ action, twin_key: row && row.twin_key, title: row && row.title, state: row && row.state });",
+  "  return { ok: true }; };",
 ].join("\n");
 
 const mod = { exports: null };
@@ -105,6 +114,7 @@ async function saveNew(name, bytes, publish) {
 (async () => {
   /* ------------------------- 0. the save the user asked about: a fresh take */
   globalThis.__resetVault();
+  globalThis.__resetTwin();
   const made = await saveNew("uvault", Buffer.alloc(1024 * 1024 + 77, 3), true);
   let rows = globalThis.__VAULT();
   check(made.code === 200 && rows.length === 1 && rows[0].did === "saved-published",
@@ -113,6 +123,14 @@ async function saveNew(name, bytes, publish) {
   check(rows[0] && /^episodes\//.test(rows[0].storage_key || "") && rows[0].bytes === 1024 * 1024 + 77,
     "that row names the stored file and its exact weight",
     rows[0] && rows[0].storage_key + " / " + rows[0].bytes);
+
+  /* The same save must reach the twin's shelf, or publishing here would not
+     be publishing there. */
+  const letters = globalThis.__TWIN();
+  check(letters.length === 1 && letters[0].action === "upsert" &&
+    letters[0].twin_key === "egregora-harness-key",
+    "saving also sends the episode to the twin's shelf",
+    letters.length ? letters[0].action + " / " + letters[0].twin_key : "no letter sent");
 
   globalThis.__resetVault();
   await saveNew("uvaultdraft", Buffer.alloc(2048, 5), false);

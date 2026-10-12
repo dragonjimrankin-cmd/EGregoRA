@@ -43,6 +43,7 @@ import { assembleUpload, UploadAssemblyError } from '../lib/upload-parts.js';
 import { adminDoor } from '../lib/door.js';
 import { whoAmI } from '../lib/accounts.js';
 import { doors as freeDoors, freeChat } from '../lib/freeai.js';
+import { mirrorMedia, newTwinKey } from '../lib/twin.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -550,7 +551,9 @@ async function sign(key) {
 }
 
 async function dress(row) {
-  const url = await sign(row.storage_key);
+  /* A recording the twin published lives on the twin's store, and this shelf
+     only holds the address of it — so there is nothing here to sign. */
+  const url = row.remote_url || await sign(row.storage_key);
   const cover = await sign(row.cover_key);
   const speakerState = row.transcript
     ? await ensureSpeakerPatterns(Number(row.id), row.transcript).catch(() => ({ speakers: [], stored: false }))
@@ -574,6 +577,9 @@ async function dress(row) {
     images,
     id: Number(row.id),
     kind: row.kind,
+    /* Set when the recording is the twin's, so the shelf can say whose it is
+       rather than offering a delete button that would do nothing. */
+    twin: row.twin_origin || null,
     title: row.title,
     summary: row.summary || '',
     number: row.number || '',
@@ -715,6 +721,17 @@ async function toVault(row, did, note, who, over) {
         String(note || '').slice(0, 400),
         String(who || '').slice(0, 200)]);
   } catch { /* the save stands even when the vault will not take the note */ }
+}
+
+/* Tell the twin what just happened on this shelf.
+   A row that arrived from the twin carries twin_origin, and is never mirrored
+   back — otherwise the two houses would keep telling each other about the same
+   change until both queues were full of echoes. Fire and forget: the local
+   save has already happened and must not wait on the other house. */
+async function tellTwin(action, row) {
+  if (!row || row.twin_origin) return;
+  try { await mirrorMedia(action, row); }
+  catch (err) { console.error('twin mirror failed', err && err.message); }
 }
 
 export default async function (req, res) {
@@ -988,11 +1005,24 @@ export default async function (req, res) {
           }
         }
 
+        /* An episode is known by the same key on both houses from the moment
+           it is first saved, so the pair can be found again later whatever
+           either side numbers it. */
+        if (!made[0].twin_key) {
+          const key = newTwinKey();
+          await db.query('UPDATE media SET twin_key = $2 WHERE id = $1', [made[0].id, key])
+            .catch(() => {});
+          made[0].twin_key = key;
+        }
+
         /* One row in the owner's vault for the save itself, carrying the
            storage key so the recording outlives the shelf entry. */
         await toVault(made[0], body.publish === false ? 'saved-draft' : 'saved-published',
           'Saved from the ' + (kind === 'video' ? 'films' : 'podcast') + ' editor.',
           publisher.email);
+
+        /* And the twin's shelf, so a save here is a save there too. */
+        await tellTwin('upsert', made[0]);
 
         return res.json({ ok: true, item: await dress(made[0]) });
       }
@@ -1007,6 +1037,8 @@ export default async function (req, res) {
         if (turned && turned[0]) {
           await toVault(turned[0], action === 'publish' ? 'published' : 'unpublished',
             action === 'publish' ? 'Put on the site.' : 'Taken off the site.', publisher.email);
+          /* On air here means on air there. */
+          await tellTwin('upsert', turned[0]);
         }
         return res.json({ ok: true });
       }
@@ -1025,6 +1057,7 @@ export default async function (req, res) {
         if (stepped && stepped[0]) {
           await toVault(stepped[0], action, action === 'archive'
             ? 'Stepped off the shelf.' : 'Brought back as a draft.', publisher.email);
+          await tellTwin('upsert', stepped[0]);
         }
         return res.json({ ok: true });
       }
@@ -1335,6 +1368,8 @@ export default async function (req, res) {
             hasDate, claimedDate || null]);
         if (edited && edited[0]) {
           await toVault(edited[0], 'edited', 'The notes beside it were changed.', publisher.email);
+          /* A title changed on either side is changed on both. */
+          await tellTwin('upsert', edited[0]);
         }
         if (hasDate) {
           await db.query(
@@ -1360,6 +1395,8 @@ export default async function (req, res) {
         if (gone) {
           await toVault(gone, 'deleted', 'Deleted off the shelf; the file went with it.',
             publisher.email, { storage_key: null });
+          /* Taken down here means taken down there. */
+          await tellTwin('remove', gone);
         }
         return res.json({ ok: true });
       }
@@ -1402,6 +1439,7 @@ export default async function (req, res) {
         if (now && now[0]) {
           await toVault(now[0], 'replaced', 'A new master was saved over the original.',
             publisher.email);
+          await tellTwin('upsert', now[0]);
         }
         return res.json({ ok: true, item: await dress(now[0]) });
       }

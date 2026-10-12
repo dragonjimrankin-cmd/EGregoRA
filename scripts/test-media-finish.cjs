@@ -39,6 +39,9 @@ const stubs = [
   "const whoAmI = async () => ({ id: 3, email: 'archivist@example.com', name: 'The Archivist',",
   "  verified: true, age_verified: true, id_status: 'accepted', privilege: 'admin', status: 'active' });",
   "const freeDoors = []; const freeChat = async () => { throw new Error('offline'); };",
+  /* The twin is recorded, never called: a test must not write to a live house. */
+  "const newTwinKey = () => 'egregora-harness-key';",
+  "const mirrorMedia = async () => ({ ok: true });",
 ].join("\n");
 
 const mod = { exports: null };
