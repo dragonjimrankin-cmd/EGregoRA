@@ -1,10 +1,37 @@
 project proj_eiuxpFfTnwwx
-live version: 269
-ours:         269
-✓ no foreign deploy since ours. Safe to deploy.
+live version: 271
+ours:         270
+
+✖ 1 deploy(s) landed since ours (v270 → v271).
+   Reading the live files so the two can be merged rather than one buried.
+
+   live project holds 270 files
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
-project proj_eiuxpFfTnwwx
-live version: 270
-ours:         269
-recorded version 270 in ops/egregora-deployed.json
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+
+   changed live vs our bundle : 14
+     ~ api/media.js
+     ~ api/owner.js
+     ~ public/assets/css/main.css
+     ~ public/assets/js/headtts/voices/am_fenrir.bin
+     ~ public/assets/js/headtts/voices/am_michael.bin
+     ~ public/assets/js/headtts/voices/am_puck.bin
+     ~ public/assets/js/headtts/voices/bm_fable.bin
+     ~ public/assets/js/headtts/voices/bm_george.bin
+     ~ public/assets/js/headtts/voices/bm_lewis.bin
+     ~ public/assets/js/media-admin.js
+     ~ public/assets/js/owner-panel.js
+     ~ public/assets/js/player.js
+     ~ public/podcast/index.html
+     ~ public/videos/index.html
+   present live, absent here  : 0
+   present here, absent live  : 2
+     - README.md
+     - migrations/0041_owner_archive.sql
+
+   their versions are saved under ops/incoming/egregora/
+   DEPLOY SKIPPED. Merge, then deploy.
