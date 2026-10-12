@@ -41,19 +41,19 @@
     audio.dataset.fx = "1";
     audio.controls = false;
     audio.preload = audio.preload || "metadata";
-    /* Cross-origin samples: "anonymous" mode only when the host actually
-       answers with CORS headers, because a host that refuses will refuse
-       the sound itself — an audio element forced into CORS mode plays
-       nothing at all where the host sends no access-control headers. The
-       probe is a HEAD; where it fails the sound still plays and the
-       canvas falls back to the drawn wave keyed to the playhead. */
-    if (audio.src && !/^(blob:|data:)/i.test(audio.src)) {
-      /* A one-byte GET: signed storage URLs sign a method, and a signed
-         host answers a range ask, which a HEAD ask may refuse. */
-      fetch(audio.src, { method: "GET", mode: "cors", headers: { "range": "bytes=0-0" } })
-        .then((r) => { if (r.ok || r.status === 206) audio.crossOrigin = "anonymous"; })
-        .catch(() => {});
-    }
+    /* Signed, cross-origin masters play natively without CORS. Routing
+       them through Web Audio without permission produces silence, and
+       changing crossorigin after loading can interrupt a play request.
+       Analyse only local/same-origin sources; remote masters use the
+       existing playhead drawing and never lose their native sound. */
+    const canAnalyse = () => {
+      const source = audio.currentSrc || audio.src;
+      if (!source) return false;
+      if (/^(blob:|data:)/i.test(source)) return true;
+      try { return new URL(source, window.location.href).origin === window.location.origin; }
+      catch { return false; }
+    };
+    if (!canAnalyse()) audio.removeAttribute("crossorigin");
 
     const fig = document.createElement("div");
     fig.className = "fx-player";
@@ -82,7 +82,20 @@
 
     /* Some browsers (and jsdom) hand back nothing from play(); never let
        that throw where a button was pressed. */
-    const start = (a) => { const p = a.play(); if (p && p.catch) p.catch(() => {}); };
+    const start = (a) => {
+      const report = (err) => {
+        if (err && err.name === "AbortError") return; /* a deliberate pause/source change */
+        const note = a.closest(".fx-player")?.querySelector(".fx-status") || status;
+        note.textContent = err && err.name === "NotAllowedError"
+          ? "Press Play again to allow this browser to start the sound."
+          : "The recording could not be played. Refresh this page to renew its link, or download the episode.";
+        note.hidden = false;
+      };
+      try {
+        const p = a.play();
+        if (p && p.catch) p.catch(report);
+      } catch (err) { report(err); }
+    };
 
     /* Whoever starts the sound, the player must be seen: open every
        closed <details> above it and bring the figure into view. */
@@ -165,47 +178,75 @@
     vol.title = "Volume";
     let savedVol = 1;
     try {
-      const sv = Number(localStorage.getItem("fx-volume"));
-      if (Number.isFinite(sv) && sv >= 0 && sv <= 1) savedVol = sv;
+      const raw = localStorage.getItem("fx-volume");
+      /* Number(null) and Number("") are zero, not a saved preference. */
+      if (raw !== null && raw.trim() !== "") {
+        const sv = Number(raw);
+        if (Number.isFinite(sv) && sv >= 0 && sv <= 1) savedVol = sv;
+      }
     } catch { /* the device keeps its own counsel */ }
+    let audibleVol = savedVol > 0 ? savedVol : 1;
     vol.value = String(Math.round(savedVol * 100));
     audio.volume = savedVol;
     const paintMute = () => {
-      muteBtn.textContent = (audio.muted || audio.volume === 0) ? "\u{1F507}" : "\u{1F50A}";
+      const silent = audio.muted || audio.volume === 0;
+      muteBtn.textContent = silent ? "\u{1F507}" : "\u{1F50A}";
+      muteBtn.setAttribute("aria-label", silent ? "Unmute" : "Mute");
+      muteBtn.setAttribute("aria-pressed", String(silent));
     };
     vol.addEventListener("input", () => {
       audio.volume = Number(vol.value) / 100;
-      if (audio.volume > 0) audio.muted = false;
+      if (audio.volume > 0) { audio.muted = false; audibleVol = audio.volume; }
       try { localStorage.setItem("fx-volume", String(audio.volume)); } catch { /* no shelf */ }
       paintMute();
     });
     muteBtn.addEventListener("click", () => {
-      audio.muted = !audio.muted;
+      if (audio.muted || audio.volume === 0) {
+        audio.muted = false;
+        if (audio.volume === 0) {
+          audio.volume = audibleVol;
+          vol.value = String(Math.round(audio.volume * 100));
+          try { localStorage.setItem("fx-volume", String(audio.volume)); } catch { /* no shelf */ }
+        }
+      } else {
+        audibleVol = audio.volume;
+        audio.muted = true;
+      }
       paintMute();
     });
     paintMute();
 
     bar.append(prevBtn, back60, back10, playBtn, fwd10, fwd60, now, seek, end, muteBtn, vol);
-    fig.append(cv, audio, bar);
+    const status = document.createElement("p");
+    status.className = "fx-status muted small";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    status.hidden = true;
+    fig.append(cv, audio, bar, status);
 
     /* --------------------------------------------------------- the sound */
     let analyser = null;
     let freq = null;
     let wired = false;
     const wire = () => {
-      if (wired) return;
-      wired = true;
-      const ctx = audioCtx();
-      if (!ctx) return;
+      if (wired || !canAnalyse()) return;
+      let src = null;
       try {
-        const src = ctx.createMediaElementSource(audio);
+        const ctx = audioCtx();
+        if (!ctx) return;
         analyser = ctx.createAnalyser();
         analyser.fftSize = 256;
         analyser.smoothingTimeConstant = 0.82;
+        src = ctx.createMediaElementSource(audio);
+        wired = true;
         src.connect(analyser);
         analyser.connect(ctx.destination);
         freq = new Uint8Array(analyser.frequencyBinCount);
-      } catch (e) { analyser = null; }
+      } catch (e) {
+        analyser = null;
+        /* If analysis fails after taking the source, keep it connected. */
+        if (src && Ctx) { try { src.connect(Ctx.destination); } catch { /* no graph */ } }
+      }
     };
 
     /* ------------------------------------------------------- the drawing */
@@ -330,6 +371,12 @@
     audio.addEventListener("play", () => { playBtn.textContent = "❚❚"; });
     audio.addEventListener("pause", () => { playBtn.textContent = "►"; });
     audio.addEventListener("ended", () => { playBtn.textContent = "►"; });
+    audio.addEventListener("playing", () => { status.hidden = true; status.textContent = ""; });
+    audio.addEventListener("error", () => {
+      status.textContent = "The recording could not be loaded. Refresh this page to renew its link, or download the episode.";
+      status.hidden = false;
+      playBtn.textContent = "►";
+    });
     audio.addEventListener("loadedmetadata", () => {
       end.textContent = stamp(audio.duration);
     });
