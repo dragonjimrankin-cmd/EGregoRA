@@ -41,6 +41,7 @@ import { ai, db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
 import { requireStudio, requireViewer } from '../lib/accounts.js';
 import { openChat } from '../lib/openchat.js';
+import { mirrorLive, newLiveKey } from '../lib/twin.js';
 
 export const access = 'public';
 export const methods = ['POST'];
@@ -56,6 +57,46 @@ async function hash(word) {
   const bytes = new TextEncoder().encode('egregora-live:' + word);
   const sum = await crypto.subtle.digest('SHA-256', bytes);
   return Array.from(new Uint8Array(sum)).map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+
+/* ---- the twin's live room -----------------------------------------------
+
+   A feed opened here is opened on the twin, and every segment goes both ways,
+   so the same broadcast is on air in two houses at once.
+
+   Which feed is which is remembered rather than looked up per segment: a
+   camera pushes a letter every two seconds and should not pay a query for
+   each one. */
+const TWIN_FEEDS = new Map();
+const TWIN_FEEDS_MAX = 200;
+
+async function twinOf(feedId) {
+  if (TWIN_FEEDS.has(feedId)) return TWIN_FEEDS.get(feedId);
+  const { rows } = await db.query(
+    'SELECT twin_key, twin_origin FROM live_feeds WHERE id = $1', [feedId]);
+  if (!rows[0]) return null;
+  const t = { twin_key: rows[0].twin_key, twin_origin: rows[0].twin_origin };
+  if (TWIN_FEEDS.size >= TWIN_FEEDS_MAX) TWIN_FEEDS.delete(TWIN_FEEDS.keys().next().value);
+  TWIN_FEEDS.set(feedId, t);
+  return t;
+}
+
+/**
+ * Send one live event to the twin. Never throws, and by default does not wait:
+ * the broadcaster's own room comes first, and a twin that is slow or down must
+ * never make it stutter.
+ */
+async function tellTwinLive(action, feedId, extra, wait) {
+  try {
+    const t = await twinOf(feedId);
+    /* A feed that came from the twin is never relayed back. */
+    if (!t || !t.twin_key || t.twin_origin) return;
+    const go = mirrorLive(action, Object.assign({ twin_key: t.twin_key }, extra));
+    if (wait) await go; else go.catch(() => {});
+  } catch (err) {
+    console.error('twin live ' + action + ':', err && err.message);
+  }
 }
 
 /* A feed whose camera stopped talking is over, whatever the row says. */
@@ -407,6 +448,9 @@ export default async function (req, res) {
            SET on_air = EXCLUDED.on_air, note = EXCLUDED.note,
                back_at = EXCLUDED.back_at, at = NOW()`,
         [on, clean(body.note, 300), clean(body.back_at, 80)]);
+      /* The sign over the door, up in both houses at once. */
+      mirrorLive('air', { on, note: clean(body.note, 300), back_at: clean(body.back_at, 80) })
+        .catch(() => {});
       return res.json({ ok: true, on });
     }
 
@@ -426,6 +470,7 @@ export default async function (req, res) {
          ON CONFLICT (feed_id) DO UPDATE
            SET x = EXCLUDED.x, y = EXCLUDED.y, name = EXCLUDED.name, updated_at = NOW()`,
         [id, x, y, String(who).slice(0, 80)]);
+      tellTwinLive('cursor', id, { x, y, name: String(who).slice(0, 80) });
       return res.json({ ok: true });
     }
 
@@ -436,11 +481,24 @@ export default async function (req, res) {
       if (word.length < 3) return res.status(400).json({ error: 'The watchword needs at least three characters.' });
 
       await sweep();
+      const note = clean(body.note, 400);
+      const mime = clean(body.mime, 80) || 'video/webm';
+      const wordHash = await hash(word);
+      const twinKey = newLiveKey();
       const { rows } = await db.query(
-        `INSERT INTO live_feeds (title, note, word_hash, mime, state)
-         VALUES ($1, $2, $3, $4, 'live') RETURNING id, started_at`,
-        [title, clean(body.note, 400), await hash(word), clean(body.mime, 80) || 'video/webm']);
-      return res.json({ ok: true, id: Number(rows[0].id), started: rows[0].started_at });
+        `INSERT INTO live_feeds (title, note, word_hash, mime, state, twin_key)
+         VALUES ($1, $2, $3, $4, 'live', $5) RETURNING id, started_at`,
+        [title, note, wordHash, mime, twinKey]);
+      const id = Number(rows[0].id);
+      TWIN_FEEDS.set(id, { twin_key: twinKey, twin_origin: null });
+      /* The same broadcast, opened on the other side. The watchword itself
+         stays here — both houses salt the hash the same way, so the hash
+         alone lets a watcher there in with the same word. */
+      await tellTwinLive('open', id, {
+        title, note, mime, word_hash: wordHash,
+        who: (admin.member && (admin.member.display_name || admin.member.name)) || ''
+      }, true);
+      return res.json({ ok: true, id, started: rows[0].started_at });
     }
 
     if (action === 'push') {
@@ -454,6 +512,8 @@ export default async function (req, res) {
         `INSERT INTO live_chunks (feed_id, seq, is_head, part) VALUES ($1, $2, $3, $4)
          ON CONFLICT (feed_id, seq) DO NOTHING`, [id, seq, body.head === true, part]);
       await db.query('UPDATE live_feeds SET seq = GREATEST(seq, $2), beat_at = NOW() WHERE id = $1', [id, seq]);
+      /* Two seconds of camera, sent on without waiting. */
+      tellTwinLive('chunk', id, { seq, head: body.head === true, part });
       if (seq % 10 === 0) await sweep();
       return res.json({ ok: true, seq });
     }
@@ -464,6 +524,9 @@ export default async function (req, res) {
       await db.query("UPDATE live_feeds SET state = 'ended', ended_at = NOW() WHERE id = $1", [id]);
       await db.query('DELETE FROM live_chunks WHERE feed_id = $1', [id]).catch(() => {});
       await db.query('DELETE FROM live_cursor WHERE feed_id = $1', [id]).catch(() => {});
+      /* Off air here means off air there. */
+      await tellTwinLive('close', id, {}, true);
+      TWIN_FEEDS.delete(id);
       return res.json({ ok: true });
     }
 

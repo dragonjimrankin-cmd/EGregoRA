@@ -155,10 +155,10 @@ const MEDIA_TIMEOUT_MS = 9000;
 
 /** POST to any twin endpoint, signed. Never throws: a twin that is down must
     not cost this house a publish. */
-export async function twinPost(path, payload) {
+export async function twinPost(path, payload, ms = MEDIA_TIMEOUT_MS) {
   const raw = JSON.stringify(payload);
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), MEDIA_TIMEOUT_MS);
+  const timer = setTimeout(() => ctrl.abort(), ms);
   try {
     const r = await fetch(`${TWIN.url}${path}`, {
       method: 'POST',
@@ -228,5 +228,42 @@ export async function mirrorMedia(action, row) {
 /** Mint the identity an episode is known by on both sides. */
 export function newTwinKey() {
   return HOME.key + '-' + Date.now().toString(36) +
+    '-' + crypto.randomBytes(4).toString('hex');
+}
+
+
+/* ---- the live room ------------------------------------------------------
+
+   A feed is a run of short segments, not a true stream, so the relay is a
+   letter per segment rather than an open socket. Each carries the same two
+   seconds of camera the house it was recorded on just stored, and each is
+   sent without waiting: a twin that is slow or down must never make the
+   broadcaster's own room stutter. A dropped segment is a dropped two
+   seconds, not a broken feed. */
+
+/* A segment is due about every two seconds. A letter that takes longer than
+   this has already missed its place in the line, so stop waiting for it. */
+const LIVE_TIMEOUT_MS = 4000;
+
+/**
+ * Tell the twin what the live room is doing.
+ *
+ * A feed that arrived from the twin is never relayed back — that is the whole
+ * anti-echo rule, and it is checked here as well as at the call sites so that
+ * a future caller cannot get it wrong.
+ *
+ * @param {'open'|'chunk'|'close'|'air'|'cursor'} action
+ * @param {object} payload  twin_key, plus whatever the action needs
+ */
+export async function mirrorLive(action, payload) {
+  const p = payload || {};
+  if (p.twin_origin) return { ok: false, error: 'echo refused' };
+  if (!p.twin_key && action !== 'air') return { ok: false, error: 'no twin_key' };
+  return twinPost('/api/twin-live', Object.assign({ action, from: HOME.key }, p), LIVE_TIMEOUT_MS);
+}
+
+/** Mint the identity a feed is known by on both sides. */
+export function newLiveKey() {
+  return HOME.key + '-live-' + Date.now().toString(36) +
     '-' + crypto.randomBytes(4).toString('hex');
 }
