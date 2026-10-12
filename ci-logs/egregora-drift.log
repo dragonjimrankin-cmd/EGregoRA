@@ -1,11 +1,11 @@
 project proj_eiuxpFfTnwwx
-live version: 268
-ours:         260
+live version: 269
+ours:         268
 
-✖ 8 deploy(s) landed since ours (v260 → v268).
+✖ 1 deploy(s) landed since ours (v268 → v269).
    Reading the live files so the two can be merged rather than one buried.
 
-   live project holds 269 files
+   live project holds 266 files
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
@@ -20,20 +20,9 @@ ours:         260
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
-   ! could not read public/cosmic-ledger/index.html: read_file failed: {
-    "error": "File not found: public/cosmic-ledger/index.html. Run list_files to see available paths, or grep with a pattern to locate it."
-}
-   ! could not read public/entropy/index.html: read_file failed: {
-    "error": "File not found: public/entropy/index.html. Run list_files to see available paths, or grep with a pattern to locate it."
-}
-   ! could not read public/feed.xml: read_file failed: {
-    "error": "File not found: public/feed.xml. Run list_files to see available paths, or grep with a pattern to locate it."
-}
-   ! could not read public/moebius-seam/index.html: read_file failed: {
-    "error": "File not found: public/moebius-seam/index.html. Run list_files to see available paths, or grep with a pattern to locate it."
-}
 
-   changed live vs our bundle : 12
+   changed live vs our bundle : 14
+     ~ api/media.js
      ~ api/oauth.js
      ~ hatchable.toml
      ~ public/assets/css/main.css
@@ -43,12 +32,18 @@ ours:         260
      ~ public/assets/js/headtts/voices/bm_fable.bin
      ~ public/assets/js/headtts/voices/bm_george.bin
      ~ public/assets/js/headtts/voices/bm_lewis.bin
+     ~ public/assets/js/media-admin.js
+     ~ public/assets/js/player.js
      ~ public/assets/js/site.js
-     ~ public/podcast/index.html
      ~ public/sitemap.xml
-   present live, absent here  : 0
-   present here, absent live  : 1
+   present live, absent here  : 1
+     + migrations/0040_media_subtitles.sql
+   present here, absent live  : 5
      - README.md
+     - public/cosmic-ledger/index.html
+     - public/entropy/index.html
+     - public/feed.xml
+     - public/moebius-seam/index.html
 
    their versions are saved under ops/incoming/egregora/
    DEPLOY SKIPPED. Merge, then deploy.
