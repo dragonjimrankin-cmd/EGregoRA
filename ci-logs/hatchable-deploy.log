@@ -1,4 +1,4 @@
-# Hatchable deploy — 2026-10-12T00:22:51Z
+# Hatchable deploy — 2026-10-12T18:57:08Z
 
 token present: 43 chars, prefix hb_
 
@@ -11,7 +11,7 @@ hatchable.com/mcp -> HTTP 200
   connected to hatchable 2.0.0
   34 tools available
 ▸ using existing project proj_eiuxpFfTnwwx
-▸ write_files — 228 text files
+▸ write_files — 229 text files
   ✓ api/account-face.js, api/account-identity.js, api/account-me.js, api/account-passkey.js, api/account-signout.j…
   ✓ api/model3d.js, api/oauth.js, api/owner.js, api/profile.js, api/track.js, api/transcribe.js, api/twin-member.j…
   ✓ lib/gink-mind.js, lib/gpu-scripts.js, lib/imagegen.js, lib/kaggle.js, lib/key-store.js, lib/mailing.js, lib/op…
@@ -19,13 +19,11 @@ hatchable.com/mcp -> HTTP 200
   ✓ lib/oracle-corpus-xxxiii.js, lib/oracle-corpus-xxxiv.js, lib/oracle-corpus-xxxix.js, lib/oracle-corpus-xxxv.js…
   ✓ migrations/0005_accounts.sql, migrations/0006_letters.sql, migrations/0007_identity.sql, migrations/0008_captc…
   ✓ migrations/0025_freeai.sql, migrations/0026_page_edits.sql, migrations/0027_twin.sql, migrations/0028_source_b…
-  ✓ public/account/index.html, public/artwork/index.html, public/ask-ed/index.html, public/assets/audio/PLACE_AUDI…
-  ✓ public/assets/js/headtts/dictionaries/en-us.txt, public/assets/js/headtts/headtts.mjs, public/assets/js/headtt…
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
-  ✓ public/assets/js/private-whisper/browser-whisper.js, public/assets/js/profile-client.js, public/assets/js/prog…
-  ✓ public/elemental-alchemy/index.html, public/entropy/index.html, public/extraterrestrials/index.html, public/fe…
-  ✓ public/robots.txt, public/runes/index.html, public/sacred-geometry/index.html, public/site-index/index.html, p…
+  ✓ public/404.html, public/account/index.html, public/artwork/index.html, public/ask-ed/index.html, public/assets…
+  ✓ public/assets/js/headtts/THIRD-PARTY-NOTICES.txt, public/assets/js/headtts/dictionaries/en-us.txt, public/asse…
+  ✓ public/assets/js/private-whisper/THIRD-PARTY-NOTICES.txt, public/assets/js/private-whisper/browser-whisper.js,…
+  ✓ public/druids/index.html, public/elemental-alchemy/index.html, public/entropy/index.html, public/extraterrestr…
+  ✓ public/research/index.html, public/robots.txt, public/runes/index.html, public/sacred-geometry/index.html, pub…
 ▸ uploading 41 binary assets (server-side URL import)
   ✓ public/assets/img/apple-touch-icon.png (47 KB) via url import
   ✓ public/assets/img/art-inner-cosmos.jpg (361 KB) via url import
@@ -38,8 +36,6 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/img/icon-512.png (336 KB) via url import
   ✓ public/assets/img/og-egregora.jpg (129 KB) via url import
   ✓ public/assets/img/product-astrolabe.jpg (216 KB) via url import
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/img/product-cap.jpg (49 KB) via url import
   ✓ public/assets/img/product-cloak.jpg (69 KB) via url import
   ✓ public/assets/img/product-codex.jpg (198 KB) via url import
@@ -66,11 +62,11 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/img/shakdrah.png (1464 KB) via url import
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_fenrir.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_michael.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
@@ -83,6 +79,8 @@ hatchable.com/mcp -> HTTP 200
   ✓ public/assets/js/headtts/voices/bm_george.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/bm_lewis.bin (510 KB, 12 chunks)
 ▸ dry_run_deploy
   {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintUndeclaredEnvReads","
@@ -97,16 +95,16 @@ hatchable.com/mcp -> HTTP 200
   "project_name": "EGregoRA",
   "project_public_id": "proj_eiuxpFfTnwwx",
   "project_slug": "egregora",
-  "version": 270,
+  "version": 272,
   "url": "https://egregora.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://egregora.hatchable.site",
   "draft_url": "https://egregora-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v269.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v270.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v271.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_eiuxpFfTnwwx/v272.png",
   "console_url": "https://hatchable.com/console/projects/egregora",
-  "files_deployed": 269,
+  "files_deployed": 270,
   "functions_deployed": 33,
   "warnings": [],
   "visibility": "public",
