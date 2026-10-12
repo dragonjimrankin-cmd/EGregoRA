@@ -37,12 +37,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://egregora.hatchable.site/cosmic-ledger/</loc>
-    <lastmod>2026-10-11T17:00:57.411Z</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://egregora.hatchable.site/decoherence/</loc>
     <lastmod>2026-10-11T17:00:57.411Z</lastmod>
     <changefreq>monthly</changefreq>
@@ -56,12 +50,6 @@
   </url>
   <url>
     <loc>https://egregora.hatchable.site/elemental-alchemy/</loc>
-    <lastmod>2026-10-11T17:00:57.411Z</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://egregora.hatchable.site/entropy/</loc>
     <lastmod>2026-10-11T17:00:57.411Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -110,12 +98,6 @@
   </url>
   <url>
     <loc>https://egregora.hatchable.site/locality/</loc>
-    <lastmod>2026-10-11T17:00:57.411Z</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://egregora.hatchable.site/moebius-seam/</loc>
     <lastmod>2026-10-11T17:00:57.411Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
