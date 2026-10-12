@@ -5125,7 +5125,43 @@
     if (items.length) ul.insertBefore(li, items[items.length - 1]); else ul.appendChild(li);
   }
 
-  function all() { mount(); peopleLink(); }
+  /* The Shop link, once, beside the last item — the house's shelf of
+     objects, present on every page without re-cutting each header by hand.
+     This house only; the twin keeps its own shop. */
+  function shopLink() {
+    var nav = document.getElementById('primary-nav');
+    if (!nav || document.getElementById('nav-shop-link')) return;
+    if (nav.querySelector('a[href="/shop/"]')) return;
+    if (window.location.origin.indexOf('two-infinities') < 0) return;
+    var ul = nav.querySelector('ul');
+    if (!ul) return;
+    var li = document.createElement('li');
+    li.id = 'nav-shop-link';
+    li.innerHTML = '<a href="/shop/"><i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M24 40 L50 24 L76 40 L76 78 L50 90 L24 78 Z"/><path d="M24 40 L50 52 L76 40 M50 52 V90" opacity="0.55"/><path d="M58 38 L74 26 M74 26 H60 M74 26 V40" opacity="0.4"/></g></svg></i><span>Shop</span></a>';
+    if (window.location.pathname.replace(/\/$/, '') === '/shop') {
+      li.querySelector('a').setAttribute('aria-current', 'page');
+    }
+    var items = ul.querySelectorAll('li');
+    if (items.length) ul.insertBefore(li, items[items.length - 1]); else ul.appendChild(li);
+    var foot = document.querySelector('.foot-nav');
+    if (foot && !foot.querySelector('a[href="/shop/"]')) {
+      var fa = document.createElement('a');
+      fa.href = '/shop/';
+      fa.textContent = 'Shop';
+      foot.appendChild(fa);
+    }
+  }
+
+  /* The shop makes the old cookie line untrue on this house; true it up
+     here rather than re-cutting the gate on every page by hand. */
+  function cookieFix() {
+    var t = document.getElementById('cookie-text');
+    if (t && t.textContent.indexOf('we sell nothing') >= 0) {
+      t.textContent = t.textContent.replace('we sell nothing', 'we sell a few things (the shop)');
+    }
+  }
+
+  function all() { mount(); peopleLink(); shopLink(); cookieFix(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', all);
   else all();
 })();
