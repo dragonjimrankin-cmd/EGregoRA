@@ -18,40 +18,21 @@ ours:         95
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
 
-   changed live vs our bundle : 28
-     ~ api/account-verify.js
-     ~ api/ask.js
-     ~ api/live.js
+   changed live vs our bundle : 12
      ~ api/oauth.js
-     ~ api/upload.js
      ~ hatchable.toml
-     ~ lib/gink-mind.js
-     ~ lib/mailing.js
-     ~ public/ask-shakdrah/index.html
-     ~ public/assets/css/forum.css
      ~ public/assets/css/main.css
-     ~ public/assets/js/headtts/utils.mjs
      ~ public/assets/js/headtts/voices/am_fenrir.bin
      ~ public/assets/js/headtts/voices/am_michael.bin
      ~ public/assets/js/headtts/voices/am_puck.bin
      ~ public/assets/js/headtts/voices/bm_fable.bin
      ~ public/assets/js/headtts/voices/bm_george.bin
      ~ public/assets/js/headtts/voices/bm_lewis.bin
-     ~ public/assets/js/live.js
-     ~ public/assets/js/oracle-knowledge.js
      ~ public/assets/js/site.js
-     ~ public/essays/index.html
-     ~ public/foundations/index.html
      ~ public/index.html
-     ~ public/moebius/index.html
-     ~ public/seams/index.html
-     ~ public/stress-tests/index.html
-     ~ public/summary/index.html
-   present live, absent here  : 1
-     + migrations/0029_live_cursor_and_shelves.sql
+     ~ public/sitemap.xml
+   present live, absent here  : 0
    present here, absent live  : 0
 
    their versions are saved under ops/incoming/tti/
