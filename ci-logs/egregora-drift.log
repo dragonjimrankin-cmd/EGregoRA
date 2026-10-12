@@ -1,49 +1,10 @@
 project proj_eiuxpFfTnwwx
 live version: 269
-ours:         268
-
-✖ 1 deploy(s) landed since ours (v268 → v269).
-   Reading the live files so the two can be merged rather than one buried.
-
-   live project holds 266 files
+ours:         269
+✓ no foreign deploy since ours. Safe to deploy.
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-
-   changed live vs our bundle : 14
-     ~ api/media.js
-     ~ api/oauth.js
-     ~ hatchable.toml
-     ~ public/assets/css/main.css
-     ~ public/assets/js/headtts/voices/am_fenrir.bin
-     ~ public/assets/js/headtts/voices/am_michael.bin
-     ~ public/assets/js/headtts/voices/am_puck.bin
-     ~ public/assets/js/headtts/voices/bm_fable.bin
-     ~ public/assets/js/headtts/voices/bm_george.bin
-     ~ public/assets/js/headtts/voices/bm_lewis.bin
-     ~ public/assets/js/media-admin.js
-     ~ public/assets/js/player.js
-     ~ public/assets/js/site.js
-     ~ public/sitemap.xml
-   present live, absent here  : 1
-     + migrations/0040_media_subtitles.sql
-   present here, absent live  : 5
-     - README.md
-     - public/cosmic-ledger/index.html
-     - public/entropy/index.html
-     - public/feed.xml
-     - public/moebius-seam/index.html
-
-   their versions are saved under ops/incoming/egregora/
-   DEPLOY SKIPPED. Merge, then deploy.
+project proj_eiuxpFfTnwwx
+live version: 270
+ours:         269
+recorded version 270 in ops/egregora-deployed.json
