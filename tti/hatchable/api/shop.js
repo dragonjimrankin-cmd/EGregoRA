@@ -1,47 +1,26 @@
 /**
  * POST /api/shop — the shop's ledger.
  *
- * One action: `order`. The product line is validated against the shelf
- * below, the gate-word is checked, the order is written to the database
+ * One action: `order`. The product line is validated against the shelf in
+ * lib/shelf.js, the gate-word is checked, the order is written to the database
  * so it cannot be lost, and a copy goes to the order's address.
  *
- * The email is allowed to fail without failing the request — an order
- * safely stored is the thing that matters. Nothing is charged here:
- * payment happens by link, from the confirmation.
+ * This is the written-down route, and it stays: a customer who would rather
+ * not put a card into a form, or whose card is refused, still gets an order
+ * into the ledger. api/checkout.js is the other door, and it writes to the
+ * same table with payment_state = 'awaiting' before Stripe is asked for
+ * anything — so both doors land in one place.
+ *
+ * The email is allowed to fail without failing the request: an order safely
+ * stored is the thing that matters.
  */
 import { db, email } from 'hatchable';
 import { cleanEmail, randomToken } from '../lib/accounts.js';
 import { solveCaptcha } from '../lib/captcha.js';
+import { SHELF, REF_PREFIX, ORDER_TO, SHOP_TITLE, SHOP_LINE } from '../lib/shelf.js';
 
 export const access = 'public';
 export const methods = ['POST'];
-
-/* The shelf, as printed on the page. The page shows what is here;
-   anything not on this list is not for sale. */
-const SHELF = {
-  'tee-twin':        { name: 'The Two Infinities Tee',              price: 18 },
-  'tee-arrow':       { name: 'The Arrow Tee',                       price: 18 },
-  'tee-dots':        { name: 'Little Red Dots Tee',                 price: 18 },
-  'ls-residue':      { name: 'Residue Long Sleeve',                 price: 22 },
-  'bomber-night':    { name: 'Night Flight Bomber',                 price: 120 },
-  'bomber-seam':     { name: 'The Seam Bomber',                     price: 120 },
-  'bomber-ledger':   { name: 'The Ledger Bomber',                   price: 135 },
-  'ring-seam':       { name: 'The Seam Ring',                       price: 85 },
-  'pendant-torus':   { name: 'Galactic Torus Pendant',              price: 65 },
-  'studs-dots':      { name: 'Little Red Dot Studs',                price: 40 },
-  'brace-ledger':    { name: 'Cosmic Ledger Bracelet',              price: 75 },
-  'ed-keeper':       { name: 'Ed Gregory — "Keeper"',               price: 35 },
-  'ed-hood':         { name: 'Ed Gregory — "Hood Up"',              price: 35 },
-  'ed-duo':          { name: '"The Conversation" Two-Pack',         price: 60 },
-  'ed-desk':         { name: 'Ed Gregory — "Expand the Space" Deluxe', price: 45 },
-  'fox-figure':      { name: 'The Fox',                             price: 25 },
-  'fox-pin':         { name: 'Fox Enamel Pin',                      price: 12 },
-  'badger-figure':   { name: 'The Badger',                          price: 25 },
-  'badger-pin':      { name: 'Badger Enamel Pin',                   price: 12 },
-  'duo-both':        { name: 'Or Both! — Fox and Badger Set',       price: 40 }
-};
-
-const ORDER_TO = 'shakradragon@gmail.com';
 
 const esc = (s) => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -54,7 +33,7 @@ function orderEmailHtml(o) {
       border:1px solid rgba(118,207,238,.35);border-radius:4px" cellpadding="0" cellspacing="0">
       <tr><td style="padding:26px 30px 10px;text-align:center">
         <div style="font-family:Georgia,serif;letter-spacing:.34em;color:#cdefff;font-size:15px;
-          text-transform:uppercase">The Shape of Becoming — The Shop</div>
+          text-transform:uppercase">${esc(SHOP_TITLE)}</div>
         <div style="color:#76cfee;font-size:13px;margin-top:6px">A new order is written to the ledger</div>
       </td></tr>
       <tr><td style="padding:16px 30px 6px">
@@ -75,7 +54,8 @@ function orderEmailHtml(o) {
         </table>
       </td></tr>
       <tr><td style="padding:14px 30px 26px;font-size:13px;color:#8f9cc0">
-        Nothing has been charged. The confirmation — with the payment link — goes out by hand.
+        ${esc(SHOP_LINE)} Nothing has been charged here; if the card route was not used,
+        the confirmation goes out by hand.
       </td></tr>
     </table>
   </td></tr></table></body></html>`;
@@ -91,7 +71,10 @@ export default async function (req, res) {
 
   const key = String(body.key || '').slice(0, 40);
   const item = SHELF[key];
-  if (!item) return res.status(400).json({ error: 'That is not on the shelf. Twenty things are; check the page.' });
+  if (!item) {
+    const n = Object.keys(SHELF).length;
+    return res.status(400).json({ error: 'That is not on the shelf. ' + n + ' things are; check the page.' });
+  }
 
   const name = String(body.name || '').trim().slice(0, 80);
   if (name.length < 2) return res.status(400).json({ error: 'A name, so the order has one.' });
@@ -118,18 +101,19 @@ export default async function (req, res) {
       return res.status(429).json({ error: 'Three orders in an hour is plenty. The ledger will have the rest.' });
     }
 
-    const ref = 'TTI-' + randomToken(4).slice(0, 6).toUpperCase();
+    const ref = REF_PREFIX + '-' + randomToken(4).slice(0, 6).toUpperCase();
     const total = item.price * qty;
     const { rows } = await db.query(
-      `INSERT INTO shop_orders (ref, product_key, product_name, qty, unit_price, total, name, email, notes)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING ref`,
-      [ref, key, item.name, qty, item.price, total, name, emailAddr, notes]
+      `INSERT INTO shop_orders (ref, product_key, product_name, qty, unit_price, total,
+                                name, email, notes, payment_state, house)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'awaiting',$10) RETURNING ref`,
+      [ref, key, item.name, qty, item.price, total, name, emailAddr, notes, REF_PREFIX]
     );
 
     try {
       await email({
         to: ORDER_TO,
-        subject: `The shop — order ${ref}: ${item.name} x${qty} (${name})`,
+        subject: `The shop \u2014 order ${ref}: ${item.name} x${qty} (${name})`,
         html: orderEmailHtml({
           ref: rows[0].ref, item: item.name, qty, total, name, email: emailAddr, notes
         })

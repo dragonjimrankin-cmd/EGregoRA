@@ -131,3 +131,25 @@ description = "Discord sign-in: the client id. discord.com/developers → OAuth2
 key         = "DISCORD_CLIENT_SECRET"
 required    = false
 description = "Discord sign-in: the client secret that goes with it."
+
+# --- taking money, and the two houses talking -----------------------------
+
+[[secret]]
+key         = "STRIPE_SECRET_KEY"
+required    = false
+description = "Stripe secret key (sk_live_… or sk_test_…). Without it the shop writes orders down but takes no card; with it, checkout, membership and gifts all work."
+
+[[secret]]
+key         = "STRIPE_WEBHOOK_SECRET"
+required    = false
+description = "Stripe webhook signing secret (whsec_…), from the endpoint's page in the Stripe dashboard. Lets the webhook be checked rather than merely believed."
+
+[[secret]]
+key         = "STRIPE_CURRENCY"
+required    = false
+description = "Optional three-letter currency for the shop. Defaults to gbp."
+
+[[secret]]
+key         = "TWIN_SECRET"
+required    = false
+description = "The shared secret the two houses sign their letters to each other with — membership, the shelf, and the live room. Change it in both projects at once, or neither will hear the other."

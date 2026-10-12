@@ -1,5 +1,7 @@
-/* The Shape of Becoming — the shop's order slip.
-   The page is the shelf; this script is only the slip and the sending. */
+/* The shop's order slip, shared by both houses.
+   The page is the shelf; this script is the slip, and the two ways to send
+   it: written down for a human to follow up, or paid by card through
+   Stripe. The page decides nothing about payment, and neither does this. */
 (() => {
   "use strict";
 
@@ -67,6 +69,15 @@
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
+  /* The card door is built here rather than marked up, so the same script
+     works on both houses' shop pages without either needing new markup. */
+  const pay = document.createElement("button");
+  pay.type = "button";
+  pay.id = "shop-pay";
+  pay.className = (submit && submit.className) || "btn";
+  pay.textContent = "Pay by card";
+  if (submit && submit.parentNode) submit.parentNode.insertBefore(pay, submit.nextSibling);
+
   document.querySelectorAll("[data-order]").forEach((btn) => {
     btn.addEventListener("click", () => open(btn.dataset.order));
   });
@@ -80,6 +91,30 @@
   });
   if (form.qty) form.qty.addEventListener("change", refreshItem);
 
+  /* The two doors ask for the same things, so they are checked once. */
+  function read() {
+    const captchaBox = drawer.querySelector('[data-captcha="shop"]');
+    const captchaInput = drawer.querySelector("[data-captcha-input]");
+    return {
+      name: String(form.name.value || "").trim(),
+      email: String(form.email.value || "").trim(),
+      qty: Math.round(Number(form.qty.value)) || 1,
+      notes: String(form.notes.value || "").trim(),
+      captcha_token: captchaBox ? captchaBox.dataset.token || "" : "",
+      captcha: captchaInput ? captchaInput.value : ""
+    };
+  }
+
+  function fillIn() {
+    if (!current) { show("Choose a thing first."); return false; }
+    const f = read();
+    if (f.name.length < 2) { show("A name, so the order has one."); return false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email)) {
+      show("A working email address, or the confirmation cannot find you."); return false;
+    }
+    return true;
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     show(null);
@@ -90,11 +125,7 @@
     const captchaBox = drawer.querySelector('[data-captcha="shop"]');
     const captchaInput = drawer.querySelector('[data-captcha-input]');
 
-    if (!current) { show("Choose a thing first."); return; }
-    if (name.length < 2) { show("A name, so the order has one."); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-      show("A working email address, or the confirmation cannot find you."); return;
-    }
+    if (!fillIn()) return;
 
     submit.disabled = true;
     submit.textContent = "Sending\u2026";
@@ -132,5 +163,47 @@
       submit.disabled = false;
       submit.textContent = "Send the order";
     }
+  });
+
+  /* Paying by card. The order is written to the ledger first and Stripe is
+     asked afterwards, so nothing is lost if the customer closes the tab; and
+     no card number ever reaches this site \u2014 Stripe's own page takes it. */
+  pay.addEventListener("click", async () => {
+    show(null);
+    if (!fillIn()) return;
+    const f = read();
+
+    pay.disabled = true;
+    if (submit) submit.disabled = true;
+    pay.textContent = "Opening the payment page\u2026";
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.assign({
+          action: "checkout", kind: "shop", key: current.key
+        }, f))
+      });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok && d.ok && d.url) {
+        pay.textContent = "Taking you to Stripe\u2026";
+        window.location.href = d.url;
+        return;   /* leaving the page; leave the button as it is */
+      }
+      if (d.not_configured) {
+        show("Card payment is not switched on at this house yet. Send the order below " +
+             "and the confirmation will carry a payment link.");
+      } else if (d.captcha && window.EGCaptchaRenew) {
+        window.EGCaptchaRenew("shop");
+        show(d.error || "Read the gate-word again.");
+      } else {
+        show(d.error || "The payment page could not be opened. Nothing has been charged.");
+      }
+    } catch {
+      show("The payment page could not be opened. Nothing has been charged.");
+    }
+    pay.disabled = false;
+    if (submit) submit.disabled = false;
+    pay.textContent = "Pay by card";
   });
 })();
