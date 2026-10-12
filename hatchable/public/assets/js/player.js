@@ -41,7 +41,19 @@
     audio.dataset.fx = "1";
     audio.controls = false;
     audio.preload = audio.preload || "metadata";
-    audio.crossOrigin = "anonymous";
+    /* Cross-origin samples: "anonymous" mode only when the host actually
+       answers with CORS headers, because a host that refuses will refuse
+       the sound itself — an audio element forced into CORS mode plays
+       nothing at all where the host sends no access-control headers. The
+       probe is a HEAD; where it fails the sound still plays and the
+       canvas falls back to the drawn wave keyed to the playhead. */
+    if (audio.src && !/^(blob:|data:)/i.test(audio.src)) {
+      /* A one-byte GET: signed storage URLs sign a method, and a signed
+         host answers a range ask, which a HEAD ask may refuse. */
+      fetch(audio.src, { method: "GET", mode: "cors", headers: { "range": "bytes=0-0" } })
+        .then((r) => { if (r.ok || r.status === 206) audio.crossOrigin = "anonymous"; })
+        .catch(() => {});
+    }
 
     const fig = document.createElement("div");
     fig.className = "fx-player";
@@ -138,7 +150,42 @@
     end.className = "fx-time";
     end.textContent = "0:00";
 
-    bar.append(prevBtn, back60, back10, playBtn, fwd10, fwd60, now, seek, end);
+    /* The voice of the room: a level of its own, remembered on this
+       device, with a hand to silence it. */
+    const muteBtn = document.createElement("button");
+    muteBtn.type = "button";
+    muteBtn.className = "fx-step fx-mute";
+    muteBtn.setAttribute("aria-label", "Mute or unmute");
+    muteBtn.title = "Mute or unmute";
+    const vol = document.createElement("input");
+    vol.type = "range";
+    vol.className = "fx-vol";
+    vol.min = "0"; vol.max = "100";
+    vol.setAttribute("aria-label", "Volume");
+    vol.title = "Volume";
+    let savedVol = 1;
+    try {
+      const sv = Number(localStorage.getItem("fx-volume"));
+      if (Number.isFinite(sv) && sv >= 0 && sv <= 1) savedVol = sv;
+    } catch { /* the device keeps its own counsel */ }
+    vol.value = String(Math.round(savedVol * 100));
+    audio.volume = savedVol;
+    const paintMute = () => {
+      muteBtn.textContent = (audio.muted || audio.volume === 0) ? "\u{1F507}" : "\u{1F50A}";
+    };
+    vol.addEventListener("input", () => {
+      audio.volume = Number(vol.value) / 100;
+      if (audio.volume > 0) audio.muted = false;
+      try { localStorage.setItem("fx-volume", String(audio.volume)); } catch { /* no shelf */ }
+      paintMute();
+    });
+    muteBtn.addEventListener("click", () => {
+      audio.muted = !audio.muted;
+      paintMute();
+    });
+    paintMute();
+
+    bar.append(prevBtn, back60, back10, playBtn, fwd10, fwd60, now, seek, end, muteBtn, vol);
     fig.append(cv, audio, bar);
 
     /* --------------------------------------------------------- the sound */

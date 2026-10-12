@@ -602,6 +602,89 @@ async function dress(row) {
   };
 }
 
+/* The languages the captions can be asked for, by the code the client sends. */
+const SUB_LANGUAGES = {
+  'en-US': 'English (American)', 'es': 'Spanish', 'fr': 'French', 'de': 'German',
+  'it': 'Italian', 'pt': 'Portuguese', 'nl': 'Dutch', 'pl': 'Polish',
+  'ru': 'Russian', 'ar': 'Arabic', 'hi': 'Hindi', 'zh': 'Chinese (Simplified)',
+  'ja': 'Japanese', 'ko': 'Korean', 'tr': 'Turkish', 'el': 'Greek',
+  'la': 'Classical Latin', 'cy': 'Welsh', 'ga': 'Irish (Gaeilge)'
+};
+
+/* Cues from the transcript's turns: one cue per readable stretch of words,
+   timed from the turn's stamp to the next turn's, split by word count. */
+function subtitleCues(turns, totalSeconds) {
+  const cues = [];
+  const endAt = (i) => {
+    for (let k = i + 1; k < turns.length; k++) {
+      if (turns[k].seconds > turns[i].seconds) return turns[k].seconds;
+    }
+    return Math.min(totalSeconds || turns[i].seconds + 60, turns[i].seconds + 60);
+  };
+  turns.forEach((t, i) => {
+    const words = String(t.text || '').trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return;
+    const span = Math.max(2, endAt(i) - t.seconds);
+    let start = t.seconds;
+    for (let k = 0; k < words.length; k += 12) {
+      const chunk = words.slice(k, k + 12);
+      const end = (k + 12 >= words.length)
+        ? start + span
+        : start + span * ((k + 12) / words.length);
+      cues.push({
+        start: Math.max(0, Math.round(start * 10) / 10),
+        end: Math.max(start + 0.5, Math.round(end * 10) / 10),
+        text: chunk.join(' ')
+      });
+      start = end;
+    }
+  });
+  return cues;
+}
+
+/* The chosen language, carried cue by cue through the order's own models.
+   Batches keep a long episode within the model window; an incomplete
+   answer discards the lot rather than half-translating an episode. */
+async function translatedCues(cues, lang) {
+  const results = new Array(cues.length);
+  let cursor = 0;
+  while (cursor < cues.length) {
+    const batch = [];
+    let chars = 0;
+    while (cursor + batch.length < cues.length && batch.length < 120) {
+      const c = cues[cursor + batch.length];
+      const cost = c.text.length + 40;
+      if (batch.length && chars + cost > 12000) break;
+      batch.push(c);
+      chars += cost;
+    }
+    if (!batch.length) break;
+    const heard = await freeChat({
+      system: `You are a careful subtitle translator. Translate the text of every numbered cue into ${lang}.
+Keep each translation short enough to read as a subtitle: the same or fewer words than the original,
+no line breaks, no quotation marks, no speaker labels, nothing added or dropped. Return JSON only in
+exactly this shape: {"lines":[{"i":1,"text":"..."}]} with one entry per cue, keeping the i numbers.`,
+      messages: [{
+        role: 'user',
+        content: JSON.stringify(batch.map((c, j) => ({ i: cursor + j + 1, text: c.text })))
+      }],
+      maxTokens: Math.min(10000, Math.max(500, Math.round(chars * 0.8))),
+      temperature: 0.2
+    });
+    const parsed = heard && jsonObject(heard.text);
+    const byI = new Map(((parsed && parsed.lines) || []).map((l) => [Number(l.i), String(l.text || '').trim()]));
+    let missing = false;
+    batch.forEach((c, j) => {
+      const t = byI.get(cursor + j + 1);
+      if (!t) missing = true;
+      results[cursor + j] = t || c.text;
+    });
+    if (missing) throw new Error('the translator answered for some cues only');
+    cursor += batch.length;
+  }
+  return cues.map((c, i) => ({ start: c.start, end: c.end, text: results[i] }));
+}
+
 export default async function (req, res) {
   const body = req.body || {};
   const action = clean(body.action || 'list', 24);
@@ -642,6 +725,57 @@ export default async function (req, res) {
       });
     } catch (err) {
       console.error('media: the transcript could not be read', err && err.message);
+      return res.status(500).json({ error: 'The shelf could not be read.' });
+    }
+  }
+
+  /* The captions of a published episode: its words, timed, in the language
+     the reader chooses. The original comes straight from the transcript's
+     turns; another language is translated by the order's own models and
+     kept on the shelf, so a chosen language is only ever asked once. */
+  if (action === 'subtitles') {
+    const id = Number(body.id);
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'Which episode?' });
+    const lang = clean(body.lang, 16);
+    const want = SUB_LANGUAGES[lang] || '';
+    try {
+      const { rows } = await db.query(
+        'SELECT id, title, state, transcript, seconds FROM media WHERE id = $1', [id]);
+      if (!rows || !rows.length) return res.status(404).json({ error: 'No episode by that number.' });
+      if (rows[0].state !== 'published') return res.status(404).json({ error: 'That episode is not on the shelf.' });
+      const raw = rows[0].transcript || '';
+      if (!String(raw).trim()) return res.json({ ok: true, lines: [], status: 'no-transcript' });
+
+      const profile = await ensureSpeakerPatterns(id, raw);
+      const cues = subtitleCues(transcriptTurns(raw, profile.speakers), Number(rows[0].seconds) || 0);
+      if (!want) return res.json({ ok: true, lang: 'original', lines: cues });
+
+      const { rows: cached } = await db.query(
+        'SELECT lines FROM media_subtitles WHERE media_id = $1 AND lang = $2', [id, lang]);
+      if (cached && cached[0]) {
+        try {
+          return res.json({ ok: true, lang, lines: JSON.parse(cached[0].lines) });
+        } catch { /* a kept translation that will not parse is translated again */ }
+      }
+
+      let translated;
+      try {
+        translated = await translatedCues(cues, want);
+      } catch (err) {
+        console.error('media: the translator was quiet', err && err.message);
+        return res.status(503).json({
+          error: 'The translator is resting — the order\u2019s models are not answering just now. The original language still works.'
+        });
+      }
+      await db.query(
+        `INSERT INTO media_subtitles (media_id, lang, lines, created_at)
+         VALUES ($1, $2, $3, NOW())
+         ON CONFLICT (media_id, lang) DO UPDATE
+           SET lines = EXCLUDED.lines, created_at = NOW()`,
+        [id, lang, JSON.stringify(translated)]).catch(() => {});
+      return res.json({ ok: true, lang, lines: translated });
+    } catch (err) {
+      console.error('media: the captions could not be read', err && err.message);
       return res.status(500).json({ error: 'The shelf could not be read.' });
     }
   }
