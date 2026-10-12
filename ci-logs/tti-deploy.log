@@ -1,53 +1,56 @@
-# The Two Infinities → Hatchable — 2026-10-12T00:22:44Z
-bundle files: 222
+# The Two Infinities → Hatchable — 2026-10-12T22:24:30Z
+bundle files: 248
 existing project id: proj_U95i5y493z9x
 
 ▸ Connecting to https://hatchable.com/mcp
   connected to hatchable 2.0.0
   34 tools available
 ▸ using existing project proj_U95i5y493z9x
-▸ write_files — 211 text files
+▸ write_files — 237 text files
   ✓ api/account-face.js, api/account-identity.js, api/account-me.js, api/account-passkey.js, api/account-signout.j…
-  ✓ api/oauth.js, api/shop.js, api/transcribe.js, api/twin-member.js, api/unsubscribe.js, api/upload.js, api/video…
-  ✓ lib/key-store.js, lib/mailing.js, lib/openai.js, lib/openchat.js, lib/oracle-corpus-iii.js, lib/oracle-corpus-…
-  ✓ lib/oracle-corpus-xvi.js, lib/oracle-corpus-xvii.js, lib/oracle-corpus-xviii.js, lib/oracle-corpus-xx.js, lib/…
-  ✓ lib/oracle-corpus-xxxvi.js, lib/oracle-corpus-xxxvii.js, lib/oracle-corpus-xxxviii.js, lib/oracle-corpus.js, l…
-  ✓ migrations/0011_colab.sql, migrations/0012_tokens.sql, migrations/0013_colab_caps.sql, migrations/0014_continu…
-  ✓ public/ask-shakdragon/index.html, public/ask-shakdrah/index.html, public/assets/css/forum.css, public/assets/c…
-  ✓ public/assets/js/headtts/language-en-us.mjs, public/assets/js/headtts/language.mjs, public/assets/js/headtts/t…
-  ✓ public/assets/js/vendor/lamejs.js, public/assets/js/vendor/three.module.js, public/base-ten/index.html, public…
-  ✓ public/foundations/index.html, public/gravity/index.html, public/index.html, public/inverted-toruses/index.htm…
-  ✓ public/site-index/index.html, public/site.webmanifest, public/sitemap.xml, public/skeletal-splice/index.html, …
+  ✓ api/media.js, api/model3d.js, api/oauth.js, api/shop.js, api/stripe-webhook.js, api/transcribe.js, api/twin-li…
+  ✓ lib/freeai.js, lib/gink-mind.js, lib/gpu-scripts.js, lib/imagegen.js, lib/kaggle.js, lib/key-store.js, lib/mai…
+  ✓ lib/oracle-corpus-xiii.js, lib/oracle-corpus-xiv.js, lib/oracle-corpus-xix.js, lib/oracle-corpus-xl.js, lib/or…
+  ✓ lib/oracle-corpus-xxxii.js, lib/oracle-corpus-xxxiii.js, lib/oracle-corpus-xxxiv.js, lib/oracle-corpus-xxxix.j…
+  ✓ migrations/0002_question_source.sql, migrations/0003_uploads.sql, migrations/0004_videos.sql, migrations/0005_…
+  ✓ migrations/0022_archive_and_elements.sql, migrations/0023_oauth.sql, migrations/0024_air.sql, migrations/0025_…
+  ✓ public/assets/js/attach-image.js, public/assets/js/device-studio.js, public/assets/js/dragon.js, public/assets…
+  ✓ public/assets/js/live.js, public/assets/js/media-admin.js, public/assets/js/membership.js, public/assets/js/mo…
+  ✓ public/assets/js/vendor/flac-encoder.js, public/assets/js/vendor/lamejs.js, public/assets/js/vendor/three.modu…
+  ✓ public/feed.xml, public/forum/index.html, public/foundations/index.html, public/gravity/index.html, public/ind…
+  ✓ public/reading/index.html, public/robots.txt, public/seams/index.html, public/shop/index.html, public/shop/tha…
 ▸ uploading 11 binary assets (server-side URL import)
   ✓ public/assets/img/apple-touch-icon.png (47 KB) via url import
   ✓ public/assets/img/favicon-32.png (2 KB) via url import
   ✓ public/assets/img/icon-192.png (53 KB) via url import
   ✓ public/assets/img/icon-512.png (336 KB) via url import
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/img/og-two-infinities.jpg (182 KB) via url import
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
   ✓ public/assets/js/headtts/voices/am_fenrir.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_michael.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_puck.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/bm_fable.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
   ✓ public/assets/js/headtts/voices/bm_george.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/bm_lewis.bin (510 KB, 12 chunks)
 ▸ dry_run_deploy
-  {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintUndeclaredEnvReads","
+  {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."}],"would_deploy":{"public_files":115,"ap
 ▸ openai key probe: HTTP 429 — You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.
 ▸ vision probe hf-router [Qwen/Qwen2.5-VL-7B-Instruct]: HTTP 401 — <!DOCTYPE html> <html class="" lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, ini
 ▸ vision probe openai [gpt-4o-mini]: HTTP 429 — ERR {"message":"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billin
@@ -59,17 +62,17 @@ existing project id: proj_U95i5y493z9x
   "project_name": "The Two Infinities (and beyond)",
   "project_public_id": "proj_U95i5y493z9x",
   "project_slug": "the-two-infinities",
-  "version": 101,
+  "version": 102,
   "url": "https://the-two-infinities.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://the-two-infinities.hatchable.site",
   "draft_url": "https://the-two-infinities-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v100.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v101.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v101.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v102.png",
   "console_url": "https://hatchable.com/console/projects/the-two-infinities",
-  "files_deployed": 222,
-  "functions_deployed": 27,
+  "files_deployed": 248,
+  "functions_deployed": 32,
   "warnings": [],
   "visibility": "public",
   "preview_url": null
