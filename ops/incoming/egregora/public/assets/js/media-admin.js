@@ -2043,7 +2043,8 @@ function setup(root) {
     player.controls = true;
     player.src = item.url;
     player.className = KIND === "audio" ? "player" : "am-film";
-    player.crossOrigin = "anonymous";
+    /* Podcast masters need no CORS permission for native playback. */
+    if (KIND === "video") player.crossOrigin = "anonymous";
     box.querySelector(".am-ed-play").appendChild(player);
     edit.player = player;
 
