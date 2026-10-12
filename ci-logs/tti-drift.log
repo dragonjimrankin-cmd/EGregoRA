@@ -1,43 +1,8 @@
 project proj_U95i5y493z9x
 live version: 100
-ours:         99
-
-✖ 1 deploy(s) landed since ours (v99 → v100).
-   Reading the live files so the two can be merged rather than one buried.
-
-   live project holds 223 files
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-   … 429 on tools/call, waiting 20s
-   … 429 on tools/call, waiting 40s
-
-   changed live vs our bundle : 10
-     ~ api/oauth.js
-     ~ hatchable.toml
-     ~ public/assets/css/main.css
-     ~ public/assets/js/headtts/voices/am_fenrir.bin
-     ~ public/assets/js/headtts/voices/am_michael.bin
-     ~ public/assets/js/headtts/voices/am_puck.bin
-     ~ public/assets/js/headtts/voices/bm_fable.bin
-     ~ public/assets/js/headtts/voices/bm_george.bin
-     ~ public/assets/js/headtts/voices/bm_lewis.bin
-     ~ public/assets/js/site.js
-   present live, absent here  : 4
-     + api/shop.js
-     + migrations/0030_shop_orders.sql
-     + public/assets/js/shop.js
-     + public/shop/index.html
-   present here, absent live  : 0
-
-   their versions are saved under ops/incoming/tti/
-   DEPLOY SKIPPED. Merge, then deploy.
+ours:         100
+✓ no foreign deploy since ours. Safe to deploy.
+project proj_U95i5y493z9x
+live version: 101
+ours:         100
+recorded version 101 in ops/tti-deployed.json
