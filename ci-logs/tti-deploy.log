@@ -1,23 +1,23 @@
-# The Two Infinities → Hatchable — 2026-10-11T17:40:30Z
-bundle files: 217
+# The Two Infinities → Hatchable — 2026-10-12T00:22:44Z
+bundle files: 222
 existing project id: proj_U95i5y493z9x
 
 ▸ Connecting to https://hatchable.com/mcp
   connected to hatchable 2.0.0
   34 tools available
 ▸ using existing project proj_U95i5y493z9x
-▸ write_files — 206 text files
+▸ write_files — 211 text files
   ✓ api/account-face.js, api/account-identity.js, api/account-me.js, api/account-passkey.js, api/account-signout.j…
-  ✓ api/oauth.js, api/transcribe.js, api/twin-member.js, api/unsubscribe.js, api/upload.js, api/video.js, hatchabl…
-  ✓ lib/mailing.js, lib/openai.js, lib/openchat.js, lib/oracle-corpus-iii.js, lib/oracle-corpus-iv.js, lib/oracle-…
-  ✓ lib/oracle-corpus-xvii.js, lib/oracle-corpus-xviii.js, lib/oracle-corpus-xx.js, lib/oracle-corpus-xxi.js, lib/…
-  ✓ lib/oracle-corpus-xxxvii.js, lib/oracle-corpus-xxxviii.js, lib/oracle-corpus.js, lib/pool.js, lib/site-map.js,…
-  ✓ migrations/0012_tokens.sql, migrations/0013_colab_caps.sql, migrations/0014_continuity.sql, migrations/0015_po…
-  ✓ public/assets/css/main.css, public/assets/img/torus.svg, public/assets/js/admin-edit.js, public/assets/js/atla…
-  ✓ public/assets/js/headtts/utils.mjs, public/assets/js/headtts/worker-tts.mjs, public/assets/js/live-desk.js, pu…
-  ✓ public/cosmic-ledger/index.html, public/dx/index.html, public/essays/a-number-made-of-itself/index.html, publi…
-  ✓ public/join/index.html, public/library/index.html, public/little-red-dots/index.html, public/little-red-dots/r…
-  ✓ public/stress-tests/index.html, public/summary/index.html, public/temporal-antipodes/index.html, public/the-se…
+  ✓ api/oauth.js, api/shop.js, api/transcribe.js, api/twin-member.js, api/unsubscribe.js, api/upload.js, api/video…
+  ✓ lib/key-store.js, lib/mailing.js, lib/openai.js, lib/openchat.js, lib/oracle-corpus-iii.js, lib/oracle-corpus-…
+  ✓ lib/oracle-corpus-xvi.js, lib/oracle-corpus-xvii.js, lib/oracle-corpus-xviii.js, lib/oracle-corpus-xx.js, lib/…
+  ✓ lib/oracle-corpus-xxxvi.js, lib/oracle-corpus-xxxvii.js, lib/oracle-corpus-xxxviii.js, lib/oracle-corpus.js, l…
+  ✓ migrations/0011_colab.sql, migrations/0012_tokens.sql, migrations/0013_colab_caps.sql, migrations/0014_continu…
+  ✓ public/ask-shakdragon/index.html, public/ask-shakdrah/index.html, public/assets/css/forum.css, public/assets/c…
+  ✓ public/assets/js/headtts/language-en-us.mjs, public/assets/js/headtts/language.mjs, public/assets/js/headtts/t…
+  ✓ public/assets/js/vendor/lamejs.js, public/assets/js/vendor/three.module.js, public/base-ten/index.html, public…
+  ✓ public/foundations/index.html, public/gravity/index.html, public/index.html, public/inverted-toruses/index.htm…
+  ✓ public/site-index/index.html, public/site.webmanifest, public/sitemap.xml, public/skeletal-splice/index.html, …
 ▸ uploading 11 binary assets (server-side URL import)
   ✓ public/assets/img/apple-touch-icon.png (47 KB) via url import
   ✓ public/assets/img/favicon-32.png (2 KB) via url import
@@ -29,11 +29,11 @@ existing project id: proj_U95i5y493z9x
   ✓ public/assets/js/headtts/voices/am_fenrir.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_michael.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_puck.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
@@ -43,6 +43,8 @@ existing project id: proj_U95i5y493z9x
   ✓ public/assets/js/headtts/voices/bm_george.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/bm_lewis.bin (510 KB, 12 chunks)
 ▸ dry_run_deploy
   {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintUndeclaredEnvReads","
@@ -57,17 +59,17 @@ existing project id: proj_U95i5y493z9x
   "project_name": "The Two Infinities (and beyond)",
   "project_public_id": "proj_U95i5y493z9x",
   "project_slug": "the-two-infinities",
-  "version": 95,
+  "version": 101,
   "url": "https://the-two-infinities.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://the-two-infinities.hatchable.site",
   "draft_url": "https://the-two-infinities-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v94.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v95.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v100.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v101.png",
   "console_url": "https://hatchable.com/console/projects/the-two-infinities",
-  "files_deployed": 217,
-  "functions_deployed": 26,
+  "files_deployed": 222,
+  "functions_deployed": 27,
   "warnings": [],
   "visibility": "public",
   "preview_url": null
