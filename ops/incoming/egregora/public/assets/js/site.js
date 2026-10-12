@@ -5131,7 +5131,26 @@
     if (items.length) ul.insertBefore(li, items[items.length - 1]); else ul.appendChild(li);
   }
 
-  function all() { mount(); peopleLink(); }
+  /* The three pages the order has moved to the twin house (the M\u00f6bius
+     seam, entropy, and the cosmic ledger) are no longer kept here. Every
+     page still carries an old link or two in its header and footer; the
+     links are stripped at load rather than re-cutting all the pages, so a
+     page rebuilt by any session stays clean without our touching it. */
+  function movedPages() {
+    var gone = ['/moebius-seam', '/entropy', '/cosmic-ledger'];
+    Array.prototype.forEach.call(document.querySelectorAll('a[href]'), function (a) {
+      var href = a.getAttribute('href') || '';
+      var hit = false;
+      for (var i = 0; i < gone.length; i++) {
+        if (href.indexOf(gone[i]) === 0) { hit = true; break; }
+      }
+      if (!hit) return;
+      var node = a.closest('li') || a.closest('.card, .frame') || a;
+      if (node.parentNode) node.parentNode.removeChild(node);
+    });
+  }
+
+  function all() { mount(); peopleLink(); movedPages(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', all);
   else all();
 })();
