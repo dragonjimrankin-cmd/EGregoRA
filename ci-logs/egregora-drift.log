@@ -20,48 +20,33 @@ ours:         260
    … 429 on tools/call, waiting 40s
    … 429 on tools/call, waiting 20s
    … 429 on tools/call, waiting 40s
+   ! could not read public/cosmic-ledger/index.html: read_file failed: {
+    "error": "File not found: public/cosmic-ledger/index.html. Run list_files to see available paths, or grep with a pattern to locate it."
+}
+   ! could not read public/entropy/index.html: read_file failed: {
+    "error": "File not found: public/entropy/index.html. Run list_files to see available paths, or grep with a pattern to locate it."
+}
+   ! could not read public/feed.xml: read_file failed: {
+    "error": "File not found: public/feed.xml. Run list_files to see available paths, or grep with a pattern to locate it."
+}
+   ! could not read public/moebius-seam/index.html: read_file failed: {
+    "error": "File not found: public/moebius-seam/index.html. Run list_files to see available paths, or grep with a pattern to locate it."
+}
 
-   changed live vs our bundle : 33
-     ~ api/account-verify.js
-     ~ api/ask.js
-     ~ api/live.js
-     ~ api/media.js
+   changed live vs our bundle : 12
      ~ api/oauth.js
-     ~ api/profile.js
-     ~ api/upload.js
      ~ hatchable.toml
-     ~ lib/accounts.js
-     ~ lib/door.js
-     ~ lib/gink-mind.js
-     ~ lib/mailing.js
-     ~ pages/feed.xml.js
-     ~ public/account/index.html
-     ~ public/ask-ed/index.html
      ~ public/assets/css/main.css
-     ~ public/assets/js/admin-edit.js
-     ~ public/assets/js/device-studio.js
      ~ public/assets/js/headtts/voices/am_fenrir.bin
      ~ public/assets/js/headtts/voices/am_michael.bin
      ~ public/assets/js/headtts/voices/am_puck.bin
      ~ public/assets/js/headtts/voices/bm_fable.bin
      ~ public/assets/js/headtts/voices/bm_george.bin
      ~ public/assets/js/headtts/voices/bm_lewis.bin
-     ~ public/assets/js/live.js
-     ~ public/assets/js/media-admin.js
-     ~ public/assets/js/oracle-knowledge.js
-     ~ public/assets/js/profile-client.js
      ~ public/assets/js/site.js
-     ~ public/feed.xml
      ~ public/podcast/index.html
-     ~ public/site-index/index.html
      ~ public/sitemap.xml
-   present live, absent here  : 6
-     + api/owner.js
-     + api/track.js
-     + migrations/0038_owner_mode.sql
-     + migrations/0039_house_shelves.sql
-     + public/assets/js/owner-panel.js
-     + public/people/index.html
+   present live, absent here  : 0
    present here, absent live  : 1
      - README.md
 
