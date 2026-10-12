@@ -1224,12 +1224,10 @@
   <div class="wrap narrow">
     <div class="upload-note">
       <strong>For Ed — how to publish a new episode.</strong>
-      Drop the MP3 into <code>src/assets/audio/</code>, then add an entry at the end of
-      <code>src/_data/episodes.json</code>:
-      <pre class="code-block">{ "number": "004", "title": "…", "date": "2026-10-17", "duration": "1h 04m",
-  "summary": "…", "audio": "/assets/audio/ep004.mp3", "tags": ["astronomy"] }</pre>
-      Commit and push — the site rebuilds with the episode and the RSS feed in place. External hosts (Acast,
-      Captivate, Spotify) work too: put their direct MP3 URL in <code>audio</code>.
+      Open the panel above, choose the MP3, and let the door do the rest: it is transcribed,
+      given its summary and its shape, and put on the shelf — the RSS feed at <code>/feed.xml</code>
+      picks it up in the same request. Under each player the reader can turn the subtitles on or off
+      and choose their language; the words arrive as soon as an episode's transcript is taken.
     </div>
   </div>
 </section>
