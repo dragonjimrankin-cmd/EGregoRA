@@ -12,7 +12,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const builtRoot = path.join(root, "tti", "_site");
 const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
 
-assert.equal(site.revision, "r4.10", "the research-project layout must carry revision r4.10");
+assert.equal(site.revision, "r4.11", "the research-project layout must carry revision r4.11");
 assert.equal(site.edition, "Working research edition", "the edition label drifted");
 assert.equal(site.research.documentCount, 25, "research study count drifted");
 assert.equal(site.research.resourceCount, 4, "project resource count drifted");

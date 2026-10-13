@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.10
+**Revision:** r4.11
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -15,7 +15,44 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical twenty-nine-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical twenty-nine-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus. It also treats the twenty-five Part I–IV documents as the research essays and rejects any essay outside 2,000–4,000 readable words.
+
+## Accessible research essays in r4.11
+
+- Kept the project&rsquo;s essay scope explicit: all twenty-five research documents in Parts I–IV are essays; Part V&rsquo;s Plates, Ask ShakDrah, Join and Account remain functional project resources.
+- Expanded the twelve papers that were below 2,000 words with substantive, plain-language routes through their mathematics, physical claims, analogies, assumptions, null models and conditions for failure.
+- Preserved the thirteen papers already in range, apart from tightening two redundant passages in `TTI-III.06` so the longest paper remains below the upper boundary under the automated count.
+- Kept exact mathematics separate from speculative promotion throughout: theorem, coordinate model, physical mechanism, philosophical interpretation and visionary reading remain visibly graded.
+- Added a complete regression to `scripts/audit-tti.mjs`. It derives the essay set from canonical Parts I–IV, excludes repeated project navigation and inaccessible SVG labels, enforces 2,000–4,000 words, and requires stable section headings, a plain-language lede, readable paragraph lengths and evidence-grade markers.
+- Created and integrity-tested the pre-expansion archive `tti-site-2026-10-13-44111ea-before-accessible-essays.zip`; SHA-256 `481f3faefedfe8cb05caff5af5de19f94aa16cc1af7bd5767745a71d3f5089a9`. The ZIP and checksum sidecar were uploaded to the Google Drive folder `baks` before essay changes began.
+
+| Part | Document | Audited words |
+|---|---|---:|
+| I | TTI-I.01 · Foundations | 2,238 |
+| I | TTI-I.02 · π from 0 and 1 | 2,102 |
+| I | TTI-I.03 · The Self | 2,005 |
+| I | TTI-I.04 · The Differential | 2,268 |
+| I | TTI-I.05 · Prime Plane | 2,081 |
+| II | TTI-II.01 · Gravity | 2,034 |
+| II | TTI-II.02 · Spiral | 2,118 |
+| II | TTI-II.03 · Skeletal Splice | 3,564 |
+| II | TTI-II.04 · Torus | 2,040 |
+| II | TTI-II.05 · Megatubule | 2,231 |
+| III | TTI-III.01 · Möbius | 3,250 |
+| III | TTI-III.02 · Cosmic Ledger | 2,216 |
+| III | TTI-III.03 · Seams | 2,057 |
+| III | TTI-III.04 · Entropy | 2,094 |
+| III | TTI-III.05 · Temporal Antipodes | 2,077 |
+| III | TTI-III.06 · Time and Residue | 3,978 |
+| III | TTI-III.07 · Inverted-Torus Universe | 2,339 |
+| III | TTI-III.08 · Wormholes | 2,222 |
+| III | TTI-III.09 · Matter and Antimatter Out of Phase | 2,427 |
+| IV | TTI-IV.01 · Stress Tests | 2,141 |
+| IV | TTI-IV.02 · Essays | 3,152 |
+| IV | TTI-IV.03 · Double Inversion | 2,044 |
+| IV | TTI-IV.04 · Accumulated Differentials | 2,047 |
+| IV | TTI-IV.05 · Little Red Dots | 2,851 |
+| IV | TTI-IV.06 · Zero-Seam Research Programme | 2,134 |
 
 ## π from 0 and 1 in r4.10
 
@@ -131,6 +168,8 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 ## Current audited result
 
+- All 25 Part I–IV research documents are accessible essays between 2,005 and 3,978 audited words; Part V remains four project resources.
+- The length and accessibility regression is part of `npm run audit:tti` and derives its scope from the canonical table of contents.
 - 28 HTML documents built.
 - 28 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.

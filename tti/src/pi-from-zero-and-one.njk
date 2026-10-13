@@ -286,6 +286,103 @@ ogType: article
   </div>
 </section>
 
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">The proof in plain language</p>
+    <h2 id="t-worked-reading">Walk Through the Interval Without Skipping a Step</h2>
+    <p>Begin with every real position strictly between 0 and 1. The factor
+      \(1/\sqrt{x(1-x)}\) gives positions near either endpoint more weight than positions near the middle.
+      The weight grows without bound as \(x\) approaches 0 or 1, but it does so gently enough that the total
+      remains finite. This is an <em>integrable singularity</em>: the graph has infinitely high ends without
+      enclosing infinite area.</p>
+    <p>Now describe a point in that interval by an angle rather than by its horizontal position. Set
+      \(x=\sin^2\theta\), where \(0&lt;\theta&lt;\pi/2\). As θ moves through one quarter-turn, \(x\) moves once
+      from 0 to 1. Differentiation gives \(dx=2\sin\theta\cos\theta\,d\theta\), while
+      \(\sqrt{x(1-x)}=\sin\theta\cos\theta\) on this range. The apparently difficult endpoint factors
+      therefore cancel:</p>
+    <p class="formula">\[
+      \frac{dx}{\sqrt{x(1-x)}}
+      =\frac{2\sin\theta\cos\theta\,d\theta}
+      {\sin\theta\cos\theta}=2\,d\theta.
+    \]</p>
+    <p>The whole weighted interval is consequently just twice a quarter-turn. Its measure is
+      \(2(\pi/2-0)=\pi\). Nothing has been estimated, fitted or read from a circle with a ruler. The circle
+      enters through the trigonometric substitution, and the integral proves that this angular description
+      and the original 0-to-1 description have exactly the same total.</p>
+    <p class="lede">Zero and one supply the limits; endpoint symmetry supplies the kernel; Euclidean angle
+      supplies the substitution; integration supplies the total. Remove any one of those ingredients and the
+      conclusion no longer follows in this form.</p>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <div class="page-head tight">
+    <p class="kicker">Two equally useful readings</p>
+    <h2 id="t-two-readings">π as a Length, and π as a Normalising Constant</h2>
+  </div>
+  <div class="grid two">
+    <article class="frame card">
+      <h3>The geometric reading</h3>
+      <p>Use \(u=2x-1\) to stretch the unit interval into the diameter \(-1&lt;u&lt;1\). The same integral becomes
+        \(\int_{-1}^{1}du/\sqrt{1-u^2}\). Its integrand is the derivative of \(\arcsin u\), so the total is
+        the angular sweep from \(-\pi/2\) to \(\pi/2\): one semicircle. Here π measures closure directly.</p>
+      <p>This does not mean that a straight interval secretly has the shape of a semicircle. It means that a
+        lawful change of coordinate reveals a circular metric already encoded by the chosen square-root
+        relation. Coordinates change; the integral does not.</p>
+    </article>
+    <article class="frame card">
+      <h3>The probabilistic reading</h3>
+      <p>Divide the same kernel by π and it becomes the arcsine probability density,
+        \(p(x)=1/[\pi\sqrt{x(1-x)}]\). A probability density must total exactly 1, so π is the unique
+        normalising constant that makes the entire interval one complete distribution.</p>
+      <p>This reading is especially close to TTI&rsquo;s language. The open interval has extreme weight near
+        both boundaries, yet neither boundary is an event with positive probability. Completion belongs to
+        the integral over the relation, not to either endpoint by itself. The resemblance is structural; it
+        is not evidence that the universe literally samples an arcsine distribution.</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">What the theorem settles</p>
+    <h2 id="t-zero-one-roles">What Zero and One Actually Do</h2>
+    <p>Zero marks one boundary and one marks the other. Arithmetic formed only from those two numerals by a
+      finite list of rational operations cannot produce π, because π is transcendental. The theorem succeeds
+      for a different reason: 0 and 1 define a continuum, the symmetric kernel relates every interior point
+      to both ends, and the integral sums that relation. “From zero and one” therefore means <em>from a
+      structure bounded by zero and one</em>, not from concatenating or manipulating two digits.</p>
+    <p>This distinction matters beyond mathematical etiquette. If a proposed physics merely notices π in a
+      formula, it has explained nothing. To do explanatory work it must identify the physical quantity that
+      ranges over the interval, justify the endpoint weighting, and show why a Euclidean angular coordinate
+      is appropriate. TTI has supplied an exact mathematical model and an ontological analogy; it has not yet
+      supplied that physical bridge.</p>
+    <p>A useful test is to alter a premise. Replace the exponents one-half in the beta integral by other
+      positive values and the answer is generally a different beta-function value. Replace Euclidean closure
+      by another geometry and circumference is no longer governed globally by the flat-space ratio. The
+      appearance of π is therefore neither arbitrary nor automatic. It records precisely the symmetry and
+      geometry that were declared.</p>
+    <p>For a reader who remembers only one line, it should be this:</p>
+    <p class="formula">\[
+      \boxed{\displaystyle
+      \int_0^1 \frac{dx}{\sqrt{x(1-x)}}=\pi}
+      \quad\text{is a theorem; its use as a creation model is a hypothesis.}
+    \]</p>
+    <p>A numerical check can make the result tangible, provided the singular endpoints are handled honestly.
+      Sampling the original integrand with equally spaced rectangles converges awkwardly because the graph
+      rises sharply at both ends. Sampling after \(x=\sin^2\theta\) is simple: the transformed integrand is
+      the constant 2 over a quarter-turn. This is not a different proof or a trick that hides infinity. It is
+      the practical value of choosing coordinates adapted to the geometry.</p>
+    <p>The example also explains why an improper integral may be finite. One evaluates from
+      \(\varepsilon\) to \(1-\varepsilon\) and then lets \(\varepsilon\) approach zero. The endpoint values
+      themselves are never inserted into the denominator. What matters is the finite limiting area of every
+      interior contribution. Thus 0 and 1 remain boundaries rather than ordinary sampled points.</p>
+    <p class="muted">That sentence protects both sides of the project. It prevents the speculative reading
+      from borrowing certainty it has not earned, and it prevents an exact result from being dismissed merely
+      because the project asks a larger philosophical question.</p>
+  </div>
+</section>
+
 <div class="divider">✦</div>
 
 <section class="wrap narrow reveal">

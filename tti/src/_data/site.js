@@ -4,10 +4,11 @@ import ttiAtlas from "./ttiAtlas.js";
  * The Two Infinities: Eternal Integration of the Self — project-wide data.
  *
  * James Alexander Matthew Rankin began the framework between 2 and 19 June
- * 2026. Revision r4.10 extends the independent working research project with
- * a theorem-led account of why π appears on the unit interval. Every route
- * receives a stable document code, research status, citation context and a
- * place in one canonical table of contents.
+ * 2026. Revision r4.11 presents every Part I-IV research document as an
+ * accessible 2,000-4,000-word essay while retaining the theorem-led account
+ * of why π appears on the unit interval. Every route receives a stable
+ * document code, research status, citation context and a place in one
+ * canonical table of contents.
  */
 /* The masthead, project contents and interactive Atlas all consume the same
    data. Each Part remains visible in the slim header and every document keeps
@@ -92,7 +93,7 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r4.10",
+  revision: "r4.11",
   revised: "2026-10-13",
   edition: "Working research edition",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",

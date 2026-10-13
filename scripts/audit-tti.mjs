@@ -14,6 +14,9 @@ const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedPartCount = site.navGroups.length;
+const essayDocuments = site.navGroups.slice(0, 4).flatMap((group) => group.items);
+const essayMinimumWords = 2_000;
+const essayMaximumWords = 4_000;
 const expectedPageLabels = new Map(site.navGroups.flatMap((group) => group.items.map((item) => [
   item.url,
   `Part ${group.part} — ${group.shortLabel} · ${item.kind} ${item.code} · ${item.label}`
@@ -25,6 +28,17 @@ let linkedCardCount = 0;
 
 const fail = (message) => errors.push(message);
 const note = (message) => notices.push(message);
+
+/* Count the readable essay itself rather than repeated project navigation.
+   Headings, equations, captions and evidence notes belong to the paper;
+   the project drawer, generated outline and inaccessible SVG labels do not. */
+function countEssayWords(text) {
+  const normalised = text
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[^\p{L}\p{N}'-]+/gu, ' ')
+    .trim();
+  return normalised ? normalised.split(/\s+/).length : 0;
+}
 
 async function exists(file) {
   try { return (await stat(file)).isFile(); } catch { return false; }
@@ -374,6 +388,58 @@ if (!temporalAntipodes) {
     if (!temporalAntipodes.$(`[id="${id}"]`).length) fail(`Temporal Antipodes omits #${id}`);
   }
   if (!temporalAntipodes.$('figure.plate').length) fail('Temporal Antipodes has no plate');
+}
+
+/* Parts I-IV are the research essays. Part V intentionally remains a group
+   of reading-room resources and is not padded to an arbitrary essay length. */
+if (essayDocuments.length !== 25) {
+  fail(`expected 25 Part I-IV research essays, found ${essayDocuments.length}`);
+}
+const essayLengths = [];
+for (const essayRecord of essayDocuments) {
+  const document = documents.get(essayRecord.url);
+  if (!document) {
+    fail(`${essayRecord.code}: essay was not built at ${essayRecord.url}`);
+    continue;
+  }
+
+  const essay = document.$('main').clone();
+  essay.find('.document-outline, .project-context, nav, script, style, svg, .skip-link').remove();
+  const wordCount = countEssayWords(essay.text());
+  essayLengths.push({ code: essayRecord.code, url: essayRecord.url, wordCount });
+
+  if (wordCount < essayMinimumWords || wordCount > essayMaximumWords) {
+    fail(`${essayRecord.code} ${essayRecord.url}: ${wordCount} essay words; expected ${essayMinimumWords}-${essayMaximumWords}`);
+  }
+
+  const sectionHeadings = essay.find('h2');
+  if (sectionHeadings.length < 4) {
+    fail(`${essayRecord.code} ${essayRecord.url}: needs at least four named essay sections for navigation`);
+  }
+  if (sectionHeadings.filter((_, element) => !document.$(element).attr('id')).length) {
+    fail(`${essayRecord.code} ${essayRecord.url}: every h2 needs a stable outline id`);
+  }
+  if (!essay.find('.lede').length) {
+    fail(`${essayRecord.code} ${essayRecord.url}: missing a plain-language lede`);
+  }
+  const paragraphs = essay.find('p');
+  if (paragraphs.length < 12) {
+    fail(`${essayRecord.code} ${essayRecord.url}: needs at least twelve readable prose paragraphs`);
+  }
+  paragraphs.each((_, element) => {
+    const paragraphWords = countEssayWords(document.$(element).text());
+    if (paragraphWords > 150) {
+      fail(`${essayRecord.code} ${essayRecord.url}: one paragraph has ${paragraphWords} words; split it below 150`);
+    }
+  });
+  if (!essay.find('.sci, .spec, .hist, .myth').length) {
+    fail(`${essayRecord.code} ${essayRecord.url}: missing evidence-grade markers`);
+  }
+}
+if (essayLengths.length) {
+  const shortest = essayLengths.reduce((left, right) => left.wordCount < right.wordCount ? left : right);
+  const longest = essayLengths.reduce((left, right) => left.wordCount > right.wordCount ? left : right);
+  note(`${essayLengths.length} Part I-IV essays hold ${shortest.wordCount}-${longest.wordCount} words (${shortest.code} to ${longest.code}) with accessible sectioning, ledes and evidence grading`);
 }
 
 if (errors.length) {
