@@ -1,8 +1,99 @@
 {
   "dates": [],
-  "digest": "fdf8f87a8c087d24623b62d3fdc2c7f2261fe4ae723c6bf479d9b04f6081aa88",
-  "edits": [],
-  "endpointInstalled": false,
+  "digest": "549120afb0ef04e2bd1a84e303aecbd90668263ab2aef4a10de2b0eb98c2f304",
+  "edits": [
+    {
+      "id": 1,
+      "ops": [
+        {
+          "op": "style",
+          "prop": "color",
+          "ref": "body > main:nth-of-type(1) > section:nth-of-type(7) > div:nt",
+          "value": "#00ff00"
+        }
+      ],
+      "page": "/"
+    },
+    {
+      "id": 2,
+      "ops": [
+        {
+          "op": "style",
+          "prop": "color",
+          "ref": "body > main:nth-of-type(1) > section:nth-of-type(7) > div:nt",
+          "value": "#00ff00"
+        }
+      ],
+      "page": "/"
+    },
+    {
+      "id": 3,
+      "ops": [
+        {
+          "op": "style",
+          "prop": "color",
+          "ref": "body > main:nth-of-type(1) > section:nth-of-type(7) > div:nt",
+          "value": "#00ff00"
+        }
+      ],
+      "page": "/"
+    },
+    {
+      "id": 4,
+      "ops": [
+        {
+          "op": "style",
+          "prop": "color",
+          "ref": "body > main:nth-of-type(1) > section:nth-of-type(7) > div:nt",
+          "value": "#00ff00"
+        }
+      ],
+      "page": "/"
+    },
+    {
+      "id": 6,
+      "ops": [
+        {
+          "end": 22,
+          "node": 0,
+          "op": "span-text",
+          "ref": "body > main:nth-of-type(1) > section:nth-of-type(5) > div:nt",
+          "start": 0,
+          "value": "Podcast 1 - ED and JIM - 10th October 2026  "
+        }
+      ],
+      "page": "/podcast/"
+    },
+    {
+      "id": 7,
+      "ops": [
+        {
+          "end": 3,
+          "node": 0,
+          "op": "span-text",
+          "ref": "body > main:nth-of-type(1) > section:nth-of-type(5) > div:nt",
+          "start": 0,
+          "value": "001"
+        }
+      ],
+      "page": "/podcast/"
+    },
+    {
+      "id": 8,
+      "ops": [
+        {
+          "end": 3,
+          "node": 0,
+          "op": "span-text",
+          "ref": "body > main:nth-of-type(1) > section:nth-of-type(5) > div:nt",
+          "start": 0,
+          "value": "001"
+        }
+      ],
+      "page": "/podcast/"
+    }
+  ],
+  "endpointInstalled": true,
   "kind": "admin-edit-commit-snapshot",
   "schema": 1,
   "site": "egregora",
