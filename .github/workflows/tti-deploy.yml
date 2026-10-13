@@ -497,8 +497,8 @@ jobs:
               markers: ['const avatarName', 'tti-shakdrah-muted', "'s voice is on",
                 'window.EGDragon || window.EGFox', 'classList.add("js-nav")', 'closeClusters',
                 'closePlateGroups', 'openPlateFromHash', 'runtimePartLabels',
-                'Part V \\u2014 Reading Rooms \\u00b7 Join',
-                'Part V \\u2014 Reading Rooms \\u00b7 Your Account']
+                'Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V.03 \\u00b7 Join',
+                'Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V.04 \\u00b7 Your Account']
             }
           ];
           let detail = 'the pages did not become current';
