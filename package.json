@@ -19,7 +19,7 @@
     "build:tti": "npx @11ty/eleventy --config=tti/eleventy.config.js",
     "build:tti:plates": "npm run build:tti && node scripts/tti-gather-plates.mjs && npm run build:tti",
     "build:tti:hatchable": "npm run build:tti:plates && rm -rf tti/hatchable/public && mkdir -p tti/hatchable/public && cp -r tti/_site/* tti/hatchable/public/",
-    "audit:tti": "npm run build:tti:plates && html-validate --rule 'no-trailing-whitespace:off' \"tti/_site/**/*.html\" && node scripts/audit-tti.mjs && node scripts/test-oracle-knowledge.mjs",
+    "audit:tti": "npm run build:tti:plates && html-validate --rule 'no-trailing-whitespace:off' \"tti/_site/**/*.html\" && node scripts/test-tti-header.mjs --built && node scripts/audit-tti.mjs && node scripts/test-oracle-knowledge.mjs",
     "sync:neural-voice": "node scripts/sync-neural-voice-assets.mjs",
     "sync:private-whisper": "node scripts/sync-private-whisper-assets.mjs",
     "test:private-whisper": "node scripts/test-private-whisper.mjs",

@@ -1,40 +1,75 @@
-<header class="site-head">
-  <div class="rule rule--top" aria-hidden="true"></div>
+<header class="site-head" data-site-header>
+  <div class="head-accent" aria-hidden="true"></div>
+
   <div class="brand-row">
-    <a class="brand" href="/">
-      <span class="brand-sigil">{% glyph "torus" %}</span>
+    <a class="brand" href="/" aria-label="{{ site.name }} — home">
+      <span class="brand-sigil" aria-hidden="true">{% glyph "torus" %}</span>
       <span class="brand-text">
-        <span class="brand-line">
-          <span class="brand-name">{{ site.name }}</span>
-          <span class="brand-order" aria-hidden="true">
-            <span class="brand-rule"></span>
-            <span class="brand-order-text">Revision {{ site.revision }}</span>
-            <span class="brand-rule"></span>
-          </span>
-        </span>
+        <span class="brand-name">{{ site.name }}</span>
         <span class="brand-tag">{{ site.tagline }}</span>
       </span>
     </a>
+
+    <span class="brand-edition" aria-label="Site revision {{ site.revision }}">
+      <span>Unified edition</span>
+      <strong>{{ site.revision }}</strong>
+    </span>
+
     <a class="head-join" href="/join/" id="head-join">
       <span class="head-join-mark" aria-hidden="true">&#9737;</span>
       <span class="head-join-text">Sign in <span class="head-join-or">/ Join</span></span>
     </a>
-    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
-      <span></span><span></span><span></span>
-      <em>Menu</em>
+
+    <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false"
+            aria-controls="primary-nav">
+      <span class="nav-toggle-icon" aria-hidden="true"><b></b><b></b><b></b></span>
+      <em>Explore</em>
     </button>
   </div>
-  <nav id="primary-nav" class="site-nav" aria-label="Primary">
-    <ul>
-      {% for item in site.nav %}
-      <li>
-        <a href="{{ item.url }}" {% if page.url == item.url %}aria-current="page"{% endif %}>
+
+  <nav id="primary-nav" class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav-shell">
+      <div class="nav-clusters">
+        {% for group in site.navGroups %}
+        <details class="nav-cluster">
+          <summary>
+            <span class="nav-cluster-index" aria-hidden="true">0{{ loop.index }}</span>
+            <span>{{ group.shortLabel }}</span>
+            <span class="nav-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="nav-panel">
+            <div class="nav-panel-head">
+              <p class="nav-panel-kicker">{{ group.label }}</p>
+              <p>{{ group.note }}</p>
+            </div>
+            <ul>
+              {% for item in group.items %}
+              <li>
+                <a href="{{ item.url }}" {% if page.url == item.url %}aria-current="page"{% endif %}>
+                  <i aria-hidden="true">{% glyph item.glyph %}</i>
+                  <span class="nav-link-copy">
+                    <strong>{{ item.label }}</strong>
+                    <small>{{ item.note }}</small>
+                  </span>
+                  <span class="nav-link-arrow" aria-hidden="true">&rarr;</span>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </details>
+        {% endfor %}
+      </div>
+
+      <div class="nav-actions">
+        {% for item in site.navActions %}
+        <a class="nav-action nav-action--{{ item.kind }}" href="{{ item.url }}"
+           {% if page.url == item.url %}aria-current="page"{% endif %}>
           <i aria-hidden="true">{% glyph item.glyph %}</i>
           <span>{{ item.label }}</span>
         </a>
-      </li>
-      {% endfor %}
-    </ul>
+        {% endfor %}
+      </div>
+    </div>
   </nav>
-  <div class="rule rule--bottom" aria-hidden="true"></div>
 </header>

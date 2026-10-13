@@ -13,6 +13,7 @@ on:
       - "scripts/sync-neural-voice-assets.mjs"
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
+      - "scripts/test-tti-header.mjs"
       - "scripts/test-tti-relocations.mjs"
       - "scripts/tti-gather-plates.mjs"
       - "scripts/audit-tti.mjs"
@@ -48,6 +49,7 @@ jobs:
           node scripts/test-neural-voice.mjs
           npm run build:tti:hatchable
           npm run lint:tti
+          node scripts/test-tti-header.mjs --built
           node scripts/audit-tti.mjs
           test -s tti/hatchable/public/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
@@ -73,7 +75,12 @@ jobs:
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r3.9' tti/hatchable/public/index.html
+          grep -Fq 'r4.0' tti/hatchable/public/index.html
+          grep -q 'class="nav-cluster"' tti/hatchable/public/index.html
+          grep -q 'First principles' tti/hatchable/public/index.html
+          grep -q 'Cosmic architecture' tti/hatchable/public/index.html
+          grep -q 'Tests and essays' tti/hatchable/public/index.html
+          grep -q 'Ask ShakDrah' tti/hatchable/public/index.html
           grep -q 'Why the two infinities never fully synchronise' tti/hatchable/public/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
@@ -112,6 +119,10 @@ jobs:
           grep -q 'Kokoro-82M-v1.0-ONNX-timestamped' tti/hatchable/public/assets/js/headtts/headtts.mjs
           grep -Fq 'item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice()' tti/hatchable/public/assets/js/headtts/headtts.mjs
           grep -q 'const avatarName' tti/hatchable/public/assets/js/site.js
+          grep -q 'classList.add("js-nav")' tti/hatchable/public/assets/js/site.js
+          grep -q 'closeClusters' tti/hatchable/public/assets/js/site.js
+          grep -q 'Navigation observatory' tti/hatchable/public/assets/css/main.css
+          grep -q '.nav-panel' tti/hatchable/public/assets/css/main.css
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'temporal-antipodes' tti/hatchable/public/assets/js/oracle-knowledge.js
@@ -217,8 +228,9 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r3.9', 'Why the two infinities never fully synchronise',
-                'The Zero-Seam Test']
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.0',
+                'class="nav-cluster"', 'First principles', 'Cosmic architecture', 'Tests and essays',
+                'Why the two infinities never fully synchronise', 'The Zero-Seam Test']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/cosmic-ledger/',
@@ -362,8 +374,14 @@ jobs:
                 'await loadVoice(x)', 'metadata.voice = d.voice']
             },
             {
+              url: 'https://the-two-infinities.hatchable.site/assets/css/main.css',
+              markers: ['Navigation observatory', '.nav-cluster', '.nav-panel',
+                '.js-nav .site-nav.open', 'position: sticky']
+            },
+            {
               url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',
-              markers: ['const avatarName', 'tti-shakdrah-muted', "'s voice is on", 'window.EGDragon || window.EGFox']
+              markers: ['const avatarName', 'tti-shakdrah-muted', "'s voice is on",
+                'window.EGDragon || window.EGFox', 'classList.add("js-nav")', 'closeClusters']
             }
           ];
           let detail = 'the pages did not become current';

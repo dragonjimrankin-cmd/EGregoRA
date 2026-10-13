@@ -3,17 +3,68 @@
   "use strict";
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* --- Mobile nav --- */
+  /* --- Header navigation --- */
+  document.documentElement.classList.add("js-nav");
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.getElementById("primary-nav");
+  const head = document.querySelector("[data-site-header]");
+  const clusters = Array.from(document.querySelectorAll(".nav-cluster"));
+
+  const closeClusters = (except) => clusters.forEach((cluster) => {
+    if (cluster !== except) cluster.removeAttribute("open");
+  });
+  const closeMobileNav = () => {
+    if (!toggle || !nav) return;
+    nav.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open navigation");
+    const label = toggle.querySelector("em");
+    if (label) label.textContent = "Explore";
+  };
+
   if (toggle && nav) {
     toggle.addEventListener("click", () => {
       const open = nav.classList.toggle("open");
       toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
       const label = toggle.querySelector("em");
-      if (label) label.textContent = open ? "Close" : "Menu";
+      if (label) label.textContent = open ? "Close" : "Explore";
+      if (!open) closeClusters();
     });
+
+    nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => {
+      closeClusters();
+      closeMobileNav();
+    }));
   }
+
+  clusters.forEach((cluster) => cluster.addEventListener("toggle", () => {
+    if (cluster.open) closeClusters(cluster);
+  }));
+
+  document.addEventListener("click", (event) => {
+    if (head && !head.contains(event.target)) {
+      closeClusters();
+      closeMobileNav();
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const openCluster = clusters.find((cluster) => cluster.open);
+    const desktopReturn = openCluster && openCluster.querySelector("summary");
+    closeClusters();
+    closeMobileNav();
+    if (toggle && toggle.offsetParent !== null) toggle.focus();
+    else if (desktopReturn) desktopReturn.focus();
+  });
+
+  const desktopNav = window.matchMedia("(min-width: 901px)");
+  const resetAtDesktop = () => {
+    if (!desktopNav.matches) return;
+    closeMobileNav();
+  };
+  if (desktopNav.addEventListener) desktopNav.addEventListener("change", resetAtDesktop);
+  else if (desktopNav.addListener) desktopNav.addListener(resetAtDesktop);
 
   /* --- Scroll reveals ---
    *

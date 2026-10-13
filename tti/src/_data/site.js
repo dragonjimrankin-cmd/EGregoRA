@@ -2,9 +2,63 @@
  * The Shape of Becoming: Infinity, Gravity and Existence — site-wide constants.
  *
  * The framework is James Alexander Matthew Rankin's, written between the
- * 2nd and 19th of June 2026 and revised to r3.9. This site is its reading
+ * 2nd and 19th of June 2026 and revised to r4.0. This site is its reading
  * room: the same house style as EGregoRA, turned from the wood to the sky.
  */
+const navGroups = [
+  {
+    label: "First principles",
+    shortLabel: "Begin",
+    note: "Zero, one, the self and the smallest gathering",
+    items: [
+      { url: "/foundations/", label: "Foundations", note: "The geometry of existence", glyph: "sphere" },
+      { url: "/the-self/", label: "The Self", note: "Consciousness as the integral", glyph: "integral" },
+      { url: "/dx/", label: "dx", note: "The completed differential", glyph: "integral" }
+    ]
+  },
+  {
+    label: "Cosmic architecture",
+    shortLabel: "Cosmos",
+    note: "Curvature, growth and the recurring toroidal form",
+    items: [
+      { url: "/gravity/", label: "Gravity", note: "Curvature rather than force", glyph: "spiral" },
+      { url: "/spiral/", label: "The Spiral", note: "The pace of becoming", glyph: "spiral" },
+      { url: "/skeletal-splice/", label: "The Splice", note: "Fibonacci accumulation", glyph: "spiral" },
+      { url: "/torus/", label: "Torus", note: "The shape that keeps returning", glyph: "torus" },
+      { url: "/megatubule/", label: "Megatubule", note: "The galactic-scale conjecture", glyph: "torus" }
+    ]
+  },
+  {
+    label: "Seams and return",
+    shortLabel: "Seams",
+    note: "Inversion, entropy, residue and the cosmic account",
+    items: [
+      { url: "/moebius/", label: "Möbius", note: "The inside of the outside", glyph: "mobius" },
+      { url: "/cosmic-ledger/", label: "Cosmic Ledger", note: "Three residues and what they owe", glyph: "ledger" },
+      { url: "/seams/", label: "Seams", note: "Horizons, time and return", glyph: "star" },
+      { url: "/entropy/", label: "Entropy", note: "Physics before metaphor", glyph: "spiral" }
+    ]
+  },
+  {
+    label: "Tests and essays",
+    shortLabel: "Enquire",
+    note: "Conjectures, objections and ways the sky can refuse",
+    items: [
+      { url: "/stress-tests/", label: "Stress Tests", note: "Where the framework might break", glyph: "eye" },
+      { url: "/essays/", label: "Essays", note: "Standalone arguments and retractions", glyph: "tree" },
+      { url: "/double-inversion/", label: "Two Inversions", note: "Möbius return and polarized light", glyph: "mobius" },
+      { url: "/accumulated-differentials/", label: "Accumulation", note: "Differentials, mass and gravity", glyph: "integral" },
+      { url: "/little-red-dots/", label: "Little Red Dots", note: "The inherited-residue conjecture", glyph: "star" },
+      { url: "/little-red-dots/research-proposal/", label: "Zero-Seam Test", note: "The preregistered research programme", glyph: "eye" }
+    ]
+  }
+];
+
+const navActions = [
+  { url: "/plates/", label: "Plates", note: "The visual compendium", glyph: "metatron", kind: "quiet" },
+  { url: "/ask-shakdrah/", label: "Ask ShakDrah", note: "Question the whole framework", glyph: "dragon", kind: "primary" }
+];
+
 export default {
   name: "The Shape of Becoming: Infinity, Gravity and Existence",
   longName: "The Shape of Becoming: Infinity, Gravity and Existence",
@@ -20,7 +74,7 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r3.9",
+  revision: "r4.0",
   revised: "2026-10-13",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
   description:
@@ -39,25 +93,11 @@ export default {
   ogImageAlt: "A luminous torus of stars, with a spiral climbing from a bright centre",
   motto: "Nothing is geometrically impossible.",
 
-  /* The spine of the site. Eight parts of the Unified Edition, plus the
-     plate room, the dragon, and the way in. */
-  nav: [
-    { url: "/foundations/",   label: "Foundations",   glyph: "sphere" },
-    { url: "/the-self/",      label: "The Self",      glyph: "integral" },
-    { url: "/dx/",             label: "dx",            glyph: "integral" },
-    { url: "/gravity/",       label: "Gravity",       glyph: "spiral" },
-    { url: "/spiral/",        label: "The Spiral",    glyph: "spiral" },
-    { url: "/skeletal-splice/", label: "The Splice", glyph: "spiral" },
-    { url: "/torus/",         label: "Torus",         glyph: "torus" },
-    { url: "/megatubule/",    label: "Megatubule",    glyph: "torus" },
-    { url: "/moebius/",       label: "Möbius",        glyph: "mobius" },
-    { url: "/cosmic-ledger/", label: "Cosmic Ledger", glyph: "ledger" },
-    { url: "/seams/",         label: "Seams",         glyph: "star" },
-    { url: "/stress-tests/",  label: "Stress Tests",  glyph: "eye" },
-    { url: "/essays/",        label: "Essays",        glyph: "tree" },
-    { url: "/plates/",        label: "Plates",        glyph: "metatron" },
-    { url: "/ask-shakdrah/",label: "ShakDrah",    glyph: "dragon" }
-  ],
+  /* Four readable constellations replace the former wall of twenty equal
+     links. `nav` remains the complete flat list for the footer and audits. */
+  navGroups,
+  navActions,
+  nav: [...navGroups.flatMap((group) => group.items), ...navActions],
 
   oracle: {
     name: "ShakDrah",

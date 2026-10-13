@@ -2,7 +2,7 @@
 
 **Project:** The Shape of Becoming: Infinity, Gravity and Existence  
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r3.9
+**Revision:** r4.0
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -15,7 +15,16 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the grouped masthead and all twenty destinations, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+
+## Header redesign in r4.0
+
+- Replaced the crowded row of equal desktop links with four compact navigation constellations: **Begin**, **Cosmos**, **Seams**, and **Enquire**.
+- Added contextual dropdown panels with short descriptions, recognizable glyphs, active-page states, keyboard-readable native disclosure controls, outside-click and Escape dismissal, and one-open-group behaviour.
+- Kept **Plates** and **Ask ShakDrah** permanently visible, while adding the transferred entropy, double-inversion, accumulated-differentials, Little Red Dots, and Zero-Seam destinations to primary discovery.
+- Rebuilt the mobile navigation as a progressively enhanced accordion: it remains visible without JavaScript, becomes a compact Explore drawer when scripting runs, and uses one or two columns according to the viewport.
+- Preserved the exact project title, exact Jim Rankin attribution line, compact desktop height, account control, six avatar voices, and every previously deployed destination.
+- Added a deterministic header regression test and extended local and live deployment audits to verify all twenty unique destinations, four groups, responsive controls, active-page state, CSS and JavaScript.
 
 ## Integration added in r3.9
 
@@ -34,7 +43,8 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 - 26 HTML documents built.
 - 26 unique canonical URLs verified.
-- Exact project title and tagline verified in the homepage, masthead, metadata and manifest.
+- Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
+- Four navigation constellations, twenty unique destinations, two persistent actions, active-page state, mobile controls and keyboard dismissal verified.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.
 - Nested breadcrumbs verified for the Zero-Seam research proposal.

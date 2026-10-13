@@ -9,6 +9,12 @@ const expectedTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
+const expectedHeaderRoutes = [
+  '/foundations/', '/the-self/', '/dx/', '/gravity/', '/spiral/', '/skeletal-splice/',
+  '/torus/', '/megatubule/', '/moebius/', '/cosmic-ledger/', '/seams/', '/entropy/',
+  '/stress-tests/', '/essays/', '/double-inversion/', '/accumulated-differentials/',
+  '/little-red-dots/', '/little-red-dots/research-proposal/', '/plates/', '/ask-shakdrah/'
+];
 const errors = [];
 const notices = [];
 let linkedCardCount = 0;
@@ -56,6 +62,21 @@ for (const file of htmlFiles) {
 
   if (!$('.brand-name').text().includes(expectedTitle)) fail(`${relative}: masthead is missing the exact project title`);
   if (!$('.brand-tag').text().includes(expectedTagline)) fail(`${relative}: masthead is missing the exact tagline`);
+  if ($('#primary-nav .nav-cluster').length !== 4) fail(`${relative}: header does not expose four navigation constellations`);
+  if ($('#primary-nav .nav-panel').length !== 4) fail(`${relative}: header does not expose four contextual panels`);
+  const headerRoutes = $('#primary-nav a').map((_, element) => $(element).attr('href')).get();
+  if (JSON.stringify(headerRoutes) !== JSON.stringify(expectedHeaderRoutes)) {
+    fail(`${relative}: header destinations or ordering drifted`);
+  }
+  if (new Set(headerRoutes).size !== expectedHeaderRoutes.length) fail(`${relative}: header repeats a destination`);
+  if (!$('.nav-toggle[aria-controls="primary-nav"][aria-expanded="false"]').length) {
+    fail(`${relative}: mobile navigation toggle is not wired to the primary navigation`);
+  }
+  const expectedCurrent = expectedHeaderRoutes.includes(urlPath) ? 1 : 0;
+  const currentLinks = $('#primary-nav a[aria-current="page"]');
+  if (currentLinks.length !== expectedCurrent || (expectedCurrent && currentLinks.attr('href') !== urlPath)) {
+    fail(`${relative}: current navigation destination is not marked correctly`);
+  }
   if (html.includes('A Geometry of Existence') || html.includes('A Geometry of the Cosmos')) {
     fail(`${relative}: contains a retired tagline`);
   }
@@ -265,4 +286,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');
+console.log('  Exact identity, grouped header navigation, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');
