@@ -43,7 +43,7 @@ assert.equal(home("#project-contents .research-toc-code").length, 28,
   "every homepage contents entry needs its stable document code");
 for (const marker of [
   "Project Table of Contents", "Geometry, Integration and the Conditions of Return",
-  "Independent research project", "Working hypotheses; not a peer-reviewed physical theory",
+  "Independent research project", "<dt>Research status</dt><dd>Working hypotheses</dd>",
   "Derive, distinguish, compare, expose failure conditions"
 ]) {
   assert.ok(home.html().includes(marker), `homepage research record is missing: ${marker}`);
