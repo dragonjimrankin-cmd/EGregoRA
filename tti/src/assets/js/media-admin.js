@@ -61,7 +61,8 @@ function setup(root) {
     number: $("[data-am=number]"),
     summary: $("[data-am=summary]"),
     tags: $("[data-am=tags]"),
-    send: $("[data-am=send]"),
+    /* Keep the single active publish control; the former send button is retired. */
+    send: $("[data-am=pubnow]") || $("[data-am=send]"),
     shelf: $("[data-am=shelf]"),
     loud: $("[data-am=loud]")
   };

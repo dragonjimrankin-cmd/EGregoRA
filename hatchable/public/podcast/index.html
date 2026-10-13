@@ -784,7 +784,7 @@
     <div data-am="work" hidden>
       <div class="divider">&#10022;</div>
 
-      <p class="kicker">One &mdash; the recording</p>
+      <p class="kicker">1. Recording</p>
       <p class="muted small">Everything starts with the sound itself: a file you recorded
       elsewhere, or one you make right here.</p>
 
@@ -828,7 +828,89 @@
         <div data-am="after"></div>
       </div>
 
-      <p class="kicker">Two &mdash; the words</p>
+      <p class="kicker">2. Work</p>
+
+      <p class="muted small">All of this happens in this browser, on this machine, before anything is
+      sent. The file is decoded, run through the chain below and rendered offline &mdash; usually faster
+      than real time &mdash; then encoded to the form chosen below, MP3 or FLAC. Nothing is
+      uploaded until you have listened to it.</p>
+
+
+      <div class="am-opts" data-am="opts">
+        <label><input type="checkbox" data-want="rumble" checked> Filter the rumble below 72&nbsp;Hz</label>
+        <label><input type="checkbox" data-want="gate" checked> Shelve the hiss</label>
+        <label><input type="checkbox" data-want="tone" checked> Shape the tone &mdash; mud down, presence and air up</label>
+        <label><input type="checkbox" data-want="deess" checked> De-ess the sibilance</label>
+        <label><input type="checkbox" data-want="level" checked> Level it &mdash; gentle compression</label>
+        <label><input type="checkbox" data-want="loud" checked> Match the loudness, then limit the peaks</label>
+
+        <label><input type="checkbox" data-want="denoise" checked> Gate the silences &mdash; sniffs and coughs out, every word left whole</label>
+        <label><input type="checkbox" data-want="roomtone" checked> Lay the room&rsquo;s tone under the silences &mdash; the background stays continuous</label>
+        <label><input type="checkbox" data-want="destutter" checked> Remove stuttering &mdash; a syllable repeated in place is muted; the word itself is never touched</label>
+        <label><input type="checkbox" data-want="trim" checked> Trim the silence from both ends</label>
+        <label><input type="checkbox" data-want="gaps" checked> Close the long speechless stretches</label>
+        <label><input type="checkbox" data-want="fade" checked> Fade in and out</label>
+
+      </div>
+
+
+      <div class="am-fields">
+        <div>
+          <label for="audio-gaphold">Count it a gap after (seconds)</label>
+          <input type="number" id="audio-gaphold" data-am="gaphold" min="0.6" max="20" step="0.1" value="1.5">
+        </div>
+        <div>
+          <label for="audio-gapleave">Leave this much of it (seconds)</label>
+          <input type="number" id="audio-gapleave" data-am="gapleave" min="0" max="3" step="0.05" value="0.45">
+        </div>
+      </div>
+
+      <details class="scroll am-why">
+        <summary>Why the chain is shaped this way &mdash; pauses, stutters and the room&rsquo;s tone</summary>
+      <p class="muted xsmall">A pause is not a fault &mdash; silence removed completely sounds wrong,
+      because conversation has rhythm. Long stretches are shortened to the breath you leave here,
+      not deleted. The gate opens just <em>before</em> each word and holds across it, so speech is
+      never clipped; only noise that stands alone between phrases &mdash; a cough, a sniff, a chair
+      knock &mdash; gets shut out.</p>
+      <p class="muted xsmall">Stuttering removal is on by default and deliberately shy. It looks
+      for one pattern only &mdash; the same short syllable landing two or more times in a row, then
+      the word itself &mdash; and mutes only the repeats before it: the last repeat and the word
+      always stand, so a word a person chose to say twice survives. If the pattern fires too often
+      to be trusted, nothing is touched at all. Every place it touched is listed under the
+      reading, and the original can always be published instead.</p>
+      <p class="muted xsmall">The room&rsquo;s tone is the opposite of the gate&rsquo;s scissors: where
+      the gate shut and left digital zero, noise measured from the recording&rsquo;s own floor is
+      laid back down &mdash; warmed, slowly breathing, never louder than the room itself &mdash; so
+      the background runs unbroken from the first word to the last. Where the room already
+      breathes, nothing is added; a recording with no floor at all is left in its studio silence.</p>
+      </details>
+
+
+
+      <label for="audio-loud">Target loudness (dB RMS)</label>
+      <input type="range" id="audio-loud" data-am="loud" min="-28" max="-10" step="1" value="-12">
+
+      <label>The form it is published in</label>
+      <div class="btn-row">
+        <label class="muted xsmall"><input type="radio" name="audio-fmt" data-am="fmt" value="mp3" checked>
+          MP3 &mdash; small, plays everywhere</label>
+        <label class="muted xsmall"><input type="radio" name="audio-fmt" data-am="fmt" value="flac">
+          FLAC &mdash; lossless, weighs more</label>
+      </div>
+      <p class="muted xsmall">Whichever is chosen, the recording is converted to that form first
+      &mdash; before any of the work is done &mdash; and the enhanced take is published in the
+      same form.</p>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn--small" data-am="run">
+          Enhance it
+        </button>
+      </div>
+      <p class="am-bar" data-am="bar" hidden></p>
+      <div data-am="preview"></div>
+
+
+      <p class="kicker">3. Words</p>
       <div class="btn-row">
         <button type="button" class="btn btn--small" data-am="hear">Transcribe privately, then write the summary</button>
         <button type="button" class="btn btn--small btn--ghost" data-am="summarise"
@@ -856,8 +938,7 @@
       <div data-am="listing" hidden></div>
 
       <div data-am="meta" hidden>
-        <p class="kicker">Three &mdash; what goes beside it</p>
-        <div class="am-fields">
+<div class="am-fields">
           <div>
             <label for="audio-title">Title</label>
             <input type="text" id="audio-title" data-am="title" maxlength="200">
@@ -1071,86 +1152,6 @@
 
       </div>
 
-      <p class="kicker">Four &mdash; the work</p>
-
-      <p class="muted small">All of this happens in this browser, on this machine, before anything is
-      sent. The file is decoded, run through the chain below and rendered offline &mdash; usually faster
-      than real time &mdash; then encoded to the form chosen below, MP3 or FLAC. Nothing is
-      uploaded until you have listened to it.</p>
-
-
-      <div class="am-opts" data-am="opts">
-        <label><input type="checkbox" data-want="rumble" checked> Filter the rumble below 72&nbsp;Hz</label>
-        <label><input type="checkbox" data-want="gate" checked> Shelve the hiss</label>
-        <label><input type="checkbox" data-want="tone" checked> Shape the tone &mdash; mud down, presence and air up</label>
-        <label><input type="checkbox" data-want="deess" checked> De-ess the sibilance</label>
-        <label><input type="checkbox" data-want="level" checked> Level it &mdash; gentle compression</label>
-        <label><input type="checkbox" data-want="loud" checked> Match the loudness, then limit the peaks</label>
-
-        <label><input type="checkbox" data-want="denoise" checked> Gate the silences &mdash; sniffs and coughs out, every word left whole</label>
-        <label><input type="checkbox" data-want="roomtone" checked> Lay the room&rsquo;s tone under the silences &mdash; the background stays continuous</label>
-        <label><input type="checkbox" data-want="destutter" checked> Remove stuttering &mdash; a syllable repeated in place is muted; the word itself is never touched</label>
-        <label><input type="checkbox" data-want="trim" checked> Trim the silence from both ends</label>
-        <label><input type="checkbox" data-want="gaps" checked> Close the long speechless stretches</label>
-        <label><input type="checkbox" data-want="fade" checked> Fade in and out</label>
-
-      </div>
-
-
-      <div class="am-fields">
-        <div>
-          <label for="audio-gaphold">Count it a gap after (seconds)</label>
-          <input type="number" id="audio-gaphold" data-am="gaphold" min="0.6" max="20" step="0.1" value="1.5">
-        </div>
-        <div>
-          <label for="audio-gapleave">Leave this much of it (seconds)</label>
-          <input type="number" id="audio-gapleave" data-am="gapleave" min="0" max="3" step="0.05" value="0.45">
-        </div>
-      </div>
-
-      <details class="scroll am-why">
-        <summary>Why the chain is shaped this way &mdash; pauses, stutters and the room&rsquo;s tone</summary>
-      <p class="muted xsmall">A pause is not a fault &mdash; silence removed completely sounds wrong,
-      because conversation has rhythm. Long stretches are shortened to the breath you leave here,
-      not deleted. The gate opens just <em>before</em> each word and holds across it, so speech is
-      never clipped; only noise that stands alone between phrases &mdash; a cough, a sniff, a chair
-      knock &mdash; gets shut out.</p>
-      <p class="muted xsmall">Stuttering removal is on by default and deliberately shy. It looks
-      for one pattern only &mdash; the same short syllable landing two or more times in a row, then
-      the word itself &mdash; and mutes only the repeats before it: the last repeat and the word
-      always stand, so a word a person chose to say twice survives. If the pattern fires too often
-      to be trusted, nothing is touched at all. Every place it touched is listed under the
-      reading, and the original can always be published instead.</p>
-      <p class="muted xsmall">The room&rsquo;s tone is the opposite of the gate&rsquo;s scissors: where
-      the gate shut and left digital zero, noise measured from the recording&rsquo;s own floor is
-      laid back down &mdash; warmed, slowly breathing, never louder than the room itself &mdash; so
-      the background runs unbroken from the first word to the last. Where the room already
-      breathes, nothing is added; a recording with no floor at all is left in its studio silence.</p>
-      </details>
-
-
-
-      <label for="audio-loud">Target loudness (dB RMS)</label>
-      <input type="range" id="audio-loud" data-am="loud" min="-28" max="-10" step="1" value="-12">
-
-      <label>The form it is published in</label>
-      <div class="btn-row">
-        <label class="muted xsmall"><input type="radio" name="audio-fmt" data-am="fmt" value="mp3" checked>
-          MP3 &mdash; small, plays everywhere</label>
-        <label class="muted xsmall"><input type="radio" name="audio-fmt" data-am="fmt" value="flac">
-          FLAC &mdash; lossless, weighs more</label>
-      </div>
-      <p class="muted xsmall">Whichever is chosen, the recording is converted to that form first
-      &mdash; before any of the work is done &mdash; and the enhanced take is published in the
-      same form.</p>
-
-      <div class="btn-row">
-        <button type="button" class="btn btn--small" data-am="run">
-          Enhance it
-        </button>
-      </div>
-      <p class="am-bar" data-am="bar" hidden></p>
-      <div data-am="preview"></div>
 
       <div class="btn-row" data-am="pubrow" hidden>
         <button type="button" class="btn" data-am="pubnow">Publish it on the site</button>

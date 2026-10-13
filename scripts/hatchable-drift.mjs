@@ -256,6 +256,7 @@ const main = async () => {
 
 main().then((code) => process.exit(code)).catch((err) => {
   console.error(`drift check failed: ${err.message}`);
-  /* A broken check must not block a deploy forever — fail open, but loudly. */
-  process.exit(0);
+  /* A failed check cannot establish that the live project is ours to replace.
+     Exit with the workflow's drift-block code so no unverified deploy proceeds. */
+  process.exit(2);
 });

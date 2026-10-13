@@ -514,6 +514,111 @@
 
   function q(sel) { return panel ? panel.querySelector(sel) : null; }
 
+  /* The title bar moves the panel; the X and all controls remain ordinary
+     buttons. Pointer events cover mouse, pen and touch without stealing the
+     selection tool's separate drag gesture on the page. */
+  function makePanelDraggable(node) {
+    if (!node || node.__aeDragBound) return;
+    node.__aeDragBound = true;
+    var handle = node.querySelector(".ae-head");
+    if (!handle) return;
+    handle.setAttribute("title", "Drag this panel around the screen");
+    handle.style.cursor = "grab";
+    handle.style.touchAction = "none";
+    var drag = null;
+
+    function touchPoint(list, id) {
+      if (!list) return null;
+      for (var i = 0; i < list.length; i++) {
+        if (id == null || list[i].identifier === id) return list[i];
+      }
+      return null;
+    }
+    function point(e) {
+      var p = e;
+      if (drag && drag.kind === "touch") {
+        p = touchPoint(e.touches, drag.id) || touchPoint(e.changedTouches, drag.id);
+        if (!p) return null;
+      }
+      return { x: Number(p.clientX) || 0, y: Number(p.clientY) || 0 };
+    }
+    function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+    function onMove(e) {
+      if (!drag) return;
+      if (drag.kind === "pointer" && e.pointerId != null && e.pointerId !== drag.id) return;
+      var p = point(e);
+      if (!p) return;
+      var vw = Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0, 320);
+      var vh = Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0, 240);
+      var maxLeft = Math.max(8, vw - drag.width - 8);
+      var maxTop = Math.max(8, vh - Math.min(drag.height, drag.handleHeight + 8) - 8);
+      node.style.left = clamp(drag.left + p.x - drag.x, 8, maxLeft) + "px";
+      node.style.top = clamp(drag.top + p.y - drag.y, 8, maxTop) + "px";
+      node.style.right = "auto";
+      node.style.bottom = "auto";
+      if (e.cancelable) e.preventDefault();
+    }
+    function onEnd(e) {
+      if (!drag) return;
+      if (drag.kind === "pointer" && e.pointerId != null && e.pointerId !== drag.id) return;
+      if (drag.kind === "touch" && !touchPoint(e.changedTouches, drag.id)) return;
+      var kind = drag.kind;
+      drag = null;
+      node.classList.remove("is-dragging");
+      handle.style.cursor = "grab";
+      window.removeEventListener(kind === "pointer" ? "pointermove" : kind === "touch" ? "touchmove" : "mousemove", onMove);
+      window.removeEventListener(kind === "pointer" ? "pointerup" : kind === "touch" ? "touchend" : "mouseup", onEnd);
+      if (kind === "pointer") window.removeEventListener("pointercancel", onEnd);
+      if (kind === "touch") window.removeEventListener("touchcancel", onEnd);
+    }
+    function onDown(e) {
+      if (e.button != null && e.button !== 0) return;
+      if (e.target && e.target.closest && e.target.closest(".ae-x, button, input, select, textarea, a")) return;
+      var kind = e.type === "pointerdown" ? "pointer" : e.type === "touchstart" ? "touch" : "mouse";
+      var source = kind === "touch" ? touchPoint(e.changedTouches, null) : e;
+      if (!source) return;
+      var p = { x: Number(source.clientX) || 0, y: Number(source.clientY) || 0 };
+      var r = node.getBoundingClientRect();
+      var vw = Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0, 320);
+      var width = r.width || node.offsetWidth || Math.min(400, vw - 16);
+      var height = r.height || node.offsetHeight || 160;
+      var left = isFinite(r.left) ? r.left : (parseFloat(node.style.left) || 8);
+      var top = isFinite(r.top) ? r.top : (parseFloat(node.style.top) || 8);
+      node.style.position = "fixed";
+      node.style.left = left + "px";
+      node.style.top = top + "px";
+      node.style.right = "auto";
+      node.style.bottom = "auto";
+      node.style.width = width + "px";
+      node.style.maxWidth = "calc(100vw - 1rem)";
+      drag = { kind: kind, id: kind === "pointer" ? e.pointerId : kind === "touch" ? source.identifier : null,
+        x: p.x, y: p.y, left: left, top: top, width: width, height: height,
+        handleHeight: handle.getBoundingClientRect().height || 36 };
+      node.classList.add("is-dragging");
+      handle.style.cursor = "grabbing";
+      if (e.cancelable) e.preventDefault();
+      if (kind === "pointer") {
+        window.addEventListener("pointermove", onMove);
+        window.addEventListener("pointerup", onEnd);
+        window.addEventListener("pointercancel", onEnd);
+      } else if (kind === "touch") {
+        window.addEventListener("touchmove", onMove, { passive: false });
+        window.addEventListener("touchend", onEnd);
+        window.addEventListener("touchcancel", onEnd);
+      } else {
+        window.addEventListener("mousemove", onMove);
+        window.addEventListener("mouseup", onEnd);
+      }
+    }
+
+    handle.addEventListener("pointerdown", onDown);
+    /* Older browsers without Pointer Events still get mouse and touch. */
+    if (!window.PointerEvent) {
+      handle.addEventListener("mousedown", onDown);
+      handle.addEventListener("touchstart", onDown, { passive: false });
+    }
+  }
+
   function say(text, bad) {
     var n = q(".ae-msg");
     if (!n) return;
@@ -731,6 +836,7 @@
       '<div class="ae-log-out" hidden></div>'
     ].join("");
     document.body.appendChild(panel);
+    makePanelDraggable(panel);
 
     var font = q(".ae-font");
     FONTS.forEach(function (f) {
@@ -740,7 +846,12 @@
       font.appendChild(o);
     });
 
-    q(".ae-x").addEventListener("click", closeAll);
+    var closeButton = q(".ae-x");
+    if (closeButton) closeButton.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeAll();
+    });
     q(".ae-pick").addEventListener("click", startDrag);
     q(".ae-one").addEventListener("click", startClick);
     q(".ae-clear").addEventListener("click", clearBox);
@@ -1698,7 +1809,13 @@
       '<p class="ae-msg"></p>'
     ].join("");
     document.body.appendChild(panel);
-    q(".ae-x").addEventListener("click", closeAll);
+    makePanelDraggable(panel);
+    var closeButton = q(".ae-x");
+    if (closeButton) closeButton.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeAll();
+    });
     var field = q(".ae-pass");
     var go = function () {
       var typed = field.value.trim();

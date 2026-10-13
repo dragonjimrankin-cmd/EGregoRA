@@ -23,7 +23,7 @@
     <div data-am="work" hidden>
       <div class="divider">&#10022;</div>
 
-      <p class="kicker">One &mdash; the recording</p>
+      <p class="kicker">1. Recording</p>
       <div class="btn-row">
         <button type="button" class="btn btn--small btn--ghost" data-am="rec-open">
           Record it here instead</button>
@@ -75,16 +75,7 @@
         <div data-am="after"></div>
       </div>
 
-      {% if amKind == "audio" %}
-      <div class="btn-row">
-        <button type="button" class="btn btn--small" data-am="hear">Transcribe it and write the listing</button>
-        <span class="muted xsmall">Title, summary, tags and the parts of the site it touches &mdash;
-        written from the recording itself.</span>
-      </div>
-      <div data-am="listing" hidden></div>
-      {% endif %}
-
-      <p class="kicker">Two &mdash; the work</p>
+      <p class="kicker">2. Work</p>
       {% if amKind == "audio" %}
       <p class="muted small">All of this happens in this browser, on this machine, before anything is
       sent. The file is decoded, run through the chain below and rendered offline &mdash; usually faster
@@ -140,9 +131,18 @@
       <p class="am-bar" data-am="bar" hidden></p>
       <div data-am="preview"></div>
 
+      <p class="kicker">3. {% if amKind == "audio" %}Words{% else %}Details{% endif %}</p>
+      {% if amKind == "audio" %}
+      <div class="btn-row">
+        <button type="button" class="btn btn--small" data-am="hear">Transcribe it and write the listing</button>
+        <span class="muted xsmall">Title, summary, tags and the parts of the site it touches &mdash;
+        written from the recording itself.</span>
+      </div>
+      <div data-am="listing" hidden></div>
+      {% endif %}
+
       <div data-am="meta" hidden>
-        <p class="kicker">Three &mdash; what goes beside it</p>
-        <div class="am-fields">
+<div class="am-fields">
           <div>
             <label for="{{ amKind }}-title">Title</label>
             <input type="text" id="{{ amKind }}-title" data-am="title" maxlength="200">
@@ -176,9 +176,8 @@
 
         <label for="{{ amKind }}-summary">Summary</label>
         <textarea id="{{ amKind }}-summary" data-am="summary" rows="3" maxlength="2000"></textarea>
-
-        <div class="btn-row">
-          <button type="button" class="btn" data-am="send" disabled>Publish to the site</button>
+        <div class="btn-row" data-am="pubrow">
+          <button type="button" class="btn" data-am="pubnow">Publish it on the site</button>
         </div>
       </div>
 

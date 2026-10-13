@@ -207,21 +207,21 @@ description: "Part VIII of the Unified Edition: eleven plain-language essays —
     <figcaption class="plate-cap"><span class="plate-num">Plate XI</span> &mdash; the fundamental and the
       infinite choir</figcaption>
     <div class="plate-art" role="img" aria-label="A horizontal axis carrying three tall bars for the three main poles, followed by a long tail of rapidly shrinking bars representing the overtone poles, whose total is labelled pi squared over six.">
-      <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" style="width: 640px; max-width: none; height: auto" data-plate-readable="true">
         <rect x="0" y="0" width="760" height="300" fill="#070b1a"/>
         <line x1="60" y1="240" x2="720" y2="240" stroke="#24627f" stroke-width="1.5"/>
         {% for n in [1,2,3] %}
         <rect x="{{ 70 + (n - 1) * 54 }}" y="{{ 240 - (190 / n) }}" width="30" height="{{ 190 / n }}" fill="#76cfee" opacity="0.85"/>
-        <text x="{{ 85 + (n - 1) * 54 }}" y="262" fill="#a9b6d8" font-size="13" text-anchor="middle">p{{ n }}</text>
+        <text x="{{ 85 + (n - 1) * 54 }}" y="262" fill="#a9b6d8" font-size="14.2" text-anchor="middle">p{{ n }}</text>
         {% endfor %}
         {% for n in [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24] %}
         <rect x="{{ 250 + (n - 4) * 20 }}" y="{{ 240 - (190 / (n * n) * 4) }}" width="12" height="{{ 190 / (n * n) * 4 }}" fill="#a07cf0" opacity="0.8"/>
         {% endfor %}
         <text x="60" y="40" fill="#cdefff" font-size="16">three main notes</text>
         <text x="420" y="40" fill="#a07cf0" font-size="16">&hellip; and an infinite choir</text>
-        <text x="420" y="64" fill="#a9b6d8" font-size="14">&sum; 1/n&sup2; = &pi;&sup2;/6 &asymp; 1.6449</text>
+        <text x="420" y="64" fill="#a9b6d8" font-size="14.2">&sum; 1/n&sup2; = &pi;&sup2;/6 &asymp; 1.6449</text>
         <line x1="250" y1="96" x2="710" y2="96" stroke="#a07cf0" stroke-width="1" stroke-dasharray="4 5"/>
-        <text x="250" y="88" fill="#a9b6d8" font-size="13">convergent &mdash; the function survives</text>
+        <text x="250" y="88" fill="#a9b6d8" font-size="14.2">convergent &mdash; the function survives</text>
       </svg>
     </div>
     <p class="plate-note">Bar heights are illustrative, not computed residues: the three tall bars stand for

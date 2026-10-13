@@ -246,7 +246,7 @@ description: "The differential dx read as the smallest completed act of summatio
     <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The Same Curve at Four Grains
       <span class="spec">&#9670;</span></figcaption>
     <div class="plate-art">
-      <svg viewBox="0 0 760 260" role="img" aria-label="The same curve filled four times over with progressively narrower slices: eight wide slices, then sixteen, then thirty-two, then sixty-four. The outline is identical in all four; only the grain of the filling changes, and a marker shows the grain at which the panel is said to wake.">
+      <svg viewBox="0 0 760 260" role="img" aria-label="The same curve filled four times over with progressively narrower slices: eight wide slices, then sixteen, then thirty-two, then sixty-four. The outline is identical in all four; only the grain of the filling changes, and a marker shows the grain at which the panel is said to wake." style="width: 640px; max-width: none; height: auto" data-plate-readable="true">
         <rect x="0" y="0" width="760" height="260" fill="#070b1a"/>
         {% for panel in [0, 1, 2, 3] %}
           {%- set x0 = 24 + panel * 186 -%}
@@ -263,15 +263,15 @@ description: "The differential dx read as the smallest completed act of summatio
           <path d="M{{ x0 }} 152 Q{{ x0 + 75 }} -32 {{ x0 + 150 }} 152"
                 fill="none" stroke="#cdefff" stroke-width="1.4"/>
           <line x1="{{ x0 }}" y1="170" x2="{{ x0 + 150 }}" y2="170" stroke="#24627f" stroke-width="1"/>
-          <text x="{{ x0 + 75 }}" y="196" fill="#a9b6d8" font-size="13" text-anchor="middle">dx = 1/{{ n }}</text>
-          <text x="{{ x0 + 75 }}" y="216" fill="#76cfee" font-size="12" text-anchor="middle">{{ n }} gathers</text>
+          <text x="{{ x0 + 75 }}" y="196" fill="#a9b6d8" font-size="14.2" text-anchor="middle">dx = 1/{{ n }}</text>
+          <text x="{{ x0 + 75 }}" y="216" fill="#76cfee" font-size="14.2" text-anchor="middle">{{ n }} gathers</text>
         {% endfor %}
         <text x="24" y="34" fill="#cdefff" font-size="15">the same area, four grains</text>
-        <text x="582" y="34" fill="#45d6b4" font-size="13" text-anchor="middle">&#9670; the grain that wakes</text>
+        <text x="582" y="34" fill="#45d6b4" font-size="14.2" text-anchor="middle">&#9670; the grain that wakes</text>
         <rect x="578" y="46" width="156" height="180" fill="none" stroke="#45d6b4" stroke-width="1"
               stroke-dasharray="4 5" opacity="0.8"/>
-        <text x="24" y="244" fill="#a9b6d8" font-size="12">The outline never changes. What changes is how finely the thing is gathered &mdash;</text>
-        <text x="24" y="256" fill="#a9b6d8" font-size="12">and the claim here is that finely enough is a difference in kind, not only in degree.</text>
+        <text x="24" y="244" fill="#a9b6d8" font-size="14.2">The outline never changes. What changes is how finely the thing is gathered &mdash;</text>
+        <text x="24" y="256" fill="#a9b6d8" font-size="14.2">and the claim here is that finely enough is a difference in kind, not only in degree.</text>
       </svg>
     </div>
     <p class="plate-note">Four Riemann sums over one curve. Arithmetically the panels converge on the same
@@ -394,35 +394,35 @@ description: "The differential dx read as the smallest completed act of summatio
     <figcaption class="plate-cap"><span class="plate-num">Plate II</span> The Transfer &mdash; Awareness
       Rising, Record Falling <span class="spec">&#9670;</span></figcaption>
     <div class="plate-art">
-      <svg viewBox="0 0 760 320" role="img" aria-label="Two curves against a common axis of increasing fineness of grain. A falling line marked M for the stored record, a rising line marked A for awareness, and a flat dotted line marked A plus M over eta, the conserved total. Three vertical thresholds are marked where the rising curve steps up and the falling curve steps down by the same amount.">
+      <svg viewBox="0 0 760 320" role="img" aria-label="Two curves against a common axis of increasing fineness of grain. A falling line marked M for the stored record, a rising line marked A for awareness, and a flat dotted line marked A plus M over eta, the conserved total. Three vertical thresholds are marked where the rising curve steps up and the falling curve steps down by the same amount." style="width: 640px; max-width: none; height: auto" data-plate-readable="true">
         <rect x="0" y="0" width="760" height="320" fill="#070b1a"/>
         <line x1="70" y1="270" x2="720" y2="270" stroke="#24627f" stroke-width="1.2"/>
         <line x1="70" y1="40" x2="70" y2="270" stroke="#24627f" stroke-width="1.2"/>
-        <text x="360" y="300" fill="#a9b6d8" font-size="13" text-anchor="middle">finer grain &mdash; dx decreasing &rarr;</text>
-        <text x="30" y="155" fill="#a9b6d8" font-size="13" transform="rotate(-90 30 155)" text-anchor="middle">information</text>
+        <text x="360" y="300" fill="#a9b6d8" font-size="14.2" text-anchor="middle">finer grain &mdash; dx decreasing &rarr;</text>
+        <text x="30" y="155" fill="#a9b6d8" font-size="14.2" transform="rotate(-90 30 155)" text-anchor="middle">information</text>
 
         {% for k in [1, 2, 3] %}
         <line x1="{{ 70 + k * 162 }}" y1="52" x2="{{ 70 + k * 162 }}" y2="270"
               stroke="#cdefff" stroke-width="0.7" stroke-dasharray="3 6" opacity="0.6"/>
-        <text x="{{ 70 + k * 162 }}" y="44" fill="#cdefff" font-size="12" text-anchor="middle">grain {{ k }}</text>
+        <text x="{{ 70 + k * 162 }}" y="44" fill="#cdefff" font-size="14.2" text-anchor="middle">grain {{ k }}</text>
         {% endfor %}
 
         <line x1="70" y1="78" x2="648" y2="78" stroke="#ffd979" stroke-width="1" stroke-dasharray="2 6"/>
-        <text x="656" y="82" fill="#ffd979" font-size="13">A + M/&eta;</text>
+        <text x="656" y="82" fill="#ffd979" font-size="14.2">A + M/&eta;</text>
 
         <polyline fill="none" stroke="#a07cf0" stroke-width="2.6"
                   points="70,98 232,98 232,140 394,140 394,186 556,186 556,228 648,228"/>
-        <text x="656" y="232" fill="#a07cf0" font-size="13">M</text>
+        <text x="656" y="232" fill="#a07cf0" font-size="14.2">M</text>
         <polyline fill="none" stroke="#45d6b4" stroke-width="2.6"
                   points="70,250 232,250 232,214 394,214 394,176 556,176 556,138 648,138"/>
-        <text x="656" y="142" fill="#45d6b4" font-size="13">A</text>
+        <text x="656" y="142" fill="#45d6b4" font-size="14.2">A</text>
 
         {% for k in [1, 2, 3] %}
         <line x1="{{ 70 + k * 162 }}" y1="{{ 98 + (k - 1) * 46 }}" x2="{{ 70 + k * 162 }}" y2="{{ 140 + (k - 1) * 46 }}"
               stroke="#ef84b6" stroke-width="1.4"/>
         <line x1="{{ 70 + k * 162 }}" y1="{{ 250 - (k - 1) * 38 }}" x2="{{ 70 + k * 162 }}" y2="{{ 214 - (k - 1) * 38 }}"
               stroke="#ef84b6" stroke-width="1.4"/>
-        <text x="{{ 76 + k * 162 }}" y="{{ 175 + (k - 1) * 10 }}" fill="#ef84b6" font-size="11">paid</text>
+        <text x="{{ 76 + k * 162 }}" y="{{ 175 + (k - 1) * 10 }}" fill="#ef84b6" font-size="14.2">paid</text>
         {% endfor %}
       </svg>
     </div>

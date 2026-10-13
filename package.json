@@ -1,12 +1,12 @@
 {
   "name": "egregora",
   "version": "1.0.0",
-  "description": "EGregoRA \u2014 Life, Love, Magic",
+  "description": "EGregoRA — Life, Love, Magic",
   "main": "index.js",
   "scripts": {
     "oracle:sync": "python3 scripts/oracle-sync.py",
     "oracle:check": "python3 scripts/oracle-sync.py --check",
-    "build": "python3 scripts/write-feed-endpoint.py && eleventy && python3 scripts/write-site-index.py && eleventy",
+    "build": "python3 scripts/infographic-readability.py src && python3 scripts/write-feed-endpoint.py && eleventy && python3 scripts/infographic-readability.py _site && python3 scripts/write-site-index.py && python3 scripts/infographic-readability.py src && eleventy && python3 scripts/infographic-readability.py _site",
     "dev": "eleventy --serve --port 8080",
     "clean": "rm -rf _site",
     "lint": "html-validate \"_site/**/*.html\"",
@@ -18,9 +18,12 @@
     "check": "python3 scripts/check-site.py",
     "check:phone": "node scripts/check-phone.mjs",
     "check:mobile": "python3 scripts/check-mobile.py",
-    "build:tti": "npx @11ty/eleventy --config=tti/eleventy.config.js",
+    "build:tti": "python3 scripts/infographic-readability.py tti/src && npx @11ty/eleventy --config=tti/eleventy.config.js && python3 scripts/infographic-readability.py tti/_site",
     "build:tti:hatchable": "npm run build:tti && rm -rf tti/hatchable/public && mkdir -p tti/hatchable/public && cp -r tti/_site/* tti/hatchable/public/",
-    "lint:tti": "html-validate \"tti/_site/**/*.html\""
+    "lint:tti": "html-validate \"tti/_site/**/*.html\"",
+    "check:infographics": "python3 scripts/infographic-readability.py --check",
+    "test:admin-edit-panels": "node scripts/test-admin-edit-panels.cjs",
+    "test:admin-media-sections": "node scripts/test-admin-media-sections.cjs"
   },
   "repository": {
     "type": "git",

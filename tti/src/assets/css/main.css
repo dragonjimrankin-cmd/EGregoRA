@@ -3751,3 +3751,29 @@ table.ledger tbody td { color: var(--vellum-dim); font-variant-numeric: tabular-
   .sitemap-toc, .sitemap-also { columns: 1; }
   .sum-chain > li { padding-left: 2.5rem; }
 }
+
+
+/* Admin Edit Mode panels can be moved by their title bar. Keep the close
+   control large and above the drag surface so it always remains clickable. */
+.admin-edit-panel .ae-head { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+.admin-edit-panel.is-dragging,
+.admin-edit-panel.is-dragging .ae-head { cursor: grabbing; }
+.admin-edit-panel .ae-head .ae-x {
+  position: relative; z-index: 1; flex: 0 0 2rem;
+  display: grid; place-items: center; width: 2rem; height: 2rem;
+  padding: 0; touch-action: manipulation;
+}
+
+
+/* Plate labels stay at a readable size. On a narrow screen, pan across the
+   vector drawing instead of shrinking its text or asking the reader to zoom. */
+.plate-art {
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+}
+.plate-art > svg[data-plate-readable] { display: block; margin-inline: auto; }
+figure:has(> svg[data-plate-readable]) {
+  overflow-x: auto; overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+}
+figure > svg[data-plate-readable] { display: block; margin-inline: auto; }
