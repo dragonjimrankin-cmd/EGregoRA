@@ -33,8 +33,8 @@
         {% for group in site.navGroups %}
         <details class="nav-cluster">
           <summary>
-            <span class="nav-cluster-index" aria-hidden="true">0{{ loop.index }}</span>
-            <span>{{ group.shortLabel }}</span>
+            <span class="nav-cluster-index">Part {{ group.part }}</span>
+            <span class="nav-cluster-title">{{ group.shortLabel }}</span>
             <span class="nav-chevron" aria-hidden="true"></span>
           </summary>
           <div class="nav-panel">
@@ -61,6 +61,7 @@
         {% endfor %}
       </div>
 
+      {% if site.navActions.length %}
       <div class="nav-actions">
         {% for item in site.navActions %}
         <a class="nav-action nav-action--{{ item.kind }}" href="{{ item.url }}"
@@ -70,6 +71,7 @@
         </a>
         {% endfor %}
       </div>
+      {% endif %}
     </div>
   </nav>
 </header>

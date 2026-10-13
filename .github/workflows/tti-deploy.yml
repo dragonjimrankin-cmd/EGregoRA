@@ -82,7 +82,7 @@ jobs:
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.2' tti/hatchable/public/index.html
+          grep -Fq 'r4.3' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -90,10 +90,19 @@ jobs:
           grep -q 'tti-atlas-skin' tti/hatchable/public/assets/js/atlas.js
           grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
           grep -q 'Folded back to the five reading paths' tti/hatchable/public/assets/js/atlas.js
-          grep -q 'class="nav-cluster"' tti/hatchable/public/index.html
-          grep -q 'First principles' tti/hatchable/public/index.html
-          grep -q 'Cosmic architecture' tti/hatchable/public/index.html
-          grep -q 'Tests and essays' tti/hatchable/public/index.html
+          test "$(grep -c 'class="nav-cluster"' tti/hatchable/public/index.html)" -eq 5
+          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 27
+          ! grep -q 'class="nav-actions"' tti/hatchable/public/index.html
+          grep -q 'Part I' tti/hatchable/public/index.html
+          grep -q 'First Principles' tti/hatchable/public/index.html
+          grep -q 'Part II' tti/hatchable/public/index.html
+          grep -q 'Cosmic Architecture' tti/hatchable/public/index.html
+          grep -q 'Part III' tti/hatchable/public/index.html
+          grep -q 'Seams and Return' tti/hatchable/public/index.html
+          grep -q 'Part IV' tti/hatchable/public/index.html
+          grep -q 'Tests and Essays' tti/hatchable/public/index.html
+          grep -q 'Part V' tti/hatchable/public/index.html
+          grep -q 'Reading Rooms' tti/hatchable/public/index.html
           grep -q 'Ask ShakDrah' tti/hatchable/public/index.html
           grep -q 'Why the two infinities never fully synchronise' tti/hatchable/public/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
@@ -251,10 +260,11 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.2',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.3',
                 'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',
-                'The same map, written out', 'class="nav-cluster"', 'First principles',
-                'Cosmic architecture', 'Tests and essays',
+                'The same map, written out', 'class="nav-cluster"', 'Part I', 'First Principles',
+                'Part II', 'Cosmic Architecture', 'Part III', 'Seams and Return',
+                'Part IV', 'Tests and Essays', 'Part V', 'Reading Rooms',
                 'Why the two infinities never fully synchronise', 'The Zero-Seam Test']
             },
             {
@@ -407,8 +417,10 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/assets/css/main.css',
               markers: ['Navigation observatory', '.nav-cluster', '.nav-panel',
-                '.js-nav .site-nav.open', 'position: sticky', '.plate-accordion-group[open]',
-                '.plate-group-toggle::after', '.atlas-grid', 'body.atlas-focused',
+                '.js-nav .site-nav.open', 'position: sticky',
+                'grid-template-columns: repeat(5, minmax(0, 1fr))',
+                '.plate-accordion-group[open]', '.plate-group-toggle::after',
+                '.atlas-grid', 'body.atlas-focused',
                 '#atlas-box.is-focused']
             },
             {

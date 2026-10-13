@@ -2,6 +2,7 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import * as cheerio from 'cheerio';
+import site from '../tti/src/_data/site.js';
 
 const projectRoot = path.resolve(process.cwd());
 const siteRoot = path.join(projectRoot, 'tti', '_site');
@@ -9,12 +10,8 @@ const expectedTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
-const expectedHeaderRoutes = [
-  '/foundations/', '/the-self/', '/dx/', '/gravity/', '/spiral/', '/skeletal-splice/',
-  '/torus/', '/megatubule/', '/moebius/', '/cosmic-ledger/', '/seams/', '/entropy/',
-  '/stress-tests/', '/essays/', '/double-inversion/', '/accumulated-differentials/',
-  '/little-red-dots/', '/little-red-dots/research-proposal/', '/plates/', '/ask-shakdrah/'
-];
+const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
+const expectedPartCount = site.navGroups.length;
 const errors = [];
 const notices = [];
 let linkedCardCount = 0;
@@ -62,8 +59,12 @@ for (const file of htmlFiles) {
 
   if (!$('.brand-name').text().includes(expectedTitle)) fail(`${relative}: masthead is missing the exact project title`);
   if (!$('.brand-tag').text().includes(expectedTagline)) fail(`${relative}: masthead is missing the exact tagline`);
-  if ($('#primary-nav .nav-cluster').length !== 4) fail(`${relative}: header does not expose four navigation constellations`);
-  if ($('#primary-nav .nav-panel').length !== 4) fail(`${relative}: header does not expose four contextual panels`);
+  if ($('#primary-nav .nav-cluster').length !== expectedPartCount) {
+    fail(`${relative}: header does not expose all ${expectedPartCount} numbered Parts`);
+  }
+  if ($('#primary-nav .nav-panel').length !== expectedPartCount) {
+    fail(`${relative}: header does not expose all ${expectedPartCount} page-subheading panels`);
+  }
   const headerRoutes = $('#primary-nav a').map((_, element) => $(element).attr('href')).get();
   if (JSON.stringify(headerRoutes) !== JSON.stringify(expectedHeaderRoutes)) {
     fail(`${relative}: header destinations or ordering drifted`);
@@ -293,4 +294,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, grouped header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');
+console.log('  Exact identity, five-Part header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');

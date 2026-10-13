@@ -2,7 +2,7 @@
 
 **Project:** The Shape of Becoming: Infinity, Gravity and Existence  
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.2
+**Revision:** r4.3
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -15,7 +15,16 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the grouped masthead, the five-path Atlas, all twenty-seven mapped destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead, the five-path Atlas, all twenty-seven mapped destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+
+## Five-Part header in r4.3
+
+- Replaced the abstract **Begin / Cosmos / Seams / Enquire** rail with the framework&rsquo;s own five numbered headings: **Part I &middot; First Principles**, **Part II &middot; Cosmic Architecture**, **Part III &middot; Seams and Return**, **Part IV &middot; Tests and Essays**, and **Part V &middot; Reading Rooms**.
+- Rendered every page as a contextual subheading beneath its Part, including Prime Plane, Temporal Antipodes, Time and Residue, Inverted Tori, Matter and Antimatter Out of Phase, Plates, Ask ShakDrah, Join and Account.
+- Made the masthead and introduction Atlas consume the same authoritative table of contents, preventing their Part and page order from drifting apart.
+- Removed the detached duplicate Plates and Ask ShakDrah actions; both remain directly available beneath Part V.
+- Kept the desktop rail slim with a compact two-line Part label, retained mutually exclusive native disclosure panels, active-page state, Escape and outside-click dismissal, and the responsive two-column mobile page list.
+- Extended the deterministic header regression and live deployment markers to require five Parts and all 27 unique page subheadings.
 
 ## Introduction Atlas in r4.2
 
@@ -33,7 +42,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - The shared disclosure name and JavaScript fallback enforce one open source chapter at a time; Escape closes the active chapter and hash links still open their named section.
 - Added responsive accordion styling, a clear plus/minus state, source-chapter links, reduced-motion handling, and deterministic local/live regression checks.
 
-## Header redesign in r4.0
+## Header redesign in r4.0 (superseded by the r4.3 Part rail)
 
 - Replaced the crowded row of equal desktop links with four compact navigation constellations: **Begin**, **Cosmos**, **Seams**, and **Enquire**.
 - Added contextual dropdown panels with short descriptions, recognizable glyphs, active-page states, keyboard-readable native disclosure controls, outside-click and Escape dismissal, and one-open-group behaviour.
@@ -60,8 +69,8 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - 26 HTML documents built.
 - 26 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
-- Four masthead navigation constellations, twenty unique header destinations, two persistent actions, active-page state, mobile controls and keyboard dismissal verified.
-- The introduction Atlas has five TTI-specific reading paths and 27 unique destinations, including all 25 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
+- Five numbered masthead Parts expose 27 unique page subheadings from the shared Atlas data, with active-page state, mobile controls and keyboard dismissal verified.
+- The introduction Atlas has five TTI-specific reading paths and the same 27 unique destinations, including all 25 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
 - Twenty-one mutually exclusive plate headings contain all 31 gathered vectors; the former bullet index is absent.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.
