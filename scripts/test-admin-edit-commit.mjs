@@ -89,18 +89,38 @@ execFileSync(process.execPath, ['--check', 'scripts/sync-admin-edit-snapshot.mjs
 execFileSync(process.execPath, ['--check', 'egregora-patch/api/admin-commit.js'], { cwd: root });
 execFileSync(process.execPath, ['--check', 'tti/hatchable/api/admin-commit.js'], { cwd: root });
 
-for (const relative of [
-  'egregora-patch/public/admin-edits.snapshot.json',
-  'tti/src/static/admin-edits.snapshot.json'
+for (const [relative, site] of [
+  ['egregora-patch/public/admin-edits.snapshot.json', 'egregora'],
+  ['tti/src/static/admin-edits.snapshot.json', 'tti']
 ]) {
-  const snapshot = JSON.parse(await read(relative));
+  const raw = await read(relative);
+  const snapshot = JSON.parse(raw);
   assert.equal(snapshot.kind, 'admin-edit-commit-snapshot');
   assert.equal(snapshot.schema, 1);
-  assert.equal(snapshot.endpointInstalled, false);
-  assert.deepEqual(snapshot.edits, []);
-  assert.deepEqual(snapshot.sources, []);
-  assert.deepEqual(snapshot.dates, []);
-  assert.equal(snapshot.digest, digest({ dates: [], edits: [], sources: [] }));
+  assert.equal(snapshot.site, site);
+  assert.equal(snapshot.endpointInstalled, true,
+    `${site} has already completed endpoint bootstrap and must not return to tolerant mode`);
+  assert.ok(Array.isArray(snapshot.edits));
+  assert.ok(Array.isArray(snapshot.sources));
+  assert.ok(Array.isArray(snapshot.dates));
+  assert.equal(snapshot.digest, digest({
+    dates: snapshot.dates,
+    edits: snapshot.edits,
+    sources: snapshot.sources
+  }), `${site} snapshot digest does not match its effective public state`);
+  const forbiddenKeys = [];
+  const inspectKeys = (value, trail = []) => {
+    if (Array.isArray(value)) return value.forEach((item, index) => inspectKeys(item, [...trail, index]));
+    if (!value || typeof value !== 'object') return;
+    for (const [key, child] of Object.entries(value)) {
+      if (/(?:passcode|password|secret|token|prompt|admin(?:istrator)?identity|auditnotes?)/i.test(key)) {
+        forbiddenKeys.push([...trail, key].join('.'));
+      }
+      inspectKeys(child, [...trail, key]);
+    }
+  };
+  inspectKeys(snapshot);
+  assert.deepEqual(forbiddenKeys, [], `${site} snapshot exports private editor keys`);
 }
 
 const effective = canonical({
