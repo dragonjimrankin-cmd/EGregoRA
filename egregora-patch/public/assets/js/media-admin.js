@@ -1520,7 +1520,21 @@ function setup(root) {
 
 
 
-  /* The archivist writes the listing from a transcript. summaryOnly touches
+  /* The podcast summary follows the same administrator-selected Free.ai
+     model and door as Gink and ShakDrah. The choice contains identifiers,
+     never provider keys; those remain behind the server-side avatar route. */
+  function avatarAiChoice() {
+    let wanted = {};
+    try {
+      wanted = window.EGFreeWants ? (window.EGFreeWants() || {}) : {};
+    } catch { wanted = {}; }
+    return {
+      free_model: wanted.chat || undefined,
+      free_slot: Number(wanted.slot) || undefined
+    };
+  }
+
+  /* The avatar AI writes the listing from a transcript. summaryOnly touches
      nothing but the summary field. */
   async function describeListing(transcript, summaryOnly, report = step) {
     report(summaryOnly ? "Writing the summary from the transcript" : "Writing the summary and listing",
@@ -1528,7 +1542,10 @@ function setup(root) {
     const d = await fetch("/api/transcribe", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ pass, action: "describe", text: transcript, kind: KIND })
+      body: JSON.stringify(Object.assign(
+        { pass, action: "describe", text: transcript, kind: KIND },
+        avatarAiChoice()
+      ))
     }).then(async (r) => {
       const out = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(out.error || "the listing could not be written");
@@ -1547,7 +1564,7 @@ function setup(root) {
     }
     if (el.summaryState) {
       el.summaryState.hidden = false;
-      el.summaryState.textContent = "Summary ready \u2014 written automatically from the transcript. Read and edit it before publishing.";
+      el.summaryState.textContent = "Summary ready \u2014 written from the transcript by the same AI used by Gink and ShakDrah. Read and edit it before publishing.";
     }
     if (!summaryOnly) {
       if (el.title) el.title.value = d.title || el.title.value;
@@ -2295,7 +2312,10 @@ function setup(root) {
       const dd = await fetch("/api/transcribe", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pass, action: "describe", text: td.transcript, kind: KIND })
+        body: JSON.stringify(Object.assign(
+          { pass, action: "describe", text: td.transcript, kind: KIND },
+          avatarAiChoice()
+        ))
       }).then((x) => x.json()).catch(() => null);
       if (!dd || !dd.ok)
         return tellEd((dd && dd.error) || "No model would write the summary just now.", true);

@@ -83,7 +83,7 @@ const podcast = await readFile(new URL(
   '../egregora-patch/public/podcast/index.html', import.meta.url), 'utf8');
 const admin = await readFile(new URL(
   '../egregora-patch/public/assets/js/media-admin.js', import.meta.url), 'utf8');
-assert.ok(podcast.includes('media-admin.js?v=progress-live-1'));
+assert.ok(podcast.includes('media-admin.js?v=avatar-summary-1'));
 assert.ok(podcast.includes('@keyframes am-progress-sweep'));
 assert.ok(podcast.includes('.am-bar.is-waiting'));
 assert.ok(podcast.includes('prefers-reduced-motion'));

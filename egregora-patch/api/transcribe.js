@@ -22,9 +22,9 @@
  * index of the site (lib/site-map.js, generated from the Atlas) and every
  * link it returns is checked against that list before it is kept.
  */
-import { db, storage } from 'hatchable';
+import { ai, db, storage } from 'hatchable';
 import { adminDoor } from '../lib/door.js';
-import { openaiKey } from '../lib/openai.js';
+import { openaiChat, openaiKey } from '../lib/openai.js';
 import { openChat } from '../lib/openchat.js';
 import { doors as freeDoors, models as freeModels, freeChat } from '../lib/freeai.js';
 import { SECTIONS, SECTION_LINES, PRESET_TAGS } from '../lib/site-map.js';
@@ -216,11 +216,73 @@ function parseListing(text, kind) {
     .filter((t) => t.heading)
     .slice(0, 14);
 
-  return {
-    title: clean(out.title, 200),
-    summary: clean(out.summary, 2000),
-    tags, links, topics, kind
-  };
+  const title = clean(out.title, 200);
+  const summary = clean(out.summary, 2000);
+  if (!summary) return null;
+
+  return { title, summary, tags, links, topics, kind };
+}
+
+/* Use the oracle/avatar model stack in the same order as /api/ask and the
+   admin editor: the selected Free.ai door/model first, then the open-weights
+   route, the order's OpenAI route, and finally Hatchable's model gateway.
+   A provider only wins when its answer parses as a complete listing, so one
+   malformed JSON response does not prevent the next avatar model from trying. */
+async function askAvatarStack(body, system, messages, accept) {
+  const temperature = 0.5;
+  const maxTokens = 1600;
+  const wantedModel = clean(body.free_model, 200);
+  const wantedSlot = Number(body.free_slot);
+  const freeOptions = { system, messages, maxTokens, temperature };
+  if (wantedModel) freeOptions.model = wantedModel;
+  if (Number.isInteger(wantedSlot) && wantedSlot >= 1 && wantedSlot <= 5) {
+    freeOptions.slot = wantedSlot;
+  }
+
+  try {
+    const free = await freeChat(freeOptions);
+    const value = free && accept(free.text);
+    if (value) {
+      return {
+        value,
+        by: (free.model || wantedModel || 'Free.ai') +
+          (free.label ? ' via ' + free.label : '')
+      };
+    }
+  } catch (error) {
+    console.error('transcribe: avatar Free.ai route failed', error && error.message);
+  }
+
+  try {
+    const open = await openChat({ system, messages, temperature, maxTokens });
+    const value = open && accept(open.text);
+    if (value) return { value, by: open.model || 'open-weights avatar model' };
+  } catch (error) {
+    console.error('transcribe: avatar open-weights route failed', error && error.message);
+  }
+
+  try {
+    const openai = await openaiChat({ system, messages, temperature, maxTokens });
+    const value = openai && accept(openai.text);
+    if (value) return { value, by: openai.model || 'OpenAI avatar model' };
+  } catch (error) {
+    console.error('transcribe: avatar OpenAI route failed', error && error.message);
+  }
+
+  for (const model of ['openai/gpt-4o-mini', 'anthropic/claude-3-5-haiku']) {
+    try {
+      const out = await ai.generateText({
+        model, system, messages, maxTokens, temperature, purpose: 'podcast-summary'
+      });
+      const value = out && accept(out.text);
+      if (value) return { value, by: (out && out.model) || model };
+    } catch (error) {
+      if (error && error.code === 'SetupRequired') break;
+      console.error('transcribe: avatar gateway route failed', error && error.message);
+    }
+  }
+
+  return null;
 }
 
 /* The next number in the run, counting what is on the shelf as well as the
@@ -290,55 +352,19 @@ export default async function (req, res) {
           text.slice(Math.floor(text.length / 2 - WINDOW * 0.15), Math.floor(text.length / 2 + WINDOW * 0.15)) +
           '\n[\u2026]\n' + text.slice(-WINDOW * 0.25);
 
-      /* The same Free.ai doors that now hear the recording can write its
-         listing. This keeps both podcast buttons useful when the separate
-         OpenAI account has no credit and the open-chat routes are asleep. */
-      const free = await freeChat({
-        system: BRIEF(kind),
-        messages: [{ role: 'user', content: fed }],
-        maxTokens: 1500,
-        temperature: 0.5
-      }).catch(() => null);
-      const freeListing = free && parseListing(free.text, kind);
-      if (freeListing) {
-        return res.json(Object.assign({
-          ok: true,
-          by: (free.model || 'Free.ai') + (free.label ? ' via ' + free.label : '')
-        }, freeListing));
+      const described = await askAvatarStack(
+        body,
+        BRIEF(kind),
+        [{ role: 'user', content: fed }],
+        (answer) => parseListing(answer, kind)
+      );
+      if (described) {
+        return res.json(Object.assign({ ok: true, by: described.by }, described.value));
       }
 
-      const key = await openaiKey();
-      if (key) {
-        for (const model of ['gpt-4o', 'gpt-4o-mini']) {
-          const r = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' },
-            body: JSON.stringify({
-              model,
-              messages: [{ role: 'system', content: BRIEF(kind) }, { role: 'user', content: fed }],
-              temperature: 0.5,
-              max_tokens: 1600,
-              response_format: { type: 'json_object' }
-            })
-          }).catch(() => null);
-          if (!r || !r.ok) continue;
-          const d = await r.json().catch(() => null);
-          const got = parseListing(d && d.choices && d.choices[0] && d.choices[0].message &&
-            d.choices[0].message.content, kind);
-          if (got) return res.json(Object.assign({ ok: true, by: model }, got));
-        }
-      }
-
-      const out = await openChat({
-        system: BRIEF(kind),
-        messages: [{ role: 'user', content: fed }],
-        temperature: 0.5,
-        maxTokens: 1500
+      return res.status(503).json({
+        error: 'The avatar AI could not write the listing just now.'
       });
-      const got = out && parseListing(out.text, kind);
-      if (got) return res.json(Object.assign({ ok: true, by: out.model }, got));
-
-      return res.status(503).json({ error: 'No model would write the listing just now.' });
     }
 
     return res.status(400).json({ error: 'No such action.' });

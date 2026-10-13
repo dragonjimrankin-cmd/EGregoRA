@@ -42,7 +42,7 @@ assert.ok(podcast.includes('Transcribe privately, then write the summary'));
 assert.ok(podcast.includes('Private local Whisper:'));
 assert.ok(podcast.includes('recording is never sent to a\n        speech-to-text service'));
 assert.ok(podcast.includes('about 206&nbsp;MB'));
-assert.ok(podcast.includes('media-admin.js?v=progress-live-1'));
+assert.ok(podcast.includes('media-admin.js?v=avatar-summary-1'));
 
 const browserWhisper = await import(moduleUrl.href + '?test=' + Date.now());
 assert.equal(typeof browserWhisper.BrowserWhisper, 'function');

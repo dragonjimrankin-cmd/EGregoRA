@@ -21,9 +21,12 @@ Current patch:
   for its summary and eventual episode storage. The pinned package, sync script,
   licences and regression test keep this vendored application reproducible.
 - `api/transcribe.js` retains the admin-only transcript-to-listing route. Its
-  older server hearing action remains compatible with staged data, but the
-  podcast interface no longer calls it or silently falls back to a cloud or
-  microphone transcription service.
+  description action now uses the same model stack as the Gink and ShakDrah
+  avatars, in the same provider order, and honours the administrator's shared
+  Free.ai chat-model and door selection. Its older server hearing action
+  remains compatible with staged data, but the podcast interface no longer
+  calls it or silently falls back to a cloud or microphone transcription
+  service.
 - `api/media.js` formats transcripts as speaker turns, maps the two identified
   voices in the latest podcast, and stores compact linguistic cadence profiles.
 - `migrations/0029_speaker_profiles.sql` keeps episode-to-speaker names and
