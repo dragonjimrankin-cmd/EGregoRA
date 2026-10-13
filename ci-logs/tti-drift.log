@@ -1,12 +1,36 @@
-   … 429 on initialize, waiting 20s
-   … 429 on initialize, waiting 40s
 project proj_U95i5y493z9x
-live version: 105
-ours:         105
-✓ no foreign deploy since ours. Safe to deploy.
-   … 429 on initialize, waiting 20s
-   … 429 on initialize, waiting 40s
-project proj_U95i5y493z9x
-live version: 106
-ours:         105
-recorded version 106 in ops/tti-deployed.json
+live version: 107
+ours:         106
+
+✖ 1 deploy(s) landed since ours (v106 → v107).
+   Reading the live files so the two can be merged rather than one buried.
+
+   live project holds 252 files
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+   … 429 on tools/call, waiting 20s
+   … 429 on tools/call, waiting 40s
+
+   changed live vs our bundle : 10
+     ~ public/assets/css/main.css
+     ~ public/assets/js/headtts/voices/am_fenrir.bin
+     ~ public/assets/js/headtts/voices/am_michael.bin
+     ~ public/assets/js/headtts/voices/am_puck.bin
+     ~ public/assets/js/headtts/voices/bm_fable.bin
+     ~ public/assets/js/headtts/voices/bm_george.bin
+     ~ public/assets/js/headtts/voices/bm_lewis.bin
+     ~ public/assets/js/site.js
+     ~ public/index.html
+     ~ public/sitemap.xml
+   present live, absent here  : 3
+     + public/entropy/index.html
+     + public/moebius-seam/index.html
+     + public/the-cosmic-ledger/index.html
+   present here, absent live  : 0
+
+   their versions are saved under ops/incoming/tti/
+   DEPLOY SKIPPED. Merge, then deploy.
