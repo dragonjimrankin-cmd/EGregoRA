@@ -170,6 +170,23 @@ if (!home) {
   if (!home.$('.hero-sub').text().trim().startsWith(expectedTagline)) {
     fail('homepage hero is missing the exact attribution tagline');
   }
+  if (!home.$('.hero-ctas a[href="#t-core-claims"]').length) {
+    fail('homepage hero does not expose the core-claims map');
+  }
+  const coreClaims = home.$('.core-claims > .core-claim');
+  if (coreClaims.length !== 10) fail(`homepage exposes ${coreClaims.length} of 10 core claims`);
+  if (coreClaims.find('.claim-bridge').length !== coreClaims.length) {
+    fail('every homepage core claim must describe its interlink');
+  }
+  if (home.$('.claim-map .claim-branches > li').length !== 6) {
+    fail('homepage dependency map must explain all six interlink branches');
+  }
+  for (const href of [
+    '/foundations/', '/the-self/', '/seams/#t-arrow', '/gravity/', '/torus/',
+    '/cosmic-ledger/', '/stress-tests/'
+  ]) {
+    if (!coreClaims.find(`a[href="${href}"]`).length) fail(`core claims do not expose ${href}`);
+  }
   for (const href of [
     '/little-red-dots/', '/little-red-dots/research-proposal/', '/entropy/',
     '/double-inversion/', '/accumulated-differentials/'
@@ -311,4 +328,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, five-Part header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');
+console.log('  Exact identity, ten interlinked core claims, five-Part header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');

@@ -301,6 +301,51 @@ h3 { font-size: 1.15rem; color: var(--gold-bright); margin: 0 0 0.4rem; letter-s
   text-align: right;
 }
 
+/* The introduction's core claims are an ordered dependency map rather than a
+   bank of interchangeable cards. Numbers keep the reading order explicit;
+   the bridge line says what each claim receives and hands onward. */
+.core-claims {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem;
+}
+.core-claim {
+  display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 1rem;
+  align-content: start;
+}
+.claim-number {
+  font-family: var(--display); font-size: 1.35rem; line-height: 1;
+  color: var(--verdant); letter-spacing: 0.06em;
+  padding-top: 0.12rem;
+}
+.claim-body { min-width: 0; display: flex; flex-direction: column; }
+.claim-body h3 a { color: inherit; text-decoration-color: rgba(118,207,238,0.35); }
+.claim-body > p:last-child { margin-bottom: 0; }
+.claim-bridge {
+  margin-top: auto; padding-top: 0.85rem;
+  border-top: 1px solid rgba(118,207,238,0.18);
+  color: var(--vellum-dim);
+}
+.claim-bridge strong { color: var(--verdant); font-family: var(--title); }
+.claim-map { margin-top: 1.4rem; }
+.claim-map h3 { font-size: clamp(1.25rem, 2.4vw, 1.65rem); }
+.claim-map .formula { overflow-x: auto; }
+.claim-branches {
+  list-style: none; padding: 0; margin: 1.2rem 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem 1.4rem;
+}
+.claim-branches li {
+  padding: 0.8rem 0 0.8rem 1rem;
+  border-left: 2px solid rgba(69,214,180,0.42);
+}
+.claim-branches strong { color: var(--gold-bright); }
+@media (max-width: 760px) {
+  .core-claims, .claim-branches { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+  .core-claim { grid-template-columns: 2.35rem minmax(0, 1fr); gap: 0.7rem; }
+  .claim-number { font-size: 1.05rem; }
+}
+
 /* Illuminated initials belong to body copy, never to compact labels or
    displayed mathematics. Without these exclusions, the first character of a
    kicker becomes an oversized gold drop cap instead of staying with its green
