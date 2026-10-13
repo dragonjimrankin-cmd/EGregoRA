@@ -160,8 +160,8 @@ jobs:
           grep -q 'closePlateGroups' tti/hatchable/public/assets/js/site.js
           grep -q 'openPlateFromHash' tti/hatchable/public/assets/js/site.js
           grep -q 'runtimePartLabels' tti/hatchable/public/assets/js/site.js
-          grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Join' tti/hatchable/public/assets/js/site.js
-          grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Your Account' tti/hatchable/public/assets/js/site.js
+          grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.03 \u00b7 Join' tti/hatchable/public/assets/js/site.js
+          grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.04 \u00b7 Your Account' tti/hatchable/public/assets/js/site.js
           grep -q 'Navigation observatory' tti/hatchable/public/assets/css/main.css
           grep -q '.nav-panel' tti/hatchable/public/assets/css/main.css
           grep -q '.plate-accordion-group' tti/hatchable/public/assets/css/main.css
