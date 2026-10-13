@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.9
+**Revision:** r4.10
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -15,7 +15,17 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical twenty-eight-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical twenty-nine-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus.
+
+## π from 0 and 1 in r4.10
+
+- Added **Why π Appears Between Zero and One** to Part I as mathematical note `TTI-I.02`, between Foundations and The Self.
+- Replaced the compressed claim that 0 and 1 simply produce π with the exact dependency: a unit continuum, Euclidean metric and circular closure are additional declared premises.
+- Centred Euler&rsquo;s beta-integral theorem, \(B(\tfrac12,\tfrac12)=\int_0^1[x(1-x)]^{-1/2}dx=\pi\), and opened it by substitution into the unit-semicircle arc-length integral.
+- Added the arcsine normalisation, fundamental-theorem/arctangent route, Gregory&ndash;Leibniz series and Euler&rsquo;s Basel theorem as exact but assumption-distinct checks.
+- Added an explicit non-Euclidean objection and an earned/chosen/refused ledger so the theorem does not masquerade as proof of TTI cosmology.
+- Added one accessible vector plate, reciprocal Foundations and homepage discovery, sitemap and Atom entries, a twenty-fourth prepared ShakDrah/Gink answer, and deterministic local/live deployment checks.
+- Advanced the research corpus to twenty-five studies plus four project resources while keeping all five top-level Parts unchanged.
 
 ## Research-project edition in r4.9
 
@@ -121,23 +131,24 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 ## Current audited result
 
-- 27 HTML documents built.
-- 27 unique canonical URLs verified.
+- 28 HTML documents built.
+- 28 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
 - Ten ordered core claims each explain their dependency and consequence; a six-branch map summarises how the framework interlinks.
+- The Part I π paper is verified with the beta integral, semicircle substitution, arcsine normalisation, arctangent and Basel routes, non-Euclidean limit, one plate and reciprocal discovery.
 - Wormholes and Inverted Tori is verified beneath Part III with one plate, thirteen required argument surfaces and reciprocal discovery links.
-- Five numbered masthead Parts expose 28 unique page subheadings from the shared Atlas data, with full-text hover/focus expansion, touch wrapping, active-page state, mobile controls and keyboard dismissal verified.
-- All 26 built destination pages carry the matching header Part and page title; runtime Join and Account labels are aligned to Part V.
-- The introduction Atlas has five TTI-specific reading paths and the same 28 unique destinations, including all 26 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
-- Twenty-two mutually exclusive plate headings contain all 32 gathered vectors; the former bullet index is absent.
+- Five numbered masthead Parts expose 29 unique page subheadings from the shared Atlas data, with full-text hover/focus expansion, touch wrapping, active-page state, mobile controls and keyboard dismissal verified.
+- All 27 built destination pages carry the matching header Part and page title; runtime Join and Account labels are aligned to Part V.
+- The introduction Atlas has five TTI-specific reading paths and the same 29 unique destinations, including all 27 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
+- Twenty-three mutually exclusive plate headings contain all 33 gathered vectors; the former bullet index is absent.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.
 - Nested breadcrumbs verified for the Zero-Seam research proposal.
 - `sitemap.xml`, Atom `feed.xml`, `robots.txt` and the SVG favicon verified.
-- 32 source plates reconciled with 32 gathered plates; SVG IDs and marker references are namespaced in the compendium.
+- 33 source plates reconciled with 33 gathered plates; SVG IDs and marker references are namespaced in the compendium.
 - The research proposal is discoverable from the homepage, parent conjecture, Essays, Stress Tests, Time and Residue, and Inverted Tori.
 - Temporal Antipodes is discoverable from the homepage, Foundations, Seams, Essays, Stress Tests, Prime Plane, Time and Residue, Inverted Tori, and the matter–antimatter essay.
-- 23 prepared answers and 23 paraphrase routes verified for both ShakDrah and Gink, including wormholes, entropy, double inversion, accumulated differentials, fallback and attachment bypass.
+- 24 prepared answers and 24 paraphrase routes verified for both ShakDrah and Gink, including π on the unit interval, wormholes, entropy, double inversion, accumulated differentials, fallback and attachment bypass.
 - Six male neural voices, per-voice dispatch, prosody, consent and lip-sync metadata remain covered by the existing neural-voice test.
 - Workflow YAML and focused Hatchable build markers are validated before deployment.
 

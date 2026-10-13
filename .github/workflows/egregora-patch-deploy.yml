@@ -85,8 +85,9 @@ jobs:
           grep -q '40 drawings' egregora-patch/public/infographics/index.html
           grep -q '.info-fold\[open\]' egregora-patch/public/assets/css/infographics-accordion.css
           grep -q 'closeFolds' egregora-patch/public/assets/js/infographics-accordion.js
-          grep -q 'Twenty-three prepared answers' egregora-patch/public/ask-ed/index.html
+          grep -q 'Twenty-four prepared answers' egregora-patch/public/ask-ed/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
+          grep -q 'Why does π appear between zero and one?' egregora-patch/public/ask-ed/index.html
           grep -q 'Why can the smaller and bigger infinities never fully synchronise?' egregora-patch/public/ask-ed/index.html
           grep -q 'Could little red dots be remnants of a previous universe?' egregora-patch/public/ask-ed/index.html
           grep -q 'What is the Zero-Seam Test?' egregora-patch/public/ask-ed/index.html
@@ -165,8 +166,8 @@ jobs:
           const targets = [
             {
               url: 'https://egregora.hatchable.site/ask-ed/',
-              markers: ['Twenty-three prepared answers', 'Can an inverted torus be a traversable wormhole?',
-                'What is in The Channeling Circle transcript archive?',
+              markers: ['Twenty-four prepared answers', 'Why does π appear between zero and one?',
+                'Can an inverted torus be a traversable wormhole?', 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
                 'Is TTI integration the same thing as entropy?',
@@ -205,7 +206,7 @@ jobs:
             {
               url: 'https://egregora.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
-                'wormhole-inverted-torus', 'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
+                'wormhole-inverted-torus', 'baryogenesis-boundary', 'pi-zero-one', 'temporal-antipodes', 'little-red-dots-residue',
                 'zero-seam-test', 'entropy-integration', 'double-inversion-residue',
                 'differentials-mass-gravity', 'epistemic-grading']
             },

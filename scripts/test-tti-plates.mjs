@@ -6,6 +6,7 @@ import * as cheerio from 'cheerio';
 const expectedGroups = [
   ['g-introduction', 'Introduction', 1],
   ['g-foundations', 'Foundations', 1],
+  ['g-pi-from-zero-and-one', 'π from 0 and 1', 1],
   ['g-the-self', 'The Self', 1],
   ['g-dx', 'dx', 2],
   ['g-gravity', 'Gravity', 1],

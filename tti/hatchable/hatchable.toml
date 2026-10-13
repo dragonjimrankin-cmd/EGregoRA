@@ -3,7 +3,7 @@
 # Reference: https://hatchable.com/docs/developers/config
 name        = "The Two Infinities: Eternal Integration of the Self"
 tagline     = "A speculative cosmology by Jim Rankin, UK, 2026"
-description = "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-four studies and four project resources."
+description = "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-five studies and four project resources."
 category    = "Publishing"
 tags        = ["astronomy", "cosmology", "mathematics", "philosophy", "geometry", "physics"]
 

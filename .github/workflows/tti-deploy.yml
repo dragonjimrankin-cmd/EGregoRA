@@ -17,6 +17,7 @@ on:
       - "scripts/test-tti-atlas.mjs"
       - "scripts/test-tti-plates.mjs"
       - "scripts/test-tti-research-layout.mjs"
+      - "scripts/test-tti-pi-from-zero-and-one.mjs"
       - "scripts/test-tti-relocations.mjs"
       - "scripts/tti-gather-plates.mjs"
       - "scripts/audit-tti.mjs"
@@ -31,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
-      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-four studies and four project resources."
+      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-five studies and four project resources."
       TTI_DEPLOY_INTENT: "Deploy The Two Infinities research project"
       TTI_DEPLOY_SUMMARY: "Publishes The Two Infinities: Eternal Integration of the Self, the independent speculative cosmology research project founded by Jim Rankin, including its studies, research resources, Atlas, plates, and ShakDrah research assistant."
     steps:
@@ -59,9 +60,11 @@ jobs:
           node scripts/test-tti-header.mjs --built
           node scripts/test-tti-atlas.mjs
           node scripts/test-tti-research-layout.mjs
+          node scripts/test-tti-pi-from-zero-and-one.mjs
           node scripts/test-tti-plates.mjs
           node scripts/audit-tti.mjs
           test -s tti/hatchable/public/index.html
+          test -s tti/hatchable/public/pi-from-zero-and-one/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
           test -s tti/hatchable/public/wormholes/index.html
@@ -95,12 +98,12 @@ jobs:
           ! grep -R -Fq 'EGregoRA — Life, Love, Magic' tti/hatchable
           ! grep -R -Fq 'founded by Edward Gregory' tti/hatchable
           test "$(grep -c 'class=\"research-toc-part\"' tti/hatchable/public/index.html)" -eq 5
-          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 28
+          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 29
           grep -Fq 'Ten Claims, One Interdependent Framework' tti/hatchable/public/index.html
           grep -Fq 'The dependency map' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.9' tti/hatchable/public/index.html
+          grep -Fq 'r4.10' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -109,7 +112,7 @@ jobs:
           grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
           grep -q 'Folded back to the five reading paths' tti/hatchable/public/assets/js/atlas.js
           test "$(grep -c 'class="nav-cluster"' tti/hatchable/public/index.html)" -eq 5
-          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 28
+          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 29
           ! grep -q 'class="nav-actions"' tti/hatchable/public/index.html
           grep -q 'Part I' tti/hatchable/public/index.html
           grep -q 'First Principles' tti/hatchable/public/index.html
@@ -124,15 +127,20 @@ jobs:
           grep -q 'Ask ShakDrah' tti/hatchable/public/index.html
           ! grep -R -q -E 'Part (VI|VII|VIII)' tti/hatchable/public --include='*.html'
           grep -q 'Why the two infinities never fully synchronise' tti/hatchable/public/index.html
+          grep -Fq 'Why π Appears Between Zero and One' tti/hatchable/public/pi-from-zero-and-one/index.html
+          grep -Fq 'Euler&rsquo;s Beta Integral Puts π Exactly Between 0 and 1' tti/hatchable/public/pi-from-zero-and-one/index.html
+          grep -Fq 'The beta&ndash;gamma theorem states' tti/hatchable/public/pi-from-zero-and-one/index.html
+          grep -Fq 'Closure Alone Is Not Enough' tti/hatchable/public/pi-from-zero-and-one/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Four readings, in order of increasing risk' tti/hatchable/public/time-and-residue/index.html
           grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Twenty-three prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Twenty-four prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Can an inverted torus be a traversable wormhole?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Why does π appear between zero and one?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Why can the smaller and bigger infinities never fully synchronise?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Could little red dots be remnants of a previous universe?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is the Zero-Seam Test?' tti/hatchable/public/ask-shakdrah/index.html
@@ -177,6 +185,7 @@ jobs:
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'wormhole-inverted-torus' tti/hatchable/public/assets/js/oracle-knowledge.js
+          grep -q 'pi-zero-one' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'temporal-antipodes' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'The Universe of Inverted Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'One Seam, Seen as Many Tori' tti/hatchable/public/inverted-toruses/index.html
@@ -215,13 +224,16 @@ jobs:
           grep -q 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html
           grep -q 'name="plate-room"' tti/hatchable/public/plates/index.html
           grep -q 'Choose one source heading to inspect its plates' tti/hatchable/public/plates/index.html
-          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 22
+          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 23
+          grep -q 'data-plate-source="/pi-from-zero-and-one/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/wormholes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/temporal-antipodes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/entropy/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/double-inversion/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/accumulated-differentials/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/little-red-dots/"' tti/hatchable/public/plates/index.html
+          grep -Fq 'https://the-two-infinities.hatchable.site/pi-from-zero-and-one/' tti/hatchable/public/sitemap.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/pi-from-zero-and-one/' tti/hatchable/public/feed.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/' tti/hatchable/public/sitemap.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/double-inversion/' tti/hatchable/public/sitemap.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/wormholes/' tti/hatchable/public/sitemap.xml
@@ -235,6 +247,7 @@ jobs:
           grep -q 'Read the Zero-Seam research proposal' tti/hatchable/public/essays/index.html
           grep -q 'little red dots are compact' tti/hatchable/public/cosmic-ledger/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
+            tti/hatchable/public/pi-from-zero-and-one/index.html \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
             tti/hatchable/public/wormholes/index.html \
@@ -298,7 +311,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.9',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.10',
                 'Project Table of Contents', 'Geometry, Integration and the Conditions of Return',
                 '<dt>Research status</dt><dd>Working hypotheses</dd>', 'TTI-I.01', 'TTI-V.04',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',
@@ -311,7 +324,16 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/foundations/',
               markers: ['Part I — First Principles · Concept paper TTI-I.01 · Foundations',
-                'Why Does Anything Exist?']
+                'Why Does Anything Exist?', 'Why π Appears Between Zero and One']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/pi-from-zero-and-one/',
+              markers: ['Part I — First Principles · Mathematical note TTI-I.02 · π from 0 and 1',
+                'Why π Appears Between Zero and One', 'Euler&rsquo;s Beta Integral Puts π Exactly Between 0 and 1',
+                'The numerals 0 and 1 alone do not force π', 'Open the Interval and the Semicircle Is Already There',
+                'π Is the Constant That Makes the Whole Interval Equal One',
+                'The Arctangent Route and Euler&rsquo;s Basel Theorem', 'Closure Alone Is Not Enough',
+                'id="fig-unit-interval-pi"']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/gravity/',
@@ -412,7 +434,8 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/plates/',
               markers: ['Part V — Reading Rooms · Figure compendium TTI-V.01 · The Plates',
                 'class="plate-accordion-group"',
-                'name="plate-room"', 'Choose one source heading to inspect its plates', 'Temporal Antipodes',
+                'name="plate-room"', 'Choose one source heading to inspect its plates', 'π from 0 and 1',
+                'data-plate-source="/pi-from-zero-and-one/"', 'Temporal Antipodes',
                 'Opposite Ends, Finite Projections', 'JWST’s Little Red Dots',
                 'Similar Arrows, Different Accounts', 'State Restored, Path Still Available',
                 'Wormholes and Inverted Tori', 'A Global Return Is Not a Local',
@@ -420,7 +443,8 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/sitemap.xml',
-              markers: ['https://the-two-infinities.hatchable.site/temporal-antipodes/',
+              markers: ['https://the-two-infinities.hatchable.site/pi-from-zero-and-one/',
+                'https://the-two-infinities.hatchable.site/temporal-antipodes/',
                 'https://the-two-infinities.hatchable.site/wormholes/',
                 'https://the-two-infinities.hatchable.site/entropy/',
                 'https://the-two-infinities.hatchable.site/double-inversion/',
@@ -440,7 +464,8 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
               markers: ['Part V — Reading Rooms · Research assistant TTI-V.02 · Ask ShakDrah',
-                'Twenty-three prepared answers', 'Can an inverted torus be a traversable wormhole?',
+                'Twenty-four prepared answers', 'Why does π appear between zero and one?',
+                'Can an inverted torus be a traversable wormhole?',
                 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
@@ -461,7 +486,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
-                'wormhole-inverted-torus', 'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
+                'wormhole-inverted-torus', 'baryogenesis-boundary', 'pi-zero-one', 'temporal-antipodes', 'little-red-dots-residue',
                 'zero-seam-test', 'entropy-integration', 'double-inversion-residue',
                 'differentials-mass-gravity', 'epistemic-grading']
             },

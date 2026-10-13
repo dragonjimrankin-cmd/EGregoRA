@@ -9,7 +9,7 @@ const siteRoot = path.join(projectRoot, 'tti', '_site');
 const expectedTitle = 'The Two Infinities: Eternal Integration of the Self';
 const retiredTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
-const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-four studies and four project resources.';
+const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-five studies and four project resources.';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
@@ -36,7 +36,7 @@ const htmlFiles = names
   .map((name) => path.join(siteRoot, name))
   .sort();
 
-if (htmlFiles.length < 27) fail(`expected at least 27 HTML documents, found ${htmlFiles.length}`);
+if (htmlFiles.length < 28) fail(`expected at least 28 HTML documents, found ${htmlFiles.length}`);
 
 const documents = new Map();
 const canonicals = new Map();
@@ -183,7 +183,7 @@ if (!home) {
     fail('homepage dependency map must explain all six interlink branches');
   }
   for (const href of [
-    '/foundations/', '/the-self/', '/seams/#t-arrow', '/gravity/', '/torus/',
+    '/foundations/', '/pi-from-zero-and-one/', '/the-self/', '/seams/#t-arrow', '/gravity/', '/torus/',
     '/cosmic-ledger/', '/stress-tests/'
   ]) {
     if (!coreClaims.find(`a[href="${href}"]`).length) fail(`core claims do not expose ${href}`);
@@ -272,7 +272,7 @@ try {
   if (!feed.includes(`<subtitle>${expectedTagline}</subtitle>`)) fail('feed tagline is incorrect');
   if (!feed.includes(`${expectedOrigin}/little-red-dots/research-proposal/`)) fail('feed omits the research proposal');
   if (!feed.includes(`${expectedOrigin}/temporal-antipodes/`)) fail('feed omits Temporal Antipodes');
-  for (const pathname of ['/entropy/', '/wormholes/', '/double-inversion/', '/accumulated-differentials/']) {
+  for (const pathname of ['/pi-from-zero-and-one/', '/entropy/', '/wormholes/', '/double-inversion/', '/accumulated-differentials/']) {
     if (!feed.includes(`${expectedOrigin}${pathname}`)) fail(`feed omits ${pathname}`);
   }
 } catch {}
@@ -289,7 +289,7 @@ if (!plates) {
   const gathered = plates.$('figure.plate[data-plate-source]').length;
   if (gathered !== sourcePlateCount) fail(`plate room gathers ${gathered} of ${sourcePlateCount} source plates`);
   const plateGroups = plates.$('.plate-accordion > .plate-accordion-group');
-  if (plateGroups.length !== 22) fail(`plate room exposes ${plateGroups.length} of 22 source headings`);
+  if (plateGroups.length !== 23) fail(`plate room exposes ${plateGroups.length} of 23 source headings`);
   if (plates.$('.plate-accordion-group[name="plate-room"]').length !== plateGroups.length) {
     fail('plate room headings do not form one native exclusive disclosure group');
   }
@@ -384,4 +384,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, ten interlinked core claims, five-Part header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, Wormholes and Inverted Tori, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');
+console.log('  Exact identity, ten interlinked core claims, the theorem-led π paper, five-Part header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, Wormholes and Inverted Tori, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');

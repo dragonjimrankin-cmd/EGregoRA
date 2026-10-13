@@ -4,15 +4,17 @@ import ttiAtlas from "./ttiAtlas.js";
  * The Two Infinities: Eternal Integration of the Self — project-wide data.
  *
  * James Alexander Matthew Rankin began the framework between 2 and 19 June
- * 2026. Revision r4.9 reorganises the website as an independent working
- * research project: every route receives a stable document code, research
- * status, citation context and a place in one canonical table of contents.
+ * 2026. Revision r4.10 extends the independent working research project with
+ * a theorem-led account of why π appears on the unit interval. Every route
+ * receives a stable document code, research status, citation context and a
+ * place in one canonical table of contents.
  */
 /* The masthead, project contents and interactive Atlas all consume the same
    data. Each Part remains visible in the slim header and every document keeps
    a stable position beneath the corresponding Part. */
 const glyphByRoute = Object.freeze({
   "/foundations/": "sphere",
+  "/pi-from-zero-and-one/": "sphere",
   "/the-self/": "integral",
   "/dx/": "integral",
   "/prime-plane/": "star",
@@ -90,7 +92,7 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r4.9",
+  revision: "r4.10",
   revised: "2026-10-13",
   edition: "Working research edition",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
@@ -101,8 +103,9 @@ export default {
     "Established results, conjectural bridges, competing explanations and failure conditions are labelled separately.",
   keywords:
     "The Two Infinities, A speculative cosmology by Jim Rankin, UK, 2026, two infinities, temporal antipodes, opposite ends of time, " +
-    "synchronisation, smallward infinity, largeward infinity, geometry of existence, pi, Euler identity, " +
-    "imaginary unit, Cantor, consciousness as integral, microtubules, Orch-OR, galactic torus, Möbius seam, " +
+    "synchronisation, smallward infinity, largeward infinity, geometry of existence, pi, Euler beta integral, " +
+    "beta-gamma theorem, Basel theorem, unit interval, Euler identity, imaginary unit, Cantor, " +
+    "consciousness as integral, microtubules, Orch-OR, galactic torus, Möbius seam, " +
     "Klein bottle, double inversion, light polarization, geometric phase, entropy, accumulated differentials, mass, gravity, cosmic ledger, chi field, dark matter, dark energy, JWST little red dots, inherited residue, " +
     "zero seam, previous universe conjecture, preregistered research, flat rotation curves, CMB, Fibonacci splice, " +
     "golden ratio, triangular numbers, arrow of time, Hawking radiation, astronomy, cosmology",

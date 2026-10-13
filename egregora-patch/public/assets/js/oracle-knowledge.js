@@ -352,6 +352,28 @@ The programme starts with public archival data and earns new telescope time only
       ]
     },
     {
+      id: "pi-zero-one",
+      question: "Why does π appear between zero and one?",
+      patterns: [
+        /(?:why|how).*(?:pi|π).*(?:zero|0).*(?:one|1)/,
+        /(?:zero|0).*(?:one|1).*(?:produce|give|result|derive|lead).*(?:pi|π)/,
+        /(?:beta integral|beta theorem|unit interval).*(?:pi|π)/,
+        /(?:pi|π).*(?:beta integral|beta theorem|unit interval)/
+      ],
+      answer: `Zero and one do **not** produce π by bare arithmetic. Finite additions, subtractions, multiplications and divisions starting from 0 and 1 stay rational, while π is transcendental. The exact claim needs declared geometry: take the continuum [0,1], give it the Euclidean metric, and ask for the symmetric measure associated with circular closure.
+
+Euler's beta-integral theorem then gives B(1/2,1/2) = ∫₀¹ dx/√(x(1−x)) = π. The bounds are exactly 0 and 1; the kernel treats them symmetrically, diverges at each edge, yet has a finite total. Under u = 2x−1 the integral becomes ∫₋₁¹ du/√(1−u²), which is the arc length of the upper unit semicircle. The apparently open interval has become a diameter, and π measures its closing arc.
+
+The same constant appears through independent checks. The fundamental theorem of calculus gives 4∫₀¹ dx/(1+x²) = π, leading to the Gregory–Leibniz series. Euler's Basel theorem gives Σₙ₌₁∞1/n² = π²/6: the terms begin at one, tend to zero and accumulate to a finite π-dependent value. These are exact theorems, not numerology.
+
+TTI's extra move remains speculative. It reads 0 and 1 as boundaries of existence and promotes Euclidean circular closure into a condition on reality. Neither the beta theorem nor the Basel theorem proves that interpretation, and closure alone does not select a Euclidean metric. Read [Why π Appears Between Zero and One](https://the-two-infinities.hatchable.site/pi-from-zero-and-one/) for the full derivation and its earned/chosen/refused ledger.`,
+      followups: [
+        "Why can the smaller and bigger infinities never fully synchronise?",
+        "Is TTI integration the same thing as entropy?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
       id: "temporal-antipodes",
       question: "Why can the smaller and bigger infinities never fully synchronise?",
       patterns: [
@@ -479,8 +501,8 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
   };
 
   window.EGOracleKnowledge = Object.freeze({
-    version: "2026-10-11.4",
-    reviewed: "2026-10-11",
+    version: "2026-10-13.1",
+    reviewed: "2026-10-13",
     entries: Object.freeze(entries.slice()),
     find
   });
@@ -512,7 +534,7 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
     return new window.Response(JSON.stringify({
       answer: entry.answer,
       followups: entry.followups,
-      note: "Prepared answer · reviewed 11 October 2026 · linked sources carry the full context.",
+      note: "Prepared answer · reviewed 13 October 2026 · linked sources carry the full context.",
       prepared: true,
       knowledge_id: entry.id,
       knowledge_version: window.EGOracleKnowledge.version

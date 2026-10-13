@@ -10,6 +10,7 @@ const output = path.join(root, 'tti', 'src', 'plates.njk');
 const pages = [
   ['index.html', '/', 'Introduction', 'introduction'],
   ['foundations/index.html', '/foundations/', 'Foundations', 'foundations'],
+  ['pi-from-zero-and-one/index.html', '/pi-from-zero-and-one/', 'π from 0 and 1', 'pi-from-zero-and-one'],
   ['the-self/index.html', '/the-self/', 'The Self', 'the-self'],
   ['dx/index.html', '/dx/', 'dx', 'dx'],
   ['gravity/index.html', '/gravity/', 'Gravity', 'gravity'],

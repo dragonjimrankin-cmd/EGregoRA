@@ -6,6 +6,7 @@
  */
 const documentMeta = Object.freeze({
   "/foundations/": ["Concept paper", "Working hypothesis"],
+  "/pi-from-zero-and-one/": ["Mathematical note", "Established derivation / speculative reading"],
   "/the-self/": ["Theoretical paper", "Working hypothesis"],
   "/dx/": ["Research note", "Working hypothesis"],
   "/prime-plane/": ["Comparative note", "Speculative model"],
@@ -64,9 +65,10 @@ export default {
       topics: [],
       subs: [
         page("I·i", "Foundations", "/foundations/", "Research question: can limit asymmetry, closure through π and complex phase form a coherent starting chain?"),
-        page("I·ii", "The Self", "/the-self/", "Tests the proposal that consciousness is an integration of differential moments into a bounded first-person history."),
-        page("I·iii", "dx", "/dx/", "Examines whether the differential can be interpreted as a completed increment without confusing notation with ontology."),
-        page("I·iv", "The Prime Plane", "/prime-plane/", "Compares base-five, base-eight and base-four phase models while keeping every physical promotion explicitly speculative.")
+        page("I·ii", "π from 0 and 1", "/pi-from-zero-and-one/", "Uses Euler’s beta-integral theorem, circular arc measure and the Basel theorem to separate an exact unit-interval result from TTI’s speculative interpretation."),
+        page("I·iii", "The Self", "/the-self/", "Tests the proposal that consciousness is an integration of differential moments into a bounded first-person history."),
+        page("I·iv", "dx", "/dx/", "Examines whether the differential can be interpreted as a completed increment without confusing notation with ontology."),
+        page("I·v", "The Prime Plane", "/prime-plane/", "Compares base-five, base-eight and base-four phase models while keeping every physical promotion explicitly speculative.")
       ]
     },
     {
@@ -127,7 +129,7 @@ export default {
       note: "Provides the figures, question interface and reader services that support inspection of the research corpus.",
       topics: [],
       subs: [
-        page("V·i", "The Plates", "/plates/", "Indexes thirty-two vector arguments beneath twenty-two exclusive source headings with links back to their papers."),
+        page("V·i", "The Plates", "/plates/", "Indexes thirty-three vector arguments beneath twenty-three exclusive source headings with links back to their papers."),
         page("V·ii", "Ask ShakDrah", "/ask-shakdrah/", "Queries the project corpus, creates drawings or films and can read answers in six distinct local voices."),
         page("V·iii", "Join", "/join/", "Creates or recovers the local reader identity used by the research rooms."),
         page("V·iv", "Your Account", "/account/", "Manages the reader’s local name, standing and account controls.")

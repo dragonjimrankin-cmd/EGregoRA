@@ -35,9 +35,9 @@ vm.runInNewContext(source, { window, URL, console }, { filename: 'oracle-knowled
 
 const kb = window.EGOracleKnowledge;
 assert.ok(kb, 'knowledge API was not exposed');
-assert.equal(kb.entries.length, 23, 'expected twenty-three substantial prepared answers');
-assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 23, 'knowledge IDs must be unique');
-assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 23, 'prepared questions must be unique');
+assert.equal(kb.entries.length, 24, 'expected twenty-four substantial prepared answers');
+assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 24, 'knowledge IDs must be unique');
+assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 24, 'prepared questions must be unique');
 
 for (const entry of kb.entries) {
   assert.ok(entry.answer.length >= 700, `${entry.id} is too slight for a high-degree answer`);
@@ -98,6 +98,7 @@ const paraphrases = new Map([
   ['Compare permanent orthogonality and quasiperiodic separation.', 'matter-phase'],
   ['Can phase separation generate net baryon number?', 'baryogenesis-boundary'],
   ['Compare base 5, base 8 and base 4 phase shifts.', 'base-shifts'],
+  ['How can pi result from the unit interval?', 'pi-zero-one'],
   ['Could JWST little red dots be inherited from a prior universe?', 'little-red-dots-residue'],
   ['Explain the Zero-Seam research proposal.', 'zero-seam-test'],
   ['Why can the two infinities not share one clock?', 'temporal-antipodes'],
@@ -131,12 +132,12 @@ for (const [label, page] of [['ShakDrah', ttiPage], ['Gink', egPage]]) {
   const group = page.match(/<div class="oracle-chips" id="oracle-chips">([\s\S]*?)<\/div>/);
   assert.ok(group, `${label} has no opening question group`);
   const chips = [...group[1].matchAll(/<button class="chip" type="button">([^<]+)<\/button>/g)].map((m) => m[1]);
-  assert.equal(chips.length, 23, `${label} should display twenty-three current questions`);
-  assert.ok(page.includes('Twenty-three prepared answers'), `${label} does not announce the twenty-three-answer update`);
+  assert.equal(chips.length, 24, `${label} should display twenty-four current questions`);
+  assert.ok(page.includes('Twenty-four prepared answers'), `${label} does not announce the twenty-four-answer update`);
   const knowledgeAt = page.indexOf('/assets/js/oracle-knowledge.js');
   const siteAt = page.indexOf('/assets/js/site.js');
   assert.ok(knowledgeAt >= 0, `${label} does not load the knowledge asset`);
   assert.ok(siteAt < 0 || knowledgeAt < siteAt, `${label} loads the knowledge asset after the oracle client`);
 }
 
-console.log('Oracle knowledge passed: 23 exact answers, 23 paraphrases, two avatars, fallback and attachment bypass.');
+console.log('Oracle knowledge passed: 24 exact answers, 24 paraphrases, two avatars, fallback and attachment bypass.');
