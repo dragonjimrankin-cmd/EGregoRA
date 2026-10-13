@@ -9,6 +9,7 @@ const siteRoot = path.join(projectRoot, 'tti', '_site');
 const expectedTitle = 'The Two Infinities: Eternal Integration of the Self';
 const retiredTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
+const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-four studies and four project resources.';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
@@ -200,6 +201,43 @@ if (!home) {
 }
 if (linkedCardCount < 24) fail(`expected at least 24 whole-card destinations, found ${linkedCardCount}`);
 else note(`${linkedCardCount} navigation cards expose their full surface as a link`);
+
+try {
+  const hatchableManifest = await readFile(path.join(projectRoot, 'tti', 'hatchable', 'hatchable.toml'), 'utf8');
+  if (!hatchableManifest.includes(`name        = "${expectedTitle}"`)) {
+    fail('Hatchable project manifest is missing the exact TTI project name');
+  }
+  if (!hatchableManifest.includes(`description = "${expectedProjectDescription}"`)) {
+    fail('Hatchable project manifest is missing the founder-specific TTI project description');
+  }
+  for (const stale of ['EGregoRA — Life, Love, Magic', 'founded by Edward Gregory']) {
+    if (hatchableManifest.includes(stale)) fail(`Hatchable TTI project manifest retains stale metadata: ${stale}`);
+  }
+
+  const workflow = await readFile(path.join(projectRoot, '.github', 'workflows', 'tti-deploy.yml'), 'utf8');
+  if (!workflow.includes(`TTI_PROJECT_DESCRIPTION: "${expectedProjectDescription}"`)) {
+    fail('TTI deployment workflow does not declare the founder-specific project description');
+  }
+  for (const option of ['--description "$TTI_PROJECT_DESCRIPTION"', '--intent "$TTI_DEPLOY_INTENT"', '--summary "$TTI_DEPLOY_SUMMARY"']) {
+    if (!workflow.includes(option)) fail(`TTI deployment workflow does not pass ${option.split(' ')[0]}`);
+  }
+  if (!workflow.includes('project metadata verified: The Two Infinities: Eternal Integration of the Self')) {
+    fail('TTI deployment workflow does not require Hatchable project-metadata verification');
+  }
+
+  const deployer = await readFile(path.join(projectRoot, 'scripts', 'hatchable-deploy.mjs'), 'utf8');
+  for (const marker of ['PROJECT_DESCRIPTION', 'DEPLOY_INTENT', 'DEPLOY_SUMMARY', 'update_project', 'get_project']) {
+    if (!deployer.includes(marker)) fail(`shared Hatchable deployer lacks metadata support: ${marker}`);
+  }
+  if (!deployer.includes('opt("description",') ||
+      !deployer.includes('opt("intent", "Deploy the EGregoRA website")') ||
+      !deployer.includes('opt("summary",')) {
+    fail('shared Hatchable deployer no longer preserves explicit EGregoRA metadata defaults');
+  }
+  note('Hatchable project metadata is TTI-specific, founder-attributed and update-verified');
+} catch (error) {
+  fail(`Hatchable project metadata audit failed: ${error.message}`);
+}
 
 const manifestPath = path.join(siteRoot, 'site.webmanifest');
 try {

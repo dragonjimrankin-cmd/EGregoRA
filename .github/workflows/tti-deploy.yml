@@ -31,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
+      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-four studies and four project resources."
+      TTI_DEPLOY_INTENT: "Deploy The Two Infinities research project"
+      TTI_DEPLOY_SUMMARY: "Publishes The Two Infinities: Eternal Integration of the Self, the independent speculative cosmology research project founded by Jim Rankin, including its studies, research resources, Atlas, plates, and ShakDrah research assistant."
     steps:
       - uses: actions/checkout@v5
 
@@ -87,6 +90,10 @@ jobs:
           grep -Fq 'Project Table of Contents' tti/hatchable/public/index.html
           grep -Fq 'Geometry, Integration and the Conditions of Return' tti/hatchable/public/index.html
           grep -Fq '<dt>Research status</dt><dd>Working hypotheses</dd>' tti/hatchable/public/index.html
+          grep -Fq 'name        = "The Two Infinities: Eternal Integration of the Self"' tti/hatchable/hatchable.toml
+          grep -Fq 'research project founded by Jim Rankin' tti/hatchable/hatchable.toml
+          ! grep -R -Fq 'EGregoRA — Life, Love, Magic' tti/hatchable
+          ! grep -R -Fq 'founded by Edward Gregory' tti/hatchable
           test "$(grep -c 'class=\"research-toc-part\"' tti/hatchable/public/index.html)" -eq 5
           test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 28
           grep -Fq 'Ten Claims, One Interdependent Framework' tti/hatchable/public/index.html
@@ -261,7 +268,10 @@ jobs:
               --bundle tti/hatchable \
               --project "$PROJECT_ID" \
               --name "The Two Infinities: Eternal Integration of the Self" \
-              --slug two-infinities 2>&1 | tee /tmp/hatchable-deploy.log
+              --slug two-infinities \
+              --description "$TTI_PROJECT_DESCRIPTION" \
+              --intent "$TTI_DEPLOY_INTENT" \
+              --summary "$TTI_DEPLOY_SUMMARY" 2>&1 | tee /tmp/hatchable-deploy.log
             STATUS=${PIPESTATUS[0]}
             set -e
             if [ "$STATUS" -eq 0 ]; then break; fi
@@ -279,6 +289,7 @@ jobs:
             echo "::error title=Hatchable deployment failed::$MESSAGE"
             exit "$STATUS"
           fi
+          grep -Fq 'project metadata verified: The Two Infinities: Eternal Integration of the Self' /tmp/hatchable-deploy.log
 
       - name: Verify the complete live TTI site
         run: |

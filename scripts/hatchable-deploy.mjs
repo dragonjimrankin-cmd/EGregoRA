@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 /**
- * EGregoRA → Hatchable deployer
+ * Hatchable project deployer
  * ---------------------------------------------------------------------------
  * Talks to the Hatchable MCP server (https://hatchable.com/mcp, Streamable
  * HTTP transport) with a static bearer token and runs the documented build
- * loop: create_project → write_files → dry_run_deploy → deploy.
+ * loop: create/update project → write_files → dry_run_deploy → deploy.
  *
  * Usage:
  *   npm run build:hatchable                 # refresh hatchable/public
  *   export HATCHABLE_TOKEN=hb_xxxxxxxx
  *   node scripts/hatchable-deploy.mjs                 # create a new project
  *   node scripts/hatchable-deploy.mjs --project proj_123   # redeploy existing
+ *   node scripts/hatchable-deploy.mjs --name Name --description "Project description"
+ *   node scripts/hatchable-deploy.mjs --intent "Deploy…" --summary "Publishes…"
  *   node scripts/hatchable-deploy.mjs --dry-run            # validate only
  *   node scripts/hatchable-deploy.mjs --tools              # dump tool schemas
  *
@@ -43,6 +45,14 @@ const opt = (n, d = null) => {
 const BUNDLE = join(ROOT, opt("bundle", "hatchable"));
 const PROJECT_NAME = opt("name", "EGregoRA");
 const PROJECT_SLUG = opt("slug", "egregora");
+const PROJECT_DESCRIPTION = opt("description",
+  "EGregoRA — Life, Love, Magic. An ornate order of enquiry founded by Edward Gregory: cosmic physics, " +
+  "druidry, sacred geometry, neuroscience, the Law of One and more. Static site: introduction, podcast, " +
+  "videos, ask-ed, infographics, music, products, further research.");
+const DEPLOY_INTENT = opt("intent", "Deploy the EGregoRA website");
+const DEPLOY_SUMMARY = opt("summary",
+  "Publishes the ornate EGregoRA static site: introduction and charter, podcast with RSS, videos, " +
+  "Ask Ed a Question, four SVG infographic plates, music, products and the annotated research bibliography.");
 const BINARY = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".ico", ".woff", ".woff2", ".mp3", ".m4a", ".mp4", ".bin"]);
 
 if (!TOKEN) {
@@ -113,11 +123,47 @@ async function call(tool, args) {
 }
 
 /** Pick the first argument name the tool's schema actually accepts. */
-function argName(tool, candidates, fallback) {
+function acceptedArg(tool, candidates) {
   const props = TOOLS.get(tool)?.inputSchema?.properties || {};
-  return candidates.find((c) => c in props) || fallback || candidates[0];
+  return candidates.find((candidate) => candidate in props) || null;
+}
+function argName(tool, candidates, fallback) {
+  return acceptedArg(tool, candidates) || fallback || candidates[0];
 }
 function hasTool(name) { return TOOLS.has(name); }
+
+async function syncProjectMetadata(projectId) {
+  if (!hasTool("update_project")) {
+    throw new Error("Hatchable does not expose update_project; existing project metadata cannot be synchronised safely.");
+  }
+
+  const idArg = acceptedArg("update_project", ["project_id", "projectId", "project"]);
+  const nameArg = acceptedArg("update_project", ["name", "project_name", "title"]);
+  const descriptionArg = acceptedArg("update_project", ["description", "project_description"]);
+  const accepted = Object.keys(TOOLS.get("update_project")?.inputSchema?.properties || {});
+  if (!idArg || !nameArg || !descriptionArg) {
+    throw new Error(`update_project cannot set the required name and description (accepted: ${accepted.join(", ") || "none"}).`);
+  }
+
+  console.log(`▸ update_project metadata for ${projectId}`);
+  await call("update_project", {
+    [idArg]: projectId,
+    [nameArg]: PROJECT_NAME,
+    [descriptionArg]: PROJECT_DESCRIPTION
+  });
+
+  if (!hasTool("get_project")) {
+    throw new Error("Hatchable does not expose get_project; updated project metadata cannot be verified.");
+  }
+  const current = await call("get_project", {
+    [argName("get_project", ["project_id", "projectId", "project"])]: projectId
+  });
+  const serialized = JSON.stringify(current);
+  if (!serialized.includes(PROJECT_NAME) || !serialized.includes(PROJECT_DESCRIPTION)) {
+    throw new Error("Hatchable returned project metadata that does not contain the requested name and description.");
+  }
+  console.log(`  ✓ project metadata verified: ${PROJECT_NAME}`);
+}
 
 /* ---------------------------------------------------------------- files --- */
 function walk(dir, acc = []) {
@@ -184,12 +230,12 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
   let projectId = opt("project", process.env.HATCHABLE_PROJECT_ID);
   if (!projectId) {
     console.log(`▸ create_project "${PROJECT_NAME}"`);
+    const createSlugArg = acceptedArg("create_project", ["slug"]);
+    const createDescriptionArg = acceptedArg("create_project", ["description", "project_description"]);
     const created = await call("create_project", {
       [argName("create_project", ["name", "project_name", "title"])]: PROJECT_NAME,
-      ...(argName("create_project", ["slug"], null) === "slug" ? { slug: PROJECT_SLUG } : {}),
-      ...(argName("create_project", ["description"], null) === "description"
-        ? { description: "EGregoRA — Life, Love, Magic. An ornate order of enquiry founded by Edward Gregory: cosmic physics, druidry, sacred geometry, neuroscience, the Law of One and more. Static site: introduction, podcast, videos, ask-ed, infographics, music, products, further research." }
-        : {})
+      ...(createSlugArg ? { [createSlugArg]: PROJECT_SLUG } : {}),
+      ...(createDescriptionArg ? { [createDescriptionArg]: PROJECT_DESCRIPTION } : {})
     });
     projectId = created.project_id || created.id || created.projectId;
     console.log(`  project_id: ${projectId}`);
@@ -198,6 +244,7 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
   } else {
     console.log(`▸ using existing project ${projectId}`);
   }
+  await syncProjectMetadata(projectId);
 
   const pid = argName("write_files", ["project_id", "projectId", "project"]);
 
@@ -393,12 +440,12 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 
   /* 5 — deploy */
   console.log("▸ deploy");
+  const deployIntentArg = acceptedArg("deploy", ["intent", "deploy_intent"]);
+  const deploySummaryArg = acceptedArg("deploy", ["summary", "deploy_summary", "description"]);
   const deployed = await call("deploy", {
     [argName("deploy", ["project_id", "projectId"])]: projectId,
-    intent: "Deploy the EGregoRA website",
-    summary:
-      "Publishes the ornate EGregoRA static site: introduction and charter, podcast with RSS, videos, " +
-      "Ask Ed a Question, four SVG infographic plates, music, products and the annotated research bibliography."
+    ...(deployIntentArg ? { [deployIntentArg]: DEPLOY_INTENT } : {}),
+    ...(deploySummaryArg ? { [deploySummaryArg]: DEPLOY_SUMMARY } : {})
   });
 
   console.log("\n✔ Deployed.");
