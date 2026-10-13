@@ -1,8 +1,8 @@
 # TTI Site Audit
 
-**Project:** The Shape of Becoming: Infinity, Gravity and Existence  
+**Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.4
+**Revision:** r4.5
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -16,6 +16,14 @@ npm run audit:tti
 ```
 
 The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching page labels, the five-path Atlas, all twenty-seven mapped destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+
+## Project title in r4.5
+
+- Renamed the project throughout to **The Two Infinities: Eternal Integration of the Self**.
+- Set the introduction hero on two lines as **The Two Infinities:** and *Eternal Integration of the Self*.
+- Updated masthead identity, page and social metadata, structured data, Atom discovery, manifest, Atlas root and written fallback, Plates generation, ShakDrah metadata, Hatchable project configuration and deployment checks.
+- Updated the EGregoRA relocation notices for Möbius, Entropy and the Cosmic Ledger so they name the current TTI project.
+- Retained the exact attribution line **“A speculative cosmology by Jim Rankin, UK, 2026”** and every existing route.
 
 ## Header-aligned page labels in r4.4
 

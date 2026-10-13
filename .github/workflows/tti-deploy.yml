@@ -1,4 +1,4 @@
-name: Deploy The Shape of Becoming
+name: Deploy The Two Infinities
 
 on:
   workflow_dispatch:
@@ -79,10 +79,10 @@ jobs:
           test "$(wc -c < tti/hatchable/public/assets/js/headtts/voices/bm_george.bin)" -gt 500000
           test "$(wc -c < tti/hatchable/public/assets/js/headtts/voices/am_fenrir.bin)" -gt 500000
           test -s tti/hatchable/public/assets/js/headtts/LICENSE-Kokoro.txt
-          grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
+          grep -Fq 'The Two Infinities: Eternal Integration of the Self' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.4' tti/hatchable/public/index.html
+          grep -Fq 'r4.5' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -237,7 +237,7 @@ jobs:
             node scripts/hatchable-deploy.mjs \
               --bundle tti/hatchable \
               --project "$PROJECT_ID" \
-              --name "The Shape of Becoming: Infinity, Gravity and Existence" \
+              --name "The Two Infinities: Eternal Integration of the Self" \
               --slug two-infinities 2>&1 | tee /tmp/hatchable-deploy.log
             STATUS=${PIPESTATUS[0]}
             set -e
@@ -263,8 +263,8 @@ jobs:
           const pages = [
             {
               url: 'https://the-two-infinities.hatchable.site/',
-              markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.4',
+              markers: ['The Two Infinities:', 'Eternal Integration of the Self',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.5',
                 'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',
                 'The same map, written out', 'class="nav-cluster"', 'Part I', 'First Principles',
                 'Part II', 'Cosmic Architecture', 'Part III', 'Seams and Return',

@@ -1,4 +1,4 @@
-# The Shape of Becoming: Infinity, Gravity and Existence. Everything here is meant to be read.
+# The Two Infinities: Eternal Integration of the Self. Everything here is meant to be read.
 User-agent: *
 Allow: /
 Disallow: /account/

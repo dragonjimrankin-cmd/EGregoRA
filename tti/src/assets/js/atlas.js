@@ -76,8 +76,8 @@ function start(data) {
   /* ------------------------------------------------------------- the tree */
   const nodes = [];
   const root = {
-    title: "The Shape of Becoming", href: "/", kind: "root", depth: 0,
-    note: "Infinity, Gravity and Existence. Five reading paths, one speculative framework.", children: []
+    title: "The Two Infinities", href: "/", kind: "root", depth: 0,
+    note: "Eternal Integration of the Self. Five reading paths, one speculative framework.", children: []
   };
   nodes.push(root);
 

@@ -6,7 +6,8 @@ import site from '../tti/src/_data/site.js';
 
 const projectRoot = path.resolve(process.cwd());
 const siteRoot = path.join(projectRoot, 'tti', '_site');
-const expectedTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
+const expectedTitle = 'The Two Infinities: Eternal Integration of the Self';
+const retiredTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
@@ -93,6 +94,7 @@ for (const file of htmlFiles) {
   if (/\bPart (?:VI|VII|VIII)\b/.test($('body').text())) {
     fail(`${relative}: retains an obsolete Part VI, VII or VIII page label`);
   }
+  if (html.includes(retiredTitle)) fail(`${relative}: contains the retired project title`);
   if (html.includes('A Geometry of Existence') || html.includes('A Geometry of the Cosmos')) {
     fail(`${relative}: contains a retired tagline`);
   }

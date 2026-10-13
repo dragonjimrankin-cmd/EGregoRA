@@ -1,9 +1,9 @@
-# Hatchable project manifest — The Shape of Becoming: Infinity, Gravity and Existence
+# Hatchable project manifest — The Two Infinities: Eternal Integration of the Self
 # Deployment refreshed 2026-10-09 after repository-secret configuration (retry 2).
 # Reference: https://hatchable.com/docs/developers/config
-name        = "The Shape of Becoming: Infinity, Gravity and Existence"
+name        = "The Two Infinities: Eternal Integration of the Self"
 tagline     = "A speculative cosmology by Jim Rankin, UK, 2026"
-description = "The Shape of Becoming: Infinity, Gravity and Existence — the Unified Edition set out page by page — the asymmetry between the infinity below one and the infinity above it, closure at pi, the integral self, gravity as curvature of the geometry, the galactic torus, Mobius parity, the cosmic ledger of three residues, the seams, eleven plain-language essays, matter as residue with complementary antimatter out of phase, one Prime role per universe-instance, an orientation-reversing torus mapping-space universe, and an attributed analysis of The Channeling Circle. ShakDrah, a green dragon, keeps the current papers and answers questions from them."
+description = "The Two Infinities: Eternal Integration of the Self — the Unified Edition set out page by page — the asymmetry between the infinity below one and the infinity above it, closure at pi, the integral self, gravity as curvature of the geometry, the galactic torus, Mobius parity, the cosmic ledger of three residues, the seams, eleven plain-language essays, matter as residue with complementary antimatter out of phase, one Prime role per universe-instance, an orientation-reversing torus mapping-space universe, and an attributed analysis of The Channeling Circle. ShakDrah, a green dragon, keeps the current papers and answers questions from them."
 category    = "Publishing"
 tags        = ["astronomy", "cosmology", "mathematics", "philosophy", "geometry", "physics"]
 

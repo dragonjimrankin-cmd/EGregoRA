@@ -5,7 +5,7 @@ import * as cheerio from 'cheerio';
 import site from '../tti/src/_data/site.js';
 import ttiAtlas from '../tti/src/_data/ttiAtlas.js';
 
-const expectedTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
+const expectedTitle = 'The Two Infinities: Eternal Integration of the Self';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
 const expectedParts = ttiAtlas.limbs;
 const expectedItems = expectedParts.flatMap((part) => part.subs);

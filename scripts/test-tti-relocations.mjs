@@ -48,7 +48,7 @@ for (const route of routes) {
     `${route.slug} does not canonicalise to TTI`);
   assert.ok(stub.includes(`http-equiv="refresh" content="0; url=${route.destination}"`),
     `${route.slug} does not relocate readers to TTI`);
-  assert.ok(stub.includes('The Shape of Becoming: Infinity, Gravity and Existence'),
+  assert.ok(stub.includes('The Two Infinities: Eternal Integration of the Self'),
     `${route.slug} does not identify the canonical project`);
 
   const source = await readFile(join(repository, 'tti', 'src', route.source), 'utf8');

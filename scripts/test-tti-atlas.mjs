@@ -96,7 +96,9 @@ for (const marker of [".atlas-grid", ".atlas-stage", ".atlas-label", ".atlas--of
   assert.ok(css.includes(marker), `Atlas styling is missing ${marker}`);
 }
 assert.ok(exists("tti/src/assets/js/vendor/three.module.js"), "the local Three.js module is missing");
-assert.ok(home.includes("The Shape of Becoming: Infinity, Gravity and Existence"), "the exact project title must remain on the introduction");
+assert.ok(home.includes("The Two Infinities: Eternal Integration of the Self"), "the exact project title must remain on the introduction");
+assert.ok(home.includes("<span>The Two Infinities:</span><br><em>Eternal Integration of the Self</em>"),
+  "the introduction hero must retain the two-line project title");
 assert.ok(home.includes("A speculative cosmology by Jim Rankin, UK, 2026"), "the exact masthead tagline must remain on the introduction");
 
 console.log(`TTI Atlas regression passed: ${ttiAtlas.limbs.length} paths, ${destinations.length} destinations, ${staticPageRoutes.length} built pages.`);
