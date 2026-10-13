@@ -85,7 +85,7 @@ jobs:
           grep -Fq 'The dependency map' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.6' tti/hatchable/public/index.html
+          grep -Fq 'r4.7' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -267,7 +267,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.6',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.7',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',
                 'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',
                 'The same map, written out', 'class="nav-cluster"', 'Part I', 'First Principles',
@@ -450,6 +450,8 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/assets/css/main.css',
               markers: ['Navigation observatory', '.nav-cluster', '.nav-panel',
                 '.js-nav .site-nav.open', 'position: sticky',
+                '.nav-cluster > summary:hover .nav-cluster-title',
+                '.site-nav .nav-panel a:hover .nav-link-copy small',
                 'grid-template-columns: repeat(5, minmax(0, 1fr))',
                 '.plate-accordion-group[open]', '.plate-group-toggle::after',
                 '.atlas-grid', 'body.atlas-focused',

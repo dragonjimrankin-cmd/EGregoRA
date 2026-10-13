@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.6
+**Revision:** r4.7
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -16,6 +16,14 @@ npm run audit:tti
 ```
 
 The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching page labels, the five-path Atlas, all twenty-seven mapped destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+
+## Expanding header links in r4.7
+
+- Kept the five-Part desktop rail compact at rest while allowing a hovered, keyboard-focused or open Part heading to wrap to its full text instead of retaining an ellipsis.
+- Made each hovered or keyboard-focused page destination expand vertically so its complete explanatory note is visible without clipping.
+- Made Part headings and destination notes wrap in the touch navigation, where hover is unavailable.
+- Allowed a signed-in account chip to reveal a long member label on hover or keyboard focus without an ellipsis.
+- Added header regression checks and live CSS deployment markers for the expansion behaviour.
 
 ## Interlinked core claims in r4.6
 
@@ -94,7 +102,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - 26 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
 - Ten ordered core claims each explain their dependency and consequence; a six-branch map summarises how the framework interlinks.
-- Five numbered masthead Parts expose 27 unique page subheadings from the shared Atlas data, with active-page state, mobile controls and keyboard dismissal verified.
+- Five numbered masthead Parts expose 27 unique page subheadings from the shared Atlas data, with full-text hover/focus expansion, touch wrapping, active-page state, mobile controls and keyboard dismissal verified.
 - All 25 built destination pages carry the matching header Part and page title; runtime Join and Account labels are aligned to Part V.
 - The introduction Atlas has five TTI-specific reading paths and the same 27 unique destinations, including all 25 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
 - Twenty-one mutually exclusive plate headings contain all 31 gathered vectors; the former bullet index is absent.

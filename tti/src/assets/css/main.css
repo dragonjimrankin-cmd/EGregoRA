@@ -1568,6 +1568,15 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   font-size: .82rem; letter-spacing: .04em; text-transform: none;
   max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+.head-join:hover .head-join-addr,
+.head-join:focus-visible .head-join-addr,
+.head-join:hover .head-join-who,
+.head-join:focus-visible .head-join-who {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .acct-email { font-family: 'EB Garamond', serif; color: #76cfee; margin: .1rem 0 1rem; word-break: break-all; }
 .acct-grid {
   display: grid; grid-template-columns: auto 1fr; gap: .45rem 1.2rem;
@@ -4137,6 +4146,30 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   line-height: 1.15;
   color: #8f9cc0;
 }
+
+/* Keep the header rail compact at rest, then let the hovered or
+   keyboard-focused destination grow to its natural height. No label or note
+   remains behind an ellipsis once the reader asks to see it. */
+@media (min-width: 901px) {
+  .nav-cluster > summary:hover .nav-cluster-title,
+  .nav-cluster > summary:focus-visible .nav-cluster-title,
+  .nav-cluster[open] > summary .nav-cluster-title {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.18;
+    text-align: center;
+  }
+  .site-nav .nav-panel a:hover .nav-link-copy small,
+  .site-nav .nav-panel a:focus-visible .nav-link-copy small {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.3;
+  }
+}
 .nav-link-arrow {
   color: var(--verdant);
   opacity: 0;
@@ -4274,7 +4307,12 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
     min-width: 3.25rem;
     font-size: 0.58rem;
   }
-  .nav-cluster-title { overflow: visible; text-overflow: clip; }
+  .nav-cluster-title {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
   .nav-chevron {
     position: static;
     margin-left: auto;
@@ -4309,6 +4347,13 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
     padding: 0.46rem 0.52rem;
   }
   .site-nav .nav-panel a i { width: 19px; height: 19px; }
+  .nav-link-copy small {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.3;
+  }
   .nav-link-arrow { display: none; }
   .nav-actions {
     padding-top: 0.65rem;
@@ -4326,7 +4371,6 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 @media (max-width: 560px) {
   .site-head .brand-name { font-size: clamp(0.56rem, 2.55vw, 0.7rem); }
   .site-nav .nav-panel ul { grid-template-columns: 1fr; }
-  .nav-link-copy small { white-space: normal; }
 }
 
 @media (max-width: 420px) {

@@ -59,6 +59,14 @@ assert.match(css, /\.nav-panel\s*\{[\s\S]*?position:\s*absolute;/, 'desktop navi
 assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.js-nav \.site-nav\.open/, 'mobile menu is not responsive');
 assert.match(css, /grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/,
   'tablet navigation does not use its available width');
+assert.match(css, /\.nav-cluster > summary:hover \.nav-cluster-title,[\s\S]*?white-space:\s*normal;/,
+  'hovered Part headings do not expand to reveal their full text');
+assert.match(css, /\.site-nav \.nav-panel a:hover \.nav-link-copy small,[\s\S]*?white-space:\s*normal;/,
+  'hovered page links do not expand to reveal their full notes');
+assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.nav-link-copy small\s*\{[\s\S]*?white-space:\s*normal;/,
+  'touch navigation still clips page-link notes');
+assert.match(css, /\.head-join:hover \.head-join-addr,[\s\S]*?text-overflow:\s*clip;/,
+  'hovered account link does not reveal a long member label');
 assert.match(js, /classList\.add\("js-nav"\)/, 'progressive mobile navigation is not armed');
 assert.match(js, /event\.key !== "Escape"/, 'Escape does not close the navigation');
 assert.match(js, /cluster\.open\) closeClusters\(cluster\)/, 'navigation Parts do not close their siblings');
@@ -120,4 +128,4 @@ if (process.argv.includes('--built')) {
   }
 }
 
-console.log(`TTI header passed: five numbered Parts, ${headerItems.length} unique page subheadings, matching page labels, exact identity, responsive controls and active-page state.`);
+console.log(`TTI header passed: five numbered Parts, ${headerItems.length} unique page subheadings, full-text hover/focus expansion, matching page labels, responsive controls and active-page state.`);
