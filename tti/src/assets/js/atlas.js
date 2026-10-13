@@ -1,94 +1,83 @@
 /* ===========================================================================
-   The Atlas — the whole site as one figure you can turn in your hand
+   The TTI Atlas — the whole reading room as one figure you can turn
    ---------------------------------------------------------------------------
-   One trunk, eleven limbs, the sub-limbs hung off the limb they belong to,
-   and under each of those the actual sections of the page, read out of the
-   pages themselves by scripts/gather-topics.py. Nothing here is a second
-   hand-written list: if a page gains a section, the map gains a twig.
+   One centre, five reading paths and every paper hung beneath the path it
+   belongs to. The written map beside the WebGL figure remains the complete,
+   keyboard-readable fallback.
 
-   The same map is drawn four ways, because the same structure genuinely is
-   all four of these things:
+   The same map is drawn four ways:
 
      the figure    a plain branching body, the clearest to read
-     the cosmos    Möbius-seamed torus knots strung round a multiverse
-     the tree      a trunk, boughs and twigs, which is what a limb is
-     the galaxy    stars, planets and moons turning in EGregoRA
+     the cosmos    Möbius-seamed torus knots inside one round whole
+     the tree      a trunk, five boughs and their papers
+     the galaxy    each path a star and each paper a planet
 
-   Only one stem stands open at a time. Opening a limb folds every other
-   limb away, and opening a sub-limb folds its sisters, so the figure never
-   becomes a thicket. Clicking anything darkens the rest of the page to
-   almost nothing and gives the map the whole screen; Escape, or the button,
-   gives the page back.
+   Only one stem stands open at a time. Clicking anything can give the map
+   the whole screen; Escape, or the button, gives the page back.
    ======================================================================== */
 import * as THREE from "./vendor/three.module.js";
 
 const host = document.getElementById("atlas-stage");
 const feed = document.getElementById("atlas-data");
-if (host && feed && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  try { start(JSON.parse(feed.textContent)); } catch (err) { quietly(err); }
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (host && feed) {
+  if (reduceMotion) quietly();
+  else {
+    const box = document.getElementById("atlas-box");
+    if (box) box.classList.remove("atlas--off");
+    try { start(JSON.parse(feed.textContent)); } catch (err) { quietly(err); }
+  }
 }
 
 function quietly(err) {
-  if (window.console) console.warn("atlas:", err);
+  if (err && window.console) console.warn("atlas:", err);
   const box = document.getElementById("atlas-box");
   if (box) box.classList.add("atlas--off");
 }
 
 function start(data) {
-  const GOLD = 0xd7b05a, BRIGHT = 0xf3ddaa, VERDANT = 0x7fae7a;
-  const BLUE = 0x8fb6d8, ROSE = 0xc98b6a, DIM = 0x6d6350;
+  const GOLD = 0x76cfee, BRIGHT = 0xcdefff, VERDANT = 0x45d6b4;
+  const BLUE = 0xa07cf0, ROSE = 0xef84b6, DIM = 0x596588;
   const V = THREE.Vector3;
 
   const say = (t) => { const el = document.getElementById("atlas-status"); if (el) el.textContent = t; };
 
-  /* --------------------------------------------------------- the Seam ----
-     The cosmos skin strings its knots on a M\u00f6bius band, and a band with
-     a half-twist in it is not decoration: it is the one claim this order
-     makes about how the limbs are joined. It is named on the map, and the
-     reading panel carries the synopsis. */
+  /* --------------------------------------------------------- the seam ----
+     The cosmos skin strings its paths on a Möbius band. Ordinary topology
+     is separated here from the interpretive work TTI asks that topology to
+     do; the reading panel keeps both registers visible. */
   const SEAM = {
-    title: "The Moebius Seam",
+    title: "The Möbius Seam",
     kind: "seam",
-    href: "/cosmic-aether/",
+    href: "/moebius/",
     lines: [
-      "A strip given half a turn before its ends are joined. The twist costs " +
-      "it a side: run a finger along the surface and you come back to where " +
-      "you began having covered what looked like both faces without once " +
-      "crossing an edge. One side, one edge, no inside. " +
-      "<span class=\"sci\">\u25c6</span> established science \u2014 this is " +
-      "ordinary topology, and you can cut one out of paper this evening.",
+      "A strip given half a turn before its ends are joined has one side and " +
+      "one edge. Follow its surface and you return to the start having covered " +
+      "what first looked like two faces. <span class=\"sci\">\u25c6</span> " +
+      "established mathematics \u2014 this is ordinary topology.",
 
-      "The order reads it as the shape of the join. Every limb on this map is " +
-      "a knot strung on that one seam, so there is no back of the house and no " +
-      "front of it: physics does not sit on the far side of magic, and " +
-      "neuroscience is not the underside of prayer. Follow any of them far " +
-      "enough and you arrive at the others, facing the other way. " +
-      "<span class=\"spec\">\u25c6</span> speculative and contested \u2014 a " +
-      "reading of a structure, not a measurement of one.",
+      "TTI uses that one-sided return as a model for identification across a " +
+      "cosmic seam. The mathematical surface is real; the cosmological reading " +
+      "is not derived from it. <span class=\"spec\">\u25c6</span> the " +
+      "framework's argument, stated as conjecture.",
 
-      "Its flow is what makes causality: the seam runs one way through " +
-      "everything, and because it has no second side there is nowhere for a " +
-      "cause to be hidden. What is done enters the surface and comes round. " +
-      "That returning is the cosmic ledger \u2014 the account kept between the " +
-      "old and the new, in which nothing is written off and nothing is paid " +
-      "twice, only carried round the twist and met again changed. " +
-      "<span class=\"myth\">\u25c6</span> myth, tradition and primary esoteric " +
-      "text \u2014 the order's own framing, offered as such.",
+      "A second inversion restores an exactly reversible state. Any residue " +
+      "that survives must therefore have an identified carrier: topology, " +
+      "relative phase, hysteresis, environment or an asymmetric boundary. " +
+      "The map links that question to the ledger rather than treating return " +
+      "itself as evidence.",
 
-      "And it is watched. The spiral being is the observer who does not stand " +
-      "outside the band, because there is no outside to stand in: it travels " +
-      "the seam, and its turning is how the ledger is read. Its testimony is " +
-      "the only one available from in here, which is exactly why this order " +
-      "grades what it says rather than simply believing it. " +
-      "<span class=\"myth\">\u25c6</span> myth, tradition and primary esoteric text."
+      "The seam joins the five reading paths visually; it does not erase their " +
+      "different evidential grades. Every paper still marks what is established, " +
+      "what is scholarship, what is speculative and what is vision."
     ]
   };
 
   /* ------------------------------------------------------------- the tree */
   const nodes = [];
   const root = {
-    title: "EGregoRA", href: "/", kind: "root", depth: 0,
-    note: "An order of enquiry. Eleven limbs, one subject.", children: []
+    title: "The Shape of Becoming", href: "/", kind: "root", depth: 0,
+    note: "Infinity, Gravity and Existence. Five reading paths, one speculative framework.", children: []
   };
   nodes.push(root);
 
@@ -115,7 +104,7 @@ function start(data) {
 
   /* ------------------------------------------------------------ the rooms */
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x0b0a09, 0.018);
+  scene.fog = new THREE.FogExp2(0x03040c, 0.018);
 
   const camera = new THREE.PerspectiveCamera(46, 16 / 9, 0.1, 900);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -169,8 +158,8 @@ function start(data) {
     });
   };
 
-  /* A ring of n points on a sphere, spread by the golden angle so eleven
-     limbs are evenly scattered rather than banded. */
+  /* A ring of n points on a sphere, spread by the golden angle so the five
+     reading paths are evenly scattered rather than banded. */
   const spiralOnSphere = (i, n, r) => {
     const y = 1 - (i / Math.max(1, n - 1)) * 2;
     const rad = Math.sqrt(Math.max(0, 1 - y * y));
@@ -205,8 +194,8 @@ function start(data) {
 
     cosmos: {
       label: "The Cosmos",
-      blurb: "Each limb a torus knot, seamed like a M\u00f6bius band and threaded " +
-        "through the others, all of them held inside one round multiverse.",
+      blurb: "Each reading path is a torus knot, seamed like a M\u00f6bius band " +
+        "and threaded through the others inside one round whole.",
       dist: 62,
       place() {
         root.home = new V(0, 0, 0);
@@ -242,10 +231,9 @@ function start(data) {
         );
         group.add(haze);
 
-        /* The seam. A M\u00f6bius band is a strip given half a twist before its
-           ends are joined, which is why it has one side and one edge: the
-           order's favourite fact about continuity, drawn here as the thread
-           the knots are strung on. */
+        /* The seam. A Möbius band is a strip given half a twist before its
+           ends are joined, which is why it has one side and one edge. Here it
+           is the visual thread on which the reading paths are strung. */
         const strip = [];
         const SEG = 260, W = 1.5, R = 30;
         for (let i = 0; i <= SEG; i++) {
@@ -280,15 +268,15 @@ function start(data) {
 
     tree: {
       label: "The Tree",
-      blurb: "A trunk, eleven boughs and their twigs \u2014 which is what a limb " +
-        "has meant here all along.",
+      blurb: "A trunk, five boughs and the papers they carry \u2014 the same " +
+        "reading paths in a more familiar branching form.",
       dist: 40,
       place() {
         root.home = new V(0, -2, 0);
         LIMBS.forEach((L, i) => {
           /* Up the trunk in a spiral, the way a real bough leaves it: the
              higher the limb, the shorter its reach, so the crown closes. */
-          const t = i / (LIMBS.length - 1);
+          const t = i / Math.max(1, LIMBS.length - 1);
           const a = i * 2.39996;                    /* the golden angle again */
           const y = 3 + t * 15;
           const out = 9.5 - t * 3.4;
@@ -331,8 +319,8 @@ function start(data) {
 
     galaxy: {
       label: "The Galaxy",
-      blurb: "EGregoRA as a galaxy: each limb a star, its sub-limbs planets, " +
-        "and every section of a page a moon.",
+      blurb: "The framework as a galaxy: each reading path a star, each paper " +
+        "a planet and each mapped section a moon.",
       dist: 54,
       place() {
         root.home = new V(0, 0, 0);
@@ -393,7 +381,7 @@ function start(data) {
   };
 
   const ORDER = ["figure", "cosmos", "tree", "galaxy"];
-  const SAVED = "eg-atlas-skin";
+  const SAVED = "tti-atlas-skin";
   let skinName = "figure";
   try {
     const was = window.localStorage.getItem(SAVED);
@@ -459,10 +447,9 @@ function start(data) {
   }
   const foldAll = () => nodes.forEach((n) => { n.open = false; });
 
-  const shown = (n) =>
-    n.depth <= 1 ||
-    (n.kind === "sub" && n.parent && n.parent.kind === "limb") ||
-    (n.parent && n.parent.open);
+  /* The whole figure begins as five paths. Opening one reveals only the
+     papers on that path; opening another folds the first away. */
+  const shown = (n) => n.depth <= 1 || (n.parent && n.parent.open);
 
   /* ------------------------------------------------------------ the labels */
   const layer = document.getElementById("atlas-labels");
@@ -549,7 +536,7 @@ function start(data) {
     if (n) choose(n); else clear();
   };
 
-  const KIND = { root: "The trunk", limb: "A limb", sub: "A sub-limb", topic: "A section of the page" };
+  const KIND = { root: "The framework", limb: "A reading path", sub: "A paper or room", topic: "A section of the page" };
 
   function choose(n) {
     /* Clicking the thing you already have in hand is how you go there \u2014
@@ -588,14 +575,14 @@ function start(data) {
       '<p class="kicker">The thread the knots are strung on</p>' +
       "<h3>" + SEAM.title + "</h3>" +
       SEAM.lines.map((t) => "<p>" + t + "</p>").join("") +
-      '<p><a class="btn" href="' + SEAM.href + '">Cosmic Aether &rarr;</a></p>';
-    say(SEAM.title + ". One side, one edge, and every limb strung on it.");
+      '<p><a class="btn" href="' + SEAM.href + '">Read Möbius &rarr;</a></p>';
+    say(SEAM.title + ". Established topology, speculative cosmological use.");
   }
   function paint(n) {
     if (!read) return;
     if (!n) {
       read.innerHTML = '<p class="muted small">Turn it with a drag, come closer with the wheel. ' +
-        "Click a limb to open it \u2014 only one stem stands open at a time, so the rest fold away.</p>";
+        "Click a reading path to open it \u2014 only one stem stands open at a time, so the rest fold away.</p>";
       return;
     }
     const kids = n.children.length
@@ -658,7 +645,7 @@ function start(data) {
     if (note) note.textContent = skin.blurb;
     if (name === "cosmos") {
       say(skin.label + ". " + skin.blurb +
-        " The gold band is the Moebius Seam \u2014 click its name for what it is.");
+        " The blue band is the M\u00f6bius Seam \u2014 click its name to read its evidential status.");
     }
   }
   document.querySelectorAll("[data-skin]").forEach((b) =>
@@ -671,7 +658,7 @@ function start(data) {
     e.currentTarget.textContent = spin ? "Hold Still" : "Turn It";
     e.currentTarget.setAttribute("aria-pressed", String(spin));
   });
-  on("at-fold", () => { foldAll(); clear(); say("Folded back to the limbs."); });
+  on("at-fold", () => { foldAll(); clear(); say("Folded back to the five reading paths."); });
   on("at-home", () => { yaw = 0.6; pitch = 0.32; dist = skin.dist; foldAll(); clear(); spin = true; say("Back to the whole figure."); });
   on("at-focus", () => focus(!focused));
 

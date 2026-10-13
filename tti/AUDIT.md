@@ -2,12 +2,12 @@
 
 **Project:** The Shape of Becoming: Infinity, Gravity and Existence  
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.1
+**Revision:** r4.2
 **Audit date:** 13 October 2026
 
 ## Scope
 
-The audit covers all generated TTI documents, shared metadata, local navigation, fragments, structured data, discovery files, the visual plate room, the prepared ShakDrah corpus, and deployment smoke checks.
+The audit covers all generated TTI documents, shared metadata, local navigation, fragments, structured data, discovery files, the interactive Atlas and its written fallback, the visual plate room, the prepared ShakDrah corpus, and deployment smoke checks.
 
 Run the complete local audit with:
 
@@ -15,7 +15,16 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the grouped masthead, all twenty destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the grouped masthead, the five-path Atlas, all twenty-seven mapped destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+
+## Introduction Atlas in r4.2
+
+- Added **The Atlas of Becoming** to the introduction: an interactive Three.js navigation map tailored to TTI rather than EGregoRA&rsquo;s taxonomy.
+- Organised all 25 built pages beneath five reading paths, with Join and Account as two additional runtime destinations: 27 destinations in total.
+- Preserved four visual forms, search, drag and zoom, full-screen focus, one-open-path folding, selected-destination reading panels and Escape recovery.
+- Added a complete native-link written map as the no-JavaScript, reduced-motion and assistive-navigation fallback.
+- Removed inherited EGregoRA language and eleven-limb assumptions from the renderer, changed its stored preference namespace, retained the user-visible spelling **Möbius**, and separated established topology from TTI&rsquo;s speculative cosmological use.
+- Added deterministic local and deployment regression checks for data completeness, all built destinations, fallback links, controls, assets, terminology and live markers.
 
 ## Plates accordion in r4.1
 
@@ -51,7 +60,8 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - 26 HTML documents built.
 - 26 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
-- Four navigation constellations, twenty unique destinations, two persistent actions, active-page state, mobile controls and keyboard dismissal verified.
+- Four masthead navigation constellations, twenty unique header destinations, two persistent actions, active-page state, mobile controls and keyboard dismissal verified.
+- The introduction Atlas has five TTI-specific reading paths and 27 unique destinations, including all 25 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
 - Twenty-one mutually exclusive plate headings contain all 31 gathered vectors; the former bullet index is absent.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.

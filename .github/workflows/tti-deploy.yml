@@ -14,6 +14,7 @@ on:
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
       - "scripts/test-tti-header.mjs"
+      - "scripts/test-tti-atlas.mjs"
       - "scripts/test-tti-plates.mjs"
       - "scripts/test-tti-relocations.mjs"
       - "scripts/tti-gather-plates.mjs"
@@ -44,6 +45,7 @@ jobs:
           node --check tti/src/assets/js/neural-voice.js
           node --check tti/src/assets/js/dragon.js
           node --check tti/src/assets/js/fox.js
+          node --check tti/src/assets/js/atlas.js
           node --check tti/src/assets/js/site.js
           node scripts/test-oracle-knowledge.mjs
           node scripts/test-tti-relocations.mjs
@@ -51,6 +53,7 @@ jobs:
           npm run build:tti:hatchable
           npm run lint:tti
           node scripts/test-tti-header.mjs --built
+          node scripts/test-tti-atlas.mjs
           node scripts/test-tti-plates.mjs
           node scripts/audit-tti.mjs
           test -s tti/hatchable/public/index.html
@@ -68,6 +71,8 @@ jobs:
           test -s tti/hatchable/public/feed.xml
           test -s tti/hatchable/public/ask-shakdrah/index.html
           test -s tti/hatchable/public/assets/js/oracle-knowledge.js
+          test -s tti/hatchable/public/assets/js/atlas.js
+          test -s tti/hatchable/public/assets/js/vendor/three.module.js
           test -s tti/hatchable/public/assets/js/neural-voice.js
           test -s tti/hatchable/public/assets/js/headtts/worker-tts.mjs
           test -s tti/hatchable/public/assets/js/headtts/dictionaries/en-us.txt
@@ -77,7 +82,14 @@ jobs:
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.1' tti/hatchable/public/index.html
+          grep -Fq 'r4.2' tti/hatchable/public/index.html
+          grep -q 'id="atlas-box"' tti/hatchable/public/index.html
+          grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
+          grep -q 'The same map, written out' tti/hatchable/public/index.html
+          grep -q 'src="/assets/js/atlas.js"' tti/hatchable/public/index.html
+          grep -q 'tti-atlas-skin' tti/hatchable/public/assets/js/atlas.js
+          grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
+          grep -q 'Folded back to the five reading paths' tti/hatchable/public/assets/js/atlas.js
           grep -q 'class="nav-cluster"' tti/hatchable/public/index.html
           grep -q 'First principles' tti/hatchable/public/index.html
           grep -q 'Cosmic architecture' tti/hatchable/public/index.html
@@ -128,6 +140,8 @@ jobs:
           grep -q 'Navigation observatory' tti/hatchable/public/assets/css/main.css
           grep -q '.nav-panel' tti/hatchable/public/assets/css/main.css
           grep -q '.plate-accordion-group' tti/hatchable/public/assets/css/main.css
+          grep -q '.atlas-grid' tti/hatchable/public/assets/css/main.css
+          grep -q 'body.atlas-focused' tti/hatchable/public/assets/css/main.css
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'temporal-antipodes' tti/hatchable/public/assets/js/oracle-knowledge.js
@@ -237,8 +251,10 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.1',
-                'class="nav-cluster"', 'First principles', 'Cosmic architecture', 'Tests and essays',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.2',
+                'id="atlas-box"', 'The Atlas of Becoming', 'The same map, written out',
+                'src="/assets/js/atlas.js"', 'class="nav-cluster"', 'First principles',
+                'Cosmic architecture', 'Tests and essays',
                 'Why the two infinities never fully synchronise', 'The Zero-Seam Test']
             },
             {
@@ -350,6 +366,11 @@ jobs:
                 'six site-hosted male voice embeddings', 'Answer text stays on this device']
             },
             {
+              url: 'https://the-two-infinities.hatchable.site/assets/js/atlas.js',
+              markers: ['tti-atlas-skin', 'The Möbius Seam', 'href: "/moebius/"',
+                'prefers-reduced-motion: reduce', 'Folded back to the five reading paths']
+            },
+            {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
                 'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
@@ -387,7 +408,8 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/assets/css/main.css',
               markers: ['Navigation observatory', '.nav-cluster', '.nav-panel',
                 '.js-nav .site-nav.open', 'position: sticky', '.plate-accordion-group[open]',
-                '.plate-group-toggle::after']
+                '.plate-group-toggle::after', '.atlas-grid', 'body.atlas-focused',
+                '#atlas-box.is-focused']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',

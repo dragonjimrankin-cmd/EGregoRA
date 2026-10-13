@@ -58,6 +58,74 @@ description: "The Shape of Becoming: Infinity, Gravity and Existence — A specu
 
 <div class="divider">✦</div>
 
+<section class="wrap reveal atlas--off" id="atlas-box" aria-labelledby="atlas-title">
+  <div class="page-head">
+    <p class="kicker"><span>T</span>he navigation map</p>
+    <h2 id="atlas-title">The Atlas of Becoming</h2>
+    <p class="lede">Five reading paths hold every TTI paper, essay, research programme and reading room. Open one path and the others fold away; search by destination when you already know the name.</p>
+  </div>
+
+  <div class="frame">
+    <div class="atlas-grid">
+      <div class="atlas-stage-wrap">
+        <div class="atlas-stage" id="atlas-stage" role="region" aria-label="Interactive three-dimensional map of the TTI reading paths">
+          <div class="atlas-labels" id="atlas-labels"></div>
+        </div>
+      </div>
+
+      <aside class="atlas-side" aria-label="Atlas controls and selected destination">
+        <p class="kicker">Wear the map as</p>
+        <div class="atlas-tools" aria-label="Choose the visual form">
+          <button class="btn" type="button" data-skin="figure" aria-pressed="true">The Figure</button>
+          <button class="btn" type="button" data-skin="cosmos" aria-pressed="false">The Cosmos</button>
+          <button class="btn" type="button" data-skin="tree" aria-pressed="false">The Tree</button>
+          <button class="btn" type="button" data-skin="galaxy" aria-pressed="false">The Galaxy</button>
+        </div>
+        <p class="muted small" id="atlas-skin-note">The plain branching body. The clearest of the four to read.</p>
+
+        <div class="atlas-tools" aria-label="Move and fold the map">
+          <button class="btn" type="button" id="at-focus" aria-pressed="false">Fill the screen</button>
+          <button class="btn" type="button" id="at-spin" aria-pressed="true">Hold Still</button>
+          <button class="btn" type="button" id="at-fold">Fold Away</button>
+          <button class="btn" type="button" id="at-home">Whole Map</button>
+        </div>
+
+        <label class="atlas-find" for="at-find">Find a paper, essay or room</label>
+        <input id="at-find" type="search" autocomplete="off" placeholder="Try gravity, Möbius, Plates…">
+        <p class="atlas-status muted small" id="atlas-status" aria-live="polite"></p>
+        <div class="atlas-read" id="atlas-read">
+          <p class="muted small">Turn it with a drag, come closer with the wheel. Click a reading path to open it — only one stem stands open at a time, so the rest fold away.</p>
+        </div>
+      </aside>
+    </div>
+
+    <details class="scroll">
+      <summary>The same map, written out</summary>
+      <nav class="atlas-list" aria-label="Written TTI navigation map">
+        <p><a href="/"><strong>The Shape of Becoming: Infinity, Gravity and Existence</strong></a></p>
+        <ol type="I">
+          {% for path in ttiAtlas.limbs %}
+          <li>
+            <a href="{{ path.href }}"><strong>{{ path.title }}</strong></a>
+            <span class="muted"> — {{ path.note }}</span>
+            <ul>
+              {% for destination in path.subs %}
+              <li><a href="{{ destination.href }}">{{ destination.title }}</a><span class="muted"> — {{ destination.note }}</span></li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% endfor %}
+        </ol>
+      </nav>
+    </details>
+  </div>
+
+  <script type="application/json" id="atlas-data">{{ ttiAtlas | dump | safe }}</script>
+  <script type="module" src="/assets/js/atlas.js"></script>
+</section>
+
+<div class="divider">✦</div>
+
 <section class="wrap">
   <div class="page-head tight">
     <p class="kicker">The Chain</p>

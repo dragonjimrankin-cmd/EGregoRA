@@ -2467,8 +2467,8 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
   border: 1px solid rgba(118, 207, 238, 0.28);
   border-radius: 3px;
   background:
-    radial-gradient(circle at 50% 45%, rgba(143, 182, 216, 0.08), transparent 62%),
-    #0b0a09;
+    radial-gradient(circle at 50% 45%, rgba(118, 207, 238, 0.09), transparent 62%),
+    #03040c;
   cursor: grab;
   touch-action: none;
   overflow: hidden;
@@ -2484,7 +2484,7 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
   padding: 0.1rem 0.3rem;
   border: 0;
   border-radius: 2px;
-  background: rgba(11, 10, 9, 0.62);
+  background: rgba(3, 4, 12, 0.68);
   color: #a9b6d8;
   font-family: "Cinzel", Georgia, serif;
   font-size: 0.62rem;
@@ -2496,18 +2496,18 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 }
 .atlas-label.is-root { color: #cdefff; font-size: 0.82rem; letter-spacing: 0.1em; }
 .atlas-label.is-limb { color: #76cfee; font-size: 0.7rem; }
-.atlas-label.is-sub { color: #7fae7a; }
-.atlas-label.is-topic { color: #8f9cc0; font-size: 0.58rem; max-width: 13ch; }
+.atlas-label.is-sub { color: #45d6b4; }
+.atlas-label.is-topic { color: #a07cf0; font-size: 0.58rem; max-width: 13ch; }
 /* The seam is not a node on the map but the thread they are strung on, so
-   its name is set apart: small capitals, the gold of the band itself. */
+   its name is set apart in small capitals and the blue of the band itself. */
 .atlas-label.is-seam {
   color: #cdefff; font-size: 0.62rem; letter-spacing: 0.22em;
   text-transform: uppercase; border: 1px solid rgba(118, 207, 238, 0.5);
-  background: rgba(11, 10, 9, 0.82);
+  background: rgba(3, 4, 12, 0.86);
 }
 .atlas-label:hover,
 .atlas-label:focus-visible,
-.atlas-label.is-on { color: #cdefff; background: rgba(11, 10, 9, 0.9); }
+.atlas-label.is-on { color: #cdefff; background: rgba(3, 4, 12, 0.94); }
 
 .atlas-side { display: flex; flex-direction: column; gap: 0.55rem; }
 .atlas-tools { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -2516,15 +2516,15 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
   font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #8f9cc0;
+  color: #a9b6d8;
 }
 #at-find {
   width: 100%;
   padding: 0.45rem 0.6rem;
   border: 1px solid rgba(118, 207, 238, 0.3);
   border-radius: 2px;
-  background: rgba(11, 10, 9, 0.6);
-  color: #e8dcc0;
+  background: rgba(3, 4, 12, 0.7);
+  color: #e8f6ff;
   font-family: "EB Garamond", Georgia, serif;
 }
 .atlas-status { min-height: 1.2em; margin: 0; }
@@ -2646,7 +2646,7 @@ body.atlas-focused { overflow: hidden; }
   margin: 0;
   padding: 0.75rem;
   max-width: none;
-  background: rgba(8, 7, 6, 0.96);
+  background: rgba(3, 4, 12, 0.97);
   overflow: auto;
 }
 #atlas-box.is-focused .page-head,
