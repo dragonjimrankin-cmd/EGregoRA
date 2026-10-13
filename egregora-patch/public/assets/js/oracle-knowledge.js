@@ -395,6 +395,44 @@ The word **cannot** remains conditional. The conjecture would fail if a consiste
       ]
     },
     {
+      id: "entropy-self-renewal",
+      question: "Could entropy be the cost of a self disintegrating so integration can continue?",
+      patterns: [
+        /entropy.*(?:self|turnover|disintegrat|renew).*(?:integrat|continue|persist|cost)/,
+        /entropy.*(?:cost|dissipat).*(?:self|turnover|disintegrat|renew)/,
+        /(?:self|turnover|disintegrat|renew).*(?:entropy|dissipat).*(?:integrat|continue|persist|cost)/
+      ],
+      answer: `Possibly as a **testable bridge**, but not as the definition or general cause of entropy. Established thermodynamics applies to systems whether or not they contain a self. An open, organised system can persist by consuming free energy, replacing parts and exporting entropy. That shows that turnover can carry an irreversible cost; it does not show that all entropy is produced by cosmic self-disintegration.
+
+The key TTI bookkeeping is dI/dt = A − D. I is an independently measured degree of integration, A is assembly and D is disassembly. A stable self can have dI/dt near zero while both A and D are large. Its total throughput Φ = A + D may therefore be high even though a snapshot shows little net change. Real finite-rate turnover can dissipate through friction, diffusion, chemical reactions, control and information erasure, but Φ is not automatically an entropy-production rate.
+
+A physical bridge must define I, measure A and D separately, close the heat, work and matter budget, and test whether throughput predicts residual entropy production after known mechanisms are included. It loses if I only renames entropy, if the extra coefficient is consistent with zero, or if conservation is violated. Rebuilding the same macro-pattern is another forward process; it is not every molecule and photon retracing its path. Read [Entropy as the Cost of Self-Renewal](https://the-two-infinities.hatchable.site/entropy-and-self-renewal/) and the broader [entropy boundary paper](https://the-two-infinities.hatchable.site/entropy/).`,
+      followups: [
+        "Is TTI integration the same thing as entropy?",
+        "Is the 5:27:68 cosmic ratio only a 13.8-billion-year snapshot?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "cosmic-ratio-snapshot",
+      question: "Is the 5:27:68 cosmic ratio only a 13.8-billion-year snapshot?",
+      patterns: [
+        /(?:5\s*:?\s*27\s*:?\s*68|cosmic ratio).*(?:13\.?8|snapshot|time|epoch|swap|reverse|convert)/,
+        /(?:baryonic|baryon).*(?:dark matter).*(?:dark energy).*(?:snapshot|time|epoch|swap|reverse|convert)/,
+        /(?:matter|dark sector).*(?:percent|fraction).*(?:swap|change|reverse|convert|age)/
+      ],
+      answer: `**It is a present-epoch snapshot, but “only” understates how strongly it is constrained.** The familiar figures are model-fitted density parameters near today: Ωb0, Ωdm0 and ΩΛ0. They are not an eternal recipe. In standard cosmology, nonrelativistic baryons and cold dark matter dilute approximately as a⁻³, radiation as a⁻⁴, and a cosmological constant remains constant. The fractions therefore change with time even when no sector converts into another.
+
+This produces ordinary swaps of dominance: radiation dominates early, matter later, and dark energy late. It does not mean dark energy consumed matter. Baryons and cold dark matter have nearly the same background scaling, although they redistribute differently inside galaxies because baryons collide, cool and form stars while cold dark matter is effectively collisionless.
+
+TTI's stronger hypothesis treats the sectors as completed, partial and ground levels of integration and asks whether they exchange or reverse. That requires continuity equations dotρi + 3H(1+wi)ρi = Qi with ΣQi = 0, plus a microphysical carrier, momentum transfer, baryon-number and charge accounting, and entropy production. The model must jointly survive nucleosynthesis, the cosmic microwave background, expansion, lensing and structure growth. It fails if ordinary dilution explains the alleged swap, if fitted transition rates are zero, or if a simpler model predicts held-out data as well. Read [The Cosmic Ratio in Time](https://the-two-infinities.hatchable.site/cosmic-ratio-in-time/) and the original [five-percent interpretation](https://the-two-infinities.hatchable.site/gravity/#t-five-percent).`,
+      followups: [
+        "Could entropy be the cost of a self disintegrating so integration can continue?",
+        "How do accumulated differentials connect to mass and gravity?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
       id: "entropy-integration",
       question: "Is TTI integration the same thing as entropy?",
       patterns: [

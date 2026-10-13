@@ -10,6 +10,8 @@ const documentMeta = Object.freeze({
   "/the-self/": ["Theoretical paper", "Working hypothesis"],
   "/dx/": ["Research note", "Working hypothesis"],
   "/prime-plane/": ["Comparative note", "Speculative model"],
+  "/entropy-and-self-renewal/": ["Bridge hypothesis", "Open thermodynamic bridge"],
+  "/cosmic-ratio-in-time/": ["Cosmology paper", "Competing model required"],
   "/gravity/": ["Theory paper", "Open physical bridge"],
   "/spiral/": ["Mathematical model", "Working model"],
   "/skeletal-splice/": ["Mathematical model", "Working model"],
@@ -68,7 +70,9 @@ export default {
         page("I·ii", "π from 0 and 1", "/pi-from-zero-and-one/", "Uses Euler’s beta-integral theorem, circular arc measure and the Basel theorem to separate an exact unit-interval result from TTI’s speculative interpretation."),
         page("I·iii", "The Self", "/the-self/", "Tests the proposal that consciousness is an integration of differential moments into a bounded first-person history."),
         page("I·iv", "dx", "/dx/", "Examines whether the differential can be interpreted as a completed increment without confusing notation with ontology."),
-        page("I·v", "The Prime Plane", "/prime-plane/", "Compares base-five, base-eight and base-four phase models while keeping every physical promotion explicitly speculative.")
+        page("I·v", "The Prime Plane", "/prime-plane/", "Compares base-five, base-eight and base-four phase models while keeping every physical promotion explicitly speculative."),
+        page("I·vi", "Entropy as the Cost of Self-Renewal", "/entropy-and-self-renewal/", "Separates net integration from the assembly and disintegration throughput that may let an organised self persist."),
+        page("I·vii", "The Cosmic Ratio in Time", "/cosmic-ratio-in-time/", "Tests whether changing cosmic fractions imply ordinary dilution, physical sector exchange or reversed integration.")
       ]
     },
     {

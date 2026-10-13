@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.12
+**Revision:** r4.13
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -15,7 +15,17 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical twenty-nine-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus. It also treats the twenty-five Part I–IV documents as the research essays and rejects any essay outside 2,000–4,000 readable words.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical thirty-one-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus. It also treats the twenty-seven Part I–IV documents as the research essays and rejects any essay outside 2,000–4,000 readable words.
+
+## Integration, entropy and cosmic time in r4.13
+
+- Added **Entropy as the Cost of Self-Renewal** to Part I as bridge hypothesis `TTI-I.06`, with 2,167 audited words.
+- Separated the net integration stock \(dI/dt=A-D\) from simultaneous assembly/disintegration throughput \(A+D\), and treated any entropy coupling as a measurable ansatz rather than a definition.
+- Distinguished macroscopic repair or organisational return from microscopic time reversal, and stated the energy, entropy and stress&ndash;energy conservation requirements.
+- Added **The Cosmic Ratio in Time** to Part I as cosmology paper `TTI-I.07`, with 2,636 audited words.
+- Labelled 5:27:68 as a present-epoch density-parameter snapshot; set out the standard \(a^{-3}\), \(a^{-4}\) and constant-Λ scalings that change dominance without conversion.
+- Required any stronger sector exchange to satisfy \(\dot\rho_i+3H(1+w_i)\rho_i=Q_i\), \(\sum_iQ_i=0\), baryon and charge accounting, perturbation constraints and held-out redshift tests.
+- Integrated both papers into the shared Atlas, slim five-Part header, homepage contents, metadata, Atom and sitemap discovery, reciprocal essay links, twenty-six-answer ShakDrah/Gink knowledge and local/live deployment checks.
 
 ## Admin Edit commits in r4.12
 
@@ -178,17 +188,18 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 ## Current audited result
 
 - Admin Edit changes on both sites are deterministically snapshotted and automatically committed before a subsequent deployment can proceed.
-- All 25 Part I–IV research documents are accessible essays between 2,005 and 3,978 audited words; Part V remains four project resources.
+- All 27 Part I–IV research documents are accessible essays between 2,021 and 3,978 audited words; Part V remains four project resources.
 - The length and accessibility regression is part of `npm run audit:tti` and derives its scope from the canonical table of contents.
-- 28 HTML documents built.
-- 28 unique canonical URLs verified.
+- 30 HTML documents built.
+- 30 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
 - Ten ordered core claims each explain their dependency and consequence; a six-branch map summarises how the framework interlinks.
 - The Part I π paper is verified with the beta integral, semicircle substitution, arcsine normalisation, arctangent and Basel routes, non-Euclidean limit, one plate and reciprocal discovery.
+- The two new Part I papers are verified at 2,167 and 2,636 words with separate standard/TTI ledgers, conservation requirements, competing explanations, equations, reciprocal discovery and explicit failure conditions.
 - Wormholes and Inverted Tori is verified beneath Part III with one plate, thirteen required argument surfaces and reciprocal discovery links.
-- Five numbered masthead Parts expose 29 unique page subheadings from the shared Atlas data, with full-text hover/focus expansion, touch wrapping, active-page state, mobile controls and keyboard dismissal verified.
-- All 27 built destination pages carry the matching header Part and page title; runtime Join and Account labels are aligned to Part V.
-- The introduction Atlas has five TTI-specific reading paths and the same 29 unique destinations, including all 27 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
+- Five numbered masthead Parts expose 31 unique page subheadings from the shared Atlas data, with full-text hover/focus expansion, touch wrapping, active-page state, mobile controls and keyboard dismissal verified.
+- All 29 built destination pages carry the matching header Part and page title; runtime Join and Account labels are aligned to Part V.
+- The introduction Atlas has five TTI-specific reading paths and the same 31 unique destinations, including all 29 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
 - Twenty-three mutually exclusive plate headings contain all 33 gathered vectors; the former bullet index is absent.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.
@@ -197,7 +208,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - 33 source plates reconciled with 33 gathered plates; SVG IDs and marker references are namespaced in the compendium.
 - The research proposal is discoverable from the homepage, parent conjecture, Essays, Stress Tests, Time and Residue, and Inverted Tori.
 - Temporal Antipodes is discoverable from the homepage, Foundations, Seams, Essays, Stress Tests, Prime Plane, Time and Residue, Inverted Tori, and the matter–antimatter essay.
-- 24 prepared answers and 24 paraphrase routes verified for both ShakDrah and Gink, including π on the unit interval, wormholes, entropy, double inversion, accumulated differentials, fallback and attachment bypass.
+- 26 prepared answers and 26 paraphrase routes verified for both ShakDrah and Gink, including π on the unit interval, wormholes, entropy, self-renewal, the time-varying cosmic ratio, double inversion, accumulated differentials, fallback and attachment bypass.
 - Six male neural voices, per-voice dispatch, prosody, consent and lip-sync metadata remain covered by the existing neural-voice test.
 - Workflow YAML and focused Hatchable build markers are validated before deployment.
 

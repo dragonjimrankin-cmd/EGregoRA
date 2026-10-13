@@ -110,13 +110,15 @@ jobs:
           grep -q '40 drawings' egregora-patch/public/infographics/index.html
           grep -q '.info-fold\[open\]' egregora-patch/public/assets/css/infographics-accordion.css
           grep -q 'closeFolds' egregora-patch/public/assets/js/infographics-accordion.js
-          grep -q 'Twenty-four prepared answers' egregora-patch/public/ask-ed/index.html
+          grep -q 'Twenty-six prepared answers' egregora-patch/public/ask-ed/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
           grep -q 'Why does π appear between zero and one?' egregora-patch/public/ask-ed/index.html
           grep -q 'Why can the smaller and bigger infinities never fully synchronise?' egregora-patch/public/ask-ed/index.html
           grep -q 'Could little red dots be remnants of a previous universe?' egregora-patch/public/ask-ed/index.html
           grep -q 'What is the Zero-Seam Test?' egregora-patch/public/ask-ed/index.html
           grep -q 'Is TTI integration the same thing as entropy?' egregora-patch/public/ask-ed/index.html
+          grep -q 'Could entropy be the cost of a self disintegrating so integration can continue?' egregora-patch/public/ask-ed/index.html
+          grep -q 'Is the 5:27:68 cosmic ratio only a 13.8-billion-year snapshot?' egregora-patch/public/ask-ed/index.html
           grep -q 'Can an inverted torus be a traversable wormhole?' egregora-patch/public/ask-ed/index.html
           grep -q 'Does residue from one inversion survive a second inversion?' egregora-patch/public/ask-ed/index.html
           grep -q 'How do accumulated differentials connect to mass and gravity?' egregora-patch/public/ask-ed/index.html
@@ -207,11 +209,13 @@ jobs:
             },
             {
               url: 'https://egregora.hatchable.site/ask-ed/',
-              markers: ['Twenty-four prepared answers', 'Why does π appear between zero and one?',
+              markers: ['Twenty-six prepared answers', 'Why does π appear between zero and one?',
                 'Can an inverted torus be a traversable wormhole?', 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
                 'Is TTI integration the same thing as entropy?',
+                'Could entropy be the cost of a self disintegrating so integration can continue?',
+                'Is the 5:27:68 cosmic ratio only a 13.8-billion-year snapshot?',
                 'Does residue from one inversion survive a second inversion?',
                 'How do accumulated differentials connect to mass and gravity?',
                 'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js',

@@ -9,7 +9,7 @@ const siteRoot = path.join(projectRoot, 'tti', '_site');
 const expectedTitle = 'The Two Infinities: Eternal Integration of the Self';
 const retiredTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
-const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-five studies and four project resources.';
+const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-seven studies and four project resources.';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
@@ -50,7 +50,7 @@ const htmlFiles = names
   .map((name) => path.join(siteRoot, name))
   .sort();
 
-if (htmlFiles.length < 28) fail(`expected at least 28 HTML documents, found ${htmlFiles.length}`);
+if (htmlFiles.length < 30) fail(`expected at least 30 HTML documents, found ${htmlFiles.length}`);
 
 const documents = new Map();
 const canonicals = new Map();
@@ -363,6 +363,14 @@ for (const [pathname, href] of [
   ['/dx/', '/accumulated-differentials/'],
   ['/skeletal-splice/', '/accumulated-differentials/'],
   ['/essays/', '/entropy/'],
+  ['/entropy/', '/entropy-and-self-renewal/'],
+  ['/the-self/', '/entropy-and-self-renewal/'],
+  ['/essays/', '/entropy-and-self-renewal/'],
+  ['/gravity/', '/cosmic-ratio-in-time/'],
+  ['/cosmic-ledger/', '/cosmic-ratio-in-time/'],
+  ['/essays/', '/cosmic-ratio-in-time/'],
+  ['/entropy-and-self-renewal/', '/cosmic-ratio-in-time/'],
+  ['/cosmic-ratio-in-time/', '/entropy-and-self-renewal/'],
   ['/essays/', '/double-inversion/'],
   ['/essays/', '/accumulated-differentials/']
 ]) {
@@ -390,10 +398,32 @@ if (!temporalAntipodes) {
   if (!temporalAntipodes.$('figure.plate').length) fail('Temporal Antipodes has no plate');
 }
 
+const firstPrincipleAdditions = [
+  ['/entropy-and-self-renewal/', 'Entropy as the Cost of Self-Renewal',
+    ['t-answer', 't-entropy-account', 't-throughput', 't-bridge-law', 't-reversal', 't-conservation', 't-failure', 't-verdict'],
+    ['A-D', 'A+D', 'sigma', 'T_{I}']],
+  ['/cosmic-ratio-in-time/', 'The Cosmic Ratio in Time',
+    ['t-answer', 't-density-parameters', 't-scaling', 't-three-swaps', 't-exchange', 't-conservation', 't-observations', 't-failure', 't-verdict'],
+    ['a^{-3}', 'a^{-4}', 'Q_i', 'sum_i Q_i=0']]
+];
+for (const [pathname, label, ids, equationMarkers] of firstPrincipleAdditions) {
+  const document = documents.get(pathname);
+  if (!document) {
+    fail(`${label} was not built`);
+    continue;
+  }
+  for (const id of ids) {
+    if (!document.$(`[id="${id}"]`).length) fail(`${label} omits #${id}`);
+  }
+  for (const marker of equationMarkers) {
+    if (!document.html.includes(marker)) fail(`${label} omits equation marker ${marker}`);
+  }
+}
+
 /* Parts I-IV are the research essays. Part V intentionally remains a group
    of reading-room resources and is not padded to an arbitrary essay length. */
-if (essayDocuments.length !== 25) {
-  fail(`expected 25 Part I-IV research essays, found ${essayDocuments.length}`);
+if (essayDocuments.length !== 27) {
+  fail(`expected 27 Part I-IV research essays, found ${essayDocuments.length}`);
 }
 const essayLengths = [];
 for (const essayRecord of essayDocuments) {

@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
-      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-five studies and four project resources."
+      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-seven studies and four project resources."
       TTI_DEPLOY_INTENT: "Deploy The Two Infinities research project"
       TTI_DEPLOY_SUMMARY: "Publishes The Two Infinities: Eternal Integration of the Self, the independent speculative cosmology research project founded by Jim Rankin, including its studies, research resources, Atlas, plates, and ShakDrah research assistant."
     steps:
@@ -125,12 +125,12 @@ jobs:
           ! grep -R -Fq 'EGregoRA — Life, Love, Magic' tti/hatchable
           ! grep -R -Fq 'founded by Edward Gregory' tti/hatchable
           test "$(grep -c 'class=\"research-toc-part\"' tti/hatchable/public/index.html)" -eq 5
-          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 29
+          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 31
           grep -Fq 'Ten Claims, One Interdependent Framework' tti/hatchable/public/index.html
           grep -Fq 'The dependency map' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.12' tti/hatchable/public/index.html
+          grep -Fq 'r4.13' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -139,7 +139,7 @@ jobs:
           grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
           grep -q 'Folded back to the five reading paths' tti/hatchable/public/assets/js/atlas.js
           test "$(grep -c 'class="nav-cluster"' tti/hatchable/public/index.html)" -eq 5
-          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 29
+          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 31
           ! grep -q 'class="nav-actions"' tti/hatchable/public/index.html
           grep -q 'Part I' tti/hatchable/public/index.html
           grep -q 'First Principles' tti/hatchable/public/index.html
@@ -158,13 +158,19 @@ jobs:
           grep -Fq 'Euler&rsquo;s Beta Integral Puts π Exactly Between 0 and 1' tti/hatchable/public/pi-from-zero-and-one/index.html
           grep -Fq 'The beta&ndash;gamma theorem states' tti/hatchable/public/pi-from-zero-and-one/index.html
           grep -Fq 'Closure Alone Is Not Enough' tti/hatchable/public/pi-from-zero-and-one/index.html
+          grep -Fq 'Entropy as the Cost of Self-Renewal' tti/hatchable/public/entropy-and-self-renewal/index.html
+          grep -Fq 'Net Integration Is Not Integration Throughput' tti/hatchable/public/entropy-and-self-renewal/index.html
+          grep -Fq 'Rebuilding a Macrostate Is Not Reversing Microscopic Time' tti/hatchable/public/entropy-and-self-renewal/index.html
+          grep -Fq 'The Cosmic Ratio in Time' tti/hatchable/public/cosmic-ratio-in-time/index.html
+          grep -Fq 'The Fractions Change Even When Nothing Converts' tti/hatchable/public/cosmic-ratio-in-time/index.html
+          grep -Fq 'Conversion Requires Source Terms That Sum to Zero' tti/hatchable/public/cosmic-ratio-in-time/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Four readings, in order of increasing risk' tti/hatchable/public/time-and-residue/index.html
           grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Twenty-four prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Twenty-six prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Can an inverted torus be a traversable wormhole?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Why does π appear between zero and one?' tti/hatchable/public/ask-shakdrah/index.html
@@ -172,6 +178,8 @@ jobs:
           grep -q 'Could little red dots be remnants of a previous universe?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is the Zero-Seam Test?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Is TTI integration the same thing as entropy?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Could entropy be the cost of a self disintegrating so integration can continue?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Is the 5:27:68 cosmic ratio only a 13.8-billion-year snapshot?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Does residue from one inversion survive a second inversion?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'How do accumulated differentials connect to mass and gravity?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO DRAW' tti/hatchable/public/ask-shakdrah/index.html
@@ -356,7 +364,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.12',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.13',
                 'Project Table of Contents', 'Geometry, Integration and the Conditions of Return',
                 '<dt>Research status</dt><dd>Working hypotheses</dd>', 'TTI-I.01', 'TTI-V.04',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',
@@ -443,6 +451,20 @@ jobs:
                 'Not If &ldquo;Inversion&rdquo; Means an Exact Involution', 'Separate Return Error from Path Memory']
             },
             {
+              url: 'https://the-two-infinities.hatchable.site/entropy-and-self-renewal/',
+              markers: ['Part I — First Principles · Bridge hypothesis TTI-I.06 · Entropy as the Cost of Self-Renewal',
+                'Net Integration Is Not Integration Throughput',
+                'Rebuilding a Macrostate Is Not Reversing Microscopic Time',
+                'Explicit Failure Conditions']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/cosmic-ratio-in-time/',
+              markers: ['Part I — First Principles · Cosmology paper TTI-I.07 · The Cosmic Ratio in Time',
+                'The Fractions Change Even When Nothing Converts',
+                'Conversion Requires Source Terms That Sum to Zero',
+                'The Ratio Must Become a Redshift-Dependent Prediction']
+            },
+            {
               url: 'https://the-two-infinities.hatchable.site/accumulated-differentials/',
               markers: ['Part IV — Tests and Essays · Bridge paper TTI-IV.04 · Accumulated Differentials',
                 'When Differentials Accumulate', 'The Skeletal Splice Deposit',
@@ -492,6 +514,8 @@ jobs:
                 'https://the-two-infinities.hatchable.site/temporal-antipodes/',
                 'https://the-two-infinities.hatchable.site/wormholes/',
                 'https://the-two-infinities.hatchable.site/entropy/',
+                'https://the-two-infinities.hatchable.site/entropy-and-self-renewal/',
+                'https://the-two-infinities.hatchable.site/cosmic-ratio-in-time/',
                 'https://the-two-infinities.hatchable.site/double-inversion/',
                 'https://the-two-infinities.hatchable.site/accumulated-differentials/',
                 'https://the-two-infinities.hatchable.site/little-red-dots/',
@@ -503,18 +527,21 @@ jobs:
               markers: ['Part IV — Tests and Essays · Collected essays TTI-IV.02 · Essays',
                 'Temporal Antipodes', 'JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture',
                 'Wormholes and Inverted Tori', 'Entropy and the Phases of Integration',
+                'Entropy as the Cost of Self-Renewal', 'The Cosmic Ratio in Time',
                 'Two Inversions', 'When Differentials Accumulate',
                 'Read the Zero-Seam research proposal']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
               markers: ['Part V — Reading Rooms · Research assistant TTI-V.02 · Ask ShakDrah',
-                'Twenty-four prepared answers', 'Why does π appear between zero and one?',
+                'Twenty-six prepared answers', 'Why does π appear between zero and one?',
                 'Can an inverted torus be a traversable wormhole?',
                 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
                 'Is TTI integration the same thing as entropy?',
+                'Could entropy be the cost of a self disintegrating so integration can continue?',
+                'Is the 5:27:68 cosmic ratio only a 13.8-billion-year snapshot?',
                 'Does residue from one inversion survive a second inversion?',
                 'How do accumulated differentials connect to mass and gravity?',
                 'Can reversible mixing create a matter-antimatter imbalance?',
@@ -532,7 +559,7 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
                 'wormhole-inverted-torus', 'baryogenesis-boundary', 'pi-zero-one', 'temporal-antipodes', 'little-red-dots-residue',
-                'zero-seam-test', 'entropy-integration', 'double-inversion-residue',
+                'zero-seam-test', 'entropy-integration', 'entropy-self-renewal', 'cosmic-ratio-snapshot', 'double-inversion-residue',
                 'differentials-mass-gravity', 'epistemic-grading']
             },
             {

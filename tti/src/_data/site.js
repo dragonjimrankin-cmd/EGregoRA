@@ -4,10 +4,10 @@ import ttiAtlas from "./ttiAtlas.js";
  * The Two Infinities: Eternal Integration of the Self — project-wide data.
  *
  * James Alexander Matthew Rankin began the framework between 2 and 19 June
- * 2026. Revision r4.12 places published Admin Edit state in an automatic Git
- * commit before either live project deploys. It retains every Part I-IV
- * research document as an accessible 2,000-4,000-word essay and keeps the
- * theorem-led account of why π appears on the unit interval. Every route
+ * 2026. Revision r4.13 adds first-principles papers on entropy as the possible
+ * cost of self-renewal and on the cosmic matter-energy ratio as a changing
+ * snapshot. It retains automatic Admin Edit commits and every Part I-IV
+ * research document as an accessible 2,000-4,000-word essay. Every route
  * receives a stable document code, research status, citation context and a
  * place in one canonical table of contents.
  */
@@ -20,6 +20,8 @@ const glyphByRoute = Object.freeze({
   "/the-self/": "integral",
   "/dx/": "integral",
   "/prime-plane/": "star",
+  "/entropy-and-self-renewal/": "integral",
+  "/cosmic-ratio-in-time/": "ledger",
   "/gravity/": "spiral",
   "/spiral/": "spiral",
   "/skeletal-splice/": "spiral",
@@ -94,7 +96,7 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r4.12",
+  revision: "r4.13",
   revised: "2026-10-13",
   edition: "Working research edition",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
@@ -107,8 +109,8 @@ export default {
     "The Two Infinities, A speculative cosmology by Jim Rankin, UK, 2026, two infinities, temporal antipodes, opposite ends of time, " +
     "synchronisation, smallward infinity, largeward infinity, geometry of existence, pi, Euler beta integral, " +
     "beta-gamma theorem, Basel theorem, unit interval, Euler identity, imaginary unit, Cantor, " +
-    "consciousness as integral, microtubules, Orch-OR, galactic torus, Möbius seam, " +
-    "Klein bottle, double inversion, light polarization, geometric phase, entropy, accumulated differentials, mass, gravity, cosmic ledger, chi field, dark matter, dark energy, JWST little red dots, inherited residue, " +
+    "consciousness as integral, self-renewal, integration turnover, entropy production, microtubules, Orch-OR, galactic torus, Möbius seam, " +
+    "Klein bottle, double inversion, light polarization, geometric phase, entropy, accumulated differentials, mass, gravity, cosmic ratio, sector exchange, cosmic ledger, chi field, dark matter, dark energy, JWST little red dots, inherited residue, " +
     "zero seam, previous universe conjecture, preregistered research, flat rotation curves, CMB, Fibonacci splice, " +
     "golden ratio, triangular numbers, arrow of time, Hawking radiation, astronomy, cosmology",
   ogImage: "/assets/img/og-two-infinities.jpg",
