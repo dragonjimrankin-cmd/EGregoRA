@@ -252,8 +252,8 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
                 'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.2',
-                'id="atlas-box"', 'The Atlas of Becoming', 'The same map, written out',
-                'src="/assets/js/atlas.js"', 'class="nav-cluster"', 'First principles',
+                'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',
+                'The same map, written out', 'class="nav-cluster"', 'First principles',
                 'Cosmic architecture', 'Tests and essays',
                 'Why the two infinities never fully synchronise', 'The Zero-Seam Test']
             },
