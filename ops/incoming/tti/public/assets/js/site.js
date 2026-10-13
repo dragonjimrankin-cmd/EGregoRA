@@ -4918,6 +4918,7 @@
 
   var MARK = {
     google: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"/><path fill="currentColor" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z"/><path fill="currentColor" d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z"/><path fill="currentColor" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.6 9.4 5.9 12 5.9z"/></svg>',
+    microsoft: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8.5v8.5H3zm9.5 0H21v8.5h-8.5zM3 12.5h8.5V21H3zm9.5 0H21V21h-8.5z"/></svg>',
     apple: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.5-.2-2.8.8-3.5.8s-1.9-.8-3.1-.8c-1.6 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.3 1.3-2.6 1.3-2.7 0 0-2.4-.9-2.4-3.7zM14.1 5.4c.6-.8 1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-.9 2.9 1 .1 2-.5 2.7-1.3z"/></svg>',
     x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.5 3h3.1l-6.8 7.8L21.8 21h-6.3l-4.9-6.4L4.9 21H1.8l7.3-8.3L2.4 3h6.4l4.4 5.9zm-1.1 16.1h1.7L7.7 4.8H5.9z"/></svg>',
     facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>',
@@ -5125,35 +5126,54 @@
     if (items.length) ul.insertBefore(li, items[items.length - 1]); else ul.appendChild(li);
   }
 
-  /* The Shop link, once, beside the last item — the house's shelf of
-     objects, present on every page without re-cutting each header by hand.
-     This house only; the twin keeps its own shop. */
-  function shopLink() {
-    var nav = document.getElementById('primary-nav');
-    if (!nav || document.getElementById('nav-shop-link')) return;
-    if (nav.querySelector('a[href="/shop/"]')) return;
+  /* The three Limb I pages moved here from the sister house: the M\u00f6bius
+     seam, entropy, and the ledger's phased integration. Inserted once per
+     page at their alphabetical place, without re-cutting the headers. */
+  function limbLinks() {
     if (window.location.origin.indexOf('two-infinities') < 0) return;
-    var ul = nav.querySelector('ul');
-    if (!ul) return;
-    var li = document.createElement('li');
-    li.id = 'nav-shop-link';
-    li.innerHTML = '<a href="/shop/"><i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M24 40 L50 24 L76 40 L76 78 L50 90 L24 78 Z"/><path d="M24 40 L50 52 L76 40 M50 52 V90" opacity="0.55"/><path d="M58 38 L74 26 M74 26 H60 M74 26 V40" opacity="0.4"/></g></svg></i><span>Shop</span></a>';
-    if (window.location.pathname.replace(/\/$/, '') === '/shop') {
-      li.querySelector('a').setAttribute('aria-current', 'page');
+    var items = [
+      ['/moebius-seam/', 'The M\u00f6bius Seam',
+        '<circle cx="50" cy="50" r="46"/><polygon points="50,8 86,29 86,71 50,92 14,71 14,29"/><polygon points="50,22 81,40 81,76 50,94 19,76 19,40" opacity="0.5"/><path d="M50,8 50,92 M14,29 86,71 M86,29 14,71 M14,29 14,71 M86,29 86,71 M50,8 14,71 M50,8 86,71 M50,92 14,71 M50,92 86,29"/>'],
+      ['/entropy/', 'Entropy',
+        '<path d="M50 50 m0 0 a4 4 0 1 1 4 -4 a9 9 0 1 1 -13 9 a18 18 0 1 1 26 -18 a32 32 0 1 1 -45 32 a46 46 0 1 1 65 -46"/>'],
+      ['/the-cosmic-ledger/', 'Phased Integration',
+        '<rect x="18" y="14" width="64" height="72"/><path d="M18 32 H82 M34 14 V86 M34 50 H82 M34 68 H82"/>']
+    ];
+    var nav = document.getElementById('primary-nav');
+    var ul = nav && nav.querySelector('ul');
+    if (ul) {
+      var links = Array.prototype.map.call(ul.querySelectorAll('a[href]'), function (a) {
+        return { a: a, p: a.getAttribute('href') || '' };
+      });
+      for (var i = 0; i < items.length; i++) {
+        if (ul.querySelector('a[href="' + items[i][0] + '"]')) continue;
+        var before = null;
+        for (var k = 0; k < links.length; k++) {
+          if (links[k].p > items[i][0]) { before = links[k].a; break; }
+        }
+        var li = document.createElement('li');
+        li.innerHTML = '<a href="' + items[i][0] + '"><i aria-hidden="true"><svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8">' + items[i][2] + '</g></svg></i><span>' + items[i][1] + '</span></a>';
+        if (window.location.pathname.replace(/\/$/, '') === items[i][0].replace(/\/$/, '')) {
+          li.querySelector('a').setAttribute('aria-current', 'page');
+        }
+        var liNode = before ? before.closest('li') : null;
+        if (liNode) ul.insertBefore(li, liNode); else ul.appendChild(li);
+      }
     }
-    var items = ul.querySelectorAll('li');
-    if (items.length) ul.insertBefore(li, items[items.length - 1]); else ul.appendChild(li);
     var foot = document.querySelector('.foot-nav');
-    if (foot && !foot.querySelector('a[href="/shop/"]')) {
-      var fa = document.createElement('a');
-      fa.href = '/shop/';
-      fa.textContent = 'Shop';
-      foot.appendChild(fa);
+    if (foot) {
+      for (var j = 0; j < items.length; j++) {
+        if (foot.querySelector('a[href="' + items[j][0] + '"]')) continue;
+        var fa = document.createElement('a');
+        fa.href = items[j][0];
+        fa.textContent = items[j][1];
+        foot.appendChild(fa);
+      }
     }
   }
 
-  /* The shop makes the old cookie line untrue on this house; true it up
-     here rather than re-cutting the gate on every page by hand. */
+  /* The shop (and now membership) make the old cookie line untrue on this
+     house; true it up here rather than re-cutting the gate on every page. */
   function cookieFix() {
     var t = document.getElementById('cookie-text');
     if (t && t.textContent.indexOf('we sell nothing') >= 0) {
@@ -5161,7 +5181,7 @@
     }
   }
 
-  function all() { mount(); peopleLink(); shopLink(); cookieFix(); }
+  function all() { mount(); peopleLink(); limbLinks(); cookieFix(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', all);
   else all();
 })();
