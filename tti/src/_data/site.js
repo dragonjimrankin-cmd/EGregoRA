@@ -2,7 +2,7 @@
  * The Shape of Becoming: Infinity, Gravity and Existence — site-wide constants.
  *
  * The framework is James Alexander Matthew Rankin's, written between the
- * 2nd and 19th of June 2026 and revised to r3.8. This site is its reading
+ * 2nd and 19th of June 2026 and revised to r3.9. This site is its reading
  * room: the same house style as EGregoRA, turned from the wood to the sky.
  */
 export default {
@@ -20,19 +20,19 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r3.8",
-  revised: "2026-10-11",
+  revision: "r3.9",
+  revised: "2026-10-13",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
   description:
     "The Shape of Becoming: Infinity, Gravity and Existence — A speculative cosmology by Jim Rankin, UK, 2026. " +
     "It follows temporal-antipode infinities, π as closure, i as the half-turn that opens a dimension, consciousness as the integral, " +
-    "gravity as curvature, the Cosmic Ledger, and a falsifiable Little Red Dots research programme. Twenty " +
-    "papers, eleven essays and the χ-field model, drawn as plates.",
+    "gravity as curvature, entropy versus integration, double-inversion residue, accumulated differentials, the Cosmic Ledger, " +
+    "and a falsifiable Little Red Dots research programme. Twenty papers, eleven source essays and new research notes, drawn as plates.",
   keywords:
     "The Shape of Becoming, A speculative cosmology by Jim Rankin, UK, 2026, two infinities, temporal antipodes, opposite ends of time, " +
     "synchronisation, smallward infinity, largeward infinity, geometry of existence, pi, Euler identity, " +
     "imaginary unit, Cantor, consciousness as integral, microtubules, Orch-OR, galactic torus, Möbius seam, " +
-    "Klein bottle, cosmic ledger, chi field, dark matter, dark energy, JWST little red dots, inherited residue, " +
+    "Klein bottle, double inversion, light polarization, geometric phase, entropy, accumulated differentials, mass, gravity, cosmic ledger, chi field, dark matter, dark energy, JWST little red dots, inherited residue, " +
     "zero seam, previous universe conjecture, preregistered research, flat rotation curves, CMB, Fibonacci splice, " +
     "golden ratio, triangular numbers, arrow of time, Hawking radiation, astronomy, cosmology",
   ogImage: "/assets/img/og-two-infinities.jpg",

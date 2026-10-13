@@ -13,6 +13,7 @@ on:
       - "scripts/sync-neural-voice-assets.mjs"
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
+      - "scripts/test-tti-relocations.mjs"
       - "scripts/tti-gather-plates.mjs"
       - "scripts/audit-tti.mjs"
       - "ops/tti-project.txt"
@@ -43,6 +44,7 @@ jobs:
           node --check tti/src/assets/js/fox.js
           node --check tti/src/assets/js/site.js
           node scripts/test-oracle-knowledge.mjs
+          node scripts/test-tti-relocations.mjs
           node scripts/test-neural-voice.mjs
           npm run build:tti:hatchable
           npm run lint:tti
@@ -51,6 +53,9 @@ jobs:
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
           test -s tti/hatchable/public/temporal-antipodes/index.html
+          test -s tti/hatchable/public/entropy/index.html
+          test -s tti/hatchable/public/double-inversion/index.html
+          test -s tti/hatchable/public/accumulated-differentials/index.html
           test -s tti/hatchable/public/little-red-dots/index.html
           test -s tti/hatchable/public/little-red-dots/research-proposal/index.html
           test -s tti/hatchable/public/stress-tests/index.html
@@ -68,7 +73,7 @@ jobs:
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r3.8' tti/hatchable/public/index.html
+          grep -Fq 'r3.9' tti/hatchable/public/index.html
           grep -q 'Why the two infinities never fully synchronise' tti/hatchable/public/index.html
           grep -q 'The One Residue That Travels' tti/hatchable/public/time-and-residue/index.html
           grep -q 'One Source Per Universe, Every Being Eligible' tti/hatchable/public/time-and-residue/index.html
@@ -76,11 +81,14 @@ jobs:
           grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Nineteen prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Twenty-two prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Why can the smaller and bigger infinities never fully synchronise?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Could little red dots be remnants of a previous universe?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is the Zero-Seam Test?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Is TTI integration the same thing as entropy?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Does residue from one inversion survive a second inversion?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'How do accumulated differentials connect to mass and gravity?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO DRAW' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO FILM' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Natural voice: off' tti/hatchable/public/ask-shakdrah/index.html
@@ -115,6 +123,14 @@ jobs:
           grep -q 'They Are Not Two Clocks That Happen to Disagree' tti/hatchable/public/temporal-antipodes/index.html
           grep -q 'Smallward Is Not Mathematically Smaller' tti/hatchable/public/temporal-antipodes/index.html
           grep -q 'What Must Be Derived Before “Cannot” Means Physics' tti/hatchable/public/temporal-antipodes/index.html
+          grep -q 'One Word from Physics, One Proposal from TTI' tti/hatchable/public/entropy/index.html
+          grep -q '101, 333, 666 and 999' tti/hatchable/public/entropy/index.html
+          grep -q 'Not If &ldquo;Inversion&rdquo; Means an Exact Involution' tti/hatchable/public/double-inversion/index.html
+          grep -q 'Does residue of a single inversion make it through' tti/hatchable/public/double-inversion/index.html
+          grep -q 'The Skeletal Splice Deposit' tti/hatchable/public/accumulated-differentials/index.html
+          grep -q 'The Bianchi Gate' tti/hatchable/public/accumulated-differentials/index.html
+          grep -q 'What the Older Möbius Seam Page Contributed' tti/hatchable/public/moebius/index.html
+          grep -q 'The Ledger Is a Reading, Not a Second Universe' tti/hatchable/public/cosmic-ledger/index.html
           grep -q 'JWST&rsquo;s Little Red Dots, Through TTI' tti/hatchable/public/little-red-dots/index.html
           grep -q 'An Integration Front Carrying an Older Residue' tti/hatchable/public/little-red-dots/index.html
           grep -q 'What Could Exist Between Minus One and Zero?' tti/hatchable/public/little-red-dots/index.html
@@ -127,18 +143,28 @@ jobs:
           grep -q 'Choose What Crosses Before Counting What Shines' tti/hatchable/public/little-red-dots/research-proposal/index.html
           grep -q 'The Temporal-Antipode Synchronisation Challenge' tti/hatchable/public/stress-tests/index.html
           grep -q 'The Zero-Seam Test, With the Null Model Kept in the Room' tti/hatchable/public/stress-tests/index.html
-          grep -q 'The Visual Compendium &middot; 28 plates' tti/hatchable/public/plates/index.html
+          grep -q 'The Visual Compendium &middot; 31 plates' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/temporal-antipodes/"' tti/hatchable/public/plates/index.html
+          grep -q 'data-plate-source="/entropy/"' tti/hatchable/public/plates/index.html
+          grep -q 'data-plate-source="/double-inversion/"' tti/hatchable/public/plates/index.html
+          grep -q 'data-plate-source="/accumulated-differentials/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/little-red-dots/"' tti/hatchable/public/plates/index.html
           grep -Fq 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/' tti/hatchable/public/sitemap.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/double-inversion/' tti/hatchable/public/sitemap.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/accumulated-differentials/' tti/hatchable/public/feed.xml
           grep -Fq '<subtitle>A speculative cosmology by Jim Rankin, UK, 2026</subtitle>' tti/hatchable/public/feed.xml
           grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
+          grep -q 'Entropy and the Phases of Integration' tti/hatchable/public/essays/index.html
+          grep -q 'When Differentials Accumulate' tti/hatchable/public/essays/index.html
           grep -q 'Read the Zero-Seam research proposal' tti/hatchable/public/essays/index.html
           grep -q 'little red dots are compact' tti/hatchable/public/cosmic-ledger/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
             tti/hatchable/public/temporal-antipodes/index.html \
+            tti/hatchable/public/entropy/index.html \
+            tti/hatchable/public/double-inversion/index.html \
+            tti/hatchable/public/accumulated-differentials/index.html \
             tti/hatchable/public/little-red-dots/index.html \
             tti/hatchable/public/little-red-dots/research-proposal/index.html \
             tti/hatchable/public/ask-shakdrah/index.html \
@@ -191,13 +217,19 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r3.8', 'Why the two infinities never fully synchronise',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r3.9', 'Why the two infinities never fully synchronise',
                 'The Zero-Seam Test']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/cosmic-ledger/',
               markers: ['The Cosmic Ledger', 'JWST&rsquo;s little red dots are compact',
-                'carrying an inherited', 'not a result of the equations above']
+                'carrying an inherited', 'not a result of the equations above',
+                'The Ledger Is a Reading, Not a Second Universe', 'When Do Accumulated Differentials Weigh?']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/moebius/',
+              markers: ['The Möbius Seam', 'What the Older Möbius Seam Page Contributed',
+                'Does a First Inversion Leave Residue After the Second?', 'Riemann Hypothesis']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/time-and-residue/',
@@ -218,6 +250,21 @@ jobs:
               markers: ['Temporal Antipodes', 'They Are Not Two Clocks That Happen to Disagree',
                 'Smallward Is Not Mathematically Smaller', 'An Instantaneous Match Is Not Full Synchronisation',
                 'What Must Be Derived Before “Cannot” Means Physics', 'Earned, Chosen, Refused']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/entropy/',
+              markers: ['Entropy and the Phases of Integration', 'One Word from Physics, One Proposal from TTI',
+                '101, 333, 666 and 999', 'What a Real Entropy&ndash;Integration Bridge Would Need']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/double-inversion/',
+              markers: ['Two Inversions', 'Does residue of a single inversion make it through',
+                'Not If &ldquo;Inversion&rdquo; Means an Exact Involution', 'Separate Return Error from Path Memory']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/accumulated-differentials/',
+              markers: ['When Differentials Accumulate', 'The Skeletal Splice Deposit',
+                'The Bianchi Gate', 'The Sum Does Not Weigh Until a Theory Makes It Weigh']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/little-red-dots/',
@@ -245,13 +292,17 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/plates/',
-              markers: ['The Visual Compendium &middot; 28 plates', 'Temporal Antipodes',
+              markers: ['The Visual Compendium &middot; 31 plates', 'Temporal Antipodes',
                 'Opposite Ends, Finite Projections', 'JWST’s Little Red Dots',
-                'From the previous closure to a']
+                'Similar Arrows, Different Accounts', 'State Restored, Path Still Available',
+                'From Increments to Curvature', 'From the previous closure to a']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/sitemap.xml',
               markers: ['https://the-two-infinities.hatchable.site/temporal-antipodes/',
+                'https://the-two-infinities.hatchable.site/entropy/',
+                'https://the-two-infinities.hatchable.site/double-inversion/',
+                'https://the-two-infinities.hatchable.site/accumulated-differentials/',
                 'https://the-two-infinities.hatchable.site/little-red-dots/',
                 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/',
                 'https://the-two-infinities.hatchable.site/stress-tests/']
@@ -259,13 +310,17 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/essays/',
               markers: ['Temporal Antipodes', 'JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture',
+                'Entropy and the Phases of Integration', 'Two Inversions', 'When Differentials Accumulate',
                 'Read the Zero-Seam research proposal']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
-              markers: ['Nineteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+              markers: ['Twenty-two prepared answers', 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
+                'Is TTI integration the same thing as entropy?',
+                'Does residue from one inversion survive a second inversion?',
+                'How do accumulated differentials connect to mass and gravity?',
                 'Can reversible mixing create a matter-antimatter imbalance?',
                 'ASK SHAKDRAH TO DRAW', 'ASK SHAKDRAH TO FILM', 'oracle-knowledge.js',
                 'Natural voice: off', 'Male neural voice',
@@ -276,7 +331,8 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
                 'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
-                'zero-seam-test', 'epistemic-grading']
+                'zero-seam-test', 'entropy-integration', 'double-inversion-residue',
+                'differentials-mass-gravity', 'epistemic-grading']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/neural-voice.js',

@@ -352,6 +352,66 @@ The word **cannot** remains conditional. The conjecture would fail if a consiste
       ]
     },
     {
+      id: "entropy-integration",
+      question: "Is TTI integration the same thing as entropy?",
+      patterns: [
+        /(?:tti|phase|cosmic).*(?:integration).*(?:same as|equal|entropy)/,
+        /entropy.*(?:integration|consciousness|order|disorder)/
+      ],
+      answer: `No. Keep at least four definitions visible. Thermodynamic entropy is a state function that constrains macroscopic processes. Boltzmann entropy, S = kB ln Ω, counts microstates compatible with a specified macro-description. Von Neumann entropy is defined from a quantum density matrix. Shannon entropy measures uncertainty in a probability distribution. Their relationships require stated ensembles, coarse-graining and physical protocols.
+
+TTI's **integration** is a proposed order parameter for degrees of freedom acting as a coherent whole. That idea may be philosophically useful, but no established law says that increased TTI integration must lower entropy, raise entropy, generate consciousness or create mass. Local order can increase while the environment gains more entropy, and gravitational systems do not behave like simple gas boxes. Similar arrows in a diagram are not an equality.
+
+A physical bridge would need a state space, dynamics, system boundary, independently defined integration measure I, and a derived relation such as I = F[ρ]. It would also need null models for ordinary self-organisation and a result that could show the bridge is absent. The older symbolic sequence 101, 333, 666 and 999 is retained as cultural history of the framework, not as a result of statistical mechanics.
+
+Read [Entropy and the Phases of Integration](https://the-two-infinities.hatchable.site/entropy/). Its central discipline is simple: established thermodynamics, information theory, TTI interpretation and spiritual symbolism go on separate ledgers.`,
+      followups: [
+        "How do accumulated differentials connect to mass and gravity?",
+        "Why can the smaller and bigger infinities never fully synchronise?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "double-inversion-residue",
+      question: "Does residue from one inversion survive a second inversion?",
+      patterns: [
+        /(?:residue|memory).*(?:first|one|single|after|through).*(?:second|double|two).*(?:inversion|polar)/,
+        /(?:double|two|second).*(?:inversion|moebius|mobius|polar).*(?:residue|memory|survive|preserve)/
+      ],
+      answer: `If the declared inversion is an exact involution P, then P² = I. The modelled state returns exactly, and the direct residue ΔO = O(P²x) − O(x) is zero for every observable O defined only on that state. This is true both for a transported transverse frame after two circuits of the Möbius double cover and, up to an overall phase, for two passages through the same ideal order-two polarization element.
+
+Something can nevertheless survive in a **larger description**. A Möbius strip remains globally non-orientable after the local frame returns. A closed polarization path can acquire a Pancharatnam–Berry phase detectable relative to a reference arm. A real optical element can retain heat, hysteresis or nonlinear material memory. Correlations can leak into an environment. Each is a distinct carrier with a distinct observable; none is implied merely by saying “inversion.”
+
+TTI could add a residue variable r and a law such as (x,r) mapping to (Px,r + f[x]). Then x may return after two operations while r does not. But that enlarged law, its units, conservation rules and coupling have to be derived and tested. It cannot be smuggled into P after the fact. A positive optical phase result would establish an optical path effect, not cosmic inheritance or matter–antimatter conversion.
+
+Read [Two Inversions](https://the-two-infinities.hatchable.site/double-inversion/) and the parent [Möbius account](https://the-two-infinities.hatchable.site/moebius/#t-double-inversion). The disciplined answer is: exact restoration is the null; surviving residue requires a separately named place to live.`,
+      followups: [
+        "Could the universe itself be the Möbius seam?",
+        "Does orientation reversal reverse time or create antimatter?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "differentials-mass-gravity",
+      question: "How do accumulated differentials connect to mass and gravity?",
+      patterns: [
+        /(?:accumulat|gather).*(?:differential|dx).*(?:mass|gravity|weigh)/,
+        /(?:mass|gravity).*(?:accumulat|differential|dx|splice deposit)/
+      ],
+      answer: `There are three levels, and the bridge between the second and third must not be skipped. In mathematics, integrals and sums accumulate differential contributions. The Skeletal Splice gives the exact count R_n = F_(n+2) − 1, defines δΠ_n = R_n φ^(−n), and yields δΠ_n tending to φ²/√5 = 1.170820… with Π_n approximately 1.1708n − 1.618. Those quantities are dimensionless until a scale and units are supplied.
+
+In established physics, a written dx is not a smallest grain of matter. Rest mass, energy density, momentum, pressure and stress enter the stress–energy tensor. General relativity relates a conserved total T_μν to curvature through G_μν + Λg_μν = (8πG/c⁴)T_μν. Much ordinary mass is QCD binding and kinetic energy, not a direct count of elementary deposits.
+
+TTI's possible bridge is to promote accumulated history to a covariant field A(x), supply a causal evolution or kernel, derive a Lagrangian or constitutive law, and obtain a stress–energy contribution T^A_μν. The complete source must obey covariant conservation because the Einstein tensor has zero divergence. Only there could accumulated history contribute to effective mass and then to gravity.
+
+The proposal must face equivalence-principle, fifth-force, lensing, structure-growth, CMB and stability constraints. It loses if its best-fit contribution is zero, violates conservation, merely renames an existing field, or cannot fit independent data. Read [When Differentials Accumulate](https://the-two-infinities.hatchable.site/accumulated-differentials/) and the [Skeletal Splice](https://the-two-infinities.hatchable.site/skeletal-splice/#t-accumulation). The sum is earned; its weight is not.`,
+      followups: [
+        "Is TTI integration the same thing as entropy?",
+        "What is the one residue that travels?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
       id: "epistemic-grading",
       question: "How should I grade these new claims?",
       patterns: [

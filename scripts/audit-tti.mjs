@@ -26,7 +26,7 @@ const htmlFiles = names
   .map((name) => path.join(siteRoot, name))
   .sort();
 
-if (htmlFiles.length < 23) fail(`expected at least 23 HTML documents, found ${htmlFiles.length}`);
+if (htmlFiles.length < 26) fail(`expected at least 26 HTML documents, found ${htmlFiles.length}`);
 
 const documents = new Map();
 const canonicals = new Map();
@@ -131,12 +131,15 @@ if (!home) {
   if (!home.$('.hero-sub').text().trim().startsWith(expectedTagline)) {
     fail('homepage hero is missing the exact attribution tagline');
   }
-  for (const href of ['/little-red-dots/', '/little-red-dots/research-proposal/']) {
+  for (const href of [
+    '/little-red-dots/', '/little-red-dots/research-proposal/', '/entropy/',
+    '/double-inversion/', '/accumulated-differentials/'
+  ]) {
     if (!home.$(`a[href="${href}"]`).length) fail(`homepage does not expose ${href}`);
   }
   const homeLinkedCards = home.$('.card--linked > h3 > a.card-link').length;
-  if (homeLinkedCards !== 17) {
-    fail(`homepage exposes ${homeLinkedCards} whole-card links, expected 17`);
+  if (homeLinkedCards !== 20) {
+    fail(`homepage exposes ${homeLinkedCards} whole-card links, expected 20`);
   }
 }
 if (linkedCardCount < 24) fail(`expected at least 24 whole-card destinations, found ${linkedCardCount}`);
@@ -175,6 +178,9 @@ try {
   if (!feed.includes(`<subtitle>${expectedTagline}</subtitle>`)) fail('feed tagline is incorrect');
   if (!feed.includes(`${expectedOrigin}/little-red-dots/research-proposal/`)) fail('feed omits the research proposal');
   if (!feed.includes(`${expectedOrigin}/temporal-antipodes/`)) fail('feed omits Temporal Antipodes');
+  for (const pathname of ['/entropy/', '/double-inversion/', '/accumulated-differentials/']) {
+    if (!feed.includes(`${expectedOrigin}${pathname}`)) fail(`feed omits ${pathname}`);
+  }
 } catch {}
 
 const plates = documents.get('/plates/');
@@ -199,6 +205,36 @@ for (const pathname of proposalLinks) {
   if (!doc?.$(`a[href="/little-red-dots/research-proposal/"]`).length) {
     fail(`${pathname} does not link to the Zero-Seam research proposal`);
   }
+}
+
+const transferredPages = new Map([
+  ['/entropy/', ['t-two-ledgers', 't-boltzmann', 't-integration-phases', 't-symbolic-poles', 't-bridge']],
+  ['/double-inversion/', ['t-answer', 't-moebius-frame', 't-polarization', 't-residue-ledger', 't-experiment']],
+  ['/accumulated-differentials/', ['t-three-levels', 't-calculus', 't-einstein', 't-splice', 't-conservation']]
+]);
+for (const [pathname, ids] of transferredPages) {
+  const doc = documents.get(pathname);
+  if (!doc) {
+    fail(`${pathname} was not built`);
+    continue;
+  }
+  for (const id of ids) {
+    if (!doc.$(`[id="${id}"]`).length) fail(`${pathname} omits #${id}`);
+  }
+  if (!doc.$('figure.plate').length) fail(`${pathname} has no visual-compendium plate`);
+}
+for (const [pathname, href] of [
+  ['/moebius/', '/double-inversion/'],
+  ['/cosmic-ledger/', '/accumulated-differentials/'],
+  ['/gravity/', '/accumulated-differentials/'],
+  ['/dx/', '/accumulated-differentials/'],
+  ['/skeletal-splice/', '/accumulated-differentials/'],
+  ['/essays/', '/entropy/'],
+  ['/essays/', '/double-inversion/'],
+  ['/essays/', '/accumulated-differentials/']
+]) {
+  const doc = documents.get(pathname);
+  if (!doc?.$(`a[href="${href}"]`).length) fail(`${pathname} does not expose ${href}`);
 }
 
 const temporalAntipodeLinks = [
@@ -229,4 +265,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, metadata, discovery, links, fragments, JSON-LD, Temporal Antipodes and proposal surfaces passed.');
+console.log('  Exact identity, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');

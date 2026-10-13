@@ -1,0 +1,166 @@
+---
+layout: layouts/base.njk
+title: Two Inversions — Möbius Return and the Polarity of Light
+metaTitle: "Two Inversions — Does Any Residue Survive?"
+permalink: /double-inversion/
+description: "A rigorous comparison of Möbius frame inversion and optical polarization, asking whether any residue from a first inversion can survive an exact second inversion."
+keywords: "Möbius inversion, light polarization, double inversion, Jones matrix, geometric phase, Pancharatnam Berry phase, optical hysteresis, residue, involution"
+ogType: article
+schemaType: Article
+section: Topology, optics and speculative cosmology
+published: "2026-10-13"
+---
+
+<section class="page-head">
+  <p class="kicker">A new TTI question &middot; topology beside optics, never substituted for it</p>
+  <h1>Two Inversions</h1>
+  <p class="lede muted">A Möbius circuit reverses a local transverse frame. A second circuit restores it.
+    A perfect optical inverter can do the same. <strong>Does residue of a single inversion make it through
+    after a second inversion?</strong></p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">The short answer</p>
+    <h2 id="t-answer">Not If &ldquo;Inversion&rdquo; Means an Exact Involution</h2>
+    <p>Let \(P\) be the operation and suppose \(P^2=I\). Then every state in the model satisfies</p>
+    <p class="formula">\[x\xmapsto{P}Px\xmapsto{P}P^2x=x.\]</p>
+    <p>For an observable \(O\), the direct double-inversion residue is therefore</p>
+    <p class="formula">\[\Delta_O=O(P^2x)-O(x)=0.\]</p>
+    <p>Any non-zero remainder must live somewhere the ideal state map did not erase: a path-dependent phase,
+      a larger state space, a changed boundary, a dissipative material, an environment, or a record. Calling
+      the remainder &ldquo;Möbius memory&rdquo; does not provide that mechanism.</p>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <div class="grid two">
+    <article class="frame card">
+      <p class="kicker">Established topology <span class="sci">&#9670;</span></p>
+      <h2 id="t-moebius-frame">What the Möbius Strip Reverses</h2>
+      <p>Write a rectangular strip with the identification</p>
+      <p class="formula">\[(0,v)\sim(2\pi,-v).\]</p>
+      <p>After one circuit, a continuously transported transverse frame returns reversed. After two circuits
+        it returns to its starting orientation. This is the non-orientability of the surface. It is not an
+        automatic reversal of electric charge, time, matter or causality.</p>
+      <p>The robust remainder is global: no continuous choice of orientation exists everywhere on the strip.
+        That topological fact survives even though a transported frame is restored after two circuits.</p>
+    </article>
+    <article class="frame card">
+      <p class="kicker">Established optics <span class="sci">&#9670;</span></p>
+      <h2 id="t-polarization">What an Optical Element Reverses</h2>
+      <p>A monochromatic pure polarization state can be represented by a Jones vector. An ideal half-wave
+        plate with fast axis \(\theta\) has, up to convention and an overall phase,</p>
+      <p class="formula">\[H(\theta)=R(-\theta)
+        \begin{pmatrix}1&0\\0&-1\end{pmatrix}R(\theta).\]</p>
+      <p>It reflects a linear polarization angle as \(\alpha\mapsto2\theta-\alpha\). Passing through the same
+        ideal plate twice gives \(H(\theta)^2=I\), up to a global phase. Two different plates need not cancel;
+        order, axis angle, retardance and wavelength all matter.</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <figure id="fig-double-inversion" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> State Restored, Path Still Available
+      <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 900 360" role="img" aria-label="A state arrow inverted once and then restored after a second inversion, with a surrounding loop labelled geometric phase and environmental record to show where a separately defined residue could remain">
+        <defs><marker id="inv-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#76cfee"/></marker></defs>
+        <g fill="none" stroke-width="2">
+          <circle cx="160" cy="180" r="58" stroke="#45d6b4"/><circle cx="450" cy="180" r="58" stroke="#ef84b6"/><circle cx="740" cy="180" r="58" stroke="#45d6b4"/>
+          <path d="M220 180H388M512 180H678" stroke="#76cfee" marker-end="url(#inv-arrow)"/>
+          <path d="M160 92C280 16 620 16 740 92" stroke="#a07cf0" stroke-dasharray="5 7" marker-end="url(#inv-arrow)"/>
+          <path d="M160 268C300 340 600 340 740 268" stroke="#d6a34a" stroke-dasharray="3 7" marker-end="url(#inv-arrow)"/>
+          <path d="M160 145v70M130 180h60M420 180h60" stroke="#cdefff"/>
+          <path d="M450 145v70" stroke="#cdefff"/>
+          <path d="M740 145v70M710 180h60" stroke="#cdefff"/>
+        </g>
+        <g font-family="Cinzel,serif" font-size="17" fill="#cdefff" text-anchor="middle">
+          <text x="160" y="188">x</text><text x="450" y="188">Px</text><text x="740" y="188">x</text>
+          <text x="305" y="163">FIRST INVERSION</text><text x="595" y="163">SECOND INVERSION</text>
+        </g>
+        <g font-family="EB Garamond,serif" font-size="15" fill="#a9b6d8" text-anchor="middle">
+          <text x="450" y="48">closed state-space path: a geometric phase may require interferometry</text>
+          <text x="450" y="340">apparatus or environment: hysteresis, heat, decoherence, boundary record</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">The centre state can be restored while a phase relative to another path, or a
+      physical record in the apparatus, remains. Those are distinct observables with distinct mechanisms;
+      neither is implied merely by drawing the two inversions.</p>
+  </figure>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">A necessary optical subtlety</p>
+    <h2 id="t-polarity">Polarity Is Not One Binary Switch</h2>
+    <p>Light polarization includes linear, circular and elliptical states. Linear angles are identified
+      modulo \(\pi\), while the Stokes vector places pure states on the Poincaré sphere. Jones matrices act on
+      amplitudes; their corresponding rotations act on Stokes vectors. An overall complex phase is invisible
+      to an isolated intensity measurement but can become a relative phase in an interferometer.</p>
+    <p>A quarter-wave plate is not an order-two inversion: two identical quarter-wave passages make a
+      half-wave retardance, not generally the identity. A mirror may also change handedness conventions and
+      propagation direction. Any comparison with a Möbius circuit must therefore name the optical operation,
+      the coordinate convention and the measured observable.</p>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <div class="page-head tight">
+    <p class="kicker">Five possible meanings of residue</p>
+    <h2 id="t-residue-ledger">Where Something Could Survive</h2>
+  </div>
+  <div class="grid two">
+    <article class="frame card"><h3>1 &middot; Topological holonomy <span class="sci">&#9670;</span></h3><p>A local frame is restored after two Möbius circuits, while the surface remains globally non-orientable. The &ldquo;residue&rdquo; is a property of the bundle or space, not a leftover material.</p></article>
+    <article class="frame card"><h3>2 &middot; Geometric phase <span class="sci">&#9670;</span></h3><p>A cyclic polarization path can acquire a Pancharatnam&ndash;Berry phase determined by geometry on the Poincaré sphere. It is observed relative to a reference path, not as a failure of the final polarization state to return.</p></article>
+    <article class="frame card"><h3>3 &middot; Hysteresis or dissipation <span class="sci">&#9670;</span></h3><p>A real optical element can heat, age, saturate or respond nonlinearly. The second operation then differs from the first. This is material memory, not ideal inversion algebra.</p></article>
+    <article class="frame card"><h3>4 &middot; Decoherence or environment <span class="hist">&#9670;</span></h3><p>The selected degree of freedom may return while correlations leak into uncontrolled modes. A larger state description is required to locate the record.</p></article>
+    <article class="frame card"><h3>5 &middot; TTI inherited residue <span class="spec">&#9670;</span></h3><p>TTI may propose a boundary variable \(r\) with its own update law, such as \((x,r)\mapsto(Px,r+f[x])\). That enlarged model can retain memory even when \(P^2x=x\), but the law and coupling must be derived and tested.</p></article>
+    <article class="frame card illuminated"><h3>The forbidden shortcut</h3><p>&ldquo;It inverted, therefore it remembers&rdquo; is not a mechanism. Exact restoration in the declared state space is the null result; memory requires an independently measurable carrier.</p></article>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">An experiment that can say no</p>
+    <h2 id="t-experiment">Separate Return Error from Path Memory</h2>
+    <ol class="steps">
+      <li>Prepare a known polarization state and retain a coherent reference arm.</li>
+      <li>Apply a calibrated order-two polarization transformation twice in the test arm.</li>
+      <li>Use full polarimetry to measure final-state error, not intensity alone.</li>
+      <li>Interfere test and reference arms to measure any relative geometric or dynamic phase.</li>
+      <li>Repeat in reversed order and over wavelength, temperature and power to expose non-ideal memory.</li>
+      <li>Declare the TTI residue model unsuccessful if every result is accounted for by calibrated optics, noise and environment.</li>
+    </ol>
+    <p>A positive phase measurement would establish an optical path effect. It would not by itself establish
+      cosmic inheritance, consciousness, matter&ndash;antimatter conversion or a Möbius universe.</p>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <div class="page-head tight"><p class="kicker">Categories</p><h2 id="t-categories">What Kind of Claim Is Being Made?</h2></div>
+  <div class="grid three">
+    <div class="frame card"><h3>Topological</h3><p>Non-orientability and frame return after two circuits are mathematical.</p></div>
+    <div class="frame card"><h3>Physical</h3><p>Jones matrices, retardance, polarimetry and geometric phase belong to optics.</p></div>
+    <div class="frame card"><h3>Informational</h3><p>A surviving record requires a carrier and distinguishable states.</p></div>
+    <div class="frame card"><h3>Philosophical</h3><p>Return-with-memory is a model of identity through change.</p></div>
+    <div class="frame card"><h3>Spiritual</h3><p>Initiation and return may be meaningful analogies, not laboratory conclusions.</p></div>
+    <div class="frame card"><h3>Cultural</h3><p>Möbius imagery has an artistic history separate from its mathematical definition.</p></div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <p class="kicker">Earned, chosen, refused</p>
+    <h2 id="t-boundary">The Question Survives; the Shortcut Does Not</h2>
+    <p><strong>Earned:</strong> exact order-two maps restore the modelled state, and closed optical paths can
+      carry measurable relative phase. <strong>Chosen:</strong> asking whether a separately defined residue
+      variable can connect those structures to TTI. <strong>Refused:</strong> treating any double inversion,
+      any polarization change or any Möbius image as evidence for inherited physical memory.</p>
+    <p>Read the parent account of <a href="/moebius/">the Möbius seam</a>, then compare
+      <a href="/time-and-residue/">the one-residue proposal</a> and
+      <a href="/out-of-phase/">matter and antimatter out of phase</a>.</p>
+  </div>
+</section>

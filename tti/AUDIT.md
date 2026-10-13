@@ -2,8 +2,8 @@
 
 **Project:** The Shape of Becoming: Infinity, Gravity and Existence  
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r3.8
-**Audit date:** 11 October 2026
+**Revision:** r3.9
+**Audit date:** 13 October 2026
 
 ## Scope
 
@@ -17,6 +17,14 @@ npm run audit:tti
 
 The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
 
+## Integration added in r3.9
+
+- Moved **The Möbius Seam**, **Entropy**, and **The Cosmic Ledger** out of EGregoRA&rsquo;s primary navigation and index. Their stable ASCII routes now provide small canonical relocation stubs to TTI rather than retaining duplicate essays.
+- Merged the useful corrected Möbius and Cosmic Ledger material into their existing TTI pages, and established `/entropy/` as the canonical entropy-versus-integration account.
+- Added **Two Inversions**, which compares Möbius frame return with light polarization and asks whether residue from a first inversion survives a second while retaining the exact-involution null \(P^2=I\).
+- Added **When Differentials Accumulate**, which preserves the exact Skeletal Splice sums but requires units, a covariant field, conservation and a stress&ndash;energy coupling before interpreting accumulation as mass or gravity.
+- Integrated the three canonical destinations and two new research notes across homepage and Essays discovery, metadata, Atom syndication, sitemap, reciprocal cross-links, prepared ShakDrah/Gink knowledge, plates, audit tests and both deployment workflows.
+
 ## Maintenance added in r3.8
 
 - Replaced the former geometry tagline with the exact attribution line **“A speculative cosmology by Jim Rankin, UK, 2026”** across the masthead, homepage hero, metadata, structured-data slogan, manifest, Atom feed, deployment configuration and live smoke checks.
@@ -24,17 +32,17 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 ## Current audited result
 
-- 23 HTML documents built.
-- 23 unique canonical URLs verified.
+- 26 HTML documents built.
+- 26 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, masthead, metadata and manifest.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.
 - Nested breadcrumbs verified for the Zero-Seam research proposal.
 - `sitemap.xml`, Atom `feed.xml`, `robots.txt` and the SVG favicon verified.
-- 28 source plates reconciled with 28 gathered plates; SVG IDs and marker references are namespaced in the compendium.
+- 31 source plates reconciled with 31 gathered plates; SVG IDs and marker references are namespaced in the compendium.
 - The research proposal is discoverable from the homepage, parent conjecture, Essays, Stress Tests, Time and Residue, and Inverted Tori.
 - Temporal Antipodes is discoverable from the homepage, Foundations, Seams, Essays, Stress Tests, Prime Plane, Time and Residue, Inverted Tori, and the matter–antimatter essay.
-- 19 prepared answers and 19 paraphrase routes verified for both ShakDrah and Gink, including fallback and attachment bypass.
+- 22 prepared answers and 22 paraphrase routes verified for both ShakDrah and Gink, including entropy, double inversion, accumulated differentials, fallback and attachment bypass.
 - Six male neural voices, per-voice dispatch, prosody, consent and lip-sync metadata remain covered by the existing neural-voice test.
 - Workflow YAML and focused Hatchable build markers are validated before deployment.
 
@@ -61,6 +69,6 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 ## Boundaries of this audit
 
-The local audit does not claim that the TTI physics is correct, that a previous universe exists, that the negative interval is a physical domain, or that the two scale-infinities are physical clocks at opposite temporal ends. It checks the site’s internal integrity and whether those claims retain their declared speculative status.
+The local audit does not claim that the TTI physics is correct, that a previous universe exists, that the negative interval is a physical domain, that the two scale-infinities are physical clocks at opposite temporal ends, that entropy equals TTI integration, that an exact double inversion retains physical residue, or that accumulated differentials generate mass or gravity. It checks the site’s internal integrity and whether those claims retain their declared speculative status.
 
 External scientific links are preserved but are not treated as automatically valid forever. The deployment workflow separately verifies selected live pages after Hatchable publishes them. Visual and audible quality still require human inspection even when markup, voice routing and timing metadata pass automated tests.

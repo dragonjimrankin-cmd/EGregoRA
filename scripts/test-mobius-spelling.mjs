@@ -24,21 +24,24 @@ for (const file of htmlFiles) {
 }
 assert.deepEqual(wrong, [],
   'Visible EGregoRA copy and metadata must spell Möbius with an umlaut');
-assert.ok(corrected >= 107,
-  `Expected the corrected spelling across the site, found only ${corrected} occurrences`);
+assert.ok(corrected >= 15,
+  `Expected the corrected spelling in the retained copy and relocation path, found only ${corrected} occurrences`);
 
 const seamFile = join(root, 'moebius-seam', 'index.html');
 assert.ok((await stat(seamFile)).isFile(),
   'the established ASCII route must remain in place for compatible links');
 const seam = await readFile(seamFile, 'utf8');
 assert.ok(seam.includes('<title>The Möbius Seam'));
-assert.ok(seam.includes('href="https://egregora.hatchable.site/moebius-seam/"'));
+assert.ok(seam.includes('href="https://the-two-infinities.hatchable.site/moebius/"'));
+assert.ok(seam.includes('http-equiv="refresh"'));
 assert.ok(seam.includes('The Möbius Seam'));
 
 const home = await readFile(join(root, 'index.html'), 'utf8');
-assert.ok(home.includes('href="/moebius-seam/">The Möbius Seam'));
+assert.ok(home.includes('href="https://the-two-infinities.hatchable.site/moebius/"'));
+assert.ok(!home.includes('href="/moebius-seam/"'));
 const siteIndex = await readFile(join(root, 'site-index', 'index.html'), 'utf8');
-assert.ok(siteIndex.includes('href="/moebius-seam/">The Möbius Seam'));
+assert.ok(!siteIndex.includes('/moebius-seam/'));
+assert.ok(!siteIndex.includes('id="x-moebius-seam"'));
 
 console.log(`Möbius spelling passed: ${corrected} corrected display/metadata occurrences across ` +
   `${htmlFiles.length} EGregoRA pages; the stable /moebius-seam/ URL is preserved.`);

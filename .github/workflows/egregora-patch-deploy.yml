@@ -18,6 +18,7 @@ on:
       - "scripts/test-avatar-summary.mjs"
       - "scripts/test-speaker-map.mjs"
       - "scripts/test-mobius-spelling.mjs"
+      - "scripts/test-tti-relocations.mjs"
       - "scripts/sync-private-whisper-assets.mjs"
       - "package.json"
       - "package-lock.json"
@@ -65,6 +66,7 @@ jobs:
           node scripts/test-avatar-summary.mjs
           node scripts/test-speaker-map.mjs
           node scripts/test-mobius-spelling.mjs
+          node scripts/test-tti-relocations.mjs
           test -s egregora-patch/public/assets/js/private-whisper/LICENSE-BrowserWhisper.txt
           test -s egregora-patch/public/assets/js/private-whisper/LICENSE-MediaBunny.txt
           test -s egregora-patch/public/assets/js/headtts/worker-tts.mjs
@@ -74,11 +76,14 @@ jobs:
           test -s egregora-patch/public/assets/js/headtts/LICENSE-Kokoro.txt
           test -s egregora-patch/public/assets/css/avatar-voice.css
           grep -q 'avatar-voice-picker' egregora-patch/public/assets/css/avatar-voice.css
-          grep -q 'Nineteen prepared answers' egregora-patch/public/ask-ed/index.html
+          grep -q 'Twenty-two prepared answers' egregora-patch/public/ask-ed/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
           grep -q 'Why can the smaller and bigger infinities never fully synchronise?' egregora-patch/public/ask-ed/index.html
           grep -q 'Could little red dots be remnants of a previous universe?' egregora-patch/public/ask-ed/index.html
           grep -q 'What is the Zero-Seam Test?' egregora-patch/public/ask-ed/index.html
+          grep -q 'Is TTI integration the same thing as entropy?' egregora-patch/public/ask-ed/index.html
+          grep -q 'Does residue from one inversion survive a second inversion?' egregora-patch/public/ask-ed/index.html
+          grep -q 'How do accumulated differentials connect to mass and gravity?' egregora-patch/public/ask-ed/index.html
           grep -q 'Natural voice: off' egregora-patch/public/ask-ed/index.html
           grep -q 'Male neural voice' egregora-patch/public/ask-ed/index.html
           grep -q 'Choose a voice to turn Natural voice on and hear an immediate audition' egregora-patch/public/ask-ed/index.html
@@ -150,9 +155,12 @@ jobs:
           const targets = [
             {
               url: 'https://egregora.hatchable.site/ask-ed/',
-              markers: ['Nineteen prepared answers', 'What is in The Channeling Circle transcript archive?',
+              markers: ['Twenty-two prepared answers', 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
+                'Is TTI integration the same thing as entropy?',
+                'Does residue from one inversion survive a second inversion?',
+                'How do accumulated differentials connect to mass and gravity?',
                 'Can reversible mixing create a matter-antimatter imbalance?', 'oracle-knowledge.js',
                 'Natural voice: off', 'Male neural voice',
                 'Choose a voice to turn Natural voice on and hear an immediate audition',
@@ -170,7 +178,8 @@ jobs:
               url: 'https://egregora.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
                 'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
-                'zero-seam-test', 'epistemic-grading']
+                'zero-seam-test', 'entropy-integration', 'double-inversion-residue',
+                'differentials-mass-gravity', 'epistemic-grading']
             },
             {
               url: 'https://egregora.hatchable.site/assets/js/neural-voice.js',
@@ -246,6 +255,9 @@ jobs:
 
       - name: Verify Möbius spelling on every live EGregoRA page
         run: node scripts/test-mobius-spelling.mjs --live
+
+      - name: Verify moved essays resolve canonically to TTI
+        run: node scripts/test-tti-relocations.mjs --live
 
       - name: Verify live private transcription, avatar summaries and active progress
         run: |
