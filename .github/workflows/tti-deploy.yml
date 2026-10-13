@@ -228,7 +228,7 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/moebius/',
-              markers: ['The Möbius Seam', 'What the Older Möbius Seam Page Contributed',
+              markers: ['Möbius Seam', 'What the Older Möbius Seam Page Contributed',
                 'Does a First Inversion Leave Residue After the Second?', 'Riemann Hypothesis']
             },
             {

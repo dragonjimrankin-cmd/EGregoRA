@@ -486,7 +486,15 @@ jobs:
           walk(root);
           const expected = files.filter((file) => fs.readFileSync(file, 'utf8')
             .includes('/assets/js/admin-edit.js?v=creation-date-1'));
-          if (expected.length !== 32) fail(`Expected 32 date-enabled generated pages, found ${expected.length}.`);
+          const excluded = files.filter((file) => !expected.includes(file))
+            .map((file) => path.relative(root, file).replaceAll(path.sep, '/')).sort();
+          const allowedRelocationStubs = [
+            'cosmic-ether/index.html', 'cosmic-ledger/index.html',
+            'entropy/index.html', 'moebius-seam/index.html'
+          ].sort();
+          if (JSON.stringify(excluded) !== JSON.stringify(allowedRelocationStubs)) {
+            fail(`Unexpected creation-date exclusions: ${excluded.join(', ') || 'none'}.`);
+          }
 
           for (const file of expected) {
             const relative = path.relative(root, file).replaceAll(path.sep, '/');
