@@ -16,6 +16,7 @@ on:
       - "scripts/test-private-whisper.mjs"
       - "scripts/test-progress-liveness.mjs"
       - "scripts/test-avatar-summary.mjs"
+      - "scripts/test-speaker-map.mjs"
       - "scripts/test-mobius-spelling.mjs"
       - "scripts/sync-private-whisper-assets.mjs"
       - "package.json"
@@ -62,6 +63,7 @@ jobs:
           node scripts/test-private-whisper.mjs
           node scripts/test-progress-liveness.mjs
           node scripts/test-avatar-summary.mjs
+          node scripts/test-speaker-map.mjs
           node scripts/test-mobius-spelling.mjs
           test -s egregora-patch/public/assets/js/private-whisper/LICENSE-BrowserWhisper.txt
           test -s egregora-patch/public/assets/js/private-whisper/LICENSE-MediaBunny.txt
@@ -304,28 +306,7 @@ jobs:
           process.exit(1);
           NODE
 
-      - name: Recover the named latest-podcast transcript
-        run: |
-          node <<'NODE'
-          const response = await fetch('https://egregora.hatchable.site/api/media', {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ action: 'bootstrap-speakers' })
-          });
-          const data = await response.json().catch(() => ({}));
-          if (!response.ok || !data.ok) {
-            const message = String(data.error || `HTTP ${response.status}`)
-              .replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A').slice(0, 1000);
-            console.log(`::warning title=Podcast speaker recovery unavailable::${message}`);
-          } else if (!data.done) {
-            const detail = `${data.status || 'not completed'}; shape=${(data.response_shape || []).join(',')}`;
-            console.log(`::warning title=Podcast speaker recovery incomplete::${detail}`);
-          } else {
-            console.log(`Named podcast transcript recovery: ${data.status}; turns=${data.turns || 'existing'}.`);
-          }
-          NODE
-
-      - name: Verify the live speaker turns
+      - name: Verify the live speaker map and any private transcript
         run: |
           node <<'NODE'
           const report = (error) => {
@@ -373,7 +354,10 @@ jobs:
             throw new Error('The latest podcast speaker map was not stored.');
           }
           if (!latest.has_transcript) {
-            throw new Error('The latest podcast still has no stored transcript after guarded recovery.');
+            console.log('::warning title=Private podcast transcript pending::' +
+              'The latest podcast has the declared Edward Gregory/Jim Rankin map. ' +
+              'Private local transcription is still pending on an administrator device; deployment will not send its audio to a cloud STT service.');
+            process.exit(0);
           }
 
           const heard = await post({ action: 'transcript', id: latest.id });

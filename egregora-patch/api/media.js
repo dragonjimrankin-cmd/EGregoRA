@@ -640,15 +640,22 @@ export default async function (req, res) {
           ORDER BY created_at DESC, id DESC LIMIT 1`);
       const row = rows && rows[0];
       if (!row) return res.json({ ok: true, done: false, status: 'no-published-podcast' });
-      if (row.transcript && String(row.transcript).trim()) {
-        const profile = await ensureSpeakerPatterns(Number(row.id), row.transcript);
-        return res.json({ ok: true, done: true, status: 'already-transcribed',
-          speaker_patterns_stored: profile.stored });
-      }
+      /* Validate the declared identities before treating an existing transcript
+         as recovered. Previously this early return reported success even when
+         a newly published latest episode had no media_speakers rows, leaving
+         the following live audit to fail with no useful recovery path. */
       const speakers = await speakersFor(Number(row.id));
       const expected = new Map(speakers.map((s) => [Number(s.speaker_no), s.name]));
       if (expected.get(1) !== 'Edward Gregory' || expected.get(2) !== 'Jim Rankin') {
         return res.status(409).json({ error: 'The guarded speaker map is not present.' });
+      }
+      if (row.transcript && String(row.transcript).trim()) {
+        const profile = await ensureSpeakerPatterns(Number(row.id), row.transcript, speakers);
+        return res.json({ ok: true, done: true, status: 'already-transcribed',
+          speakers: profile.speakers.map((speaker) => ({
+            number: Number(speaker.speaker_no), name: speaker.name
+          })),
+          speaker_patterns_stored: profile.stored });
       }
       /* The original one-shot completed after the provider accepted options
          but returned no labels. Permit one, and only one, bounded retry for

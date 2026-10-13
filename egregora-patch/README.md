@@ -43,14 +43,14 @@ Current patch:
   podcast episode's claimed date when one has been set. Every generated HTML
   page cache-busts the shared Admin Edit script so the Date tab is available
   throughout the site immediately.
-- `migrations/0031_speaker_bootstrap.sql`,
-  `migrations/0032_speaker_inference_fallback.sql`, and the guarded media action
-  recover the latest named podcast transcript without exposing the admin
-  passcode or creating a general public transcription proxy. Provider speaker
-  labels are preferred. When the provider returns only timestamped fragments,
-  one bounded fallback uses measurable pauses or text-only dialogue structure;
-  that provenance is stored explicitly and is not presented as biometric
-  voice recognition.
+- `migrations/0031_speaker_bootstrap.sql` and
+  `migrations/0032_speaker_inference_fallback.sql` retain the historical
+  one-shot recovery markers, but deployment no longer invokes cloud hearing.
+  `migrations/0035_latest_podcast_speaker_map.sql` applies the administrators'
+  explicit declaration to the one currently latest published episode: Speaker
+  1 is Edward Gregory and Speaker 2 is Jim Rankin. If that episode has no
+  transcript, it remains pending until an administrator runs private local
+  Whisper on their own device.
 - `migrations/0033_consenting_voiceprints.sql`,
   `migrations/0034_extensible_voiceprints.sql`, `public/assets/js/voiceprint.js`,
   and the podcast editor add explicit-consent biometric voiceprints. Every
