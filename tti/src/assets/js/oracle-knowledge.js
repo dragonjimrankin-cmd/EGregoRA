@@ -231,6 +231,27 @@ Two weaker readings remain available: a network of toroidal cells joined by loca
       ]
     },
     {
+      id: "wormhole-inverted-torus",
+      question: "Can an inverted torus be a traversable wormhole?",
+      patterns: [
+        /inverted tor(?:us|i|uses).*(?:wormhole|throat|travers)/,
+        /(?:wormhole|throat).*(?:inverted torus|inverted tori|orientation revers)/,
+        /toroidal.*(?:mouth|wormhole|throat)/
+      ],
+      answer: `**Not from topology alone.** An inverted mapping torus is a global identification: a torus fibre returns through an orientation-reversing map whose induced matrix has determinant minus one. That construction can be mathematically precise without containing two mouths, a local throat or a shortcut. A traversable wormhole is a stronger Lorentzian-spacetime claim.
+
+For a simple Morris–Thorne throat, the shape function must satisfy b(r₀) = r₀ and the flare-out condition b′(r₀) < 1, while the redshift function stays finite so no horizon blocks passage. In ordinary general relativity this elementary setup violates the null energy condition at the throat. A candidate must then identify its supporting stress–energy, obey junction and conservation conditions, survive perturbations, keep tidal forces finite and address the possibility that moving mouths create closed timelike curves.
+
+TTI can contribute a proposed **mouth map**. Toroidal winding data may cross from mouth A to mouth B through an orientation-reversing map f with det f_* = −1. That can reverse a transported spatial or internal frame while future-directed time remains future-directed. It does not by itself create antimatter, reverse entropy, provide negative energy or preserve memory. A round trip restores orientation under an exact involution; any residue must live in a computed phase, holonomy, winding, interaction or environmental record.
+
+The clean distinction is: the inverted torus tells a state **how to return**; the wormhole metric must tell spacetime **how to let it pass**. Read [Wormholes and Inverted Tori](https://the-two-infinities.hatchable.site/wormholes/) and its [six-gate research programme](https://the-two-infinities.hatchable.site/wormholes/#t-programme).`,
+      followups: [
+        "What is an orientation-reversing torus mapping space?",
+        "Does residue from one inversion survive a second inversion?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
       id: "matter-phase",
       question: "How can matter be residue while antimatter is out of phase?",
       patterns: [

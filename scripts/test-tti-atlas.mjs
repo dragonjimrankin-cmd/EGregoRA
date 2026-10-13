@@ -26,7 +26,7 @@ assert.deepEqual(
 );
 
 const destinations = ttiAtlas.limbs.flatMap((route) => route.subs);
-assert.equal(destinations.length, 27, "the five reading paths must contain all 27 page and account-room destinations");
+assert.equal(destinations.length, 28, "the five reading paths must contain all 28 page and account-room destinations");
 assert.ok(ttiAtlas.limbs.every((route) => route.note && route.subs.length >= 4), "every path needs an explanation and at least four destinations");
 assert.ok(destinations.every((item) => item.title && item.note && item.href.startsWith("/") && item.href.endsWith("/")), "every destination needs a title, note and stable absolute URL");
 
@@ -34,7 +34,7 @@ const mappedHrefs = destinations.map((item) => item.href);
 assert.equal(new Set(mappedHrefs).size, mappedHrefs.length, "Atlas destination URLs must be unique");
 for (const required of [
   "/foundations/", "/prime-plane/", "/gravity/", "/torus/", "/moebius/", "/entropy/",
-  "/double-inversion/", "/accumulated-differentials/", "/little-red-dots/",
+  "/inverted-toruses/", "/wormholes/", "/double-inversion/", "/accumulated-differentials/", "/little-red-dots/",
   "/little-red-dots/research-proposal/", "/plates/", "/ask-shakdrah/", "/join/", "/account/"
 ]) {
   assert.ok(mappedHrefs.includes(required), `Atlas is missing ${required}`);

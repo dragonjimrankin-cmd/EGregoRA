@@ -35,7 +35,7 @@ const htmlFiles = names
   .map((name) => path.join(siteRoot, name))
   .sort();
 
-if (htmlFiles.length < 26) fail(`expected at least 26 HTML documents, found ${htmlFiles.length}`);
+if (htmlFiles.length < 27) fail(`expected at least 27 HTML documents, found ${htmlFiles.length}`);
 
 const documents = new Map();
 const canonicals = new Map();
@@ -188,14 +188,14 @@ if (!home) {
     if (!coreClaims.find(`a[href="${href}"]`).length) fail(`core claims do not expose ${href}`);
   }
   for (const href of [
-    '/little-red-dots/', '/little-red-dots/research-proposal/', '/entropy/',
+    '/little-red-dots/', '/little-red-dots/research-proposal/', '/entropy/', '/wormholes/',
     '/double-inversion/', '/accumulated-differentials/'
   ]) {
     if (!home.$(`a[href="${href}"]`).length) fail(`homepage does not expose ${href}`);
   }
   const homeLinkedCards = home.$('.card--linked > h3 > a.card-link').length;
-  if (homeLinkedCards !== 20) {
-    fail(`homepage exposes ${homeLinkedCards} whole-card links, expected 20`);
+  if (homeLinkedCards !== 21) {
+    fail(`homepage exposes ${homeLinkedCards} whole-card links, expected 21`);
   }
 }
 if (linkedCardCount < 24) fail(`expected at least 24 whole-card destinations, found ${linkedCardCount}`);
@@ -234,7 +234,7 @@ try {
   if (!feed.includes(`<subtitle>${expectedTagline}</subtitle>`)) fail('feed tagline is incorrect');
   if (!feed.includes(`${expectedOrigin}/little-red-dots/research-proposal/`)) fail('feed omits the research proposal');
   if (!feed.includes(`${expectedOrigin}/temporal-antipodes/`)) fail('feed omits Temporal Antipodes');
-  for (const pathname of ['/entropy/', '/double-inversion/', '/accumulated-differentials/']) {
+  for (const pathname of ['/entropy/', '/wormholes/', '/double-inversion/', '/accumulated-differentials/']) {
     if (!feed.includes(`${expectedOrigin}${pathname}`)) fail(`feed omits ${pathname}`);
   }
 } catch {}
@@ -251,7 +251,7 @@ if (!plates) {
   const gathered = plates.$('figure.plate[data-plate-source]').length;
   if (gathered !== sourcePlateCount) fail(`plate room gathers ${gathered} of ${sourcePlateCount} source plates`);
   const plateGroups = plates.$('.plate-accordion > .plate-accordion-group');
-  if (plateGroups.length !== 21) fail(`plate room exposes ${plateGroups.length} of 21 source headings`);
+  if (plateGroups.length !== 22) fail(`plate room exposes ${plateGroups.length} of 22 source headings`);
   if (plates.$('.plate-accordion-group[name="plate-room"]').length !== plateGroups.length) {
     fail('plate room headings do not form one native exclusive disclosure group');
   }
@@ -286,6 +286,24 @@ for (const [pathname, ids] of transferredPages) {
   }
   if (!doc.$('figure.plate').length) fail(`${pathname} has no visual-compendium plate`);
 }
+const wormholes = documents.get('/wormholes/');
+if (!wormholes) {
+  fail('Wormholes and Inverted Tori was not built');
+} else {
+  for (const id of [
+    't-proposal', 't-three-objects', 't-morris-thorne', 'fig-wormhole-or-seam',
+    't-models', 't-transport', 't-junction', 't-two-crossings', 't-causality',
+    't-observables', 't-censorship', 't-programme', 't-ledger'
+  ]) {
+    if (!wormholes.$(`[id="${id}"]`).length) fail(`/wormholes/ omits #${id}`);
+  }
+  if (wormholes.$('figure.plate').length !== 1) fail('/wormholes/ must contribute exactly one plate');
+}
+for (const pathname of ['/', '/torus/', '/moebius/', '/seams/', '/inverted-toruses/', '/essays/', '/stress-tests/']) {
+  const doc = documents.get(pathname);
+  if (!doc?.$('a[href="/wormholes/"]').length) fail(`${pathname} does not expose /wormholes/`);
+}
+
 for (const [pathname, href] of [
   ['/moebius/', '/double-inversion/'],
   ['/cosmic-ledger/', '/accumulated-differentials/'],
@@ -328,4 +346,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, ten interlinked core claims, five-Part header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');
+console.log('  Exact identity, ten interlinked core claims, five-Part header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, Wormholes and Inverted Tori, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');

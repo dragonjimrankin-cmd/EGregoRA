@@ -85,12 +85,13 @@ jobs:
           grep -q '40 drawings' egregora-patch/public/infographics/index.html
           grep -q '.info-fold\[open\]' egregora-patch/public/assets/css/infographics-accordion.css
           grep -q 'closeFolds' egregora-patch/public/assets/js/infographics-accordion.js
-          grep -q 'Twenty-two prepared answers' egregora-patch/public/ask-ed/index.html
+          grep -q 'Twenty-three prepared answers' egregora-patch/public/ask-ed/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
           grep -q 'Why can the smaller and bigger infinities never fully synchronise?' egregora-patch/public/ask-ed/index.html
           grep -q 'Could little red dots be remnants of a previous universe?' egregora-patch/public/ask-ed/index.html
           grep -q 'What is the Zero-Seam Test?' egregora-patch/public/ask-ed/index.html
           grep -q 'Is TTI integration the same thing as entropy?' egregora-patch/public/ask-ed/index.html
+          grep -q 'Can an inverted torus be a traversable wormhole?' egregora-patch/public/ask-ed/index.html
           grep -q 'Does residue from one inversion survive a second inversion?' egregora-patch/public/ask-ed/index.html
           grep -q 'How do accumulated differentials connect to mass and gravity?' egregora-patch/public/ask-ed/index.html
           grep -q 'Natural voice: off' egregora-patch/public/ask-ed/index.html
@@ -164,7 +165,8 @@ jobs:
           const targets = [
             {
               url: 'https://egregora.hatchable.site/ask-ed/',
-              markers: ['Twenty-two prepared answers', 'What is in The Channeling Circle transcript archive?',
+              markers: ['Twenty-three prepared answers', 'Can an inverted torus be a traversable wormhole?',
+                'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
                 'Is TTI integration the same thing as entropy?',
@@ -203,7 +205,7 @@ jobs:
             {
               url: 'https://egregora.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
-                'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
+                'wormhole-inverted-torus', 'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
                 'zero-seam-test', 'entropy-integration', 'double-inversion-residue',
                 'differentials-mass-gravity', 'epistemic-grading']
             },

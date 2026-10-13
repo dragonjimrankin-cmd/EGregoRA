@@ -1,0 +1,450 @@
+---
+layout: layouts/base.njk
+title: Wormholes and Inverted Tori
+metaTitle: "Wormholes and Inverted Tori — Throats, Return and Orientation"
+permalink: /wormholes/
+description: "Part III — Seams and Return: a disciplined comparison of Lorentzian wormholes, toroidal mouths and TTI's orientation-reversing mapping-torus universe, with energy-condition, stability, causality and observational requirements kept explicit."
+keywords: "wormholes, inverted tori, mapping torus, toroidal wormhole, Morris Thorne metric, Einstein Rosen bridge, null energy condition, orientation reversal, monodromy, traversability, topological censorship, speculative cosmology"
+ogType: article
+schemaType: Article
+section: Speculative geometry and gravitation
+published: "2026-10-13"
+---
+
+<section class="page-head">
+  <p class="kicker">Part III &mdash; Seams and Return &middot; Wormholes and Inverted Tori</p>
+  <h1>Wormholes and Inverted Tori</h1>
+  <p class="lede muted">An inverted torus can describe a global return of orientation. A wormhole must do
+    more: it must be a Lorentzian spacetime geometry with a throat, a stress&ndash;energy source, stable causal
+    passage and an observable consequence. This page asks when the first picture could become the second.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">The proposal in one sentence</p>
+    <h2 id="t-proposal">A Throat Could Localise the Seam, but Topology Alone Cannot Hold It Open</h2>
+    <p class="lede">TTI may use an orientation-reversing torus map to specify what changes between two
+      mouths; it still owes the metric that joins them, the matter that supports the throat and the causal
+      law that lets anything cross.</p>
+    <p>The companion <a href="/inverted-toruses/">inverted-torus universe</a> is a global construction. Its
+      toroidal slices return through a map \(f:T^2\to T^2\) with \(\det f_*=-1\). No local tunnel is
+      required. A wormhole is different: two regions are connected by a spacetime throat, and Einstein&rsquo;s
+      equations ask what stress&ndash;energy makes that geometry possible.</p>
+    <p>This page therefore treats &ldquo;wormhole&rdquo; as a physical promotion with a higher burden of proof,
+      not as a synonym for seam, portal, inversion or hole in a drawn doughnut.
+      <span class="spec">&#9670;</span></p>
+    <p class="muted small">Grading: <span class="sci">&#9670; established mathematics or physics</span>
+      &middot; <span class="spec">&#9670; a conditional TTI mechanism</span> &middot;
+      <span class="myth">&#9670; philosophical image, stated as image</span>.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">Three objects, three burdens</p>
+    <h2 id="t-three-objects">Do Not Call Every Return a Wormhole</h2>
+  </div>
+  <div class="grid three">
+    <div class="frame card">
+      <h3>A torus \(T^2\)</h3>
+      <p>A two-dimensional surface with two independent winding directions. It can be embedded like a
+        doughnut, but its intrinsic topology does not provide a shortcut through spacetime.</p>
+      <p class="formula">\[
+        \pi_1(T^2)=\mathbb Z\oplus\mathbb Z.
+      \]</p>
+    </div>
+    <div class="frame card">
+      <h3>An inverted mapping torus \(\mathcal M_f\)</h3>
+      <p>A global identification in which one circuit returns a torus fibre with reversed orientation. It
+        can exist as a mathematical three-manifold without a mouth, throat or traveller.</p>
+      <p class="formula">\[
+        \mathcal M_f=\frac{T^2\times[0,1]}{(x,1)\sim(f(x),0)},
+        \quad \det f_*=-1.
+      \]</p>
+    </div>
+    <div class="frame card illuminated">
+      <h3>A Lorentzian wormhole</h3>
+      <p>A spacetime connection between regions. Traversability requires a throat without an event horizon,
+        finite tidal loads, a supportable stress tensor and a causal route that remains open long enough to
+        use.</p>
+      <p class="formula">\[
+        G_{\mu\nu}=8\pi T_{\mu\nu}
+        \qquad (G=c=1).
+      \]</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">The first historical distinction</p>
+    <h2 id="t-einstein-rosen">An Einstein&ndash;Rosen Bridge Is Not a Traversable Passage</h2>
+    <p>The maximally extended Schwarzschild solution contains a bridge between exterior regions. That
+      bridge is hidden behind horizons and pinches off too quickly for a signal or traveller to pass from one
+      exterior to the other. It supplies the ancestry of the modern word <em>wormhole</em>, not a usable
+      tunnel. <span class="sci">&#9670;</span></p>
+    <p>Rotating or charged black-hole solutions possess richer mathematical extensions, but their inner
+      horizons are expected to be violently unstable. Drawing another asymptotic region on a causal diagram
+      is not evidence that astrophysical collapse builds a safe door to it.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">The traversability gate</p>
+    <h2 id="t-morris-thorne">The Metric Must Say Where the Throat Is and What Supports It</h2>
+    <p class="lede muted">For a static, spherically symmetric example, the Morris&ndash;Thorne form makes the
+      debts visible. TTI does not get to erase them by changing the mouth&rsquo;s picture from a sphere to a
+      torus.</p>
+  </div>
+  <div class="wrap narrow">
+    <div class="frame illuminated">
+      <p>In geometric units \(G=c=1\), write</p>
+      <p class="formula">\[
+        ds^2=-e^{2\Phi(r)}dt^2
+        +\frac{dr^2}{1-b(r)/r}
+        +r^2(d\theta^2+\sin^2\theta\,d\varphi^2).
+      \]</p>
+      <p>The throat lies at \(r=r_0\), where \(b(r_0)=r_0\). Traversability asks for finite \(\Phi\), so
+        no horizon blocks the route, and for the flare-out condition \(b'(r_0)&lt;1\). At the throat,
+        Einstein&rsquo;s equations then give a negative radial null contraction:</p>
+      <p class="formula">\[
+        T_{\mu\nu}k^\mu k^\nu
+        =\rho+p_r
+        =\frac{b'(r_0)-1}{8\pi r_0^2}&lt;0.
+      \]</p>
+      <p>That violates the classical null energy condition for this simple traversable geometry.
+        <span class="sci">&#9670;</span> Quantum fields can produce restricted negative-energy effects, and
+        specially constructed settings can make wormholes traversable in theoretical models. Neither fact
+        demonstrates a macroscopic traversable wormhole in our universe.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <figure id="fig-wormhole-or-seam" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Figure I</span> A Global Return Is Not a Local
+      Throat <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art">
+      <svg viewBox="0 0 920 430" role="img" aria-label="The upper path shows toroidal slices connected around a global orientation-reversing return with no local tunnel. The lower path shows two toroidal mouths joined by a narrow wormhole throat, with labels requiring a metric, stress-energy, stability and causal passage.">
+        <defs>
+          <marker id="worm-arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#76cfee"/>
+          </marker>
+          <marker id="worm-arrow-rose" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#ef84b6"/>
+          </marker>
+          <linearGradient id="worm-throat-fill" x1="0" x2="1">
+            <stop offset="0" stop-color="#76cfee" stop-opacity="0.16"/>
+            <stop offset="0.5" stop-color="#a07cf0" stop-opacity="0.34"/>
+            <stop offset="1" stop-color="#ef84b6" stop-opacity="0.16"/>
+          </linearGradient>
+        </defs>
+
+        <g fill="none" stroke-width="1.5">
+          <path d="M160 112 C285 35 635 35 760 112 C820 150 816 190 755 205" stroke="#76cfee" stroke-dasharray="6 7" marker-end="url(#worm-arrow-blue)"/>
+          <g stroke="#76cfee">
+            <ellipse cx="160" cy="132" rx="95" ry="42"/><ellipse cx="160" cy="132" rx="34" ry="14"/>
+            <ellipse cx="460" cy="92" rx="95" ry="42"/><ellipse cx="460" cy="92" rx="34" ry="14"/>
+          </g>
+          <g stroke="#ef84b6">
+            <ellipse cx="760" cy="132" rx="95" ry="42"/><ellipse cx="760" cy="132" rx="34" ry="14"/>
+          </g>
+          <path d="M760 176 C640 238 280 238 160 176" stroke="#ef84b6" stroke-dasharray="6 7" marker-end="url(#worm-arrow-rose)"/>
+
+          <g stroke="#76cfee">
+            <ellipse cx="180" cy="320" rx="116" ry="52"/><ellipse cx="180" cy="320" rx="43" ry="18"/>
+          </g>
+          <g stroke="#ef84b6">
+            <ellipse cx="740" cy="320" rx="116" ry="52"/><ellipse cx="740" cy="320" rx="43" ry="18"/>
+          </g>
+          <path d="M223 302 C332 238 381 278 460 278 C539 278 588 238 697 302 L697 338 C588 402 539 362 460 362 C381 362 332 402 223 338 Z" fill="url(#worm-throat-fill)" stroke="#a07cf0"/>
+          <path d="M265 320 H655" stroke="#f3dd9c" stroke-dasharray="4 6" marker-end="url(#worm-arrow-blue)"/>
+        </g>
+
+        <g font-family="Cinzel, serif" text-anchor="middle" letter-spacing="1.1">
+          <text x="460" y="24" fill="#cdefff" font-size="15">GLOBAL MAPPING-TORUS RETURN</text>
+          <text x="160" y="137" fill="#76cfee" font-size="13">T²</text>
+          <text x="460" y="97" fill="#76cfee" font-size="13">T²</text>
+          <text x="760" y="137" fill="#ef84b6" font-size="13">T²&minus;</text>
+          <text x="460" y="214" fill="#a9b6d8" font-size="11">holonomy after a complete circuit · no local mouth required</text>
+
+          <text x="460" y="252" fill="#cdefff" font-size="15">LOCALISED WORMHOLE CLAIM</text>
+          <text x="180" y="325" fill="#76cfee" font-size="12">MOUTH A</text>
+          <text x="740" y="325" fill="#ef84b6" font-size="12">MOUTH B&minus;</text>
+          <text x="460" y="326" fill="#f3dd9c" font-size="12">THROAT</text>
+          <text x="460" y="407" fill="#a9b6d8" font-size="11">metric · stress&ndash;energy · stability · causal passage</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">Above: orientation reversal is global holonomy, detected only after a complete
+      circuit. Below: the claim is stronger because a local throat joins two mouths. The inversion map can
+      label what a frame does during passage; only a spacetime solution can say whether passage occurs.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">Where inversion can enter</p>
+    <h2 id="t-models">Three Ways to Relate a Wormhole to Inverted Tori</h2>
+  </div>
+  <div class="grid three">
+    <div class="frame card">
+      <h3>Model A &mdash; global seam only</h3>
+      <p>Spacetime has torus fibres with orientation-reversing monodromy. A long circuit changes a carried
+        frame, but there are no local mouths and no shortcut. This is the least wormhole-like and the most
+        faithful to the existing mapping-torus proposal.</p>
+    </div>
+    <div class="frame card illuminated">
+      <h3>Model B &mdash; one handle, two mouths</h3>
+      <p>Two regions of one spacetime are connected by a throat. Each mouth has a toroidal state space or
+        toroidal cross-section, and the gluing map reverses one winding direction:</p>
+      <p class="formula">\[
+        (x,+)\sim(f(x),-),\qquad \det f_*=-1.
+      \]</p>
+    </div>
+    <div class="frame card">
+      <h3>Model C &mdash; bridge between instances</h3>
+      <p>Separate toroidal universe-instances are joined by a higher-dimensional throat. This is the strongest
+        claim: it requires a containing theory, a lawful boundary map and an account of conservation across
+        worlds. No such theory is supplied here.</p>
+    </div>
+  </div>
+  <div class="wrap narrow">
+    <div class="frame">
+      <p class="lede">TTI adopts none of these as established. Model A is already mathematically defined.
+        Model B is the focused research question. Model C remains a metaphysical possibility until a larger
+        dynamical framework gives &ldquo;between universes&rdquo; a physical meaning.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">The proposed transport law</p>
+    <h2 id="t-transport">A Mouth Map Can Reverse Orientation Without Reversing Time</h2>
+    <p>Let a traveller or field state carry toroidal winding data \((p,q)\), an orientation sign \(\chi\),
+      and ordinary future-directed four-momentum \(P^\mu\). A TTI mouth identification might act as</p>
+    <p class="formula">\[
+      (p,q,\chi;P^\mu)_A
+      \longmapsto
+      \bigl(f_*(p,q),-\chi;\Lambda^\mu{}_{\nu}P^\nu\bigr)_B,
+      \qquad \det f_*=-1.
+    \]</p>
+    <p>The spatial or internal frame reverses. The condition \(P^0&gt;0\) can still be preserved, so the
+      mapping does not by itself reverse causal time. Nor does \(\chi\mapsto-\chi\) turn matter into
+      antimatter, change electric charge or generate baryon number. Those effects would require additional
+      field transformations and a conservation law. <span class="spec">&#9670;</span></p>
+    <p>A complete model must also state whether \(f\) acts on physical space, an internal gauge space,
+      polarization, a toroidal field configuration or only a coordinate chart. If no invariant measurement
+      changes, the inversion is a relabelling rather than new physics.</p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Junction bookkeeping</p>
+    <h2 id="t-junction">The Mouth Cannot Hide Its Stress&ndash;Energy</h2>
+    <p>A thin-shell construction joins two geometries across a hypersurface with induced metric \(h_{ab}\).
+      In geometric units, the jump in extrinsic curvature obeys the Israel junction condition</p>
+    <p class="formula">\[
+      [K_{ab}]-h_{ab}[K]=-8\pi S_{ab}.
+    \]</p>
+    <p>The surface stress tensor \(S_{ab}\) is the price of the join. Choosing an orientation-reversing map
+      does not set that price to zero. The bulk and shell must together respect local conservation, and any
+      claimed transfer must balance flux through the two mouths:</p>
+    <p class="formula">\[
+      \nabla_\mu T^{\mu\nu}=0,
+      \qquad
+      \int_A T^{\mu\nu}n_\mu\,d\Sigma
+      +\int_B T^{\mu\nu}n_\mu\,d\Sigma
+      +\Delta P^\nu_{\rm throat}=0.
+    \]</p>
+    <p class="muted">This schematic flux ledger does not derive the throat. It states what the proposal must
+      conserve before words such as matter, memory or residue are allowed to cross it.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">One passage and the return passage</p>
+    <h2 id="t-two-crossings">Two Inversions Restore the Frame; They Do Not Automatically Erase the Journey</h2>
+    <p>If the two mouth crossings apply the same ideal involution \(I\), then</p>
+    <p class="formula">\[
+      I^2=\mathrm{id},
+      \qquad \chi\xrightarrow{I}-\chi\xrightarrow{I}+\chi.
+    \]</p>
+    <p>The final orientation matches the initial orientation. Any remaining difference must live somewhere
+      else: proper time along the path, a geometric phase, toroidal winding, interaction with the throat,
+      environmental entanglement or material hysteresis. This is the same discipline used in
+      <a href="/double-inversion/">Two Inversions</a>: restored state and remembered path are different
+      questions.</p>
+    <p>A wormhole therefore does not rescue residue by vocabulary. The proposal must name a state variable
+      \(R\) and an evolution law. One possible bookkeeping form is</p>
+    <p class="formula">\[
+      R_{\rm out}=U_{\gamma}R_{\rm in},
+      \qquad
+      U_{\bar\gamma}U_{\gamma}=e^{i\Omega}
+      \quad\text{or}
+      \quad U_{\bar\gamma}U_{\gamma}=I.
+    \]</p>
+    <p>A non-zero phase \(\Omega\) or a non-trivial holonomy must be calculated from the connection. It cannot
+      be inferred merely because the route was drawn through a throat. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame caution">
+    <p class="kicker">Causality is not optional</p>
+    <h2 id="t-causality">Moving the Mouths Can Turn a Shortcut into a Time Machine</h2>
+    <p>If two traversable mouths acquire a relative time shift through acceleration or gravitational time
+      dilation, the throat can participate in a closed timelike curve. That is a warning, not a feature.
+      Chronology protection, quantum backreaction or instability may prevent the required configuration.</p>
+    <p><strong>TTI therefore refuses this inference:</strong> temporal antipodes do not become synchronised
+      merely because a diagram joins them. A path between opposite asymptotic limits still needs a global
+      causal structure, and that structure must not permit contradiction or undefined initial data.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">What the sky and laboratory would need to distinguish</p>
+    <h2 id="t-observables">A Wormhole Claim Must Outrun Black Holes, Lenses and Ordinary Topology</h2>
+  </div>
+  <div class="grid two">
+    <div class="frame card">
+      <h3>Paired, parity-related images</h3>
+      <p>A two-mouth model might produce correlated structures with a prescribed orientation reversal and
+        time delay. Ordinary gravitational lensing also creates multiple images and parity flips, so the
+        wormhole model must predict a correlation lensing cannot mimic.</p>
+    </div>
+    <div class="frame card">
+      <h3>Polarization holonomy</h3>
+      <p>Transport around the complete route could rotate or reverse a polarization frame. Plasma, magnetic
+        fields and ordinary gravitational Faraday rotation are foregrounds, not optional afterthoughts.</p>
+    </div>
+    <div class="frame card">
+      <h3>Ringdown and echoes</h3>
+      <p>A horizonless compact throat may alter late-time wave propagation. Echo-like features are model
+        dependent and contested; a claim needs a waveform family, priors and false-positive analysis.</p>
+    </div>
+    <div class="frame card">
+      <h3>Repeated cosmic structure</h3>
+      <p>Global compact topology can correlate distant patterns. A local wormhole and a global mapping torus
+        predict different repetition rules, allowing observations to separate Model A from Model B.</p>
+    </div>
+    <div class="frame card">
+      <h3>Energy and stability signatures</h3>
+      <p>A supporting field may introduce lensing anomalies, fifth forces, vacuum instabilities or rapid
+        collapse. A throat that survives only by hiding every supporting degree of freedom is not predictive.</p>
+    </div>
+    <div class="frame card illuminated">
+      <h3>The clean loss</h3>
+      <p>Reject the physical wormhole reading if no self-consistent metric and source exist, if perturbations
+        destroy the throat, if chronology becomes inconsistent, or if its proposed signal reduces to an
+        ordinary black hole, lens or coordinate relabelling.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Topological censorship</p>
+    <h2 id="t-censorship">Why a Distant Observer May Never Be Allowed to Probe the Handle</h2>
+    <p>Topological-censorship results show, under specified assumptions such as suitable causal structure,
+      asymptotic behaviour and averaged energy conditions, that causal observers cannot use non-trivial
+      topology as an observable shortcut. <span class="sci">&#9670;</span> The theorem is not the sentence
+      &ldquo;wormholes never exist&rdquo;; it is a list of conditions a traversable proposal must violate or evade.</p>
+    <p>That makes the TTI task sharper. It must declare which assumption changes, why the change is physically
+      allowed and what other consequence follows. &ldquo;The torus is inverted&rdquo; is not an exemption.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">A six-gate research programme</p>
+    <h2 id="t-programme">What Must Be Built Before the Word &ldquo;Wormhole&rdquo; Is Earned</h2>
+  </div>
+  <ol class="timeline">
+    <li><strong>Specify the manifold and metric.</strong> State whether the mouths are spherical, toroidal or
+      toroidal only in an internal state space; give the global identifications and causal boundaries.</li>
+    <li><strong>Solve for the source.</strong> Derive \(T_{\mu\nu}\) or a modified-gravity equivalent, test
+      energy conditions and account for every shell or boundary term.</li>
+    <li><strong>Prove traversability.</strong> Exclude horizons and singularities along the route, bound tidal
+      acceleration and give a finite crossing time.</li>
+    <li><strong>Test stability.</strong> Perturb the throat, supporting fields and mouth map. A static drawing
+      that collapses under arbitrarily small disturbances is not a transport mechanism.</li>
+    <li><strong>Protect causality and conservation.</strong> Evolve both mouths consistently, prevent or explain
+      closed timelike curves, and conserve energy, momentum and every claimed charge.</li>
+    <li><strong>Predeclare a discriminator.</strong> Predict a parity, timing, polarization, lensing or wave
+      signature that an ordinary compact object and an ordinary lens do not already provide.</li>
+  </ol>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <h2 id="t-ledger">Earned, Chosen, Refused</h2>
+    <dl class="glossary">
+      <dt>Earned</dt>
+      <dd>General relativity admits bridge and wormhole geometries. The elementary static traversable throat
+        requires null-energy-condition violation at its flare-out. Mapping tori and orientation-reversing
+        automorphisms are precise mathematical objects. A global identification, a local throat and a
+        coordinate picture are distinct.</dd>
+      <dt>Chosen</dt>
+      <dd>That a physical mouth carries toroidal winding data; that its gluing map has determinant \(-1\);
+        that the TTI seam can be localised as a wormhole; and that a measurable phase or residue survives a
+        round trip.</dd>
+      <dt>Refused</dt>
+      <dd>Calling the hole in a doughnut a wormhole. Treating an Einstein&ndash;Rosen bridge as traversable.
+        Claiming that inversion supplies negative energy, stability or chronology protection. Turning
+        orientation reversal into time reversal, antimatter or memory without an explicit field law.</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="wrap narrow">
+  <div class="frame">
+    <p class="kicker">Primary landmarks</p>
+    <h2 id="t-sources">Where the Physical Constraints Come From</h2>
+    <ul class="biblio">
+      <li>A. Einstein and N. Rosen, <a href="https://doi.org/10.1103/PhysRev.48.73">The Particle Problem in
+        the General Theory of Relativity</a> (1935).</li>
+      <li>M. S. Morris and K. S. Thorne, <a href="https://doi.org/10.1119/1.15620">Wormholes in spacetime and
+        their use for interstellar travel</a> (1988).</li>
+      <li>J. L. Friedman, K. Schleich and D. M. Witt,
+        <a href="https://doi.org/10.1103/PhysRevLett.71.1486">Topological Censorship</a> (1993).</li>
+      <li>P. Gao, D. L. Jafferis and A. C. Wall,
+        <a href="https://doi.org/10.1007/JHEP12(2017)151">Traversable Wormholes via a Double Trace
+        Deformation</a> (2017), a controlled anti-de Sitter construction rather than evidence for an
+        astrophysical portal.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <p class="kicker">Closing stance</p>
+    <p class="lede">The inverted torus tells a state how to return. The wormhole must tell spacetime how to
+      let it pass.</p>
+    <p>That distinction gives the conjecture a useful shape. Global monodromy can remain a topological model;
+      a localised throat becomes a gravitational research programme. If the programme cannot supply energy,
+      stability, causality and a discriminating observation, the honest result is not a hidden portal. It is
+      an orientation-reversing map and no more.</p>
+    <p class="muted small">Read the global construction in
+      <a href="/inverted-toruses/">The Universe of Inverted Tori</a>, the underlying transition in
+      <a href="/moebius/">the Möbius seam</a>, the horizon account in <a href="/seams/">Seams</a>, and the
+      round-trip question in <a href="/double-inversion/">Two Inversions</a>.</p>
+  </div>
+</section>

@@ -35,9 +35,9 @@ vm.runInNewContext(source, { window, URL, console }, { filename: 'oracle-knowled
 
 const kb = window.EGOracleKnowledge;
 assert.ok(kb, 'knowledge API was not exposed');
-assert.equal(kb.entries.length, 22, 'expected twenty-two substantial prepared answers');
-assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 22, 'knowledge IDs must be unique');
-assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 22, 'prepared questions must be unique');
+assert.equal(kb.entries.length, 23, 'expected twenty-three substantial prepared answers');
+assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 23, 'knowledge IDs must be unique');
+assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 23, 'prepared questions must be unique');
 
 for (const entry of kb.entries) {
   assert.ok(entry.answer.length >= 700, `${entry.id} is too slight for a high-degree answer`);
@@ -92,6 +92,7 @@ const paraphrases = new Map([
   ['What does a single Prime Being per universe mean?', 'prime-per-instance'],
   ['Explain the residue that travels through time.', 'one-residue'],
   ['Define an orientation reversing mapping torus.', 'mapping-space'],
+  ['Could a toroidal mouth be a traversable wormhole?', 'wormhole-inverted-torus'],
   ['Does orientation reversal turn matter into antimatter?', 'orientation-boundary'],
   ['Might the universe be the Mobius seam itself?', 'seam-universe'],
   ['Compare permanent orthogonality and quasiperiodic separation.', 'matter-phase'],
@@ -130,12 +131,12 @@ for (const [label, page] of [['ShakDrah', ttiPage], ['Gink', egPage]]) {
   const group = page.match(/<div class="oracle-chips" id="oracle-chips">([\s\S]*?)<\/div>/);
   assert.ok(group, `${label} has no opening question group`);
   const chips = [...group[1].matchAll(/<button class="chip" type="button">([^<]+)<\/button>/g)].map((m) => m[1]);
-  assert.equal(chips.length, 22, `${label} should display twenty-two current questions`);
-  assert.ok(page.includes('Twenty-two prepared answers'), `${label} does not announce the twenty-two-answer update`);
+  assert.equal(chips.length, 23, `${label} should display twenty-three current questions`);
+  assert.ok(page.includes('Twenty-three prepared answers'), `${label} does not announce the twenty-three-answer update`);
   const knowledgeAt = page.indexOf('/assets/js/oracle-knowledge.js');
   const siteAt = page.indexOf('/assets/js/site.js');
   assert.ok(knowledgeAt >= 0, `${label} does not load the knowledge asset`);
   assert.ok(siteAt < 0 || knowledgeAt < siteAt, `${label} loads the knowledge asset after the oracle client`);
 }
 
-console.log('Oracle knowledge passed: 22 exact answers, 22 paraphrases, two avatars, fallback and attachment bypass.');
+console.log('Oracle knowledge passed: 23 exact answers, 23 paraphrases, two avatars, fallback and attachment bypass.');

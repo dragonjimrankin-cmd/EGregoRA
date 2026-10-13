@@ -22,7 +22,8 @@ const expectedGroups = [
   ['g-double-inversion', 'Two Inversions', 1],
   ['g-accumulated-differentials', 'Accumulated Differentials', 1],
   ['g-time-and-residue', 'Time and Residue', 1],
-  ['g-inverted-toruses', 'Inverted Tori', 1],
+  ['g-inverted-toruses', 'Inverted-Torus Universe', 1],
+  ['g-wormholes', 'Wormholes and Inverted Tori', 1],
   ['g-out-of-phase', 'Matter and Antimatter Out of Phase', 1],
   ['g-little-red-dots', 'JWST’s Little Red Dots', 3]
 ];

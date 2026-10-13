@@ -28,7 +28,8 @@ const pages = [
   ['double-inversion/index.html', '/double-inversion/', 'Two Inversions', 'double-inversion'],
   ['accumulated-differentials/index.html', '/accumulated-differentials/', 'Accumulated Differentials', 'accumulated-differentials'],
   ['time-and-residue/index.html', '/time-and-residue/', 'Time and Residue', 'time-and-residue'],
-  ['inverted-toruses/index.html', '/inverted-toruses/', 'Inverted Tori', 'inverted-toruses'],
+  ['inverted-toruses/index.html', '/inverted-toruses/', 'Inverted-Torus Universe', 'inverted-toruses'],
+  ['wormholes/index.html', '/wormholes/', 'Wormholes and Inverted Tori', 'wormholes'],
   ['out-of-phase/index.html', '/out-of-phase/', 'Matter and Antimatter Out of Phase', 'out-of-phase'],
   ['little-red-dots/index.html', '/little-red-dots/', 'JWST’s Little Red Dots', 'little-red-dots']
 ];

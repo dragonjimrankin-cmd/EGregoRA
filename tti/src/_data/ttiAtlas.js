@@ -41,7 +41,7 @@ export default {
       title: "Seams and Return",
       href: "/moebius/",
       page: false,
-      note: "Inversion, temporal antipodes, entropy, residue and the account kept across a cosmic return.",
+      note: "Inversion, wormhole constraints, temporal antipodes, entropy, residue and the account kept across a cosmic return.",
       topics: [],
       subs: [
         page("III·i", "Möbius", "/moebius/", "The one-sided seam, its mathematical neighbours and the framework's proposed identification."),
@@ -50,8 +50,9 @@ export default {
         page("III·iv", "Entropy and Integration", "/entropy/", "Established entropies separated from TTI's speculative phases of integration."),
         page("III·v", "Temporal Antipodes", "/temporal-antipodes/", "Why finite projections may overlap while the two asymptotic endpoints share no clock."),
         page("III·vi", "Time and Residue", "/time-and-residue/", "What, if anything, can cross a closure without being smuggled through it."),
-        page("III·vii", "Inverted Tori", "/inverted-toruses/", "Paired orientations and the observational signatures they would need to leave."),
-        page("III·viii", "Matter and Antimatter Out of Phase", "/out-of-phase/", "A phase conjecture constrained by the fact that reversible mixing creates no net baryon number.")
+        page("III·vii", "Inverted-Torus Universe", "/inverted-toruses/", "A globally twisted torus bundle, its orientation ledger and its observational debts."),
+        page("III·viii", "Wormholes and Inverted Tori", "/wormholes/", "What a local spacetime throat would add to global torus inversion, including energy, stability and causality constraints."),
+        page("III·ix", "Matter and Antimatter Out of Phase", "/out-of-phase/", "A phase conjecture constrained by the fact that reversible mixing creates no net baryon number.")
       ]
     },
     {
@@ -78,7 +79,7 @@ export default {
       note: "The visual compendium, the framework's dragon interlocutor and the reader's own standing in the site.",
       topics: [],
       subs: [
-        page("V·i", "The Plates", "/plates/", "Thirty-one vector arguments gathered beneath twenty-one exclusive source headings."),
+        page("V·i", "The Plates", "/plates/", "Thirty-two vector arguments gathered beneath twenty-two exclusive source headings."),
         page("V·ii", "Ask ShakDrah", "/ask-shakdrah/", "Question the framework, ask for a drawing or film, and hear one of six distinct male voices."),
         page("V·iii", "Join", "/join/", "Create or recover the small local identity used by the reading room."),
         page("V·iv", "Your Account", "/account/", "Your name, standing and local account controls once signed in.")

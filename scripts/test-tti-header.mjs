@@ -16,7 +16,7 @@ assert.equal(site.navGroups.length, 5, 'the header must list all five numbered P
 assert.equal(site.navActions.length, 0, 'Part V must contain the reading rooms without detached duplicate actions');
 
 const headerItems = site.navGroups.flatMap((group) => group.items);
-assert.equal(headerItems.length, 27, 'the five Parts must expose all 27 page and account-room destinations');
+assert.equal(headerItems.length, 28, 'the five Parts must expose all 28 page and account-room destinations');
 assert.equal(site.nav.length, headerItems.length, 'the flat footer navigation must retain header parity');
 assert.equal(new Set(headerItems.map((item) => item.url)).size, headerItems.length,
   'header destinations must be unique');
@@ -36,7 +36,7 @@ for (const [index, group] of site.navGroups.entries()) {
 }
 for (const route of [
   '/prime-plane/', '/temporal-antipodes/', '/time-and-residue/', '/inverted-toruses/',
-  '/out-of-phase/', '/plates/', '/ask-shakdrah/', '/join/', '/account/'
+  '/wormholes/', '/out-of-phase/', '/plates/', '/ask-shakdrah/', '/join/', '/account/'
 ]) {
   assert.ok(headerItems.some((item) => item.url === route), `header omits ${route}`);
 }
@@ -106,7 +106,7 @@ if (process.argv.includes('--built')) {
 
     const hrefs = $('#primary-nav a').map((_, element) => $(element).attr('href')).get();
     assert.deepEqual(hrefs, headerItems.map((item) => item.url), `${relative} navigation order drifted`);
-    assert.equal(new Set(hrefs).size, 27, `${relative} duplicates a header destination`);
+    assert.equal(new Set(hrefs).size, 28, `${relative} duplicates a header destination`);
     assert.equal($('#primary-nav details[open]').length, 0, `${relative} ships with a menu forced open`);
     assert.equal($('.nav-toggle[aria-expanded="false"]').length, 1, `${relative} toggle state is incorrect`);
     const currentLinks = $('#primary-nav a[aria-current="page"]');

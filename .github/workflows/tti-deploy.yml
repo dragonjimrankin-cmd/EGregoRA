@@ -59,6 +59,7 @@ jobs:
           test -s tti/hatchable/public/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
+          test -s tti/hatchable/public/wormholes/index.html
           test -s tti/hatchable/public/temporal-antipodes/index.html
           test -s tti/hatchable/public/entropy/index.html
           test -s tti/hatchable/public/double-inversion/index.html
@@ -85,7 +86,7 @@ jobs:
           grep -Fq 'The dependency map' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.7' tti/hatchable/public/index.html
+          grep -Fq 'r4.8' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -94,7 +95,7 @@ jobs:
           grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
           grep -q 'Folded back to the five reading paths' tti/hatchable/public/assets/js/atlas.js
           test "$(grep -c 'class="nav-cluster"' tti/hatchable/public/index.html)" -eq 5
-          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 27
+          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 28
           ! grep -q 'class="nav-actions"' tti/hatchable/public/index.html
           grep -q 'Part I' tti/hatchable/public/index.html
           grep -q 'First Principles' tti/hatchable/public/index.html
@@ -115,7 +116,8 @@ jobs:
           grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Twenty-two prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Twenty-three prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Can an inverted torus be a traversable wormhole?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Why can the smaller and bigger infinities never fully synchronise?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Could little red dots be remnants of a previous universe?' tti/hatchable/public/ask-shakdrah/index.html
@@ -160,12 +162,17 @@ jobs:
           grep -q 'body.atlas-focused' tti/hatchable/public/assets/css/main.css
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
+          grep -q 'wormhole-inverted-torus' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'temporal-antipodes' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'The Universe of Inverted Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'One Seam, Seen as Many Tori' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'The Universe Is the Möbius Seam' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Handedness Reversal Is Not Time Reversal' tti/hatchable/public/inverted-toruses/index.html
           grep -q 'Earned, Chosen, Refused' tti/hatchable/public/inverted-toruses/index.html
+          grep -q 'Part III &mdash; Seams and Return &middot; Wormholes and Inverted Tori' tti/hatchable/public/wormholes/index.html
+          grep -q 'A Global Return Is Not a Local' tti/hatchable/public/wormholes/index.html
+          grep -q 'The Metric Must Say Where the Throat Is and What Supports It' tti/hatchable/public/wormholes/index.html
+          grep -q 'What Must Be Built Before the Word &ldquo;Wormhole&rdquo; Is Earned' tti/hatchable/public/wormholes/index.html
           grep -q 'They Are Not Two Clocks That Happen to Disagree' tti/hatchable/public/temporal-antipodes/index.html
           grep -q 'Smallward Is Not Mathematically Smaller' tti/hatchable/public/temporal-antipodes/index.html
           grep -q 'What Must Be Derived Before “Cannot” Means Physics' tti/hatchable/public/temporal-antipodes/index.html
@@ -188,12 +195,14 @@ jobs:
           grep -q 'Three Models Must Enter, and Any May Lose' tti/hatchable/public/little-red-dots/research-proposal/index.html
           grep -q 'Choose What Crosses Before Counting What Shines' tti/hatchable/public/little-red-dots/research-proposal/index.html
           grep -q 'The Temporal-Antipode Synchronisation Challenge' tti/hatchable/public/stress-tests/index.html
+          grep -q 'The Wormhole Promotion Test' tti/hatchable/public/stress-tests/index.html
           grep -q 'The Zero-Seam Test, With the Null Model Kept in the Room' tti/hatchable/public/stress-tests/index.html
-          grep -q 'Part V &mdash; Reading Rooms &middot; The Plates &middot; 31 plates' tti/hatchable/public/plates/index.html
+          grep -q 'Part V &mdash; Reading Rooms &middot; The Plates &middot; 32 plates' tti/hatchable/public/plates/index.html
           grep -q 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html
           grep -q 'name="plate-room"' tti/hatchable/public/plates/index.html
           grep -q 'Choose a heading to unfold its plates' tti/hatchable/public/plates/index.html
-          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 21
+          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 22
+          grep -q 'data-plate-source="/wormholes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/temporal-antipodes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/entropy/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/double-inversion/"' tti/hatchable/public/plates/index.html
@@ -201,16 +210,20 @@ jobs:
           grep -q 'data-plate-source="/little-red-dots/"' tti/hatchable/public/plates/index.html
           grep -Fq 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/' tti/hatchable/public/sitemap.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/double-inversion/' tti/hatchable/public/sitemap.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/wormholes/' tti/hatchable/public/sitemap.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/wormholes/' tti/hatchable/public/feed.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/accumulated-differentials/' tti/hatchable/public/feed.xml
           grep -Fq '<subtitle>A speculative cosmology by Jim Rankin, UK, 2026</subtitle>' tti/hatchable/public/feed.xml
           grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
           grep -q 'Entropy and the Phases of Integration' tti/hatchable/public/essays/index.html
+          grep -q 'Wormholes and Inverted Tori' tti/hatchable/public/essays/index.html
           grep -q 'When Differentials Accumulate' tti/hatchable/public/essays/index.html
           grep -q 'Read the Zero-Seam research proposal' tti/hatchable/public/essays/index.html
           grep -q 'little red dots are compact' tti/hatchable/public/cosmic-ledger/index.html
           npx html-validate --rule 'no-trailing-whitespace:off' \
             tti/hatchable/public/time-and-residue/index.html \
             tti/hatchable/public/inverted-toruses/index.html \
+            tti/hatchable/public/wormholes/index.html \
             tti/hatchable/public/temporal-antipodes/index.html \
             tti/hatchable/public/entropy/index.html \
             tti/hatchable/public/double-inversion/index.html \
@@ -267,7 +280,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.7',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.8',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',
                 'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',
                 'The same map, written out', 'class="nav-cluster"', 'Part I', 'First Principles',
@@ -309,10 +322,19 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/inverted-toruses/',
-              markers: ['Part III &mdash; Seams and Return &middot; Inverted Tori',
+              markers: ['Part III &mdash; Seams and Return &middot; Inverted-Torus Universe',
                 'The Universe of Inverted Tori', 'One Seam, Seen as Many Tori',
                 'The Universe Is the Möbius Seam', 'Handedness Reversal Is Not Time Reversal',
                 'negative-interval conjecture', 'Earned, Chosen, Refused']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/wormholes/',
+              markers: ['Part III &mdash; Seams and Return &middot; Wormholes and Inverted Tori',
+                'A Throat Could Localise the Seam', 'Do Not Call Every Return a Wormhole',
+                'A Global Return Is Not a Local', 'A Mouth Map Can Reverse Orientation Without Reversing Time',
+                'The Mouth Cannot Hide Its Stress&ndash;Energy',
+                'What Must Be Built Before the Word &ldquo;Wormhole&rdquo; Is Earned',
+                'Earned, Chosen, Refused']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/temporal-antipodes/',
@@ -362,22 +384,24 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/stress-tests/',
               markers: ['Part IV &mdash; Tests and Essays &middot; Stress Tests',
                 'Where It Might Break', 'The Entropy Objection',
-                'The Temporal-Antipode Synchronisation Challenge',
+                'The Temporal-Antipode Synchronisation Challenge', 'The Wormhole Promotion Test',
                 'The Zero-Seam Test, With the Null Model Kept in the Room',
                 'The clean loss:', 'inherited-residue implementation is rejected']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/plates/',
-              markers: ['Part V &mdash; Reading Rooms &middot; The Plates &middot; 31 plates',
+              markers: ['Part V &mdash; Reading Rooms &middot; The Plates &middot; 32 plates',
                 'class="plate-accordion-group"',
                 'name="plate-room"', 'Choose a heading to unfold its plates', 'Temporal Antipodes',
                 'Opposite Ends, Finite Projections', 'JWST’s Little Red Dots',
                 'Similar Arrows, Different Accounts', 'State Restored, Path Still Available',
+                'Wormholes and Inverted Tori', 'A Global Return Is Not a Local',
                 'From Increments to Curvature', 'From the previous closure to a']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/sitemap.xml',
               markers: ['https://the-two-infinities.hatchable.site/temporal-antipodes/',
+                'https://the-two-infinities.hatchable.site/wormholes/',
                 'https://the-two-infinities.hatchable.site/entropy/',
                 'https://the-two-infinities.hatchable.site/double-inversion/',
                 'https://the-two-infinities.hatchable.site/accumulated-differentials/',
@@ -389,13 +413,15 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/essays/',
               markers: ['Part IV &mdash; Tests and Essays &middot; Essays',
                 'Temporal Antipodes', 'JWST&rsquo;s Little Red Dots', 'Enter the TTI conjecture',
-                'Entropy and the Phases of Integration', 'Two Inversions', 'When Differentials Accumulate',
+                'Wormholes and Inverted Tori', 'Entropy and the Phases of Integration',
+                'Two Inversions', 'When Differentials Accumulate',
                 'Read the Zero-Seam research proposal']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
               markers: ['Part V &mdash; Reading Rooms &middot; Ask ShakDrah',
-                'Twenty-two prepared answers', 'What is in The Channeling Circle transcript archive?',
+                'Twenty-three prepared answers', 'Can an inverted torus be a traversable wormhole?',
+                'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
                 'Could little red dots be remnants of a previous universe?', 'What is the Zero-Seam Test?',
                 'Is TTI integration the same thing as entropy?',
@@ -415,7 +441,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
-                'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
+                'wormhole-inverted-torus', 'baryogenesis-boundary', 'temporal-antipodes', 'little-red-dots-residue',
                 'zero-seam-test', 'entropy-integration', 'double-inversion-residue',
                 'differentials-mass-gravity', 'epistemic-grading']
             },
