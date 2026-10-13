@@ -1,4 +1,4 @@
-# The Two Infinities → Hatchable — 2026-10-13T00:41:35Z
+# The Two Infinities → Hatchable — 2026-10-13T00:49:52Z
 bundle files: 248
 existing project id: proj_U95i5y493z9x
 
@@ -8,6 +8,8 @@ existing project id: proj_U95i5y493z9x
 ▸ using existing project proj_U95i5y493z9x
 ▸ write_files — 237 text files
   ✓ api/account-face.js, api/account-identity.js, api/account-me.js, api/account-passkey.js, api/account-signout.j…
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ api/media.js, api/model3d.js, api/oauth.js, api/shop.js, api/stripe-webhook.js, api/transcribe.js, api/twin-li…
   ✓ lib/freeai.js, lib/gink-mind.js, lib/gpu-scripts.js, lib/imagegen.js, lib/kaggle.js, lib/key-store.js, lib/mai…
   ✓ lib/oracle-corpus-xiii.js, lib/oracle-corpus-xiv.js, lib/oracle-corpus-xix.js, lib/oracle-corpus-xl.js, lib/or…
@@ -30,11 +32,11 @@ existing project id: proj_U95i5y493z9x
   ✓ public/assets/js/headtts/voices/am_fenrir.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_michael.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_puck.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
@@ -58,14 +60,14 @@ existing project id: proj_U95i5y493z9x
   "project_name": "The Two Infinities (and beyond)",
   "project_public_id": "proj_U95i5y493z9x",
   "project_slug": "the-two-infinities",
-  "version": 105,
+  "version": 106,
   "url": "https://the-two-infinities.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://the-two-infinities.hatchable.site",
   "draft_url": "https://the-two-infinities-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v104.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v105.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v105.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v106.png",
   "console_url": "https://hatchable.com/console/projects/the-two-infinities",
   "files_deployed": 248,
   "functions_deployed": 32,
