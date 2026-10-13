@@ -1,10 +1,8 @@
 project proj_eiuxpFfTnwwx
-live version: 273
-ours:         273
-✓ no foreign deploy since ours. Safe to deploy.
-   … 429 on initialize, waiting 20s
-   … 429 on initialize, waiting 40s
-project proj_eiuxpFfTnwwx
 live version: 274
-ours:         273
-recorded version 274 in ops/egregora-deployed.json
+ours:         274
+✓ no foreign deploy since ours. Safe to deploy.
+project proj_eiuxpFfTnwwx
+live version: 275
+ours:         274
+recorded version 275 in ops/egregora-deployed.json
