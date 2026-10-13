@@ -1,4 +1,4 @@
-# The Two Infinities → Hatchable — 2026-10-12T23:15:22Z
+# The Two Infinities → Hatchable — 2026-10-13T00:30:12Z
 bundle files: 248
 existing project id: proj_U95i5y493z9x
 
@@ -35,19 +35,19 @@ existing project id: proj_U95i5y493z9x
   ✓ public/assets/js/headtts/voices/am_michael.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/am_puck.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/bm_fable.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
+   … 429 on tools/call, waiting 20s (attempt 1/5)
+   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/bm_george.bin (510 KB, 12 chunks)
   … url import failed (import_file_from_url failed: {
     "error": "Fetch returned HTTP 404 (non-2xx)."), falling back to chunks
-   … 429 on tools/call, waiting 20s (attempt 1/5)
-   … 429 on tools/call, waiting 40s (attempt 2/5)
   ✓ public/assets/js/headtts/voices/bm_lewis.bin (510 KB, 12 chunks)
 ▸ dry_run_deploy
   {"ok":true,"errors":[],"warnings":[{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":12,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."},{"validator":"lintJavaScript","rule":"db_query_without_await","file":"api/account-me.js","line":21,"message":"db.* methods are async — call them with `await` or the query may not run before the handler returns."}],"would_deploy":{"public_files":115,"ap
@@ -62,14 +62,14 @@ existing project id: proj_U95i5y493z9x
   "project_name": "The Two Infinities (and beyond)",
   "project_public_id": "proj_U95i5y493z9x",
   "project_slug": "the-two-infinities",
-  "version": 103,
+  "version": 104,
   "url": "https://the-two-infinities.hatchable.site",
   "status": "live",
   "is_draft": false,
   "public_url": "https://the-two-infinities.hatchable.site",
   "draft_url": "https://the-two-infinities-draft.hatchable.site",
-  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v102.png",
-  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v103.png",
+  "screenshot_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v103.png",
+  "screenshot_pending_url": "https://hatchable.com/storage/deploy-previews/proj_U95i5y493z9x/v104.png",
   "console_url": "https://hatchable.com/console/projects/the-two-infinities",
   "files_deployed": 248,
   "functions_deployed": 32,
