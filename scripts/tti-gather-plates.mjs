@@ -92,21 +92,31 @@ for (const [file, url, title, slug] of pages) {
   }
 }
 
-const indexItems = groups.map((group) =>
-  `      <li><a href="#g-${group.slug}">${group.title}</a> <span class="muted">&mdash; ${group.figures.length} ${group.figures.length === 1 ? 'plate' : 'plates'}</span></li>`
-).join('\n');
-
-const sections = groups.map((group) => `
-<div class="divider">✦</div>
-<section class="wrap narrow reveal">
-  <div class="frame">
-    <p class="kicker">Gathered from <a href="${group.url}">${group.title}</a></p>
-    <h2 id="g-${group.slug}">${group.title}</h2>
-    <p class="muted small">${group.figures.length} ${group.figures.length === 1 ? 'plate' : 'plates'}, drawn in place on that page and reproduced here unchanged.</p>
-  </div>
-</section>
-${group.figures.map((figure) => `<section class="wrap reveal">\n${figure}\n</section>`).join('\n')}
-`).join('');
+const sections = groups.map((group, index) => {
+  const count = `${group.figures.length} ${group.figures.length === 1 ? 'plate' : 'plates'}`;
+  const number = String(index + 1).padStart(2, '0');
+  return `
+  <details class="plate-accordion-group" id="g-${group.slug}" name="plate-room">
+    <summary>
+      <h2>
+        <span class="plate-group-number" aria-hidden="true">${number}</span>
+        <span class="plate-group-title">${group.title}</span>
+        <span class="plate-group-count">${count}</span>
+        <span class="plate-group-toggle" aria-hidden="true"></span>
+      </h2>
+    </summary>
+    <div class="plate-accordion-panel">
+      <div class="plate-group-context">
+        <p class="kicker">Drawn in its source chapter</p>
+        <p><a href="${group.url}">Read ${group.title} in context <span aria-hidden="true">&rarr;</span></a></p>
+        <p class="muted small">${count}, reproduced here unchanged.</p>
+      </div>
+      <div class="plate-group-figures">
+${group.figures.map((figure) => `        <div class="plate-accordion-plate">\n${figure}\n        </div>`).join('\n')}
+      </div>
+    </div>
+  </details>`;
+}).join('\n');
 
 const document = `---
 layout: layouts/base.njk
@@ -127,16 +137,18 @@ description: "Every plate drawn across The Shape of Becoming: Infinity, Gravity 
   <div class="frame frame--first illuminated">
     <p class="lede">Every figure the site draws, collected. Each one is vector, built in the page it belongs
       to and reproduced here with a link back to the complete argument.</p>
-    <ul>
-${indexItems}
-    </ul>
+    <p class="muted">Choose a heading to unfold its plates. Opening another heading closes the first.</p>
     <p class="muted small">Grading: <span class="sci">&#9670; established</span> &middot;
       <span class="hist">&#9670; scholarship</span> &middot;
       <span class="spec">&#9670; the framework&rsquo;s argument</span> &middot;
       <span class="myth">&#9670; vision, stated as vision</span>.</p>
   </div>
 </section>
+<section class="wrap plate-accordion-wrap reveal" aria-label="Plates grouped by source chapter">
+  <div class="plate-accordion" data-plate-accordion>
 ${sections}
+  </div>
+</section>
 <div class="divider">✦</div>
 <section class="wrap narrow reveal">
   <div class="frame frame--creed">

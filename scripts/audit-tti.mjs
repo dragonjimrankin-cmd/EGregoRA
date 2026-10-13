@@ -215,7 +215,14 @@ if (!plates) {
   }
   const gathered = plates.$('figure.plate[data-plate-source]').length;
   if (gathered !== sourcePlateCount) fail(`plate room gathers ${gathered} of ${sourcePlateCount} source plates`);
-  note(`plate room reconciled ${gathered} source plates`);
+  const plateGroups = plates.$('.plate-accordion > .plate-accordion-group');
+  if (plateGroups.length !== 21) fail(`plate room exposes ${plateGroups.length} of 21 source headings`);
+  if (plates.$('.plate-accordion-group[name="plate-room"]').length !== plateGroups.length) {
+    fail('plate room headings do not form one native exclusive disclosure group');
+  }
+  if (plates.$('.frame--first ul, .frame--first li').length) fail('plate room retains its obsolete bullet index');
+  if (plates.$('.plate-accordion-group[open]').length) fail('plate room does not begin fully collapsed');
+  note(`plate room reconciled ${gathered} source plates beneath ${plateGroups.length} exclusive headings`);
 }
 
 const proposalLinks = [
@@ -286,4 +293,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, grouped header navigation, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');
+console.log('  Exact identity, grouped header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');

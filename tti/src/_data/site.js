@@ -2,7 +2,7 @@
  * The Shape of Becoming: Infinity, Gravity and Existence — site-wide constants.
  *
  * The framework is James Alexander Matthew Rankin's, written between the
- * 2nd and 19th of June 2026 and revised to r4.0. This site is its reading
+ * 2nd and 19th of June 2026 and revised to r4.1. This site is its reading
  * room: the same house style as EGregoRA, turned from the wood to the sky.
  */
 const navGroups = [
@@ -74,7 +74,7 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r4.0",
+  revision: "r4.1",
   revised: "2026-10-13",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
   description:

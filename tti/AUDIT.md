@@ -2,7 +2,7 @@
 
 **Project:** The Shape of Becoming: Infinity, Gravity and Existence  
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.0
+**Revision:** r4.1
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -15,7 +15,14 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the grouped masthead and all twenty destinations, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the grouped masthead, all twenty destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+
+## Plates accordion in r4.1
+
+- Replaced the Visual Compendium&rsquo;s bullet index and permanently expanded plate groups with twenty-one native, keyboard-operable disclosure headings.
+- Each heading now contains its plate count and unfolds the original vector plate or plates directly beneath it.
+- The shared disclosure name and JavaScript fallback enforce one open source chapter at a time; Escape closes the active chapter and hash links still open their named section.
+- Added responsive accordion styling, a clear plus/minus state, source-chapter links, reduced-motion handling, and deterministic local/live regression checks.
 
 ## Header redesign in r4.0
 
@@ -45,6 +52,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - 26 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
 - Four navigation constellations, twenty unique destinations, two persistent actions, active-page state, mobile controls and keyboard dismissal verified.
+- Twenty-one mutually exclusive plate headings contain all 31 gathered vectors; the former bullet index is absent.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.
 - Nested breadcrumbs verified for the Zero-Seam research proposal.

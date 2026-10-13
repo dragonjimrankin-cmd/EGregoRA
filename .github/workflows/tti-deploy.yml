@@ -14,6 +14,7 @@ on:
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
       - "scripts/test-tti-header.mjs"
+      - "scripts/test-tti-plates.mjs"
       - "scripts/test-tti-relocations.mjs"
       - "scripts/tti-gather-plates.mjs"
       - "scripts/audit-tti.mjs"
@@ -50,6 +51,7 @@ jobs:
           npm run build:tti:hatchable
           npm run lint:tti
           node scripts/test-tti-header.mjs --built
+          node scripts/test-tti-plates.mjs
           node scripts/audit-tti.mjs
           test -s tti/hatchable/public/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
@@ -75,7 +77,7 @@ jobs:
           grep -Fq 'The Shape of Becoming: Infinity, Gravity and Existence' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.0' tti/hatchable/public/index.html
+          grep -Fq 'r4.1' tti/hatchable/public/index.html
           grep -q 'class="nav-cluster"' tti/hatchable/public/index.html
           grep -q 'First principles' tti/hatchable/public/index.html
           grep -q 'Cosmic architecture' tti/hatchable/public/index.html
@@ -121,8 +123,11 @@ jobs:
           grep -q 'const avatarName' tti/hatchable/public/assets/js/site.js
           grep -q 'classList.add("js-nav")' tti/hatchable/public/assets/js/site.js
           grep -q 'closeClusters' tti/hatchable/public/assets/js/site.js
+          grep -q 'closePlateGroups' tti/hatchable/public/assets/js/site.js
+          grep -q 'openPlateFromHash' tti/hatchable/public/assets/js/site.js
           grep -q 'Navigation observatory' tti/hatchable/public/assets/css/main.css
           grep -q '.nav-panel' tti/hatchable/public/assets/css/main.css
+          grep -q '.plate-accordion-group' tti/hatchable/public/assets/css/main.css
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'temporal-antipodes' tti/hatchable/public/assets/js/oracle-knowledge.js
@@ -155,6 +160,10 @@ jobs:
           grep -q 'The Temporal-Antipode Synchronisation Challenge' tti/hatchable/public/stress-tests/index.html
           grep -q 'The Zero-Seam Test, With the Null Model Kept in the Room' tti/hatchable/public/stress-tests/index.html
           grep -q 'The Visual Compendium &middot; 31 plates' tti/hatchable/public/plates/index.html
+          grep -q 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html
+          grep -q 'name="plate-room"' tti/hatchable/public/plates/index.html
+          grep -q 'Choose a heading to unfold its plates' tti/hatchable/public/plates/index.html
+          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 21
           grep -q 'data-plate-source="/temporal-antipodes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/entropy/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/double-inversion/"' tti/hatchable/public/plates/index.html
@@ -228,7 +237,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Shape of Becoming:', 'Infinity, Gravity and Existence',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.0',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.1',
                 'class="nav-cluster"', 'First principles', 'Cosmic architecture', 'Tests and essays',
                 'Why the two infinities never fully synchronise', 'The Zero-Seam Test']
             },
@@ -304,7 +313,8 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/plates/',
-              markers: ['The Visual Compendium &middot; 31 plates', 'Temporal Antipodes',
+              markers: ['The Visual Compendium &middot; 31 plates', 'class="plate-accordion-group"',
+                'name="plate-room"', 'Choose a heading to unfold its plates', 'Temporal Antipodes',
                 'Opposite Ends, Finite Projections', 'JWST’s Little Red Dots',
                 'Similar Arrows, Different Accounts', 'State Restored, Path Still Available',
                 'From Increments to Curvature', 'From the previous closure to a']
@@ -376,12 +386,14 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/assets/css/main.css',
               markers: ['Navigation observatory', '.nav-cluster', '.nav-panel',
-                '.js-nav .site-nav.open', 'position: sticky']
+                '.js-nav .site-nav.open', 'position: sticky', '.plate-accordion-group[open]',
+                '.plate-group-toggle::after']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',
               markers: ['const avatarName', 'tti-shakdrah-muted', "'s voice is on",
-                'window.EGDragon || window.EGFox', 'classList.add("js-nav")', 'closeClusters']
+                'window.EGDragon || window.EGFox', 'classList.add("js-nav")', 'closeClusters',
+                'closePlateGroups', 'openPlateFromHash']
             }
           ];
           let detail = 'the pages did not become current';

@@ -66,6 +66,40 @@
   if (desktopNav.addEventListener) desktopNav.addEventListener("change", resetAtDesktop);
   else if (desktopNav.addListener) desktopNav.addListener(resetAtDesktop);
 
+  /* --- The Plates: one source chapter open at a time ---
+   * Modern browsers enforce this through the shared `name` on each details
+   * element. The toggle listener is the fallback for older engines, and the
+   * hash helper preserves links such as /plates/#g-foundations. */
+  const plateGroups = Array.from(document.querySelectorAll("[data-plate-accordion] > .plate-accordion-group"));
+  const closePlateGroups = (except) => plateGroups.forEach((group) => {
+    if (group !== except) group.removeAttribute("open");
+  });
+  plateGroups.forEach((group) => group.addEventListener("toggle", () => {
+    if (group.open) closePlateGroups(group);
+  }));
+
+  const openPlateFromHash = () => {
+    if (!window.location.hash || !plateGroups.length) return;
+    let id;
+    try { id = decodeURIComponent(window.location.hash.slice(1)); }
+    catch (_) { return; }
+    const group = document.getElementById(id);
+    if (!group || !group.classList.contains("plate-accordion-group")) return;
+    closePlateGroups(group);
+    group.setAttribute("open", "");
+  };
+  openPlateFromHash();
+  window.addEventListener("hashchange", openPlateFromHash);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const openGroup = plateGroups.find((group) => group.open);
+    if (!openGroup) return;
+    openGroup.removeAttribute("open");
+    const summary = openGroup.querySelector("summary");
+    if (summary) summary.focus();
+  });
+
   /* --- Scroll reveals ---
    *
    * Everything marked .reveal starts at opacity 0 and is faded in when it
