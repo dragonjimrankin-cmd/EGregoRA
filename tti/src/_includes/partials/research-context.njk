@@ -1,0 +1,66 @@
+{% set researchPage = site.researchByUrl[page.url] %}
+{% if researchPage %}
+<section class="project-context wrap" aria-label="Research document context">
+  <div class="project-context-line">
+    <div class="project-record">
+      <span class="project-record-code">{{ researchPage.code }}</span>
+      <span class="project-record-kind">{{ researchPage.kind }}</span>
+      <span class="project-record-status">{{ researchPage.status }}</span>
+    </div>
+    <a class="project-contents-link" href="/#project-contents">Project table of contents</a>
+  </div>
+
+  <div class="project-context-nav">
+    {% if researchPage.previous %}
+    <a class="project-context-step project-context-step--previous" href="{{ researchPage.previous.url }}">
+      <span>Previous</span>
+      <strong>{{ researchPage.previous.code }} · {{ researchPage.previous.label }}</strong>
+    </a>
+    {% else %}
+    <span class="project-context-step is-empty" aria-hidden="true"></span>
+    {% endif %}
+
+    <p class="project-context-position">
+      <span>Part {{ researchPage.part }} · {{ researchPage.partTitle }}</span>
+      <strong>Document {{ researchPage.index }} of {{ researchPage.total }}</strong>
+    </p>
+
+    {% if researchPage.next %}
+    <a class="project-context-step project-context-step--next" href="{{ researchPage.next.url }}">
+      <span>Next</span>
+      <strong>{{ researchPage.next.code }} · {{ researchPage.next.label }}</strong>
+    </a>
+    {% else %}
+    <span class="project-context-step is-empty" aria-hidden="true"></span>
+    {% endif %}
+  </div>
+
+  <details class="project-drawer">
+    <summary>Browse all five Parts and twenty-eight project documents</summary>
+    <div class="project-drawer-grid">
+      {% for group in site.navGroups %}
+      <section aria-labelledby="drawer-part-{{ group.part }}">
+        <h2 id="drawer-part-{{ group.part }}">Part {{ group.part }} · {{ group.shortLabel }}</h2>
+        <ol>
+          {% for item in group.items %}
+          <li>
+            <a href="{{ item.url }}" {% if item.url == page.url %}aria-current="page"{% endif %}>
+              <span>{{ item.code }}</span>
+              <strong>{{ item.label }}</strong>
+            </a>
+          </li>
+          {% endfor %}
+        </ol>
+      </section>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+
+<nav class="document-outline wrap" data-document-outline aria-label="Table of contents for this document" hidden>
+  <details open>
+    <summary>In this document</summary>
+    <ol data-document-outline-list></ol>
+  </details>
+</nav>
+{% endif %}

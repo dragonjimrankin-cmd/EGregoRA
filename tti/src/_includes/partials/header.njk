@@ -10,10 +10,11 @@
       </span>
     </a>
 
-    <span class="brand-edition" aria-label="Site revision {{ site.revision }}">
-      <span>Unified edition</span>
+    <a class="brand-edition" href="/#project-contents"
+       aria-label="Open the project table of contents, working edition {{ site.revision }}">
+      <span>Project contents</span>
       <strong>{{ site.revision }}</strong>
-    </span>
+    </a>
 
     <a class="head-join" href="/join/" id="head-join">
       <span class="head-join-mark" aria-hidden="true">&#9737;</span>
@@ -23,11 +24,11 @@
     <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false"
             aria-controls="primary-nav">
       <span class="nav-toggle-icon" aria-hidden="true"><b></b><b></b><b></b></span>
-      <em>Explore</em>
+      <em>Contents</em>
     </button>
   </div>
 
-  <nav id="primary-nav" class="site-nav" aria-label="Primary navigation">
+  <nav id="primary-nav" class="site-nav" aria-label="Project table of contents">
     <div class="site-nav-shell">
       <div class="nav-clusters">
         {% for group in site.navGroups %}
@@ -48,6 +49,7 @@
                 <a href="{{ item.url }}" {% if page.url == item.url %}aria-current="page"{% endif %}>
                   <i aria-hidden="true">{% glyph item.glyph %}</i>
                   <span class="nav-link-copy">
+                    <span class="nav-link-meta">{{ item.code }} · {{ item.kind }}</span>
                     <strong>{{ item.label }}</strong>
                     <small>{{ item.note }}</small>
                   </span>

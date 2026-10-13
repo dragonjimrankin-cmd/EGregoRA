@@ -71,8 +71,10 @@ assert.match(js, /classList\.add\("js-nav"\)/, 'progressive mobile navigation is
 assert.match(js, /event\.key !== "Escape"/, 'Escape does not close the navigation');
 assert.match(js, /cluster\.open\) closeClusters\(cluster\)/, 'navigation Parts do not close their siblings');
 assert.match(js, /runtimePartLabels/, 'runtime Join and Account page labels are not aligned');
-assert.match(js, /Part V \\u2014 Reading Rooms \\u00b7 Join/, 'Join does not carry the Part V page label');
-assert.match(js, /Part V \\u2014 Reading Rooms \\u00b7 Your Account/, 'Account does not carry the Part V page label');
+assert.match(js, /Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V\.03 \\u00b7 Join/,
+  'Join does not carry the Part V research label');
+assert.match(js, /Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V\.04 \\u00b7 Your Account/,
+  'Account does not carry the Part V research label');
 
 if (process.argv.includes('--built')) {
   const fixtures = [
@@ -121,7 +123,7 @@ if (process.argv.includes('--built')) {
       const html = await readFile(new URL(`../tti/_site${item.url}index.html`, import.meta.url), 'utf8');
       const $ = cheerio.load(html);
       const visible = $('main > .page-head > .kicker').first().text().replace(/\s+/g, ' ').trim().replace(/’/g, "'");
-      const expected = `Part ${part.num} — ${part.title} · ${item.label}`.replace(/’/g, "'");
+      const expected = `Part ${part.num} — ${part.title} · ${item.kind} ${item.code} · ${item.label}`.replace(/’/g, "'");
       assert.ok(visible.startsWith(expected),
         `${item.url} page label is ${visible || 'missing'}, expected it to begin ${expected}`);
     }

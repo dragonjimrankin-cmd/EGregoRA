@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.8
+**Revision:** r4.9
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -15,7 +15,17 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching page labels, the five-path Atlas, all twenty-eight mapped destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical twenty-eight-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus.
+
+## Research-project edition in r4.9
+
+- Reorganised the introduction as an independent working research project with a formal abstract, research question, method, status statement, project record and evidence key.
+- Added a canonical **Project Table of Contents** listing all five Parts and all twenty-eight documents with stable `TTI-Part.Sequence` codes, document types, research statuses and concise aims.
+- Made the header, project contents, interactive Atlas, per-document context and footer citations consume the same authoritative data so titles, Part labels and order cannot drift.
+- Added a compact research record to every built document with its code, type, status, corpus position, previous/next reading and a complete five-Part contents drawer.
+- Added a progressively enhanced **In this document** outline generated from each paper’s section headings, preserving existing fragment identifiers and assigning stable collision-safe identifiers where needed.
+- Reframed masthead, introduction, footer, figure register and selected page language around working papers, competing models, open derivations and failure conditions without claiming peer review.
+- Retained the exact project title, exact Jim Rankin attribution line, five-Part hierarchy, expandable navigation, all existing papers and resources, the interactive Atlas, plate accordion and avatar functions.
 
 ## Wormholes and inverted tori in r4.8
 

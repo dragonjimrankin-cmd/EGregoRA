@@ -1,15 +1,16 @@
 import ttiAtlas from "./ttiAtlas.js";
 
 /**
- * The Two Infinities: Eternal Integration of the Self — site-wide constants.
+ * The Two Infinities: Eternal Integration of the Self — project-wide data.
  *
- * The framework is James Alexander Matthew Rankin's, written between the
- * 2nd and 19th of June 2026 and revised to r4.8. This site is its reading
- * room: the same house style as EGregoRA, turned from the wood to the sky.
+ * James Alexander Matthew Rankin began the framework between 2 and 19 June
+ * 2026. Revision r4.9 reorganises the website as an independent working
+ * research project: every route receives a stable document code, research
+ * status, citation context and a place in one canonical table of contents.
  */
-/* The header and the introduction Atlas share one canonical table of contents.
-   Each Part is a visible masthead heading; every page beneath it is rendered
-   as a contextual subheading in that Part's panel. */
+/* The masthead, project contents and interactive Atlas all consume the same
+   data. Each Part remains visible in the slim header and every document keeps
+   a stable position beneath the corresponding Part. */
 const glyphByRoute = Object.freeze({
   "/foundations/": "sphere",
   "/the-self/": "integral",
@@ -49,11 +50,28 @@ const navGroups = ttiAtlas.limbs.map((part) => ({
     url: destination.href,
     label: destination.title,
     note: destination.note,
+    code: destination.code,
+    kind: destination.kind,
+    status: destination.status,
+    part: part.num,
+    partTitle: part.title,
+    kicker: `Part ${part.num} — ${part.title} · ${destination.kind} ${destination.code} · ${destination.title}`,
     glyph: glyphByRoute[destination.href] || "seed"
   }))
 }));
 
-/* Plates and Ask ShakDrah now sit beneath Part V with the other reading rooms
+const researchDocuments = navGroups.flatMap((group) => group.items).map((document, index, documents) => ({
+  ...document,
+  index: index + 1,
+  total: documents.length,
+  previous: index > 0 ? { url: documents[index - 1].url, label: documents[index - 1].label, code: documents[index - 1].code } : null,
+  next: index + 1 < documents.length ? { url: documents[index + 1].url, label: documents[index + 1].label, code: documents[index + 1].code } : null
+}));
+const researchByUrl = Object.fromEntries(researchDocuments.map((document) => [document.url, document]));
+const researchStudyCount = navGroups.slice(0, 4).reduce((total, group) => total + group.items.length, 0);
+const researchResourceCount = navGroups[4].items.length;
+
+/* Plates and Ask ShakDrah sit beneath Part V with the other project resources
    instead of being duplicated as detached actions beside the five Parts. */
 const navActions = [];
 
@@ -72,14 +90,15 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r4.8",
+  revision: "r4.9",
   revised: "2026-10-13",
+  edition: "Working research edition",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
   description:
-    "The Two Infinities: Eternal Integration of the Self — A speculative cosmology by Jim Rankin, UK, 2026. " +
-    "It follows temporal-antipode infinities, π as closure, i as the half-turn that opens a dimension, consciousness as the integral, " +
-    "gravity as curvature, entropy versus integration, double-inversion residue, accumulated differentials, the Cosmic Ledger, " +
-    "and a falsifiable Little Red Dots research programme. Twenty papers, eleven source essays and new research notes, drawn as plates.",
+    "The Two Infinities: Eternal Integration of the Self — an independent speculative-cosmology research project by Jim Rankin, UK, 2026. " +
+    "Its working papers examine temporal-antipode infinities, π as closure, complex phase, consciousness as integration, " +
+    "gravity and accumulated differentials, entropy, topological return, the Cosmic Ledger, and a falsifiable Little Red Dots programme. " +
+    "Established results, conjectural bridges, competing explanations and failure conditions are labelled separately.",
   keywords:
     "The Two Infinities, A speculative cosmology by Jim Rankin, UK, 2026, two infinities, temporal antipodes, opposite ends of time, " +
     "synchronisation, smallward infinity, largeward infinity, geometry of existence, pi, Euler identity, " +
@@ -96,6 +115,16 @@ export default {
   navGroups,
   navActions,
   nav: [...navGroups.flatMap((group) => group.items), ...navActions],
+  researchDocuments,
+  researchByUrl,
+  research: {
+    title: "Independent speculative-cosmology research project",
+    question: "Can a single geometric account of limits, closure, complex phase and integration connect self, time, gravity and cosmic return without hiding the points at which analogy must become physics?",
+    method: "Separate established mathematics and observations from interpretation; formalise each proposed bridge; compare ordinary explanations; publish unresolved requirements and conditions that could make the framework fail.",
+    status: "Working hypotheses, open derivations and preregistration-ready tests — not a peer-reviewed physical theory.",
+    documentCount: researchStudyCount,
+    resourceCount: researchResourceCount
+  },
 
   oracle: {
     name: "ShakDrah",

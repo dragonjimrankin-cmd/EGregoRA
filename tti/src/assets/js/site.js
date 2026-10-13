@@ -19,7 +19,7 @@
     toggle.setAttribute("aria-expanded", "false");
     toggle.setAttribute("aria-label", "Open navigation");
     const label = toggle.querySelector("em");
-    if (label) label.textContent = "Explore";
+    if (label) label.textContent = "Contents";
   };
 
   if (toggle && nav) {
@@ -28,7 +28,7 @@
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
       const label = toggle.querySelector("em");
-      if (label) label.textContent = open ? "Close" : "Explore";
+      if (label) label.textContent = open ? "Close" : "Contents";
       if (!open) closeClusters();
     });
 
@@ -70,12 +70,56 @@
      Eleventy. Keep their visible page labels in the same Part V vocabulary as
      the static header and Atlas. */
   const runtimePartLabels = {
-    "/join/": "Part V \u2014 Reading Rooms \u00b7 Join",
-    "/account/": "Part V \u2014 Reading Rooms \u00b7 Your Account"
+    "/join/": "Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.03 \u00b7 Join",
+    "/account/": "Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.04 \u00b7 Your Account"
   };
   const runtimePartLabel = runtimePartLabels[window.location.pathname];
   const runtimePageKicker = document.querySelector("main > .page-head > .kicker");
   if (runtimePartLabel && runtimePageKicker) runtimePageKicker.textContent = runtimePartLabel;
+
+  /* --- Research-document outline ---
+   * Every built paper has the canonical project contents above it. This local
+   * index is generated from the paper's own section headings so long documents
+   * can be read like research reports without maintaining a second hand-made
+   * list. Existing fragment IDs are preserved; headings without one receive a
+   * deterministic, collision-safe ID. */
+  const outline = document.querySelector("[data-document-outline]");
+  const outlineList = document.querySelector("[data-document-outline-list]");
+  const main = document.getElementById("main");
+  if (outline && outlineList && main) {
+    const outsideProjectChrome = (heading) =>
+      !heading.closest(".project-context, .project-drawer, .document-outline");
+    let headings = Array.from(main.querySelectorAll("h2")).filter(outsideProjectChrome);
+    if (headings.length < 2) headings = Array.from(main.querySelectorAll("h3")).filter(outsideProjectChrome);
+
+    const usedIds = new Set(Array.from(document.querySelectorAll("[id]"), (node) => node.id));
+    const slug = (text) => String(text || "section")
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "section";
+
+    headings.forEach((heading, index) => {
+      if (!heading.id) {
+        const base = `section-${slug(heading.textContent)}`;
+        let candidate = base;
+        let suffix = 2;
+        while (usedIds.has(candidate)) candidate = `${base}-${suffix++}`;
+        heading.id = candidate;
+        usedIds.add(candidate);
+      }
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = `#${encodeURIComponent(heading.id)}`;
+      link.textContent = heading.textContent.trim().replace(/\s+/g, " ");
+      link.dataset.outlineIndex = String(index + 1);
+      item.appendChild(link);
+      outlineList.appendChild(item);
+    });
+
+    if (headings.length >= 2) outline.hidden = false;
+  }
 
   /* --- The Plates: one source chapter open at a time ---
    * Modern browsers enforce this through the shared `name` on each details

@@ -15,7 +15,7 @@ const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((
 const expectedPartCount = site.navGroups.length;
 const expectedPageLabels = new Map(site.navGroups.flatMap((group) => group.items.map((item) => [
   item.url,
-  `Part ${group.part} — ${group.shortLabel} · ${item.label}`
+  `Part ${group.part} — ${group.shortLabel} · ${item.kind} ${item.code} · ${item.label}`
 ])));
 const normaliseLabel = (text) => text.replace(/\s+/g, ' ').trim().replace(/’/g, "'");
 const errors = [];
