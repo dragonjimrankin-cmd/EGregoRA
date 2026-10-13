@@ -10,6 +10,9 @@ on:
       - "package.json"
       - "package-lock.json"
       - "scripts/hatchable-deploy.mjs"
+      - "scripts/commit-admin-edit-snapshot.sh"
+      - "scripts/sync-admin-edit-snapshot.mjs"
+      - "scripts/test-admin-edit-commit.mjs"
       - "scripts/sync-neural-voice-assets.mjs"
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
@@ -25,7 +28,13 @@ on:
       - ".github/workflows/tti-deploy.yml"
 
 permissions:
-  contents: read
+  contents: write
+
+# Both live projects share one branch. Serialising their deployment jobs keeps
+# automatic Admin Edit commits from racing one another.
+concurrency:
+  group: serialized-live-deployment-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -43,9 +52,22 @@ jobs:
           node-version: 24
           cache: npm
 
+      - name: Commit queued TTI Admin Edit changes
+        run: |
+          scripts/commit-admin-edit-snapshot.sh \
+            tti \
+            https://the-two-infinities.hatchable.site/api/admin-commit \
+            tti/src/static/admin-edits.snapshot.json \
+            "$GITHUB_REF_NAME" \
+            refresh
+
       - name: Build and validate the static site
         run: |
           npm ci
+          node --check tti/hatchable/api/admin-commit.js
+          node --check tti/src/assets/js/admin-edit.js
+          node --check scripts/sync-admin-edit-snapshot.mjs
+          node scripts/test-admin-edit-commit.mjs
           node --check tti/src/assets/js/oracle-knowledge.js
           node --check tti/src/assets/js/neural-voice.js
           node --check tti/src/assets/js/dragon.js
@@ -64,6 +86,11 @@ jobs:
           node scripts/test-tti-plates.mjs
           node scripts/audit-tti.mjs
           test -s tti/hatchable/public/index.html
+          test -s tti/hatchable/public/admin-edits.snapshot.json
+          grep -Fq 'admin-edit-commit-snapshot' tti/hatchable/public/admin-edits.snapshot.json
+          grep -Fq 'automatic Git commit before the next deployment' tti/hatchable/public/assets/js/admin-edit.js
+          test -s tti/hatchable/api/admin-commit.js
+          grep -Fq 'admin-edit-commit-snapshot' tti/hatchable/api/admin-commit.js
           test -s tti/hatchable/public/pi-from-zero-and-one/index.html
           test -s tti/hatchable/public/time-and-residue/index.html
           test -s tti/hatchable/public/inverted-toruses/index.html
@@ -103,7 +130,7 @@ jobs:
           grep -Fq 'The dependency map' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.11' tti/hatchable/public/index.html
+          grep -Fq 'r4.12' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -263,16 +290,26 @@ jobs:
             tti/hatchable/public/essays/index.html \
             tti/hatchable/public/out-of-phase/index.html
 
+      - name: Recheck and commit TTI Admin Edit changes before deployment
+        run: |
+          scripts/commit-admin-edit-snapshot.sh \
+            tti \
+            https://the-two-infinities.hatchable.site/api/admin-commit \
+            tti/src/static/admin-edits.snapshot.json \
+            "$GITHUB_REF_NAME" \
+            check
+          cp tti/src/static/admin-edits.snapshot.json tti/hatchable/public/admin-edits.snapshot.json
+          cmp tti/src/static/admin-edits.snapshot.json tti/hatchable/public/admin-edits.snapshot.json
+
       - name: Deploy the existing Hatchable project
-        env:
-          RAW_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/tti/hatchable
-          RAW_SOURCE_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/tti/src
         run: |
           if [ -z "$HATCHABLE_TOKEN" ]; then
             echo "::error title=Hatchable deployment unavailable::HATCHABLE_TOKEN is not configured as a repository secret. The site built successfully, but the live project was not changed."
             exit 1
           fi
 
+          export RAW_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${ADMIN_COMMIT_SHA}/tti/hatchable"
+          export RAW_SOURCE_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${ADMIN_COMMIT_SHA}/tti/src"
           PROJECT_ID=$(tr -d ' \n\r' < ops/tti-project.txt)
           STATUS=1
           for ATTEMPT in 1 2 3 4 5 6; do
@@ -309,9 +346,17 @@ jobs:
           node <<'NODE'
           const pages = [
             {
+              url: 'https://the-two-infinities.hatchable.site/admin-edits.snapshot.json',
+              markers: ['admin-edit-commit-snapshot', '"site": "tti"']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/api/admin-commit',
+              markers: ['admin-edit-commit-snapshot', '"digest"']
+            },
+            {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.11',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.12',
                 'Project Table of Contents', 'Geometry, Integration and the Conditions of Return',
                 '<dt>Research status</dt><dd>Working hypotheses</dd>', 'TTI-I.01', 'TTI-V.04',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',

@@ -883,7 +883,8 @@
       var row = q(".ae-confirm");
       if (row) row.hidden = true;
       draft = null;
-      say("Published as change #" + d.id + ". It is in the log and can be undone there.");
+      say("Published as change #" + d.id + ". It is in the log and queued for an automatic " +
+        "Git commit before the next deployment.");
     }).catch(function (err) { say(err.message || "It would not save.", true); });
   }
 
@@ -909,7 +910,10 @@
       out.querySelectorAll(".ae-flip").forEach(function (b) {
         b.addEventListener("click", function () {
           post({ action: b.getAttribute("data-to"), pass: pass, id: Number(b.getAttribute("data-id")) })
-            .then(function () { say("Done. Reload to see it as a visitor will."); showLog(); })
+            .then(function () {
+              say("Done. The new state is queued for an automatic Git commit before the next deployment.");
+              showLog();
+            })
             .catch(function (err) { say(err.message || "That did not work.", true); });
         });
       });
@@ -947,7 +951,8 @@
         ? "Nothing published on this page to undo."
         : "Nothing undone on this page to redo.", true);
       post({ action: want, pass: pass, id: pick.id }).then(function () {
-        say((want === "undo" ? "Undone" : "Redone") + " \u2014 reloading.");
+        say((want === "undo" ? "Undone" : "Redone") +
+          " and queued for an automatic Git commit before the next deployment \u2014 reloading.");
         setTimeout(function () { location.reload(); }, 600);
       }).catch(function (err) { say(err.message || "That would not " + want + ".", true); });
     }).catch(function (err) { say(err.message || "The log could not be read.", true); });
@@ -992,9 +997,11 @@
         if (d.date) {
           applyPageDate(d.date);
           say("The page now purports to have been created on " + dateLabel(d.date) +
-            ". The real audit times were not changed.");
+            ". The real audit times were not changed; this state is queued for an automatic Git commit " +
+            "before the next deployment.");
         } else {
-          say("The purported creation date was cleared. Reloading the built metadata.");
+          say("The purported creation date was cleared and queued for an automatic Git commit before " +
+            "the next deployment. Reloading the built metadata.");
           setTimeout(function () { location.reload(); }, 500);
         }
       }).catch(function (err) { say(err.message || "The date would not save.", true); });
@@ -1019,7 +1026,8 @@
     if (!window.confirm("Save the whole page as edited? A backup of what stands now is kept, " +
       "and every visitor will see the new page.")) return;
     post({ action: "save-source", pass: pass, page: PAGE, html: ta.value }).then(function () {
-      say("Saved, with a backup kept \u2014 reloading.");
+      say("Saved with a backup kept, and queued for an automatic Git commit before the next " +
+        "deployment \u2014 reloading.");
       setTimeout(function () { location.reload(); }, 600);
     }).catch(function (err) { say(err.message || "It would not save.", true); });
   }

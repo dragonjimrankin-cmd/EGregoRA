@@ -744,7 +744,8 @@
       var row = q(".ae-confirm");
       if (row) row.hidden = true;
       draft = null;
-      say("Published as change #" + d.id + ". It is in the log and can be undone there.");
+      say("Published as change #" + d.id + ". It is in the log and queued for an automatic " +
+        "Git commit before the next deployment.");
     }).catch(function (err) { say(err.message || "It would not save.", true); });
   }
 
@@ -770,7 +771,10 @@
       out.querySelectorAll(".ae-flip").forEach(function (b) {
         b.addEventListener("click", function () {
           post({ action: b.getAttribute("data-to"), pass: pass, id: Number(b.getAttribute("data-id")) })
-            .then(function () { say("Done. Reload to see it as a visitor will."); showLog(); })
+            .then(function () {
+              say("Done. The new state is queued for an automatic Git commit before the next deployment.");
+              showLog();
+            })
             .catch(function (err) { say(err.message || "That did not work.", true); });
         });
       });

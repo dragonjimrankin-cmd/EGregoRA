@@ -9,6 +9,9 @@ on:
       - "egregora-patch/**"
       - "ops/egregora-project.txt"
       - "scripts/hatchable-deploy.mjs"
+      - "scripts/commit-admin-edit-snapshot.sh"
+      - "scripts/sync-admin-edit-snapshot.mjs"
+      - "scripts/test-admin-edit-commit.mjs"
       - "scripts/test-voiceprint.mjs"
       - "scripts/test-neural-voice.mjs"
       - "scripts/test-oracle-knowledge.mjs"
@@ -26,7 +29,13 @@ on:
       - ".github/workflows/egregora-patch-deploy.yml"
 
 permissions:
-  contents: read
+  contents: write
+
+# Both live projects share one branch. Serialising their deployment jobs keeps
+# automatic Admin Edit commits from racing one another.
+concurrency:
+  group: serialized-live-deployment-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -40,11 +49,27 @@ jobs:
         with:
           node-version: 24
 
+      - name: Commit queued EGregoRA Admin Edit changes
+        run: |
+          scripts/commit-admin-edit-snapshot.sh \
+            egregora \
+            https://egregora.hatchable.site/api/admin-commit \
+            egregora-patch/public/admin-edits.snapshot.json \
+            "$GITHUB_REF_NAME" \
+            refresh
+
       - name: Validate the patch
         run: |
           npm ci --ignore-scripts
           node scripts/sync-private-whisper-assets.mjs
           git diff --exit-code -- egregora-patch/public/assets/js/private-whisper
+          node --check egregora-patch/api/admin-commit.js
+          node --check egregora-patch/public/assets/js/admin-edit.js
+          node --check scripts/sync-admin-edit-snapshot.mjs
+          node scripts/test-admin-edit-commit.mjs
+          test -s egregora-patch/public/admin-edits.snapshot.json
+          grep -Fq 'admin-edit-commit-snapshot' egregora-patch/public/admin-edits.snapshot.json
+          grep -Fq 'automatic Git commit before the next deployment' egregora-patch/public/assets/js/admin-edit.js
           node --check egregora-patch/api/transcribe.js
           node --check egregora-patch/api/media.js
           node --check egregora-patch/lib/upload-parts.js
@@ -124,15 +149,23 @@ jobs:
           grep -Fq 'item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice()' egregora-patch/public/assets/js/headtts/headtts.mjs
           node -e "const fs=require('fs'); const id=fs.readFileSync('ops/egregora-project.txt','utf8').trim(); if (!/^proj_[A-Za-z0-9]+$/.test(id)) process.exit(1)"
 
+      - name: Recheck and commit EGregoRA Admin Edit changes before deployment
+        run: |
+          scripts/commit-admin-edit-snapshot.sh \
+            egregora \
+            https://egregora.hatchable.site/api/admin-commit \
+            egregora-patch/public/admin-edits.snapshot.json \
+            "$GITHUB_REF_NAME" \
+            check
+
       - name: Deploy to the existing EGregoRA project
-        env:
-          RAW_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/egregora-patch
         run: |
           if [ -z "$HATCHABLE_TOKEN" ]; then
             echo "::error title=Hatchable deployment unavailable::HATCHABLE_TOKEN is not configured as a repository secret."
             exit 1
           fi
 
+          export RAW_BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${ADMIN_COMMIT_SHA}/egregora-patch"
           PROJECT_ID=$(tr -d ' \n\r' < ops/egregora-project.txt)
           STATUS=1
           for ATTEMPT in 1 2 3 4 5 6; do
@@ -164,6 +197,14 @@ jobs:
         run: |
           node <<'NODE'
           const targets = [
+            {
+              url: 'https://egregora.hatchable.site/admin-edits.snapshot.json',
+              markers: ['admin-edit-commit-snapshot', '"site": "egregora"']
+            },
+            {
+              url: 'https://egregora.hatchable.site/api/admin-commit',
+              markers: ['admin-edit-commit-snapshot', '"digest"']
+            },
             {
               url: 'https://egregora.hatchable.site/ask-ed/',
               markers: ['Twenty-four prepared answers', 'Why does π appear between zero and one?',
@@ -496,7 +537,7 @@ jobs:
             fail(data.error || `date endpoint HTTP ${response.status}`);
           }
 
-          const asset = await fetch('https://egregora.hatchable.site/assets/js/admin-edit.js?v=creation-date-1');
+          const asset = await fetch('https://egregora.hatchable.site/assets/js/admin-edit.js?v=admin-commit-1');
           const assetText = await asset.text();
           if (!asset.ok || !assetText.includes('ae-date-save') ||
               !assetText.includes('purported creation date')) {
@@ -514,7 +555,7 @@ jobs:
           };
           walk(root);
           const expected = files.filter((file) => fs.readFileSync(file, 'utf8')
-            .includes('/assets/js/admin-edit.js?v=creation-date-1'));
+            .includes('/assets/js/admin-edit.js?v=admin-commit-1'));
           const excluded = files.filter((file) => !expected.includes(file))
             .map((file) => path.relative(root, file).replaceAll(path.sep, '/')).sort();
           const allowedRelocationStubs = [
@@ -532,7 +573,7 @@ jobs:
                 : '/' + relative;
             const page = await fetch('https://egregora.hatchable.site' + route);
             const html = await page.text();
-            if (!page.ok || !html.includes('/assets/js/admin-edit.js?v=creation-date-1')) {
+            if (!page.ok || !html.includes('/assets/js/admin-edit.js?v=admin-commit-1')) {
               fail(`${route} does not load the date-enabled Admin Edit asset (HTTP ${page.status}).`);
             }
           }

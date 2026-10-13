@@ -44,6 +44,13 @@ Current patch:
 - `api/edit.js` and `public/assets/js/admin-edit.js` add a Date tab to Admin
   Edit Mode on every page. The claimed date is visible and updates metadata;
   real deployment and audit timestamps are preserved.
+- `api/admin-commit.js` exports only the effective public Admin Edit state.
+  Both deployment workflows serialise access to the shared branch, snapshot
+  that state into each project bundle, create and push a real Git commit when
+  it changed, and recheck immediately before deployment. A deployment therefore
+  uses the post-commit SHA rather than leaving live editor changes outside the
+  repository. The browser tells administrators that publish, undo, redo,
+  source and date changes are queued for this automatic commit.
 - `migrations/0030_purported_creation_dates.sql` stores page/media date claims
   separately and appends every change to an audit log. `pages/feed.js` uses a
   podcast episode's claimed date when one has been set. Every generated HTML

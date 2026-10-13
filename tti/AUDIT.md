@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.11
+**Revision:** r4.12
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -16,6 +16,15 @@ npm run audit:tti
 ```
 
 The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical twenty-nine-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus. It also treats the twenty-five Part I–IV documents as the research essays and rejects any essay outside 2,000–4,000 readable words.
+
+## Admin Edit commits in r4.12
+
+- Added the same read-only `/api/admin-commit` endpoint to EGregoRA and TTI. It exports a deterministic digest of effective live operations, saved page sources and purported dates, while excluding passcodes, prompts, administrator identities and audit notes.
+- Added versioned snapshots at `egregora-patch/public/admin-edits.snapshot.json` and `tti/src/static/admin-edits.snapshot.json`; each is also included in the corresponding deployment bundle.
+- Both deployment workflows now share one non-cancelling concurrency group, fetch the latest branch head, compare the live state with the versioned snapshot, and create and push a real Git commit whenever Admin Edit state changed.
+- The workflows perform the comparison once before validation and again immediately before deployment, use the resulting commit SHA for server-side file imports, and refuse to deploy if the branch advances unexpectedly.
+- Admin Edit Mode now tells administrators that publish, undo, redo, whole-source and purported-date changes are queued for an automatic Git commit before the next deployment.
+- Added `scripts/test-admin-edit-commit.mjs`, including a local endpoint fixture, digest validation, idempotence checks, endpoint privacy checks and workflow-ordering regressions for both sites.
 
 ## Accessible research essays in r4.11
 
@@ -168,6 +177,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 ## Current audited result
 
+- Admin Edit changes on both sites are deterministically snapshotted and automatically committed before a subsequent deployment can proceed.
 - All 25 Part I–IV research documents are accessible essays between 2,005 and 3,978 audited words; Part V remains four project resources.
 - The length and accessibility regression is part of `npm run audit:tti` and derives its scope from the canonical table of contents.
 - 28 HTML documents built.
