@@ -87,16 +87,33 @@ async function exercise(relative, usePointer) {
 
 (async () => {
   for (let i = 0; i < FILES.length; i++) await exercise(FILES[i], i % 2 === 0);
-  const cacheVersion = "20261013-admin-readable";
-  for (const file of [
-    "hatchable/public/podcast/index.html",
-    "hatchable/public/infographics/index.html",
-    "tti/hatchable/public/podcast/index.html",
-    "tti/hatchable/public/plates/index.html"
-  ]) {
-    const html = fs.readFileSync(path.join(ROOT, file), "utf8");
-    check(new RegExp(`/assets/css/main\\.css\\?v=${cacheVersion}`).test(html), `${file}: updated stylesheet cache key`);
-    check(new RegExp(`/assets/js/admin-edit\\.js\\?v=${cacheVersion}`).test(html), `${file}: updated Admin Edit script cache key`);
+  const cachePages = {
+    EGregoRA: [
+      "hatchable/public/podcast/index.html",
+      "hatchable/public/infographics/index.html"
+    ],
+    "The Two Infinities": [
+      "tti/hatchable/public/podcast/index.html",
+      "tti/hatchable/public/plates/index.html"
+    ]
+  };
+  for (const [site, files] of Object.entries(cachePages)) {
+    const cssVersions = new Set();
+    const scriptVersions = new Set();
+    for (const file of files) {
+      const html = fs.readFileSync(path.join(ROOT, file), "utf8");
+      const cssVersion = html.match(/\/assets\/css\/main\.css\?v=([^"'\s>]+)/);
+      const scriptVersion = html.match(/\/assets\/js\/admin-edit\.js\?v=([^"'\s>]+)/);
+      check(Boolean(cssVersion), `${file}: stylesheet has a cache key`);
+      check(Boolean(scriptVersion), `${file}: Admin Edit script has a cache key`);
+      if (cssVersion) cssVersions.add(cssVersion[1]);
+      if (scriptVersion) scriptVersions.add(scriptVersion[1]);
+    }
+    check(cssVersions.size === 1, `${site}: sampled pages share one stylesheet cache key`);
+    check(scriptVersions.size === 1, `${site}: sampled pages share one Admin Edit cache key`);
+    if (cssVersions.size === 1 && scriptVersions.size === 1) {
+      check([...cssVersions][0] === [...scriptVersions][0], `${site}: stylesheet and Admin Edit cache keys match`);
+    }
   }
   console.log(failures.length ? `\n${failures.length} failure(s)` : "\nAll Admin Edit panel checks passed.");
   process.exitCode = failures.length ? 1 : 0;
