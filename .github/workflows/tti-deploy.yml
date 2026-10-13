@@ -85,7 +85,7 @@ jobs:
           grep -Fq 'The Two Infinities: Eternal Integration of the Self' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
           grep -Fq 'Project Table of Contents' tti/hatchable/public/index.html
-          grep -Fq 'A Working Programme, Not a Finished Theory' tti/hatchable/public/index.html
+          grep -Fq 'Geometry, Integration and the Conditions of Return' tti/hatchable/public/index.html
           grep -Fq 'not a peer-reviewed physical theory' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"research-toc-part\"' tti/hatchable/public/index.html)" -eq 5
           test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 28
@@ -288,7 +288,7 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
                 'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.9',
-                'Project Table of Contents', 'A Working Programme, Not a Finished Theory',
+                'Project Table of Contents', 'Geometry, Integration and the Conditions of Return',
                 'not a peer-reviewed physical theory', 'TTI-I.01', 'TTI-V.04',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',
                 'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',

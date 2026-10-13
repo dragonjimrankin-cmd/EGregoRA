@@ -42,7 +42,7 @@ assert.equal(home("#project-contents .research-toc-part > ol > li").length, 28,
 assert.equal(home("#project-contents .research-toc-code").length, 28,
   "every homepage contents entry needs its stable document code");
 for (const marker of [
-  "Project Table of Contents", "A Working Programme, Not a Finished Theory",
+  "Project Table of Contents", "Geometry, Integration and the Conditions of Return",
   "Independent research project", "Working hypotheses; not a peer-reviewed physical theory",
   "Derive, distinguish, compare, expose failure conditions"
 ]) {
