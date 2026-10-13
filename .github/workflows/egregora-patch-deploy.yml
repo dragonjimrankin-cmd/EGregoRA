@@ -15,6 +15,7 @@ on:
       - "scripts/test-media-upload.mjs"
       - "scripts/test-private-whisper.mjs"
       - "scripts/test-progress-liveness.mjs"
+      - "scripts/test-egregora-infographics.mjs"
       - "scripts/test-avatar-summary.mjs"
       - "scripts/test-speaker-map.mjs"
       - "scripts/test-mobius-spelling.mjs"
@@ -57,12 +58,14 @@ jobs:
           node --check egregora-patch/public/assets/js/oracle-knowledge.js
           node --check egregora-patch/public/assets/js/neural-voice.js
           node --check egregora-patch/public/assets/js/fox.js
+          node --check egregora-patch/public/assets/js/infographics-accordion.js
           node scripts/test-voiceprint.mjs
           node scripts/test-oracle-knowledge.mjs
           node scripts/test-neural-voice.mjs
           node scripts/test-media-upload.mjs
           node scripts/test-private-whisper.mjs
           node scripts/test-progress-liveness.mjs
+          node scripts/test-egregora-infographics.mjs
           node scripts/test-avatar-summary.mjs
           node scripts/test-speaker-map.mjs
           node scripts/test-mobius-spelling.mjs
@@ -76,6 +79,12 @@ jobs:
           test -s egregora-patch/public/assets/js/headtts/LICENSE-Kokoro.txt
           test -s egregora-patch/public/assets/css/avatar-voice.css
           grep -q 'avatar-voice-picker' egregora-patch/public/assets/css/avatar-voice.css
+          grep -q 'One hundred and eleven illustrated plates' egregora-patch/public/infographics/index.html
+          test "$(grep -c 'name=\"infographic-room\"' egregora-patch/public/infographics/index.html)" -eq 13
+          grep -q 'id="info-infographics"' egregora-patch/public/infographics/index.html
+          grep -q '40 drawings' egregora-patch/public/infographics/index.html
+          grep -q '.info-fold\[open\]' egregora-patch/public/assets/css/infographics-accordion.css
+          grep -q 'closeFolds' egregora-patch/public/assets/js/infographics-accordion.js
           grep -q 'Twenty-two prepared answers' egregora-patch/public/ask-ed/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' egregora-patch/public/ask-ed/index.html
           grep -q 'Why can the smaller and bigger infinities never fully synchronise?' egregora-patch/public/ask-ed/index.html
@@ -149,7 +158,7 @@ jobs:
             exit "$STATUS"
           fi
 
-      - name: Verify Gink's live prepared knowledge
+      - name: Verify live infographics and Gink prepared knowledge
         run: |
           node <<'NODE'
           const targets = [
@@ -168,6 +177,23 @@ jobs:
                 'avatar-voice.css?v=prompt-first-1',
                 'fox.js?v=male-voices-3'],
               orderedMarkers: ['class="fox-ask"', 'class="oracle-chat"']
+            },
+            {
+              url: 'https://egregora.hatchable.site/infographics/',
+              markers: ['One hundred and eleven illustrated plates', '111 drawings in thirteen sections',
+                'name="infographic-room"', 'id="info-astrology"', 'id="info-infographics"',
+                '40 drawings', 'infographics-accordion.css?v=exclusive-folds-1',
+                'infographics-accordion.js?v=exclusive-folds-1']
+            },
+            {
+              url: 'https://egregora.hatchable.site/assets/css/infographics-accordion.css',
+              markers: ['.info-fold[open]', '.info-fold-toggle::after',
+                '@media (max-width: 620px)', 'prefers-reduced-motion: reduce']
+            },
+            {
+              url: 'https://egregora.hatchable.site/assets/js/infographics-accordion.js',
+              markers: ['const closeFolds', 'if (fold.open) closeFolds(fold)',
+                'const openFromHash', 'openFold.removeAttribute("open")']
             },
             {
               url: 'https://egregora.hatchable.site/assets/css/avatar-voice.css',
@@ -236,7 +262,7 @@ jobs:
               const voicesDistinct = voiceChecks.length === 6 &&
                 new Set(voiceChecks.map((check) => check.voiceHash)).size === 6;
               if (checks.every((check) => check.current) && voicesDistinct) {
-                console.log('Live Gink chooser, six distinct embeddings, questions and prepared answers verified.');
+                console.log('Live EGregoRA infographics, Gink chooser, six distinct embeddings, questions and prepared answers verified.');
                 process.exit(0);
               }
               detail = checks.map((check) =>

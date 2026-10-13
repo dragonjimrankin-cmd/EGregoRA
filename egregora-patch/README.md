@@ -7,6 +7,12 @@ credential-bearing bundle.
 
 Current patch:
 
+- `public/infographics/index.html`, `public/assets/css/infographics-accordion.css`, and
+  `public/assets/js/infographics-accordion.js` place all 111 drawings inside thirteen
+  numbered, keyboard-operable source sections. The shared native disclosure name
+  and JavaScript fallback allow only one section to remain open; stable hash links,
+  Escape dismissal, mobile layout and reduced-motion behaviour mirror TTI&rsquo;s
+  Plates room without changing EGregoRA&rsquo;s historical shared stylesheet.
 - `public/assets/js/oracle-knowledge.js` updates both Gink and ShakDrah with nineteen
   substantial prepared answers covering The Channeling Circle review, one Prime
   role per universe-instance, the one residue, the universe-as-Möbius-seam model,
