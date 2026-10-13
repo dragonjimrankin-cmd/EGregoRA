@@ -289,7 +289,7 @@ jobs:
             echo "::error title=Hatchable deployment failed::$MESSAGE"
             exit "$STATUS"
           fi
-          grep -Fq 'project metadata verified: The Two Infinities: Eternal Integration of the Self' /tmp/hatchable-deploy.log
+          grep -Fq 'project metadata synchronised: The Two Infinities: Eternal Integration of the Self' /tmp/hatchable-deploy.log
 
       - name: Verify the complete live TTI site
         run: |

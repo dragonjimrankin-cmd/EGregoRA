@@ -27,7 +27,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - Reframed masthead, introduction, footer, figure register and selected page language around working papers, competing models, open derivations and failure conditions without claiming peer review.
 - Retained the exact project title, exact Jim Rankin attribution line, five-Part hierarchy, expandable navigation, all existing papers and resources, the interactive Atlas, plate accordion and avatar functions.
 - Corrected the Hatchable project-level name and description so the platform listing identifies **The Two Infinities** as an independent research project founded by **Jim Rankin**, rather than inheriting EGregoRA metadata.
-- Made project descriptions and deployment records configurable in the shared deployer, with EGregoRA defaults preserved and existing-project metadata updated and read back through Hatchable before each deployment.
+- Made project descriptions and deployment records configurable in the shared deployer, with EGregoRA defaults preserved, metadata updates acknowledged by Hatchable and the existing project read back before each deployment.
 
 ## Wormholes and inverted tori in r4.8
 

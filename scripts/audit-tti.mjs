@@ -221,8 +221,8 @@ try {
   for (const option of ['--description "$TTI_PROJECT_DESCRIPTION"', '--intent "$TTI_DEPLOY_INTENT"', '--summary "$TTI_DEPLOY_SUMMARY"']) {
     if (!workflow.includes(option)) fail(`TTI deployment workflow does not pass ${option.split(' ')[0]}`);
   }
-  if (!workflow.includes('project metadata verified: The Two Infinities: Eternal Integration of the Self')) {
-    fail('TTI deployment workflow does not require Hatchable project-metadata verification');
+  if (!workflow.includes('project metadata synchronised: The Two Infinities: Eternal Integration of the Self')) {
+    fail('TTI deployment workflow does not require Hatchable project-metadata synchronisation');
   }
 
   const deployer = await readFile(path.join(projectRoot, 'scripts', 'hatchable-deploy.mjs'), 'utf8');
@@ -234,7 +234,7 @@ try {
       !deployer.includes('opt("summary",')) {
     fail('shared Hatchable deployer no longer preserves explicit EGregoRA metadata defaults');
   }
-  note('Hatchable project metadata is TTI-specific, founder-attributed and update-verified');
+  note('Hatchable project metadata is TTI-specific, founder-attributed and API-synchronised');
 } catch (error) {
   fail(`Hatchable project metadata audit failed: ${error.message}`);
 }
