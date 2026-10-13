@@ -87,6 +87,17 @@ async function exercise(relative, usePointer) {
 
 (async () => {
   for (let i = 0; i < FILES.length; i++) await exercise(FILES[i], i % 2 === 0);
+  const cacheVersion = "20261013-admin-readable";
+  for (const file of [
+    "hatchable/public/podcast/index.html",
+    "hatchable/public/infographics/index.html",
+    "tti/hatchable/public/podcast/index.html",
+    "tti/hatchable/public/plates/index.html"
+  ]) {
+    const html = fs.readFileSync(path.join(ROOT, file), "utf8");
+    check(new RegExp(`/assets/css/main\\.css\\?v=${cacheVersion}`).test(html), `${file}: updated stylesheet cache key`);
+    check(new RegExp(`/assets/js/admin-edit\\.js\\?v=${cacheVersion}`).test(html), `${file}: updated Admin Edit script cache key`);
+  }
   console.log(failures.length ? `\n${failures.length} failure(s)` : "\nAll Admin Edit panel checks passed.");
   process.exitCode = failures.length ? 1 : 0;
 })();
