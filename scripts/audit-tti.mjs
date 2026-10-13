@@ -12,6 +12,11 @@ const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedPartCount = site.navGroups.length;
+const expectedPageLabels = new Map(site.navGroups.flatMap((group) => group.items.map((item) => [
+  item.url,
+  `Part ${group.part} — ${group.shortLabel} · ${item.label}`
+])));
+const normaliseLabel = (text) => text.replace(/\s+/g, ' ').trim().replace(/’/g, "'");
 const errors = [];
 const notices = [];
 let linkedCardCount = 0;
@@ -77,6 +82,16 @@ for (const file of htmlFiles) {
   const currentLinks = $('#primary-nav a[aria-current="page"]');
   if (currentLinks.length !== expectedCurrent || (expectedCurrent && currentLinks.attr('href') !== urlPath)) {
     fail(`${relative}: current navigation destination is not marked correctly`);
+  }
+  const expectedPageLabel = expectedPageLabels.get(urlPath);
+  if (expectedPageLabel) {
+    const pageLabel = $('main > .page-head > .kicker').first().text();
+    if (!normaliseLabel(pageLabel).startsWith(normaliseLabel(expectedPageLabel))) {
+      fail(`${relative}: page Part label is ${normaliseLabel(pageLabel) || 'missing'}, expected ${expectedPageLabel}`);
+    }
+  }
+  if (/\bPart (?:VI|VII|VIII)\b/.test($('body').text())) {
+    fail(`${relative}: retains an obsolete Part VI, VII or VIII page label`);
   }
   if (html.includes('A Geometry of Existence') || html.includes('A Geometry of the Cosmos')) {
     fail(`${relative}: contains a retired tagline`);

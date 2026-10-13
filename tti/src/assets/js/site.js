@@ -66,6 +66,17 @@
   if (desktopNav.addEventListener) desktopNav.addEventListener("change", resetAtDesktop);
   else if (desktopNav.addListener) desktopNav.addListener(resetAtDesktop);
 
+  /* Hatchable supplies the two account rooms at runtime rather than through
+     Eleventy. Keep their visible page labels in the same Part V vocabulary as
+     the static header and Atlas. */
+  const runtimePartLabels = {
+    "/join/": "Part V \u2014 Reading Rooms \u00b7 Join",
+    "/account/": "Part V \u2014 Reading Rooms \u00b7 Your Account"
+  };
+  const runtimePartLabel = runtimePartLabels[window.location.pathname];
+  const runtimePageKicker = document.querySelector("main > .page-head > .kicker");
+  if (runtimePartLabel && runtimePageKicker) runtimePageKicker.textContent = runtimePartLabel;
+
   /* --- The Plates: one source chapter open at a time ---
    * Modern browsers enforce this through the shared `name` on each details
    * element. The toggle listener is the fallback for older engines, and the

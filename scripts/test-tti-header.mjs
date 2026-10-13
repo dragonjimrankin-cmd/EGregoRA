@@ -62,6 +62,9 @@ assert.match(css, /grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/,
 assert.match(js, /classList\.add\("js-nav"\)/, 'progressive mobile navigation is not armed');
 assert.match(js, /event\.key !== "Escape"/, 'Escape does not close the navigation');
 assert.match(js, /cluster\.open\) closeClusters\(cluster\)/, 'navigation Parts do not close their siblings');
+assert.match(js, /runtimePartLabels/, 'runtime Join and Account page labels are not aligned');
+assert.match(js, /Part V \\u2014 Reading Rooms \\u00b7 Join/, 'Join does not carry the Part V page label');
+assert.match(js, /Part V \\u2014 Reading Rooms \\u00b7 Your Account/, 'Account does not carry the Part V page label');
 
 if (process.argv.includes('--built')) {
   const fixtures = [
@@ -102,6 +105,19 @@ if (process.argv.includes('--built')) {
     assert.equal(currentLinks.length, current ? 1 : 0, `${relative} current-page state is incorrect`);
     if (current) assert.equal(currentLinks.attr('href'), current, `${relative} highlights the wrong destination`);
   }
+
+  for (const [partIndex, part] of expectedParts.entries()) {
+    const group = site.navGroups[partIndex];
+    for (const item of group.items) {
+      if (item.url === '/join/' || item.url === '/account/') continue;
+      const html = await readFile(new URL(`../tti/_site${item.url}index.html`, import.meta.url), 'utf8');
+      const $ = cheerio.load(html);
+      const visible = $('main > .page-head > .kicker').first().text().replace(/\s+/g, ' ').trim().replace(/’/g, "'");
+      const expected = `Part ${part.num} — ${part.title} · ${item.label}`.replace(/’/g, "'");
+      assert.ok(visible.startsWith(expected),
+        `${item.url} page label is ${visible || 'missing'}, expected it to begin ${expected}`);
+    }
+  }
 }
 
-console.log(`TTI header passed: five numbered Parts, ${headerItems.length} unique page subheadings, exact identity, responsive controls and active-page state.`);
+console.log(`TTI header passed: five numbered Parts, ${headerItems.length} unique page subheadings, matching page labels, exact identity, responsive controls and active-page state.`);

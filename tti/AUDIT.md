@@ -2,7 +2,7 @@
 
 **Project:** The Shape of Becoming: Infinity, Gravity and Existence  
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.3
+**Revision:** r4.4
 **Audit date:** 13 October 2026
 
 ## Scope
@@ -15,7 +15,15 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead, the five-path Atlas, all twenty-seven mapped destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching page labels, the five-path Atlas, all twenty-seven mapped destinations and the exclusive plate accordion, runs the custom site audit, and tests the prepared browser-side knowledge corpus.
+
+## Header-aligned page labels in r4.4
+
+- Re-labelled all 25 built destination pages with the same numbered Part, Part title and page title used by the main header and Atlas.
+- Reclassified older chapter-era labels such as Part VI, Part VII and Part VIII into the current five-Part structure without changing the original chapter numbers.
+- Updated visible next-page references and Part-bearing metadata descriptions so they no longer contradict the main navigation.
+- Added client-side alignment for the Hatchable-provided Join and Account rooms: **Part V &mdash; Reading Rooms &middot; Join** and **Part V &mdash; Reading Rooms &middot; Your Account**.
+- Extended the header regression and complete site audit to derive every expected page label from the canonical header data and reject obsolete Part VI&ndash;VIII labels.
 
 ## Five-Part header in r4.3
 
@@ -70,6 +78,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - 26 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
 - Five numbered masthead Parts expose 27 unique page subheadings from the shared Atlas data, with active-page state, mobile controls and keyboard dismissal verified.
+- All 25 built destination pages carry the matching header Part and page title; runtime Join and Account labels are aligned to Part V.
 - The introduction Atlas has five TTI-specific reading paths and the same 27 unique destinations, including all 25 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
 - Twenty-one mutually exclusive plate headings contain all 31 gathered vectors; the former bullet index is absent.
 - Every local document, asset and fragment link verified.
