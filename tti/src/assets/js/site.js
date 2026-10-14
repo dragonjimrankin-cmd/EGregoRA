@@ -66,10 +66,10 @@
   if (desktopNav.addEventListener) desktopNav.addEventListener("change", resetAtDesktop);
   else if (desktopNav.addListener) desktopNav.addListener(resetAtDesktop);
 
-  /* The complete archive is a native details disclosure for keyboard and touch
-     readers. On desktop its large six-Part panel also opens on deliberate
-     pointer hover; a short leave delay lets the pointer cross into the panel
-     without collapsing it. */
+  /* Every conjecture programme and the supporting archive is a native details
+     disclosure for keyboard and touch readers. On desktop each panel also
+     opens on deliberate pointer hover; a short leave delay lets the pointer
+     cross into the panel without collapsing it. */
   clusters.forEach((cluster) => {
     let hoverCloseTimer = 0;
     cluster.addEventListener("pointerenter", () => {

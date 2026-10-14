@@ -5099,9 +5099,9 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 /* ===========================================================================
    r6.0 — Fundamental conjectures
    ---------------------------------------------------------------------------
-   The public rail and introduction now privilege three load-bearing ideas.
-   The complete six-Part record remains one action away in a full archive
-   panel and on its own canonical archive page.
+   The public rail and introduction privilege three load-bearing ideas, with
+   Parts I–III integrated beneath them. Parts IV–VI occupy the supporting
+   panel; the complete six-Part record remains on its canonical archive page.
    ======================================================================== */
 .site-nav-shell {
   display: grid;
@@ -5118,8 +5118,9 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 .focus-nav-link {
   min-width: 0;
   min-height: 48px;
-  padding: 0.36rem 0.72rem;
+  padding: 0.36rem 1.45rem 0.36rem 0.72rem;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 0.62rem;
@@ -5179,6 +5180,30 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   text-overflow: clip;
   white-space: normal;
   text-wrap: balance;
+}
+.focus-cluster { min-width: 0; }
+.focus-panel {
+  width: min(460px, calc(100vw - 2rem));
+}
+.focus-panel-head h2 {
+  margin: 0.18rem 0 0.34rem;
+  color: var(--gold-bright);
+  font-size: 0.82rem;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.site-nav .focus-panel ul {
+  grid-template-columns: 1fr;
+}
+.focus-panel .focus-doc-code {
+  margin: 0 0 0.12rem;
+  color: var(--verdant);
+  font-family: var(--title);
+  font-size: 0.48rem;
+  line-height: 1.3;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
 }
 .nav-actions--focus {
   padding: 0.22rem 0;
@@ -5255,7 +5280,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 .archive-part-grid {
   margin-top: 0.72rem;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.45rem;
 }
 .archive-part {
@@ -5552,6 +5577,104 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 }
 .focus-primary-link:hover span { transform: translateX(4px); }
 .focus-primary-link span { color: var(--verdant); transition: transform 150ms ease; }
+.focus-programme {
+  max-width: 900px;
+  margin-top: 2.6rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(118, 207, 238, 0.2);
+}
+.focus-programme-head {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.55fr) minmax(260px, 1.45fr);
+  gap: 0.25rem 1.5rem;
+  align-items: start;
+}
+.focus-programme-head .kicker {
+  grid-column: 1;
+  margin: 0.18rem 0 0;
+}
+.focus-programme-head h3 {
+  grid-column: 2;
+  margin: 0;
+  color: var(--gold-bright);
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  line-height: 1.25;
+}
+.focus-programme-head > p:last-child {
+  grid-column: 2;
+  max-width: 70ch;
+  margin: 0.25rem 0 0;
+  color: #8f9cba;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.focus-programme-documents {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(118, 207, 238, 0.12);
+}
+.focus-programme-documents li {
+  margin: 0;
+  border-bottom: 1px solid rgba(118, 207, 238, 0.1);
+}
+.focus-programme-documents a {
+  min-width: 0;
+  padding: 0.8rem 0.35rem;
+  display: grid;
+  grid-template-columns: 5.4rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.9rem;
+  color: inherit;
+  text-decoration: none;
+  transition: background 150ms ease, padding-inline 150ms ease;
+}
+.focus-programme-documents a:hover,
+.focus-programme-documents a:focus-visible {
+  padding-inline: 0.7rem;
+  background: linear-gradient(90deg, rgba(118, 207, 238, 0.075), transparent);
+  outline: none;
+}
+.focus-programme-code {
+  padding-top: 0.18rem;
+  color: var(--verdant);
+  font-family: var(--title);
+  font-size: 0.56rem;
+  line-height: 1.35;
+  letter-spacing: 0.08em;
+}
+.focus-programme-copy,
+.focus-programme-copy strong,
+.focus-programme-copy small,
+.focus-programme-copy > span { display: block; }
+.focus-programme-copy { min-width: 0; }
+.focus-programme-copy strong {
+  color: #e4ebfa;
+  font-family: var(--title);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+.focus-programme-copy small {
+  margin-top: 0.16rem;
+  color: var(--amethyst);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+.focus-programme-copy > span {
+  margin-top: 0.28rem;
+  color: #8f9cba;
+  font-size: 0.88rem;
+  line-height: 1.48;
+}
+.focus-programme-arrow {
+  padding-top: 0.12rem;
+  color: var(--gold);
+  transition: transform 150ms ease;
+}
+.focus-programme-documents a:hover .focus-programme-arrow,
+.focus-programme-documents a:focus-visible .focus-programme-arrow { transform: translateX(3px); }
 .focus-related {
   max-width: 820px;
   margin: 2rem 0 0;
@@ -5706,6 +5829,18 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   .focus-pillar { min-height: 0; grid-template-columns: 1fr; padding-block: 4.5rem; }
   .focus-pillar-number { font-size: 6.5rem; }
   .focus-pillar::after { width: 75%; opacity: 0.7; }
+  .focus-programme-head { grid-template-columns: 1fr; }
+  .focus-programme-head .kicker,
+  .focus-programme-head h3,
+  .focus-programme-head > p:last-child { grid-column: 1; }
+  .focus-programme-head h3 { margin-top: 0.2rem; }
+  .focus-programme-documents a {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.32rem 0.65rem;
+  }
+  .focus-programme-code,
+  .focus-programme-copy { grid-column: 1; }
+  .focus-programme-arrow { grid-column: 2; grid-row: 1 / 3; }
   .focus-related { display: grid; grid-template-columns: 1fr 1fr; }
   .focus-archive { grid-template-columns: 1fr; text-align: left; }
   .focus-archive-mark { width: 6rem; }

@@ -6,14 +6,14 @@ import ttiAtlas from "./ttiAtlas.js";
  * James Alexander Matthew Rankin began the framework between 2 and 19 June
  * 2026. Revision r6.0 reorganises the public site around the framework's three
  * fundamental conjectural structures: eternal integration, the Rankin Skeletal
- * Splice, and Part III's seams and return. The complete six-Part corpus remains
- * available in a separate research archive, together with the Atlas, Plates,
- * Oracle, long-form syntheses and correction records. Every document keeps its
- * stable code, evidence boundary and canonical place in the archive.
+ * Splice, and Part III's seams and return. Parts I–III now sit directly beneath
+ * those conjectures; Parts IV–VI supply tests, reader tools and mathematical
+ * audit. The complete six-Part corpus remains available in the canonical
+ * archive with its Atlas, Plates, long-form syntheses and correction records.
  */
-/* The masthead archive, canonical contents and interactive Atlas all consume
-   the same data. Three conjectures lead the public rail; every Part and every
-   document keeps a stable position inside the complete archive. */
+/* The masthead, canonical contents and interactive Atlas all consume the same
+   data. Three conjectures own Parts I–III in the public rail; every Part and
+   every document keeps a stable position inside the complete archive. */
 const glyphByRoute = Object.freeze({
   "/foundations/": "sphere",
   "/pi-from-zero-and-one/": "sphere",
@@ -59,6 +59,7 @@ const navGroups = ttiAtlas.limbs.map((part) => ({
     url: destination.href,
     label: destination.title,
     note: destination.note,
+    aim: destination.note,
     code: destination.code,
     kind: destination.kind,
     status: destination.status,
@@ -82,6 +83,56 @@ const researchStudyCount = navGroups
   .filter((group) => group.part !== "V")
   .reduce((total, group) => total + group.items.length, 0);
 const researchResourceCount = resourceGroup ? resourceGroup.items.length : 0;
+const integratedNavGroups = navGroups.slice(0, 3);
+const supportingNavGroups = navGroups.slice(3);
+
+/* Parts I–III are no longer a parallel taxonomy competing with the public
+   conjectures. Each is the complete research programme beneath the conjecture
+   it develops. Parts IV–VI remain the supporting test, reader and audit record. */
+const focusBlueprints = [
+  {
+    key: "integration",
+    part: "I",
+    numeral: "I",
+    eyebrow: "First principle",
+    label: "Eternal Integration",
+    url: "/foundations/",
+    note: "Why the framework proposes that selfhood persists by integrating, differentiating and integrating again rather than terminating at a final state.",
+    equation: "I_{n+1}=\\mathcal{R}(I_n,D_n)"
+  },
+  {
+    key: "splice",
+    part: "II",
+    numeral: "II",
+    eyebrow: "Generative mechanism",
+    label: "The Rankin Skeletal Splice",
+    url: "/skeletal-splice/",
+    note: "The proposed fork at each density threshold: one branch continues, one returns, while the fixed skeleton of minus one, nought and one supplies the frame.",
+    equation: "P_n=F_{n+2}-1"
+  },
+  {
+    key: "return",
+    part: "III",
+    numeral: "III",
+    eyebrow: "Topology of return",
+    label: "Seams and Return",
+    url: "/seams/",
+    note: "How Möbius seams, temporal antipodes, residue, inverted toruses and wormhole analogies are used to imagine return without a terminal edge.",
+    equation: "(x,0)\\sim(1-x,1)"
+  }
+];
+
+const focusAreas = focusBlueprints.map((focus) => {
+  const group = navGroups.find((candidate) => candidate.part === focus.part);
+  if (!group) throw new Error(`Missing research Part ${focus.part} for ${focus.label}`);
+  return {
+    ...focus,
+    partTitle: group.shortLabel,
+    partLabel: group.label,
+    partNote: group.note,
+    documents: group.items
+  };
+});
 
 /* Plates and Ask ShakDrah sit beneath Part V with the other project resources
    instead of being duplicated as detached actions beside the six Parts. */
@@ -124,56 +175,14 @@ export default {
   ogImage: "/assets/img/og-two-infinities.jpg",
   ogImageAlt: "A luminous torus of stars, with a spiral climbing from a bright centre",
   motto: "Nothing is geometrically impossible.",
-  focusAreas: [
-    {
-      key: "integration",
-      numeral: "I",
-      eyebrow: "First principle",
-      label: "Eternal Integration",
-      url: "/foundations/",
-      note: "Why the framework proposes that selfhood persists by integrating, differentiating and integrating again rather than terminating at a final state.",
-      equation: "I_{n+1}=\\mathcal{R}(I_n,D_n)",
-      links: [
-        { label: "Foundations", url: "/foundations/" },
-        { label: "The self that integrates", url: "/the-self/" },
-        { label: "Entropy and self-disintegration", url: "/entropy-and-self-renewal/" },
-        { label: "Cosmic ratios through time", url: "/cosmic-ratio-in-time/" }
-      ]
-    },
-    {
-      key: "splice",
-      numeral: "II",
-      eyebrow: "Generative mechanism",
-      label: "The Rankin Skeletal Splice",
-      url: "/skeletal-splice/",
-      note: "The proposed fork at each density threshold: one branch continues, one returns, while the fixed skeleton of minus one, nought and one supplies the frame.",
-      equation: "P_n=F_{n+2}-1",
-      links: [
-        { label: "The Rankin Skeletal Splice", url: "/skeletal-splice/" },
-        { label: "Recursive spiral", url: "/spiral/" },
-        { label: "The Prime Plane", url: "/prime-plane/" },
-        { label: "Riemann Programme", url: "/riemann-programme/" }
-      ]
-    },
-    {
-      key: "return",
-      numeral: "III",
-      eyebrow: "Topology of return",
-      label: "Seams and Return",
-      url: "/seams/",
-      note: "How Möbius seams, temporal antipodes, residue, inverted toruses and wormhole analogies are used to imagine return without a terminal edge.",
-      equation: "(x,0)\\sim(1-x,1)",
-      links: [
-        { label: "Seams and Return", url: "/seams/" },
-        { label: "The Möbius Bridge", url: "/moebius/" },
-        { label: "Temporal antipodes", url: "/temporal-antipodes/" },
-        { label: "Time and residue", url: "/time-and-residue/" }
-      ]
-    }
-  ],
+  focusAreas,
 
-  /* The complete six-Part corpus now lives in the Research Archive while
-     `nav` remains the complete flat list for the footer and audits. */
+  /* Parts I–III are integrated beneath their conjectures in the public
+     journey; Parts IV–VI remain the supporting archive. `navGroups` and `nav`
+     still retain the complete canonical six-Part corpus for the archive,
+     Atlas, research drawer, footer and audits. */
+  integratedNavGroups,
+  supportingNavGroups,
   navGroups,
   navActions,
   nav: [...navGroups.flatMap((group) => group.items), ...navActions],

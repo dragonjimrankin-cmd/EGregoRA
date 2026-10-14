@@ -156,7 +156,10 @@ jobs:
           grep -q 'Folded back to the six reading paths' tti/hatchable/public/assets/js/atlas.js
           test "$(grep -c 'class="focus-nav-link ' tti/hatchable/public/index.html)" -eq 3
           test "$(grep -c 'class="nav-cluster nav-archive"' tti/hatchable/public/index.html)" -eq 1
-          test "$(grep -c 'data-archive-document' tti/hatchable/public/index.html)" -eq 34
+          test "$(grep -c 'data-focus-document' tti/hatchable/public/index.html)" -eq 21
+          test "$(grep -c 'data-archive-document' tti/hatchable/public/index.html)" -eq 13
+          test "$(grep -c 'data-research-document' tti/hatchable/public/index.html)" -eq 34
+          test "$(grep -c 'data-focus-programme-document' tti/hatchable/public/index.html)" -eq 21
           grep -q 'class="nav-actions nav-actions--focus"' tti/hatchable/public/index.html
           grep -q 'Part I' tti/hatchable/public/index.html
           grep -q 'First Principles' tti/hatchable/public/index.html
@@ -236,6 +239,8 @@ jobs:
           grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.04 \u00b7 Your Account' tti/hatchable/public/assets/js/site.js
           grep -q 'r6.0 — Fundamental conjectures' tti/hatchable/public/assets/css/main.css
           grep -q '.focus-nav' tti/hatchable/public/assets/css/main.css
+          grep -q '.focus-panel' tti/hatchable/public/assets/css/main.css
+          grep -q '.focus-programme' tti/hatchable/public/assets/css/main.css
           grep -q '.archive-panel' tti/hatchable/public/assets/css/main.css
           grep -q '.plate-accordion-group' tti/hatchable/public/assets/css/main.css
           grep -q '.atlas-grid' tti/hatchable/public/assets/css/main.css
@@ -427,8 +432,10 @@ jobs:
                 'Eternal Integration', 'The Rankin Skeletal Splice', 'Seams and Return',
                 'Integration differentiates. The splice routes. The seam returns.',
                 'The complete research programme remains open', 'Research Archive',
+                'Integrated research programme', 'data-focus-programme-document',
                 'class="focus-nav-link ', 'class="nav-cluster nav-archive"',
-                'TTI-I.01', 'TTI-V.04', 'Part I', 'First Principles',
+                'data-focus-document', 'data-archive-document', 'data-research-document',
+                'Parts IV–VI', 'TTI-I.01', 'TTI-V.04', 'Part I', 'First Principles',
                 'Part II', 'Cosmic Architecture', 'Part III',
                 'Part IV', 'Tests and Essays', 'Part V', 'Reading Rooms',
                 'Part VI', 'Riemann Programme', 'TTI-VI.03',
@@ -708,9 +715,9 @@ jobs:
               markers: ['r6.0 — Fundamental conjectures', '.focus-nav', '.focus-nav-link',
                 '.nav-archive', '.archive-panel', '.archive-part-grid',
                 '.js-nav .site-nav.open', 'position: sticky',
-                '.focus-nav-link:hover .focus-nav-copy strong',
-                'grid-template-columns: repeat(6, minmax(0, 1fr))',
-                '.focus-hero', '.focus-pillar', '.focus-synthesis', '.focus-archive',
+                '.focus-nav-link:hover .focus-nav-copy strong', '.focus-panel',
+                'grid-template-columns: repeat(3, minmax(0, 1fr))',
+                '.focus-hero', '.focus-pillar', '.focus-programme', '.focus-synthesis', '.focus-archive',
                 '.plate-accordion-group[open]', '.plate-group-toggle::after',
                 '.atlas-grid', 'body.atlas-focused',
                 '#atlas-box.is-focused']

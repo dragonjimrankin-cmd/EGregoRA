@@ -79,7 +79,7 @@ description: "The Two Infinities: Eternal Integration of the Self — Jim Rankin
     <p class="kicker">The public argument</p>
     <h2 id="focus-intro-title">Three conjectures carry the framework</h2>
   </div>
-  <p class="lede muted">The site no longer asks every paper to compete for first attention. Begin with the proposed persistence of integration, move through the splice that differentiates its path, then ask how a returning path could re-enter without an absolute end.</p>
+  <p class="lede muted">Each conjecture now carries its complete research Part beneath it: First Principles develops integration, Cosmic Architecture develops the splice, and Seams and Return develops the topology of return. Read them in that sequence, or open any coded study directly.</p>
 </section>
 
 <section class="focus-pillars wrap wide" aria-label="The three fundamental conjectures">
@@ -100,12 +100,30 @@ description: "The Two Infinities: Eternal Integration of the Self — Jim Rankin
           <p>The Möbius identification \((x,0)\sim(1-x,1)\) is established topology. Using it as an analogue for cosmic or temporal return is the speculative move—and the archive keeps that distinction visible.</p>
         {% endif %}
         <p class="focus-equation" aria-label="Representative expression">\[{{ focus.equation }}\]</p>
-        <a class="focus-primary-link" href="{{ focus.url }}">Read the principal study <span aria-hidden="true">→</span></a>
-        <ul class="focus-related" aria-label="Related studies">
-          {% for link in focus.links %}
-            <li><a href="{{ link.url }}">{{ link.label }}</a></li>
-          {% endfor %}
-        </ul>
+        <a class="focus-primary-link" href="{{ focus.url }}">Begin with the central study <span aria-hidden="true">→</span></a>
+
+        <section class="focus-programme" aria-labelledby="focus-programme-{{ focus.part }}">
+          <header class="focus-programme-head">
+            <p class="kicker">Integrated research programme</p>
+            <h3 id="focus-programme-{{ focus.part }}">Part {{ focus.part }} · {{ focus.partTitle }}</h3>
+            <p>{{ focus.partNote }}</p>
+          </header>
+          <ol class="focus-programme-documents">
+            {% for item in focus.documents %}
+              <li>
+                <a data-focus-programme-document href="{{ item.url }}">
+                  <span class="focus-programme-code">{{ item.code }}</span>
+                  <span class="focus-programme-copy">
+                    <strong>{{ item.label }}</strong>
+                    <small>{{ item.kind }} · {{ item.status }}</small>
+                    <span>{{ item.note }}</span>
+                  </span>
+                  <span class="focus-programme-arrow" aria-hidden="true">→</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ol>
+        </section>
       </div>
     </article>
   {% endfor %}
@@ -137,7 +155,7 @@ description: "The Two Infinities: Eternal Integration of the Self — Jim Rankin
   <div>
     <p class="kicker">Nothing removed</p>
     <h2 id="focus-archive-title">The complete research programme remains open</h2>
-    <p class="lede muted">The six-Part structure, {{ site.research.documentCount }} studies, {{ site.research.resourceCount }} project resources, Part syntheses, Plates, Riemann dossier, observational programmes and revision record are preserved in the Research Archive.</p>
+    <p class="lede muted">Parts I–III are integrated above beneath their governing conjectures. Parts IV–VI provide tests, essays, reader resources and the Riemann audit; the complete six-Part sequence, {{ site.research.documentCount }} studies and {{ site.research.resourceCount }} project resources remain preserved in the Research Archive.</p>
   </div>
   <div class="focus-archive-actions">
     <a class="btn btn--primary" href="/archive/">Browse all six Parts</a>

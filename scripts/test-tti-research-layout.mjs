@@ -15,6 +15,14 @@ const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
 assert.equal(site.revision, "r6.0", "the focus-first layout must carry revision r6.0");
 assert.equal(site.edition, "Fundamental conjectures edition", "the edition label drifted");
 assert.equal(site.focusAreas.length, 3, "the public edition must retain exactly three fundamental conjectures");
+assert.deepEqual(site.integratedNavGroups.map((group) => group.part), ["I", "II", "III"],
+  "Parts I–III must be the integrated conjecture programmes");
+assert.deepEqual(site.supportingNavGroups.map((group) => group.part), ["IV", "V", "VI"],
+  "Parts IV–VI must remain the supporting research record");
+assert.ok(site.focusAreas.every((focus, index) =>
+  focus.part === site.integratedNavGroups[index].part &&
+  focus.documents === site.integratedNavGroups[index].items),
+"each conjecture must own its complete canonical research Part");
 assert.equal(site.research.documentCount, 30, "research study count drifted");
 assert.equal(site.research.resourceCount, 4, "project resource count drifted");
 assert.match(site.research.status, /not a peer-reviewed physical theory/i,
@@ -46,6 +54,12 @@ assert.equal(home(".focus-pillar").length, 3,
 assert.deepEqual(home(".focus-pillar h2").map((_, element) => home(element).text().trim()).get(),
   ["Eternal Integration", "The Rankin Skeletal Splice", "Seams and Return"],
   "the public conjecture sequence drifted");
+assert.deepEqual(home(".focus-programme-head h3").map((_, element) => home(element).text().trim()).get(),
+  ["Part I · First Principles", "Part II · Cosmic Architecture", "Part III · Seams and Return"],
+  "Parts I–III are not subheadings beneath the matching conjectures");
+assert.deepEqual(home("[data-focus-programme-document]").map((_, element) => home(element).attr("href")).get(),
+  site.integratedNavGroups.flatMap((group) => group.items.map((item) => item.url)),
+  "homepage integrated research programmes are incomplete or out of order");
 assert.equal(home(".focus-status").text().trim(), "Working hypotheses",
   "the public research-status display must read exactly Working hypotheses");
 for (const marker of [

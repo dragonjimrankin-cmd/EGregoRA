@@ -12,7 +12,9 @@ const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
 const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return, mathematical proof auditing and testable failure conditions across thirty studies and four project resources.';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
-const expectedArchiveRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
+const expectedResearchRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
+const expectedIntegratedRoutes = site.integratedNavGroups.flatMap((group) => group.items.map((item) => item.url));
+const expectedSupportingRoutes = site.supportingNavGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedFocusRoutes = site.focusAreas.map((focus) => focus.url);
 const expectedPartCount = site.navGroups.length;
 const essayDocuments = site.navGroups
@@ -83,25 +85,33 @@ for (const file of htmlFiles) {
 
   if (!$('.brand-name').text().includes(expectedTitle)) fail(`${relative}: masthead is missing the exact project title`);
   if (!$('.brand-tag').text().includes(expectedTagline)) fail(`${relative}: masthead is missing the exact tagline`);
-  if ($('#primary-nav .focus-nav-link').length !== 3) {
-    fail(`${relative}: header does not foreground exactly three conjectures`);
+  if ($('#primary-nav .focus-cluster').length !== 3 || $('#primary-nav .focus-nav-link').length !== 3) {
+    fail(`${relative}: header does not foreground exactly three conjecture disclosures`);
   }
-  const focusRoutes = $('#primary-nav .focus-nav-link').map((_, element) => $(element).attr('href')).get();
+  const focusRoutes = $('#primary-nav .focus-nav-link').map((_, element) => $(element).attr('data-focus-route')).get();
   if (JSON.stringify(focusRoutes) !== JSON.stringify(expectedFocusRoutes)) {
-    fail(`${relative}: focus destinations or ordering drifted`);
+    fail(`${relative}: principal focus destinations or ordering drifted`);
   }
-  if ($('#primary-nav .nav-archive').length !== 1 || $('#primary-nav .archive-part').length !== expectedPartCount) {
-    fail(`${relative}: header archive does not expose all ${expectedPartCount} numbered Parts`);
+  const integratedRoutes = $('#primary-nav [data-focus-document]').map((_, element) => $(element).attr('href')).get();
+  if (JSON.stringify(integratedRoutes) !== JSON.stringify(expectedIntegratedRoutes)) {
+    fail(`${relative}: Parts I–III are not completely integrated beneath the three conjectures`);
   }
-  const archiveRoutes = $('#primary-nav [data-archive-document]').map((_, element) => $(element).attr('href')).get();
-  if (JSON.stringify(archiveRoutes) !== JSON.stringify(expectedArchiveRoutes)) {
-    fail(`${relative}: archive destinations or ordering drifted`);
+  if ($('#primary-nav .nav-archive').length !== 1 || $('#primary-nav .archive-part').length !== 3) {
+    fail(`${relative}: supporting archive does not expose Parts IV–VI`);
   }
-  if (new Set(archiveRoutes).size !== expectedArchiveRoutes.length) fail(`${relative}: archive repeats a destination`);
+  const supportingRoutes = $('#primary-nav [data-archive-document]').map((_, element) => $(element).attr('href')).get();
+  if (JSON.stringify(supportingRoutes) !== JSON.stringify(expectedSupportingRoutes)) {
+    fail(`${relative}: supporting archive destinations or ordering drifted`);
+  }
+  const researchRoutes = $('#primary-nav [data-research-document]').map((_, element) => $(element).attr('href')).get();
+  if (JSON.stringify(researchRoutes) !== JSON.stringify(expectedResearchRoutes)) {
+    fail(`${relative}: header does not expose all ${expectedPartCount} Parts in canonical order`);
+  }
+  if (new Set(researchRoutes).size !== expectedResearchRoutes.length) fail(`${relative}: header repeats a research destination`);
   if (!$('.nav-toggle[aria-controls="primary-nav"][aria-expanded="false"]').length) {
     fail(`${relative}: mobile navigation toggle is not wired to the primary navigation`);
   }
-  const expectedCurrentUrl = urlPath === '/archive/' ? '/archive/' : (expectedArchiveRoutes.includes(urlPath) ? urlPath : null);
+  const expectedCurrentUrl = urlPath === '/archive/' ? '/archive/' : (expectedResearchRoutes.includes(urlPath) ? urlPath : null);
   const currentLinks = $('#primary-nav a[aria-current="page"]');
   if (currentLinks.length !== (expectedCurrentUrl ? 1 : 0) ||
       (expectedCurrentUrl && currentLinks.attr('href') !== expectedCurrentUrl)) {
@@ -209,12 +219,16 @@ if (!home) {
   if (focusPillars.find('.focus-equation').length !== 3) {
     fail('every fundamental conjecture must display its representative expression');
   }
-  for (const href of [
-    '/foundations/', '/the-self/', '/entropy-and-self-renewal/', '/cosmic-ratio-in-time/',
-    '/skeletal-splice/', '/spiral/', '/prime-plane/', '/riemann-programme/',
-    '/seams/', '/moebius/', '/temporal-antipodes/', '/time-and-residue/'
-  ]) {
-    if (!focusPillars.find(`a[href="${href}"]`).length) fail(`fundamental conjectures do not expose ${href}`);
+  const programmes = focusPillars.find('.focus-programme');
+  if (programmes.length !== 3) fail(`homepage integrates ${programmes.length} of 3 research Parts`);
+  const programmeHeadings = programmes.find('.focus-programme-head h3').map((_, element) => home.$(element).text().trim()).get();
+  if (JSON.stringify(programmeHeadings) !== JSON.stringify([
+    'Part I · First Principles', 'Part II · Cosmic Architecture', 'Part III · Seams and Return'
+  ])) fail('homepage integrated Part subheadings drifted');
+  const programmeRoutes = programmes.find('[data-focus-programme-document]')
+    .map((_, element) => home.$(element).attr('href')).get();
+  if (JSON.stringify(programmeRoutes) !== JSON.stringify(expectedIntegratedRoutes)) {
+    fail('homepage conjectures do not expose every Part I–III document in canonical order');
   }
 }
 const archive = documents.get('/archive/');
