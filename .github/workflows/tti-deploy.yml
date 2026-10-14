@@ -263,8 +263,11 @@ jobs:
           grep -q '.frame::before' tti/hatchable/public/assets/css/r35-baseline.css
           grep -q '.hero' tti/hatchable/public/assets/css/r35-baseline.css
           grep -q '.site-head--reference .reference-nav-list' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q '.site-head--reference .reference-nav-overview-row > ul' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.site-head--reference .reference-part-row' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.site-head--reference .reference-part-documents' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q 'justify-content: flex-end' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q 'justify-content: flex-start' tti/hatchable/public/assets/css/r35-integration.css
           grep -q 'flex-wrap: nowrap' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.reference-nav-list a:hover' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.focus-programme-summary' tti/hatchable/public/assets/css/r35-integration.css
@@ -764,7 +767,8 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/assets/css/r35-integration.css',
               markers: ['r3.5 — CURRENT CORPUS INTEGRATION',
                 '.site-head--reference .reference-nav-list', '.reference-nav-list a:hover',
-                '.reference-part-row', '.reference-part-documents', 'flex-wrap: nowrap',
+                '.reference-nav-overview-row > ul', '.reference-part-row', '.reference-part-documents',
+                'justify-content: flex-end', 'justify-content: flex-start', 'flex-wrap: nowrap',
                 '.reference-part-label', '.brand-essence', '.focus-programme-summary',
                 'body *', 'overflow-wrap: normal', 'word-break: normal', 'hyphens: none'],
               forbiddenMarkers: ['overflow-wrap: anywhere', 'overflow-wrap: break-word',

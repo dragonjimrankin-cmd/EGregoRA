@@ -83,17 +83,20 @@ assert.match(headerSource, /href="\/archive\/"/, "complete Research Index is abs
 assert.match(headerSource, /aria-controls="primary-nav"/, "mobile toggle is not linked to the primary navigation");
 
 /* The desktop index mirrors the reference while assigning every Part and its
-   papers to one deliberate row. Links expand on hover without truncating or
-   splitting words. */
+   papers to one deliberate, left-aligned row. The two overview destinations
+   sit at the right. Links expand on hover without truncating or splitting. */
 assert.match(r35Integration,
   /\.site-head--reference \.reference-nav-list\s*\{[^}]*display:\s*grid;/s,
   "reference masthead does not establish one-dimensional Part rows");
 assert.match(r35Integration,
-  /\.site-head--reference \.reference-part-row\s*\{[^}]*display:\s*flex;[^}]*justify-content:\s*center;/s,
-  "each desktop Part is not centred on a row of its own");
+  /\.site-head--reference \.reference-nav-overview-row > ul\s*\{[^}]*justify-content:\s*flex-end;/s,
+  "Summary and Research Index are not aligned to the right");
 assert.match(r35Integration,
-  /\.site-head--reference \.reference-part-documents\s*\{[^}]*flex:\s*0 1 auto;[^}]*flex-wrap:\s*nowrap;/s,
-  "a desktop Part's paper links may break across multiple rows");
+  /\.site-head--reference \.reference-part-row\s*\{[^}]*display:\s*flex;[^}]*justify-content:\s*flex-start;/s,
+  "each desktop Part is not left-aligned on a row of its own");
+assert.match(r35Integration,
+  /\.site-head--reference \.reference-part-documents\s*\{[^}]*flex:\s*0 1 auto;[^}]*justify-content:\s*flex-start;[^}]*flex-wrap:\s*nowrap;/s,
+  "a desktop Part's paper links are not kept left-aligned on one row");
 const linkRule = r35Integration.match(/\.site-head--reference \.reference-nav-list a\s*\{([^}]*)\}/)?.[1] || "";
 assert.match(linkRule, /text-overflow:\s*clip;/, "masthead labels may still be truncated");
 assert.match(linkRule, /white-space:\s*nowrap;/, "desktop masthead labels are not kept whole");
