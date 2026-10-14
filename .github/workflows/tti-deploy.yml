@@ -231,10 +231,12 @@ jobs:
           grep -q 'closePlateGroups' tti/hatchable/public/assets/js/site.js
           grep -q 'openPlateFromHash' tti/hatchable/public/assets/js/site.js
           grep -q 'runtimePartLabels' tti/hatchable/public/assets/js/site.js
+          grep -Fq 'cluster.addEventListener("pointerenter"' tti/hatchable/public/assets/js/site.js
           grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.03 \u00b7 Join' tti/hatchable/public/assets/js/site.js
           grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.04 \u00b7 Your Account' tti/hatchable/public/assets/js/site.js
-          grep -q 'Navigation observatory' tti/hatchable/public/assets/css/main.css
-          grep -q '.nav-panel' tti/hatchable/public/assets/css/main.css
+          grep -q 'r6.0 — Fundamental conjectures' tti/hatchable/public/assets/css/main.css
+          grep -q '.focus-nav' tti/hatchable/public/assets/css/main.css
+          grep -q '.archive-panel' tti/hatchable/public/assets/css/main.css
           grep -q '.plate-accordion-group' tti/hatchable/public/assets/css/main.css
           grep -q '.atlas-grid' tti/hatchable/public/assets/css/main.css
           grep -q 'body.atlas-focused' tti/hatchable/public/assets/css/main.css
@@ -285,7 +287,8 @@ jobs:
           ! grep -q 'A final, all-encompassing accessible synthesis' tti/hatchable/public/index.html
           ! grep -q 'class="wrap narrow longform-synthesis final-synthesis"' tti/hatchable/public/index.html
           ! grep -q 'href="#longform-the-two-infinities-eternal-integration-of-the-self"' tti/hatchable/public/index.html
-          grep -q 'A Reader&rsquo;s Contract' tti/hatchable/public/index.html
+          ! grep -q 'A Reader&rsquo;s Contract' tti/hatchable/public/index.html
+          grep -q 'A Reader&rsquo;s Contract' tti/hatchable/public/archive/index.html
           test "$(grep -R -l 'class="wrap narrow editorial-guide reveal"' tti/hatchable/public --include='index.html' | wc -l)" -eq 32
           grep -q 'does not manufacture i from π' tti/hatchable/public/foundations/index.html
           grep -q 'real-arithmetic formulations' tti/hatchable/public/foundations/index.html
