@@ -12,8 +12,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const builtRoot = path.join(root, "tti", "_site");
 const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
 
-assert.equal(site.revision, "r6.0", "the focus-first layout must carry revision r6.0");
-assert.equal(site.edition, "Fundamental conjectures edition", "the edition label drifted");
+assert.equal(site.revision, "r3.5", "the restored reading room must identify revision r3.5");
+assert.equal(site.edition, "Integrated r3.5 research edition", "the integrated r3.5 edition label drifted");
 assert.equal(site.focusAreas.length, 3, "the public edition must retain exactly three fundamental conjectures");
 assert.deepEqual(site.integratedNavGroups.map((group) => group.part), ["I", "II", "III"],
   "Parts I–III must be the integrated conjecture programmes");
@@ -63,10 +63,17 @@ assert.deepEqual(home("[data-focus-programme-document]").map((_, element) => hom
 assert.equal(home(".focus-status").text().trim(), "Working hypotheses",
   "the public research-status display must read exactly Working hypotheses");
 for (const marker of [
-  "Three conjectures carry the framework", "Integration differentiates. The splice routes. The seam returns.",
-  "Nothing removed", "The complete research programme remains open"
+  "The Question Physics Does Not Touch", "The Complete Public Argument",
+  "The Chain of Necessity", "Everything It Puts Under One Roof",
+  "Where the Framework Touches Something Testable", "Earned, Chosen, Refused",
+  "Why anything exists", "Why the universe is quantum", "What consciousness is",
+  "Why there is something it is like to be", "Why time has a direction", "What gravity is",
+  "Why we are five percent", "Why everything is a torus", "What collapse is",
+  "How any of it could be measured", "The seam and the colour charge",
+  "Whether galaxies carry a rotation bias", "Dark matter as the ledger",
+  "The thirty-six, the quarks and the pace", "The full six-Part programme remains open"
 ]) {
-  assert.ok(home.html().includes(marker), `homepage focus record is missing: ${marker}`);
+  assert.ok(home.html().includes(marker), `restored r3.5 homepage is missing: ${marker}`);
 }
 assert.ok(home('.hero-ctas a[href="#fundamental-conjectures"]').length,
   "the hero must link directly to the three conjectures");
@@ -125,6 +132,10 @@ assert.match(context, /site\.navGroups/, "document contents drawer is not genera
 assert.match(header, /Research Archive/, "masthead does not expose the complete research archive");
 assert.match(header, /item\.code/, "archive destinations do not display research codes");
 assert.match(header, /site\.focusAreas/, "masthead is not generated from the three public focus areas");
+assert.match(footer, /Every page marks what is <em>earned<\/em> by argument, what is <em>chosen<\/em> as interpretation/,
+  "restored r3.5 footer language drifted");
+assert.match(footer, /Test everything; keep what survives\./,
+  "restored r3.5 footer closing rule drifted");
 assert.match(footer, /Suggested document citation/, "footer lacks a per-document citation");
 assert.match(js, /Research-document outline/, "document-outline enhancement is absent");
 assert.match(js, /while \(usedIds\.has\(candidate\)\)/, "generated heading IDs are not collision-safe");

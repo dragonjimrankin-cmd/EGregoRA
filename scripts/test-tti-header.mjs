@@ -8,7 +8,10 @@ import site from "../tti/src/_data/site.js";
 
 const ROOT = process.cwd();
 const HEADER = path.join(ROOT, "tti/src/_includes/partials/header.njk");
+const BASE = path.join(ROOT, "tti/src/_includes/layouts/base.njk");
 const CSS = path.join(ROOT, "tti/src/assets/css/main.css");
+const R35_BASELINE = path.join(ROOT, "tti/src/assets/css/r35-baseline.css");
+const R35_INTEGRATION = path.join(ROOT, "tti/src/assets/css/r35-integration.css");
 const JS = path.join(ROOT, "tti/src/assets/js/site.js");
 const BUILD = path.join(ROOT, "tti/_site");
 const builtMode = process.argv.includes("--built");
@@ -31,7 +34,11 @@ if (!fs.existsSync(BUILD) && !builtMode) {
 }
 
 const headerSource = fs.readFileSync(HEADER, "utf8");
+const baseSource = fs.readFileSync(BASE, "utf8");
 const css = fs.readFileSync(CSS, "utf8");
+const r35Baseline = fs.readFileSync(R35_BASELINE, "utf8");
+const r35Integration = fs.readFileSync(R35_INTEGRATION, "utf8");
+const allCss = [css, r35Baseline, r35Integration].join("\n");
 const js = fs.readFileSync(JS, "utf8");
 
 /* Source contract: three conjectures own Parts I–III; one disclosure carries
@@ -40,6 +47,15 @@ assert.match(headerSource, /class="brand-name">The Two Infinities: Eternal Integ
   "exact project title is absent from the masthead");
 assert.match(headerSource, /class="brand-tag">A speculative cosmology by Jim Rankin, UK, 2026</,
   "exact attribution is absent from the masthead");
+assert.match(headerSource, /\{% glyph "torus" %\}/,
+  "restored r3.5 masthead is missing its torus sigil");
+assert.match(headerSource, /Integrated research edition[^\n]*site\.revision/,
+  "restored r3.5 masthead is missing its ruled edition line");
+assert.match(headerSource, /class="rule rule--bottom"/,
+  "restored r3.5 masthead is missing its lower illuminated rule");
+assert.match(baseSource,
+  /main\.css[^\n]*\n[^\n]*r35-baseline\.css[^\n]*\n[^\n]*r35-integration\.css/,
+  "stylesheets do not load in current-components, complete-r3.5, integration order");
 assert.match(headerSource, /for focus in site\.focusAreas/, "header does not derive the three focus clusters from canonical data");
 assert.match(headerSource, /for item in focus\.documents/, "Parts I–III are not integrated beneath their conjectures");
 assert.match(headerSource, /data-focus-document/, "integrated research documents are not explicitly identified");
@@ -62,12 +78,18 @@ assert.match(focusLabelRule, /white-space:\s*normal;/,
   "focus labels do not wrap at rest");
 assert.doesNotMatch(focusLabelRule, /text-overflow:\s*ellipsis;/,
   "focus labels are still truncated at rest");
-const attributionRule = css.match(/\.site-head \.brand-tag\s*\{([^}]*)\}/)?.[1] || "";
-assert.match(attributionRule, /font-size:\s*calc\(0\.51rem \+ 2px\);/,
-  "masthead attribution was not increased by exactly two pixels");
-assert.match(css, /body\s*\{[^}]*overflow-wrap:\s*normal;[^}]*word-break:\s*normal;[^}]*hyphens:\s*none;/s,
-  "the site does not establish whole-word line breaking");
-assert.doesNotMatch(css,
+const attributionRule = [...r35Integration.matchAll(/\.site-head \.brand-tag\s*\{([^}]*)\}/g)]
+  .map((match) => match[1])
+  .find((rule) => /font-size:\s*calc\(0\.54rem \+ 2px\)/.test(rule)) || "";
+assert.match(attributionRule, /font-size:\s*calc\(0\.54rem \+ 2px\);/,
+  "restored masthead attribution was not increased by exactly two pixels");
+assert.match(r35Baseline, /\.hero\s*\{[\s\S]*?text-align:\s*center;/,
+  "the complete r3.5 hero system is absent");
+assert.match(r35Baseline, /\.frame::before[\s\S]*?\.frame::after/,
+  "the complete r3.5 illuminated frame system is absent");
+assert.match(r35Integration, /body \*\s*\{[^}]*overflow-wrap:\s*normal;[^}]*word-break:\s*normal;[^}]*hyphens:\s*none;/s,
+  "the integrated edition does not establish whole-word line breaking");
+assert.doesNotMatch(allCss,
   /(?:overflow-wrap:\s*(?:anywhere|break-word)|word-break:\s*(?:break-all|break-word)|hyphens:\s*auto)/,
   "a CSS rule can still split a word between rows");
 assert.match(css, /\.focus-panel\s*\{[^}]*width:\s*min\(460px,/s,

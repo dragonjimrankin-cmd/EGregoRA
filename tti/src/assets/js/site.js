@@ -19,7 +19,7 @@
     toggle.setAttribute("aria-expanded", "false");
     toggle.setAttribute("aria-label", "Open navigation");
     const label = toggle.querySelector("em");
-    if (label) label.textContent = "Contents";
+    if (label) label.textContent = "Menu";
   };
 
   if (toggle && nav) {
@@ -28,7 +28,7 @@
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
       const label = toggle.querySelector("em");
-      if (label) label.textContent = open ? "Close" : "Contents";
+      if (label) label.textContent = open ? "Close" : "Menu";
       if (!open) closeClusters();
     });
 

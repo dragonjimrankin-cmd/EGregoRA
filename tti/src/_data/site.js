@@ -4,9 +4,9 @@ import ttiAtlas from "./ttiAtlas.js";
  * The Two Infinities: Eternal Integration of the Self — project-wide data.
  *
  * James Alexander Matthew Rankin began the framework between 2 and 19 June
- * 2026. Revision r6.0 reorganises the public site around the framework's three
- * fundamental conjectural structures: eternal integration, the Rankin Skeletal
- * Splice, and Part III's seams and return. Parts I–III now sit directly beneath
+ * 2026. The integrated r3.5 edition restores the complete historical reading
+ * room around the framework's three fundamental conjectural structures:
+ * eternal integration, the Rankin Skeletal Splice, and Part III's seams and return. Parts I–III now sit directly beneath
  * those conjectures; Parts IV–VI supply tests, reader tools and mathematical
  * audit. The complete six-Part corpus remains available in the canonical
  * archive with its Atlas, Plates, long-form syntheses and correction records.
@@ -153,9 +153,9 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r6.0",
+  revision: "r3.5",
   revised: "2026-10-14",
-  edition: "Fundamental conjectures edition",
+  edition: "Integrated r3.5 research edition",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
   description:
     "The Two Infinities: Eternal Integration of the Self — an independent speculative-cosmology research project by Jim Rankin, UK, 2026. " +

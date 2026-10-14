@@ -117,6 +117,8 @@ jobs:
           test -s tti/hatchable/public/sitemap.xml
           test -s tti/hatchable/public/feed.xml
           test -s tti/hatchable/public/ask-shakdrah/index.html
+          test -s tti/hatchable/public/assets/css/r35-baseline.css
+          test -s tti/hatchable/public/assets/css/r35-integration.css
           test -s tti/hatchable/public/assets/js/oracle-knowledge.js
           test -s tti/hatchable/public/assets/js/atlas.js
           test -s tti/hatchable/public/assets/js/vendor/three.module.js
@@ -128,13 +130,23 @@ jobs:
           test -s tti/hatchable/public/assets/js/headtts/LICENSE-Kokoro.txt
           grep -Fq 'The Two Infinities: Eternal Integration of the Self' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
-          grep -Fq 'Three conjectures carry the framework' tti/hatchable/public/index.html
-          grep -Fq 'Integration differentiates. The splice routes. The seam returns.' tti/hatchable/public/index.html
+          grep -Fq 'The Question Physics Does Not Touch' tti/hatchable/public/index.html
+          grep -Fq 'The Complete Public Argument' tti/hatchable/public/index.html
+          grep -Fq 'The Chain of Necessity' tti/hatchable/public/index.html
+          grep -Fq 'Everything It Puts Under One Roof' tti/hatchable/public/index.html
+          grep -Fq 'Where the Framework Touches Something Testable' tti/hatchable/public/index.html
+          grep -Fq 'Why the universe is quantum' tti/hatchable/public/index.html
+          grep -Fq 'Why there is something it is like to be' tti/hatchable/public/index.html
+          grep -Fq 'Why everything is a torus' tti/hatchable/public/index.html
+          grep -Fq 'What collapse is' tti/hatchable/public/index.html
+          grep -Fq 'The seam and the colour charge' tti/hatchable/public/index.html
+          grep -Fq 'The thirty-six, the quarks and the pace' tti/hatchable/public/index.html
           grep -Fq 'Working hypotheses' tti/hatchable/public/index.html
           grep -Fq 'Eternal Integration' tti/hatchable/public/index.html
           grep -Fq 'The Rankin Skeletal Splice' tti/hatchable/public/index.html
           grep -Fq 'Seams and Return' tti/hatchable/public/index.html
-          grep -Fq 'Nothing removed' tti/hatchable/public/index.html
+          grep -Fq 'The full six-Part programme remains open' tti/hatchable/public/index.html
+          grep -Fq 'Test everything; keep what survives.' tti/hatchable/public/index.html
           grep -Fq 'name        = "The Two Infinities: Eternal Integration of the Self"' tti/hatchable/hatchable.toml
           grep -Fq 'research project founded by Jim Rankin' tti/hatchable/hatchable.toml
           ! grep -R -Fq 'EGregoRA — Life, Love, Magic' tti/hatchable
@@ -146,7 +158,10 @@ jobs:
           test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/archive/index.html)" -eq 34
           grep -Fq 'A Reader&rsquo;s Contract' tti/hatchable/public/archive/index.html
           grep -q 'id="fig-chain"' tti/hatchable/public/archive/index.html
-          grep -Fq 'r6.0' tti/hatchable/public/index.html
+          grep -Fq 'r3.5' tti/hatchable/public/index.html
+          grep -q 'assets/css/main.css' tti/hatchable/public/index.html
+          grep -q 'assets/css/r35-baseline.css' tti/hatchable/public/index.html
+          grep -q 'assets/css/r35-integration.css' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/archive/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/archive/index.html
           grep -q 'The same map, written out' tti/hatchable/public/archive/index.html
@@ -237,14 +252,18 @@ jobs:
           grep -Fq 'cluster.addEventListener("pointerenter"' tti/hatchable/public/assets/js/site.js
           grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.03 \u00b7 Join' tti/hatchable/public/assets/js/site.js
           grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.04 \u00b7 Your Account' tti/hatchable/public/assets/js/site.js
-          grep -q 'r6.0 — Fundamental conjectures' tti/hatchable/public/assets/css/main.css
-          grep -q '.focus-nav' tti/hatchable/public/assets/css/main.css
+          grep -q 'THE TWO INFINITIES.*r3.5' tti/hatchable/public/assets/css/r35-baseline.css
+          grep -q 'CURRENT CORPUS INTEGRATION' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q '.frame::before' tti/hatchable/public/assets/css/r35-baseline.css
+          grep -q '.hero' tti/hatchable/public/assets/css/r35-baseline.css
+          grep -q '.focus-nav' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.focus-panel' tti/hatchable/public/assets/css/main.css
-          grep -q '.focus-programme' tti/hatchable/public/assets/css/main.css
-          grep -q '.archive-panel' tti/hatchable/public/assets/css/main.css
+          grep -q '.focus-programme' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q '.archive-panel' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.plate-accordion-group' tti/hatchable/public/assets/css/main.css
           grep -q '.atlas-grid' tti/hatchable/public/assets/css/main.css
           grep -q 'body.atlas-focused' tti/hatchable/public/assets/css/main.css
+          ! grep -R -q -E 'overflow-wrap:[[:space:]]*(anywhere|break-word)|word-break:[[:space:]]*(break-all|break-word)|hyphens:[[:space:]]*auto' tti/hatchable/public/assets/css --include='*.css'
           grep -q 'circle-evidence' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'baryogenesis-boundary' tti/hatchable/public/assets/js/oracle-knowledge.js
           grep -q 'wormhole-inverted-torus' tti/hatchable/public/assets/js/oracle-knowledge.js
@@ -427,11 +446,16 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r6.0',
-                'Working hypotheses', 'Three conjectures carry the framework',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r3.5',
+                'Working hypotheses', 'The Question Physics Does Not Touch',
+                'The Complete Public Argument', 'The Chain of Necessity',
+                'Everything It Puts Under One Roof', 'Where the Framework Touches Something Testable',
+                'Why the universe is quantum', 'Why there is something it is like to be',
+                'Why everything is a torus', 'What collapse is',
+                'The seam and the colour charge', 'The thirty-six, the quarks and the pace',
                 'Eternal Integration', 'The Rankin Skeletal Splice', 'Seams and Return',
-                'Integration differentiates. The splice routes. The seam returns.',
-                'The complete research programme remains open', 'Research Archive',
+                'The full six-Part programme remains open', 'Research Archive',
+                'Test everything; keep what survives.',
                 'Integrated research programme', 'data-focus-programme-document',
                 'class="focus-nav-link ', 'class="nav-cluster nav-archive"',
                 'data-focus-document', 'data-archive-document', 'data-research-document',
@@ -712,15 +736,29 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/css/main.css',
-              markers: ['r6.0 — Fundamental conjectures', '.focus-nav', '.focus-nav-link',
-                '.nav-archive', '.archive-panel', '.archive-part-grid',
-                '.js-nav .site-nav.open', 'position: sticky',
+              markers: ['.focus-nav', '.focus-nav-link', '.nav-archive', '.archive-panel',
+                '.archive-part-grid', '.js-nav .site-nav.open',
                 '.focus-nav-link:hover .focus-nav-copy strong', '.focus-panel',
                 'grid-template-columns: repeat(3, minmax(0, 1fr))',
                 '.focus-hero', '.focus-pillar', '.focus-programme', '.focus-synthesis', '.focus-archive',
                 '.plate-accordion-group[open]', '.plate-group-toggle::after',
-                '.atlas-grid', 'body.atlas-focused',
-                '#atlas-box.is-focused']
+                '.atlas-grid', 'body.atlas-focused', '#atlas-box.is-focused']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/assets/css/r35-baseline.css',
+              markers: ['THE TWO INFINITIES — r3.5 COMPLETE HISTORICAL BASELINE',
+                '.hero', '.frame::before', '.frame::after', '.rule::after',
+                '.plate-art', '.divider'],
+              forbiddenMarkers: ['overflow-wrap: anywhere', 'overflow-wrap: break-word',
+                'word-break: break-all', 'word-break: break-word', 'hyphens: auto']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/assets/css/r35-integration.css',
+              markers: ['r3.5 — CURRENT CORPUS INTEGRATION', '.focus-nav',
+                '.focus-programme', '.archive-panel', 'body *',
+                'overflow-wrap: normal', 'word-break: normal', 'hyphens: none'],
+              forbiddenMarkers: ['overflow-wrap: anywhere', 'overflow-wrap: break-word',
+                'word-break: break-all', 'word-break: break-word', 'hyphens: auto']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',

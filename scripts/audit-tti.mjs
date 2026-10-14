@@ -200,8 +200,8 @@ if (!home) {
   if (home.$('head > title').text().trim() !== expectedTitle) fail('homepage title metadata is not the exact project title');
   const heroTitle = home.$('h1').text().replace(/:\s*/g, ': ').replace(/\s+/g, ' ').trim();
   if (!heroTitle.includes(expectedTitle)) fail('homepage hero is missing the exact project title');
-  if (home.$('.focus-hero .kicker').first().text().trim() !== expectedTagline) {
-    fail('homepage hero is missing the exact attribution tagline');
+  if (home.$('.hero--r35 .hero-sub').first().text().trim() !== expectedTagline) {
+    fail('restored r3.5 homepage hero is missing the exact attribution tagline');
   }
   if (home.$('.focus-status').text().trim() !== 'Working hypotheses') {
     fail('homepage research status must read exactly Working hypotheses');
@@ -329,7 +329,9 @@ if (!plates) {
 } else {
   let sourcePlateCount = 0;
   for (const [pathname, document] of documents) {
-    if (pathname === '/plates/') continue;
+    /* The restored r3.5 homepage carries its historical orientation plate,
+       while the Plate Room remains the 36-figure research-document register. */
+    if (pathname === '/plates/' || pathname === '/') continue;
     sourcePlateCount += document.$('figure.plate').length;
   }
   const gathered = plates.$('figure.plate[data-plate-source]').length;

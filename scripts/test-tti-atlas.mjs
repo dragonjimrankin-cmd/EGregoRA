@@ -102,8 +102,8 @@ for (const marker of [".atlas-grid", ".atlas-stage", ".atlas-label", ".atlas--of
 }
 assert.ok(exists("tti/src/assets/js/vendor/three.module.js"), "the local Three.js module is missing");
 assert.ok(home.includes("The Two Infinities: Eternal Integration of the Self"), "the exact project title must remain on the introduction");
-assert.ok(home.includes('<h1 id="focus-hero-title"><span>The Two Infinities:</span> <em>Eternal Integration of the Self.</em></h1>'),
-  "the introduction hero must retain the exact split project title");
+assert.ok(home.includes('<h1 class="hero-title" id="hero-title"><span>The Two Infinities:</span><br><em>Eternal Integration of the Self.</em></h1>'),
+  "the restored r3.5 hero must retain the exact split project title");
 assert.ok(home.includes("A speculative cosmology by Jim Rankin, UK, 2026"), "the exact masthead tagline must remain on the introduction");
 assert.ok(archive.includes("The Two Infinities: Eternal Integration of the Self"), "the archive must retain the exact project title");
 

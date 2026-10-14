@@ -1,33 +1,26 @@
 <header class="site-head" id="top" data-site-header>
-  <div class="head-accent"></div>
+  <div class="rule rule--top head-accent" aria-hidden="true"></div>
   <div class="brand-row wrap wide">
     <a class="brand" href="/" aria-label="{{ site.name }} — home">
-      <svg class="brand-sigil" viewBox="0 0 64 64" role="img" aria-hidden="true">
-        <defs>
-          <linearGradient id="sigil-gradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="currentColor"/>
-            <stop offset="1" stop-color="var(--verdant)"/>
-          </linearGradient>
-        </defs>
-        <path d="M12 35c7-18 18-24 32-18 10 5 10 18 2 24-8 6-20 1-18-8 2-8 14-10 23-4" fill="none" stroke="url(#sigil-gradient)" stroke-width="2"/>
-        <path d="M10 35c7 18 19 23 34 16" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>
-        <circle cx="10" cy="35" r="2.5" fill="currentColor"/>
-        <circle cx="52" cy="29" r="2.5" fill="var(--verdant)"/>
-      </svg>
+      <span class="brand-sigil" aria-hidden="true">{% glyph "torus" %}</span>
       <span class="brand-text">
-        <span class="brand-name">The Two Infinities: Eternal Integration of the Self</span>
+        <span class="brand-line">
+          <span class="brand-name">The Two Infinities: Eternal Integration of the Self</span>
+          <span class="brand-order" aria-hidden="true">
+            <span class="brand-rule"></span>
+            <span class="brand-order-text">Integrated research edition &middot; {{ site.revision }}</span>
+            <span class="brand-rule"></span>
+          </span>
+        </span>
         <span class="brand-tag">A speculative cosmology by Jim Rankin, UK, 2026</span>
       </span>
-    </a>
-    <a class="brand-edition" href="/archive/" aria-label="Open {{ site.revision }} research record">
-      <span>Research edition</span><strong>{{ site.revision }}</strong>
     </a>
     <a class="head-join" href="/join/" id="head-join">
       <span class="head-join-mark" aria-hidden="true">&#9737;</span>
       <span class="head-join-text">Sign in <span class="head-join-or">/ Join</span></span>
     </a>
     <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">
-      <span class="nav-toggle-icon" aria-hidden="true"><b></b><b></b><b></b></span><em>Contents</em>
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><em>Menu</em>
     </button>
   </div>
 
@@ -120,4 +113,5 @@
       </div>
     </div>
   </nav>
+  <div class="rule rule--bottom" aria-hidden="true"></div>
 </header>

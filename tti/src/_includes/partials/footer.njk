@@ -2,13 +2,18 @@
 <footer class="site-foot">
   <div class="foot-glyph">{% glyph "spiral" %}</div>
   <p class="foot-motto">{{ site.motto }}</p>
-  <nav class="foot-nav" aria-label="Project documents">
-    {% for item in site.nav %}<a href="{{ item.url }}"><span>{{ item.code }}</span> {{ item.label }}</a>{% endfor %}
+  <nav class="foot-nav" aria-label="Footer">
+    {% for item in site.nav %}<a href="{{ item.url }}">{{ item.label }}</a>{% endfor %}
   </nav>
   <p class="foot-fine">
-    This is an <strong>independent working research project</strong> by {{ site.cofounder }}, begun 2nd&#8211;19th June 2026 and revised to
-    {{ site.revision }}. Established results, historical sources, conjectural bridges and visionary claims are marked separately.
-    The framework is published with its open derivations, competing explanations and failure conditions visible; it is not presented as a peer-reviewed physical theory.
+    The framework is the work of <strong>{{ site.cofounder }}</strong>, written 2nd&#8211;19th June 2026 and revised to
+    {{ site.revision }}. Every page marks what is <em>earned</em> by argument, what is <em>chosen</em> as interpretation, and what is
+    <em>refused</em> as costume. Test everything; keep what survives.
+  </p>
+  <p class="foot-fine">
+    This is an independent working research project, not a peer-reviewed physical theory. Established results, historical sources,
+    conjectural bridges and visionary claims are marked separately, with open derivations, competing explanations, correction records
+    and failure conditions kept visible.
   </p>
   {% if researchPage %}
   <p class="foot-citation"><strong>Suggested document citation:</strong> Rankin, J. (2026), “{{ title }}”,
