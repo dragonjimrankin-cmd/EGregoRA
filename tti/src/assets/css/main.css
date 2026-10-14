@@ -38,6 +38,9 @@ body {
   font-size: clamp(1.02rem, 0.55vw + 0.92rem, 1.18rem);
   line-height: 1.75;
   overflow-x: hidden;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
 }
 
 #starfield { position: fixed; inset: 0; z-index: -3; display: block; width: 100%; height: 100%; }
@@ -213,7 +216,7 @@ h1, h2, h3, h4 { font-family: var(--title); font-weight: 600; line-height: 1.15;
 h1 {
   font-family: var(--display); font-weight: 700;
   font-size: clamp(1.7rem, 7.6vw, 4.1rem); margin: 0.6rem 0 0.4rem;
-  overflow-wrap: break-word; hyphens: auto;
+  overflow-wrap: normal; hyphens: none;
   background: linear-gradient(180deg, #fffaf0, var(--gold) 60%, var(--gold-deep));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -1558,7 +1561,7 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   max-width: 15rem;
   overflow: visible;
   text-overflow: clip;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   text-transform: none;
   letter-spacing: .06em;
   font-size: .72rem;
@@ -1578,7 +1581,7 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   font-size: .82rem;
   letter-spacing: .04em;
   text-transform: none;
@@ -1590,9 +1593,9 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
-.acct-email { font-family: 'EB Garamond', serif; color: #76cfee; margin: .1rem 0 1rem; word-break: break-all; }
+.acct-email { font-family: 'EB Garamond', serif; color: #76cfee; margin: .1rem 0 1rem; word-break: normal; }
 .acct-grid {
   display: grid; grid-template-columns: auto 1fr; gap: .45rem 1.2rem;
   margin: 0 0 1.2rem; font-family: 'EB Garamond', serif;
@@ -1632,7 +1635,7 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   font-family: 'EB Garamond', serif;
   color: #a9b6d8;
 }
@@ -3609,42 +3612,48 @@ button.rung:hover, button.rung:focus-visible { color: #cdefff; border-bottom-col
   border-radius: 4px; background: rgba(118,207,238,0.05); }
 .invite-card .kicker { margin: 0 0 0.5rem; }
 .invite-link { width: 100%; max-width: 100%; box-sizing: border-box; margin-bottom: 0.6rem;
-  font-family: "EB Garamond", serif; font-size: 0.95rem; overflow-wrap: anywhere; }
+  font-family: "EB Garamond", serif; font-size: 0.95rem; overflow-wrap: normal; }
 
 /* =======================================================================
-   WRAPPING, EVERYWHERE — the last word on text that will not fit
+   WRAPPING AT WORD BOUNDARIES — keep every word intact
 
-   One pass over the whole site and its apps. Long words, long URLs, email
-   addresses, hashes, watchwords, table cells, chat lines, oracle answers
-   and the admin panels all break rather than push the page sideways. The
-   rules are deliberately broad and deliberately last in the file: nothing
-   here changes a layout, it only decides what happens at the edge.
+   Text may move to a new row only at a normal browser line-break opportunity,
+   never through the middle of a word. This applies equally to prose, titles,
+   navigation, controls, tables and application panels. Exceptionally long
+   machine strings remain whole and are contained by their scrolling panel.
    ======================================================================= */
 
-/* 1. Prose and every control that holds words. `break-word` keeps ordinary
-      sentences looking normal and only breaks a word that cannot fit. Links
-      and controls use `anywhere` because their labels can contain a single
-      long title or route with no natural break point. */
+/* 1. Prose, labels and controls wrap at spaces and punctuation. Automatic
+      hyphenation and emergency mid-word breaking remain disabled. */
 p, li, dd, dt, td, th, figcaption, blockquote, label, legend,
 h1, h2, h3, h4, h5, h6, .kicker, .lede, .muted, .auth-msg, .chip,
 strong, em, span.plate-num {
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
 }
 a, button, summary, .btn {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   word-break: normal;
 }
 
-/* 2. The things that are routinely one unbroken string: addresses, keys,
-      links, code, chat lines, file names. These may break anywhere. */
+/* 2. Addresses, keys, links, code and file names remain single whole tokens.
+      Preformatted blocks scroll locally if a machine string is wider than its
+      reading column. */
 code, kbd, samp, .acct-email, .invite-link, .mono, .tape-name, .file-name,
 .chat-who, .chat-list li, .oracle-answer a, .biblio a, a[href^="mailto:"], a[href^="http"] {
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
 }
 
-pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
 
 /* 3. Flex and grid children default to min-width:auto, which is the single
       most common cause of a page that scrolls sideways on a phone. */
@@ -3658,11 +3667,11 @@ img, svg, video, canvas, iframe, table, input, select, textarea {
 input, select, textarea { box-sizing: border-box; }
 textarea { resize: vertical; }
 
-/* 5. Tables: wrap long cells, and let a genuinely wide one scroll inside
-      its own box rather than taking the page with it. Links inside a table
-      are rows, never a run of adjacent inline labels. */
+/* 5. Tables wrap at normal word boundaries, and a genuinely wide one scrolls
+      inside its own box rather than splitting cell content. Links inside a
+      table are rows, never a run of adjacent inline labels. */
 table { table-layout: auto; }
-th, td { overflow-wrap: anywhere; word-break: normal; }
+th, td { overflow-wrap: normal; word-break: normal; }
 table :is(th, td) > a[href] {
   display: block;
   width: fit-content;
@@ -3679,8 +3688,8 @@ html { overflow-x: hidden; }
 body { max-width: 100%; }
 
 @media (max-width: 640px) {
-  /* On a phone, hyphenate the long prose rather than leaving rivers. */
-  .frame p, .lede, .biblio li, .glossary dd, .timeline li { hyphens: auto; }
+  /* Phones keep the same whole-word line-breaking contract. */
+  .frame p, .lede, .biblio li, .glossary dd, .timeline li { hyphens: none; }
   /* Buttons and chips wrap their label instead of growing past the screen. */
   .btn, .chip { white-space: normal; }
   .btn-row { flex-wrap: wrap; }
@@ -3943,7 +3952,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 .site-head .brand-name {
   max-width: none;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   text-wrap: balance;
   font-size: clamp(0.84rem, 1.32vw, 1.12rem);
   line-height: 1.12;
@@ -3953,7 +3962,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   margin: 0;
   max-width: none;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   /* Keep the masthead attribution quiet, but no longer microscopic. This is
      exactly two CSS pixels larger than the r6.0 setting. */
   font-size: calc(0.51rem + 2px);
@@ -4066,7 +4075,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   text-wrap: balance;
 }
 .nav-chevron {
@@ -4183,7 +4192,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   font-family: var(--serif);
   font-size: 0.78rem;
   line-height: 1.3;
@@ -4200,7 +4209,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
     overflow: visible;
     text-overflow: clip;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
     line-height: 1.18;
     text-align: center;
   }
@@ -4209,7 +4218,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
     overflow: visible;
     text-overflow: clip;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
     line-height: 1.3;
   }
 }
@@ -4239,7 +4248,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   text-transform: uppercase;
   text-decoration: none;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   color: var(--vellum-dim);
 }
 .site-nav .nav-action i { display: block; width: 17px; height: 17px; }
@@ -4355,7 +4364,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
     overflow: visible;
     text-overflow: clip;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
   }
   .nav-chevron {
     position: static;
@@ -4395,7 +4404,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
     overflow: visible;
     text-overflow: clip;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
     line-height: 1.3;
   }
   .nav-link-arrow { display: none; }
@@ -4676,7 +4685,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 .project-context-position strong {
   display: block;
   margin-top: 0.15rem;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   font-size: 0.78rem;
   line-height: 1.25;
   color: var(--gold-bright);
@@ -5156,7 +5165,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   text-wrap: balance;
   font-family: var(--title);
   font-size: 0.62rem;
@@ -5195,7 +5204,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 .nav-archive-copy strong {
   display: block;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 .nav-archive-copy small {
   margin-bottom: 0.08rem;
@@ -5292,7 +5301,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   font-size: 0.57rem;
   line-height: 1.25;
   letter-spacing: 0.055em;
@@ -5311,7 +5320,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 
 /* Homepage: a restrained observatory built around one three-stage cycle. */

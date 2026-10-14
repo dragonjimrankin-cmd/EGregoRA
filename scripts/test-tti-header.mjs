@@ -58,6 +58,11 @@ assert.doesNotMatch(focusLabelRule, /text-overflow:\s*ellipsis;/,
 const attributionRule = css.match(/\.site-head \.brand-tag\s*\{([^}]*)\}/)?.[1] || "";
 assert.match(attributionRule, /font-size:\s*calc\(0\.51rem \+ 2px\);/,
   "masthead attribution was not increased by exactly two pixels");
+assert.match(css, /body\s*\{[^}]*overflow-wrap:\s*normal;[^}]*word-break:\s*normal;[^}]*hyphens:\s*none;/s,
+  "the site does not establish whole-word line breaking");
+assert.doesNotMatch(css,
+  /(?:overflow-wrap:\s*(?:anywhere|break-word)|word-break:\s*(?:break-all|break-word)|hyphens:\s*auto)/,
+  "a CSS rule can still split a word between rows");
 assert.match(css, /\.archive-part-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/,
   "desktop archive does not expose all six Parts as columns");
 assert.match(css, /@media \(max-width:\s*900px\)[\s\S]*?\.focus-nav\s*\{\s*display:\s*block;/,
