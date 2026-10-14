@@ -140,7 +140,7 @@ jobs:
           grep -Fq 'The dependency map' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r5.0' tti/hatchable/public/index.html
+          grep -Fq 'r5.1' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -276,8 +276,9 @@ jobs:
           grep -q 'How a Speculative Cosmology Faces Evidence' tti/hatchable/public/stress-tests/index.html
           grep -q 'The Reading Rooms: How to Explore, Question and Test The Two Infinities' tti/hatchable/public/plates/index.html
           grep -q 'Arithmetic, Proof and the Limits of Analogy: The Riemann Programme' tti/hatchable/public/riemann-programme/index.html
-          grep -q 'A final, all-encompassing accessible synthesis' tti/hatchable/public/index.html
-          grep -q 'class="wrap narrow longform-synthesis final-synthesis"' tti/hatchable/public/index.html
+          ! grep -q 'A final, all-encompassing accessible synthesis' tti/hatchable/public/index.html
+          ! grep -q 'class="wrap narrow longform-synthesis final-synthesis"' tti/hatchable/public/index.html
+          ! grep -q 'href="#longform-the-two-infinities-eternal-integration-of-the-self"' tti/hatchable/public/index.html
           grep -q 'A Reader&rsquo;s Contract' tti/hatchable/public/index.html
           test "$(grep -R -l 'class="wrap narrow editorial-guide reveal"' tti/hatchable/public --include='index.html' | wc -l)" -eq 32
           grep -q 'does not manufacture i from π' tti/hatchable/public/foundations/index.html
@@ -412,7 +413,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r5.0',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r5.1',
                 'Project Table of Contents', 'Geometry, Integration and the Conditions of Return',
                 '<dt>Research status</dt><dd>Working hypotheses</dd>', 'TTI-I.01', 'TTI-V.04',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',
@@ -421,10 +422,12 @@ jobs:
                 'Part II', 'Cosmic Architecture', 'Part III', 'Seams and Return',
                 'Part IV', 'Tests and Essays', 'Part V', 'Reading Rooms',
                 'Part VI', 'Riemann Programme', 'TTI-VI.03',
-                'A final, all-encompassing accessible synthesis',
                 'The Two Infinities: Eternal Integration of the Self',
                 'A Reader&rsquo;s Contract', 'External sources are bearings, not endorsements',
-                'Why the two infinities never fully synchronise', 'The Zero-Seam Test']
+                'Why the two infinities never fully synchronise', 'The Zero-Seam Test'],
+              forbiddenMarkers: ['A final, all-encompassing accessible synthesis',
+                'class="wrap narrow longform-synthesis final-synthesis"',
+                'href="#longform-the-two-infinities-eternal-integration-of-the-self"']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/foundations/',
@@ -708,14 +711,16 @@ jobs:
                   headers: { 'cache-control': 'no-cache' }
                 });
                 const body = await response.arrayBuffer();
-                const html = page.markers.length ? new TextDecoder().decode(body) : '';
+                const html = page.markers.length || page.forbiddenMarkers?.length
+                  ? new TextDecoder().decode(body) : '';
                 const missingMarkers = page.markers.filter((marker) => !html.includes(marker));
+                const forbiddenMarkers = (page.forbiddenMarkers || []).filter((marker) => html.includes(marker));
                 const current = response.ok && body.byteLength >= (page.minBytes || 1) &&
-                  missingMarkers.length === 0;
+                  missingMarkers.length === 0 && forbiddenMarkers.length === 0;
                 const voiceHash = page.voiceId
                   ? Buffer.from(await crypto.subtle.digest('SHA-256', body)).toString('hex')
                   : null;
-                return { page, response, current, voiceHash, missingMarkers };
+                return { page, response, current, voiceHash, missingMarkers, forbiddenMarkers };
               }));
               const voiceChecks = checked.filter((result) => result.page.voiceId);
               const voicesDistinct = voiceChecks.length === 6 &&
@@ -726,7 +731,8 @@ jobs:
               }
               detail = checked.map((result) =>
                 `${result.page.url} HTTP ${result.response.status}; current=${result.current}; ` +
-                `missing=${result.missingMarkers.join(',') || 'none'}`).join(' | ') +
+                `missing=${result.missingMarkers.join(',') || 'none'}; ` +
+                `forbidden=${result.forbiddenMarkers.join(',') || 'none'}`).join(' | ') +
                 ` | sixDistinctVoices=${voicesDistinct}`;
             } catch (error) {
               detail = error && error.message || String(error);

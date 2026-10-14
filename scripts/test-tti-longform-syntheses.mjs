@@ -54,17 +54,11 @@ assert.equal(longform.final.wordCount, finalWords, 'final synthesis data word co
 
 const homeHtml = fs.readFileSync(path.join(builtRoot, 'index.html'), 'utf8');
 const home = cheerio.load(homeHtml);
-const finalSynthesis = home('.longform-synthesis.final-synthesis');
-assert.equal(finalSynthesis.length, 1, 'homepage must contain one final synthesis');
-assert.equal(finalSynthesis.find('h1').length, 0, 'homepage synthesis must not add a second h1');
-assert.ok(finalSynthesis.find('h2').first().text().includes('The Two Infinities'),
-  'homepage final synthesis title is missing');
-assert.ok(countWords(finalSynthesis.text()) >= 10000, 'rendered final synthesis is too short');
-assert.equal(finalSynthesis.find('h2, h3, h4').filter((_, heading) => !home(heading).attr('id')).length, 0,
-  'final synthesis has headings without stable IDs');
-assert.ok(homeHtml.indexOf('class="wrap narrow longform-synthesis final-synthesis"') > homeHtml.indexOf('id="atlas-box"'),
-  'final synthesis must follow the homepage project map');
-assert.ok(home('a[href="#longform-the-two-infinities-eternal-integration-of-the-self"]').length,
-  'homepage hero does not link to the final synthesis');
+assert.equal(home('.longform-synthesis.final-synthesis').length, 0,
+  'homepage must not render the all-encompassing synthesis');
+assert.equal(home('a[href="#longform-the-two-infinities-eternal-integration-of-the-self"]').length, 0,
+  'homepage must not link to the removed all-encompassing synthesis');
+assert.ok(!homeHtml.includes('A final, all-encompassing accessible synthesis'),
+  'homepage still contains the all-encompassing synthesis copy');
 
-console.log(`TTI long-form syntheses passed: six Part essays (${integrations.map(([key]) => longform[key].wordCount).join(', ')} words) and one ${finalWords}-word final synthesis integrated into their lead pages.`);
+console.log(`TTI long-form syntheses passed: six Part essays (${integrations.map(([key]) => longform[key].wordCount).join(', ')} words) remain integrated, the ${finalWords}-word final source remains preserved, and the homepage does not render it.`);

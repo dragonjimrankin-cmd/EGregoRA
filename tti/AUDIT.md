@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r5.0
+**Revision:** r5.1
 **Audit date:** 14 October 2026
 
 ## Scope
@@ -15,7 +15,14 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the six-Part masthead and matching research labels, the six-path Atlas, the canonical thirty-four-entry project contents, per-document records and outline shells, the thirty-two site-wide editorial guides, the exclusive plate accordion, the custom site audit, the seven long-form syntheses and the prepared browser-side knowledge corpus. It keeps the twenty-seven original Parts I–IV research essays within 2,000–4,000 readable words, independently enforces 6,000–8,000 words for every Part synthesis and 10,000–13,000 words for the final project synthesis.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the six-Part masthead and matching research labels, the six-path Atlas, the canonical thirty-four-entry project contents, per-document records and outline shells, the thirty-two site-wide editorial guides, the exclusive plate accordion, the custom site audit, the six rendered Part syntheses, the preserved final-synthesis source and the prepared browser-side knowledge corpus. It keeps the twenty-seven original Parts I–IV research essays within 2,000–4,000 readable words, independently enforces 6,000–8,000 words for every Part synthesis and 10,000–13,000 words for the retained final project source.
+
+## Concise introduction in r5.1
+
+- Removed the 10,825-word all-encompassing synthesis from the introduction page, together with its hero shortcut and homepage metadata claim.
+- The introduction now moves directly from the Atlas to the ten core claims, while all six Part syntheses remain integrated into their established lead pages.
+- Preserved `tti/longform/final-synthesis.md` and its 10,000–13,000-word regression for the long-form collection; this change removes its homepage rendering rather than deleting the underlying essay.
+- Added local build and live-deployment absence checks for the section, heading and former fragment link so a generated rebuild cannot silently restore it.
 
 ## Site-wide clarity edition in r5.0
 
@@ -36,7 +43,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 - Added six plain-language Part syntheses, now regenerated at 6,349, 6,319, 6,359, 6,267, 6,043 and 6,293 words, with equations omitted wherever prose can carry the idea.
 - Integrated them into the existing lead pages: Foundations, Gravity, Möbius, Stress Tests, The Plates and The Riemann Dossier.
-- Added a 10,825-word all-encompassing synthesis to the homepage immediately after the Atlas project map.
+- Originally added a 10,825-word all-encompassing synthesis after the homepage Atlas; r5.1 removes that rendering while retaining the tracked source.
 - Preserved every original study rather than replacing it; the existing 2,000–4,000-word audit excludes the clearly marked synthesis wrappers and continues to verify the original essays independently.
 - Added tracked Markdown sources, build-time semantic heading conversion, responsive long-reading typography, stable fragment IDs and a dedicated source/build/accessibility regression.
 
