@@ -45,11 +45,19 @@ assert.match(headerSource, /data-archive-document/, "archive document links are 
 assert.match(headerSource, /href="\/archive\/"/, "archive overview is absent from the header");
 assert.match(headerSource, /aria-controls="primary-nav"/, "mobile toggle is not linked to the primary navigation");
 
-/* The compact rail may elide at rest, but reveals full copy on hover/focus. */
+/* Compact text may wrap, but it must never be clipped or made illegible. */
 assert.match(css, /\.focus-nav\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/,
   "desktop header is not a three-focus rail");
-assert.match(css, /\.focus-nav-link:hover \.focus-nav-copy strong,[\s\S]*?white-space:\s*normal;/,
-  "focus labels do not expand fully on hover/focus");
+const focusLabelRule = [...css.matchAll(/\.focus-nav-copy strong\s*\{([^}]*)\}/g)]
+  .map((match) => match[1])
+  .find((rule) => /font-family:\s*var\(--title\)/.test(rule)) || "";
+assert.match(focusLabelRule, /white-space:\s*normal;/,
+  "focus labels do not wrap at rest");
+assert.doesNotMatch(focusLabelRule, /text-overflow:\s*ellipsis;/,
+  "focus labels are still truncated at rest");
+const attributionRule = css.match(/\.site-head \.brand-tag\s*\{([^}]*)\}/)?.[1] || "";
+assert.match(attributionRule, /font-size:\s*calc\(0\.51rem \+ 2px\);/,
+  "masthead attribution was not increased by exactly two pixels");
 assert.match(css, /\.archive-part-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/,
   "desktop archive does not expose all six Parts as columns");
 assert.match(css, /@media \(max-width:\s*900px\)[\s\S]*?\.focus-nav\s*\{\s*display:\s*block;/,

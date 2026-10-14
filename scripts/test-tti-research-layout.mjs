@@ -117,5 +117,13 @@ assert.match(js, /while \(usedIds\.has\(candidate\)\)/, "generated heading IDs a
 for (const selector of [".focus-hero", ".focus-pillar", ".research-toc", ".project-context", ".project-drawer", ".document-outline"]) {
   assert.ok(css.includes(selector), `research layout styling is missing ${selector}`);
 }
+const outlineRules = [...css.matchAll(/\.document-outline ol\s*\{([^}]*)\}/g)].map((match) => match[1]);
+assert.ok(outlineRules.length > 0, "document outline has no list layout rule");
+assert.ok(outlineRules.every((rule) => !/grid-template-columns:\s*repeat\(/.test(rule)),
+  "document outline links return to multiple horizontal columns at a breakpoint");
+assert.ok(outlineRules.some((rule) => /grid-template-columns:\s*1fr;/.test(rule)),
+  "document outline links are not listed vertically");
+assert.match(css, /table :is\(th, td\) > a\[href\]\s*\{[^}]*display:\s*block;/s,
+  "links inside tables are not forced onto separate vertical rows");
 
 console.log(`TTI research layout regression passed: ${documents.length} indexed destinations, ${indexFiles.length} built research documents.`);

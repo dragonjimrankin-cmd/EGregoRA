@@ -280,8 +280,10 @@ h3 { font-size: 1.15rem; color: var(--gold-bright); margin: 0 0 0.4rem; letter-s
 .frame::after { bottom: 6px; right: 6px; border-left: 0; border-top: 0; }
 
 .grid { display: grid; gap: 1.4rem; }
-.grid.two { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-.grid.three { grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); }
+/* `min(100%, …)` lets the cards become narrower than their preferred measure
+   when a phone, inset frame or split panel offers less room. */
+.grid.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.grid.three { grid-template-columns: repeat(auto-fit, minmax(min(100%, 265px), 1fr)); }
 
 .card { position: relative; overflow: hidden; transition: transform 0.35s, border-color 0.35s; }
 .card:hover { transform: translateY(-4px); border-color: rgba(243,221,156,0.6); }
@@ -1552,8 +1554,15 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 }
 
 /* ------------------------------------------------------- the register */
-.head-join-addr { text-transform: none; letter-spacing: .06em; font-size: .72rem; max-width: 15rem;
-  overflow: hidden; text-overflow: ellipsis; }
+.head-join-addr {
+  max-width: 15rem;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  text-transform: none;
+  letter-spacing: .06em;
+  font-size: .72rem;
+}
 /* Signed in: two rows — the quiet label above, the name beneath it. */
 .head-join.is-in .head-join-text {
   display: inline-flex; flex-direction: column; align-items: flex-start;
@@ -1565,8 +1574,14 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 }
 .head-join.is-in:hover .head-join-lead, .head-join.is-in:focus-visible .head-join-lead { color: #b9ad8d; }
 .head-join-who {
-  font-size: .82rem; letter-spacing: .04em; text-transform: none;
-  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  max-width: 100%;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: .82rem;
+  letter-spacing: .04em;
+  text-transform: none;
 }
 .head-join:hover .head-join-addr,
 .head-join:focus-visible .head-join-addr,
@@ -1613,8 +1628,13 @@ body.oracle-tall .oracle-msg { max-width: 92%; }
 }
 .shot-body { flex: 1 1 auto; min-width: 0; }
 .shot-name {
-  font-family: 'EB Garamond', serif; color: #a9b6d8; margin: 0 0 .4rem;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  margin: 0 0 .4rem;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-family: 'EB Garamond', serif;
+  color: #a9b6d8;
 }
 .shot-trim { display: flex; gap: .7rem; align-items: center; flex-wrap: wrap; }
 .shot-trim label {
@@ -2667,7 +2687,7 @@ input.sound-file { position: absolute; width: 1px; height: 1px; opacity: 0; poin
 .write-model textarea { width: 100%; }
 .keeper-gpus td { vertical-align: top; }
 .keeper-gpus .is-busy { color: #c98b6a; }
-.keeper-gpus .btn { white-space: nowrap; }
+.keeper-gpus .btn { white-space: normal; }
 
 /* ------------------------------------------------- The atlas, filling the screen
    Touching the map darkens the rest of the page to almost nothing and lets
@@ -3204,7 +3224,7 @@ details.ep:has(.pin-mark) { border-color: rgba(118, 207, 238, 0.55); }
   font-size: 0.64rem; color: #76cfee; min-width: 4.2em;
 }
 .people-table .tick-cell { text-align: center; }
-.people-table .el-cell { color: #a9b6d8; text-transform: capitalize; white-space: nowrap; }
+.people-table .el-cell { color: #a9b6d8; text-transform: capitalize; white-space: normal; }
 .people-table .empty-row td { color: rgba(203, 187, 147, 0.3); }
 .people-table tbody tr:nth-child(odd) { background: rgba(118, 207, 238, 0.03); }
 .on-air-dot {
@@ -3475,7 +3495,7 @@ body.only-check .frame { border: 0; padding: 0.2rem; }
 }
 .cell-table tbody th { font-weight: 400; color: #cdefff; }
 .cell-table tbody tr.is-open { background: rgba(127, 174, 122, 0.08); }
-.cell-do { white-space: nowrap; }
+.cell-do { white-space: normal; }
 .cell-do .btn { margin: 0.1rem 0.25rem 0.1rem 0; }
 .btn--tiny { padding: 0.22rem 0.55rem; font-size: 0.62rem; letter-spacing: 0.12em; }
 .btn--tiny.is-elsewhere { opacity: 0.6; }
@@ -3602,11 +3622,18 @@ button.rung:hover, button.rung:focus-visible { color: #cdefff; border-bottom-col
    ======================================================================= */
 
 /* 1. Prose and every control that holds words. `break-word` keeps ordinary
-      sentences looking normal and only breaks a word that cannot fit. */
-p, li, dd, dt, td, th, figcaption, blockquote, label, legend, summary,
+      sentences looking normal and only breaks a word that cannot fit. Links
+      and controls use `anywhere` because their labels can contain a single
+      long title or route with no natural break point. */
+p, li, dd, dt, td, th, figcaption, blockquote, label, legend,
 h1, h2, h3, h4, h5, h6, .kicker, .lede, .muted, .auth-msg, .chip,
-.btn, button, a, strong, em, span.plate-num {
+strong, em, span.plate-num {
   overflow-wrap: break-word;
+}
+a, button, summary, .btn {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 /* 2. The things that are routinely one unbroken string: addresses, keys,
@@ -3632,10 +3659,18 @@ input, select, textarea { box-sizing: border-box; }
 textarea { resize: vertical; }
 
 /* 5. Tables: wrap long cells, and let a genuinely wide one scroll inside
-      its own box rather than taking the page with it. */
+      its own box rather than taking the page with it. Links inside a table
+      are rows, never a run of adjacent inline labels. */
 table { table-layout: auto; }
-th, td { overflow-wrap: break-word; }
-.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+th, td { overflow-wrap: anywhere; word-break: normal; }
+table :is(th, td) > a[href] {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  white-space: normal;
+}
+table :is(th, td) > a[href] + a[href] { margin-top: 0.35em; }
+.table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 /* 6. A last guard on the document itself. Content is fixed at the source
       above; this only stops a stray wide child from offering the whole page
@@ -3907,17 +3942,22 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 }
 .site-head .brand-name {
   max-width: none;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
   font-size: clamp(0.84rem, 1.32vw, 1.12rem);
-  line-height: 1;
+  line-height: 1.12;
   letter-spacing: 0.028em;
 }
 .site-head .brand-tag {
   margin: 0;
   max-width: none;
-  white-space: nowrap;
-  font-size: 0.51rem;
-  line-height: 1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  /* Keep the masthead attribution quiet, but no longer microscopic. This is
+     exactly two CSS pixels larger than the r6.0 setting. */
+  font-size: calc(0.51rem + 2px);
+  line-height: 1.2;
   letter-spacing: 0.105em;
   color: #8f9cc0;
 }
@@ -4023,9 +4063,11 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 }
 .nav-cluster-title {
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 .nav-chevron {
   position: absolute;
@@ -4138,12 +4180,13 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 }
 .nav-link-copy small {
   margin-top: 0.13rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
   font-family: var(--serif);
   font-size: 0.78rem;
-  line-height: 1.15;
+  line-height: 1.3;
   color: #8f9cc0;
 }
 
@@ -4191,11 +4234,12 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   border: 1px solid transparent;
   font-family: var(--title);
   font-size: 0.62rem;
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: 0.13em;
   text-transform: uppercase;
   text-decoration: none;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   color: var(--vellum-dim);
 }
 .site-nav .nav-action i { display: block; width: 17px; height: 17px; }
@@ -4462,7 +4506,7 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   font-size: 0.9rem;
   color: var(--vellum-dim);
 }
-.project-grades span { white-space: nowrap; margin-right: 0.7rem; }
+.project-grades span { white-space: normal; margin-right: 0.7rem; }
 
 .project-contents {
   scroll-margin-top: 104px;
@@ -4742,8 +4786,10 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   margin: 0;
   padding: 0.65rem 0.8rem 0.85rem;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.35rem 0.75rem;
+  /* A document is read in one sequence. Keep that sequence visibly vertical
+     instead of distributing it across newspaper-style columns. */
+  grid-template-columns: 1fr;
+  gap: 0.24rem;
   border-top: 1px solid rgba(118, 207, 238, 0.12);
   counter-reset: outline;
 }
@@ -4789,7 +4835,6 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   .research-toc-part > ol > li > a { grid-template-columns: 5.4rem minmax(0, 1fr) minmax(7rem, auto); }
   .research-toc-status { grid-column: 2 / -1; }
   .project-drawer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .document-outline ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 700px) {
@@ -5108,12 +5153,14 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   text-transform: uppercase;
 }
 .focus-nav-copy strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
   font-family: var(--title);
   font-size: 0.62rem;
-  line-height: 1.1;
+  line-height: 1.2;
   letter-spacing: 0.085em;
   text-transform: uppercase;
 }
@@ -5145,7 +5192,11 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   color: var(--gold-bright);
 }
 .nav-archive-copy small,
-.nav-archive-copy strong { display: block; white-space: nowrap; }
+.nav-archive-copy strong {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .nav-archive-copy small {
   margin-bottom: 0.08rem;
   color: #7886aa;
@@ -5238,10 +5289,12 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 }
 .site-nav .archive-part a[data-archive-document] i { width: 17px; height: 17px; }
 .archive-part .nav-link-copy strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
   font-size: 0.57rem;
+  line-height: 1.25;
   letter-spacing: 0.055em;
 }
 .archive-part .nav-link-copy small:last-child { display: none; }
