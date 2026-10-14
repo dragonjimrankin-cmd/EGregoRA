@@ -67,6 +67,10 @@ assert.match(headerSource, /for group in site\.navGroups/,
   "masthead Parts are not derived from the canonical six-Part index");
 assert.match(headerSource, /for item in group\.items/,
   "masthead pages are not derived beneath their canonical Parts");
+assert.match(headerSource, /reference-part-row reference-part-row--/,
+  "masthead does not give every Part its own structural row");
+assert.match(headerSource, /reference-part-documents/,
+  "masthead does not keep each Part's papers inside its row");
 assert.match(headerSource, /item\.mastheadLabel/,
   "masthead does not use purpose-written compact page labels");
 assert.match(headerSource, /data-focus-document/,
@@ -78,11 +82,18 @@ assert.match(headerSource, /data-research-document/,
 assert.match(headerSource, /href="\/archive\/"/, "complete Research Index is absent from the masthead");
 assert.match(headerSource, /aria-controls="primary-nav"/, "mobile toggle is not linked to the primary navigation");
 
-/* The low desktop index mirrors the reference: centred, wrapping, glyph-led,
-   expanding on hover and never truncating or splitting words. */
+/* The desktop index mirrors the reference while assigning every Part and its
+   papers to one deliberate row. Links expand on hover without truncating or
+   splitting words. */
 assert.match(r35Integration,
-  /\.site-head--reference \.reference-nav-list\s*\{[^}]*display:\s*flex;[^}]*justify-content:\s*center;[^}]*flex-wrap:\s*wrap;/s,
-  "reference masthead is not a centred wrapping research index");
+  /\.site-head--reference \.reference-nav-list\s*\{[^}]*display:\s*grid;/s,
+  "reference masthead does not establish one-dimensional Part rows");
+assert.match(r35Integration,
+  /\.site-head--reference \.reference-part-row\s*\{[^}]*display:\s*flex;[^}]*justify-content:\s*center;/s,
+  "each desktop Part is not centred on a row of its own");
+assert.match(r35Integration,
+  /\.site-head--reference \.reference-part-documents\s*\{[^}]*flex:\s*0 1 auto;[^}]*flex-wrap:\s*nowrap;/s,
+  "a desktop Part's paper links may break across multiple rows");
 const linkRule = r35Integration.match(/\.site-head--reference \.reference-nav-list a\s*\{([^}]*)\}/)?.[1] || "";
 assert.match(linkRule, /text-overflow:\s*clip;/, "masthead labels may still be truncated");
 assert.match(linkRule, /white-space:\s*nowrap;/, "desktop masthead labels are not kept whole");
@@ -93,8 +104,8 @@ assert.match(r35Integration,
   /\.site-head--reference \.reference-nav-list i\s*\{[^}]*width:\s*17px;[^}]*height:\s*17px;/s,
   "reference masthead lacks compact glyph-led destinations");
 assert.match(r35Integration,
-  /@media \(max-width:\s*900px\)[\s\S]*?\.site-head--reference \.reference-nav-list\s*\{[^}]*grid-template-columns:\s*repeat\(2,/,
-  "complete masthead index has no readable narrow-screen layout");
+  /@media \(max-width:\s*900px\)[\s\S]*?\.site-head--reference \.reference-part-documents\s*\{[^}]*grid-template-columns:\s*repeat\(2,/,
+  "Part rows have no readable narrow-screen paper layout");
 const attributionRule = r35Integration.match(/\.site-head--reference \.brand-tag\s*\{([^}]*)\}/)?.[1] || "";
 assert.match(attributionRule, /font-size:\s*calc\(0\.39rem \+ 2px\);/,
   "masthead attribution does not retain its two-pixel increase");
@@ -136,12 +147,27 @@ for (const [relative, route] of fixtures) {
     `${relative} has the wrong accessible project title`);
   assert.equal(normalise($(".brand-tag").first().text()), expectedTagline,
     `${relative} has the wrong attribution`);
+  const partRows = $("#primary-nav .reference-nav-list > .reference-part-row");
+  assert.equal(partRows.length, 6,
+    `${relative} does not give all six Parts a row of their own`);
   assert.equal($("#primary-nav .reference-part-label").length, 6,
     `${relative} does not display all six Part labels`);
   assert.deepEqual($("#primary-nav .reference-part-label").map((_, element) =>
     normalise($(element).find("a").attr("aria-label"))).get(),
   expectedGroups.map((group) => `Part ${group.part} — ${group.shortLabel}`),
   `${relative} Part headings drifted from the canonical index`);
+  partRows.each((index, element) => {
+    const row = $(element);
+    const group = expectedGroups[index];
+    const label = row.children(".reference-part-label");
+    const papers = row.children(".reference-part-documents");
+    assert.equal(label.length, 1, `${relative} Part ${group.part} row has no unique heading`);
+    assert.equal(papers.length, 1, `${relative} Part ${group.part} row has no paper list`);
+    assert.equal(papers.children(".reference-nav-item").length, group.items.length,
+      `${relative} Part ${group.part} papers escaped their own row`);
+    assert.deepEqual(papers.find("[data-research-document]").map((_, link) => $(link).attr("href")).get(),
+      group.items.map((item) => item.url), `${relative} Part ${group.part} row ordering drifted`);
+  });
 
   const integratedRoutes = $("#primary-nav [data-focus-document]").map((_, element) => $(element).attr("href")).get();
   assert.deepEqual(integratedRoutes, expectedIntegratedRoutes,

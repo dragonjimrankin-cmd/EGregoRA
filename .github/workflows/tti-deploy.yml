@@ -170,6 +170,8 @@ jobs:
           grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
           grep -q 'Folded back to the six reading paths' tti/hatchable/public/assets/js/atlas.js
           test "$(grep -c 'class="reference-part-label ' tti/hatchable/public/index.html)" -eq 6
+          test "$(grep -c 'class="reference-part-row ' tti/hatchable/public/index.html)" -eq 6
+          test "$(grep -c 'class="reference-part-documents"' tti/hatchable/public/index.html)" -eq 6
           test "$(grep -c 'class="site-nav reference-nav"' tti/hatchable/public/index.html)" -eq 1
           test "$(grep -c 'data-focus-document' tti/hatchable/public/index.html)" -eq 21
           test "$(grep -c 'data-archive-document' tti/hatchable/public/index.html)" -eq 13
@@ -261,6 +263,9 @@ jobs:
           grep -q '.frame::before' tti/hatchable/public/assets/css/r35-baseline.css
           grep -q '.hero' tti/hatchable/public/assets/css/r35-baseline.css
           grep -q '.site-head--reference .reference-nav-list' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q '.site-head--reference .reference-part-row' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q '.site-head--reference .reference-part-documents' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q 'flex-wrap: nowrap' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.reference-nav-list a:hover' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.focus-programme-summary' tti/hatchable/public/assets/css/r35-integration.css
           grep -q 'grid-template-columns: repeat(2, minmax(0, 1fr))' tti/hatchable/public/assets/css/r35-integration.css
@@ -462,7 +467,8 @@ jobs:
                 'Test everything; keep what survives.',
                 'Integrated research programme', 'data-focus-programme-document',
                 'class="site-head site-head--reference"', 'class="site-nav reference-nav"',
-                'class="reference-part-label ', 'A Geometry <em>of</em> Existence',
+                'class="reference-part-row ', 'class="reference-part-label ',
+                'class="reference-part-documents"', 'A Geometry <em>of</em> Existence',
                 'Research Index', 'data-focus-document', 'data-archive-document', 'data-research-document',
                 'Parts IV–VI', 'TTI-I.01', 'TTI-V.04', 'Part I', 'First Principles',
                 'Part II', 'Cosmic Architecture', 'Part III',
@@ -758,6 +764,7 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/assets/css/r35-integration.css',
               markers: ['r3.5 — CURRENT CORPUS INTEGRATION',
                 '.site-head--reference .reference-nav-list', '.reference-nav-list a:hover',
+                '.reference-part-row', '.reference-part-documents', 'flex-wrap: nowrap',
                 '.reference-part-label', '.brand-essence', '.focus-programme-summary',
                 'body *', 'overflow-wrap: normal', 'word-break: normal', 'hyphens: none'],
               forbiddenMarkers: ['overflow-wrap: anywhere', 'overflow-wrap: break-word',

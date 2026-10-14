@@ -28,33 +28,41 @@
 
   <nav id="primary-nav" class="site-nav reference-nav" aria-label="Complete six-Part research index">
     <ul class="reference-nav-list">
-      <li class="reference-nav-overview">
-        <a href="/"{% if page.url == '/' %} aria-current="page"{% endif %}>
-          <i aria-hidden="true">{% glyph "eye" %}</i><span>Summary</span>
-        </a>
-      </li>
-      <li class="reference-nav-overview">
-        <a href="/archive/"{% if page.url == '/archive/' %} aria-current="page"{% endif %}>
-          <i aria-hidden="true">{% glyph "metatron" %}</i><span>Research Index</span>
-        </a>
-      </li>
-      {% for group in site.navGroups %}
-        <li class="reference-part-label reference-part-{{ group.part | lower }}">
-          <a href="{{ group.items[0].url }}" aria-label="Part {{ group.part }} — {{ group.shortLabel }}">
-            <span class="reference-part-num">{{ group.part }}</span>
-            <span>Part {{ group.part }}<small>{{ group.shortLabel }}</small></span>
-          </a>
-        </li>
-        {% for item in group.items %}
-          <li class="reference-nav-item reference-nav-item--part-{{ group.part | lower }}">
-            <a data-research-document {% if group.part == 'I' or group.part == 'II' or group.part == 'III' %}data-focus-document{% else %}data-archive-document{% endif %}
-              href="{{ item.url }}" title="Part {{ group.part }} — {{ group.shortLabel }} · {{ item.label }} · {{ item.note }}"{% if page.url == item.url %} aria-current="page"{% endif %}>
-              <i aria-hidden="true">{% glyph item.glyph %}</i>
-              <span>{{ item.mastheadLabel }}</span>
-              <span class="sr-only"> — Part {{ group.part }}, {{ group.shortLabel }}; {{ item.code }}</span>
+      <li class="reference-nav-overview-row">
+        <ul aria-label="Project overview">
+          <li class="reference-nav-overview">
+            <a href="/"{% if page.url == '/' %} aria-current="page"{% endif %}>
+              <i aria-hidden="true">{% glyph "eye" %}</i><span>Summary</span>
             </a>
           </li>
-        {% endfor %}
+          <li class="reference-nav-overview">
+            <a href="/archive/"{% if page.url == '/archive/' %} aria-current="page"{% endif %}>
+              <i aria-hidden="true">{% glyph "metatron" %}</i><span>Research Index</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      {% for group in site.navGroups %}
+        <li class="reference-part-row reference-part-row--{{ group.part | lower }}">
+          <div class="reference-part-label reference-part-{{ group.part | lower }}">
+            <a href="{{ group.items[0].url }}" aria-label="Part {{ group.part }} — {{ group.shortLabel }}">
+              <span class="reference-part-num">{{ group.part }}</span>
+              <span>Part {{ group.part }}<small>{{ group.shortLabel }}</small></span>
+            </a>
+          </div>
+          <ul class="reference-part-documents" aria-label="Part {{ group.part }} — {{ group.shortLabel }} papers">
+            {% for item in group.items %}
+              <li class="reference-nav-item reference-nav-item--part-{{ group.part | lower }}">
+                <a data-research-document {% if group.part == 'I' or group.part == 'II' or group.part == 'III' %}data-focus-document{% else %}data-archive-document{% endif %}
+                  href="{{ item.url }}" title="Part {{ group.part }} — {{ group.shortLabel }} · {{ item.label }} · {{ item.note }}"{% if page.url == item.url %} aria-current="page"{% endif %}>
+                  <i aria-hidden="true">{% glyph item.glyph %}</i>
+                  <span>{{ item.mastheadLabel }}</span>
+                  <span class="sr-only"> — Part {{ group.part }}, {{ group.shortLabel }}; {{ item.code }}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
       {% endfor %}
     </ul>
   </nav>

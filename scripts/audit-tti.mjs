@@ -95,6 +95,20 @@ for (const file of htmlFiles) {
   if ($('#primary-nav .reference-part-label').length !== expectedPartCount) {
     fail(`${relative}: reference masthead does not expose all ${expectedPartCount} Part labels`);
   }
+  const partRows = $('#primary-nav .reference-nav-list > .reference-part-row');
+  if (partRows.length !== expectedPartCount) {
+    fail(`${relative}: reference masthead does not put all ${expectedPartCount} Parts on their own rows`);
+  }
+  partRows.each((index, element) => {
+    const group = site.navGroups[index];
+    const row = $(element);
+    const rowRoutes = row.children('.reference-part-documents')
+      .find('[data-research-document]').map((_, link) => $(link).attr('href')).get();
+    const expectedRowRoutes = group?.items.map((item) => item.url) || [];
+    if (JSON.stringify(rowRoutes) !== JSON.stringify(expectedRowRoutes)) {
+      fail(`${relative}: Part ${group?.part || index + 1} papers are not contained on their own row`);
+    }
+  });
   const integratedRoutes = $('#primary-nav [data-focus-document]').map((_, element) => $(element).attr('href')).get();
   if (JSON.stringify(integratedRoutes) !== JSON.stringify(expectedIntegratedRoutes)) {
     fail(`${relative}: Parts I–III are not complete in the reference masthead`);
