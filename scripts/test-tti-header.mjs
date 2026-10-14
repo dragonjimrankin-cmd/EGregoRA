@@ -8,9 +8,7 @@ import site from "../tti/src/_data/site.js";
 
 const ROOT = process.cwd();
 const HEADER = path.join(ROOT, "tti/src/_includes/partials/header.njk");
-const BASE = path.join(ROOT, "tti/src/_includes/layouts/base.njk");
 const CSS = path.join(ROOT, "tti/src/assets/css/main.css");
-const R35_CSS = path.join(ROOT, "tti/src/assets/css/r35-restoration.css");
 const JS = path.join(ROOT, "tti/src/assets/js/site.js");
 const BUILD = path.join(ROOT, "tti/_site");
 const builtMode = process.argv.includes("--built");
@@ -29,9 +27,7 @@ if (!fs.existsSync(BUILD) && !builtMode) {
 }
 
 const headerSource = fs.readFileSync(HEADER, "utf8");
-const baseSource = fs.readFileSync(BASE, "utf8");
 const css = fs.readFileSync(CSS, "utf8");
-const r35css = fs.readFileSync(R35_CSS, "utf8");
 const js = fs.readFileSync(JS, "utf8");
 
 /* Source contract: three public ideas, one keyboard-readable complete archive. */
@@ -39,15 +35,6 @@ assert.match(headerSource, /class="brand-name">The Two Infinities: Eternal Integ
   "exact project title is absent from the masthead");
 assert.match(headerSource, /class="brand-tag">A speculative cosmology by Jim Rankin, UK, 2026</,
   "exact attribution is absent from the masthead");
-assert.match(headerSource, /class="brand-sigil"[^>]*>\{% glyph "torus" %\}/,
-  "r3.5 torus masthead sigil is absent");
-assert.match(headerSource, /class="brand-line"/,
-  "r3.5 engraved masthead line is absent");
-assert.match(headerSource, /class="brand-order-text">Research edition &middot; \{\{ site\.revision \}\}/,
-  "restored masthead does not identify the current research edition");
-assert.match(baseSource,
-  /main\.css\?v=\{\{ build\.id \}\}[\s\S]*r35-restoration\.css\?v=\{\{ build\.id \}\}/,
-  "r3.5 restoration layer is not loaded after the main stylesheet");
 assert.match(headerSource, /for focus in site\.focusAreas/, "header does not derive the three focus links from canonical data");
 assert.match(headerSource, /class="focus-nav-link/, "fundamental-conjecture rail is absent");
 assert.match(headerSource, /<details class="nav-cluster nav-archive">/,
@@ -68,19 +55,12 @@ assert.match(focusLabelRule, /white-space:\s*normal;/,
   "focus labels do not wrap at rest");
 assert.doesNotMatch(focusLabelRule, /text-overflow:\s*ellipsis;/,
   "focus labels are still truncated at rest");
-assert.match(r35css, /r3\.5 — restored formatting layer/,
-  "the historical formatting layer is not explicitly identified");
-assert.match(r35css, /\.site-head\s*\{[^}]*position:\s*relative;[^}]*backdrop-filter:\s*blur\(6px\);/s,
-  "the non-sticky r3.5 masthead was not restored");
-assert.match(r35css, /\.focus-hero\s*\{[^}]*max-width:\s*var\(--maxw\);[^}]*text-align:\s*center;/s,
-  "the centred r3.5 hero measure was not restored");
-assert.match(r35css, /\.focus-pillar\s*\{[^}]*border:\s*1px solid rgba\(118,207,238,0\.28\);[^}]*box-shadow:/s,
-  "current conjectures do not use the r3.5 framed-paper treatment");
-assert.match(r35css, /font-size:\s*calc\(0\.54rem \+ 2px\);/,
-  "restored desktop attribution does not retain the requested two-pixel increase");
+const attributionRule = css.match(/\.site-head \.brand-tag\s*\{([^}]*)\}/)?.[1] || "";
+assert.match(attributionRule, /font-size:\s*calc\(0\.51rem \+ 2px\);/,
+  "masthead attribution was not increased by exactly two pixels");
 assert.match(css, /body\s*\{[^}]*overflow-wrap:\s*normal;[^}]*word-break:\s*normal;[^}]*hyphens:\s*none;/s,
   "the site does not establish whole-word line breaking");
-assert.doesNotMatch(`${css}\n${r35css}`,
+assert.doesNotMatch(css,
   /(?:overflow-wrap:\s*(?:anywhere|break-word)|word-break:\s*(?:break-all|break-word)|hyphens:\s*auto)/,
   "a CSS rule can still split a word between rows");
 assert.match(css, /\.archive-part-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/,
@@ -110,11 +90,6 @@ for (const [relative, route] of fixtures) {
   const file = path.join(BUILD, relative);
   assert.ok(fs.existsSync(file), `${relative} was not built`);
   const $ = cheerio.load(fs.readFileSync(file, "utf8"));
-  const stylesheets = $("link[rel='stylesheet']").map((_, element) => $(element).attr("href") || "").get();
-  const mainCssIndex = stylesheets.findIndex((href) => href.startsWith("/assets/css/main.css"));
-  const r35CssIndex = stylesheets.findIndex((href) => href.startsWith("/assets/css/r35-restoration.css"));
-  assert.ok(mainCssIndex >= 0 && r35CssIndex > mainCssIndex,
-    `${relative} does not load the r3.5 formatting layer after the main stylesheet`);
 
   assert.equal(normalise($(".brand-name").first().text()), expectedTitle, `${relative} has the wrong title`);
   assert.equal(normalise($(".brand-tag").first().text()), expectedTagline, `${relative} has the wrong attribution`);

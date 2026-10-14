@@ -237,11 +237,6 @@ jobs:
           grep -q 'r6.0 — Fundamental conjectures' tti/hatchable/public/assets/css/main.css
           grep -q '.focus-nav' tti/hatchable/public/assets/css/main.css
           grep -q '.archive-panel' tti/hatchable/public/assets/css/main.css
-          grep -q 'r35-restoration.css' tti/hatchable/public/index.html
-          grep -q 'r3.5 — restored formatting layer' tti/hatchable/public/assets/css/r35-restoration.css
-          grep -q 'position: relative' tti/hatchable/public/assets/css/r35-restoration.css
-          grep -q 'font-size: calc(0.54rem + 2px)' tti/hatchable/public/assets/css/r35-restoration.css
-          ! grep -Eq 'overflow-wrap:[[:space:]]*(anywhere|break-word)|word-break:[[:space:]]*(break-all|break-word)|hyphens:[[:space:]]*auto' tti/hatchable/public/assets/css/r35-restoration.css
           grep -q '.plate-accordion-group' tti/hatchable/public/assets/css/main.css
           grep -q '.atlas-grid' tti/hatchable/public/assets/css/main.css
           grep -q 'body.atlas-focused' tti/hatchable/public/assets/css/main.css
@@ -719,15 +714,6 @@ jobs:
                 '.plate-accordion-group[open]', '.plate-group-toggle::after',
                 '.atlas-grid', 'body.atlas-focused',
                 '#atlas-box.is-focused']
-            },
-            {
-              url: 'https://the-two-infinities.hatchable.site/assets/css/r35-restoration.css',
-              markers: ['r3.5 — restored formatting layer', 'position: relative',
-                'font-size: calc(0.54rem + 2px)', '.focus-hero', '.focus-pillar',
-                '.research-toc-grid', '.document-outline ol',
-                'overflow-wrap: normal', 'hyphens: none'],
-              forbiddenMarkers: ['overflow-wrap: anywhere', 'overflow-wrap: break-word',
-                'word-break: break-all', 'word-break: break-word', 'hyphens: auto']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',
