@@ -8,11 +8,7 @@
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.getElementById("primary-nav");
   const head = document.querySelector("[data-site-header]");
-  const clusters = Array.from(document.querySelectorAll(".nav-cluster"));
 
-  const closeClusters = (except) => clusters.forEach((cluster) => {
-    if (cluster !== except) cluster.removeAttribute("open");
-  });
   const closeMobileNav = () => {
     if (!toggle || !nav) return;
     nav.classList.remove("open");
@@ -29,33 +25,18 @@
       toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
       const label = toggle.querySelector("em");
       if (label) label.textContent = open ? "Close" : "Menu";
-      if (!open) closeClusters();
     });
 
-    nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => {
-      closeClusters();
-      closeMobileNav();
-    }));
+    nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMobileNav));
   }
 
-  clusters.forEach((cluster) => cluster.addEventListener("toggle", () => {
-    if (cluster.open) closeClusters(cluster);
-  }));
-
   document.addEventListener("click", (event) => {
-    if (head && !head.contains(event.target)) {
-      closeClusters();
-      closeMobileNav();
-    }
+    if (head && !head.contains(event.target)) closeMobileNav();
   });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    const openCluster = clusters.find((cluster) => cluster.open);
-    const desktopReturn = openCluster && openCluster.querySelector("summary");
-    closeClusters();
     closeMobileNav();
     if (toggle && toggle.offsetParent !== null) toggle.focus();
-    else if (desktopReturn) desktopReturn.focus();
   });
 
   const desktopNav = window.matchMedia("(min-width: 901px)");
@@ -66,24 +47,8 @@
   if (desktopNav.addEventListener) desktopNav.addEventListener("change", resetAtDesktop);
   else if (desktopNav.addListener) desktopNav.addListener(resetAtDesktop);
 
-  /* Every conjecture programme and the supporting archive is a native details
-     disclosure for keyboard and touch readers. On desktop each panel also
-     opens on deliberate pointer hover; a short leave delay lets the pointer
-     cross into the panel without collapsing it. */
-  clusters.forEach((cluster) => {
-    let hoverCloseTimer = 0;
-    cluster.addEventListener("pointerenter", () => {
-      if (!desktopNav.matches) return;
-      window.clearTimeout(hoverCloseTimer);
-      closeClusters(cluster);
-      cluster.setAttribute("open", "");
-    });
-    cluster.addEventListener("pointerleave", () => {
-      if (!desktopNav.matches) return;
-      window.clearTimeout(hoverCloseTimer);
-      hoverCloseTimer = window.setTimeout(() => cluster.removeAttribute("open"), 140);
-    });
-  });
+  /* Desktop uses the complete visible r3.5 index. Mobile turns the same links
+     into one scrollable menu; no second navigation taxonomy is maintained. */
 
   /* Hatchable supplies the two account rooms at runtime rather than through
      Eleventy. Keep their visible page labels in the same Part V vocabulary as

@@ -1044,3 +1044,413 @@ table :is(th, td) > a[href] {
   .hero--r35 .hero-ctas .btn { width: 100%; }
   #fundamental-conjectures .focus-pillar { padding-inline: 1rem; }
 }
+
+/* ---------- Reference masthead: the complete r3.5 research index --------
+   The user's reference is the original low, engraved masthead: one identity
+   line above a centred field of glyph-led destinations. The current corpus is
+   larger, so compact display labels carry every destination without hiding a
+   Part or truncating a paper title. */
+.site-head--reference .head-accent,
+.site-head--reference > .rule--bottom {
+  height: 10px;
+}
+.site-head--reference .head-accent::before,
+.site-head--reference .head-accent::after,
+.site-head--reference > .rule--bottom::before,
+.site-head--reference > .rule--bottom::after {
+  font-size: 0.58rem;
+}
+.site-head--reference .brand-row {
+  max-width: 1400px;
+  min-height: 44px;
+  padding: 0.18rem 1.1rem 0.22rem;
+  gap: 0.8rem;
+}
+.site-head--reference .brand {
+  gap: 0.58rem;
+}
+.site-head--reference .brand-sigil {
+  width: 27px;
+  height: 27px;
+}
+.site-head--reference .brand-text {
+  min-width: 0;
+  display: grid;
+  gap: 0.16rem;
+}
+.site-head--reference .brand-line {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.62rem;
+}
+.site-head--reference .brand-name {
+  flex: 0 0 auto;
+  max-width: none;
+  color: var(--gold-bright);
+  font-size: clamp(0.77rem, 1.2vw, 1rem);
+  line-height: 1;
+  letter-spacing: 0.065em;
+  white-space: nowrap;
+}
+.site-head--reference .brand-order {
+  flex: 0 0 auto;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+.site-head--reference .brand-rule {
+  width: clamp(12px, 1.8vw, 28px);
+}
+.site-head--reference .brand-order-text {
+  color: var(--gold);
+  font-size: clamp(0.45rem, 0.72vw, 0.6rem);
+  line-height: 1;
+  letter-spacing: 0.3em;
+}
+.site-head--reference .brand-order-text em {
+  margin: 0 0.25em;
+  color: var(--vellum-dim);
+  font-family: var(--serif);
+  font-size: 1.12em;
+  font-style: italic;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+}
+.site-head--reference .brand-essence {
+  min-width: 0;
+  overflow: visible;
+  color: var(--vellum-dim);
+  font-family: var(--caps);
+  font-size: clamp(0.43rem, 0.65vw, 0.55rem);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.site-head--reference .brand-tag {
+  margin: 0;
+  color: rgba(231,237,255,0.62);
+  /* Compact reference size, preserving the requested two-pixel increase. */
+  font-size: calc(0.39rem + 2px);
+  line-height: 1;
+  letter-spacing: 0.17em;
+  white-space: nowrap;
+}
+.site-head--reference .head-join {
+  margin: 0;
+  padding: 0.42rem 0.7rem;
+  border-color: rgba(118,207,238,0.25);
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+}
+
+.site-head--reference .reference-nav {
+  position: relative;
+  overflow: visible;
+  max-height: none;
+  border-top: 1px solid rgba(118,207,238,0.1);
+  background: rgba(3,4,12,0.2);
+}
+.site-head--reference .reference-nav-list {
+  width: min(1420px, 100%);
+  max-width: 1420px;
+  margin: 0 auto;
+  padding: 0.28rem 1rem 0.42rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.04rem 0.16rem;
+  list-style: none;
+}
+.site-head--reference .reference-nav-list > li {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+.site-head--reference .reference-nav-list a {
+  min-width: 0;
+  min-height: 0;
+  padding: 0.34rem 0.44rem;
+  display: flex;
+  align-items: center;
+  gap: 0.34rem;
+  overflow: visible;
+  border: 1px solid transparent;
+  color: rgba(231,237,255,0.65);
+  background: transparent;
+  font-family: var(--title);
+  font-size: clamp(0.53rem, 0.65vw, 0.63rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 0.145em;
+  text-decoration: none;
+  text-overflow: clip;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease,
+    padding 180ms ease, letter-spacing 180ms ease, transform 180ms ease;
+}
+.site-head--reference .reference-nav-list a:hover,
+.site-head--reference .reference-nav-list a:focus-visible,
+.site-head--reference .reference-nav-list a[aria-current="page"] {
+  padding-inline: 0.62rem;
+  color: var(--gold-bright);
+  border-color: rgba(118,207,238,0.3);
+  background: radial-gradient(120% 140% at 50% 120%, rgba(118,207,238,0.14), transparent 70%);
+  letter-spacing: 0.17em;
+  outline: none;
+  transform: translateY(-1px);
+}
+.site-head--reference .reference-nav-list i {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  display: block;
+  color: var(--gold-bright);
+  opacity: 0.66;
+  filter: drop-shadow(0 0 3px rgba(118,207,238,0.4));
+  transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
+}
+.site-head--reference .reference-nav-list a:hover i,
+.site-head--reference .reference-nav-list a:focus-visible i,
+.site-head--reference .reference-nav-list a[aria-current="page"] i {
+  opacity: 1;
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 6px rgba(205,239,255,0.8));
+}
+.site-head--reference .reference-part-label a {
+  gap: 0.25rem;
+  padding-inline: 0.38rem;
+  color: var(--gold);
+  border-left: 1px solid rgba(118,207,238,0.24);
+  font-size: clamp(0.46rem, 0.58vw, 0.56rem);
+  letter-spacing: 0.1em;
+}
+.site-head--reference .reference-part-label:first-of-type a {
+  border-left-color: transparent;
+}
+.site-head--reference .reference-part-label a > span:last-child {
+  display: grid;
+  gap: 0.05rem;
+}
+.site-head--reference .reference-part-label small {
+  display: block;
+  color: rgba(169,182,216,0.66);
+  font-family: var(--caps);
+  font-size: 0.42rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.site-head--reference .reference-part-num {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(118,207,238,0.28);
+  border-radius: 50%;
+  color: var(--gold-bright);
+  font-family: var(--title);
+  font-size: 0.5rem;
+  letter-spacing: 0;
+}
+
+@media (min-width: 901px) and (max-width: 1180px) {
+  .site-head--reference .brand-tag { display: none; }
+  .site-head--reference .reference-nav-list a {
+    padding-inline: 0.35rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.1em;
+  }
+  .site-head--reference .reference-nav-list i {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media (max-width: 900px) {
+  .site-head--reference .brand-row {
+    min-height: 0;
+    padding: 0.35rem 0.72rem;
+  }
+  .site-head--reference .brand-sigil {
+    width: 34px;
+    height: 34px;
+  }
+  .site-head--reference .brand-line { display: block; }
+  .site-head--reference .brand-name {
+    font-size: clamp(0.72rem, 3vw, 0.95rem);
+    white-space: normal;
+  }
+  .site-head--reference .brand-order,
+  .site-head--reference .brand-essence { display: none; }
+  .site-head--reference .brand-tag {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.58rem;
+    line-height: 1.2;
+    letter-spacing: 0.09em;
+    white-space: normal;
+  }
+  .site-head--reference .head-join { display: none; }
+  .site-head--reference .reference-nav {
+    border-top: 0;
+  }
+  .js-nav .site-head--reference .reference-nav {
+    max-height: 0;
+    overflow: hidden;
+  }
+  .js-nav .site-head--reference .reference-nav.open {
+    max-height: calc(100dvh - 58px);
+    overflow-y: auto;
+  }
+  .site-head--reference .reference-nav-list {
+    width: auto;
+    padding: 0.4rem 0.75rem 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 0;
+  }
+  .site-head--reference .reference-nav-list a {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.55rem 0.65rem;
+    border: 0;
+    border-bottom: 1px solid rgba(118,207,238,0.12);
+    font-size: 0.64rem;
+    line-height: 1.2;
+    letter-spacing: 0.11em;
+    white-space: normal;
+  }
+  .site-head--reference .reference-nav-list a:hover,
+  .site-head--reference .reference-nav-list a:focus-visible,
+  .site-head--reference .reference-nav-list a[aria-current="page"] {
+    padding-inline: 0.78rem;
+    border-bottom-color: rgba(118,207,238,0.35);
+    letter-spacing: 0.13em;
+    transform: none;
+  }
+  .site-head--reference .reference-part-label {
+    grid-column: 1 / -1;
+  }
+  .site-head--reference .reference-part-label a {
+    min-height: 38px;
+    border-left: 0;
+    color: var(--gold);
+    background: rgba(118,207,238,0.035);
+  }
+  .site-head--reference .reference-part-label small {
+    font-size: 0.48rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .site-head--reference .reference-nav-list { grid-template-columns: 1fr; }
+  .site-head--reference .reference-nav-list i {
+    width: 19px;
+    height: 19px;
+  }
+  .site-head--reference .brand-tag { display: none; }
+  .site-head--reference .nav-toggle > span { display: none; }
+  .site-head--reference .nav-toggle em { margin-left: 0; }
+}
+
+/* The three conjectures remain the homepage's organising ideas, while their
+   twenty-one papers now open on demand. This keeps the restored summary and
+   chain visible before the reader enters the complete programme. */
+#fundamental-conjectures details.focus-programme {
+  padding-top: 0;
+  border: 1px solid rgba(118,207,238,0.2);
+  background: rgba(3,5,14,0.36);
+}
+#fundamental-conjectures .focus-programme-summary {
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+  transition: background 180ms ease, padding-inline 180ms ease;
+}
+#fundamental-conjectures .focus-programme-summary::-webkit-details-marker { display: none; }
+#fundamental-conjectures .focus-programme-summary:hover,
+#fundamental-conjectures .focus-programme-summary:focus-visible {
+  padding-inline: 1.25rem;
+  background: rgba(118,207,238,0.055);
+  outline: none;
+}
+#fundamental-conjectures .focus-programme-summary > span:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+#fundamental-conjectures .focus-programme-summary small {
+  color: var(--verdant);
+  font-family: var(--caps);
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+#fundamental-conjectures .focus-programme-summary strong {
+  color: var(--gold-bright);
+  font-family: var(--title);
+  font-size: clamp(0.78rem, 1.4vw, 1rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+#fundamental-conjectures .focus-programme-summary-action {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--vellum-dim);
+  font-family: var(--title);
+  font-size: 0.58rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+#fundamental-conjectures .focus-programme-summary-action i {
+  width: 0.5rem;
+  height: 0.5rem;
+  display: block;
+  border-right: 1px solid var(--gold);
+  border-bottom: 1px solid var(--gold);
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 180ms ease;
+}
+#fundamental-conjectures details[open] .focus-programme-summary-action i {
+  transform: rotate(225deg) translate(-2px, -2px);
+}
+#fundamental-conjectures .focus-programme-head {
+  margin: 0 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(118,207,238,0.13);
+}
+#fundamental-conjectures .focus-programme-documents {
+  margin-inline: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 620px) {
+  #fundamental-conjectures .focus-programme-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  #fundamental-conjectures .focus-programme-summary-action { white-space: normal; }
+  #fundamental-conjectures .focus-programme-head {
+    display: block;
+  }
+  #fundamental-conjectures .focus-programme-head > * { margin-top: 0.5rem; }
+  #fundamental-conjectures .focus-programme-documents a {
+    grid-template-columns: 1fr auto;
+  }
+  #fundamental-conjectures .focus-programme-code { grid-column: 1 / -1; }
+}

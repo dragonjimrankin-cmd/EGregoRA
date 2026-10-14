@@ -15,7 +15,6 @@ const runtimeRoutes = new Set(['/join/', '/account/']);
 const expectedResearchRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedIntegratedRoutes = site.integratedNavGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedSupportingRoutes = site.supportingNavGroups.flatMap((group) => group.items.map((item) => item.url));
-const expectedFocusRoutes = site.focusAreas.map((focus) => focus.url);
 const expectedPartCount = site.navGroups.length;
 const essayDocuments = site.navGroups
   .filter((group) => ['I', 'II', 'III', 'IV'].includes(group.part))
@@ -83,25 +82,26 @@ for (const file of htmlFiles) {
   if (canonicals.has(canonical)) fail(`${relative}: duplicate canonical also used by ${canonicals.get(canonical)}`);
   canonicals.set(canonical, relative);
 
-  if (!$('.brand-name').text().includes(expectedTitle)) fail(`${relative}: masthead is missing the exact project title`);
-  if (!$('.brand-tag').text().includes(expectedTagline)) fail(`${relative}: masthead is missing the exact tagline`);
-  if ($('#primary-nav .focus-cluster').length !== 3 || $('#primary-nav .focus-nav-link').length !== 3) {
-    fail(`${relative}: header does not foreground exactly three conjecture disclosures`);
+  if (!$('.brand .sr-only').text().includes(expectedTitle)) fail(`${relative}: masthead is missing the exact accessible project title`);
+  if (!$('.brand-name').text().includes('The Two Infinities') ||
+      !$('.brand-essence').text().includes('Eternal Integration of the Self')) {
+    fail(`${relative}: reference masthead does not display the complete project identity`);
   }
-  const focusRoutes = $('#primary-nav .focus-nav-link').map((_, element) => $(element).attr('data-focus-route')).get();
-  if (JSON.stringify(focusRoutes) !== JSON.stringify(expectedFocusRoutes)) {
-    fail(`${relative}: principal focus destinations or ordering drifted`);
+  if (!$('.brand-order').text().includes('A Geometry of Existence') ||
+      !$('.brand-order').text().includes('r3.5')) {
+    fail(`${relative}: reference masthead is missing its geometry-and-revision line`);
+  }
+  if (!$('.brand-tag').text().includes(expectedTagline)) fail(`${relative}: masthead is missing the exact tagline`);
+  if ($('#primary-nav .reference-part-label').length !== expectedPartCount) {
+    fail(`${relative}: reference masthead does not expose all ${expectedPartCount} Part labels`);
   }
   const integratedRoutes = $('#primary-nav [data-focus-document]').map((_, element) => $(element).attr('href')).get();
   if (JSON.stringify(integratedRoutes) !== JSON.stringify(expectedIntegratedRoutes)) {
-    fail(`${relative}: Parts I–III are not completely integrated beneath the three conjectures`);
-  }
-  if ($('#primary-nav .nav-archive').length !== 1 || $('#primary-nav .archive-part').length !== 3) {
-    fail(`${relative}: supporting archive does not expose Parts IV–VI`);
+    fail(`${relative}: Parts I–III are not complete in the reference masthead`);
   }
   const supportingRoutes = $('#primary-nav [data-archive-document]').map((_, element) => $(element).attr('href')).get();
   if (JSON.stringify(supportingRoutes) !== JSON.stringify(expectedSupportingRoutes)) {
-    fail(`${relative}: supporting archive destinations or ordering drifted`);
+    fail(`${relative}: Parts IV–VI are not complete in the reference masthead`);
   }
   const researchRoutes = $('#primary-nav [data-research-document]').map((_, element) => $(element).attr('href')).get();
   if (JSON.stringify(researchRoutes) !== JSON.stringify(expectedResearchRoutes)) {
@@ -111,7 +111,8 @@ for (const file of htmlFiles) {
   if (!$('.nav-toggle[aria-controls="primary-nav"][aria-expanded="false"]').length) {
     fail(`${relative}: mobile navigation toggle is not wired to the primary navigation`);
   }
-  const expectedCurrentUrl = urlPath === '/archive/' ? '/archive/' : (expectedResearchRoutes.includes(urlPath) ? urlPath : null);
+  const expectedCurrentUrl = urlPath === '/' ? '/' : urlPath === '/archive/' ? '/archive/' :
+    (expectedResearchRoutes.includes(urlPath) ? urlPath : null);
   const currentLinks = $('#primary-nav a[aria-current="page"]');
   if (currentLinks.length !== (expectedCurrentUrl ? 1 : 0) ||
       (expectedCurrentUrl && currentLinks.attr('href') !== expectedCurrentUrl)) {
@@ -128,8 +129,8 @@ for (const file of htmlFiles) {
     fail(`${relative}: retains an obsolete Part VII or VIII page label`);
   }
   if (html.includes(retiredTitle)) fail(`${relative}: contains the retired project title`);
-  if (html.includes('A Geometry of Existence') || html.includes('A Geometry of the Cosmos')) {
-    fail(`${relative}: contains a retired tagline`);
+  if (html.includes('A Geometry of the Cosmos')) {
+    fail(`${relative}: contains the superseded geometry descriptor`);
   }
   if (/\b(?:localhost|127\.0\.0\.1)\b/.test(html)) fail(`${relative}: contains a browser-facing local address`);
 

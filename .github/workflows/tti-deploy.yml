@@ -169,13 +169,17 @@ jobs:
           grep -q 'tti-atlas-skin' tti/hatchable/public/assets/js/atlas.js
           grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
           grep -q 'Folded back to the six reading paths' tti/hatchable/public/assets/js/atlas.js
-          test "$(grep -c 'class="focus-nav-link ' tti/hatchable/public/index.html)" -eq 3
-          test "$(grep -c 'class="nav-cluster nav-archive"' tti/hatchable/public/index.html)" -eq 1
+          test "$(grep -c 'class="reference-part-label ' tti/hatchable/public/index.html)" -eq 6
+          test "$(grep -c 'class="site-nav reference-nav"' tti/hatchable/public/index.html)" -eq 1
           test "$(grep -c 'data-focus-document' tti/hatchable/public/index.html)" -eq 21
           test "$(grep -c 'data-archive-document' tti/hatchable/public/index.html)" -eq 13
+          test "$(grep -c 'class="focus-programme"' tti/hatchable/public/index.html)" -eq 3
+          grep -Fq 'A Geometry <em>of</em> Existence' tti/hatchable/public/index.html
+          grep -Fq 'Eternal Integration of the Self' tti/hatchable/public/index.html
+          grep -Fq 'Research Index' tti/hatchable/public/index.html
           test "$(grep -c 'data-research-document' tti/hatchable/public/index.html)" -eq 34
           test "$(grep -c 'data-focus-programme-document' tti/hatchable/public/index.html)" -eq 21
-          grep -q 'class="nav-actions nav-actions--focus"' tti/hatchable/public/index.html
+          grep -q 'class="reference-nav-list"' tti/hatchable/public/index.html
           grep -q 'Part I' tti/hatchable/public/index.html
           grep -q 'First Principles' tti/hatchable/public/index.html
           grep -q 'Part II' tti/hatchable/public/index.html
@@ -245,21 +249,21 @@ jobs:
           grep -Fq 'item.message.data.voice = (item.message.data.voice || this.ttsSetup.voice).slice()' tti/hatchable/public/assets/js/headtts/headtts.mjs
           grep -q 'const avatarName' tti/hatchable/public/assets/js/site.js
           grep -q 'classList.add("js-nav")' tti/hatchable/public/assets/js/site.js
-          grep -q 'closeClusters' tti/hatchable/public/assets/js/site.js
+          grep -q 'closeMobileNav' tti/hatchable/public/assets/js/site.js
           grep -q 'closePlateGroups' tti/hatchable/public/assets/js/site.js
           grep -q 'openPlateFromHash' tti/hatchable/public/assets/js/site.js
           grep -q 'runtimePartLabels' tti/hatchable/public/assets/js/site.js
-          grep -Fq 'cluster.addEventListener("pointerenter"' tti/hatchable/public/assets/js/site.js
+          grep -Fq 'nav.classList.toggle("open")' tti/hatchable/public/assets/js/site.js
           grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.03 \u00b7 Join' tti/hatchable/public/assets/js/site.js
           grep -Fq 'Part V \u2014 Reading Rooms \u00b7 Reader service TTI-V.04 \u00b7 Your Account' tti/hatchable/public/assets/js/site.js
           grep -q 'THE TWO INFINITIES.*r3.5' tti/hatchable/public/assets/css/r35-baseline.css
           grep -q 'CURRENT CORPUS INTEGRATION' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.frame::before' tti/hatchable/public/assets/css/r35-baseline.css
           grep -q '.hero' tti/hatchable/public/assets/css/r35-baseline.css
-          grep -q '.focus-nav' tti/hatchable/public/assets/css/r35-integration.css
-          grep -q '.focus-panel' tti/hatchable/public/assets/css/main.css
-          grep -q '.focus-programme' tti/hatchable/public/assets/css/r35-integration.css
-          grep -q '.archive-panel' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q '.site-head--reference .reference-nav-list' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q '.reference-nav-list a:hover' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q '.focus-programme-summary' tti/hatchable/public/assets/css/r35-integration.css
+          grep -q 'grid-template-columns: repeat(2, minmax(0, 1fr))' tti/hatchable/public/assets/css/r35-integration.css
           grep -q '.plate-accordion-group' tti/hatchable/public/assets/css/main.css
           grep -q '.atlas-grid' tti/hatchable/public/assets/css/main.css
           grep -q 'body.atlas-focused' tti/hatchable/public/assets/css/main.css
@@ -457,8 +461,9 @@ jobs:
                 'The full six-Part programme remains open', 'Research Archive',
                 'Test everything; keep what survives.',
                 'Integrated research programme', 'data-focus-programme-document',
-                'class="focus-nav-link ', 'class="nav-cluster nav-archive"',
-                'data-focus-document', 'data-archive-document', 'data-research-document',
+                'class="site-head site-head--reference"', 'class="site-nav reference-nav"',
+                'class="reference-part-label ', 'A Geometry <em>of</em> Existence',
+                'Research Index', 'data-focus-document', 'data-archive-document', 'data-research-document',
                 'Parts IV–VI', 'TTI-I.01', 'TTI-V.04', 'Part I', 'First Principles',
                 'Part II', 'Cosmic Architecture', 'Part III',
                 'Part IV', 'Tests and Essays', 'Part V', 'Reading Rooms',
@@ -736,11 +741,8 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/css/main.css',
-              markers: ['.focus-nav', '.focus-nav-link', '.nav-archive', '.archive-panel',
-                '.archive-part-grid', '.js-nav .site-nav.open',
-                '.focus-nav-link:hover .focus-nav-copy strong', '.focus-panel',
-                'grid-template-columns: repeat(3, minmax(0, 1fr))',
-                '.focus-hero', '.focus-pillar', '.focus-programme', '.focus-synthesis', '.focus-archive',
+              markers: ['.js-nav .site-nav.open', '.focus-pillar', '.focus-programme',
+                '.focus-archive', '.project-drawer-grid', '.document-outline',
                 '.plate-accordion-group[open]', '.plate-group-toggle::after',
                 '.atlas-grid', 'body.atlas-focused', '#atlas-box.is-focused']
             },
@@ -754,17 +756,18 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/css/r35-integration.css',
-              markers: ['r3.5 — CURRENT CORPUS INTEGRATION', '.focus-nav',
-                '.focus-programme', '.archive-panel', 'body *',
-                'overflow-wrap: normal', 'word-break: normal', 'hyphens: none'],
+              markers: ['r3.5 — CURRENT CORPUS INTEGRATION',
+                '.site-head--reference .reference-nav-list', '.reference-nav-list a:hover',
+                '.reference-part-label', '.brand-essence', '.focus-programme-summary',
+                'body *', 'overflow-wrap: normal', 'word-break: normal', 'hyphens: none'],
               forbiddenMarkers: ['overflow-wrap: anywhere', 'overflow-wrap: break-word',
                 'word-break: break-all', 'word-break: break-word', 'hyphens: auto']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',
               markers: ['const avatarName', 'tti-shakdrah-muted', "'s voice is on",
-                'window.EGDragon || window.EGFox', 'classList.add("js-nav")', 'closeClusters',
-                'cluster.addEventListener("pointerenter"', 'closePlateGroups', 'openPlateFromHash', 'runtimePartLabels',
+                'window.EGDragon || window.EGFox', 'classList.add("js-nav")', 'closeMobileNav',
+                'nav.classList.toggle("open")', 'closePlateGroups', 'openPlateFromHash', 'runtimePartLabels',
                 'Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V.03 \\u00b7 Join',
                 'Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V.04 \\u00b7 Your Account']
             }

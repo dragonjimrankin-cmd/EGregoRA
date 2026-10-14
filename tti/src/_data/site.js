@@ -11,9 +11,49 @@ import ttiAtlas from "./ttiAtlas.js";
  * audit. The complete six-Part corpus remains available in the canonical
  * archive with its Atlas, Plates, long-form syntheses and correction records.
  */
-/* The masthead, canonical contents and interactive Atlas all consume the same
-   data. Three conjectures own Parts I–III in the public rail; every Part and
-   every document keeps a stable position inside the complete archive. */
+/* The reference masthead, canonical contents and interactive Atlas all consume
+   the same six-Part index. On the homepage, the three conjectures still own
+   Parts I–III; every document keeps one stable position throughout the site. */
+/* Compact labels keep the restored r3.5 masthead readable as a complete,
+   three-line research index. Canonical titles remain unchanged everywhere
+   else, including page labels, citations and the Research Archive. */
+const mastheadLabelByRoute = Object.freeze({
+  "/foundations/": "Foundations",
+  "/pi-from-zero-and-one/": "π from 0 & 1",
+  "/the-self/": "The Self",
+  "/dx/": "dx",
+  "/prime-plane/": "Prime Plane",
+  "/entropy-and-self-renewal/": "Self-Renewal",
+  "/cosmic-ratio-in-time/": "Cosmic Ratio",
+  "/gravity/": "Gravity",
+  "/spiral/": "The Spiral",
+  "/skeletal-splice/": "The Splice",
+  "/torus/": "Torus",
+  "/megatubule/": "Megatubule",
+  "/moebius/": "Möbius",
+  "/cosmic-ledger/": "Cosmic Ledger",
+  "/seams/": "Seams",
+  "/entropy/": "Entropy",
+  "/temporal-antipodes/": "Antipodes",
+  "/time-and-residue/": "Residue",
+  "/inverted-toruses/": "Inverted Torus",
+  "/wormholes/": "Wormholes",
+  "/out-of-phase/": "Phase",
+  "/stress-tests/": "Stress Tests",
+  "/essays/": "Essays",
+  "/double-inversion/": "Two Inversions",
+  "/accumulated-differentials/": "Differentials",
+  "/little-red-dots/": "Little Red Dots",
+  "/little-red-dots/research-proposal/": "Zero-Seam Test",
+  "/riemann-programme/": "Riemann Dossier",
+  "/riemann-proof-audit/": "Proof Audit",
+  "/riemann-splice-questions/": "Splice after RH",
+  "/plates/": "Plates",
+  "/ask-shakdrah/": "ShakDrah",
+  "/join/": "Join",
+  "/account/": "Account"
+});
+
 const glyphByRoute = Object.freeze({
   "/foundations/": "sphere",
   "/pi-from-zero-and-one/": "sphere",
@@ -66,6 +106,7 @@ const navGroups = ttiAtlas.limbs.map((part) => ({
     part: part.num,
     partTitle: part.title,
     kicker: `Part ${part.num} — ${part.title} · ${destination.kind} ${destination.code} · ${destination.title}`,
+    mastheadLabel: mastheadLabelByRoute[destination.href] || destination.title,
     glyph: glyphByRoute[destination.href] || "seed"
   }))
 }));

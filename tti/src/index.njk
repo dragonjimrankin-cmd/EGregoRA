@@ -77,9 +77,13 @@ description: "The Two Infinities: Eternal Integration of the Self — the comple
           <p class="focus-equation" aria-label="Representative expression">\[{{ focus.equation }}\]</p>
           <a class="focus-primary-link" href="{{ focus.url }}">Begin with the central study <span aria-hidden="true">→</span></a>
 
-          <section class="focus-programme" aria-labelledby="focus-programme-{{ focus.part }}">
+          <details class="focus-programme" aria-labelledby="focus-programme-{{ focus.part }}">
+            <summary class="focus-programme-summary">
+              <span><small>Integrated research programme</small><strong>Part {{ focus.part }} · {{ focus.partTitle }}</strong></span>
+              <span class="focus-programme-summary-action">Explore {{ focus.documents | length }} studies <i aria-hidden="true"></i></span>
+            </summary>
             <header class="focus-programme-head">
-              <p class="kicker">Integrated research programme</p>
+              <p class="kicker">Part {{ focus.part }} under {{ focus.label }}</p>
               <h3 id="focus-programme-{{ focus.part }}">Part {{ focus.part }} · {{ focus.partTitle }}</h3>
               <p>{{ focus.partNote }}</p>
             </header>
@@ -98,7 +102,7 @@ description: "The Two Infinities: Eternal Integration of the Self — the comple
                 </li>
               {% endfor %}
             </ol>
-          </section>
+          </details>
         </div>
       </article>
     {% endfor %}

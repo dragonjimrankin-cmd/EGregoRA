@@ -1,18 +1,20 @@
-<header class="site-head" id="top" data-site-header>
+<header class="site-head site-head--reference" id="top" data-site-header>
   <div class="rule rule--top head-accent" aria-hidden="true"></div>
   <div class="brand-row wrap wide">
     <a class="brand" href="/" aria-label="{{ site.name }} — home">
       <span class="brand-sigil" aria-hidden="true">{% glyph "torus" %}</span>
       <span class="brand-text">
-        <span class="brand-line">
-          <span class="brand-name">The Two Infinities: Eternal Integration of the Self</span>
-          <span class="brand-order" aria-hidden="true">
+        <span class="brand-line" aria-hidden="true">
+          <span class="brand-name">The Two Infinities</span>
+          <span class="brand-order">
             <span class="brand-rule"></span>
-            <span class="brand-order-text">Integrated research edition &middot; {{ site.revision }}</span>
+            <span class="brand-order-text">A Geometry <em>of</em> Existence &middot; {{ site.revision }}</span>
             <span class="brand-rule"></span>
           </span>
+          <span class="brand-essence">Eternal Integration of the Self</span>
         </span>
         <span class="brand-tag">A speculative cosmology by Jim Rankin, UK, 2026</span>
+        <span class="sr-only">The Two Infinities: Eternal Integration of the Self</span>
       </span>
     </a>
     <a class="head-join" href="/join/" id="head-join">
@@ -24,94 +26,37 @@
     </button>
   </div>
 
-  <nav id="primary-nav" class="site-nav" aria-label="Primary navigation">
-    <div class="site-nav-shell">
-      <div class="focus-nav" aria-label="Fundamental conjectures and integrated research Parts I to III">
-        {% for focus in site.focusAreas %}
-          <details class="nav-cluster focus-cluster focus-cluster--{{ focus.key }}">
-            <summary class="focus-nav-link focus-nav-link--{{ focus.key }}" data-focus-route="{{ focus.url }}">
-              <span class="focus-nav-num">{{ focus.numeral }}</span>
-              <span class="focus-nav-copy"><small>{{ focus.eyebrow }}</small><strong>{{ focus.label }}</strong></span>
-              <span class="nav-chevron" aria-hidden="true"></span>
-            </summary>
-            <div class="nav-panel focus-panel">
-              <div class="nav-panel-head focus-panel-head">
-                <p class="nav-panel-kicker">Research programme under {{ focus.label }}</p>
-                <h2>Part {{ focus.part }} · {{ focus.partTitle }}</h2>
-                <p>{{ focus.partNote }}</p>
-              </div>
-              <ul>
-                {% for item in focus.documents %}
-                  <li>
-                    <a data-research-document data-focus-document href="{{ item.url }}" title="{{ item.note }}"{% if page.url == item.url %} aria-current="page"{% endif %}>
-                      <i aria-hidden="true">{% glyph item.glyph %}</i>
-                      <span class="nav-link-copy">
-                        <small class="focus-doc-code">{{ item.code }} · {{ item.kind }}</small>
-                        <strong>{{ item.label }}</strong>
-                        <small>{{ item.note }}</small>
-                      </span>
-                      <span class="nav-link-arrow" aria-hidden="true">→</span>
-                    </a>
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
-          </details>
+  <nav id="primary-nav" class="site-nav reference-nav" aria-label="Complete six-Part research index">
+    <ul class="reference-nav-list">
+      <li class="reference-nav-overview">
+        <a href="/"{% if page.url == '/' %} aria-current="page"{% endif %}>
+          <i aria-hidden="true">{% glyph "eye" %}</i><span>Summary</span>
+        </a>
+      </li>
+      <li class="reference-nav-overview">
+        <a href="/archive/"{% if page.url == '/archive/' %} aria-current="page"{% endif %}>
+          <i aria-hidden="true">{% glyph "metatron" %}</i><span>Research Index</span>
+        </a>
+      </li>
+      {% for group in site.navGroups %}
+        <li class="reference-part-label reference-part-{{ group.part | lower }}">
+          <a href="{{ group.items[0].url }}" aria-label="Part {{ group.part }} — {{ group.shortLabel }}">
+            <span class="reference-part-num">{{ group.part }}</span>
+            <span>Part {{ group.part }}<small>{{ group.shortLabel }}</small></span>
+          </a>
+        </li>
+        {% for item in group.items %}
+          <li class="reference-nav-item reference-nav-item--part-{{ group.part | lower }}">
+            <a data-research-document {% if group.part == 'I' or group.part == 'II' or group.part == 'III' %}data-focus-document{% else %}data-archive-document{% endif %}
+              href="{{ item.url }}" title="Part {{ group.part }} — {{ group.shortLabel }} · {{ item.label }} · {{ item.note }}"{% if page.url == item.url %} aria-current="page"{% endif %}>
+              <i aria-hidden="true">{% glyph item.glyph %}</i>
+              <span>{{ item.mastheadLabel }}</span>
+              <span class="sr-only"> — Part {{ group.part }}, {{ group.shortLabel }}; {{ item.code }}</span>
+            </a>
+          </li>
         {% endfor %}
-      </div>
-
-      <div class="nav-actions nav-actions--focus">
-        <details class="nav-cluster nav-archive">
-          <summary aria-label="Open supporting Parts IV to VI and the complete six-Part research archive">
-            <i aria-hidden="true">{% glyph "ledger" %}</i>
-            <span class="nav-archive-copy"><small>Parts IV–VI</small><strong>Supporting Research</strong></span>
-            <span class="nav-chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="nav-panel archive-panel">
-            <div class="archive-panel-head">
-              <div>
-                <p class="nav-panel-kicker">Tests, resources and mathematical audit</p>
-                <p>Parts I–III now sit beneath the three conjectures; Parts IV–VI support, test and document them.</p>
-              </div>
-              <a class="archive-index-link" href="/archive/"{% if page.url == '/archive/' %} aria-current="page"{% endif %}>
-                Open complete Research Archive <span aria-hidden="true">→</span>
-              </a>
-            </div>
-            <div class="archive-part-grid">
-              {% for group in site.supportingNavGroups %}
-                <section class="archive-part" aria-labelledby="archive-part-{{ group.part }}">
-                  <div class="archive-part-head">
-                    <span>Part {{ group.part }}</span>
-                    <h2 id="archive-part-{{ group.part }}">{{ group.label }}</h2>
-                  </div>
-                  <ul>
-                    {% for item in group.items %}
-                      <li>
-                        <a data-research-document data-archive-document href="{{ item.url }}" title="{{ item.note }}"{% if page.url == item.url %} aria-current="page"{% endif %}>
-                          <i aria-hidden="true">{% glyph item.glyph %}</i>
-                          <span class="nav-link-copy">
-                            <small class="archive-doc-code">{{ item.code }}</small>
-                            <strong>{{ item.label }}</strong>
-                            <small>{{ item.note }}</small>
-                          </span>
-                          <span class="nav-link-arrow" aria-hidden="true">→</span>
-                        </a>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                </section>
-              {% endfor %}
-            </div>
-          </div>
-        </details>
-        <a class="nav-action nav-action--compact" href="/plates/">
-          <i aria-hidden="true">{% glyph "eye" %}</i><span>Plates</span>
-        </a>
-        <a class="nav-action nav-action--primary nav-action--compact" href="/ask-shakdrah/">
-          <i aria-hidden="true">{% glyph "dragon" %}</i><span>Ask ShakDrah</span>
-        </a>
-      </div>
-    </div>
+      {% endfor %}
+    </ul>
   </nav>
   <div class="rule rule--bottom" aria-hidden="true"></div>
 </header>

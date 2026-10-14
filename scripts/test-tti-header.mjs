@@ -20,13 +20,14 @@ const expectedTagline = "A speculative cosmology by Jim Rankin, UK, 2026";
 const expectedGroups = site.navGroups;
 const expectedIntegratedGroups = site.integratedNavGroups;
 const expectedSupportingGroups = site.supportingNavGroups;
-const expectedFocus = site.focusAreas;
 const expectedResearchRoutes = expectedGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedIntegratedRoutes = expectedIntegratedGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedSupportingRoutes = expectedSupportingGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedPageLabels = new Map(expectedGroups.flatMap((group) => group.items.map((item) => [item.url,
   `Part ${group.part} — ${group.shortLabel} · ${item.kind} ${item.code} · ${item.label}`
 ])));
+const expectedCompactLabels = new Map(expectedGroups.flatMap((group) =>
+  group.items.map((item) => [item.url, item.mastheadLabel])));
 const normalise = (value) => String(value || "").replace(/\s+/g, " ").trim().replace(/’/g, "'");
 
 if (!fs.existsSync(BUILD) && !builtMode) {
@@ -41,48 +42,62 @@ const r35Integration = fs.readFileSync(R35_INTEGRATION, "utf8");
 const allCss = [css, r35Baseline, r35Integration].join("\n");
 const js = fs.readFileSync(JS, "utf8");
 
-/* Source contract: three conjectures own Parts I–III; one disclosure carries
-   supporting Parts IV–VI and links to the complete canonical archive. */
-assert.match(headerSource, /class="brand-name">The Two Infinities: Eternal Integration of the Self</,
-  "exact project title is absent from the masthead");
+/* Source contract: the supplied r3.5 reference becomes the real global
+   masthead, while canonical data still supplies all six Parts and 34 routes. */
+assert.match(headerSource, /site-head site-head--reference/,
+  "the reference-style r3.5 masthead is absent");
+assert.match(headerSource, /class="brand-name">The Two Infinities</,
+  "the engraved short title is absent from the masthead");
+assert.match(headerSource, /class="brand-essence">Eternal Integration of the Self</,
+  "the complete project identity is absent from the masthead line");
+assert.match(headerSource, /class="sr-only">The Two Infinities: Eternal Integration of the Self</,
+  "the masthead lacks the exact accessible project title");
+assert.match(headerSource, /A Geometry <em>of<\/em> Existence[^\n]*site\.revision/,
+  "the reference geometry-and-revision line is absent");
 assert.match(headerSource, /class="brand-tag">A speculative cosmology by Jim Rankin, UK, 2026</,
   "exact attribution is absent from the masthead");
 assert.match(headerSource, /\{% glyph "torus" %\}/,
-  "restored r3.5 masthead is missing its torus sigil");
-assert.match(headerSource, /Integrated research edition[^\n]*site\.revision/,
-  "restored r3.5 masthead is missing its ruled edition line");
+  "the reference masthead is missing its torus sigil");
 assert.match(headerSource, /class="rule rule--bottom"/,
-  "restored r3.5 masthead is missing its lower illuminated rule");
+  "the reference masthead is missing its lower illuminated rule");
 assert.match(baseSource,
   /main\.css[^\n]*\n[^\n]*r35-baseline\.css[^\n]*\n[^\n]*r35-integration\.css/,
   "stylesheets do not load in current-components, complete-r3.5, integration order");
-assert.match(headerSource, /for focus in site\.focusAreas/, "header does not derive the three focus clusters from canonical data");
-assert.match(headerSource, /for item in focus\.documents/, "Parts I–III are not integrated beneath their conjectures");
-assert.match(headerSource, /data-focus-document/, "integrated research documents are not explicitly identified");
-assert.match(headerSource, /<details class="nav-cluster nav-archive">/,
-  "supporting archive is not a native keyboard-readable disclosure");
-assert.match(headerSource, /for group in site\.supportingNavGroups/,
-  "supporting archive does not derive Parts IV–VI from canonical data");
-assert.match(headerSource, /data-archive-document/, "supporting archive documents are not explicitly identified");
-assert.match(headerSource, /data-research-document/, "header research destinations lack a shared identity");
-assert.match(headerSource, /href="\/archive\/"/, "complete archive overview is absent from the header");
+assert.match(headerSource, /for group in site\.navGroups/,
+  "masthead Parts are not derived from the canonical six-Part index");
+assert.match(headerSource, /for item in group\.items/,
+  "masthead pages are not derived beneath their canonical Parts");
+assert.match(headerSource, /item\.mastheadLabel/,
+  "masthead does not use purpose-written compact page labels");
+assert.match(headerSource, /data-focus-document/,
+  "integrated Parts I–III documents are not explicitly identified");
+assert.match(headerSource, /data-archive-document/,
+  "supporting Parts IV–VI documents are not explicitly identified");
+assert.match(headerSource, /data-research-document/,
+  "masthead research destinations lack a shared identity");
+assert.match(headerSource, /href="\/archive\/"/, "complete Research Index is absent from the masthead");
 assert.match(headerSource, /aria-controls="primary-nav"/, "mobile toggle is not linked to the primary navigation");
 
-/* Compact text may wrap, but it must never be clipped or made illegible. */
-assert.match(css, /\.focus-nav\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/,
-  "desktop header is not a three-focus rail");
-const focusLabelRule = [...css.matchAll(/\.focus-nav-copy strong\s*\{([^}]*)\}/g)]
-  .map((match) => match[1])
-  .find((rule) => /font-family:\s*var\(--title\)/.test(rule)) || "";
-assert.match(focusLabelRule, /white-space:\s*normal;/,
-  "focus labels do not wrap at rest");
-assert.doesNotMatch(focusLabelRule, /text-overflow:\s*ellipsis;/,
-  "focus labels are still truncated at rest");
-const attributionRule = [...r35Integration.matchAll(/\.site-head \.brand-tag\s*\{([^}]*)\}/g)]
-  .map((match) => match[1])
-  .find((rule) => /font-size:\s*calc\(0\.54rem \+ 2px\)/.test(rule)) || "";
-assert.match(attributionRule, /font-size:\s*calc\(0\.54rem \+ 2px\);/,
-  "restored masthead attribution was not increased by exactly two pixels");
+/* The low desktop index mirrors the reference: centred, wrapping, glyph-led,
+   expanding on hover and never truncating or splitting words. */
+assert.match(r35Integration,
+  /\.site-head--reference \.reference-nav-list\s*\{[^}]*display:\s*flex;[^}]*justify-content:\s*center;[^}]*flex-wrap:\s*wrap;/s,
+  "reference masthead is not a centred wrapping research index");
+const linkRule = r35Integration.match(/\.site-head--reference \.reference-nav-list a\s*\{([^}]*)\}/)?.[1] || "";
+assert.match(linkRule, /text-overflow:\s*clip;/, "masthead labels may still be truncated");
+assert.match(linkRule, /white-space:\s*nowrap;/, "desktop masthead labels are not kept whole");
+assert.match(r35Integration,
+  /\.site-head--reference \.reference-nav-list a:hover,[\s\S]*?padding-inline:\s*0\.62rem;/,
+  "masthead links do not expand on hover");
+assert.match(r35Integration,
+  /\.site-head--reference \.reference-nav-list i\s*\{[^}]*width:\s*17px;[^}]*height:\s*17px;/s,
+  "reference masthead lacks compact glyph-led destinations");
+assert.match(r35Integration,
+  /@media \(max-width:\s*900px\)[\s\S]*?\.site-head--reference \.reference-nav-list\s*\{[^}]*grid-template-columns:\s*repeat\(2,/,
+  "complete masthead index has no readable narrow-screen layout");
+const attributionRule = r35Integration.match(/\.site-head--reference \.brand-tag\s*\{([^}]*)\}/)?.[1] || "";
+assert.match(attributionRule, /font-size:\s*calc\(0\.39rem \+ 2px\);/,
+  "masthead attribution does not retain its two-pixel increase");
 assert.match(r35Baseline, /\.hero\s*\{[\s\S]*?text-align:\s*center;/,
   "the complete r3.5 hero system is absent");
 assert.match(r35Baseline, /\.frame::before[\s\S]*?\.frame::after/,
@@ -92,19 +107,10 @@ assert.match(r35Integration, /body \*\s*\{[^}]*overflow-wrap:\s*normal;[^}]*word
 assert.doesNotMatch(allCss,
   /(?:overflow-wrap:\s*(?:anywhere|break-word)|word-break:\s*(?:break-all|break-word)|hyphens:\s*auto)/,
   "a CSS rule can still split a word between rows");
-assert.match(css, /\.focus-panel\s*\{[^}]*width:\s*min\(460px,/s,
-  "integrated Part disclosures have no readable desktop panel");
-assert.match(css, /\.archive-part-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/,
-  "desktop supporting archive does not expose Parts IV–VI as three columns");
-assert.match(css, /@media \(max-width:\s*900px\)[\s\S]*?\.focus-nav\s*\{\s*display:\s*block;/,
-  "focus navigation has no narrow-screen mode");
-assert.match(css, /@media \(max-width:\s*620px\)[\s\S]*?\.archive-part-grid\s*\{\s*grid-template-columns:\s*1fr;/,
-  "supporting archive does not become a readable single column on small screens");
-assert.match(js, /querySelectorAll\("\.nav-cluster"\)/,
-  "research disclosures are not managed by the shared navigation controller");
-assert.match(js, /pointerenter|mouseenter/, "desktop hover does not open research disclosures");
-assert.match(js, /pointerleave|mouseleave/, "desktop hover does not close research disclosures");
-assert.match(js, /event\.key !== "Escape"/, "Escape does not close research disclosures");
+assert.match(js, /nav\.classList\.toggle\("open"\)/,
+  "mobile navigation toggle no longer controls the complete index");
+assert.match(js, /event\.key !== "Escape"/,
+  "Escape no longer closes navigation disclosures retained elsewhere in the application");
 
 const fixtures = [
   ["index.html", "/"],
@@ -122,59 +128,50 @@ for (const [relative, route] of fixtures) {
   assert.ok(fs.existsSync(file), `${relative} was not built`);
   const $ = cheerio.load(fs.readFileSync(file, "utf8"));
 
-  assert.equal(normalise($(".brand-name").first().text()), expectedTitle, `${relative} has the wrong title`);
-  assert.equal(normalise($(".brand-tag").first().text()), expectedTagline, `${relative} has the wrong attribution`);
-  assert.equal($("#primary-nav .focus-cluster").length, 3, `${relative} does not expose three primary conjectures`);
-  $("#primary-nav .focus-cluster").each((index, element) => {
-    const expected = expectedFocus[index];
-    const expectedGroup = expectedIntegratedGroups[index];
-    const cluster = $(element);
-    const summary = cluster.children("summary.focus-nav-link").first();
-    assert.equal(summary.attr("data-focus-route"), expected.url,
-      `${relative} focus ${index + 1} has the wrong principal route`);
-    assert.equal(normalise(summary.find(".focus-nav-copy > strong").text()), expected.label,
-      `${relative} focus ${index + 1} has the wrong label`);
-    assert.equal(normalise(cluster.find(".focus-panel-head h2").first().text()),
-      `Part ${expectedGroup.part} · ${expectedGroup.shortLabel}`,
-      `${relative} focus ${index + 1} has the wrong integrated Part subheading`);
-    const routes = cluster.find("[data-focus-document]").map((_, link) => $(link).attr("href")).get();
-    assert.deepEqual(routes, expectedGroup.items.map((item) => item.url),
-      `${relative} focus ${index + 1} does not expose its complete canonical Part`);
-  });
+  assert.equal(normalise($(".brand-name").first().text()), "The Two Infinities",
+    `${relative} has the wrong engraved short title`);
+  assert.equal(normalise($(".brand-essence").first().text()), "Eternal Integration of the Self",
+    `${relative} has the wrong identity continuation`);
+  assert.equal(normalise($(".brand .sr-only").first().text()), expectedTitle,
+    `${relative} has the wrong accessible project title`);
+  assert.equal(normalise($(".brand-tag").first().text()), expectedTagline,
+    `${relative} has the wrong attribution`);
+  assert.equal($("#primary-nav .reference-part-label").length, 6,
+    `${relative} does not display all six Part labels`);
+  assert.deepEqual($("#primary-nav .reference-part-label").map((_, element) =>
+    normalise($(element).find("a").attr("aria-label"))).get(),
+  expectedGroups.map((group) => `Part ${group.part} — ${group.shortLabel}`),
+  `${relative} Part headings drifted from the canonical index`);
 
   const integratedRoutes = $("#primary-nav [data-focus-document]").map((_, element) => $(element).attr("href")).get();
   assert.deepEqual(integratedRoutes, expectedIntegratedRoutes,
     `${relative} integrated Parts I–III destinations or ordering drifted`);
-
-  assert.equal($("#primary-nav .nav-archive").length, 1, `${relative} has no single supporting archive disclosure`);
-  assert.equal($("#primary-nav .archive-part").length, 3, `${relative} supporting archive does not expose Parts IV–VI`);
   const supportingRoutes = $("#primary-nav [data-archive-document]").map((_, element) => $(element).attr("href")).get();
   assert.deepEqual(supportingRoutes, expectedSupportingRoutes,
-    `${relative} supporting archive destinations or ordering drifted`);
+    `${relative} supporting Parts IV–VI destinations or ordering drifted`);
 
-  $("#primary-nav .archive-part").each((index, element) => {
-    const expected = expectedSupportingGroups[index];
-    const part = $(element);
-    assert.equal(normalise(part.find(".archive-part-head > span").first().text()), `Part ${expected.part}`,
-      `${relative} supporting Part ${index + 1} has the wrong numeral`);
-    assert.equal(normalise(part.find(".archive-part-head h2").first().text()), expected.label,
-      `${relative} supporting Part ${index + 1} has the wrong title`);
-    assert.equal(part.find("[data-archive-document]").length, expected.items.length,
-      `${relative} supporting Part ${index + 1} has the wrong destination count`);
-  });
-
-  const allResearchRoutes = $("#primary-nav [data-research-document]")
-    .map((_, element) => $(element).attr("href")).get();
+  const links = $("#primary-nav [data-research-document]");
+  const allResearchRoutes = links.map((_, element) => $(element).attr("href")).get();
   assert.deepEqual(allResearchRoutes, expectedResearchRoutes,
-    `${relative} header does not retain all six Parts in canonical order`);
+    `${relative} masthead does not retain all six Parts in canonical order`);
   assert.equal(new Set(allResearchRoutes).size, expectedResearchRoutes.length,
-    `${relative} header repeats a research document`);
+    `${relative} masthead repeats a research document`);
+  links.each((_, element) => {
+    const link = $(element);
+    const routeForLink = link.attr("href");
+    const visibleLabel = normalise(link.children("span:not(.sr-only)").first().text());
+    assert.equal(visibleLabel, expectedCompactLabels.get(routeForLink),
+      `${relative} compact label drifted for ${routeForLink}`);
+    assert.ok(normalise(link.attr("title")).startsWith("Part "),
+      `${relative} ${routeForLink} has no complete Part-and-paper title`);
+  });
 
   assert.equal($(".nav-toggle").attr("aria-controls"), "primary-nav", `${relative} toggle target drifted`);
   assert.equal($(".nav-toggle").attr("aria-expanded"), "false", `${relative} toggle does not begin collapsed`);
-  const expectedCurrent = route === "/archive/" ? "/archive/" : (expectedResearchRoutes.includes(route) ? route : null);
+  const expectedCurrent = route === "/" ? "/" : route === "/archive/" ? "/archive/" :
+    (expectedResearchRoutes.includes(route) ? route : null);
   const current = $("#primary-nav [aria-current='page']").map((_, element) => $(element).attr("href")).get();
-  assert.deepEqual(current, expectedCurrent ? [expectedCurrent] : [], `${relative} current research destination is wrong`);
+  assert.deepEqual(current, expectedCurrent ? [expectedCurrent] : [], `${relative} current destination is wrong`);
 
   const expectedPageLabel = expectedPageLabels.get(route);
   if (expectedPageLabel) {
@@ -184,4 +181,4 @@ for (const [relative, route] of fixtures) {
   }
 }
 
-console.log(`TTI integrated header passed: 3 conjectures own Parts I–III; Parts IV–VI and all ${expectedResearchRoutes.length} destinations remain accessible.`);
+console.log(`TTI reference masthead passed: six Parts and all ${expectedResearchRoutes.length} destinations remain visible, ordered and accessible.`);

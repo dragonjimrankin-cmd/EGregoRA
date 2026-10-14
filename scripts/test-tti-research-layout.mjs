@@ -57,6 +57,13 @@ assert.deepEqual(home(".focus-pillar h2").map((_, element) => home(element).text
 assert.deepEqual(home(".focus-programme-head h3").map((_, element) => home(element).text().trim()).get(),
   ["Part I · First Principles", "Part II · Cosmic Architecture", "Part III · Seams and Return"],
   "Parts I–III are not subheadings beneath the matching conjectures");
+assert.equal(home("details.focus-programme").length, 3,
+  "the complete Parts beneath the conjectures must use three progressive disclosures");
+assert.equal(home("details.focus-programme[open]").length, 0,
+  "the homepage must begin with its restored summary rather than 21 expanded paper records");
+assert.deepEqual(home(".focus-programme-summary strong").map((_, element) => home(element).text().trim()).get(),
+  ["Part I · First Principles", "Part II · Cosmic Architecture", "Part III · Seams and Return"],
+  "collapsed programme labels drifted from their conjectures");
 assert.deepEqual(home("[data-focus-programme-document]").map((_, element) => home(element).attr("href")).get(),
   site.integratedNavGroups.flatMap((group) => group.items.map((item) => item.url)),
   "homepage integrated research programmes are incomplete or out of order");
@@ -129,9 +136,9 @@ const [base, context, header, footer, js, css] = [
 assert.match(base, /partials\/research-context\.njk/, "base layout does not include research context");
 assert.match(context, /data-document-outline/, "research context lacks the local outline shell");
 assert.match(context, /site\.navGroups/, "document contents drawer is not generated from canonical navigation");
-assert.match(header, /Research Archive/, "masthead does not expose the complete research archive");
-assert.match(header, /item\.code/, "archive destinations do not display research codes");
-assert.match(header, /site\.focusAreas/, "masthead is not generated from the three public focus areas");
+assert.match(header, /Research Index/, "masthead does not expose the complete research index");
+assert.match(header, /item\.code/, "masthead destinations do not retain research codes for assistive technology");
+assert.match(header, /site\.navGroups/, "masthead is not generated from the canonical six-Part index");
 assert.match(footer, /Every page marks what is <em>earned<\/em> by argument, what is <em>chosen<\/em> as interpretation/,
   "restored r3.5 footer language drifted");
 assert.match(footer, /Test everything; keep what survives\./,
