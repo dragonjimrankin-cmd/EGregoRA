@@ -447,7 +447,7 @@ jobs:
                 'Part VI', 'Riemann Programme', 'A Reader&rsquo;s Contract',
                 'External sources are bearings, not endorsements', 'id="fig-chain"',
                 'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',
-                'The same map, written out', 'src="/assets/js/atlas.js"']
+                'The same map, written out', 'assets/js/atlas.js']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/foundations/',
