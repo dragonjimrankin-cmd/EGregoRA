@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.15
+**Revision:** r5.0
 **Audit date:** 14 October 2026
 
 ## Scope
@@ -15,13 +15,28 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the six-Part masthead and matching research labels, the six-path Atlas, the canonical thirty-four-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, the seven long-form syntheses and the prepared browser-side knowledge corpus. It keeps the twenty-seven original Parts I–IV research essays within 2,000–4,000 readable words, independently enforces 6,000–8,000 words for every Part synthesis and 10,000–13,000 words for the final project synthesis.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the six-Part masthead and matching research labels, the six-path Atlas, the canonical thirty-four-entry project contents, per-document records and outline shells, the thirty-two site-wide editorial guides, the exclusive plate accordion, the custom site audit, the seven long-form syntheses and the prepared browser-side knowledge corpus. It keeps the twenty-seven original Parts I–IV research essays within 2,000–4,000 readable words, independently enforces 6,000–8,000 words for every Part synthesis and 10,000–13,000 words for the final project synthesis.
+
+## Site-wide clarity edition in r5.0
+
+- Added one bespoke prose guide to every built research document: a plain-language question, the page&rsquo;s argument, its established evidence line, the exact stopping point and a critical prompt that can put the claim under pressure.
+- Added external bearings from nine source hosts across mathematics, relativity, cosmology, entropy, consciousness, topology, observational astronomy and proof auditing; the interface explicitly states that context and competing accounts do not amount to endorsement of TTI.
+- Added a homepage **Reader&rsquo;s Contract** defining the project&rsquo;s language rules: a theorem does not prove its physical promotion, a diagram does not establish a mechanism, and a claim gains force by becoming easier to lose.
+- Corrected the overstatement that experiments had proved imaginary numbers uniquely indispensable. The revised Foundations page distinguishes standard complex quantum theory, the 2021 real-amplitude foil experiment and the live dispute over equivalent real-arithmetic representations.
+- Rewrote the opening mathematical chain so a convergent sequence is not confused with zero itself, uncountable cardinality is not called topological density, Euclidean circular closure is a declared choice, and the theorem-to-ontology transitions are no longer described as forced.
+- Rewrote the Gravity lead claims to distinguish general relativity from the π-level interpretation, remove the claim that a flat rotation curve comes &ldquo;for free&rdquo;, and state the joint lensing, structure-growth and quantum-gravity debts in direct prose.
+- Corrected two topological promotions: SU(3) colour confinement is now explicitly an analogy rather than the definition of non-orientability, and one global twist no longer purports to prove one unique geometric throat or one Cold Spot.
+- Narrowed the use of Landauer&rsquo;s principle on the dx page to logically irreversible erasure under stated thermodynamic conditions; it no longer claims to establish a smallest experiential grain or a universal price for consciousness.
+- Updated the Little Red Dots paper and Zero-Seam protocol with the 2026 radiation-hydrodynamic heavy-seed result, strengthening the conventional accreting-black-hole comparator and requiring residue to predict something it misses.
+- Added `scripts/test-tti-editorial-guides.mjs`, which verifies all thirty-two guides, substantive field lengths, one critical question per page, safe external links, source breadth, one page-level H1, homepage contract and the targeted scientific corrections.
+- Synchronised a thirtieth prepared ShakDrah/Gink answer, **How should I read and test a TTI claim?**, so the evidence protocol is available inside both existing Oracle interfaces without weakening their model fallback or attachment route.
+- Kept the editorial guides outside the original-essay word count, just as the separately bounded long-form syntheses are excluded, so all three reading layers remain independently testable.
 
 ## Accessible Part and project syntheses in r4.15
 
-- Added six plain-language Part syntheses of 6,248, 6,341, 6,311, 6,334, 6,050 and 6,005 words, with equations omitted wherever prose can carry the idea.
+- Added six plain-language Part syntheses, now regenerated at 6,349, 6,319, 6,359, 6,267, 6,043 and 6,293 words, with equations omitted wherever prose can carry the idea.
 - Integrated them into the existing lead pages: Foundations, Gravity, Möbius, Stress Tests, The Plates and The Riemann Dossier.
-- Added a 10,304-word all-encompassing synthesis to the homepage immediately after the Atlas project map.
+- Added a 10,825-word all-encompassing synthesis to the homepage immediately after the Atlas project map.
 - Preserved every original study rather than replacing it; the existing 2,000–4,000-word audit excludes the clearly marked synthesis wrappers and continues to verify the original essays independently.
 - Added tracked Markdown sources, build-time semantic heading conversion, responsive long-reading typography, stable fragment IDs and a dedicated source/build/accessibility regression.
 

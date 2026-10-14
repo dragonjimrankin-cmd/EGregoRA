@@ -1,0 +1,35 @@
+{% set guide = editorialGuides[page.url] %}
+{% if guide %}
+<section class="wrap narrow editorial-guide reveal" aria-labelledby="t-claim-brief">
+  <div class="frame frame--first editorial-guide-frame">
+    <p class="kicker">A clear reading before the deep dive</p>
+    <h2 id="t-claim-brief">The Claim, in Plain Terms</h2>
+    <p class="editorial-guide-question">{{ guide.question }}</p>
+
+    <div class="editorial-guide-prose">
+      <p><strong>The argument.</strong> {{ guide.argument }}</p>
+      <p><strong>The evidence line.</strong> {{ guide.evidence }}</p>
+      <p><strong>Where the claim stops.</strong> {{ guide.limit }}</p>
+    </div>
+
+    <aside class="editorial-guide-prompt" aria-label="Critical reader's prompt">
+      <p class="kicker">The question to carry through the page</p>
+      <p>{{ guide.prompt }}</p>
+    </aside>
+
+    <details class="editorial-guide-sources">
+      <summary>External bearings used for this reading</summary>
+      <p>These sources establish context or a competing account. They do not endorse TTI&rsquo;s speculative interpretation.</p>
+      <ul>
+        {% for source in guide.sources %}
+        <li>
+          <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
+          <span>{{ source.publisher }}</span>
+          <p>{{ source.note }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+    </details>
+  </div>
+</section>
+{% endif %}

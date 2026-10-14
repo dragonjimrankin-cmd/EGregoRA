@@ -4827,6 +4827,136 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   .document-outline ol { grid-template-columns: 1fr; }
 }
 
+/* ---------- Site-wide editorial clarity guides ---------------------------
+   Every research page starts with one prose brief: the argument, the evidence
+   line, the stopping point and a question capable of putting pressure on it. */
+.editorial-guide {
+  margin-block: clamp(1.5rem, 4vw, 3.2rem) clamp(3.4rem, 7vw, 5.6rem);
+  scroll-margin-top: 7rem;
+}
+.editorial-guide-frame {
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--gold) 48%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--navy-2) 95%, transparent), color-mix(in srgb, var(--violet) 8%, var(--navy-2))),
+    var(--navy-2);
+}
+.editorial-guide-frame::before { border-color: color-mix(in srgb, var(--gold) 56%, transparent); }
+.editorial-guide-frame > h2 {
+  max-width: 18ch;
+  margin-bottom: 0.7rem;
+  font-size: clamp(1.65rem, 3.5vw, 2.55rem);
+  text-wrap: balance;
+}
+.editorial-guide-question {
+  max-width: 58ch;
+  margin: 0 0 clamp(1.4rem, 3vw, 2.1rem);
+  color: var(--cyan-soft);
+  font-family: var(--body);
+  font-size: clamp(1.18rem, 2.1vw, 1.48rem);
+  line-height: 1.36;
+  text-wrap: balance;
+}
+.editorial-guide-prose {
+  max-width: 74ch;
+}
+.editorial-guide-prose p {
+  margin: 0 0 1.05rem;
+  font-size: clamp(1.02rem, 1.35vw, 1.11rem);
+  line-height: 1.72;
+  text-wrap: pretty;
+}
+.editorial-guide-prose strong {
+  color: var(--vellum);
+  font-family: var(--font-ui);
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.editorial-guide-prompt {
+  max-width: 70ch;
+  margin: 1.7rem 0 1.25rem;
+  padding: 1.05rem 1.2rem 1.15rem;
+  border-inline-start: 3px solid var(--gold);
+  background: color-mix(in srgb, var(--gold) 7%, transparent);
+}
+.editorial-guide-prompt p { margin: 0; }
+.editorial-guide-prompt .kicker { margin-bottom: 0.35rem; color: var(--gold); }
+.editorial-guide-prompt p:last-child {
+  color: var(--vellum);
+  font-size: clamp(1.04rem, 1.6vw, 1.2rem);
+  line-height: 1.5;
+}
+.editorial-guide-sources {
+  margin-top: 1.35rem;
+  border-top: 1px solid color-mix(in srgb, var(--cyan) 24%, transparent);
+}
+.editorial-guide-sources summary {
+  padding: 0.9rem 0 0.3rem;
+  color: var(--cyan-soft);
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.editorial-guide-sources > p {
+  max-width: 72ch;
+  margin: 0.55rem 0 0.9rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.editorial-guide-sources ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.editorial-guide-sources li {
+  min-width: 0;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--cyan) 18%, transparent);
+  background: color-mix(in srgb, var(--navy) 72%, transparent);
+}
+.editorial-guide-sources li > a {
+  display: block;
+  color: var(--cyan-soft);
+  font-weight: 600;
+  line-height: 1.28;
+}
+.editorial-guide-sources li > span {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--gold);
+  font-family: var(--font-ui);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+}
+.editorial-guide-sources li > p {
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+@media (max-width: 700px) {
+  .editorial-guide-frame { padding-inline: 1.05rem; }
+  .editorial-guide-sources ul { grid-template-columns: 1fr; }
+  .editorial-guide-prose p { line-height: 1.64; }
+}
+
+.editorial-manifesto { margin-block: clamp(3rem, 7vw, 5.5rem); }
+.editorial-manifesto .frame {
+  border-color: color-mix(in srgb, var(--cyan) 34%, transparent);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--cyan) 5%, var(--navy-2)), var(--navy-2));
+}
+.editorial-manifesto h2 { max-width: 18ch; text-wrap: balance; }
+.editorial-manifesto p { max-width: 72ch; line-height: 1.72; text-wrap: pretty; }
+.editorial-manifesto p strong { color: var(--vellum); }
+
 .nav-link-meta {
   display: block;
   margin-bottom: 0.08rem;

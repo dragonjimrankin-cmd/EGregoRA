@@ -20,19 +20,35 @@ This essay therefore avoids treating evocative geometry as a shortcut. It explai
 
 If π is the constant that closes the relation between the two infinities, then at the scale of the cosmos it is not a force acting in the geometry. It is the geometry.
 
+The argument. The page starts from general relativity's geometric account and proposes that dark energy, dark matter and baryonic matter represent baseline, partial and completed integration. That ordering is an interpretive hypothesis; it becomes physics only if one set of dynamics reproduces expansion, lensing, structure growth and local gravity.
+
+The evidence line. General relativity relates spacetime curvature to stress-energy. Dark matter is inferred through several independent gravitational effects, and the present density budget is inferred by fitting cosmological models to data. None of this establishes a π-level or i-level.
+
+Where the claim stops. TTI does not yet derive the observed fractions, a covariant stress-energy tensor or a unique halo profile. Nor is gravity's resistance to quantisation evidence that gravity sits 'before' complex phase; quantum gravity remains required where both quantum effects and strong curvature matter.
+
+What single field equation could produce the same mass profile for dynamics and lensing while also matching early structure formation?
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
+
+The need for quantum gravity Einstein Online · Max Planck Institute for Gravitational Physics Why general relativity and quantum theory must both matter at extreme curvature and microscopic scales.
+
+Planck 2018 results VI: Cosmological parameters Astronomy & Astrophysics 641, A6 The model-dependent ΛCDM fit behind the familiar present-epoch cosmic density fractions.
+
 General relativity already says that gravity is curvature rather than a force.  The framework takes that at its word and asks what follows if the curvature in question is the same closure that let anything exist at all.
 
-The first consequence is a diagnosis of why quantum gravity has been so hard. The other three forces live at the i-level — they are phenomena of the complex plane, and they quantise because that is what objects in that plane do. Gravity lives one level earlier, at the π-level, prior to the i-split. On this reading it resists quantisation not because we have been insufficiently clever but because it is not that kind of thing: it is the stage, not an actor on it.
+TTI interprets this geometric description as a clue, not a solution to quantum gravity. It assigns gravity to a proposed π-level of closure and quantum fields to a later i-level of complex phase. That vocabulary may organise the framework, but it does not explain why a quantum theory of spacetime is unnecessary. Black-hole interiors and the earliest cosmic conditions are precisely regimes in which established theories indicate that both quantum effects and dynamical geometry matter. Any claim that gravity is the stage rather than an actor must reproduce those regimes mathematically.
 
-Three readings follow, each offered as interpretation rather than prediction. A precessing orbit is not an ellipse that failed to close; it is a spiral seen edge-on — the same ascent the being makes, drawn by a planet. A gravitational wave is π vibrating: the closure constant itself ringing after a violent event.  for the detection,  for the reading. And gravity is memory: curvature is the record mass leaves in the geometry, persisting after the event that made it.
+Three images follow, and each must remain visibly an image. Relativistic orbital precession produces a rosette-like path rather than a closed Newtonian ellipse; calling it a spiral highlights cumulative advance but does not alter the relativistic mechanism. Gravitational waves are propagating distortions of spacetime measured through strain; “π vibrating” is TTI’s metaphor for them, not their field-theoretic definition. Finally, curvature can encode the continuing influence of a source, but the phrase “gravity is memory” becomes physics only if a memory variable predicts something beyond Einstein’s equations.
 
-Gravity operates at the level of π. Quantum mechanics and the three particle forces operate at the level of i. Matter is the product of traversing the whole chain. The claim is that dark energy, dark matter and baryonic matter correspond to those three levels exactly.
+The observed budget is conventionally described as baryonic matter, dark matter and dark energy. TTI proposes a one-to-one interpretation — completed, partial and baseline integration — but does not yet derive either the three categories or their measured fractions from its own dynamics.
 
-Present everywhere, not because anything curved it, but because space is the product of the two-infinity resolution. Einstein called it the cosmological constant. It cannot be turned off, because it is not a thing in space but a property of space.
+In the base ΛCDM model, accelerated expansion is represented by a cosmological constant with approximately uniform energy density. Other live possibilities include evolving fields and modified gravity. TTI selects a geometric interpretation: the baseline from which further integration begins.
+
+The framework then asks whether separating its proposed π-level geometry from i-level quantum fields could reframe the cosmological constant problem. Estimates of the mismatch between naive vacuum-energy calculations and the observed scale vary with assumptions and can become enormous. Calling the levels different does not yet solve that problem: TTI must show, in a calculation, why the quantum contributions do not gravitate in the usual way while preserving the successful predictions of quantum field theory and general relativity.
 
 The chain does not require every integration to reach the end. Something may reach the π-level — producing gravity, curving spacetime, carrying mass-energy — without reaching the i-level, and so never interact electromagnetically.
 
-Every observed property of dark matter fits that description: it clusters around galaxies, it lenses light, it emits nothing, and it has never been caught in a detector built to catch particles.  The framework does not merely accommodate it; it claims such a component must exist as a structural feature of the chain.
+The proposal is motivated by several observed features: an unseen component clusters, contributes to lensing and cosmic structure, and has not yet been identified in a non-gravitational detector.  But matching that verbal profile is only a first filter. To claim that partial integration must exist, TTI still has to derive the same distribution across galaxies, clusters, the microwave background and structure growth with one dynamical model.
 
 Without the twenty-seven percent there would be no five percent: the early density variations needed that gravitational pull to grow fast enough, and the halos are the scaffolding inside which ordinary matter collected, cooled and formed stars.  The partial integration built the structure that made complete integration possible.
 
@@ -54,21 +70,21 @@ Dark energy is geometry that never left the baseline: it expands, and it neither
 
 Dark matter is dark for a structural reason, not an accidental one. It is not a particle that happens to interact weakly. It is a region that stopped one link short of being able to interact at all.
 
-The payoff is a flat rotation curve for free. A galaxy sits in a χ-gradient falling from χ ≈ 1 in the disk to χ ≈ ½ through the halo; a χ ∝ 1/r profile gives ρ ∝ 1/r², hence M(r) ∝ r, hence a constant orbital velocity out to large radii — which is what Vera Rubin measured and what the visible mass cannot explain. The arithmetic and the derivation gap are both set out in full at the cosmic ledger. The gap, in one line: the 1/r profile is motivated but has not been forced out of the framework's own field equations.
-
-And the limit of the claim, stated here so that it is not mistaken later: this account says nothing whatever about which way a galaxy turns. Completion and orientation are different axes. Spin belongs to the seam.
-
-The popular rubber-sheet picture can help, but only up to a point. A heavy ball dimpling a sheet uses Earth’s gravity to explain gravity and hides time, which is essential to relativity. A better plain description is that clocks and rulers behave differently around energy, so the straightest available route through spacetime can look curved when plotted in space. Light follows that geometry too, which is why gravitational lensing lets astronomers map mass that does not shine.
-
-“Dark matter” is the working name for the extra gravitating component inferred from several kinds of evidence: galaxy motions, lensing, galaxy clusters, the cosmic microwave background and the growth of structure. “Dark energy” names the component associated with accelerated cosmic expansion. The familiar percentages are parameters of a successful cosmological model fitted to data; they are not a direct inventory made by opening three boxes.
-
-Any TTI account must reproduce the same observations at least as well as the established model. Renaming dark matter “partial integration” does not reduce that burden by a single measurement.
-
-A completion fraction such as χ must be a defined field, distribution or state variable. Its units, dynamics and stress–energy contribution must be stated. A profile selected because it yields flat rotation curves is a hypothesis to derive, not an explanation by itself.
-
 ## The Spiral
 
 Ten cannot be both the return and the next beginning unless it divides. So at ten the one thing becomes two: an heir that climbs, and a twin that begins again.
+
+The argument. TTI reads spirals as records of accumulation: each turn inherits a previous radius while adding displacement, so repetition and novelty coexist. The page compares triangular, harmonic and Fibonacci constructions to ask which mechanism, if any, can generate that combination across scales.
+
+The evidence line. Spiral forms arise through many established mechanisms—orbital precession, density waves, differential growth, angular momentum and optimisation among them. Similar shape does not imply identical cause.
+
+Where the claim stops. A numerical resemblance earns physical meaning only when the variables, scale law and dynamics are fixed before the fit. The framework must not select a spiral after seeing the object and call the match a prediction.
+
+Which dimensionless relation stays constant across the proposed systems, and what ordinary mechanism is it expected to beat?
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
+
+Computational Topology: Surface Topology Stanford University The torus, Möbius band, orientability and gluing rules as precise mathematical objects.
 
 Each decade is one revolution. Angle carries value; radius carries density. Nought sits at the centre — the ground, where the logarithm is undefined and no radius reaches.
 
@@ -108,17 +124,19 @@ The clock accelerates for ever and the journey never finishes. That is the asymp
 
 Against ourselves: vn ∝ Πn is an assumption, not a theorem. It is the natural one — accumulated structure carries the next step — but a different coupling between progress and rate gives a different series, and some of those converge. The result is robust to the constant (1.1708 or any other positive number changes nothing, since the harmonic series diverges regardless of scaling) and fragile to the exponent. Stating which part is sturdy and which is the hinge is the whole of the discipline here.
 
-If the tick shortens as 1/n, then the subjective length of a density is not a measure of how much happens in it. Early densities are long and sparse; later ones are brief and dense, carrying more accumulated structure through a shorter interval. A being in the third density is not halfway through anything in time; it is at the point where the deposit has grown large enough for the pace to be felt as acceleration — which is, in the framework's reading, exactly the complaint every generation makes about the one before it.
-
-Euler's identity can be read as a sentence about exactly three values: travelling π through the imaginary dimension carries 1 to −1, and the two together resolve to 0. Each is fixed under one of the framework's central operations.
-
-Zero — fixed under scaling. Multiply it by anything and it is unchanged: the one value invariant under every rescaling, every change of density. Exactly the property a ground must have.
-
-One — fixed under multiplication. The identity: the value that leaves all others unchanged, and so the natural threshold of selfhood.
-
 ## The Splice
 
 Two results of the framework, put together: the fork that happens at every density, and the three fixed points it happens against. What falls out of the join is a gradient — and something for it to pull on.
+
+The argument. The Splice organises triangular and Fibonacci-related sequences into a repeatable arithmetic construction. Its legitimate achievement is internal: readers can reproduce the steps, test identities and locate where choices enter. TTI then asks whether the pattern can constrain a physical model.
+
+The evidence line. Exact integer identities remain exact regardless of their interpretation. Physics adds further requirements: dimensions, covariance, conservation, a state space and a derivation connecting the integers to measured quantities.
+
+Where the claim stops. A close numerical match is not a mechanism, especially when normalisations or index choices were selected after comparison. The Splice has not yet derived Newton's constant, the fine-structure constant, a halo radius or a cosmological abundance.
+
+Riemann Hypothesis Clay Mathematics Institute The official statement of the unresolved problem and its connection to fluctuations in the distribution of primes.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
 
 A being that reaches the top of a density does not simply continue. It splices: one half carries on into the next density, the other is sent back.
 
@@ -156,17 +174,17 @@ This chapter inherits the price set out on the dx page: an emerging awareness is
 
 Which is why nothing in this picture is a reward. The prime being is not the winner of the splice. It is the part that kept moving, and it moves faster precisely because it keeps leaving things behind.
 
-The standing objection writes itself: 333, 666 and 999 are decimal numerals, so the skeleton's recurrence looks like an artefact of how humans happen to count. The framework's answer is to turn the objection over. The splice does not land approximately near the decade and then get tidied up into round figures. It lands exactly on it, and on the thirds of it, and on the vectors between them — and a structure that keeps landing cleanly in one notation is telling you something about the structure, not about the notation.
-
-So the chapter takes the harder position rather than the safer one: nature counts in tens. Base ten is not the lens, it is the reading.
-
-The usual order of explanation is that ten is arbitrary — an accident of having ten fingers — and that any pattern found in decimal numerals is therefore a pattern in us. This chapter runs the explanation the other way.
-
-The argument is not that ten is magic. It is narrower and more checkable than that: the splice, which was defined without reference to any notation, keeps landing on the structural features of base ten exactly rather than approximately. Three strands.
-
 ## Torus
 
 The circle is π applied once: a line curved into a closed loop. The torus is π applied twice: a loop curved around another loop. Everything that must both circulate and return arrives at the same surface.
+
+The argument. A torus provides a precise way for motion to continue without meeting an edge: one or more directions wrap around. TTI uses that geometry to imagine recurrence that preserves continuity while allowing many local paths.
+
+The evidence line. Tori occur rigorously in topology and physically in systems whose boundary conditions or dynamics support them. Their appearance in magnetic confinement, fluid vortices or mathematical phase spaces does not show that the universe as a whole has toroidal topology.
+
+Where the claim stops. Global cosmic topology is an empirical question. The framework still owes an embedding or metric, causal structure and observational signatures such as constrained repeated patterns—not just a familiar doughnut-shaped illustration.
+
+Computational Topology: Surface Topology Stanford University The torus, Möbius band, orientability and gluing rules as precise mathematical objects.
 
 A sphere lets a path return but gives it nowhere to circulate. A cylinder lets a path circulate but never brings it home. The torus is the simplest surface that permits both at once — which is why anything that has to keep going round and come back ends up on one.
 
@@ -210,23 +228,31 @@ A spatial three-torus would identify opposite faces of a volume and could produc
 
 Seeing similar geometry at several scales can motivate a research question, but resemblance alone has little explanatory power. To promote the torus from organising image to mechanism, the project must identify what moves around each cycle, what fixes the periods, how the two directions couple, and what measurement records a winding number or phase. Different systems may answer those questions with completely different materials and laws.
 
-The map could fail in informative ways. If the proposed state has only one measurable phase, a circle may be sufficient and the torus is excessive. If all paths contract without leaving an observable phase, winding carries no physical memory. If a supposed seam changes orientation, an ordinary torus is not enough because a torus is orientable; the Möbius or mapping-torus construction must be stated separately.
-
-A good experiment would prepare two paths with the same endpoints but different winding, then look for a repeatable relative phase or other invariant after ordinary dynamical effects have been controlled. A positive result would demonstrate path-dependent memory in that system. It would not automatically establish TTI’s cosmology, but it would give the analogy a measurable carrier.
-
 ## Megatubule
 
-One surface, one edge, one throat. The framework's picture of the universe is not a ball and not a sheet, but a tube that returns through itself — and the place it returns through can be pointed at in the sky.
+TTI's minimal picture combines toroidal return with one orientation-reversing twist and one proposed throat. The CMB Cold Spot is a comparison target, not an identified cosmic doorway.
 
-Take the torus of Part IV — π applied twice, a circulation that comes back to itself. Then put the half-twist of the Möbius chapter into it. What you have is not a doughnut and not a band: it is a tube with one surface, and the framework calls it the megatubule.
+The argument. The megatubule is a scale hypothesis: a proposal that nested cylindrical organisation might support transport and integration at both neural and galactic scales. Its value is as a generator of questions about channels, coherence and boundary conditions.
+
+The evidence line. Microtubules are cellular structures with established mechanical and transport roles. Quantum-consciousness accounts involving them remain disputed and require mechanisms that survive biological noise. Galaxies, by contrast, are governed on large scales by gravity, gas dynamics, magnetic fields and dark-matter structure.
+
+Where the claim stops. Shared shape is not shared physics. The cosmic proposal needs a defined field, a scaling rule and observations not already explained by galactic dynamics; it cannot inherit biological function merely from cylindrical resemblance.
+
+What quantity is conserved across the proposed scale change, and why should its governing equation remain valid over more than twenty orders of magnitude?
+
+Quantum Approaches to Consciousness Stanford Encyclopedia of Philosophy The Penrose–Hameroff proposal, its microtubule mechanism, and the physical questions that remain unresolved.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
+
+Begin with the recurring direction described in the torus paper, then add the orientation-reversing identification studied in the Möbius paper. TTI calls the resulting proposal a megatubule. That name does not identify a standard unique topological object: a formal version must state the underlying space and gluing map rather than relying on the drawing.
 
 The name is deliberate. A microtubule is the smallest tube the framework takes seriously, and the chapter on the self hangs a great deal on it. The claim here is that the same object appears at the other end of the scale, and that this is the seam rule again: one structure, seen at whatever magnification you happen to be using.
 
-There is no outside. A single-surfaced tube has no second face to be outside of. Questions of the form “what is beyond the universe” are asking for a face the shape does not have.
+The mathematical transport rule. In a precisely defined non-orientable space, a local handed frame can return reversed after one appropriate circuit and be restored after two. That is a topological statement about the chosen model.
 
-There is exactly one edge. Everything the framework calls a seam — collapse, the horizon, the moment of recognition, the saturation ceiling — is that one edge, met at a different scale.
+The global interpretation. TTI proposes that this return removes the need for an external face and that several kinds of boundary are appearances of one seam. Neither conclusion follows merely from drawing a one-sided band; the cosmic space, embedding and causal structure still have to be specified.
 
-Orientation is not conserved on a full circuit. Carry a handedness round the twist and it returns reversed; carry it round twice and it returns as it left. That parity test is the subject of Appendix A, and it is the one part of this picture that could in principle be checked against galaxy handedness.
+The observable translation. Appendix A asks whether galaxy handedness could carry a parity signature. A mathematical orientation reversal does not by itself predict an astronomical asymmetry, so the transport law and selection-corrected statistic are part of the outstanding work.
 
 The framework places the throat at the Cold Spot. Before the reading, the measurement — because this is the one page in Part IV that touches real data, and the data deserves to be stated without the interpretation leaning on it.
 
@@ -250,17 +276,7 @@ Which gives the framework a reading of its own foundations it did not have befor
 
 Note what this costs. If residue is what passes through, then nothing personal does. The framework is not offering continuity of self across the throat and should not be read as offering it: what crosses is the deposit, not the depositor. Any consolation here is for the structure, not for the being.
 
-A torus with a half-twist has a single edge; a single edge admits a single place of maximum pinch. Two throats would require two twists, and two twists cancel — the surface becomes two-sided again and the whole structure loses the property it was built for.
-
-So the uniqueness of the Cold Spot is not an extra assumption bolted on. It is forced by the shape, which is the strongest kind of thing this chapter is able to say.
-
-Appendix A's parity test is the live one: if the twist is real, galaxy handedness should not be perfectly balanced across the sky, and the imbalance should be oriented with respect to the throat. Reported asymmetries exist and are disputed, largely on selection-effect grounds.
-
-A clean null result — handedness balanced to high precision, with no preferred axis — would not merely weaken this page. It would remove the twist, and with it the single edge, and with it the throat.
-
-Vielva, P. et al. — “Detection of non-Gaussianity in the WMAP 1-year data using spherical wavelets”, ApJ 609 (2004).
-
-Szapudi, I. et al. — “Detection of a supervoid aligned with the cold spot of the cosmic microwave background”, MNRAS 450 (2015).
+The present construction chooses one global orientation-reversing identification and represents it with one throat. That is a clean minimal model, but topology alone does not force a unique point of maximum pinch: a one-sided or twisted space can still carry geometry with several local extrema. Nor does adding a second local throat necessarily mean applying a second global twist.
 
 ## What Part II leaves us with
 

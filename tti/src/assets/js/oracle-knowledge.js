@@ -12,6 +12,24 @@
 
   const entries = [
     {
+      id: "claim-reading",
+      question: "How should I read and test a TTI claim?",
+      patterns: [
+        /how.*(?:read|assess|evaluate|test).*(?:tti|claim)/,
+        /tti.*(?:claim|evidence).*(?:read|assess|evaluate|test)/
+      ],
+      answer: `Begin by identifying what kind of sentence you are reading. A mathematical identity may be exact once its definitions and premises are fixed. A result in physics may be well tested within a stated domain. A TTI interpretation can then use either as a model without inheriting its evidential authority. Similar language across those levels is a prompt to examine the bridge, not proof that the bridge exists.
+
+For each page, ask five questions. What is the central claim? Which observations or theorems are genuinely established? Which premise is added by TTI? What competing explanation covers the same facts? What result would count against the proposal? The **Claim boundary** in the page's editorial guide gives the present stopping point. The **Critical prompt** names a pressure test. The external bearings provide context and comparators; they do not endorse TTI.
+
+A diagram can make a hypothesis intelligible without making it true. A fitted curve is not yet a mechanism. A suggestive numerical correspondence is not a derivation. Conversely, calling a proposal speculative does not make it empty if the proposal defines variables, conservation laws, scales and observations that could distinguish it from rivals. Read the project as a staged research programme whose obligations grow with the strength of its language. The homepage [Reader's Contract](https://the-two-infinities.hatchable.site/#reader-contract-title) states the rule compactly: a claim becomes scientifically stronger when it becomes easier to lose.`,
+      followups: [
+        "How should I grade these new claims?",
+        "What did the consolidated Riemann Hypothesis archive actually establish?",
+        "What is the Zero-Seam Test?"
+      ]
+    },
+    {
       id: "circle-evidence",
       question: "Are The Channeling Circle's channeled entities scientifically verified?",
       patterns: [

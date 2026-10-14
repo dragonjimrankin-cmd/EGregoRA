@@ -26,6 +26,14 @@ The Two Infinities is an independent theoretical research project investigating 
 
 The present result is therefore a research architecture rather than a completed cosmology. Its principal open problems are to derive a lawful coupling between accumulated differentials and stress–energy, test whether self-renewing integration has an irreducible turnover cost, distinguish standard density evolution from actual exchange among cosmic sectors, name a carrier for residue that survives inversion, and calibrate the Cosmic Ledger independently. The Zero-Seam protocol provides the current empirical edge: competing models are specified in advance so that the proposed signal may be retained, revised or rejected by the data. A separate Riemann Programme consolidates a 52-file mathematical diary, propagates its corrections and asks what, if anything, its surviving methods contribute to the splice.
 
+This project asks for imaginative attention, but never for unearned agreement. Every research page now opens by saying what it argues, what established work can support, exactly where the inference stops, and which question puts the greatest pressure on it.
+
+Mathematics is not used as a costume for certainty. An exact identity may constrain a model without proving the model’s physical interpretation. A Möbius band can reverse orientation without reversing time; a compactified boundary can organise a diagram without becoming an event; a numerical pattern can be exact without being a law of nature.
+
+External sources are bearings, not endorsements. The source notes point to the strongest established account or relevant live dispute — from general relativity and cosmological parameter inference to consciousness research, entropy, little red dots and the Riemann Hypothesis. None of those sources is presented as supporting TTI unless it actually does.
+
+A claim earns force by becoming easier to lose. Where the framework lacks units, a carrier, an action, a conservation law or a discriminating observation, the prose says so. The aim of this edition is not to make speculation sound safer. It is to make each proposal clear enough to challenge.
+
 Six Parts move from first principles to physical models, boundary studies, tests, reader resources and a correction-aware Riemann programme. Stable document codes support citation; type and status labels show what each item is intended to do. The sequence is a research path, not a claim that later papers have already proved earlier ones.
 
 TTI-I.01 Foundations Concept paper Working hypothesis Research question: can limit asymmetry, closure through π and complex phase form a coherent starting chain?
@@ -74,21 +82,11 @@ TTI-III.08 Wormholes and Inverted Tori Constraint paper Comparative analysis Com
 
 TTI-III.09 Matter and Antimatter Out of Phase Phase hypothesis Speculative model Tests a phase-sector conjecture against the requirement that reversible mixing cannot create net baryon number.
 
-Part IV Tests and Essays Turns the framework into objections, discriminating observations, competing models and research protocols that can fail. 6 documents TTI-IV.01 Stress Tests Falsification paper Active programme Collects the framework’s declared failure conditions, strongest objections and unresolved physical bridges. TTI-IV.02 Essays Collected essays Research context Provides eleven standalone arguments and historical comparisons, including explicit limits and retractions. TTI-IV.03 Two Inversions Comparative paper Open question Compares Möbius frame return with optical polarization and asks what could retain path memory after an exact involution. TTI-IV.04 Accumulated Differentials Bridge paper Open derivation Carries exact sums to the point where units, covariance, conservation and stress–energy must be supplied. TTI-IV.05 JWST’s Little Red Dots Observational hypothesis Competing models Places the inherited-residue conjecture beside conventional compact-source and obscured-accretion explanations. TTI-IV.06 The Zero-Seam Test Research protocol Preregistration draft Defines a staged, preregistration-ready comparison in which conventional, local-front and inherited-residue models may all lose.
-
-TTI-IV.01 Stress Tests Falsification paper Active programme Collects the framework’s declared failure conditions, strongest objections and unresolved physical bridges.
-
-TTI-IV.02 Essays Collected essays Research context Provides eleven standalone arguments and historical comparisons, including explicit limits and retractions.
-
-TTI-IV.03 Two Inversions Comparative paper Open question Compares Möbius frame return with optical polarization and asks what could retain path memory after an exact involution.
-
-Compares Möbius frame return with optical polarization and asks what could retain path memory after an exact involution.
-
 ## Plates are arguments, not decoration
 
 A plate can make a relationship visible before prose makes it memorable. That power creates a risk: a beautiful arrow can look like a proven implication. The plate room therefore keeps every figure beside a plain statement of what it can and cannot establish.
 
-Plate I The Straight Path and the Closed One. Without π there are no Euclidean circles; without closure the path between the two infinities never comes back, and nothing whatever can exist. The move the framework makes here is to promote π from a measured ratio to a precondition — which is exactly the step a critic should press hardest.
+Plate I The Straight Path and the Closed One. Euclidean circles require π, but closed curves also exist in other geometries. TTI chooses Euclidean circular closure and conjectures that some form of closure is required for a persistent, distinguishable world. Promoting that choice into a precondition of existence is the step a critic should press hardest.
 
 Plate II The Self as the Running Sum. The slices are not small pieces of experience; individually they are not experience at all. The claim is that the operation — not the parts, and not the substrate — is what being someone consists of.
 
@@ -143,6 +141,10 @@ Plate I Four gates between splice arithmetic and physics. The exact deposit sequ
 ## Asking ShakDrah without outsourcing judgement
 
 Ask ShakDrah is a prepared research interface, not an oracle in the literal sense. Its reviewed answers preserve attribution, repeat uncertainty labels and return the reader to the full paper. Voice, drawing and film controls change presentation; they do not change the evidence.
+
+### How should I read and test a TTI claim?
+
+Begin by identifying what kind of sentence you are reading. A mathematical identity may be exact once its definitions and premises are fixed. A result in physics may be well tested within a stated domain. A TTI interpretation can then use either as a model without inheriting its evidential authority. Similar language across those levels is a prompt to examine the bridge, not proof that the bridge exists. For each page, ask five questions. What is the central claim? Which observations or theorems are genuinely established? Which premise is added by TTI? What competing explanation covers the same facts? What result would count against the proposal? The **Claim boundary** in the page's editorial guide gives the present stopping point. The **Critical prompt** names a pressure test. The external bearings provide context and comparators; they do not endorse TTI. A diagram can make a hypothesis intelligible without making it true. A fitted curve is not yet a mechanism. A suggestive numerical correspondence is not a derivation. Conversely, calling a proposal speculative does not make it empty if the proposal defines variables, conservation laws, scales and observations that could distinguish it from rivals. Read the project as a staged research programme whose obligations grow with the strength of its language. The homepage Reader's Contract states the rule compactly: a claim becomes scientifically stronger when it becomes easier to lose.
 
 ### Are The Channeling Circle's channeled entities scientifically verified?
 
@@ -203,10 +205,6 @@ Five headline claims require downgrade in the supplied corpus. First, the easy c
 ### Does the Riemann Hypothesis work solve the outstanding splice questions?
 
 No—not at the level of physical derivation. The literal TTI hierarchy remains π-level geometry, the decimal splice at 10 as a proposed localised gravitational source, and the splice at 100 as a proposed circular phase that may support U(1). The RH archive supplies no unique map from the exact deposit sequence to a covariant action, no unit-bearing length or energy scale needed to determine G, no canonical gauge-field and charge normalisation needed to determine e or alpha, and no independently anchored galactic radius r₀. It does offer useful discipline. Transform the splice sequence before interpreting it; state the infinite quadratic form or stability operator first; derive a truncation budget before trusting a small finite eigenvalue; and preregister the decimal log-frequency, golden approach exponent, phase rule and radial anchor before examining galaxy data. One law must explain both dynamics and lensing if the deposit is claimed to gravitate. The RH diary’s negative Fibonacci search also does not refute TTI’s separate argument that base ten is intrinsic. It only reports no connection to the selected RH matrices. Similar spectra and cancellation language cannot supply missing couplings. Read The Splice Questions After RH and When Differentials Accumulate.
-
-### How should I grade these new claims?
-
-Use four separate ledgers rather than one mood of belief. **Established mathematics or physics:** a mapping torus can be defined precisely; determinant −1 records orientation reversal; two reversals restore orientation; arctangent can compactify an infinite coordinate without reaching its boundary; reversible symmetric dynamics do not create a global asymmetry from nothing. **Historical or source evidence:** The Channeling Circle publishes a dated transcript archive in the L/L Research tradition. That establishes the publication record and the group's self-description, not the identity of its attributed speakers. **Conditional mechanism:** if a specified orientation degree of freedom, carrier, coupling or conserved sector existed, the equations describe consequences that could be developed and tested. The “if” must remain visible. **Metaphysical reading:** one Prime Being per universe-instance, a globally transmissible residue, nonlocal reception, or a seam-world as cosmology. These may organise thought, but they are not thereby empirical results. Never let resemblance do the work of evidence. A spiritual portal is not a topological seam; orientation reversal is not time reversal; cultural inheritance is not a signal between universes; a meaningful channeling is not source authentication. The framework is strongest when those boundaries remain explicit.
 
 ## A practical reading method
 

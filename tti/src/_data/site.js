@@ -4,13 +4,13 @@ import ttiAtlas from "./ttiAtlas.js";
  * The Two Infinities: Eternal Integration of the Self — project-wide data.
  *
  * James Alexander Matthew Rankin began the framework between 2 and 19 June
- * 2026. Revision r4.15 integrates six accessible 6,000-8,000-word Part
- * syntheses into their lead pages and a 10,000-13,000-word project synthesis
- * into the homepage. It retains the correction-aware Riemann Programme,
- * automatic Admin Edit commits and every original Part I-IV essay within the
- * accessible 2,000-4,000-word range. Every route receives a stable document
- * code, research status, citation context and a place in one canonical table
- * of contents.
+ * 2026. Revision r5.0 is the clarity edition: every substantive document opens
+ * with a plain-language account of its argument, evidence boundary, stopping
+ * point, critical question and external bearings. It corrects overstatements
+ * about complex quantum theory, strengthens the conventional little-red-dot
+ * comparator and retains all six Part syntheses, the final project synthesis,
+ * the Riemann Programme and every original research document. Every route
+ * keeps its stable code, research status and canonical place in the contents.
  */
 /* The masthead, project contents and interactive Atlas all consume the same
    data. Each Part remains visible in the slim header and every document keeps
@@ -103,7 +103,7 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r4.15",
+  revision: "r5.0",
   revised: "2026-10-14",
   edition: "Working research edition",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",

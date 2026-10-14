@@ -309,7 +309,9 @@ if (!plates) {
   if (plates.$('.plate-accordion-group[name="plate-room"]').length !== plateGroups.length) {
     fail('plate room headings do not form one native exclusive disclosure group');
   }
-  if (plates.$('.frame--first ul, .frame--first li').length) fail('plate room retains its obsolete bullet index');
+  if (plates.$('.frame--first.illuminated').first().find('ul, li').length) {
+    fail('plate room retains its obsolete bullet index');
+  }
   if (plates.$('.plate-accordion-group[open]').length) fail('plate room does not begin fully collapsed');
   note(`plate room reconciled ${gathered} source plates beneath ${plateGroups.length} exclusive headings`);
 }
@@ -436,7 +438,7 @@ for (const essayRecord of essayDocuments) {
   }
 
   const essay = document.$('main').clone();
-  essay.find('.document-outline, .project-context, .longform-synthesis, nav, script, style, svg, .skip-link').remove();
+  essay.find('.document-outline, .project-context, .editorial-guide, .longform-synthesis, nav, script, style, svg, .skip-link').remove();
   const wordCount = countEssayWords(essay.text());
   essayLengths.push({ code: essayRecord.code, url: essayRecord.url, wordCount });
 

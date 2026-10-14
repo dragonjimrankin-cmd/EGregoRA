@@ -44,7 +44,8 @@ const groups = $('.plate-accordion > .plate-accordion-group');
 
 assert.equal(groups.length, expectedGroups.length, 'every source chapter should be one expandable heading');
 assert.equal($('.plate-accordion-group[open]').length, 0, 'the plate room should load with every heading collapsed');
-assert.equal($('.frame--first ul, .frame--first li').length, 0, 'the old bullet index is still present');
+assert.equal($('.frame--first.illuminated').first().find('ul, li').length, 0,
+  'the plate-room introduction still contains the old bullet index');
 assert.equal($('.plate-accordion-group figure.plate').length, expectedPlateTotal,
   'the accordion does not contain all gathered plates');
 assert.equal($('.plate-accordion-group[name="plate-room"]').length, expectedGroups.length,

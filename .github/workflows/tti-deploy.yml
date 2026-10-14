@@ -20,6 +20,7 @@ on:
       - "scripts/test-tti-atlas.mjs"
       - "scripts/test-tti-plates.mjs"
       - "scripts/test-tti-research-layout.mjs"
+      - "scripts/test-tti-editorial-guides.mjs"
       - "scripts/build-tti-longform-sources.mjs"
       - "scripts/test-tti-longform-syntheses.mjs"
       - "scripts/test-tti-riemann-programme.mjs"
@@ -85,6 +86,7 @@ jobs:
           node scripts/test-tti-header.mjs --built
           node scripts/test-tti-atlas.mjs
           node scripts/test-tti-research-layout.mjs
+          node scripts/test-tti-editorial-guides.mjs
           node scripts/test-tti-longform-syntheses.mjs
           node scripts/test-tti-riemann-programme.mjs
           node scripts/test-tti-pi-from-zero-and-one.mjs
@@ -138,7 +140,7 @@ jobs:
           grep -Fq 'The dependency map' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.15' tti/hatchable/public/index.html
+          grep -Fq 'r5.0' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
@@ -180,7 +182,7 @@ jobs:
           grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Twenty-nine prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Thirty prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Can an inverted torus be a traversable wormhole?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Why does π appear between zero and one?' tti/hatchable/public/ask-shakdrah/index.html
@@ -276,6 +278,15 @@ jobs:
           grep -q 'Arithmetic, Proof and the Limits of Analogy: The Riemann Programme' tti/hatchable/public/riemann-programme/index.html
           grep -q 'A final, all-encompassing accessible synthesis' tti/hatchable/public/index.html
           grep -q 'class="wrap narrow longform-synthesis final-synthesis"' tti/hatchable/public/index.html
+          grep -q 'A Reader&rsquo;s Contract' tti/hatchable/public/index.html
+          test "$(grep -R -l 'class="wrap narrow editorial-guide reveal"' tti/hatchable/public --include='index.html' | wc -l)" -eq 32
+          grep -q 'does not manufacture i from π' tti/hatchable/public/foundations/index.html
+          grep -q 'real-arithmetic formulations' tti/hatchable/public/foundations/index.html
+          grep -q 'does not define a smallest conscious grain' tti/hatchable/public/dx/index.html
+          grep -q 'not a definition or derivation of colour confinement' tti/hatchable/public/moebius/index.html
+          grep -q 'topology alone does not force a unique point of' tti/hatchable/public/megatubule/index.html
+          grep -q 's41586-026-10985-8' tti/hatchable/public/little-red-dots/index.html
+          grep -q 'predicts a feature the conventional model misses' tti/hatchable/public/little-red-dots/index.html
           grep -q 'Part VI — Riemann Programme · Research dossier TTI-VI.01 · The Riemann Dossier' tti/hatchable/public/riemann-programme/index.html
           grep -q 'The identity gap is a missing implication, not a missing decimal' tti/hatchable/public/riemann-programme/index.html
           grep -q 'Part VI — Riemann Programme · Proof audit TTI-VI.02 · Proof and Correction Ledger' tti/hatchable/public/riemann-proof-audit/index.html
@@ -401,7 +412,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.15',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r5.0',
                 'Project Table of Contents', 'Geometry, Integration and the Conditions of Return',
                 '<dt>Research status</dt><dd>Working hypotheses</dd>', 'TTI-I.01', 'TTI-V.04',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',
@@ -412,12 +423,15 @@ jobs:
                 'Part VI', 'Riemann Programme', 'TTI-VI.03',
                 'A final, all-encompassing accessible synthesis',
                 'The Two Infinities: Eternal Integration of the Self',
+                'A Reader&rsquo;s Contract', 'External sources are bearings, not endorsements',
                 'Why the two infinities never fully synchronise', 'The Zero-Seam Test']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/foundations/',
               markers: ['Part I — First Principles · Concept paper TTI-I.01 · Foundations',
-                'Why Does Anything Exist?', 'Why π Appears Between Zero and One',
+                'Why Does Anything Exist?', 'The Claim, in Plain Terms',
+                'does not manufacture i from π', 'real-arithmetic formulations',
+                'Why π Appears Between Zero and One',
                 'From Nothing to a Self: The First Principles of The Two Infinities']
             },
             {
@@ -520,7 +534,8 @@ jobs:
                 'An Integration Front Carrying an Older Residue',
                 'What Could Exist Between Minus One and Zero?',
                 'Not a Fourth Pole, but a Boundary Condition', 'The conservation fork',
-                'Six Debts the Sky Can Collect',
+                'Six Debts the Sky Can Collect', 's41586-026-10985-8',
+                'predicts a feature the conventional model misses',
                 'The Dot May Be a Memory Learning to Shine Again']
             },
             {
@@ -607,7 +622,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
               markers: ['Part V — Reading Rooms · Research assistant TTI-V.02 · Ask ShakDrah',
-                'Twenty-nine prepared answers', 'Why does π appear between zero and one?',
+                'Thirty prepared answers', 'How should I read and test a TTI claim?', 'Why does π appear between zero and one?',
                 'Can an inverted torus be a traversable wormhole?',
                 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',

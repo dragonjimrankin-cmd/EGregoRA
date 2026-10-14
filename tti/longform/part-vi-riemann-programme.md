@@ -20,6 +20,16 @@ This essay describes the identity gap between exact formulas and the missing glo
 
 Fifty-two files record an ambitious search through kernels, zero sums, quadratic forms and spectral operators. This dossier keeps the exact mathematics, the finite evidence and the corrections on separate lines. It does not contain or claim a proof of the Riemann Hypothesis.
 
+The argument. The dossier preserves useful identities, transforms, asymptotic observations and diagnostic computations while refusing to promote them into a proof. Its main result is methodological: corrections must propagate through every later claim that depended on the corrected step.
+
+The evidence line. The Riemann Hypothesis remains open and states that every nontrivial zero of ζ(s) has real part one half. Extensive numerical verification and equivalent criteria are evidence and structure, not a proof for all zeros.
+
+Where the claim stops. No calculation over a finite range closes a universal implication. A positivity pattern, kernel approximation or critical-line identity must be connected to RH by a theorem whose hypotheses are actually proved.
+
+At which exact implication would a sceptical analyst stop, and can that implication be stated independently of the desired conclusion?
+
+Riemann Hypothesis Clay Mathematics Institute The official statement of the unresolved problem and its connection to fluctuations in the distribution of primes.
+
 The source archive is a research diary. Seven files call themselves comprehensive, but each accumulates earlier claims and later addenda rather than replacing a corrected argument cleanly.
 
 The archive expands to 52 documents and 916,946 bytes. Four pairs are exact duplicates, leaving 48 unique payloads. Its sessions repeatedly do something scientifically valuable: make a strong claim, test it, discover a sign, normalisation or logical error, and record a correction. The same structure creates a danger. A theorem announced near the top of a master file may be retracted hundreds of lines later and then reappear in a final summary. Consolidation therefore cannot mean choosing the most recent or most confident sentence. It means reconstructing each claim through its correction history.
@@ -46,6 +56,16 @@ The next paper follows every major claim through its correction history and iden
 
 A correction does not merely alter a formula. It changes which later conclusions can still use that formula. This ledger follows five headline claims through the archive and stops each argument at the first step not supplied.
 
+The argument. The proof ledger audits arguments at their earliest unsupported move: complete monotonicity, positivity of a density, replacement of one kernel by another, restriction to the critical line, or extension from numerical range to all parameters. This is more informative than declaring a long calculation simply right or wrong.
+
+The evidence line. Equivalent criteria for RH are valuable only when every condition of the equivalence is met. Approximation can illuminate a transform while failing to preserve the zero set or sign property needed by the exact theorem.
+
+Where the claim stops. A repaired lemma is not a proof unless the full dependency chain is repaired. The page deliberately records downgrades and retractions rather than hiding them behind encouraging numerics.
+
+Which missing statement is both necessary for the route and realistically separable into a lemma that could be proved or disproved?
+
+Riemann Hypothesis Clay Mathematics Institute The official statement of the unresolved problem and its connection to fluctuations in the distribution of primes.
+
 The archive deserves credit for recording errors. Consolidation must now propagate each correction forward instead of leaving the original theorem label in place.
 
 A numerical result can support a conjecture, test an implementation or expose a false generalisation. It cannot replace a missing uniform bound. A conditional Hadamard formula can describe what follows if every zero is on the critical line. It cannot be used as the unconditional starting point of an argument meant to prove a property without RH. A leading asymptotic can suggest a sign. It cannot determine a discrete sum unless the remainder is bounded more tightly than the proposed margin.
@@ -71,6 +91,18 @@ Continue to The Splice Questions After RH, where the same audit discipline is ap
 ## The Splice Questions After RH
 
 The RH archive changes the standard of evidence, not the constants in the theory. It offers transform methods, positivity tests and warnings about finite cancellation. It does not derive the action, physical scale, charge normalisation or reference radius the splice still owes.
+
+The argument. The answer is presently no. The archive contributes disciplined transforms, spectral analogies and proof-audit habits, but it does not supply a dimensionful action, gravitational coupling, electromagnetic normalisation or halo scale.
+
+The evidence line. The zeta function encodes prime-number structure, and RH constrains fluctuations around the average distribution of primes. Moving from that arithmetic fact to physical constants requires an independently justified map with units and dynamics.
+
+Where the claim stops. A shared appearance of spectra, oscillation or criticality is not a coefficient derivation. The splice remains open until a physical bridge predicts a number before calibration and survives comparison with data.
+
+What explicit map carries a dimensionless zeta quantity into a physical observable without importing the observable as its own scale?
+
+Riemann Hypothesis Clay Mathematics Institute The official statement of the unresolved problem and its connection to fluctuations in the distribution of primes.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
 
 This assessment does not replace decimal splices with an arbitrary base. TTI’s existing Skeletal Splice argument treats base ten as the finding to be defended, not an unnoticed coordinate choice.
 
@@ -233,14 +265,6 @@ Exact unbroken local \(U(1)\) would forbid a bare Proca mass, and an anomaly-fre
 Only a canonically normalised kinetic term and an independently selected smallest representation fix what number is called the stated mathematical expression. Predicting \(_{ EM}=e^2/(4 c)\) also requires the scale at which the boundary value is set and the renormalisation-group flow to the measured scale.
 
 Answer: the route from second-splice phase to \(U(1)\) remains plausible as a symmetry promotion, while the numerical coupling remains underdetermined.
-
-The finite corrections predict an approach exponent the stated mathematical expression and a decaying decimal log-periodic residual. That is an interesting conditional signature. It becomes predictive only if the stated mathematical expression is fixed independently and the same source explains both dynamics and lensing.
-
-The RH archive contains logarithmic prime frequencies and zero ordinates, so it is tempting to identify one with the stated mathematical expression. No unique dimensionally valid map does so. Choosing the first zero, a mean spacing or a prime scale because it improves a galaxy fit would introduce exactly the retrospective freedom the prediction is meant to remove. One universal anchor must be derived before looking at individual rotation curves, or tied to a separately measured formation variable by one preregistered law.
-
-The literal-base prediction has log-frequency the stated mathematical expression and golden approach exponent the stated mathematical expression. Fix amplitude law, phase rule, radial anchor and covariance before examining a galaxy sample. Do not permit a separate phase and the stated mathematical expression for every object.
-
-Derive the residual shape from the exact the stated mathematical expression, including both the monotone the stated mathematical expression term and the alternating \((-1)^n^{-2n-2}\) term.
 
 ## What Part VI leaves us with
 

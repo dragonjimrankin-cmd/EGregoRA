@@ -20,6 +20,22 @@ This essay presents those tests in ordinary language. The emphasis is on discipl
 
 A research framework is worth what survives its strongest objection. This paper is written by the author against his own work — including one objection he concedes outright.
 
+The argument. This page converts attractive images into liabilities the framework must accept. A serious stress test identifies a rival explanation, freezes a discriminating prediction before the result is known and states what outcome would count against TTI.
+
+The evidence line. Established theories earn trust by surviving linked tests with shared parameters. General relativity predicts orbit precession, light bending and gravitational waves from one framework; ΛCDM connects expansion and structure data. TTI should be judged by the same logic, not by isolated resemblance.
+
+Where the claim stops. A test is not risky if every outcome can be re-described as another kind of integration. Unspecified corrections, source-by-source phase offsets and post-hoc profile choices must count as losses rather than escapes.
+
+Which proposed observation has the largest likelihood ratio between TTI and its strongest conventional rival, using parameters fixed in advance?
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
+
+Observation of Gravitational Waves from a Binary Black Hole Merger Einstein Online · Max Planck Institute for Gravitational Physics What LIGO measured and how waveform models turn strain data into a test of general relativity.
+
+Planck 2018 results VI: Cosmological parameters Astronomy & Astrophysics 641, A6 The model-dependent ΛCDM fit behind the familiar present-epoch cosmic density fractions.
+
+Overmassive black holes and little red dots naturally form in simulations Nature 657 (2026) A conventional heavy-seed and rapid-accretion pathway that reproduces little-red-dot-like sources.
+
 The measurement function does not have three poles. It has infinitely many: sin(πz) vanishes at every integer, and the ledger only works if the residues at all the distant ones behave.
 
 The cost, stated plainly: the rescue is real but it dilutes. Those distant residues are not zero, so the three headline percentages are the leading terms of a sum with an infinite tail, not the whole of it. Any claim that the budget is exactly 68.10 / 26.95 / 4.95 has to answer for the tail.
@@ -54,17 +70,21 @@ Observable: predict a finite lag, covariance or forbidden locking pattern that o
 
 The clean loss: the conjecture is rejected if a consistent temporal gluing gives the endpoints a shared clock, if a lawful model produces exact phase-and-rate locking on a non-zero interval, or if its supposed signature can always be rescued by choosing a separate phase offset for each object. If no finite observable can be derived at all, it remains metaphysics and must not be advertised as a physical prediction.
 
-The wormhole proposal begins only after the inverted-torus topology has been specified. To count as a physical passage it must then provide a Lorentzian metric, the stress tensor that supports its throat, a perturbative stability analysis, a causal evolution for both mouths and a signal distinguishable from ordinary lensing or a compact object.
-
-The clean loss: withdraw the physical wormhole reading if no self-consistent source holds the throat open, if arbitrarily small perturbations destroy it, if chronology cannot be made consistent, or if every proposed observation is already supplied by a black hole, lens or coordinate relabelling. The global mapping-torus model may survive that loss as topology; the portal claim may not.
-
-Everything else on this page is a challenge brought against the framework. This one it brings against itself, and it is the only place in the work where the sky is given a clean opportunity to say no.
-
-The claim under test comes from the two-being reading of the seam: if the half-twist births an inverted pair rather than one oriented thing, there exists a plane across which observed galaxy handedness reverses. The prediction is not the size of the asymmetry — the framework has no amplitude and says so — but its shape. A genuine seam demands an orientation field that is cleanly odd about a single great circle:
-
 ## Essays
 
 The papers stop arguing here and start talking. Eleven short essays in plain language — and, unusually for a cosmology, several of them are about where the author thinks he went wrong.
+
+The argument. The essays give TTI room to explore consequences, histories and metaphors without pretending that every suggestive connection is a derivation. Their task is to make assumptions visible and sharpen questions that the formal papers can later accept or reject.
+
+The evidence line. Philosophical argument can clarify concepts such as infinity, identity, explanation and necessity. It cannot substitute for empirical support when a claim concerns fields, particles, cosmic history or measurable dynamics.
+
+Where the claim stops. A memorable sentence may organise thought while remaining false as physics. Readers should carry each essay's conclusion back to the evidence ledger before treating it as part of the model.
+
+After removing the metaphor, what proposition remains, and what kind of evidence could make that proposition more or less credible?
+
+The Neuroscience of Consciousness Stanford Encyclopedia of Philosophy A comparative account of global-workspace, recurrent-processing, higher-order and integrated-information approaches.
+
+Information Processing and Thermodynamic Entropy Stanford Encyclopedia of Philosophy The distinctions among thermodynamic, statistical and informational entropy, including Landauer's principle.
 
 The origin story, told against itself. A wheel seen in a dream, draining into a dark point; then a week of afternoons in which paper after paper arrived, each one apparently finishing the last.
 
@@ -102,15 +122,23 @@ Cell-cycle biology is well measured and needs none of this. The claim is that th
 
 Earlier parts of the framework leaned hard on those numbers and tried to derive them from one equation. If the target moves, a derivation that hits it today is either a coincidence or a description of an epoch. The essay says so in the author's own voice rather than in a critic's.
 
-A being that reaches ten does not simply carry on: it splits. One half climbs to the next level; the other half is sent back. The question left hanging was where, exactly, the sent-back half lands.
-
-The first answer was the easy one — back to one, to run the journey again, with zero kept clean and untouched, a floor nobody ever stepped on. This essay is about why that was probably wrong. The returners land below one, in the interval between zero and one, and they land there by the golden law: each return falls a further step into the small, never reaching the ground.
-
-The payoff is that two parts of the framework that had been sitting side by side without touching are tied together. The crowding near zero — asserted on the very first page as the reason the lower infinity is denser — stops being an axiom and becomes a consequence: it is where the returners pile, turn after turn, forever short of the floor.
-
 ## Two Inversions
 
 A Möbius circuit reverses a local transverse frame. A second circuit restores it. A perfect optical inverter can do the same. Does residue of a single inversion make it through after a second inversion?
+
+The argument. The page compares an exact involution—apply a reversal twice and recover the starting orientation—with physical systems that can accumulate phase or hysteresis along a closed path. TTI's question is whether return of the visible state can coexist with retained path information.
+
+The evidence line. Topology and linear algebra distinguish an operation's endpoint from the route used to implement it. Geometric phase, dissipation and environmental coupling can leave measurable traces even when a selected coordinate returns.
+
+Where the claim stops. Path memory is not guaranteed by the word 'inversion'. It requires a connection, non-commuting operations, hysteresis or another explicit mechanism; otherwise two exact reversals simply cancel.
+
+Which gauge-invariant observable records the route after the orientation has returned, and what null experiment shows that the effect is not ordinary dissipation?
+
+Computational Topology: Surface Topology Stanford University The torus, Möbius band, orientability and gluing rules as precise mathematical objects.
+
+Quantum theory based on real numbers can be experimentally falsified Nature 600 (2021) The influential network experiment separating complex quantum theory from one specifically defined real-amplitude foil.
+
+Information Processing and Thermodynamic Entropy Stanford Encyclopedia of Philosophy The distinctions among thermodynamic, statistical and informational entropy, including Landauer's principle.
 
 Any non-zero remainder must live somewhere the ideal state map did not erase: a path-dependent phase, a larger state space, a changed boundary, a dissipative material, an environment, or a record. Calling the remainder “Möbius memory” does not provide that mechanism.
 
@@ -150,19 +178,23 @@ A null result is informative. If calibrated optics, measured phase and environme
 
 One further subtlety is that states can be equivalent for one measurement while differing for another. Multiplying a lone quantum state by a global phase does not change its direct measurement probabilities, but a relative phase between two coherent paths can change interference. The reference arm is therefore part of the experiment that makes phase observable. Saying “the state returned” must specify which equivalence relation and which measurements are intended.
 
-Accordingly, the experiment should publish its full modelled state space before data collection. Adding an unmeasured coordinate only after a null result would immunise the hypothesis. Adding a coordinate in advance, together with the instrument that reads it and the predicted scale, creates a claim that can succeed or fail.
-
-The disciplined answer to the title question is therefore: two exact inversions do not force a surviving polarity. Path memory can survive in an enlarged, measurable state. The difference between those sentences is the difference between algebra and a research programme.
-
-Declare the TTI residue model unsuccessful if every result is accounted for by calibrated optics, noise and environment.
-
-A positive phase measurement would establish an optical path effect. It would not by itself establish cosmic inheritance, consciousness, matter–antimatter conversion or a Möbius universe.
-
-Earned: exact order-two maps restore the modelled state, and closed optical paths can carry measurable relative phase. Chosen: asking whether a separately defined residue variable can connect those structures to TTI. Refused: treating any double inversion, any polarization change or any Möbius image as evidence for inherited physical memory.
-
 ## Accumulated Differentials
 
 Could accumulated differentials appear physically as mass, and could their distribution then contribute to gravity? Calculus permits the accumulation. Physics requires much more.
+
+The argument. TTI proposes that what persists may be the accumulation of changes rather than an underlying static substance. Exact sums and integrals show how small contributions build a total; the physical conjecture is that an integration variable might contribute to stress-energy.
+
+The evidence line. Calculus licenses accumulation once a quantity and measure are defined. General relativity requires a covariantly conserved stress-energy tensor with correct units and transformation properties.
+
+Where the claim stops. A dimensionless count of increments cannot become mass by analogy. The model still owes a carrier, coupling constant, action, conservation law and independent prediction; inserting the desired mass scale after summation would be circular.
+
+What local Lagrangian produces the accumulation law and a conserved stress-energy tensor without fitting the final gravitational scale?
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
+
+The need for quantum gravity Einstein Online · Max Planck Institute for Gravitational Physics Why general relativity and quantum theory must both matter at extreme curvature and microscopic scales.
+
+Information Processing and Thermodynamic Entropy Stanford Encyclopedia of Philosophy The distinctions among thermodynamic, statistical and informational entropy, including Landauer's principle.
 
 Established physics: mass–energy and momentum enter the stress–energy tensor; in general relativity that tensor sources spacetime curvature.
 
@@ -198,9 +230,23 @@ Reject the physical bridge if its fitted contribution is zero, duplicates an exi
 
 Suppose the dots are the youngest things we can see because they are also the oldest things still arriving: residues of a previous universe, carried through the hidden interval between minus one and zero and projected into ours as compact red seams.
 
+The argument. TTI treats compact red sources at high redshift as a possible place to look for boundary residue. That is now a deliberately disadvantaged hypothesis: a useful version must beat increasingly detailed conventional models of obscured, rapidly accreting black holes in compact hosts.
+
+The evidence line. By 2026, radiation-hydrodynamic simulations had produced little-red-dot-like objects through heavy black-hole seeds, dense gas and sustained rapid accretion. Spectroscopy and host-galaxy studies also strengthen accreting-black-hole interpretations, while population diversity and detailed emission physics remain active research.
+
+Where the claim stops. Red colour, compactness or early appearance alone is no longer persuasive evidence for TTI. The residue model needs a preregistered feature that conventional accretion, dust, stellar populations and selection effects do not naturally produce.
+
+What spectral, temporal or population-level signature has a quantitative residue prediction and a low probability under the best black-hole model?
+
+Overmassive black holes and little red dots naturally form in simulations Nature 657 (2026) A conventional heavy-seed and rapid-accretion pathway that reproduces little-red-dot-like sources.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
+
 The black hole would be the closure knot where the old residue acquires a new physical body. The dense red source around it would be the seam’s visible aftermath: ordinary gas heated and reprocessed by an object whose boundary condition is older than its host galaxy. The dot is not the previous galaxy surviving intact. It is what that galaxy, universe, or global residue leaves when almost everything except its capacity to seed structure has been stripped away.
 
-Webb has found an abundant early population of extremely compact sources with blue rest-ultraviolet light, steep red rest-optical continua and, in many examples, spectral evidence for accreting massive black holes. They become common in the first billion years and decline rapidly later. Dense gas around young black holes is presently the leading physical account of their unusual spectra.
+Webb has found an abundant early population of extremely compact sources with blue rest-ultraviolet light, steep red rest-optical continua and, in many examples, spectral evidence for accreting massive black holes. They become common in the first billion years and decline rapidly later. Dense gas around young black holes is the leading physical account of their unusual spectra.
+
+The evidential balance has moved since the first version of this proposal. In 2026, published radiation-hydrodynamic simulations showed that heavy black-hole seeds, dense gas and sustained rapid accretion can naturally produce little-red-dot-like objects and connect them to later overmassive black holes. That result does not prove that every dot has one origin, but it gives the conventional model a mechanism rather than a label. Read the Nature study and its assumptions.
 
 No earlier universe is required. The negative interval can be a simultaneously existing, orientation-reversed sector of this universe. A little red dot then marks a local intersection where that hidden sector projects into positive measure. “Previous” describes its order in the closure map, not an earlier date on our cosmic clock.
 
@@ -228,19 +274,21 @@ This gives a sharper TTI reading of an apparently overmassive black hole in a fa
 
 The supply from the zero seam must decay at a calculable rate. It should predict the observed early abundance and later decline, together with a source-to-host sequence as each luminous galaxy catches up with its compact inherited seed.
 
-One global residue sampled many times should impose a population-level covariance: a constrained relation among seed mass, host deficit, duty cycle and environment that independent seed models do not produce. Similar redness alone is not enough.
-
-If ordinary seed formation explains every residual; if no stable crossing map exists; if the predicted handedness, redshift window or population covariance is absent; or if the energy budget fails, the inherited-residue explanation should be abandoned.
-
-A companion research proposal turns these six debts into a staged twenty-four-month programme: derive one conserved crossing law, preregister three competing models, test them on fields withheld from training, and earn any new telescope time through successful archival prediction.
-
-The metaphysical image is now stronger. A universe closes but does not become nothing. Its final residue loses positive extension, traverses the interval before zero, and returns not as the same collection of things but as a bias toward becoming. At a few early knots, that memory gathers a new scaffold and the boundary itself shines. The little red dot is both a visible verb—integrating—and a possible echo: remembering without remaining identical.
-
-Those verbs belong to the philosophy of the framework. The proposal does not establish personal survival, communication from another world, or observational access to a spirit realm. Astronomy measures spectra, structure and dynamics. It could test only the physical shell around the image: a crossing law, conservation rule, orientation trace, population covariance and inheritance clock.
-
 ## The Zero-Seam Test
 
 A research proposal for asking whether JWST’s little red dots are fully explained by young black holes, dense gas and rapidly assembling hosts—or whether their population retains a measurable signature of an integration front carrying inherited cosmic residue.
+
+The argument. The protocol compares three families: conventional compact-source models, a local transition model and inherited residue. Its purpose is not to secure a TTI win; it is to make all three vulnerable under the same held-out data and scoring rule.
+
+The evidence line. Current conventional models can generate compact red high-redshift sources through black-hole seeding, gas enshrouding and rapid accretion. That evidence raises the bar and should inform the null model, priors and synthetic recovery tests.
+
+Where the claim stops. A flexible extra component will almost always improve a fit. The proposal therefore needs complexity penalties, blinded thresholds, negative controls and a rule that treats failure to outperform conventional models as evidence against the residue claim.
+
+Which one statistic will be frozen before opening the validation set, and what numerical result will retire rather than merely revise the inherited-residue model?
+
+Overmassive black holes and little red dots naturally form in simulations Nature 657 (2026) A conventional heavy-seed and rapid-accretion pathway that reproduces little-red-dot-like sources.
+
+Planck 2018 results VI: Cosmological parameters Astronomy & Astrophysics 641, A6 The model-dependent ΛCDM fit behind the familiar present-epoch cosmic density fractions.
 
 This programme would not search a telescope image for “another universe”. It would first turn the conjecture into a low-parameter generative model, then test whether that model predicts a preregistered combination of abundance, central-to-host growth, environment, energy balance and—if resolvable—orientation better than conventional astrophysical models. The decisive evidence would be successful prediction in data withheld by field and by observing programme, not an improved fit to the sample used to invent the model.
 
@@ -293,30 +341,6 @@ Failure to choose is a stop condition. In particular, a negative coordinate does
 Reject the tested implementation if its prespecified redshift, covariance or energy predictions fail. A failed implementation need not disprove every imaginable cyclic cosmology; it does remove this version from scientific use.
 
 Mathematical relativity, field theory and topology expertise to derive the seam map, dimensions and conservation law rather than infer them from the desired answer.
-
-Early-universe, AGN, stellar-population and radiative-transfer expertise to construct the baseline and prevent unfamiliar gas physics from being relabelled as new cosmology.
-
-Phase I requires archival access, reproducible computing and staff time rather than immediate new observing time. A Phase II telescope proposal should be submitted only after the archival gate fixes the targets, measurements and required sensitivity.
-
-The proposal begins from the evidence summarised in the parent conjecture: an early compact population, widespread signs of accreting black holes, dense ionised cocoons, at least one direct dynamical black-hole mass, and faint extended hosts in stacked imaging. These observations motivate the study but do not support its TTI extension by themselves.
-
-The proposal’s standard is deliberately severe: TTI must predict a constrained relation that ordinary black-hole and galaxy physics did not already supply, and it must do so before the decisive observations are examined.
-
-Read the parent little-red-dots conjecture, follow the underlying field in the Cosmic Ledger, compare its declared failure conditions in Stress Tests, or return to the essays.
-
-## Further connections across Part IV
-
-The rival explanation, and currently the favourite, is pedestrian: galaxies turning against the Milky Way's motion are Doppler-brightened, enter a magnitude-limited sample preferentially, and produce an excess centred on our Galactic pole that worsens with faintness. That account predicts an excess tied to our motion vector and apparent magnitude — which need not be perfectly antisymmetric and need not resolve to one circle.
-
-The framework's own expectation runs partly against the current data. A primordial seam ought to be a cosmic-frame structure, and the reported axis sits close to our own pole. That is a point against, it is recorded here rather than in a footnote, and no attempt is made to explain it away.
-
-A scientific stress test needs more than an objection stated in forceful language. It needs a target claim, a measurement, at least one ordinary rival explanation and an outcome that counts against the proposal. Those items should be recorded before the decisive data are examined. Otherwise a framework can reinterpret every result after the fact and never risk being wrong.
-
-Negative evidence also comes in degrees. Failure to detect a predicted signal may exclude one parameter range rather than an entire idea. A conventional model fitting better may make a speculative extension unnecessary without proving it logically impossible. By contrast, violation of a required conservation law can defeat a proposed mechanism at its foundation. Each test on this page therefore names which level it addresses.
-
-Independent replication matters because flexible models can absorb noise. The handedness programme must survive survey masks and observer-frame bias in new catalogues. The Zero-Seam programme must predict held- out fields rather than merely describe the sample that suggested it. The temporal-antipode conjecture must use one transport law rather than a new phase offset for each object.
-
-The purpose of a clean loss is not to punish imagination. It is to separate a research programme that can learn from the world from a story that can only rename what has already happened.
 
 ## What Part IV leaves us with
 

@@ -35,9 +35,9 @@ vm.runInNewContext(source, { window, URL, console }, { filename: 'oracle-knowled
 
 const kb = window.EGOracleKnowledge;
 assert.ok(kb, 'knowledge API was not exposed');
-assert.equal(kb.entries.length, 29, 'expected twenty-nine substantial prepared answers');
-assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 29, 'knowledge IDs must be unique');
-assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 29, 'prepared questions must be unique');
+assert.equal(kb.entries.length, 30, 'expected thirty substantial prepared answers');
+assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 30, 'knowledge IDs must be unique');
+assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 30, 'prepared questions must be unique');
 
 for (const entry of kb.entries) {
   assert.ok(entry.answer.length >= 700, `${entry.id} is too slight for a high-degree answer`);
@@ -82,6 +82,7 @@ for (const href of linked) {
 }
 
 const paraphrases = new Map([
+  ['How should I test a TTI claim?', 'claim-reading'],
   ['Is The Channeling Circle proof of extraterrestrials?', 'circle-evidence'],
   ['Show me The Channeling Circle archive and its sessions.', 'circle-archive'],
   ['What meditation practices recur in The Channeling Circle?', 'circle-practices'],
@@ -137,12 +138,12 @@ for (const [label, page] of [['ShakDrah', ttiPage], ['Gink', egPage]]) {
   const group = page.match(/<div class="oracle-chips" id="oracle-chips">([\s\S]*?)<\/div>/);
   assert.ok(group, `${label} has no opening question group`);
   const chips = [...group[1].matchAll(/<button class="chip" type="button">([^<]+)<\/button>/g)].map((m) => m[1]);
-  assert.equal(chips.length, 29, `${label} should display twenty-nine current questions`);
-  assert.ok(page.includes('Twenty-nine prepared answers'), `${label} does not announce the twenty-nine-answer update`);
+  assert.equal(chips.length, 30, `${label} should display thirty current questions`);
+  assert.ok(page.includes('Thirty prepared answers'), `${label} does not announce the thirty-answer update`);
   const knowledgeAt = page.indexOf('/assets/js/oracle-knowledge.js');
   const siteAt = page.indexOf('/assets/js/site.js');
   assert.ok(knowledgeAt >= 0, `${label} does not load the knowledge asset`);
   assert.ok(siteAt < 0 || knowledgeAt < siteAt, `${label} loads the knowledge asset after the oracle client`);
 }
 
-console.log('Oracle knowledge passed: 29 exact answers, 29 paraphrases, two avatars, fallback and attachment bypass.');
+console.log('Oracle knowledge passed: 30 exact answers, 30 paraphrases, two avatars, fallback and attachment bypass.');

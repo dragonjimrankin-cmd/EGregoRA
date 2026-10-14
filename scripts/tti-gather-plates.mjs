@@ -138,6 +138,8 @@ description: "Every plate drawn across The Two Infinities: Eternal Integration o
   <p class="lede muted">The project&rsquo;s figure register: ${total} scalable arguments, indexed by source document.</p>
 </section>
 
+{% include "partials/editorial-guide.njk" %}
+
 <section class="wrap narrow reveal">
   <div class="frame frame--first illuminated">
     <p class="lede">Every research figure is reproduced here as a vector and linked to the paper in which

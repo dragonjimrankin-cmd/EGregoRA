@@ -18,13 +18,21 @@ The central theme is integration. In everyday language, integration means bringi
 
 ## Foundations
 
-Not a deeper particle, not an earlier instant. Two boundary conditions, one constant of closure, and a half-turn that opens a dimension — and then matter, with nowhere else to go.
+Not a proposed earlier particle or instant, but a conditional chain: two chosen boundary meanings, Euclidean closure, a quarter-turn in complex phase, and a conjectured route to matter.
 
-Zero and one are not two small numbers. They are the two ends of measurability, and neither is reachable from inside.
+The argument. TTI proposes a chain of dependence: boundaries make distinction possible; a chosen geometry supplies closure; complex phase then supplies a richer space of relations. The page is strongest when read as a conditional construction—if those starting premises are granted, later steps can be inspected one by one—not as a proof that nature had no alternative.
 
-Zero is the floor no shrinking quantity ever reaches. Halve a thing forever and you produce an endless sequence that converges on zero and never arrives. It is an infinity opening downward, into the small. One is the edge of the unit, the boundary of this against that, the threshold at which a thing is a thing at all.
+The evidence line. Cantor's work establishes that the natural numbers and the real unit interval have different cardinalities. Quantum theory is conventionally formulated over complex Hilbert spaces. Neither fact, by itself, assigns the two infinities to time, turns π into a cause, or identifies a wavefunction with matter.
 
-Between them sits the fact the whole framework is built on. The interval from zero to one contains more numbers than the entire unending march of 1, 2, 3, 4… put together.  This is Cantor's diagonal result, rigorous and unarguable: the “small” infinity nested between the two markers is strictly denser than the “large” one that runs to the stars. The framework does not treat this as a curiosity. It treats it as a tilt built into the foundations — and much later, in the chapter on the arrow, it cashes that tilt in as the direction of time.
+Where the claim stops. The mathematical statements are real results; the ontological meanings attached to 0, 1, π and i are TTI's proposal. Current debate also shows that experiments distinguish standard complex quantum theory from particular real-amplitude rivals, not from every possible reformulation using real arithmetic.
+
+Which declared premise does the most work: the meaning of the endpoints, the demand for closure, or the promotion from mathematics to physics?
+
+Quantum theory based on real numbers can be experimentally falsified Nature 600 (2021) The influential network experiment separating complex quantum theory from one specifically defined real-amplitude foil.
+
+On whether quantum theory needs complex numbers: the foil theories perspective arXiv (2025 preprint) Why the experimental result depends on how the rival real theory and its composition rule are defined.
+
+TTI assigns two ontological roles to the familiar numbers zero and one: an open limit toward absence and a completed boundary of unity. Those roles are the framework's premises, not properties proved by arithmetic.
 
 The framework now asks whether the smallward infinity near zero and the largeward infinity of unbounded magnitude are not merely asymmetric in scale, but temporal antipodes. On that reading they cannot fully synchronise: a common clock would require a shared finite instant and a lawful comparison channel, while the proposed boundary states sit at opposite asymptotic ends.
 
@@ -32,29 +40,35 @@ This does not follow from cardinal arithmetic, and “smallward” does not mean
 
 Ask how zero and one are joined. Draw the path straight and it never closes: it runs on forever, resolving nothing, producing nothing finite that could stand and stay.
 
-What falls out is not a smaller, tamer quantity. It is the imaginary unit: the operator that lifts the real line ninety degrees into a direction that was not there before. Fold the new perpendicular onto the old familiar line and the complex plane springs into being.
+Euler's formula describes rotation in a complex plane that already contains the imaginary unit. A half-turn carries one to negative one; a quarter-turn carries one to i:
 
-And the complex plane is not a convenient abstraction with no address in the world. It is the native country of quantum mechanics. Every wavefunction is complex-valued; it cannot be written down without i. That is not notational habit: experiments in quantum information have demonstrated that a real-valued quantum theory makes different and worse predictions than the universe actually obeys.  The imaginary dimension is load-bearing.
+This equation does not manufacture i from π; i is part of the formula used to define the rotation. What it establishes is an exact relation among exponential growth, circular phase and a perpendicular axis. TTI then makes a separate interpretive move: it reads the quarter-turn as a model for dimensional opening. That reading may be illuminating, but it is not another theorem hidden inside Euler's identity.
+
+The complex plane is not a decorative afterthought in the standard formulation of quantum mechanics: states live in complex Hilbert spaces and relative phase changes measurable interference. A prominent 2021 network experiment separated standard complex quantum theory from a specifically defined real-amplitude rival. The conclusion is narrower than this page previously implied. Later work showed that broader real-arithmetic formulations can reproduce the same predictions by changing how composite systems are represented. The safe claim is therefore that complex structure is load-bearing in the standard formalism, not that experiment has proved the symbol i to be an irreducible substance of nature.
 
 The later little-red-dots conjecture asks whether this interval could parameterise an orientation-reversed residue sector. Its Zero-Seam research proposal accepts the resulting burden: define the state space, derive a crossing map, choose what is conserved and make a prediction ordinary astrophysics does not already supply. Until then, the physical reading is chosen rather than earned.
 
 Normalised Euclidean circular closure introduces π. The unit-interval beta integral states the exact result; choosing that geometry as a condition on reality remains speculative.
 
+A quarter-turn in the complex plane carries 1 to i. Euler's formula states that relation exactly; interpreting it as dimensional creation is TTI's additional move.
+
+The real and imaginary axes span the complex plane. This is established mathematics; the claim that the second axis is physically generated by closure is not.
+
 If existence rested on a cause, one could always ask what caused the cause, and the question would recede forever. On this reading nothing is holding existence up, because there is nothing it could fall from. Zero and one are not events that happened; they are conditions that cannot fail to obtain. The closure between them is not an achievement but a consequence. Nothing is geometrically impossible — and so something is unavoidable.
 
-That the wavefunction is matter, rather than describing it — a position in the philosophy of quantum mechanics, not a result.
-
-Any claim that this derives the Standard Model, predicts a constant, or replaces a field equation. It does not. It is an argument about why there is a stage — and it is judged on whether that argument holds, not on physics it never attempted.
-
-A chain of necessity is only worth the name if it is directed. Six links that could be traversed in either order would be a list, not a derivation. So it is worth stating plainly what forbids the return journey at each joint.
-
-From α to π the step is closure: an interval acquires a second side. Closure destroys information about where on the interval you began, which is exactly why it cannot be undone — a circle does not remember its cut. From π to π/2 the step is splitting: one rotation becomes two independent half-rotations, and the imaginary axis appears. Splitting is not a loss but a promotion, and promotions are not reversible either; you cannot unsplit a plane back into a line without choosing which direction to discard, and nothing in the geometry makes that choice. From π/2 to i the step is orientation, and orientation is the one thing a half-twist takes away permanently.
-
-Each link forgets something. That is what makes the chain a direction rather than a sequence, and it is the earliest appearance in this work of the arrow that Part III — Seams and Return has to account for.
+Standard quantum theory uses complex amplitudes, and experiments rule out particular real-amplitude foil theories under their stated composition assumptions. Whether complex numbers are uniquely fundamental rather than representational remains debated.
 
 ## π from 0 and 1
 
 Zero and one do not generate π by bare arithmetic. The exact statement is more interesting: once they bound a unit interval and that interval is given Euclidean closure, π is the normalising constant the geometry requires.
+
+The argument. The page gives an exact route from an integral over 0 < x < 1 to π, then asks whether circular closure deserves an ontological role in TTI. This is not a claim that the decimal symbols 0 and 1 secretly contain π. It is a claim that once a Euclidean metric and circular closure are chosen, π is forced by the geometry.
+
+The evidence line. Euler's beta integral, semicircle area and the Basel problem provide independent mathematical appearances of π. Their agreement is powerful internal checking. It does not select Euclidean circular closure as the geometry of the physical universe.
+
+Where the claim stops. The theorem ends where the physical interpretation begins. A different metric, topology or closure rule would change the construction; no theorem on this page makes π a causal agent.
+
+Computational Topology: Surface Topology Stanford University The torus, Möbius band, orientability and gluing rules as precise mathematical objects.
 
 The numerals 0 and 1 alone do not force π. Starting with them and applying finitely many additions, subtractions, multiplications and divisions produces rational numbers, while π is transcendental. Lindemann proved that transcendence in 1882.
 
@@ -87,6 +101,18 @@ The corrected TTI chain therefore reads: zero and one provide the normalised bou
 ## The Self
 
 A universe of flawlessly described matter could still be utterly dark within. The second movement asks where experience enters — and answers with one symbol from calculus.
+
+The argument. TTI treats the self as the process that binds changing sensations, memories and intentions into a history experienced as one life. The proposal shifts the question from finding an unchanging inner object to explaining how continuity is maintained while almost every constituent changes.
+
+The evidence line. Contemporary consciousness research takes integration, global availability, recurrent processing and higher-order representation seriously, but no consensus theory identifies integration alone as sufficient for consciousness. Personal continuity also remains a philosophical problem, not a quantity read directly from a brain scan.
+
+Where the claim stops. The page offers a metaphysical model of first-person unity. It does not derive subjective experience from an equation, prove survival beyond biological function, or show that every integrated system is conscious.
+
+What observation would distinguish TTI's integrating self from an ordinary neural system that combines information without possessing the proposed deeper continuity?
+
+The Neuroscience of Consciousness Stanford Encyclopedia of Philosophy A comparative account of global-workspace, recurrent-processing, higher-order and integrated-information approaches.
+
+Quantum Approaches to Consciousness Stanford Encyclopedia of Philosophy The Penrose–Hameroff proposal, its microtubule mechanism, and the physical questions that remain unresolved.
 
 Taken further on their own pages: dx as the smallest possible integral, the price an emerging awareness pays out of memory, and whether a continuing self must release part of its old integration in order to keep gathering.
 
@@ -124,17 +150,19 @@ What is the pole the spiral eternally tends toward without arrival? The framewor
 
 This is offered as the mathematical description of God: not a being somewhere in the universe, not a large and powerful creature at the end of time, but the condition that makes existence possible — always present as the horizon, never present as a destination. Aquinas called it esse ipsum subsistens, being itself subsisting; Tillich called it the Ground of Being; the mystics called it the Unground, the Godhead, Brahman.  The framework calls it one.
 
-The gap between the curve and the asymptote never closes, and that is not a failure. A being that reached one would cease to be a finite being in the interval and would become the boundary condition itself. The gap is the gift. The approach is the life.
-
-That the microtubule lattice is where the operation is carried out — a contested proposal, and the site says so on the stress-test page.
-
-The integral of a life is not an abstraction performed on a smooth stream. It is performed on something that already ticks. Every cell in a body runs an oscillator: the circadian clock, a transcription–translation feedback loop with a period close to twenty-four hours, which keeps running in cultured cells with no sky to look at and no body to belong to. Remove the organism and the beat persists.
-
-The framework takes that literally rather than poetically. If the self is an integral, then the dx is set by whatever the substrate's smallest reliable interval happens to be, and a body is a hierarchy of such intervals: the millisecond of a spike, the hundreds of milliseconds of a perceptual moment, the ninety-minute ultradian cycle, the day. A life is not one integral but a nested stack of them, each coarser one summing the finer.
-
 ## dx
 
 Calculus is usually taught as though dx were a convenient fiction on its way to zero. Read it the other way and it is the opposite: the smallest finished thing a sum can be, and the grain at which anything can be aware of itself.
+
+The argument. The page uses the differential as a disciplined image of a change small enough to be local yet real enough to accumulate. TTI then asks whether persistence might consist of such increments being continuously taken up into a larger history.
+
+The evidence line. Calculus rigorously defines derivatives, differentials and integrals through limits and related structures. Those tools describe change with extraordinary success. They do not say that reality is literally made of infinitesimal pieces or that an integral is automatically a conscious act.
+
+Where the claim stops. The ontological reading is optional and must earn physical content through variables, units and dynamics. A metaphor becomes a model only when it predicts something that standard calculus plus established physics does not already predict.
+
+If dx names a physical increment, what carries it, what are its units, and what conservation law governs its accumulation?
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
 
 The framework takes the other road. dx is not a nothing that has not finished vanishing. It is an integral of the shortest possible interval: the least sum that is nevertheless a sum, the smallest act of gathering that has actually been completed.
 
@@ -162,15 +190,19 @@ Put plainly: the substrate holds a stored past. Call its information content M. 
 
 Every bit the awareness acquires is a bit the record loses, discounted by an efficiency η that is never better than one and in practice much worse. Awareness, on this reading, is the record being spent. A system that becomes more present becomes, by exactly that much, less faithful to what it was.
 
-Because the sliver is already complete. If dx is a finished sum, it cannot be added to the ledger for free; it has to be composed of terms that were somewhere before. The new awareness is not conjured out of the substrate's spare capacity, because the framework does not grant the substrate any spare capacity: everything it has is already the record of what it has been.
-
-Because the one place we can look already behaves like this. Brains do not accumulate; they overwrite. The evidence is set out in the next panel.
-
-A consolidated memory, when retrieved, becomes labile again and must be re-stored. Nader, Schafe and LeDoux (Nature, 2000) blocked protein synthesis in the amygdala after retrieval and the fear memory did not survive — an already-consolidated trace was lost by the act of being remembered.
-
 ## The Prime Plane
 
 Suppose the line that keeps climbing counts in fives. What clock do the beings sent back obey? An eight-state return preserves the Fibonacci pairing and falls behind. A four-state return restores the quarter-turn and moves ahead. The arithmetic is simple. The choice between the two is not.
+
+The argument. TTI compares several base-dependent ways of arranging primes and phase sectors, using base ten as an internally motivated representation rather than pretending that notation is irrelevant. The useful question is whether any pattern survives a change of representation strongly enough to deserve physical attention.
+
+The evidence line. Prime numbers and residue classes have exact arithmetic structure. A visual pattern in base five, eight, ten or another base can be mathematically correct while remaining a consequence of the chosen encoding.
+
+Where the claim stops. No base comparison on this page proves a particle family, force, dimension or cosmic sector. A physical promotion would require an invariant construction and a measurable quantity whose value does not depend on how humans write integers.
+
+Which feature is invariant under a change of base, and what experiment would measure that invariant rather than the diagram?
+
+Riemann Hypothesis Clay Mathematics Institute The official statement of the unresolved problem and its connection to fluctuations in the distribution of primes.
 
 A numeral base cannot create a physical phase shift merely by changing how a number is written. For this speculation to say anything, base must mean the number of equally spaced phase states in one local cycle.
 
@@ -202,19 +234,21 @@ That changes the story. A phase lead does not naturally picture a depth pulling 
 
 The weakness: four is structurally abundant, which makes it easy to invoke after the fact. This model gives up the consecutive-Fibonacci relation and must explain why the returning branch changes clocks from a fivefold ascent to a fourfold ground.
 
-where the braces mean fractional part. This phase never repeats exactly; it winds densely around the circle. That is a very different cosmology from the forty- or twenty-tick beat. One gives periodic rephasing because the clocks have finitely many states. The other gives permanent quasiperiodicity because the density scales are multiplicatively incommensurate.
-
-The framework must choose which meaning of base it intends. It cannot claim the finite closure of the cyclic model and the non-closing drift of the scale model in the same argument.
-
-A forty-tick reset favours the five-to-eight cyclic model. A twenty-tick reset favours five to four. No exact reset, together with continuing phase drift, favours the multiplicative-scale reading.
-
-Under one fixed orientation, base eight produces a lag and base four a lead. Any proposed coupling must preserve that sign. A model that predicts the same effect from both has discarded the only sharp difference between them.
-
-The framework must identify a physical event that deserves to be called the shared tick. Without one, “forty” and “twenty” count marks on a diagram rather than events in a world.
-
 ## Entropy as the Cost of Self-Renewal
 
 Could a self persist only by letting some of itself come apart? The careful answer is that turnover can produce entropy and can be necessary for continued organisation, but it does not explain the second law by itself. TTI’s stronger proposal begins only after that distinction is secure.
+
+The argument. The proposal is not that consciousness violates thermodynamics. It is that a persistent organised system may remain coherent only by replacing components, correcting errors and exporting waste. Integration can rise locally while total entropy still increases because maintenance has a cost.
+
+The evidence line. Living systems are open systems: they preserve organisation by consuming free energy and releasing heat and waste. Landauer's principle gives a precise lower bound for logically irreversible erasure, but it does not establish a universal price for every act of memory, identity or consciousness.
+
+Where the claim stops. TTI has not yet derived an entropy-production term uniquely associated with self-renewal. The bridge remains qualitative until a state variable, control volume and measurable excess above ordinary metabolism are defined.
+
+What would be measured differently in two equally active systems if one performed the proposed integration and the other did not?
+
+Information Processing and Thermodynamic Entropy Stanford Encyclopedia of Philosophy The distinctions among thermodynamic, statistical and informational entropy, including Landauer's principle.
+
+The Neuroscience of Consciousness Stanford Encyclopedia of Philosophy A comparative account of global-workspace, recurrent-processing, higher-order and integrated-information approaches.
 
 Living organisms, flames, vortices and maintained machines can preserve recognisable organisation while their material parts and energy continually change. They are open, nonequilibrium systems. Their local persistence is paid for by free-energy consumption, heat release and a non-negative total entropy production when system and environment are counted together.
 
@@ -244,19 +278,19 @@ The word “necessary” is conditional. It follows only after specifying finite
 
 This guards against romanticising decay. Illness, trauma and material breakdown are not cosmically required gifts merely because some renewal is useful. The model concerns a possible structural relation between maintenance and controlled release, not a moral explanation for suffering.
 
-A self can restore a previous macroscopic condition without every molecule retracing its trajectory and every emitted photon returning. Repair after damage, recovery of a stored file or reconstruction of a pattern uses a new physical path. It consumes resources and leaves new records in the environment.
-
-Microscopic time reversal is much stricter. In a classical idealisation it reverses momenta and follows the exact trajectory backward; in quantum theory it requires the appropriate antiunitary time-reversal operation and reversed external conditions. Ordinary recovery does neither. It is another forward process that reaches a macrostate judged equivalent under a coarse description.
-
-This also separates cyclic integration from a perpetual-motion claim. A system may pass through assembly, use, release and renewed assembly many times. Its organisational variables can be periodic while total entropy rises each cycle:
-
-Macroscopic return therefore does not erase the arrow of time. The state called “the same self” may sit above different microstates, different waste heat and a changed environment. TTI’s language of return must preserve that distinction unless it derives a genuinely reversible microscopic mechanism.
-
-Measure heat, work, matter flow and known dissipative reactions. Entropy production cannot be read from semantic change alone. The total account must include the apparatus and environment far enough away to prevent hidden exports.
-
 ## The Cosmic Ratio in Time
 
 The familiar split of roughly five percent baryonic matter, twenty-seven percent dark matter and sixty-eight percent dark energy is a present-epoch model fit, not an eternal recipe. Its changing fractions do not by themselves show that one sector converts into another.
+
+The argument. The page corrects a static reading of the famous cosmic pie chart. TTI may interpret baryonic matter, dark matter and dark energy as stages of integration, but it must first respect the standard fact that their density fractions evolve differently as the universe expands.
+
+The evidence line. Planck's familiar fractions are model-dependent inferences within base ΛCDM, not three substances weighed directly. Matter density dilutes with expansion while a cosmological constant remains approximately constant per unit volume, so the fractions change even without any conversion between sectors.
+
+Where the claim stops. A changing ratio is not evidence that one sector turns into another. Exchange, reversal or cyclic swapping requires continuity equations with explicit interaction terms and observations that outperform the non-interacting model.
+
+What redshift-dependent curve does TTI predict that differs from ordinary ΛCDM dilution without adding a freely fitted exchange function?
+
+Planck 2018 results VI: Cosmological parameters Astronomy & Astrophysics 641, A6 The model-dependent ΛCDM fit behind the familiar present-epoch cosmic density fractions.
 
 In standard cosmology the density associated with nonrelativistic baryons and cold dark matter falls approximately as the inverse cube of the scale factor, while a cosmological constant has constant energy density. Their fractions of the total therefore change with cosmic time. Dark energy becomes fractionally dominant late without consuming matter.
 
@@ -287,14 +321,6 @@ TTI reads dark energy as the geometric ground, dark matter as partial integratio
 If the levels are states of one underlying field, transitions may be possible in principle. If they are genuinely distinct substances, a reaction and conserved charges are needed. If they are only descriptive categories, talk of conversion may be a category error. TTI must choose before writing an exchange law.
 
 This choice also controls what “reverse” means. A field can roll back toward another phase, a particle can decay through a permitted channel, and a description can change because an observer uses a different coarse-graining. These are not interchangeable physical events.
-
-The rates must have units, depend on declared local variables and remain non-negative as rates. Their energy release or absorption must appear in other sectors, perhaps radiation or kinetic energy. A net sequence can reverse when the reverse rate exceeds the forward rate; no reversal follows merely because the universe has become old.
-
-Creating baryonic matter is not merely relabelling energy. The model must explain baryon-number accounting, electric neutrality and the particle products. Known baryon-number violation is tightly constrained, and the observed matter excess carries an early-universe explanation debt.
-
-Changing the baryon density around nucleosynthesis or recombination alters light-element abundances, acoustic peaks and photon scattering. Late conversion can inject heat, ionisation or gamma rays. The absence of such signals limits both rate and channel.
-
-A cyclic level model cannot silently reset the thermodynamic ledger. Forward and reverse transitions may restore a sector fraction while producing net entropy. The companion paper on self-renewal distinguishes organisational return from microscopic time reversal.
 
 ## What Part I leaves us with
 

@@ -20,6 +20,18 @@ The common question is what can survive change. If a process returns to a simila
 
 The circle and the torus are levels in the chain: stable, closed, orientable. The Möbius strip is something else entirely — a transition between levels, the surface of the moment when what was outside one level becomes inside the next.
 
+The argument. TTI uses the Möbius band as a disciplined model of return with changed handedness: after one circuit a local frame is reversed, and after two it is restored. The physical proposal is that some cosmic seam may act analogously on states transported around it.
+
+The evidence line. A Möbius band is mathematically non-orientable, and its gluing rule is exact. That fact alone says nothing about antimatter, temporal direction, entropy, or the topology of spacetime.
+
+Where the claim stops. To promote the seam into physics, the page must specify what state is transported, the connection governing transport, which observable changes sign, and how a laboratory or astronomical measurement differs from ordinary geometric phase.
+
+What measurable object returns reversed after one circuit, and what prevents an ordinary gauge choice from removing the apparent reversal?
+
+Computational Topology: Surface Topology Stanford University The torus, Möbius band, orientability and gluing rules as precise mathematical objects.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
+
 Three of these are places to be. The fourth is a way of getting from one to another, and that distinction is what the rest of the chapter is built on.
 
 The wavefunction is complex-valued: it has two faces, real and imaginary. Superposition is the state in which both faces are simultaneously present — a two-faced surface. Collapse is the identification of those faces: the moment the half-twist completes and both reveal themselves as one continuous surface.
@@ -40,17 +52,19 @@ The ordinary self is a cylinder: two-faced, bounded, with a clear distinction be
 
 In deep meditation, in mystical states, in certain moments of profound openness, that boundary becomes permeable; observer and observed stop being two things. In topological terms the experiential surface has taken the half-twist. The cylindrical self has become a Möbius surface, and what was outside is now continuous with what was inside.
 
-The mystic who says “I am the universe” is not speaking metaphorically. From within a Möbius surface the statement is precisely accurate: inside and outside are the same face.
-
-The difference between ordinary and mystical consciousness, on this reading, is not a difference in content but in topology: cylinder or strip, two faces or one.
-
-Refused: treating “a Möbius strip has one side” as though it proved anything about minds. The topology is used as a precise analogy and labelled as one.
-
-If the half-twist is real, it should leave a fingerprint somewhere small enough to be measured rather than merely admired. The strong force is where to look, because the strong force is the one place in physics where a charge is already described as a thing that cannot be exhibited on its own.
-
 ## Cosmic Ledger
 
 Everything before this was geometry argued in words. Here the framework writes something down that can be evaluated, and therefore something that can be wrong in a specific way.
+
+The argument. The Ledger is where poetic correspondences are required to become bookkeeping. It assigns variables to baseline, partial and completed integration and asks how they contribute to expansion, mass profiles and conserved totals.
+
+The evidence line. Modern cosmology already links parameters to multiple data sets: microwave-background anisotropies, lensing, clustering, supernova distances and structure growth. A rival ledger must fit these jointly rather than explaining one curve at a time.
+
+Where the claim stops. The current χ profiles and residue terms are ansätze, not consequences of an action or field equation. Calibration after observing each target would make the model descriptive but not predictive.
+
+Planck 2018 results VI: Cosmological parameters Astronomy & Astrophysics 641, A6 The model-dependent ΛCDM fit behind the familiar present-epoch cosmic density fractions.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
 
 Model the universe as a meromorphic function on the Riemann sphere whose residues encode the structural constraints of the cosmos. The Global Residue Theorem then requires that the total residue on the sphere vanish.
 
@@ -74,13 +88,21 @@ Standard cosmology measures a dark sector and then looks for something to put in
 
 What is not secure is the next step, which is almost always taken silently: that a thing which gravitates and does not radiate must be a particle. Forty years of direct-detection experiments — xenon time projection chambers, cryogenic germanium, axion haloscopes — have returned null results across most of the parameter space that motivated them. The particle reading is not refuted. It is unconfirmed, expensively and repeatedly.
 
-The ledger's reading is that the middle entry is not a species but a state: a region of geometry that has reached the π/2 threshold and stopped there. Integrated enough to curve space. Not integrated enough to carry a phase, and therefore not integrated enough to emit light.
-
-The chain the whole framework runs on is α → π → π/2 → i, and the χ-field is nothing more than a bookkeeping of how far along it a region has travelled. Read that way, the three residues stop being three numbers and become three stages of one process:
-
 ## Seams
 
 A seam is where one level ends and the next begins — and the framework's claim is that it is always the same seam, appearing at whatever scale you happen to be looking.
+
+The argument. The page compares boundaries to expose both common structure and category errors. TTI's productive intuition is that limits organise what can cross, return or be remembered; its discipline is to keep causal, topological and thermodynamic limits distinct.
+
+The evidence line. An event horizon is a causal boundary in spacetime. An entropy gradient describes statistical direction. A Möbius seam is a topological identification. Each has different mathematics and none can substitute for another without an explicit bridge.
+
+Where the claim stops. Calling all three 'seams' is a research vocabulary, not a unification. A successful synthesis must derive a shared invariant or demonstrate a transfer law that respects each domain's established constraints.
+
+Horizon Einstein Online · Max Planck Institute for Gravitational Physics The event horizon as a causal boundary, not a material membrane or generic synonym for every seam.
+
+Information Processing and Thermodynamic Entropy Stanford Encyclopedia of Philosophy The distinctions among thermodynamic, statistical and informational entropy, including Landauer's principle.
+
+Computational Topology: Surface Topology Stanford University The torus, Möbius band, orientability and gluing rules as precise mathematical objects.
 
 Wherever the framework found a transition it found the same structure: a boundary that is not a wall but an identification, where what was outside becomes inside.
 
@@ -106,15 +128,21 @@ The density toward zero was always asserted. Now it is built: it is where the re
 
 The chapter is careful where it would be easy to cheat. Population density — how many beings occupy the small region — is what the returners produce, and the mechanism owns it completely: every fork at every level sends someone downward, so the low region receives traffic from all densities above it. Numerical density — how many numbers occupy a region — is Cantor's, a property of the value system and nothing to do with beings.
 
-The new idea is the conjecture that the two coincide: that the beings pile where the numbers crowd, and that the foundational density is the shadow of the fork's returns. It is named as a conjecture in the text and is named as one here.
-
-This chapter has argued that one seam recurs at every scale: the horizon of a black hole, the threshold at one, the moment of passing. The claim is cheap unless the seam shows up somewhere small enough to be instrumented. It does, and it has a name that has nothing to do with this framework: confinement.
-
-Colour charge is never observed alone. What reaches a detector is always a colour bound to its own inversion — a quark with an antiquark, or three quarks taking one of each — and pulling the pair apart does not separate them; past about a femtometre the stored energy makes a fresh pair instead. The two faces cannot be prised off one another, which is exactly the property that distinguishes a one-sided surface from a two-sided one.
-
 ## Entropy and Integration
 
 Entropy is a family of precise quantities. “Integration” is TTI’s proposed metaphysical reading of how settled structure gathers. They may be compared; they must not be equated.
+
+The argument. TTI proposes phases in which local organisation is assembled, maintained and released. The useful version of the claim is compatible with the second law: a subsystem can become more organised while producing greater entropy in its surroundings.
+
+The evidence line. Thermodynamic entropy, Boltzmann or Gibbs entropy and Shannon information answer related but non-identical questions. Landauer's result concerns logically irreversible erasure under specified physical conditions; it is not a licence to equate every loss of meaning with heat.
+
+Where the claim stops. No scalar 'integration' measure on this page has yet been shown to enter a thermodynamic state equation. The arrow of time cannot be derived from a verbal contrast between integration and disintegration.
+
+What state variables make integration measurable, and how do they enter an entropy balance for a clearly bounded system?
+
+Information Processing and Thermodynamic Entropy Stanford Encyclopedia of Philosophy The distinctions among thermodynamic, statistical and informational entropy, including Landauer's principle.
+
+The Neuroscience of Consciousness Stanford Encyclopedia of Philosophy A comparative account of global-workspace, recurrent-processing, higher-order and integrated-information approaches.
 
 In equilibrium statistical mechanics, entropy counts accessible microstates relative to a stated macro-description. In thermodynamics it is a state function whose changes constrain possible processes. In information theory it measures uncertainty in a distribution. Those definitions are related, but not interchangeable without assumptions.
 
@@ -136,19 +164,17 @@ Take a shuffled deck of cards. One exact order is no more or less probable than 
 
 “Disorder” is sometimes a useful shortcut, but it easily misleads. A well-stacked library can have more thermodynamic entropy than a scattered cold pile of books because molecular energy, not visual neatness, dominates the count. Conversely, a turbulent pattern may look disorderly while carrying organised flows. The technical question is always: which states are being counted, under which constraints?
 
-Entropy measures multiplicity or uncertainty in a defined description. It is not a cosmic score for messiness, moral decline or lack of meaning.
-
-The inside becomes colder and more constrained, but the motor releases more heat into the room. The refrigerator is an open system. Its local entropy reduction is paid for by a larger increase in its surroundings, so total entropy does not decrease.
-
-Cells maintain intricate organisation by taking in low-entropy free energy and releasing heat and waste. Growth, repair and memory are compatible with the second law because the organism continually exchanges matter and energy with its environment.
-
-A cloud can clump into stars and galaxies even while total entropy rises. Gravitating systems behave differently from a gas in a fixed box; radiation, heating and black-hole entropy matter. Visual structure is not a reliable entropy meter.
-
-If integration means stronger functional coordination, it may increase while thermodynamic entropy also increases, or while entropy is exported. No universal minus sign links them. Their relationship must be derived for each defined system.
-
 ## Temporal Antipodes
 
 The smaller infinity and the bigger infinity cannot ever fully synchronise because they exist at opposite ends of time.
+
+The argument. TTI places smallward and largeward limits at opposite ends of a compactified temporal description. The conditional claim is modest but precise: if the endpoints are not physically identified and no transport law joins them, they cannot share an operational clock even when finite projections overlap.
+
+The evidence line. Compactification is a standard mathematical technique, and relativity requires a protocol when distant clocks are compared. Drawing infinite limits at finite positions changes coordinates; it does not create signals or simultaneity.
+
+Where the claim stops. The temporal assignment is a TTI postulate, not a consequence of Cantor's theorem. A physical version still needs states, a causal transport rule and a finite observable distinguishable from ordinary redshift, delay and time dilation.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
 
 They are proposed boundary conditions at opposite temporal asymptotes. Complete synchronisation would require a shared finite instant, a comparison rule and a channel that can carry timing information between them. On this conjecture, no such common clock exists.
 
@@ -178,17 +204,23 @@ Ordinary propagation delays, redshift, decoherence and unsynchronised astrophysi
 
 TTI assigns smallward and largeward infinities to opposite compactified ends. This is a clear geometric proposal: finite history lies between two asymptotic conditions. The additional claim that those ends cannot synchronise is conditional. It follows only if no lawful identification or transport rule joins them. Topological separation on one diagram is not by itself a prohibition in physics.
 
-Compactification changes coordinates, not causal structure. A boundary drawn at a finite distance can still represent something no finite traveller reaches.
-
-Two clocks brought together can compare readings locally. Separated clocks need exchanged signals and a convention for propagation delay. In relativity, simultaneity for distant events depends on the observer’s state of motion; there is no universal cosmic tick supplied automatically.
-
-Matching once is not synchronisation. The rates must remain related over an interval after known redshift, motion and gravitational effects are included. Two hands that cross on a clock face may have different speeds and immediately separate.
-
-Phase belongs to a specified oscillator. Comparing phases at different places requires a signal or a transport law. Without one, drawing two sine waves on the same axis silently grants the common time coordinate that the antipode proposal says may be absent.
-
 ## Time and Residue
 
 Suppose every instance of the universe has one Prime Being whose residue can cross that instance’s depth of time and space — while every being could occupy the prime role in another instance. The residue does not arrive as a preserved personality. It is distributed through minds as questions, intuitions and philosophical ideas.
+
+The argument. The page separates three possibilities often blurred together: a later state may resemble an earlier one, may be statistically constrained by it, or may literally receive transferable information from it. TTI's residue claim concerns the strongest case and therefore inherits the greatest burden.
+
+The evidence line. Physics permits correlations and conserved quantities to persist through many transformations. Information transfer nevertheless requires a carrier, a channel, a mapping between state spaces and a causal account of how the channel operates.
+
+Where the claim stops. Similarity, memory and transmission are not synonyms. Personal testimony and visionary material can motivate a question but cannot establish a cosmological carrier or conservation law.
+
+What encoded distinction crosses the seam, through which degree of freedom, and how could a later observer tell transmission from coincidence or shared dynamics?
+
+Information Processing and Thermodynamic Entropy Stanford Encyclopedia of Philosophy The distinctions among thermodynamic, statistical and informational entropy, including Landauer's principle.
+
+Horizon Einstein Online · Max Planck Institute for Gravitational Physics The event horizon as a causal boundary, not a material membrane or generic synonym for every seam.
+
+The Neuroscience of Consciousness Stanford Encyclopedia of Philosophy A comparative account of global-workspace, recurrent-processing, higher-order and integrated-information approaches.
 
 Within each universe-instance, only its Prime Being’s residue occupies the globally transmissible mode. Across different instances, every being could be the one who occupies that role.
 
@@ -210,23 +242,19 @@ The philosophical proposal begins after that restraint. Time is treated as the o
 
 If every being inside one universe possessed an independent globally propagating residue, that universe would contain as many common channels as beings. Nothing would explain why their signals do not overwrite, cancel or fragment one another. The revised hypothesis keeps one coherent zero-mode per instance while allowing the identity of its source to vary between instances.
 
-What could enforce one-at-a-time uniqueness? Three possibilities can be imagined: the first traversal in each instance creates a topological winding that later traversals cannot duplicate; the selected subject occupies that world’s non-degenerate ground mode; or the role is fixed by a boundary condition rather than by an intrinsic property of the being. These are metaphysical mechanisms, not observations.
-
-Every being is eligible across instances; only one is prime within any particular instance. No living person gains authority by declaring which instance this is or claiming to be its exclusive mouthpiece.
-
-A residue is not the Being packed into a small object and sent forward. It is the change left in the conditions from which later events grow. A footprint travels through history without the foot travelling with it. A melody crosses centuries while no molecule from the first instrument accompanies the later performance.
-
-The common residue is not copied into identical minds. It is refracted by different bodies, languages, histories and problems.
-
-Philosophies can disagree in their answers while repeatedly encountering being, change, identity, suffering, causality, unity and multiplicity. The conjecture locates the residue in the recurrence of the questions, not in a secret sentence all traditions supposedly share.
-
-A thought moves through citation, translation, rejection and rediscovery. Its distribution can be pictured as a branching kernel,
-
-but the kernel is made of people and institutions, not empty mathematics. Libraries, teachers, migrations, prohibitions and technologies determine what survives.
-
 ## Inverted-Torus Universe
 
 Perhaps one universe-instance is not merely made from inverted tori. Perhaps that universe is the Möbius seam itself: one globally twisted return whose local cross-sections are ordinary tori, and whose completed circuit brings every transported frame back inverted.
+
+The argument. The construction combines recurrence with a twist, producing a mapping-torus-style model in which a transported frame may return transformed. TTI explores whether this can formalise inversion more carefully than a picture of a torus turning inside out.
+
+The evidence line. Topology allows precise quotient spaces and orientation-changing identifications. A physically admissible spacetime must additionally carry a metric, causal structure, suitable matter content and globally consistent fields.
+
+Where the claim stops. A topological identification is not automatically a dynamical event. The current model has not shown that the universe has this topology or that such a twist creates matter, reverses time, or transmits residue.
+
+Computational Topology: Surface Topology Stanford University The torus, Möbius band, orientability and gluing rules as precise mathematical objects.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
 
 Let the universe be one globally twisted return. Its apparently separate inverted tori are local cross-sections of that return, not rooms outside one another; the Möbius seam is the whole relation that carries each slice into the next.
 
@@ -252,21 +280,23 @@ The first two numbers remember how often the path circulated. The sign remembers
 
 That gives philosophical distribution a geometry. One receiver may formulate the residue as outward creation; another, after an odd seam, as inward return. One may speak of being; another of emptiness. Their propositions need not be identical for the transport to preserve a relation between them.
 
-The equation is a proposed bookkeeping law. It does not establish that thoughts carry a measurable parity or that philosophical disagreement is caused by topology.
-
-Each toroidal whole is a separate universe with its own Prime Being. No exchange occurs unless a higher portal joins the instances.
-
-The tori are fibres of one mapping torus. There is no external join between worlds: global return itself performs the inversion.
-
-The new proposal selects Model C. “A universe of inverted toruses” becomes a local description of one Möbius seam-world: many toroidal slices, one globally twisted whole.
-
-are different. The first reverses one spatial or internal coordinate. The second reverses the time parameter. An inverted torus can still have ordinary causal order, ordinary record formation and an increasing thermodynamic entropy.
-
-Nor does orientation reversal manufacture matter, antimatter or net baryon number. A reversible seam can separate, relabel or hide a pre-existing bias, but an exactly symmetric state remains globally symmetric unless additional dynamics or asymmetric boundary conditions intervene:
-
 ## Wormholes and Inverted Tori
 
 An inverted torus can describe a global return of orientation. A wormhole must do more: it must be a Lorentzian spacetime geometry with a throat, a stress–energy source, stable causal passage and an observable consequence. This page asks when the first picture could become the second.
+
+The argument. The page's central service is a refusal: a toroidal or twisted global topology does not become a traversable wormhole merely because both involve return. A wormhole is a spacetime geometry with a throat and causal path; an inverted torus is a global identification unless further metric structure is supplied.
+
+The evidence line. General relativity admits wormhole geometries, but classical traversability typically requires violations of averaged or null energy conditions. Concrete quantum or higher-dimensional models state exceptional assumptions and face severe stability constraints.
+
+Where the claim stops. TTI has not produced a throat metric, stress-energy source, stability analysis or observational signature. Until it does, 'wormhole' is a comparison target, not the name of an achieved result.
+
+What metric and stress-energy tensor keep the proposed throat open, and what observation distinguishes it from a compact object or lens?
+
+Humanly traversable wormholes Physical Review D 103, 066007 (2021) A concrete theoretical construction that makes its negative-energy, beyond-Standard-Model and stability assumptions explicit.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
+
+Horizon Einstein Online · Max Planck Institute for Gravitational Physics The event horizon as a causal boundary, not a material membrane or generic synonym for every seam.
 
 TTI may use an orientation-reversing torus map to specify what changes between two mouths; it still owes the metric that joins them, the matter that supports the throat and the causal law that lets anything cross.
 
@@ -292,19 +322,23 @@ Two regions of one spacetime are connected by a throat. Each mouth has a toroida
 
 Separate toroidal universe-instances are joined by a higher-dimensional throat. This is the strongest claim: it requires a containing theory, a lawful boundary map and an account of conservation across worlds. No such theory is supplied here.
 
-TTI adopts none of these as established. Model A is already mathematically defined. Model B is the focused research question. Model C remains a metaphysical possibility until a larger dynamical framework gives “between universes” a physical meaning.
-
-This schematic flux ledger does not derive the throat. It states what the proposal must conserve before words such as matter, memory or residue are allowed to cross it.
-
-The final orientation matches the initial orientation. Any remaining difference must live somewhere else: proper time along the path, a geometric phase, toroidal winding, interaction with the throat, environmental entanglement or material hysteresis. This is the same discipline used in Two Inversions: restored state and remembered path are different questions.
-
-If two traversable mouths acquire a relative time shift through acceleration or gravitational time dilation, the throat can participate in a closed timelike curve. That is a warning, not a feature. Chronology protection, quantum backreaction or instability may prevent the required configuration.
-
-TTI therefore refuses this inference: temporal antipodes do not become synchronised merely because a diagram joins them. A path between opposite asymptotic limits still needs a global causal structure, and that structure must not permit contradiction or undefined initial data.
-
 ## Matter and Antimatter Out of Phase
 
 Perhaps matter did not defeat antimatter. Perhaps both were residues of an earlier interaction, deposited into different modes of the same geometry, and what survived was simply what could no longer reach its complement.
+
+The argument. TTI asks whether apparent separation might be represented as a phase offset rather than a spatial partition. The mathematically useful part is the distinction between an isolated phase coincidence and sustained phase locking.
+
+The evidence line. Quantum fields use complex phases, and matter–antimatter asymmetry is a measured fact requiring a dynamical account. Reversible phase evolution alone cannot generate a net conserved charge from a symmetric initial state.
+
+Where the claim stops. The proposal does not yet provide baryon-number violation, CP asymmetry, departure from equilibrium or another accepted route to baryogenesis. Nor does a phase diagram place real antimatter beyond a topological seam.
+
+Which interaction turns the proposed phase relation into a quantitative asymmetry while preserving every conservation law that should remain intact?
+
+Quantum theory based on real numbers can be experimentally falsified Nature 600 (2021) The influential network experiment separating complex quantum theory from one specifically defined real-amplitude foil.
+
+On whether quantum theory needs complex numbers: the foil theories perspective arXiv (2025 preprint) Why the experimental result depends on how the rival real theory and its composition rule are defined.
+
+Einstein's geometric gravity Einstein Online · Max Planck Institute for Gravitational Physics An accessible account of gravity as spacetime geometry and free motion along geodesics.
 
 The visible universe may be made not from the substance that won, but from the tiny remainder that failed to cancel.
 
@@ -323,18 +357,6 @@ The baker’s map can explain how a residue becomes unreadable as an interaction
 There are several places such an event could be imagined: an early symmetry-breaking transition, a bounce from an earlier cosmological phase, a collision between branches, or the passage through the framework’s Möbius seam. Those are not equivalent hypotheses, and none has evidence supplied by the geometry alone.
 
 Ordinary matter and antimatter still annihilate when their states meet. For “out of phase” to do physical work, phase must label different internal modes, topological sheets, vacuum sectors or values of an additional coordinate. The annihilation rate can then be written conditionally as
-
-The sector label is conserved. Matter and complementary antimatter can coexist in the complete geometry without sharing an electromagnetic or strong-interaction channel. Their separation is not distance but orthogonality.
-
-This is the cleanest protection against annihilation. It permits exact global balance, explains the absence of an annihilation boundary in our sky, and does not depend on catching the phases at a fortunate moment.
-
-The complement could gravitate while remaining dark to ordinary light. It would resemble a hidden or mirror sector, not laboratory antimatter placed behind an invisible screen.
-
-The theory must derive the conserved label, the forbidden interaction matrix element and the shared gravitational coupling. Without those, “another plane” only renames the absence of annihilation.
-
-That would halve the long-term rate, not suppress it. In the dense early universe even a brief open channel could erase the residues. Survival instead depends on the integrated optical depth,
-
-so the overlap windows must be extremely narrow, the cross-sector coupling extremely weak, or the first effective reopening delayed until cosmic expansion has reduced the density. The reward for that difficulty is falsifiability: periodic coupling invites searches for bursts, oscillations, conversion events or energy injection tied to one recurrence time. The framework does not yet identify the physical duration of a tick.
 
 ## What Part III leaves us with
 
