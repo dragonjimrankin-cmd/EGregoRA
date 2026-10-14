@@ -41,7 +41,7 @@ const expected = [
   }
 ];
 
-assert.equal(site.revision, 'r5.1', 'Riemann programme must remain integrated in revision r5.1');
+assert.equal(site.revision, 'r6.0', 'Riemann programme must remain integrated in revision r6.0');
 assert.equal(site.research.documentCount, 30, 'Riemann programme must add three research studies');
 assert.equal(site.research.resourceCount, 4, 'reading-room resources must remain unchanged');
 

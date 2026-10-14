@@ -1,79 +1,98 @@
-<header class="site-head" data-site-header>
-  <div class="head-accent" aria-hidden="true"></div>
-
-  <div class="brand-row">
+<header class="site-head" id="top" data-site-header>
+  <div class="head-accent"></div>
+  <div class="brand-row wrap wide">
     <a class="brand" href="/" aria-label="{{ site.name }} — home">
-      <span class="brand-sigil" aria-hidden="true">{% glyph "torus" %}</span>
+      <svg class="brand-sigil" viewBox="0 0 64 64" role="img" aria-hidden="true">
+        <defs>
+          <linearGradient id="sigil-gradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="currentColor"/>
+            <stop offset="1" stop-color="var(--verdant)"/>
+          </linearGradient>
+        </defs>
+        <path d="M12 35c7-18 18-24 32-18 10 5 10 18 2 24-8 6-20 1-18-8 2-8 14-10 23-4" fill="none" stroke="url(#sigil-gradient)" stroke-width="2"/>
+        <path d="M10 35c7 18 19 23 34 16" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>
+        <circle cx="10" cy="35" r="2.5" fill="currentColor"/>
+        <circle cx="52" cy="29" r="2.5" fill="var(--verdant)"/>
+      </svg>
       <span class="brand-text">
-        <span class="brand-name">{{ site.name }}</span>
-        <span class="brand-tag">{{ site.tagline }}</span>
+        <span class="brand-name">The Two Infinities: Eternal Integration of the Self</span>
+        <span class="brand-tag">A speculative cosmology by Jim Rankin, UK, 2026</span>
       </span>
     </a>
-
-    <a class="brand-edition" href="/#project-contents"
-       aria-label="Open the project table of contents, working edition {{ site.revision }}">
-      <span>Project contents</span>
-      <strong>{{ site.revision }}</strong>
+    <a class="brand-edition" href="/archive/" aria-label="Open {{ site.revision }} research record">
+      <span>Research edition</span><strong>{{ site.revision }}</strong>
     </a>
-
     <a class="head-join" href="/join/" id="head-join">
       <span class="head-join-mark" aria-hidden="true">&#9737;</span>
       <span class="head-join-text">Sign in <span class="head-join-or">/ Join</span></span>
     </a>
-
-    <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false"
-            aria-controls="primary-nav">
-      <span class="nav-toggle-icon" aria-hidden="true"><b></b><b></b><b></b></span>
-      <em>Contents</em>
+    <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">
+      <span class="nav-toggle-icon" aria-hidden="true"><b></b><b></b><b></b></span><em>Contents</em>
     </button>
   </div>
 
-  <nav id="primary-nav" class="site-nav" aria-label="Project table of contents">
+  <nav id="primary-nav" class="site-nav" aria-label="Primary navigation">
     <div class="site-nav-shell">
-      <div class="nav-clusters">
-        {% for group in site.navGroups %}
-        <details class="nav-cluster">
-          <summary>
-            <span class="nav-cluster-index">Part {{ group.part }}</span>
-            <span class="nav-cluster-title">{{ group.shortLabel }}</span>
-            <span class="nav-chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="nav-panel">
-            <div class="nav-panel-head">
-              <p class="nav-panel-kicker">{{ group.label }}</p>
-              <p>{{ group.note }}</p>
-            </div>
-            <ul>
-              {% for item in group.items %}
-              <li>
-                <a href="{{ item.url }}" {% if page.url == item.url %}aria-current="page"{% endif %}>
-                  <i aria-hidden="true">{% glyph item.glyph %}</i>
-                  <span class="nav-link-copy">
-                    <span class="nav-link-meta">{{ item.code }} · {{ item.kind }}</span>
-                    <strong>{{ item.label }}</strong>
-                    <small>{{ item.note }}</small>
-                  </span>
-                  <span class="nav-link-arrow" aria-hidden="true">&rarr;</span>
-                </a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </details>
+      <div class="focus-nav" aria-label="Fundamental conjectures">
+        {% for focus in site.focusAreas %}
+          <a class="focus-nav-link focus-nav-link--{{ focus.key }}{% if page.url == focus.url %} is-current{% endif %}" href="{{ focus.url }}">
+            <span class="focus-nav-num">{{ focus.numeral }}</span>
+            <span class="focus-nav-copy"><small>{{ focus.eyebrow }}</small><strong>{{ focus.label }}</strong></span>
+          </a>
         {% endfor %}
       </div>
 
-      {% if site.navActions.length %}
-      <div class="nav-actions">
-        {% for item in site.navActions %}
-        <a class="nav-action nav-action--{{ item.kind }}" href="{{ item.url }}"
-           {% if page.url == item.url %}aria-current="page"{% endif %}>
-          <i aria-hidden="true">{% glyph item.glyph %}</i>
-          <span>{{ item.label }}</span>
+      <div class="nav-actions nav-actions--focus">
+        <details class="nav-cluster nav-archive">
+          <summary aria-label="Open the complete six-Part research archive">
+            <i aria-hidden="true">{% glyph "ledger" %}</i>
+            <span class="nav-archive-copy"><small>All six Parts</small><strong>Research Archive</strong></span>
+            <span class="nav-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="nav-panel archive-panel">
+            <div class="archive-panel-head">
+              <div>
+                <p class="nav-panel-kicker">Complete research record</p>
+                <p>Six Parts · {{ site.research.documentCount }} studies · {{ site.research.resourceCount }} project resources</p>
+              </div>
+              <a class="archive-index-link" href="/archive/"{% if page.url == '/archive/' %} aria-current="page"{% endif %}>
+                Open archive overview <span aria-hidden="true">→</span>
+              </a>
+            </div>
+            <div class="archive-part-grid">
+              {% for group in site.navGroups %}
+                <section class="archive-part" aria-labelledby="archive-part-{{ group.part }}">
+                  <div class="archive-part-head">
+                    <span>Part {{ group.part }}</span>
+                    <h2 id="archive-part-{{ group.part }}">{{ group.label }}</h2>
+                  </div>
+                  <ul>
+                    {% for item in group.items %}
+                      <li>
+                        <a data-archive-document href="{{ item.url }}" title="{{ item.note }}"{% if page.url == item.url %} aria-current="page"{% endif %}>
+                          <i aria-hidden="true">{% glyph item.glyph %}</i>
+                          <span class="nav-link-copy">
+                            <small class="archive-doc-code">{{ item.code }}</small>
+                            <strong>{{ item.label }}</strong>
+                            <small>{{ item.note }}</small>
+                          </span>
+                          <span class="nav-link-arrow" aria-hidden="true">→</span>
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </section>
+              {% endfor %}
+            </div>
+          </div>
+        </details>
+        <a class="nav-action nav-action--compact" href="/plates/">
+          <i aria-hidden="true">{% glyph "eye" %}</i><span>Plates</span>
         </a>
-        {% endfor %}
+        <a class="nav-action nav-action--primary nav-action--compact" href="/ask-shakdrah/">
+          <i aria-hidden="true">{% glyph "dragon" %}</i><span>Ask ShakDrah</span>
+        </a>
       </div>
-      {% endif %}
     </div>
   </nav>
 </header>

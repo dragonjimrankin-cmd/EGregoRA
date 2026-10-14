@@ -12,7 +12,8 @@ const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
 const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return, mathematical proof auditing and testable failure conditions across thirty studies and four project resources.';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
-const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
+const expectedArchiveRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
+const expectedFocusRoutes = site.focusAreas.map((focus) => focus.url);
 const expectedPartCount = site.navGroups.length;
 const essayDocuments = site.navGroups
   .filter((group) => ['I', 'II', 'III', 'IV'].includes(group.part))
@@ -65,8 +66,8 @@ for (const file of htmlFiles) {
 
   if ($('html').attr('lang') !== 'en-GB') fail(`${relative}: html lang must be en-GB`);
   if ($('h1').length !== 1) fail(`${relative}: expected one h1, found ${$('h1').length}`);
-  if (!$('title').text().trim()) fail(`${relative}: missing title`);
-  if ($('title').text().trim().length > 70) fail(`${relative}: title exceeds 70 characters`);
+  if (!$('head > title').text().trim()) fail(`${relative}: missing title`);
+  if ($('head > title').text().trim().length > 70) fail(`${relative}: title exceeds 70 characters`);
   if (!$('meta[name="description"]').attr('content')?.trim()) fail(`${relative}: missing description`);
   if (!$('link[rel="manifest"][href="/site.webmanifest"]').length) fail(`${relative}: missing manifest link`);
   if (!$('link[rel="sitemap"][href="/sitemap.xml"]').length) fail(`${relative}: missing sitemap link`);
@@ -82,24 +83,29 @@ for (const file of htmlFiles) {
 
   if (!$('.brand-name').text().includes(expectedTitle)) fail(`${relative}: masthead is missing the exact project title`);
   if (!$('.brand-tag').text().includes(expectedTagline)) fail(`${relative}: masthead is missing the exact tagline`);
-  if ($('#primary-nav .nav-cluster').length !== expectedPartCount) {
-    fail(`${relative}: header does not expose all ${expectedPartCount} numbered Parts`);
+  if ($('#primary-nav .focus-nav-link').length !== 3) {
+    fail(`${relative}: header does not foreground exactly three conjectures`);
   }
-  if ($('#primary-nav .nav-panel').length !== expectedPartCount) {
-    fail(`${relative}: header does not expose all ${expectedPartCount} page-subheading panels`);
+  const focusRoutes = $('#primary-nav .focus-nav-link').map((_, element) => $(element).attr('href')).get();
+  if (JSON.stringify(focusRoutes) !== JSON.stringify(expectedFocusRoutes)) {
+    fail(`${relative}: focus destinations or ordering drifted`);
   }
-  const headerRoutes = $('#primary-nav a').map((_, element) => $(element).attr('href')).get();
-  if (JSON.stringify(headerRoutes) !== JSON.stringify(expectedHeaderRoutes)) {
-    fail(`${relative}: header destinations or ordering drifted`);
+  if ($('#primary-nav .nav-archive').length !== 1 || $('#primary-nav .archive-part').length !== expectedPartCount) {
+    fail(`${relative}: header archive does not expose all ${expectedPartCount} numbered Parts`);
   }
-  if (new Set(headerRoutes).size !== expectedHeaderRoutes.length) fail(`${relative}: header repeats a destination`);
+  const archiveRoutes = $('#primary-nav [data-archive-document]').map((_, element) => $(element).attr('href')).get();
+  if (JSON.stringify(archiveRoutes) !== JSON.stringify(expectedArchiveRoutes)) {
+    fail(`${relative}: archive destinations or ordering drifted`);
+  }
+  if (new Set(archiveRoutes).size !== expectedArchiveRoutes.length) fail(`${relative}: archive repeats a destination`);
   if (!$('.nav-toggle[aria-controls="primary-nav"][aria-expanded="false"]').length) {
     fail(`${relative}: mobile navigation toggle is not wired to the primary navigation`);
   }
-  const expectedCurrent = expectedHeaderRoutes.includes(urlPath) ? 1 : 0;
+  const expectedCurrentUrl = urlPath === '/archive/' ? '/archive/' : (expectedArchiveRoutes.includes(urlPath) ? urlPath : null);
   const currentLinks = $('#primary-nav a[aria-current="page"]');
-  if (currentLinks.length !== expectedCurrent || (expectedCurrent && currentLinks.attr('href') !== urlPath)) {
-    fail(`${relative}: current navigation destination is not marked correctly`);
+  if (currentLinks.length !== (expectedCurrentUrl ? 1 : 0) ||
+      (expectedCurrentUrl && currentLinks.attr('href') !== expectedCurrentUrl)) {
+    fail(`${relative}: current archive destination is not marked correctly`);
   }
   const expectedPageLabel = expectedPageLabels.get(urlPath);
   if (expectedPageLabel) {
@@ -181,41 +187,51 @@ const home = documents.get('/');
 if (!home) {
   fail('homepage was not built');
 } else {
-  if (home.$('title').text().trim() !== expectedTitle) fail('homepage title metadata is not the exact project title');
+  if (home.$('head > title').text().trim() !== expectedTitle) fail('homepage title metadata is not the exact project title');
   const heroTitle = home.$('h1').text().replace(/:\s*/g, ': ').replace(/\s+/g, ' ').trim();
   if (!heroTitle.includes(expectedTitle)) fail('homepage hero is missing the exact project title');
-  if (!home.$('.hero-sub').text().trim().startsWith(expectedTagline)) {
+  if (home.$('.focus-hero .kicker').first().text().trim() !== expectedTagline) {
     fail('homepage hero is missing the exact attribution tagline');
   }
-  if (!home.$('.hero-ctas a[href="#t-core-claims"]').length) {
-    fail('homepage hero does not expose the core-claims map');
+  if (home.$('.focus-status').text().trim() !== 'Working hypotheses') {
+    fail('homepage research status must read exactly Working hypotheses');
   }
-  const coreClaims = home.$('.core-claims > .core-claim');
-  if (coreClaims.length !== 10) fail(`homepage exposes ${coreClaims.length} of 10 core claims`);
-  if (coreClaims.find('.claim-bridge').length !== coreClaims.length) {
-    fail('every homepage core claim must describe its interlink');
+  if (!home.$('.hero-ctas a[href="#fundamental-conjectures"]').length ||
+      !home.$('.hero-ctas a[href="/archive/"]').length) {
+    fail('homepage hero does not expose the three conjectures and complete archive');
   }
-  if (home.$('.claim-map .claim-branches > li').length !== 6) {
-    fail('homepage dependency map must explain all six interlink branches');
+  const focusPillars = home.$('.focus-pillars > .focus-pillar');
+  if (focusPillars.length !== 3) fail(`homepage exposes ${focusPillars.length} of 3 fundamental conjectures`);
+  const focusTitles = focusPillars.find('h2').map((_, element) => home.$(element).text().trim()).get();
+  if (JSON.stringify(focusTitles) !== JSON.stringify([
+    'Eternal Integration', 'The Rankin Skeletal Splice', 'Seams and Return'
+  ])) fail('homepage fundamental-conjecture order drifted');
+  if (focusPillars.find('.focus-equation').length !== 3) {
+    fail('every fundamental conjecture must display its representative expression');
   }
   for (const href of [
-    '/foundations/', '/pi-from-zero-and-one/', '/the-self/', '/seams/#t-arrow', '/gravity/', '/torus/',
-    '/cosmic-ledger/', '/stress-tests/'
+    '/foundations/', '/the-self/', '/entropy-and-self-renewal/', '/cosmic-ratio-in-time/',
+    '/skeletal-splice/', '/spiral/', '/prime-plane/', '/riemann-programme/',
+    '/seams/', '/moebius/', '/temporal-antipodes/', '/time-and-residue/'
   ]) {
-    if (!coreClaims.find(`a[href="${href}"]`).length) fail(`core claims do not expose ${href}`);
-  }
-  for (const href of [
-    '/little-red-dots/', '/little-red-dots/research-proposal/', '/entropy/', '/wormholes/',
-    '/double-inversion/', '/accumulated-differentials/'
-  ]) {
-    if (!home.$(`a[href="${href}"]`).length) fail(`homepage does not expose ${href}`);
-  }
-  const homeLinkedCards = home.$('.card--linked > h3 > a.card-link').length;
-  if (homeLinkedCards !== 21) {
-    fail(`homepage exposes ${homeLinkedCards} whole-card links, expected 21`);
+    if (!focusPillars.find(`a[href="${href}"]`).length) fail(`fundamental conjectures do not expose ${href}`);
   }
 }
-if (linkedCardCount < 24) fail(`expected at least 24 whole-card destinations, found ${linkedCardCount}`);
+const archive = documents.get('/archive/');
+if (!archive) {
+  fail('research archive was not built');
+} else {
+  if (archive.$('#project-contents .research-toc-part').length !== 6) {
+    fail('research archive does not expose all six Parts');
+  }
+  if (archive.$('#project-contents .research-toc-part > ol > li').length !== 34) {
+    fail('research archive does not expose all 34 destinations');
+  }
+  if (!archive.$('#atlas-box #atlas-data').length || !archive.$('script[src="/assets/js/atlas.js"]').length) {
+    fail('research archive does not preserve the interactive Atlas');
+  }
+}
+if (linkedCardCount < 19) fail(`expected at least 19 whole-card destinations in the retained research corpus, found ${linkedCardCount}`);
 else note(`${linkedCardCount} navigation cards expose their full surface as a link`);
 
 try {
@@ -484,4 +500,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, ten interlinked core claims, the theorem-led π paper, six-Part header navigation, Riemann correction ledger, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges and proposal surfaces passed.');
+console.log('  Exact identity, three fundamental conjectures, the complete six-Part archive, theorem-led π paper, Riemann correction ledger, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges and proposal surfaces passed.');

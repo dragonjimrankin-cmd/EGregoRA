@@ -66,6 +66,25 @@
   if (desktopNav.addEventListener) desktopNav.addEventListener("change", resetAtDesktop);
   else if (desktopNav.addListener) desktopNav.addListener(resetAtDesktop);
 
+  /* The complete archive is a native details disclosure for keyboard and touch
+     readers. On desktop its large six-Part panel also opens on deliberate
+     pointer hover; a short leave delay lets the pointer cross into the panel
+     without collapsing it. */
+  clusters.forEach((cluster) => {
+    let hoverCloseTimer = 0;
+    cluster.addEventListener("pointerenter", () => {
+      if (!desktopNav.matches) return;
+      window.clearTimeout(hoverCloseTimer);
+      closeClusters(cluster);
+      cluster.setAttribute("open", "");
+    });
+    cluster.addEventListener("pointerleave", () => {
+      if (!desktopNav.matches) return;
+      window.clearTimeout(hoverCloseTimer);
+      hoverCloseTimer = window.setTimeout(() => cluster.removeAttribute("open"), 140);
+    });
+  });
+
   /* Hatchable supplies the two account rooms at runtime rather than through
      Eleventy. Keep their visible page labels in the same Part V vocabulary as
      the static header and Atlas. */

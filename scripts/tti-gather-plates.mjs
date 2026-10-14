@@ -8,7 +8,7 @@ const builtRoot = path.join(root, 'tti', '_site');
 const output = path.join(root, 'tti', 'src', 'plates.njk');
 
 const pages = [
-  ['index.html', '/', 'Introduction', 'introduction'],
+  ['archive/index.html', '/archive/', 'Introduction', 'introduction'],
   ['foundations/index.html', '/foundations/', 'Foundations', 'foundations'],
   ['pi-from-zero-and-one/index.html', '/pi-from-zero-and-one/', 'π from 0 and 1', 'pi-from-zero-and-one'],
   ['the-self/index.html', '/the-self/', 'The Self', 'the-self'],

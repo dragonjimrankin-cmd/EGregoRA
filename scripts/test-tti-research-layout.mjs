@@ -12,8 +12,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const builtRoot = path.join(root, "tti", "_site");
 const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
 
-assert.equal(site.revision, "r5.1", "the research-project layout must carry revision r5.1");
-assert.equal(site.edition, "Working research edition", "the edition label drifted");
+assert.equal(site.revision, "r6.0", "the focus-first layout must carry revision r6.0");
+assert.equal(site.edition, "Fundamental conjectures edition", "the edition label drifted");
+assert.equal(site.focusAreas.length, 3, "the public edition must retain exactly three fundamental conjectures");
 assert.equal(site.research.documentCount, 30, "research study count drifted");
 assert.equal(site.research.resourceCount, 4, "project resource count drifted");
 assert.match(site.research.status, /not a peer-reviewed physical theory/i,
@@ -33,25 +34,36 @@ assert.ok(site.researchDocuments.every((document, index) =>
   document.index === index + 1 && document.total === 34), "corpus positions are inconsistent");
 
 const homeFile = path.join(builtRoot, "index.html");
-assert.ok(fs.existsSync(homeFile), "build tti/_site before running the research-layout regression");
+const archiveFile = path.join(builtRoot, "archive", "index.html");
+assert.ok(fs.existsSync(homeFile) && fs.existsSync(archiveFile),
+  "build the introduction and archive before running the research-layout regression");
 const home = cheerio.load(fs.readFileSync(homeFile, "utf8"));
-assert.equal(home("#project-contents .research-toc-part").length, 6,
-  "homepage table of contents must expose all six Parts");
-assert.equal(home("#project-contents .research-toc-part > ol > li").length, 34,
-  "homepage table of contents must expose all 34 documents");
-assert.equal(home("#project-contents .research-toc-code").length, 34,
-  "every homepage contents entry needs its stable document code");
+const archive = cheerio.load(fs.readFileSync(archiveFile, "utf8"));
+assert.equal(home("#project-contents").length, 0,
+  "the concise introduction must not reproduce the six-Part table of contents");
+assert.equal(home(".focus-pillar").length, 3,
+  "homepage must foreground exactly three conjectural pillars");
+assert.deepEqual(home(".focus-pillar h2").map((_, element) => home(element).text().trim()).get(),
+  ["Eternal Integration", "The Rankin Skeletal Splice", "Seams and Return"],
+  "the public conjecture sequence drifted");
+assert.equal(home(".focus-status").text().trim(), "Working hypotheses",
+  "the public research-status display must read exactly Working hypotheses");
 for (const marker of [
-  "Project Table of Contents", "Geometry, Integration and the Conditions of Return",
-  "Independent research project", "<dt>Research status</dt><dd>Working hypotheses</dd>",
-  "Derive, distinguish, compare, expose failure conditions"
+  "Three conjectures carry the framework", "Integration differentiates. The splice routes. The seam returns.",
+  "Nothing removed", "The complete research programme remains open"
 ]) {
-  assert.ok(home.html().includes(marker), `homepage research record is missing: ${marker}`);
+  assert.ok(home.html().includes(marker), `homepage focus record is missing: ${marker}`);
 }
-assert.ok(home('.hero-ctas a[href="#project-contents"]').length,
-  "the hero must link directly to the project table of contents");
-assert.ok(home('.hero-ctas a[href="#project-abstract"]').length,
-  "the hero must link directly to the project abstract");
+assert.ok(home('.hero-ctas a[href="#fundamental-conjectures"]').length,
+  "the hero must link directly to the three conjectures");
+assert.ok(home('.hero-ctas a[href="/archive/"]').length,
+  "the hero must link directly to the complete archive");
+assert.equal(archive("#project-contents .research-toc-part").length, 6,
+  "archive table of contents must expose all six Parts");
+assert.equal(archive("#project-contents .research-toc-part > ol > li").length, 34,
+  "archive table of contents must expose all 34 documents");
+assert.equal(archive("#project-contents .research-toc-code").length, 34,
+  "every archive contents entry needs its stable document code");
 
 function builtIndexFiles(directory, relative = "") {
   const found = [];
@@ -64,7 +76,8 @@ function builtIndexFiles(directory, relative = "") {
   return found;
 }
 
-const indexFiles = builtIndexFiles(builtRoot).filter((file) => file !== "index.html");
+const indexFiles = builtIndexFiles(builtRoot)
+  .filter((file) => file !== "index.html" && file !== "archive/index.html");
 for (const relative of indexFiles) {
   const route = `/${path.posix.dirname(relative)}/`;
   const expected = site.researchByUrl[route];
@@ -95,12 +108,13 @@ const [base, context, header, footer, js, css] = [
 assert.match(base, /partials\/research-context\.njk/, "base layout does not include research context");
 assert.match(context, /data-document-outline/, "research context lacks the local outline shell");
 assert.match(context, /site\.navGroups/, "document contents drawer is not generated from canonical navigation");
-assert.match(header, /Project contents/, "masthead does not expose project contents");
-assert.match(header, /item\.code/, "masthead destinations do not display research codes");
+assert.match(header, /Research Archive/, "masthead does not expose the complete research archive");
+assert.match(header, /item\.code/, "archive destinations do not display research codes");
+assert.match(header, /site\.focusAreas/, "masthead is not generated from the three public focus areas");
 assert.match(footer, /Suggested document citation/, "footer lacks a per-document citation");
 assert.match(js, /Research-document outline/, "document-outline enhancement is absent");
 assert.match(js, /while \(usedIds\.has\(candidate\)\)/, "generated heading IDs are not collision-safe");
-for (const selector of [".project-abstract", ".research-toc", ".project-context", ".project-drawer", ".document-outline"]) {
+for (const selector of [".focus-hero", ".focus-pillar", ".research-toc", ".project-context", ".project-drawer", ".document-outline"]) {
   assert.ok(css.includes(selector), `research layout styling is missing ${selector}`);
 }
 

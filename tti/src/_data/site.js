@@ -4,17 +4,16 @@ import ttiAtlas from "./ttiAtlas.js";
  * The Two Infinities: Eternal Integration of the Self — project-wide data.
  *
  * James Alexander Matthew Rankin began the framework between 2 and 19 June
- * 2026. Revision r5.1 keeps the clarity edition across every substantive
- * document while returning the introduction to a concise project gateway. The
- * six Part syntheses remain on their lead pages, but the 10,825-word final
- * synthesis is no longer rendered on the homepage; its tracked source remains
- * preserved for the long-form collection. The Riemann Programme and every
- * original research document retain their stable code, research status and
- * canonical place in the contents.
+ * 2026. Revision r6.0 reorganises the public site around the framework's three
+ * fundamental conjectural structures: eternal integration, the Rankin Skeletal
+ * Splice, and Part III's seams and return. The complete six-Part corpus remains
+ * available in a separate research archive, together with the Atlas, Plates,
+ * Oracle, long-form syntheses and correction records. Every document keeps its
+ * stable code, evidence boundary and canonical place in the archive.
  */
-/* The masthead, project contents and interactive Atlas all consume the same
-   data. Each Part remains visible in the slim header and every document keeps
-   a stable position beneath the corresponding Part. */
+/* The masthead archive, canonical contents and interactive Atlas all consume
+   the same data. Three conjectures lead the public rail; every Part and every
+   document keeps a stable position inside the complete archive. */
 const glyphByRoute = Object.freeze({
   "/foundations/": "sphere",
   "/pi-from-zero-and-one/": "sphere",
@@ -103,9 +102,9 @@ export default {
   cofounder: "James Alexander Matthew Rankin",
   cofounder2: "ShakDrah",
   founded: "2026-06-02",
-  revision: "r5.1",
+  revision: "r6.0",
   revised: "2026-10-14",
-  edition: "Working research edition",
+  edition: "Fundamental conjectures edition",
   epigraph: "The universe exists not because something caused it — but because nothing is geometrically impossible.",
   description:
     "The Two Infinities: Eternal Integration of the Self — an independent speculative-cosmology research project by Jim Rankin, UK, 2026. " +
@@ -125,9 +124,56 @@ export default {
   ogImage: "/assets/img/og-two-infinities.jpg",
   ogImageAlt: "A luminous torus of stars, with a spiral climbing from a bright centre",
   motto: "Nothing is geometrically impossible.",
+  focusAreas: [
+    {
+      key: "integration",
+      numeral: "I",
+      eyebrow: "First principle",
+      label: "Eternal Integration",
+      url: "/foundations/",
+      note: "Why the framework proposes that selfhood persists by integrating, differentiating and integrating again rather than terminating at a final state.",
+      equation: "I_{n+1}=\\mathcal{R}(I_n,D_n)",
+      links: [
+        { label: "Foundations", url: "/foundations/" },
+        { label: "The self that integrates", url: "/the-self/" },
+        { label: "Entropy and self-disintegration", url: "/entropy-and-self-renewal/" },
+        { label: "Cosmic ratios through time", url: "/cosmic-ratio-in-time/" }
+      ]
+    },
+    {
+      key: "splice",
+      numeral: "II",
+      eyebrow: "Generative mechanism",
+      label: "The Rankin Skeletal Splice",
+      url: "/skeletal-splice/",
+      note: "The proposed fork at each density threshold: one branch continues, one returns, while the fixed skeleton of minus one, nought and one supplies the frame.",
+      equation: "P_n=F_{n+2}-1",
+      links: [
+        { label: "The Rankin Skeletal Splice", url: "/skeletal-splice/" },
+        { label: "Recursive spiral", url: "/spiral/" },
+        { label: "The Prime Plane", url: "/prime-plane/" },
+        { label: "Riemann Programme", url: "/riemann-programme/" }
+      ]
+    },
+    {
+      key: "return",
+      numeral: "III",
+      eyebrow: "Topology of return",
+      label: "Seams and Return",
+      url: "/seams/",
+      note: "How Möbius seams, temporal antipodes, residue, inverted toruses and wormhole analogies are used to imagine return without a terminal edge.",
+      equation: "(x,0)\\sim(1-x,1)",
+      links: [
+        { label: "Seams and Return", url: "/seams/" },
+        { label: "The Möbius Bridge", url: "/moebius/" },
+        { label: "Temporal antipodes", url: "/temporal-antipodes/" },
+        { label: "Time and residue", url: "/time-and-residue/" }
+      ]
+    }
+  ],
 
-  /* Six numbered Parts replace the abstract four-cluster header. `nav`
-     remains the complete flat list for the footer and audits. */
+  /* The complete six-Part corpus now lives in the Research Archive while
+     `nav` remains the complete flat list for the footer and audits. */
   navGroups,
   navActions,
   nav: [...navGroups.flatMap((group) => group.items), ...navActions],

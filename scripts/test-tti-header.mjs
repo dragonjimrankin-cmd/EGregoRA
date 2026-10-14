@@ -1,134 +1,122 @@
 #!/usr/bin/env node
-import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import * as cheerio from 'cheerio';
-import site from '../tti/src/_data/site.js';
-import ttiAtlas from '../tti/src/_data/ttiAtlas.js';
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { execFileSync } from "node:child_process";
+import * as cheerio from "cheerio";
+import site from "../tti/src/_data/site.js";
 
-const expectedTitle = 'The Two Infinities: Eternal Integration of the Self';
-const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
-const expectedParts = ttiAtlas.limbs;
-const expectedItems = expectedParts.flatMap((part) => part.subs);
+const ROOT = process.cwd();
+const HEADER = path.join(ROOT, "tti/src/_includes/partials/header.njk");
+const CSS = path.join(ROOT, "tti/src/assets/css/main.css");
+const JS = path.join(ROOT, "tti/src/assets/js/site.js");
+const BUILD = path.join(ROOT, "tti/_site");
+const builtMode = process.argv.includes("--built");
+const expectedTitle = "The Two Infinities: Eternal Integration of the Self";
+const expectedTagline = "A speculative cosmology by Jim Rankin, UK, 2026";
+const expectedGroups = site.navGroups;
+const expectedFocus = site.focusAreas;
+const expectedArchiveRoutes = expectedGroups.flatMap((group) => group.items.map((item) => item.url));
+const expectedPageLabels = new Map(expectedGroups.flatMap((group) => group.items.map((item) => [item.url,
+  `Part ${group.part} — ${group.shortLabel} · ${item.kind} ${item.code} · ${item.label}`
+])));
+const normalise = (value) => String(value || "").replace(/\s+/g, " ").trim().replace(/’/g, "'");
 
-assert.equal(site.name, expectedTitle, 'the exact project title changed');
-assert.equal(site.tagline, expectedTagline, 'the exact project tagline changed');
-assert.equal(site.navGroups.length, 6, 'the header must list all six numbered Parts');
-assert.equal(site.navActions.length, 0, 'Part V must contain the reading rooms without detached duplicate actions');
-
-const headerItems = site.navGroups.flatMap((group) => group.items);
-assert.equal(headerItems.length, 34, 'the six Parts must expose all 34 page and account-room destinations');
-assert.equal(site.nav.length, headerItems.length, 'the flat footer navigation must retain header parity');
-assert.equal(new Set(headerItems.map((item) => item.url)).size, headerItems.length,
-  'header destinations must be unique');
-assert.deepEqual(headerItems.map((item) => item.url), expectedItems.map((item) => item.href),
-  'header page order must follow the Atlas table of contents');
-
-for (const [index, group] of site.navGroups.entries()) {
-  const expected = expectedParts[index];
-  assert.equal(group.part, expected.num, `${expected.title} has the wrong Part number`);
-  assert.equal(group.shortLabel, expected.title, `Part ${expected.num} has the wrong heading`);
-  assert.equal(group.label, `Part ${expected.num} · ${expected.title}`, `Part ${expected.num} lacks its full label`);
-  assert.equal(group.note, expected.note, `Part ${expected.num} has drifted from the Atlas description`);
-  assert.equal(group.items.length, expected.subs.length, `Part ${expected.num} omits a page subheading`);
-  for (const item of group.items) {
-    assert.ok(item.label && item.note && item.glyph, `${item.url} lacks navigation context`);
-  }
-}
-for (const route of [
-  '/pi-from-zero-and-one/', '/prime-plane/', '/entropy-and-self-renewal/', '/cosmic-ratio-in-time/', '/temporal-antipodes/', '/time-and-residue/', '/inverted-toruses/',
-  '/wormholes/', '/out-of-phase/', '/riemann-programme/', '/riemann-proof-audit/', '/riemann-splice-questions/',
-  '/plates/', '/ask-shakdrah/', '/join/', '/account/'
-]) {
-  assert.ok(headerItems.some((item) => item.url === route), `header omits ${route}`);
+if (!fs.existsSync(BUILD) && !builtMode) {
+  execFileSync("npm", ["run", "build:tti"], { cwd: ROOT, stdio: "inherit" });
 }
 
-const [headerSource, css, js] = await Promise.all([
-  readFile(new URL('../tti/src/_includes/partials/header.njk', import.meta.url), 'utf8'),
-  readFile(new URL('../tti/src/assets/css/main.css', import.meta.url), 'utf8'),
-  readFile(new URL('../tti/src/assets/js/site.js', import.meta.url), 'utf8')
-]);
-assert.match(headerSource, /<details class="nav-cluster">/, 'Part navigation is not native and keyboard-readable');
-assert.match(headerSource, /Part \{\{ group\.part \}\}/, 'the numbered Part is not visible in each header heading');
-assert.match(headerSource, /class="nav-cluster-title"/, 'the Part title is absent from the header rail');
-assert.match(headerSource, /class="nav-panel"/, 'header lacks page-subheading panels');
-assert.match(headerSource, /site\.navGroups/, 'header does not use the canonical grouped navigation');
-assert.match(headerSource, /aria-controls="primary-nav"/, 'mobile navigation control is not connected');
-assert.match(css, /\.site-head\s*\{[\s\S]*?position:\s*sticky;/, 'redesigned header is not sticky');
-assert.match(css, /grid-template-columns:\s*repeat\(6, minmax\(0, 1fr\)\)/,
-  'desktop header does not give each Part its own column');
-assert.match(css, /\.nav-panel\s*\{[\s\S]*?position:\s*absolute;/, 'desktop navigation panels are not layered');
-assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.js-nav \.site-nav\.open/, 'mobile menu is not responsive');
-assert.match(css, /grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/,
-  'tablet navigation does not use its available width');
-assert.match(css, /\.nav-cluster > summary:hover \.nav-cluster-title,[\s\S]*?white-space:\s*normal;/,
-  'hovered Part headings do not expand to reveal their full text');
-assert.match(css, /\.site-nav \.nav-panel a:hover \.nav-link-copy small,[\s\S]*?white-space:\s*normal;/,
-  'hovered page links do not expand to reveal their full notes');
-assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.nav-link-copy small\s*\{[\s\S]*?white-space:\s*normal;/,
-  'touch navigation still clips page-link notes');
-assert.match(css, /\.head-join:hover \.head-join-addr,[\s\S]*?text-overflow:\s*clip;/,
-  'hovered account link does not reveal a long member label');
-assert.match(js, /classList\.add\("js-nav"\)/, 'progressive mobile navigation is not armed');
-assert.match(js, /event\.key !== "Escape"/, 'Escape does not close the navigation');
-assert.match(js, /cluster\.open\) closeClusters\(cluster\)/, 'navigation Parts do not close their siblings');
-assert.match(js, /runtimePartLabels/, 'runtime Join and Account page labels are not aligned');
-assert.match(js, /Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V\.03 \\u00b7 Join/,
-  'Join does not carry the Part V research label');
-assert.match(js, /Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V\.04 \\u00b7 Your Account/,
-  'Account does not carry the Part V research label');
+const headerSource = fs.readFileSync(HEADER, "utf8");
+const css = fs.readFileSync(CSS, "utf8");
+const js = fs.readFileSync(JS, "utf8");
 
-if (process.argv.includes('--built')) {
-  const fixtures = [
-    ['../tti/_site/index.html', null],
-    ['../tti/_site/temporal-antipodes/index.html', '/temporal-antipodes/'],
-    ['../tti/_site/ask-shakdrah/index.html', '/ask-shakdrah/']
-  ];
-  for (const [relative, current] of fixtures) {
-    const html = await readFile(new URL(relative, import.meta.url), 'utf8');
-    const $ = cheerio.load(html);
-    assert.equal($('.site-head').length, 1, `${relative} does not have one header`);
-    assert.equal($('.brand-name').text().trim(), expectedTitle, `${relative} masthead title changed`);
-    assert.equal($('.brand-tag').text().trim(), expectedTagline, `${relative} masthead tagline changed`);
-    assert.equal($('#primary-nav .nav-cluster').length, 6, `${relative} does not expose six Parts`);
-    assert.equal($('#primary-nav .nav-panel').length, 6, `${relative} does not expose six page panels`);
-    assert.equal($('#primary-nav .nav-actions').length, 0, `${relative} retains detached duplicate actions`);
+/* Source contract: three public ideas, one keyboard-readable complete archive. */
+assert.match(headerSource, /class="brand-name">The Two Infinities: Eternal Integration of the Self</,
+  "exact project title is absent from the masthead");
+assert.match(headerSource, /class="brand-tag">A speculative cosmology by Jim Rankin, UK, 2026</,
+  "exact attribution is absent from the masthead");
+assert.match(headerSource, /for focus in site\.focusAreas/, "header does not derive the three focus links from canonical data");
+assert.match(headerSource, /class="focus-nav-link/, "fundamental-conjecture rail is absent");
+assert.match(headerSource, /<details class="nav-cluster nav-archive">/,
+  "complete archive is not a native keyboard-readable disclosure");
+assert.match(headerSource, /for group in site\.navGroups/, "archive does not derive all Parts from canonical data");
+assert.match(headerSource, /for item in group\.items/, "archive does not derive every destination from canonical data");
+assert.match(headerSource, /data-archive-document/, "archive document links are not explicitly identified");
+assert.match(headerSource, /href="\/archive\/"/, "archive overview is absent from the header");
+assert.match(headerSource, /aria-controls="primary-nav"/, "mobile toggle is not linked to the primary navigation");
 
-    $('#primary-nav .nav-cluster').each((index, element) => {
-      const expected = expectedParts[index];
-      const cluster = $(element);
-      assert.equal(cluster.find('.nav-cluster-index').first().text().trim(), `Part ${expected.num}`,
-        `${relative} mislabels Part ${expected.num}`);
-      assert.equal(cluster.find('.nav-cluster-title').first().text().trim(), expected.title,
-        `${relative} misnames Part ${expected.num}`);
-      assert.deepEqual(
-        cluster.find('.nav-panel a').map((_, link) => $(link).attr('href')).get(),
-        expected.subs.map((item) => item.href),
-        `${relative} drifts within Part ${expected.num}`
-      );
-    });
+/* The compact rail may elide at rest, but reveals full copy on hover/focus. */
+assert.match(css, /\.focus-nav\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/,
+  "desktop header is not a three-focus rail");
+assert.match(css, /\.focus-nav-link:hover \.focus-nav-copy strong,[\s\S]*?white-space:\s*normal;/,
+  "focus labels do not expand fully on hover/focus");
+assert.match(css, /\.archive-part-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/,
+  "desktop archive does not expose all six Parts as columns");
+assert.match(css, /@media \(max-width:\s*900px\)[\s\S]*?\.focus-nav\s*\{\s*display:\s*block;/,
+  "focus navigation has no narrow-screen mode");
+assert.match(css, /@media \(max-width:\s*620px\)[\s\S]*?\.archive-part-grid\s*\{\s*grid-template-columns:\s*1fr;/,
+  "archive does not become a readable single column on small screens");
+assert.match(js, /querySelectorAll\("\.nav-cluster"\)/,
+  "archive disclosure is not managed by the shared navigation controller");
+assert.match(js, /pointerenter|mouseenter/, "desktop hover does not open the archive disclosure");
+assert.match(js, /pointerleave|mouseleave/, "desktop hover does not close the archive disclosure");
+assert.match(js, /event\.key !== "Escape"/, "Escape does not close the archive disclosure");
 
-    const hrefs = $('#primary-nav a').map((_, element) => $(element).attr('href')).get();
-    assert.deepEqual(hrefs, headerItems.map((item) => item.url), `${relative} navigation order drifted`);
-    assert.equal(new Set(hrefs).size, 34, `${relative} duplicates a header destination`);
-    assert.equal($('#primary-nav details[open]').length, 0, `${relative} ships with a menu forced open`);
-    assert.equal($('.nav-toggle[aria-expanded="false"]').length, 1, `${relative} toggle state is incorrect`);
-    const currentLinks = $('#primary-nav a[aria-current="page"]');
-    assert.equal(currentLinks.length, current ? 1 : 0, `${relative} current-page state is incorrect`);
-    if (current) assert.equal(currentLinks.attr('href'), current, `${relative} highlights the wrong destination`);
-  }
+const fixtures = [
+  ["index.html", "/"],
+  ["archive/index.html", "/archive/"],
+  ["foundations/index.html", "/foundations/"],
+  ["skeletal-splice/index.html", "/skeletal-splice/"],
+  ["seams/index.html", "/seams/"],
+  ["little-red-dots/research-proposal/index.html", "/little-red-dots/research-proposal/"],
+  ["riemann-splice-questions/index.html", "/riemann-splice-questions/"],
+  ["ask-shakdrah/index.html", "/ask-shakdrah/"]
+];
 
-  for (const [partIndex, part] of expectedParts.entries()) {
-    const group = site.navGroups[partIndex];
-    for (const item of group.items) {
-      if (item.url === '/join/' || item.url === '/account/') continue;
-      const html = await readFile(new URL(`../tti/_site${item.url}index.html`, import.meta.url), 'utf8');
-      const $ = cheerio.load(html);
-      const visible = $('main > .page-head > .kicker').first().text().replace(/\s+/g, ' ').trim().replace(/’/g, "'");
-      const expected = `Part ${part.num} — ${part.title} · ${item.kind} ${item.code} · ${item.label}`.replace(/’/g, "'");
-      assert.ok(visible.startsWith(expected),
-        `${item.url} page label is ${visible || 'missing'}, expected it to begin ${expected}`);
-    }
+for (const [relative, route] of fixtures) {
+  const file = path.join(BUILD, relative);
+  assert.ok(fs.existsSync(file), `${relative} was not built`);
+  const $ = cheerio.load(fs.readFileSync(file, "utf8"));
+
+  assert.equal(normalise($(".brand-name").first().text()), expectedTitle, `${relative} has the wrong title`);
+  assert.equal(normalise($(".brand-tag").first().text()), expectedTagline, `${relative} has the wrong attribution`);
+  assert.equal($("#primary-nav .focus-nav-link").length, 3, `${relative} does not expose three primary conjectures`);
+  $("#primary-nav .focus-nav-link").each((index, element) => {
+    const expected = expectedFocus[index];
+    assert.equal($(element).attr("href"), expected.url, `${relative} focus ${index + 1} has the wrong route`);
+    assert.equal(normalise($(element).find("strong").text()), expected.label,
+      `${relative} focus ${index + 1} has the wrong label`);
+  });
+
+  assert.equal($("#primary-nav .nav-archive").length, 1, `${relative} has no single archive disclosure`);
+  assert.equal($("#primary-nav .archive-part").length, 6, `${relative} archive does not expose six Parts`);
+  const archiveRoutes = $("#primary-nav [data-archive-document]").map((_, element) => $(element).attr("href")).get();
+  assert.deepEqual(archiveRoutes, expectedArchiveRoutes, `${relative} archive destinations or ordering drifted`);
+  assert.equal(new Set(archiveRoutes).size, expectedArchiveRoutes.length, `${relative} archive repeats a document`);
+
+  $("#primary-nav .archive-part").each((index, element) => {
+    const expected = expectedGroups[index];
+    const part = $(element);
+    assert.equal(normalise(part.find(".archive-part-head > span").first().text()), `Part ${expected.part}`,
+      `${relative} archive Part ${index + 1} has the wrong numeral`);
+    assert.equal(normalise(part.find(".archive-part-head h2").first().text()), expected.label,
+      `${relative} archive Part ${index + 1} has the wrong title`);
+    assert.equal(part.find("[data-archive-document]").length, expected.items.length,
+      `${relative} archive Part ${index + 1} has the wrong destination count`);
+  });
+
+  assert.equal($(".nav-toggle").attr("aria-controls"), "primary-nav", `${relative} toggle target drifted`);
+  assert.equal($(".nav-toggle").attr("aria-expanded"), "false", `${relative} toggle does not begin collapsed`);
+  const expectedCurrent = route === "/archive/" ? "/archive/" : (expectedArchiveRoutes.includes(route) ? route : null);
+  const current = $("#primary-nav [aria-current='page']").map((_, element) => $(element).attr("href")).get();
+  assert.deepEqual(current, expectedCurrent ? [expectedCurrent] : [], `${relative} current archive destination is wrong`);
+
+  const expectedPageLabel = expectedPageLabels.get(route);
+  if (expectedPageLabel) {
+    const actualPageLabel = normalise($("main > .page-head > .kicker").first().text());
+    assert.ok(actualPageLabel.startsWith(normalise(expectedPageLabel)),
+      `${relative} page label does not correspond to its archive Part`);
   }
 }
 
-console.log(`TTI header passed: six numbered Parts, ${headerItems.length} unique page subheadings, full-text hover/focus expansion, matching page labels, responsive controls and active-page state.`);
+console.log(`TTI focus header passed: 3 conjectures, ${expectedGroups.length} archived Parts and ${expectedArchiveRoutes.length} unique destinations.`);

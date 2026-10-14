@@ -60,8 +60,9 @@ for (const statement of [
 }
 
 const foundations = read("tti/src/foundations.njk");
-const introduction = read("tti/src/index.njk");
-for (const [name, document] of [["Foundations", foundations], ["introduction", introduction]]) {
+const archive = read("tti/_site/archive/index.html");
+const introduction = read("tti/_site/index.html");
+for (const [name, document] of [["Foundations", foundations], ["archive", archive], ["introduction header", introduction]]) {
   assert.ok(document.includes('href="/pi-from-zero-and-one/"'), `${name} does not discover the π paper`);
 }
 

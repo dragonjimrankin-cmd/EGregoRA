@@ -55,11 +55,12 @@ for (const route of expectedRoutes) {
   assert.equal($("h1").length, 1, `${route} must retain one page-level H1`);
 }
 
-const home = cheerio.load(fs.readFileSync(path.join(builtRoot, "index.html"), "utf8"));
-assert.equal(home(".editorial-manifesto").length, 1, "homepage needs the clarity-edition reader contract");
+const archive = cheerio.load(fs.readFileSync(path.join(builtRoot, "archive", "index.html"), "utf8"));
+assert.equal(archive(".editorial-manifesto").length, 1,
+  "research archive needs the preserved clarity-edition reader contract");
 for (const marker of ["A Reader’s Contract", "Mathematics is not used as a costume for certainty",
   "External sources are bearings, not endorsements", "A claim earns force by becoming easier to lose"]) {
-  assert.ok(home(".editorial-manifesto").text().includes(marker), `reader contract is missing: ${marker}`);
+  assert.ok(archive(".editorial-manifesto").text().includes(marker), `reader contract is missing: ${marker}`);
 }
 
 const foundations = fs.readFileSync(path.join(builtRoot, "foundations", "index.html"), "utf8");

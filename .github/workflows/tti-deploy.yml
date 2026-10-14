@@ -93,6 +93,7 @@ jobs:
           node scripts/test-tti-plates.mjs
           node scripts/audit-tti.mjs
           test -s tti/hatchable/public/index.html
+          test -s tti/hatchable/public/archive/index.html
           test -s tti/hatchable/public/admin-edits.snapshot.json
           grep -Fq 'admin-edit-commit-snapshot' tti/hatchable/public/admin-edits.snapshot.json
           grep -Fq 'automatic Git commit before the next deployment' tti/hatchable/public/assets/js/admin-edit.js
@@ -127,30 +128,36 @@ jobs:
           test -s tti/hatchable/public/assets/js/headtts/LICENSE-Kokoro.txt
           grep -Fq 'The Two Infinities: Eternal Integration of the Self' tti/hatchable/public/index.html
           grep -Fq 'A speculative cosmology by Jim Rankin, UK, 2026' tti/hatchable/public/index.html
-          grep -Fq 'Project Table of Contents' tti/hatchable/public/index.html
-          grep -Fq 'Geometry, Integration and the Conditions of Return' tti/hatchable/public/index.html
-          grep -Fq '<dt>Research status</dt><dd>Working hypotheses</dd>' tti/hatchable/public/index.html
+          grep -Fq 'Three conjectures carry the framework' tti/hatchable/public/index.html
+          grep -Fq 'Integration differentiates. The splice routes. The seam returns.' tti/hatchable/public/index.html
+          grep -Fq 'Working hypotheses' tti/hatchable/public/index.html
+          grep -Fq 'Eternal Integration' tti/hatchable/public/index.html
+          grep -Fq 'The Rankin Skeletal Splice' tti/hatchable/public/index.html
+          grep -Fq 'Seams and Return' tti/hatchable/public/index.html
+          grep -Fq 'Nothing removed' tti/hatchable/public/index.html
           grep -Fq 'name        = "The Two Infinities: Eternal Integration of the Self"' tti/hatchable/hatchable.toml
           grep -Fq 'research project founded by Jim Rankin' tti/hatchable/hatchable.toml
           ! grep -R -Fq 'EGregoRA — Life, Love, Magic' tti/hatchable
           ! grep -R -Fq 'founded by Edward Gregory' tti/hatchable
-          test "$(grep -c 'class=\"research-toc-part\"' tti/hatchable/public/index.html)" -eq 6
-          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 34
-          grep -Fq 'Ten Claims, One Interdependent Framework' tti/hatchable/public/index.html
-          grep -Fq 'The dependency map' tti/hatchable/public/index.html
-          test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
-          grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r5.1' tti/hatchable/public/index.html
-          grep -q 'id="atlas-box"' tti/hatchable/public/index.html
-          grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
-          grep -q 'The same map, written out' tti/hatchable/public/index.html
-          grep -q 'src="/assets/js/atlas.js"' tti/hatchable/public/index.html
+          ! grep -q 'id="project-contents"' tti/hatchable/public/index.html
+          ! grep -q 'id="atlas-box"' tti/hatchable/public/index.html
+          grep -Fq 'Complete Six-Part Table of Contents' tti/hatchable/public/archive/index.html
+          test "$(grep -c 'class=\"research-toc-part frame\"' tti/hatchable/public/archive/index.html)" -eq 6
+          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/archive/index.html)" -eq 34
+          grep -Fq 'A Reader&rsquo;s Contract' tti/hatchable/public/archive/index.html
+          grep -q 'id="fig-chain"' tti/hatchable/public/archive/index.html
+          grep -Fq 'r6.0' tti/hatchable/public/index.html
+          grep -q 'id="atlas-box"' tti/hatchable/public/archive/index.html
+          grep -q 'The Atlas of Becoming' tti/hatchable/public/archive/index.html
+          grep -q 'The same map, written out' tti/hatchable/public/archive/index.html
+          grep -q 'src="/assets/js/atlas.js"' tti/hatchable/public/archive/index.html
           grep -q 'tti-atlas-skin' tti/hatchable/public/assets/js/atlas.js
           grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
           grep -q 'Folded back to the six reading paths' tti/hatchable/public/assets/js/atlas.js
-          test "$(grep -c 'class="nav-cluster"' tti/hatchable/public/index.html)" -eq 6
-          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 34
-          ! grep -q 'class="nav-actions"' tti/hatchable/public/index.html
+          test "$(grep -c 'class="focus-nav-link ' tti/hatchable/public/index.html)" -eq 3
+          test "$(grep -c 'class="nav-cluster nav-archive"' tti/hatchable/public/index.html)" -eq 1
+          test "$(grep -c 'data-archive-document' tti/hatchable/public/index.html)" -eq 34
+          grep -q 'class="nav-actions nav-actions--focus"' tti/hatchable/public/index.html
           grep -q 'Part I' tti/hatchable/public/index.html
           grep -q 'First Principles' tti/hatchable/public/index.html
           grep -q 'Part II' tti/hatchable/public/index.html
@@ -165,7 +172,6 @@ jobs:
           grep -q 'Riemann Programme' tti/hatchable/public/index.html
           grep -q 'Ask ShakDrah' tti/hatchable/public/index.html
           ! grep -R -q -E 'Part (VII|VIII)' tti/hatchable/public --include='*.html'
-          grep -q 'Why the two infinities never fully synchronise' tti/hatchable/public/index.html
           grep -Fq 'Why π Appears Between Zero and One' tti/hatchable/public/pi-from-zero-and-one/index.html
           grep -Fq 'Euler&rsquo;s Beta Integral Puts π Exactly Between 0 and 1' tti/hatchable/public/pi-from-zero-and-one/index.html
           grep -Fq 'The beta&ndash;gamma theorem states' tti/hatchable/public/pi-from-zero-and-one/index.html
@@ -413,21 +419,32 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r5.1',
-                'Project Table of Contents', 'Geometry, Integration and the Conditions of Return',
-                '<dt>Research status</dt><dd>Working hypotheses</dd>', 'TTI-I.01', 'TTI-V.04',
-                'Ten Claims, One Interdependent Framework', 'The dependency map',
-                'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',
-                'The same map, written out', 'class="nav-cluster"', 'Part I', 'First Principles',
-                'Part II', 'Cosmic Architecture', 'Part III', 'Seams and Return',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r6.0',
+                'Working hypotheses', 'Three conjectures carry the framework',
+                'Eternal Integration', 'The Rankin Skeletal Splice', 'Seams and Return',
+                'Integration differentiates. The splice routes. The seam returns.',
+                'The complete research programme remains open', 'Research Archive',
+                'class="focus-nav-link ', 'class="nav-cluster nav-archive"',
+                'TTI-I.01', 'TTI-V.04', 'Part I', 'First Principles',
+                'Part II', 'Cosmic Architecture', 'Part III',
                 'Part IV', 'Tests and Essays', 'Part V', 'Reading Rooms',
                 'Part VI', 'Riemann Programme', 'TTI-VI.03',
-                'The Two Infinities: Eternal Integration of the Self',
-                'A Reader&rsquo;s Contract', 'External sources are bearings, not endorsements',
-                'Why the two infinities never fully synchronise', 'The Zero-Seam Test'],
-              forbiddenMarkers: ['A final, all-encompassing accessible synthesis',
+                'The Zero-Seam Test'],
+              forbiddenMarkers: ['id="project-contents"', 'id="atlas-box"',
+                'A final, all-encompassing accessible synthesis',
                 'class="wrap narrow longform-synthesis final-synthesis"',
                 'href="#longform-the-two-infinities-eternal-integration-of-the-self"']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/archive/',
+              markers: ['Research Archive', 'Complete Six-Part Table of Contents',
+                'TTI-I.01', 'TTI-V.04', 'TTI-VI.03', 'Part I', 'First Principles',
+                'Part II', 'Cosmic Architecture', 'Part III', 'Seams and Return',
+                'Part IV', 'Tests and Essays', 'Part V', 'Reading Rooms',
+                'Part VI', 'Riemann Programme', 'A Reader&rsquo;s Contract',
+                'External sources are bearings, not endorsements', 'id="fig-chain"',
+                'id="atlas-box"', 'id="atlas-data"', 'The Atlas of Becoming',
+                'The same map, written out', 'src="/assets/js/atlas.js"']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/foundations/',
@@ -685,11 +702,12 @@ jobs:
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/css/main.css',
-              markers: ['Navigation observatory', '.nav-cluster', '.nav-panel',
+              markers: ['r6.0 — Fundamental conjectures', '.focus-nav', '.focus-nav-link',
+                '.nav-archive', '.archive-panel', '.archive-part-grid',
                 '.js-nav .site-nav.open', 'position: sticky',
-                '.nav-cluster > summary:hover .nav-cluster-title',
-                '.site-nav .nav-panel a:hover .nav-link-copy small',
+                '.focus-nav-link:hover .focus-nav-copy strong',
                 'grid-template-columns: repeat(6, minmax(0, 1fr))',
+                '.focus-hero', '.focus-pillar', '.focus-synthesis', '.focus-archive',
                 '.plate-accordion-group[open]', '.plate-group-toggle::after',
                 '.atlas-grid', 'body.atlas-focused',
                 '#atlas-box.is-focused']
@@ -698,7 +716,7 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/assets/js/site.js',
               markers: ['const avatarName', 'tti-shakdrah-muted', "'s voice is on",
                 'window.EGDragon || window.EGFox', 'classList.add("js-nav")', 'closeClusters',
-                'closePlateGroups', 'openPlateFromHash', 'runtimePartLabels',
+                'cluster.addEventListener("pointerenter"', 'closePlateGroups', 'openPlateFromHash', 'runtimePartLabels',
                 'Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V.03 \\u00b7 Join',
                 'Part V \\u2014 Reading Rooms \\u00b7 Reader service TTI-V.04 \\u00b7 Your Account']
             }

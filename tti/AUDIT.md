@@ -2,7 +2,7 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r5.1
+**Revision:** r6.0
 **Audit date:** 14 October 2026
 
 ## Scope
@@ -15,7 +15,17 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the six-Part masthead and matching research labels, the six-path Atlas, the canonical thirty-four-entry project contents, per-document records and outline shells, the thirty-two site-wide editorial guides, the exclusive plate accordion, the custom site audit, the six rendered Part syntheses, the preserved final-synthesis source and the prepared browser-side knowledge corpus. It keeps the twenty-seven original Parts I–IV research essays within 2,000–4,000 readable words, independently enforces 6,000–8,000 words for every Part synthesis and 10,000–13,000 words for the retained final project source.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the three-conjecture masthead and complete six-Part archive panel, the six-path Atlas, the canonical thirty-four-entry project contents, per-document records and outline shells, the thirty-two site-wide editorial guides, the exclusive plate accordion, the custom site audit, the six rendered Part syntheses, the preserved final-synthesis source and the prepared browser-side knowledge corpus. It keeps the twenty-seven original Parts I–IV research essays within 2,000–4,000 readable words, independently enforces 6,000–8,000 words for every Part synthesis and 10,000–13,000 words for the retained final project source.
+
+## Fundamental conjectures redesign in r6.0
+
+- Rebuilt the introduction as a focus-first public journey through exactly three load-bearing ideas: **Eternal Integration**, **The Rankin Skeletal Splice** and **Seams and Return**.
+- Added a three-node cycle diagram, representative equations, direct principal-study links and a concise research boundary that continues to distinguish established mathematics from speculative physical promotion.
+- Replaced the six equal-weight masthead menus with three primary focus links and one keyboard-, touch- and hover-readable **Research Archive** disclosure. The archive panel still lists all six Parts, all thirty-four coded destinations and the current document.
+- Added the canonical `/archive/` route containing the complete six-Part table of contents, the unchanged interactive **Atlas of Becoming**, its written fallback, the clarity-edition Reader&rsquo;s Contract and the introductory chain plate removed from the concise homepage.
+- Preserved the full corpus rather than deleting or demoting source material: thirty studies, four project resources, six 6,000–8,000-word Part syntheses, the 10,825-word retained final-synthesis source, thirty-six Plates beneath twenty-six source headings and all three Riemann studies remain independently audited.
+- Updated the Plates gatherer so the preserved introductory chain is sourced honestly from the archive, and updated both ShakDrah and Gink with the Reader&rsquo;s Contract&rsquo;s new canonical fragment without breaking Oracle synchronisation.
+- Added local and live deployment checks that require the three conjectures on the homepage, forbid the table and Atlas there, and require the complete contents, Reader&rsquo;s Contract, chain plate and Atlas in the archive.
 
 ## Concise introduction in r5.1
 
@@ -28,14 +38,14 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 - Added one bespoke prose guide to every built research document: a plain-language question, the page&rsquo;s argument, its established evidence line, the exact stopping point and a critical prompt that can put the claim under pressure.
 - Added external bearings from nine source hosts across mathematics, relativity, cosmology, entropy, consciousness, topology, observational astronomy and proof auditing; the interface explicitly states that context and competing accounts do not amount to endorsement of TTI.
-- Added a homepage **Reader&rsquo;s Contract** defining the project&rsquo;s language rules: a theorem does not prove its physical promotion, a diagram does not establish a mechanism, and a claim gains force by becoming easier to lose.
+- Added a **Reader&rsquo;s Contract**, now preserved in the r6.0 Research Archive, defining the project&rsquo;s language rules: a theorem does not prove its physical promotion, a diagram does not establish a mechanism, and a claim gains force by becoming easier to lose.
 - Corrected the overstatement that experiments had proved imaginary numbers uniquely indispensable. The revised Foundations page distinguishes standard complex quantum theory, the 2021 real-amplitude foil experiment and the live dispute over equivalent real-arithmetic representations.
 - Rewrote the opening mathematical chain so a convergent sequence is not confused with zero itself, uncountable cardinality is not called topological density, Euclidean circular closure is a declared choice, and the theorem-to-ontology transitions are no longer described as forced.
 - Rewrote the Gravity lead claims to distinguish general relativity from the π-level interpretation, remove the claim that a flat rotation curve comes &ldquo;for free&rdquo;, and state the joint lensing, structure-growth and quantum-gravity debts in direct prose.
 - Corrected two topological promotions: SU(3) colour confinement is now explicitly an analogy rather than the definition of non-orientability, and one global twist no longer purports to prove one unique geometric throat or one Cold Spot.
 - Narrowed the use of Landauer&rsquo;s principle on the dx page to logically irreversible erasure under stated thermodynamic conditions; it no longer claims to establish a smallest experiential grain or a universal price for consciousness.
 - Updated the Little Red Dots paper and Zero-Seam protocol with the 2026 radiation-hydrodynamic heavy-seed result, strengthening the conventional accreting-black-hole comparator and requiring residue to predict something it misses.
-- Added `scripts/test-tti-editorial-guides.mjs`, which verifies all thirty-two guides, substantive field lengths, one critical question per page, safe external links, source breadth, one page-level H1, homepage contract and the targeted scientific corrections.
+- Added `scripts/test-tti-editorial-guides.mjs`, which verifies all thirty-two guides, substantive field lengths, one critical question per page, safe external links, source breadth, one page-level H1, the archived Reader&rsquo;s Contract and the targeted scientific corrections.
 - Synchronised a thirtieth prepared ShakDrah/Gink answer, **How should I read and test a TTI claim?**, so the evidence protocol is available inside both existing Oracle interfaces without weakening their model fallback or attachment route.
 - Kept the editorial guides outside the original-essay word count, just as the separately bounded long-form syntheses are excluded, so all three reading layers remain independently testable.
 
