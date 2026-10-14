@@ -1,0 +1,9 @@
+<section class="wrap narrow longform-synthesis {{ synthesis.className }}" aria-labelledby="{{ synthesis.titleId }}">
+  <div class="longform-synthesis-meta">
+    <p class="kicker">Accessible long-form synthesis</p>
+    <p class="muted small">{{ synthesis.wordCount | readableNumber }} words · equations minimised · plain-language reader edition</p>
+  </div>
+  <article class="longform-paper">
+    {{ synthesis.html | safe }}
+  </article>
+</section>

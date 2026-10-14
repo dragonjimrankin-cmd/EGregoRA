@@ -20,6 +20,9 @@ on:
       - "scripts/test-tti-atlas.mjs"
       - "scripts/test-tti-plates.mjs"
       - "scripts/test-tti-research-layout.mjs"
+      - "scripts/build-tti-longform-sources.mjs"
+      - "scripts/test-tti-longform-syntheses.mjs"
+      - "scripts/test-tti-riemann-programme.mjs"
       - "scripts/test-tti-pi-from-zero-and-one.mjs"
       - "scripts/test-tti-relocations.mjs"
       - "scripts/tti-gather-plates.mjs"
@@ -41,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
-      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-seven studies and four project resources."
+      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return, mathematical proof auditing and testable failure conditions across thirty studies and four project resources."
       TTI_DEPLOY_INTENT: "Deploy The Two Infinities research project"
       TTI_DEPLOY_SUMMARY: "Publishes The Two Infinities: Eternal Integration of the Self, the independent speculative cosmology research project founded by Jim Rankin, including its studies, research resources, Atlas, plates, and ShakDrah research assistant."
     steps:
@@ -82,6 +85,8 @@ jobs:
           node scripts/test-tti-header.mjs --built
           node scripts/test-tti-atlas.mjs
           node scripts/test-tti-research-layout.mjs
+          node scripts/test-tti-longform-syntheses.mjs
+          node scripts/test-tti-riemann-programme.mjs
           node scripts/test-tti-pi-from-zero-and-one.mjs
           node scripts/test-tti-plates.mjs
           node scripts/audit-tti.mjs
@@ -101,6 +106,9 @@ jobs:
           test -s tti/hatchable/public/accumulated-differentials/index.html
           test -s tti/hatchable/public/little-red-dots/index.html
           test -s tti/hatchable/public/little-red-dots/research-proposal/index.html
+          test -s tti/hatchable/public/riemann-programme/index.html
+          test -s tti/hatchable/public/riemann-proof-audit/index.html
+          test -s tti/hatchable/public/riemann-splice-questions/index.html
           test -s tti/hatchable/public/stress-tests/index.html
           test -s tti/hatchable/public/plates/index.html
           test -s tti/hatchable/public/sitemap.xml
@@ -124,22 +132,22 @@ jobs:
           grep -Fq 'research project founded by Jim Rankin' tti/hatchable/hatchable.toml
           ! grep -R -Fq 'EGregoRA — Life, Love, Magic' tti/hatchable
           ! grep -R -Fq 'founded by Edward Gregory' tti/hatchable
-          test "$(grep -c 'class=\"research-toc-part\"' tti/hatchable/public/index.html)" -eq 5
-          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 31
+          test "$(grep -c 'class=\"research-toc-part\"' tti/hatchable/public/index.html)" -eq 6
+          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/index.html)" -eq 34
           grep -Fq 'Ten Claims, One Interdependent Framework' tti/hatchable/public/index.html
           grep -Fq 'The dependency map' tti/hatchable/public/index.html
           test "$(grep -c 'class=\"frame core-claim\"' tti/hatchable/public/index.html)" -eq 10
           grep -Fq 'The Zero-Seam Test' tti/hatchable/public/index.html
-          grep -Fq 'r4.13' tti/hatchable/public/index.html
+          grep -Fq 'r4.15' tti/hatchable/public/index.html
           grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -q 'The Atlas of Becoming' tti/hatchable/public/index.html
           grep -q 'The same map, written out' tti/hatchable/public/index.html
           grep -q 'src="/assets/js/atlas.js"' tti/hatchable/public/index.html
           grep -q 'tti-atlas-skin' tti/hatchable/public/assets/js/atlas.js
           grep -q 'The Möbius Seam' tti/hatchable/public/assets/js/atlas.js
-          grep -q 'Folded back to the five reading paths' tti/hatchable/public/assets/js/atlas.js
-          test "$(grep -c 'class="nav-cluster"' tti/hatchable/public/index.html)" -eq 5
-          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 31
+          grep -q 'Folded back to the six reading paths' tti/hatchable/public/assets/js/atlas.js
+          test "$(grep -c 'class="nav-cluster"' tti/hatchable/public/index.html)" -eq 6
+          test "$(grep -c 'class="nav-link-copy"' tti/hatchable/public/index.html)" -eq 34
           ! grep -q 'class="nav-actions"' tti/hatchable/public/index.html
           grep -q 'Part I' tti/hatchable/public/index.html
           grep -q 'First Principles' tti/hatchable/public/index.html
@@ -151,8 +159,10 @@ jobs:
           grep -q 'Tests and Essays' tti/hatchable/public/index.html
           grep -q 'Part V' tti/hatchable/public/index.html
           grep -q 'Reading Rooms' tti/hatchable/public/index.html
+          grep -q 'Part VI' tti/hatchable/public/index.html
+          grep -q 'Riemann Programme' tti/hatchable/public/index.html
           grep -q 'Ask ShakDrah' tti/hatchable/public/index.html
-          ! grep -R -q -E 'Part (VI|VII|VIII)' tti/hatchable/public --include='*.html'
+          ! grep -R -q -E 'Part (VII|VIII)' tti/hatchable/public --include='*.html'
           grep -q 'Why the two infinities never fully synchronise' tti/hatchable/public/index.html
           grep -Fq 'Why π Appears Between Zero and One' tti/hatchable/public/pi-from-zero-and-one/index.html
           grep -Fq 'Euler&rsquo;s Beta Integral Puts π Exactly Between 0 and 1' tti/hatchable/public/pi-from-zero-and-one/index.html
@@ -170,7 +180,7 @@ jobs:
           grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Twenty-six prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Twenty-nine prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Can an inverted torus be a traversable wormhole?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Why does π appear between zero and one?' tti/hatchable/public/ask-shakdrah/index.html
@@ -182,6 +192,9 @@ jobs:
           grep -q 'Is the 5:27:68 cosmic ratio only a 13.8-billion-year snapshot?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Does residue from one inversion survive a second inversion?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'How do accumulated differentials connect to mass and gravity?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'What did the consolidated Riemann Hypothesis archive actually establish?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Which Riemann Hypothesis claims were corrected or downgraded?' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Does the Riemann Hypothesis work solve the outstanding splice questions?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO DRAW' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'ASK SHAKDRAH TO FILM' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Natural voice: off' tti/hatchable/public/ask-shakdrah/index.html
@@ -255,11 +268,25 @@ jobs:
           grep -q 'The Temporal-Antipode Synchronisation Challenge' tti/hatchable/public/stress-tests/index.html
           grep -q 'The Wormhole Promotion Test' tti/hatchable/public/stress-tests/index.html
           grep -q 'The Zero-Seam Test, With the Null Model Kept in the Room' tti/hatchable/public/stress-tests/index.html
+          grep -q 'From Nothing to a Self: The First Principles of The Two Infinities' tti/hatchable/public/foundations/index.html
+          grep -q 'From Splice to Structure: Gravity, Spirals, Tori and the Cosmic Body' tti/hatchable/public/gravity/index.html
+          grep -q 'The Universe at Its Seams: Time, Entropy, Residue and Return' tti/hatchable/public/moebius/index.html
+          grep -q 'How a Speculative Cosmology Faces Evidence' tti/hatchable/public/stress-tests/index.html
+          grep -q 'The Reading Rooms: How to Explore, Question and Test The Two Infinities' tti/hatchable/public/plates/index.html
+          grep -q 'Arithmetic, Proof and the Limits of Analogy: The Riemann Programme' tti/hatchable/public/riemann-programme/index.html
+          grep -q 'A final, all-encompassing accessible synthesis' tti/hatchable/public/index.html
+          grep -q 'class="wrap narrow longform-synthesis final-synthesis"' tti/hatchable/public/index.html
+          grep -q 'Part VI — Riemann Programme · Research dossier TTI-VI.01 · The Riemann Dossier' tti/hatchable/public/riemann-programme/index.html
+          grep -q 'The identity gap is a missing implication, not a missing decimal' tti/hatchable/public/riemann-programme/index.html
+          grep -q 'Part VI — Riemann Programme · Proof audit TTI-VI.02 · Proof and Correction Ledger' tti/hatchable/public/riemann-proof-audit/index.html
+          grep -q 'Bernstein density: the small-' tti/hatchable/public/riemann-proof-audit/index.html
+          grep -q 'Part VI — Riemann Programme · Bridge assessment TTI-VI.03 · The Splice Questions After RH' tti/hatchable/public/riemann-splice-questions/index.html
+          grep -q 'No unique splice-to-action map' tti/hatchable/public/riemann-splice-questions/index.html
           grep -q 'Part V — Reading Rooms · Figure compendium TTI-V.01 · The Plates' tti/hatchable/public/plates/index.html
           grep -q 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html
           grep -q 'name="plate-room"' tti/hatchable/public/plates/index.html
           grep -q 'Choose one source heading to inspect its plates' tti/hatchable/public/plates/index.html
-          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 23
+          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 26
           grep -q 'data-plate-source="/pi-from-zero-and-one/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/wormholes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/temporal-antipodes/"' tti/hatchable/public/plates/index.html
@@ -267,6 +294,9 @@ jobs:
           grep -q 'data-plate-source="/double-inversion/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/accumulated-differentials/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/little-red-dots/"' tti/hatchable/public/plates/index.html
+          grep -q 'data-plate-source="/riemann-programme/"' tti/hatchable/public/plates/index.html
+          grep -q 'data-plate-source="/riemann-proof-audit/"' tti/hatchable/public/plates/index.html
+          grep -q 'data-plate-source="/riemann-splice-questions/"' tti/hatchable/public/plates/index.html
           grep -Fq 'https://the-two-infinities.hatchable.site/pi-from-zero-and-one/' tti/hatchable/public/sitemap.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/pi-from-zero-and-one/' tti/hatchable/public/feed.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/' tti/hatchable/public/sitemap.xml
@@ -274,6 +304,10 @@ jobs:
           grep -Fq 'https://the-two-infinities.hatchable.site/wormholes/' tti/hatchable/public/sitemap.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/wormholes/' tti/hatchable/public/feed.xml
           grep -Fq 'https://the-two-infinities.hatchable.site/accumulated-differentials/' tti/hatchable/public/feed.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/riemann-programme/' tti/hatchable/public/sitemap.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/riemann-programme/' tti/hatchable/public/feed.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/riemann-proof-audit/' tti/hatchable/public/feed.xml
+          grep -Fq 'https://the-two-infinities.hatchable.site/riemann-splice-questions/' tti/hatchable/public/feed.xml
           grep -Fq '<subtitle>A speculative cosmology by Jim Rankin, UK, 2026</subtitle>' tti/hatchable/public/feed.xml
           grep -q 'Enter the TTI conjecture' tti/hatchable/public/essays/index.html
           grep -q 'Entropy and the Phases of Integration' tti/hatchable/public/essays/index.html
@@ -292,6 +326,9 @@ jobs:
             tti/hatchable/public/accumulated-differentials/index.html \
             tti/hatchable/public/little-red-dots/index.html \
             tti/hatchable/public/little-red-dots/research-proposal/index.html \
+            tti/hatchable/public/riemann-programme/index.html \
+            tti/hatchable/public/riemann-proof-audit/index.html \
+            tti/hatchable/public/riemann-splice-questions/index.html \
             tti/hatchable/public/ask-shakdrah/index.html \
             tti/hatchable/public/torus/index.html \
             tti/hatchable/public/moebius/index.html \
@@ -364,7 +401,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/',
               markers: ['The Two Infinities:', 'Eternal Integration of the Self',
-                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.13',
+                'A speculative cosmology by Jim Rankin, UK, 2026', 'r4.15',
                 'Project Table of Contents', 'Geometry, Integration and the Conditions of Return',
                 '<dt>Research status</dt><dd>Working hypotheses</dd>', 'TTI-I.01', 'TTI-V.04',
                 'Ten Claims, One Interdependent Framework', 'The dependency map',
@@ -372,12 +409,16 @@ jobs:
                 'The same map, written out', 'class="nav-cluster"', 'Part I', 'First Principles',
                 'Part II', 'Cosmic Architecture', 'Part III', 'Seams and Return',
                 'Part IV', 'Tests and Essays', 'Part V', 'Reading Rooms',
+                'Part VI', 'Riemann Programme', 'TTI-VI.03',
+                'A final, all-encompassing accessible synthesis',
+                'The Two Infinities: Eternal Integration of the Self',
                 'Why the two infinities never fully synchronise', 'The Zero-Seam Test']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/foundations/',
               markers: ['Part I — First Principles · Concept paper TTI-I.01 · Foundations',
-                'Why Does Anything Exist?', 'Why π Appears Between Zero and One']
+                'Why Does Anything Exist?', 'Why π Appears Between Zero and One',
+                'From Nothing to a Self: The First Principles of The Two Infinities']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/pi-from-zero-and-one/',
@@ -391,7 +432,8 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/gravity/',
               markers: ['Part II — Cosmic Architecture · Theory paper TTI-II.01 · Gravity',
-                'Gravity, and the Five Percent']
+                'Gravity, and the Five Percent',
+                'From Splice to Structure: Gravity, Spirals, Tori and the Cosmic Body']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/cosmic-ledger/',
@@ -404,6 +446,7 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/moebius/',
               markers: ['Part III — Seams and Return · Topology paper TTI-III.01 · Möbius',
                 'Möbius Seam', 'What the Older Möbius Seam Page Contributed',
+                'The Universe at Its Seams: Time, Entropy, Residue and Return',
                 'Does a First Inversion Leave Residue After the Second?', 'Riemann Hypothesis']
             },
             {
@@ -495,7 +538,30 @@ jobs:
                 'Where It Might Break', 'The Entropy Objection',
                 'The Temporal-Antipode Synchronisation Challenge', 'The Wormhole Promotion Test',
                 'The Zero-Seam Test, With the Null Model Kept in the Room',
+                'How a Speculative Cosmology Faces Evidence',
                 'The clean loss:', 'inherited-residue implementation is rejected']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/riemann-programme/',
+              markers: ['Part VI — Riemann Programme · Research dossier TTI-VI.01 · The Riemann Dossier',
+                'The last filename is not the last word', 'What RH actually says',
+                'The identity gap is a missing implication, not a missing decimal',
+                'Strict log-convexity on the real axis', 'What is now safe to say',
+                'Arithmetic, Proof and the Limits of Analogy: The Riemann Programme']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/riemann-proof-audit/',
+              markers: ['Part VI — Riemann Programme · Proof audit TTI-VI.02 · Proof and Correction Ledger',
+                'A proof must survive its own revisions', 'The correction cascade',
+                'Complete monotonicity: the corrected formula breaks the easy proof',
+                'the small-', 'reverse implication is not proved']
+            },
+            {
+              url: 'https://the-two-infinities.hatchable.site/riemann-splice-questions/',
+              markers: ['Part VI — Riemann Programme · Bridge assessment TTI-VI.03 · The Splice Questions After RH',
+                'Ten, then one hundred', 'Four gates between splice arithmetic and physics',
+                'No unique splice-to-action map', 'No physical scale for',
+                'No unique', 'No independent', 'The decimal-spectrum test']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/plates/',
@@ -506,7 +572,11 @@ jobs:
                 'Opposite Ends, Finite Projections', 'JWST’s Little Red Dots',
                 'Similar Arrows, Different Accounts', 'State Restored, Path Still Available',
                 'Wormholes and Inverted Tori', 'A Global Return Is Not a Local',
-                'From Increments to Curvature', 'From the previous closure to a']
+                'From Increments to Curvature', 'From the previous closure to a',
+                'The Riemann Dossier', 'Proof and Correction Ledger', 'The Splice Questions After RH',
+                'The Reading Rooms: How to Explore, Question and Test The Two Infinities',
+                'data-plate-source="/riemann-programme/"', 'data-plate-source="/riemann-proof-audit/"',
+                'data-plate-source="/riemann-splice-questions/"']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/sitemap.xml',
@@ -520,6 +590,9 @@ jobs:
                 'https://the-two-infinities.hatchable.site/accumulated-differentials/',
                 'https://the-two-infinities.hatchable.site/little-red-dots/',
                 'https://the-two-infinities.hatchable.site/little-red-dots/research-proposal/',
+                'https://the-two-infinities.hatchable.site/riemann-programme/',
+                'https://the-two-infinities.hatchable.site/riemann-proof-audit/',
+                'https://the-two-infinities.hatchable.site/riemann-splice-questions/',
                 'https://the-two-infinities.hatchable.site/stress-tests/']
             },
             {
@@ -534,7 +607,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
               markers: ['Part V — Reading Rooms · Research assistant TTI-V.02 · Ask ShakDrah',
-                'Twenty-six prepared answers', 'Why does π appear between zero and one?',
+                'Twenty-nine prepared answers', 'Why does π appear between zero and one?',
                 'Can an inverted torus be a traversable wormhole?',
                 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
@@ -544,6 +617,9 @@ jobs:
                 'Is the 5:27:68 cosmic ratio only a 13.8-billion-year snapshot?',
                 'Does residue from one inversion survive a second inversion?',
                 'How do accumulated differentials connect to mass and gravity?',
+                'What did the consolidated Riemann Hypothesis archive actually establish?',
+                'Which Riemann Hypothesis claims were corrected or downgraded?',
+                'Does the Riemann Hypothesis work solve the outstanding splice questions?',
                 'Can reversible mixing create a matter-antimatter imbalance?',
                 'ASK SHAKDRAH TO DRAW', 'ASK SHAKDRAH TO FILM', 'oracle-knowledge.js',
                 'Natural voice: off', 'Male neural voice',
@@ -553,14 +629,14 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/atlas.js',
               markers: ['tti-atlas-skin', 'The Möbius Seam', 'href: "/moebius/"',
-                'prefers-reduced-motion: reduce', 'Folded back to the five reading paths']
+                'prefers-reduced-motion: reduce', 'Folded back to the six reading paths']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/oracle-knowledge.js',
               markers: ['circle-evidence', 'prime-per-instance', 'mapping-space',
                 'wormhole-inverted-torus', 'baryogenesis-boundary', 'pi-zero-one', 'temporal-antipodes', 'little-red-dots-residue',
                 'zero-seam-test', 'entropy-integration', 'entropy-self-renewal', 'cosmic-ratio-snapshot', 'double-inversion-residue',
-                'differentials-mass-gravity', 'epistemic-grading']
+                'differentials-mass-gravity', 'rh-dossier', 'rh-proof-audit', 'rh-splice-bridge', 'epistemic-grading']
             },
             {
               url: 'https://the-two-infinities.hatchable.site/assets/js/neural-voice.js',
@@ -595,7 +671,7 @@ jobs:
                 '.js-nav .site-nav.open', 'position: sticky',
                 '.nav-cluster > summary:hover .nav-cluster-title',
                 '.site-nav .nav-panel a:hover .nav-link-copy small',
-                'grid-template-columns: repeat(5, minmax(0, 1fr))',
+                'grid-template-columns: repeat(6, minmax(0, 1fr))',
                 '.plate-accordion-group[open]', '.plate-group-toggle::after',
                 '.atlas-grid', 'body.atlas-focused',
                 '#atlas-box.is-focused']

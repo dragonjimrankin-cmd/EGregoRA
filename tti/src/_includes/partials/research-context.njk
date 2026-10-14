@@ -36,7 +36,7 @@
   </div>
 
   <details class="project-drawer">
-    <summary>Browse all five Parts and {{ site.nav | length }} project documents</summary>
+    <summary>Browse all {{ site.navGroups | length }} Parts and {{ site.nav | length }} project documents</summary>
     <div class="project-drawer-grid">
       {% for group in site.navGroups %}
       <section aria-labelledby="drawer-part-{{ group.part }}">

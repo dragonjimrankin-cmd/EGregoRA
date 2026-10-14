@@ -1,0 +1,256 @@
+---
+layout: layouts/base.njk
+title: Proof and Correction Ledger
+metaTitle: "Riemann Proof Audit · The Two Infinities"
+permalink: /riemann-proof-audit/
+description: "Part VI — Riemann Programme: a line-by-line evidence audit of the archive’s complete-monotonicity, Bernstein-density, Pólya-kernel, critical-line and third-derivative claims."
+ogType: article
+schemaType: ScholarlyArticle
+section: Mathematical proof audit
+published: "2026-10-14"
+keywords: "Riemann Hypothesis proof audit, complete monotonicity, Bernstein density, Pólya kernel log concavity, critical line positivity, correction ledger"
+---
+
+<section class="page-head">
+  <p class="kicker">{{ site.researchByUrl[page.url].kicker }}</p>
+  <h1>Proof and Correction Ledger</h1>
+  <p class="lede muted">A correction does not merely alter a formula. It changes which later conclusions
+    can still use that formula. This ledger follows five headline claims through the archive and stops each
+    argument at the first step not supplied.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">Audit rule</p>
+    <h2 id="t-rh-audit-rule">A proof must survive its own revisions</h2>
+    <p class="lede">The archive deserves credit for recording errors. Consolidation must now propagate each
+      correction forward instead of leaving the original theorem label in place.</p>
+    <p>A numerical result can support a conjecture, test an implementation or expose a false generalisation.
+      It cannot replace a missing uniform bound. A conditional Hadamard formula can describe what follows if
+      every zero is on the critical line. It cannot be used as the unconditional starting point of an argument
+      meant to prove a property without RH. A leading asymptotic can suggest a sign. It cannot determine a
+      discrete sum unless the remainder is bounded more tightly than the proposed margin.</p>
+    <p>This page uses “unproved” in that precise, local sense: the supplied documents do not close the claim.
+      It does not assert that the claim is false, and it does not survey every result in the literature. Where
+      the archive cites 2026 papers, their contents are treated as source reports until independently checked.
+      <span class="hist">&#9670;</span></p>
+    <p>The audit also distinguishes a failed <em>bridge</em> from a failed <em>identity</em>. The corrected
+      inverse-Laplace formula may be exact while the proposed positivity proof fails. The Cauchy&ndash;Schwarz
+      proof on the real axis may be valid while its hoped-for continuation to the critical line is unavailable.
+      Keeping the surviving half is the purpose of a ledger.</p>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <figure class="plate" id="fig-rh-correction-cascade">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The correction cascade <span class="myth">&#9670;</span></figcaption>
+    <div class="plate-art" role="img" aria-label="A descending timeline. An original formula for F leads to a trivial complete-monotonicity proof and an unconditional theorem label. A red correction replaces the formula, breaking the proof. The surviving result is conditional inverse-Laplace algebra; complete monotonicity returns to open status.">
+      <svg viewBox="0 0 900 390" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="rh-cascade-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#76cfee"/>
+          </marker>
+        </defs>
+        <rect width="900" height="390" fill="#070b1a"/>
+        <g font-family="Cinzel, serif" text-anchor="middle">
+          <g fill="none" stroke-width="1.4">
+            <rect x="55" y="44" width="230" height="78" rx="7" stroke="#a07cf0"/>
+            <rect x="335" y="44" width="230" height="78" rx="7" stroke="#a07cf0"/>
+            <rect x="615" y="44" width="230" height="78" rx="7" stroke="#a07cf0"/>
+            <rect x="205" y="242" width="230" height="86" rx="7" stroke="#45d6b4"/>
+            <rect x="515" y="242" width="230" height="86" rx="7" stroke="#ef84b6"/>
+          </g>
+          <g fill="#cdefff" font-size="13">
+            <text x="170" y="72">OLD FORMULA FOR F</text><text x="170" y="96" fill="#a9b6d8">later corrected</text>
+            <text x="450" y="72">“TRIVIAL” CM PROOF</text><text x="450" y="96" fill="#a9b6d8">depends on old F</text>
+            <text x="730" y="72">UNCONDITIONAL</text><text x="730" y="94">THEOREM LABEL</text>
+            <text x="320" y="272">SURVIVES</text><text x="320" y="296" fill="#45d6b4">correct conditional algebra</text>
+            <text x="630" y="272">RETURNS TO OPEN</text><text x="630" y="296" fill="#ef84b6">CM sign for all n and x</text>
+          </g>
+          <path d="M285 83 H328" stroke="#76cfee" stroke-width="1.5" marker-end="url(#rh-cascade-arrow)"/>
+          <path d="M565 83 H608" stroke="#76cfee" stroke-width="1.5" marker-end="url(#rh-cascade-arrow)"/>
+          <path d="M450 126 V190" stroke="#ef84b6" stroke-width="2"/>
+          <path d="M422 166 L478 216 M478 166 L422 216" stroke="#ef84b6" stroke-width="3"/>
+          <text x="450" y="150" fill="#f3dd9c" font-size="12">FORMULA CORRECTED</text>
+          <path d="M426 214 L344 238" stroke="#45d6b4" stroke-width="1.5" marker-end="url(#rh-cascade-arrow)"/>
+          <path d="M474 214 L600 238" stroke="#ef84b6" stroke-width="1.5" marker-end="url(#rh-cascade-arrow)"/>
+          <text x="450" y="366" fill="#a9b6d8" font-family="EB Garamond, serif" font-size="17">a downstream theorem cannot keep an upstream premise that no longer exists</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">The archive itself catches the mistaken formula. The public correction is to keep
+      the corrected transform identity and withdraw the theorem status of the proof that used the old one.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">Ledger entry 1</p>
+    <h2 id="t-rh-cm-audit">Complete monotonicity: the corrected formula breaks the easy proof</h2>
+    <p>The dedicated complete-monotonicity document first states</p>
+    <p class="formula">\[
+      F(x)=(\log\xi)''\!\left(\frac12+\sqrt{x}\right)
+      =2\sum_k\frac1{x+\gamma_k^2}.
+    \]</p>
+    <p>Every term on the right is completely monotone, so that expression would make the conclusion nearly
+      immediate under the all-on-line zero representation. Sessions 16 and 17 correctly identify that it is
+      not \(F\). The corrected RH-conditional formula is</p>
+    <p class="formula">\[
+      F(x)=2\sum_k\frac{\gamma_k^2-x}{(x+\gamma_k^2)^2}.
+    \]</p>
+    <p>Individual terms in the corrected sum are not completely monotone on the whole positive axis. The old
+      term-by-term proof is therefore gone. The document’s alternative says that a family of sums
+      \(S_n(r)\) is positive; that larger \(n\) should be easier; and that finite “epoch verification”, a
+      smooth zero-density model and an off-line perturbation estimate complete every case.</p>
+    <p>Those ingredients do not yet form a proof. “Easier” is not an induction inequality. Finite epochs do
+      not cover an unbounded parameter. A smooth approximation must carry an explicit error below the claimed
+      margin uniformly in \(n\) and \(r\). The off-line correction must be derived from the actual quartet
+      product without assuming a corresponding on-line zero at the same ordinate. The documents supply no
+      single bound that does all of this.</p>
+    <p>There is another logical warning. Positivity of all derivatives at \(x=0\), even if established, would
+      not by itself imply the alternating derivative signs for every \(x>0\). Bernstein’s theorem can conclude
+      complete monotonicity from a positive representing measure; it cannot be used to assume the measure
+      whose positivity is the disputed claim.</p>
+    <p><strong>Verdict:</strong> the corrected formula is retained conditionally. Unconditional complete
+      monotonicity is an open claim in this corpus. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Ledger entry 2</p>
+    <h2 id="t-rh-density-audit">Bernstein density: the small-\(t\) inequality points the wrong way</h2>
+    <p>Termwise inverse Laplace transformation of the corrected RH-conditional \(F\) gives</p>
+    <p class="formula">\[
+      \rho(t)=2\sum_k(2\gamma_k^2t-1)e^{-\gamma_k^2t}.
+    \]</p>
+    <p>The dedicated proof handles \(t>1/(2\gamma_1^2)\) correctly: then every factor
+      \(2\gamma_k^2t-1\) is positive. For \(0&lt;t\le1/(2\gamma_1^2)\), however, it says that only the first
+      term can be negative and that all \(k\ge2\) terms are positive. The condition for a negative term is</p>
+    <p class="formula">\[
+      \gamma_k&lt;\frac1{\sqrt{2t}}.
+    \]</p>
+    <p>As \(t\) decreases, the right side grows. More early zeros, not fewer, enter the negative block. At
+      \(t=10^{-4}\), even \(\gamma_2\approx21.02\) gives
+      \(2\gamma_2^2t-1&lt;0\). The proof’s claimed one-negative-term decomposition is therefore false over most
+      of the interval it is meant to settle.</p>
+    <p>A smooth density estimate may still suggest a positive total, and the archive reports positive samples.
+      Those are useful numerical evidence. They do not repair the sign partition. The stated small-\(t\)
+      asymptotic also deserves correction: applying \(-(1+2t\,d/dt)\) to a leading
+      \(t^{-1/2}\log(1/t)\) term cancels the logarithmic factor rather than multiplying it by three. A new
+      proof would need a controlled heat-trace asymptotic with a rigorous remainder or a separate positivity
+      theorem for the entire sum.</p>
+    <p><strong>Verdict:</strong> the density formula survives under RH and suitable interchange conditions;
+      positivity for every \(t>0\) is numerically supported but not proved here. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">Ledger entry 3</p>
+    <h2 id="t-rh-third-derivative-audit">The third derivative: smooth balance is not a discrete sign theorem</h2>
+    <p>The archive proposes</p>
+    <p class="formula">\[
+      (\log\xi)'''(\sigma)&lt;0\qquad\text{for every }\sigma>\frac12
+    \]</p>
+    <p>without RH. Under RH, differentiating a paired-zero expression reduces the question to the sign of a
+      discrete sum with kernel \((3\gamma^2-r^2)/(r^2+\gamma^2)^3\). For small \(r\), each term has the
+      desired sign. At larger \(r\), terms of both signs appear. The diary calculates a smooth approximation,
+      observes an exact cancellation of its leading integral and finds a positive logarithmic correction.
+      It also checks many finite epochs numerically.</p>
+    <p>This is a plausible proof programme, not the proof announced in the title. The intermediate interval is
+      computer-sampled rather than enclosed by certified interval bounds in the supplied files. Replacing the
+      zero-counting measure by its main term requires partial summation with endpoint terms and an explicit
+      error estimate valid over the entire claimed range. Most importantly, the sum written with positive
+      ordinates \(\gamma_k\) assumes an all-on-line pairing. Removing RH requires treating arbitrary symmetric
+      quartets from the start.</p>
+    <p>The proposed unconditional extension compares a hypothetical off-line quartet with an on-line baseline
+      at the same height and assigns a very small global error. That comparison does not identify a canonical
+      on-line zero being perturbed, and its bound is not shown uniformly for \(\sigma\) that grows through the
+      same scale as the hypothetical ordinates. A fixed tiny tail estimate cannot simply be compared with an
+      on-line margin that itself tends to zero without a uniform ratio proof.</p>
+    <p><strong>Verdict:</strong> retain the small-\(r\) sign calculation, exact kernel integrals and numerical
+      exploration. Treat global unconditional negativity as unproved. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame card">
+      <p class="kicker">Ledger entry 4</p>
+      <h2 id="t-rh-kernel-audit">Pólya-kernel log-concavity</h2>
+      <p>The archive writes \(\Phi=\sum_nf_n\), proves each positive summand \(f_n\) log-concave on the
+        relevant half-line, and then uses a weighted-variance decomposition for \((\log\Phi)''\). This is a
+        sensible route. The displayed variance bound replaces the infinite support of logarithmic slopes by a
+        two-point distance involving the first two terms, without proving that all remaining slopes lie inside
+        those endpoints or bounding their weighted tail.</p>
+      <p>A sum of log-concave functions is not automatically log-concave. The numerical margin reported in the
+        archive may be real, but a proof needs an explicit tail inequality or an applicable closure theorem.
+        The later statement “each term is log-concave, therefore the sum is” repeats precisely the missing
+        implication.</p>
+      <p>Even if strict log-concavity of this particular \(\Phi\) is proved, the archive’s later Gaussian
+        counterexample correctly shows that kernel log-concavity alone does not force the first Laguerre
+        inequality of its Fourier transform everywhere.</p>
+      <p><strong>Verdict:</strong> numerical claim with an incomplete supplied proof; no RH bridge.
+        <span class="spec">&#9670;</span></p>
+    </div>
+    <div class="frame card">
+      <p class="kicker">Ledger entry 5</p>
+      <h2 id="t-rh-critical-converse">Critical-line positivity</h2>
+      <p>Under RH, the paired Hadamard expression gives positive contributions to
+        \((\log\xi)''(\tfrac12+it)\) away from its poles. The archive first claimed the converse: one off-line
+        zero produces a large negative contribution at its height, so positivity forces every zero back to the
+        line.</p>
+      <p>Session 7 correctly retracts that proof. The sign of one contribution is not the sign of the total;
+        the background from all other zeros must be bounded. A later F28 document asserts equivalence again but
+        its own numerical table says deviations below a threshold are not detected by the test. That evidence
+        cannot establish the claimed converse.</p>
+      <p>A counterfactual zero move also has to preserve functional-equation symmetry, conjugation and
+        multiplicity. Adding an off-line quartet without subtracting the corresponding original factor changes
+        the number of zeros and the background. The archive notices this in one addendum, another reason the
+        short converse fails.</p>
+      <p><strong>Verdict:</strong> RH implies the displayed positivity in the RH product representation. The
+        reverse implication is not proved by these files. <span class="myth">&#9670;</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Two shorter corrections</p>
+    <h2 id="t-rh-wedge-pade">The “Bernstein wedge” and the Padé closure</h2>
+    <p>The archive says the Laplace representation converges in \(\Re(s)>1/2\) because, with
+      \(y=s-1/2\), it contains \(e^{-y^2t}\). But \(\Re(y^2)>0\) describes sectors in the complex
+      \(y\)-plane, not the entire half-plane \(\Re y>0\). On the critical line \(y=i\tau\), the factor is
+      \(e^{\tau^2t}\). Under the RH-conditional density series, the large-\(t\) tail begins with decay like
+      \(e^{-\gamma_1^2t}\), so small \(|\tau|&lt;\gamma_1\) is not automatically divergent. Singularities and
+      analytic continuation still matter, but the stated “every non-zero critical point diverges” conclusion
+      is too strong.</p>
+    <p>The Padé experiment similarly deserves a narrower label. One \([14/14]\) approximant reportedly placed
+      poles in the wrong locations. That closes one numerical attempt. It does not prove that real-coefficient
+      Padé approximants cannot represent imaginary poles: \(1/(1+z^2)\) has real coefficients and poles at
+      \(z=\pm i\). Failure of an implementation is valuable evidence about that implementation, not a theorem
+      about every rational continuation scheme.</p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <p class="kicker">What publication would require</p>
+    <h2 id="t-rh-publication-gate">From research diary to mathematical paper</h2>
+    <p>Publish the real-axis log-convexity argument only after checking its prior literature and fixing a
+      standard normalisation. Publish the exact integral identities as supporting lemmas, not as evidence of
+      RH. Present the complete-monotonicity, Bernstein-density and third-derivative statements as conjectures
+      unless uniform proofs are supplied. Attach code, precision, truncation rules and certified error budgets
+      to numerical tables. Remove “all approaches fail” language; the archive establishes only that its tested
+      approaches did not cross the gap.</p>
+    <p>Most importantly, keep the correction history visible. The diary’s willingness to retract is one of its
+      strongest features. A polished paper should inherit that honesty rather than its most confident headings.</p>
+    <p>Continue to <a href="/riemann-splice-questions/">The Splice Questions After RH</a>, where the same audit
+      discipline is applied to TTI’s proposed gravitational and electromagnetic hierarchy.</p>
+  </div>
+</section>

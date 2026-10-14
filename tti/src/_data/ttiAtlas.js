@@ -1,5 +1,5 @@
 /**
- * The five research divisions used by the project contents, masthead and
+ * The six research divisions used by the project contents, masthead and
  * interactive Atlas. `limbs` is retained because the Atlas renderer models
  * each division as a branch. This is the single source of truth for titles,
  * order, document codes and research status throughout TTI.
@@ -32,6 +32,9 @@ const documentMeta = Object.freeze({
   "/accumulated-differentials/": ["Bridge paper", "Open derivation"],
   "/little-red-dots/": ["Observational hypothesis", "Competing models"],
   "/little-red-dots/research-proposal/": ["Research protocol", "Preregistration draft"],
+  "/riemann-programme/": ["Research dossier", "Audited synthesis"],
+  "/riemann-proof-audit/": ["Proof audit", "Corrections required"],
+  "/riemann-splice-questions/": ["Bridge assessment", "No coefficient derivation"],
   "/plates/": ["Figure compendium", "Project resource"],
   "/ask-shakdrah/": ["Research assistant", "Project resource"],
   "/join/": ["Reader service", "Project resource"],
@@ -133,10 +136,23 @@ export default {
       note: "Provides the figures, question interface and reader services that support inspection of the research corpus.",
       topics: [],
       subs: [
-        page("V·i", "The Plates", "/plates/", "Indexes thirty-three vector arguments beneath twenty-three exclusive source headings with links back to their papers."),
+        page("V·i", "The Plates", "/plates/", "Indexes thirty-six vector arguments beneath twenty-six exclusive source headings with links back to their papers."),
         page("V·ii", "Ask ShakDrah", "/ask-shakdrah/", "Queries the project corpus, creates drawings or films and can read answers in six distinct local voices."),
         page("V·iii", "Join", "/join/", "Creates or recovers the local reader identity used by the research rooms."),
         page("V·iv", "Your Account", "/account/", "Manages the reader’s local name, standing and account controls.")
+      ]
+    },
+    {
+      num: "VI",
+      title: "Riemann Programme",
+      href: "/riemann-programme/",
+      page: false,
+      note: "Consolidates the RH research diary, propagates its corrections and tests whether any surviving mathematics advances the splice without claiming a proof.",
+      topics: [],
+      subs: [
+        page("VI·i", "The Riemann Dossier", "/riemann-programme/", "Separates exact identities, internally derivable results, conditional formulae, numerical evidence and retracted claims across the 52-file archive."),
+        page("VI·ii", "Proof and Correction Ledger", "/riemann-proof-audit/", "Audits the complete-monotonicity, Bernstein-density, Pólya-kernel, critical-line and third-derivative arguments at their first unsupported step."),
+        page("VI·iii", "The Splice Questions After RH", "/riemann-splice-questions/", "Tests whether the RH work fixes the action, gravitational scale, electromagnetic normalisation or halo radius, and records the diagnostics it can supply instead.")
       ]
     }
   ]

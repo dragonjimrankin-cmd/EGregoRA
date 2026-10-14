@@ -18,16 +18,16 @@ const atlasJs = read("tti/src/assets/js/atlas.js");
 const css = read("tti/src/assets/css/main.css");
 const atlasSource = read("tti/src/_data/ttiAtlas.js");
 
-assert.equal(ttiAtlas.limbs.length, 5, "the map must keep five TTI-specific reading paths");
+assert.equal(ttiAtlas.limbs.length, 6, "the map must keep six TTI-specific reading paths");
 assert.deepEqual(
   ttiAtlas.limbs.map((route) => route.title),
-  ["First Principles", "Cosmic Architecture", "Seams and Return", "Tests and Essays", "Reading Rooms"],
+  ["First Principles", "Cosmic Architecture", "Seams and Return", "Tests and Essays", "Reading Rooms", "Riemann Programme"],
   "unexpected top-level reading paths"
 );
 
 const destinations = ttiAtlas.limbs.flatMap((route) => route.subs);
-assert.equal(destinations.length, 31, "the five reading paths must contain all 31 page and account-room destinations");
-assert.ok(ttiAtlas.limbs.every((route) => route.note && route.subs.length >= 4), "every path needs an explanation and at least four destinations");
+assert.equal(destinations.length, 34, "the six reading paths must contain all 34 page and account-room destinations");
+assert.ok(ttiAtlas.limbs.every((route) => route.note && route.subs.length >= 3), "every path needs an explanation and at least three destinations");
 assert.ok(destinations.every((item) => item.title && item.note && item.href.startsWith("/") && item.href.endsWith("/")), "every destination needs a title, note and stable absolute URL");
 
 const mappedHrefs = destinations.map((item) => item.href);
@@ -35,7 +35,8 @@ assert.equal(new Set(mappedHrefs).size, mappedHrefs.length, "Atlas destination U
 for (const required of [
   "/foundations/", "/pi-from-zero-and-one/", "/prime-plane/", "/entropy-and-self-renewal/", "/cosmic-ratio-in-time/", "/gravity/", "/torus/", "/moebius/", "/entropy/",
   "/inverted-toruses/", "/wormholes/", "/double-inversion/", "/accumulated-differentials/", "/little-red-dots/",
-  "/little-red-dots/research-proposal/", "/plates/", "/ask-shakdrah/", "/join/", "/account/"
+  "/little-red-dots/research-proposal/", "/riemann-programme/", "/riemann-proof-audit/", "/riemann-splice-questions/",
+  "/plates/", "/ask-shakdrah/", "/join/", "/account/"
 ]) {
   assert.ok(mappedHrefs.includes(required), `Atlas is missing ${required}`);
 }
@@ -83,7 +84,7 @@ for (const href of mappedHrefs) {
 
 for (const marker of [
   'const SAVED = "tti-atlas-skin"', 'title: "The Möbius Seam"', 'href: "/moebius/"',
-  "prefers-reduced-motion: reduce", "Folded back to the five reading paths", "openOnly", "atlas--off"
+  "prefers-reduced-motion: reduce", "Folded back to the six reading paths", "openOnly", "atlas--off"
 ]) {
   assert.ok(atlasJs.includes(marker), `Atlas engine is missing TTI marker: ${marker}`);
 }

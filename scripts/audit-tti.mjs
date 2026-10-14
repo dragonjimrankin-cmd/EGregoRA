@@ -9,12 +9,14 @@ const siteRoot = path.join(projectRoot, 'tti', '_site');
 const expectedTitle = 'The Two Infinities: Eternal Integration of the Self';
 const retiredTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
-const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return and testable failure conditions across twenty-seven studies and four project resources.';
+const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return, mathematical proof auditing and testable failure conditions across thirty studies and four project resources.';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const expectedHeaderRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
 const expectedPartCount = site.navGroups.length;
-const essayDocuments = site.navGroups.slice(0, 4).flatMap((group) => group.items);
+const essayDocuments = site.navGroups
+  .filter((group) => ['I', 'II', 'III', 'IV'].includes(group.part))
+  .flatMap((group) => group.items);
 const essayMinimumWords = 2_000;
 const essayMaximumWords = 4_000;
 const expectedPageLabels = new Map(site.navGroups.flatMap((group) => group.items.map((item) => [
@@ -106,8 +108,8 @@ for (const file of htmlFiles) {
       fail(`${relative}: page Part label is ${normaliseLabel(pageLabel) || 'missing'}, expected ${expectedPageLabel}`);
     }
   }
-  if (/\bPart (?:VI|VII|VIII)\b/.test($('body').text())) {
-    fail(`${relative}: retains an obsolete Part VI, VII or VIII page label`);
+  if (/\bPart (?:VII|VIII)\b/.test($('body').text())) {
+    fail(`${relative}: retains an obsolete Part VII or VIII page label`);
   }
   if (html.includes(retiredTitle)) fail(`${relative}: contains the retired project title`);
   if (html.includes('A Geometry of Existence') || html.includes('A Geometry of the Cosmos')) {
@@ -303,7 +305,7 @@ if (!plates) {
   const gathered = plates.$('figure.plate[data-plate-source]').length;
   if (gathered !== sourcePlateCount) fail(`plate room gathers ${gathered} of ${sourcePlateCount} source plates`);
   const plateGroups = plates.$('.plate-accordion > .plate-accordion-group');
-  if (plateGroups.length !== 23) fail(`plate room exposes ${plateGroups.length} of 23 source headings`);
+  if (plateGroups.length !== 26) fail(`plate room exposes ${plateGroups.length} of 26 source headings`);
   if (plates.$('.plate-accordion-group[name="plate-room"]').length !== plateGroups.length) {
     fail('plate room headings do not form one native exclusive disclosure group');
   }
@@ -420,8 +422,8 @@ for (const [pathname, label, ids, equationMarkers] of firstPrincipleAdditions) {
   }
 }
 
-/* Parts I-IV are the research essays. Part V intentionally remains a group
-   of reading-room resources and is not padded to an arbitrary essay length. */
+/* Parts I-IV are the project's long-form essays. Part V contains functional
+   resources, while Part VI contains concise mathematical dossier studies. */
 if (essayDocuments.length !== 27) {
   fail(`expected 27 Part I-IV research essays, found ${essayDocuments.length}`);
 }
@@ -434,7 +436,7 @@ for (const essayRecord of essayDocuments) {
   }
 
   const essay = document.$('main').clone();
-  essay.find('.document-outline, .project-context, nav, script, style, svg, .skip-link').remove();
+  essay.find('.document-outline, .project-context, .longform-synthesis, nav, script, style, svg, .skip-link').remove();
   const wordCount = countEssayWords(essay.text());
   essayLengths.push({ code: essayRecord.code, url: essayRecord.url, wordCount });
 
@@ -480,4 +482,4 @@ if (errors.length) {
 
 console.log(`TTI audit passed: ${htmlFiles.length} HTML documents, ${canonicals.size} unique canonicals.`);
 for (const message of notices) console.log(`  ${message}.`);
-console.log('  Exact identity, ten interlinked core claims, the theorem-led π paper, five-Part header navigation, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, Wormholes and Inverted Tori, transferred essays, new bridges, Temporal Antipodes and proposal surfaces passed.');
+console.log('  Exact identity, ten interlinked core claims, the theorem-led π paper, six-Part header navigation, Riemann correction ledger, exclusive plate accordion, metadata, discovery, links, fragments, JSON-LD, transferred essays, new bridges and proposal surfaces passed.');

@@ -2,8 +2,8 @@
 
 **Project:** The Two Infinities: Eternal Integration of the Self
 **Tagline:** A speculative cosmology by Jim Rankin, UK, 2026
-**Revision:** r4.13
-**Audit date:** 13 October 2026
+**Revision:** r4.15
+**Audit date:** 14 October 2026
 
 ## Scope
 
@@ -15,7 +15,24 @@ Run the complete local audit with:
 npm run audit:tti
 ```
 
-The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the five-Part masthead and matching research labels, the five-path Atlas, the canonical thirty-one-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, and the prepared browser-side knowledge corpus. It also treats the twenty-seven Part I–IV documents as the research essays and rejects any essay outside 2,000–4,000 readable words.
+The command performs two Eleventy builds around deterministic plate gathering, validates every generated HTML document, tests the six-Part masthead and matching research labels, the six-path Atlas, the canonical thirty-four-entry project contents, per-document records and outline shells, the exclusive plate accordion, the custom site audit, the seven long-form syntheses and the prepared browser-side knowledge corpus. It keeps the twenty-seven original Parts I–IV research essays within 2,000–4,000 readable words, independently enforces 6,000–8,000 words for every Part synthesis and 10,000–13,000 words for the final project synthesis.
+
+## Accessible Part and project syntheses in r4.15
+
+- Added six plain-language Part syntheses of 6,248, 6,341, 6,311, 6,334, 6,050 and 6,005 words, with equations omitted wherever prose can carry the idea.
+- Integrated them into the existing lead pages: Foundations, Gravity, Möbius, Stress Tests, The Plates and The Riemann Dossier.
+- Added a 10,304-word all-encompassing synthesis to the homepage immediately after the Atlas project map.
+- Preserved every original study rather than replacing it; the existing 2,000–4,000-word audit excludes the clearly marked synthesis wrappers and continues to verify the original essays independently.
+- Added tracked Markdown sources, build-time semantic heading conversion, responsive long-reading typography, stable fragment IDs and a dedicated source/build/accessibility regression.
+
+## Correction-aware Riemann Programme in r4.14
+
+- Retrieved and checksum-verified `RHfindings1.rar`: 52 files, 916,946 expanded bytes and four exact duplicate pairs.
+- Added `docs/rh/RH_CONSOLIDATED_AUDIT.md` as the correction-aware master synthesis, with a source lineage, proof-status ledger, surviving exact results and splice assessment.
+- Added Part VI with three accessible studies: **The Riemann Dossier** (`TTI-VI.01`), **Proof and Correction Ledger** (`TTI-VI.02`) and **The Splice Questions After RH** (`TTI-VI.03`).
+- Preserved strict real-axis log-convexity and exact balance integrals while downgrading unsupported claims of complete monotonicity, global Bernstein-density positivity, unconditional third-derivative negativity, Pólya-kernel log-concavity and the critical-line converse.
+- Recorded that the RH work derives no splice action, physical scale for \(G\), electromagnetic normalisation or independent halo radius \(r_0\); its contribution is methodological diagnostics and preregistered spectral tests.
+- Added three accessible inline-vector infographics, full Atlas/header/homepage/feed/sitemap/Plates integration, three synchronised ShakDrah/Gink answers and dedicated regression coverage.
 
 ## Integration, entropy and cosmic time in r4.13
 
@@ -188,27 +205,31 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 ## Current audited result
 
 - Admin Edit changes on both sites are deterministically snapshotted and automatically committed before a subsequent deployment can proceed.
-- All 27 Part I–IV research documents are accessible essays between 2,021 and 3,978 audited words; Part V remains four project resources.
-- The length and accessibility regression is part of `npm run audit:tti` and derives its scope from the canonical table of contents.
-- 30 HTML documents built.
-- 30 unique canonical URLs verified.
+- All 27 long-form research essays in Parts I–IV remain between 2,021 and 3,978 audited words; Part V remains four project resources.
+- The three concise Part VI dossier studies hold 1,436, 1,770 and 1,798 audited words respectively, with accessible correction, identity-gap and splice-gate infographics.
+- Six additional Part syntheses hold 6,248, 6,341, 6,311, 6,334, 6,050 and 6,005 words; the homepage final synthesis holds 10,304 words.
+- The essay-length regression is part of `npm run audit:tti`: original Parts I–IV essays, Part VI studies, Part syntheses and the final synthesis retain separate scopes and tests rather than contaminating one another’s counts.
+- 33 HTML documents built.
+- 33 unique canonical URLs verified.
 - Exact project title and tagline verified in the homepage, redesigned masthead, metadata and manifest.
 - Ten ordered core claims each explain their dependency and consequence; a six-branch map summarises how the framework interlinks.
 - The Part I π paper is verified with the beta integral, semicircle substitution, arcsine normalisation, arctangent and Basel routes, non-Euclidean limit, one plate and reciprocal discovery.
 - The two new Part I papers are verified at 2,167 and 2,636 words with separate standard/TTI ledgers, conservation requirements, competing explanations, equations, reciprocal discovery and explicit failure conditions.
+- Part VI preserves the real-axis log-convexity proof and exact balance identities, publishes the corrected RH-conditional \(F\) and density formulas, and explicitly withholds RH, complete-monotonicity, density-positivity and converse claims not proved by the archive.
+- The splice assessment verifies that no action map, scale for \(G\), electromagnetic normalisation or independent \(r_0\) is derived; the decimal-spectrum proposal remains a preregistered test rather than a physical implication.
 - Wormholes and Inverted Tori is verified beneath Part III with one plate, thirteen required argument surfaces and reciprocal discovery links.
-- Five numbered masthead Parts expose 31 unique page subheadings from the shared Atlas data, with full-text hover/focus expansion, touch wrapping, active-page state, mobile controls and keyboard dismissal verified.
-- All 29 built destination pages carry the matching header Part and page title; runtime Join and Account labels are aligned to Part V.
-- The introduction Atlas has five TTI-specific reading paths and the same 31 unique destinations, including all 29 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
-- Twenty-three mutually exclusive plate headings contain all 33 gathered vectors; the former bullet index is absent.
+- Six numbered masthead Parts expose 34 unique page subheadings from the shared Atlas data, with full-text hover/focus expansion, touch wrapping, active-page state, mobile controls and keyboard dismissal verified.
+- All 32 built destination pages carry the matching header Part and page title; runtime Join and Account labels are aligned to Part V.
+- The introduction Atlas has six TTI-specific reading paths and the same 34 unique destinations, including all 32 built pages plus Join and Account; its interactive controls and complete written fallback are verified.
+- Twenty-six mutually exclusive plate headings contain all 36 gathered vectors; the former bullet index is absent.
 - Every local document, asset and fragment link verified.
 - JSON-LD parsed on every HTML page.
 - Nested breadcrumbs verified for the Zero-Seam research proposal.
 - `sitemap.xml`, Atom `feed.xml`, `robots.txt` and the SVG favicon verified.
-- 33 source plates reconciled with 33 gathered plates; SVG IDs and marker references are namespaced in the compendium.
+- 36 source plates reconciled with 36 gathered plates; SVG IDs and marker references are namespaced in the compendium.
 - The research proposal is discoverable from the homepage, parent conjecture, Essays, Stress Tests, Time and Residue, and Inverted Tori.
 - Temporal Antipodes is discoverable from the homepage, Foundations, Seams, Essays, Stress Tests, Prime Plane, Time and Residue, Inverted Tori, and the matter–antimatter essay.
-- 26 prepared answers and 26 paraphrase routes verified for both ShakDrah and Gink, including π on the unit interval, wormholes, entropy, self-renewal, the time-varying cosmic ratio, double inversion, accumulated differentials, fallback and attachment bypass.
+- 29 prepared answers and 29 paraphrase routes verified for both ShakDrah and Gink, including π on the unit interval, wormholes, entropy, self-renewal, the time-varying cosmic ratio, double inversion, accumulated differentials, the RH correction ledger, the negative splice verdict, fallback and attachment bypass.
 - Six male neural voices, per-voice dispatch, prosody, consent and lip-sync metadata remain covered by the existing neural-voice test.
 - Workflow YAML and focused Hatchable build markers are validated before deployment.
 
@@ -235,6 +256,6 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 
 ## Boundaries of this audit
 
-The local audit does not claim that the TTI physics is correct, that a previous universe exists, that the negative interval is a physical domain, that the two scale-infinities are physical clocks at opposite temporal ends, that entropy equals TTI integration, that an exact double inversion retains physical residue, or that accumulated differentials generate mass or gravity. It checks the site’s internal integrity and whether those claims retain their declared speculative status.
+The local audit does not claim that the TTI physics is correct, that a previous universe exists, that the negative interval is a physical domain, that the two scale-infinities are physical clocks at opposite temporal ends, that entropy equals TTI integration, that an exact double inversion retains physical residue, or that accumulated differentials generate mass or gravity. It does not claim a proof of RH, global complete monotonicity, positivity of the proposed Bernstein density, or a physical implication from zeta mathematics to the Skeletal Splice. It checks the site’s internal integrity and whether those claims retain their declared speculative status.
 
 External scientific links are preserved but are not treated as automatically valid forever. The deployment workflow separately verifies selected live pages after Hatchable publishes them. Visual and audible quality still require human inspection even when markup, voice routing and timing metadata pass automated tests.

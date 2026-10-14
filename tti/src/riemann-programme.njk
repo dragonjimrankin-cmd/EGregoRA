@@ -1,0 +1,269 @@
+---
+layout: layouts/base.njk
+title: The Riemann Dossier
+metaTitle: "The Riemann Dossier · The Two Infinities"
+permalink: /riemann-programme/
+description: "Part VI — Riemann Programme: a correction-aware consolidation of 52 research files on xi, the Pólya kernel, Weil positivity, spectral matrices and the identity gap, with no proof of RH claimed."
+ogType: article
+schemaType: ScholarlyArticle
+section: Mathematical research audit
+published: "2026-10-14"
+keywords: "Riemann Hypothesis, Riemann xi function, Pólya kernel, Weil criterion, identity gap, proof audit, numerical evidence, TTI Riemann programme"
+---
+
+<section class="page-head">
+  <p class="kicker">{{ site.researchByUrl[page.url].kicker }}</p>
+  <h1>The Riemann Dossier</h1>
+  <p class="lede muted">Fifty-two files record an ambitious search through kernels, zero sums, quadratic
+    forms and spectral operators. This dossier keeps the exact mathematics, the finite evidence and the
+    corrections on separate lines. It does not contain or claim a proof of the Riemann Hypothesis.</p>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">Consolidated 14 October 2026</p>
+    <h2 id="t-rh-reading-rule">The last filename is not the last word</h2>
+    <p class="lede">The source archive is a research diary. Seven files call themselves comprehensive, but
+      each accumulates earlier claims and later addenda rather than replacing a corrected argument cleanly.</p>
+    <p>The archive expands to 52 documents and 916,946 bytes. Four pairs are exact duplicates, leaving 48
+      unique payloads. Its sessions repeatedly do something scientifically valuable: make a strong claim,
+      test it, discover a sign, normalisation or logical error, and record a correction. The same structure
+      creates a danger. A theorem announced near the top of a master file may be retracted hundreds of lines
+      later and then reappear in a final summary. Consolidation therefore cannot mean choosing the most recent
+      or most confident sentence. It means reconstructing each claim through its correction history.</p>
+    <p>This section uses four grades. <span class="sci">&#9670; Exact or internally derivable</span> means the
+      displayed calculation can be reproduced from its stated assumptions. <span class="hist">&#9670; Source
+      report</span> means the archive attributes a result to an external paper that this internal audit has not
+      independently certified. <span class="spec">&#9670; Numerical or conditional</span> means finite evidence,
+      an RH-dependent formula or an incomplete proof programme. <span class="myth">&#9670; Retracted or
+      unsupported</span> marks a claim the supplied argument does not establish.</p>
+    <p>The full source reconciliation and line of reasoning are retained in the project document
+      <code>docs/rh/RH_CONSOLIDATED_AUDIT.md</code>. The public pages are an accessible account of that audit,
+      not a replacement for it.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">The object under examination</p>
+    <h2 id="t-rh-baseline">What RH actually says</h2>
+  </div>
+  <div class="wrap narrow">
+    <div class="frame">
+      <p>The completed zeta function may be written</p>
+      <p class="formula">\[
+        \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma\!\left(\frac{s}{2}\right)\zeta(s),
+        \qquad
+        \Xi(t)=\xi\!\left(\frac12+it\right).
+      \]</p>
+      <p>The functional equation is \(\xi(s)=\xi(1-s)\). The Riemann Hypothesis says that every
+        non-trivial zero \(\rho\) satisfies \(\Re\rho=\tfrac12\). It is a universal location statement:
+        not that many zeros lie on the line, not that every tested zero does, and not that a finite matrix is
+        positive, but that <em>every</em> non-trivial zero lies there. No calculation in the supplied archive
+        discharges that universal quantifier.</p>
+      <p>The diary explores many equivalent or potentially related languages: Laguerre inequalities, Hankel
+        determinants, Jacobi matrices, Weil quadratic forms, Loewner matrices, Pick functions, screw
+        functions, moment sequences and finite Galerkin operators. These translations are useful because a
+        hard location statement may become a positivity statement with visible structure. Translation is not
+        completion. If the new positivity condition is itself equivalent to RH, restating it does not make it
+        easier unless some independent theorem controls the required sign.</p>
+      <p>That distinction governs this dossier. A reformulation can be exact and illuminating while making no
+        progress towards proof. A finite computation can be spectacularly precise while remaining finite.
+        A conditional formula can reveal what RH would organise while being unavailable as an unconditional
+        premise. Each of those is worth recording, but none may borrow the evidential grade of another.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <figure class="plate" id="fig-rh-identity-gap">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The identity gap is a missing implication, not a missing decimal <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art" role="img" aria-label="A four-stage diagram. Prime data and functional symmetry feed global identities and finite computations. A broken bridge separates them from pointwise control of every zero. The far side is labelled Riemann Hypothesis.">
+      <svg viewBox="0 0 900 330" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="rh-gap-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#76cfee"/>
+          </marker>
+        </defs>
+        <rect width="900" height="330" fill="#070b1a"/>
+        <g font-family="Cinzel, serif" text-anchor="middle">
+          <g fill="none" stroke-width="1.5">
+            <rect x="45" y="92" width="170" height="112" rx="8" stroke="#45d6b4"/>
+            <rect x="275" y="92" width="190" height="112" rx="8" stroke="#76cfee"/>
+            <rect x="685" y="92" width="170" height="112" rx="8" stroke="#ef84b6"/>
+          </g>
+          <g fill="#cdefff" font-size="15">
+            <text x="130" y="126">PRIMES +</text><text x="130" y="148">FUNCTIONAL</text><text x="130" y="170">SYMMETRY</text>
+            <text x="370" y="126">GLOBAL IDENTITIES,</text><text x="370" y="148">AVERAGES + FINITE</text><text x="370" y="170">CERTIFICATES</text>
+            <text x="770" y="126">EVERY ZERO ON</text><text x="770" y="148">Re(s) = 1/2</text><text x="770" y="176" fill="#ef84b6">RH</text>
+          </g>
+          <path d="M215 148 H268" stroke="#76cfee" stroke-width="1.5" marker-end="url(#rh-gap-arrow)"/>
+          <path d="M472 148 H548" stroke="#76cfee" stroke-width="1.5"/>
+          <path d="M612 148 H678" stroke="#76cfee" stroke-width="1.5" marker-end="url(#rh-gap-arrow)"/>
+          <g stroke="#ef84b6" stroke-width="3">
+            <path d="M552 118 L608 178"/><path d="M608 118 L552 178"/>
+          </g>
+          <text x="580" y="88" fill="#f3dd9c" font-size="13">NO PROVED BRIDGE</text>
+          <text x="580" y="227" fill="#a9b6d8" font-family="EB Garamond, serif" font-size="16">the universal quantifier lives here</text>
+          <text x="450" y="284" fill="#a07cf0" font-family="EB Garamond, serif" font-size="17">more precision on the left does not, by itself, cross the break</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">“Identity gap” is project vocabulary for the missing theorem that would carry
+      convergent-region or averaged information into pointwise control of all zero locations. It is a useful
+      diagnosis, not a proof that no future mathematics can cross the gap.</p>
+  </figure>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">One result that closes internally</p>
+    <h2 id="t-rh-log-convexity">Strict log-convexity on the real axis</h2>
+    <p>The cleanest surviving argument begins with the positive-kernel representation, up to an irrelevant
+      positive normalisation,</p>
+    <p class="formula">\[
+      M(r)=\xi\!\left(\frac12+r\right)
+      =C\int_0^\infty\Phi(u)\cosh(ru)\,du,
+      \qquad C>0,\quad\Phi(u)>0.
+    \]</p>
+    <p>Normalise the integrand to a probability measure
+      \(d\mu_r=\Phi(u)\cosh(ru)\,du/M(r)\). Differentiation gives</p>
+    <p class="formula">\[
+      (\log M)''(r)=
+      \mathbb E_r[u^2]
+      -\bigl(\mathbb E_r[u\tanh(ru)]\bigr)^2.
+    \]</p>
+    <p>Cauchy&ndash;Schwarz bounds the squared second term by
+      \(\mathbb E_r[u^2]\mathbb E_r[\tanh^2(ru)]\), and the latter multiplier is strictly below one for
+      finite \(r>0\). At \(r=0\), the odd derivative vanishes and the second moment is positive. Reflection
+      through the functional equation covers the other half of the real axis. Therefore</p>
+    <p class="formula">\[
+      (\log\xi)''(\sigma)>0\qquad(\sigma\in\mathbb R).
+    \]</p>
+    <p>This is an internally reproducible result. <span class="sci">&#9670;</span> The archive calls it new;
+      this dossier does not. Establishing novelty requires a systematic literature comparison beyond the
+      supplied notes. The proof also stays on the real axis, where \(\cosh\) is positive. Replacing it with
+      the oscillatory \(\cos(tu)\) on the critical line destroys the positive probability measure, so the
+      same Cauchy&ndash;Schwarz step does not prove RH.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="grid two">
+    <div class="frame card">
+      <p class="kicker">Exact calculations retained</p>
+      <h2 id="t-rh-balances">Balance integrals</h2>
+      <p>Several cancellations in the diary reduce to elementary Gamma- or trigonometric-integral
+        identities:</p>
+      <p class="formula">\[
+        \int_0^\infty(2u^2-1)e^{-u^2}\,du=0,
+      \]</p>
+      <p class="formula">\[
+        \int_0^\infty(2u^2-1)e^{-u^2}\log u\,du=\frac{\sqrt\pi}{2},
+      \]</p>
+      <p class="formula">\[
+        \int_0^\infty\frac{3u^2-1}{(1+u^2)^3}\,du=0,
+        \quad
+        \int_0^\infty\frac{3u^2-1}{(1+u^2)^3}\log u\,du=\frac\pi4.
+      \]</p>
+      <p>These equalities are exact. <span class="sci">&#9670;</span> Their zero leading terms explain why a
+        logarithmic correction can control a smooth approximation. They do not prove that a discrete sum over
+        all zeros has the same sign. That requires an explicit remainder estimate strong enough for every
+        parameter value.</p>
+    </div>
+    <div class="frame card">
+      <p class="kicker">Conditional algebra retained</p>
+      <h2 id="t-rh-conditional-density">The corrected \(F\) and its density</h2>
+      <p>Under RH, pairing zeros with ordinates \(\gamma_k>0\) yields</p>
+      <p class="formula">\[
+        F(x)=2\sum_k\frac{\gamma_k^2-x}{(x+\gamma_k^2)^2}.
+      \]</p>
+      <p>The archive originally replaced this with \(2\sum(x+\gamma_k^2)^{-1}\), then correctly retracted
+        that substitution. Inverting each corrected term gives</p>
+      <p class="formula">\[
+        \rho(t)=2\sum_k(2\gamma_k^2t-1)e^{-\gamma_k^2t},
+        \qquad
+        F(x)=\int_0^\infty e^{-xt}\rho(t)\,dt,
+      \]</p>
+      <p>where interchange of sum and integral must be justified. The inversion is exact under its
+        assumptions. <span class="spec">&#9670;</span> Positivity of \(\rho\) is a different claim; the supplied
+        proof of it fails for small \(t\), as the correction ledger explains.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">What the computations do show</p>
+    <h2 id="t-rh-cooperative-rescue">Cooperative rescue is a pattern, not yet a theorem</h2>
+    <p>The archive’s most memorable phrase is <strong>cooperative rescue</strong>. In selected finite Weil or
+      Galerkin matrices, an archimedean contribution and individual prime contributions can each be indefinite,
+      while their computed sum is positive. Perturbing frequencies or amplitudes may destroy that positivity.
+      This is an informative observation about exact arithmetic coordination in those experiments.</p>
+    <p>Its present evidential grade is numerical. <span class="spec">&#9670;</span> The tested cutoffs, basis
+      sizes and precision do not establish positivity for every admissible test function. Nor does one
+      indefinite decomposition imply that nature uses a physical rescue mechanism. A quadratic form may have
+      many decompositions; the sign of separate summands is not invariant unless the decomposition itself is
+      canonically justified.</p>
+    <p>The right use of these experiments is diagnostic. They identify where error budgets must be explicit,
+      where a finite truncation sits inside an inconclusive band, and where a proof cannot simply estimate each
+      prime contribution independently. The wrong use would be to name a tiny positive eigenvalue as evidence
+      for a universal theorem, or to translate matrix fragility into cosmological fine tuning without a map
+      between the two systems.</p>
+    <p>Likewise, finite checks of Laguerre inequalities, Hankel determinants, Turán gaps or zero approximants
+      demonstrate that an implementation can reproduce expected local behaviour. They do not establish the
+      all-orders or all-heights condition. Precision changes the quality of a finite statement; it does not
+      change its quantifier.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="page-head tight">
+    <p class="kicker">A correction-aware conclusion</p>
+    <h2 id="t-rh-status">What is now safe to say</h2>
+  </div>
+  <div class="grid two">
+    <div class="frame card">
+      <h3>Retain</h3>
+      <ul>
+        <li>the exact definition and functional symmetry of \(\xi\);</li>
+        <li>the positive-kernel proof of real-axis strict log-convexity;</li>
+        <li>the elementary balance integrals;</li>
+        <li>the corrected RH-conditional expression for \(F\);</li>
+        <li>the conditional inverse-Laplace and Mellin algebra;</li>
+        <li>finite experiments as finite experiments;</li>
+        <li>the identity gap as a research diagnosis.</li>
+      </ul>
+    </div>
+    <div class="frame card">
+      <h3>Do not promote</h3>
+      <ul>
+        <li>critical-line positivity into an unproved converse;</li>
+        <li>kernel log-concavity into transform-zero reality;</li>
+        <li>the corrected \(F\) into the old trivial CM proof;</li>
+        <li>a sampled Bernstein density into positivity for all \(t\);</li>
+        <li>a smooth approximation into a discrete theorem without error control;</li>
+        <li>one failed Padé experiment into an impossibility result;</li>
+        <li>any RH analogy into a splice coupling constant.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed">
+    <p class="lede">The dossier does not become weaker when a theorem is downgraded. It becomes usable.</p>
+    <p>The next paper follows every major claim through its correction history and identifies the exact step
+      still owed. Continue to <a href="/riemann-proof-audit/">Proof and Correction Ledger</a>. The final paper
+      then asks the practical TTI question: <a href="/riemann-splice-questions/">does any of this actually
+      advance the splice?</a></p>
+  </div>
+</section>
+{% set synthesis = longform.partVI %}
+{% include "partials/longform-synthesis.njk" %}

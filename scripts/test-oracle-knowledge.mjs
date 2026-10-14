@@ -35,9 +35,9 @@ vm.runInNewContext(source, { window, URL, console }, { filename: 'oracle-knowled
 
 const kb = window.EGOracleKnowledge;
 assert.ok(kb, 'knowledge API was not exposed');
-assert.equal(kb.entries.length, 26, 'expected twenty-six substantial prepared answers');
-assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 26, 'knowledge IDs must be unique');
-assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 26, 'prepared questions must be unique');
+assert.equal(kb.entries.length, 29, 'expected twenty-nine substantial prepared answers');
+assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 29, 'knowledge IDs must be unique');
+assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 29, 'prepared questions must be unique');
 
 for (const entry of kb.entries) {
   assert.ok(entry.answer.length >= 700, `${entry.id} is too slight for a high-degree answer`);
@@ -107,6 +107,9 @@ const paraphrases = new Map([
   ['Could the matter and dark sector percentages swap as the universe ages?', 'cosmic-ratio-snapshot'],
   ['Can memory remain after two polarization inversions?', 'double-inversion-residue'],
   ['Can accumulated dx produce mass and gravity?', 'differentials-mass-gravity'],
+  ['What survived the RH archive consolidation?', 'rh-dossier'],
+  ['Audit the corrected complete monotonicity and Bernstein claims.', 'rh-proof-audit'],
+  ['Can zeta or RH determine the splice action and physical constants?', 'rh-splice-bridge'],
   ['How should we grade the new residue and seam claims?', 'epistemic-grading']
 ]);
 for (const [question, id] of paraphrases) {
@@ -134,12 +137,12 @@ for (const [label, page] of [['ShakDrah', ttiPage], ['Gink', egPage]]) {
   const group = page.match(/<div class="oracle-chips" id="oracle-chips">([\s\S]*?)<\/div>/);
   assert.ok(group, `${label} has no opening question group`);
   const chips = [...group[1].matchAll(/<button class="chip" type="button">([^<]+)<\/button>/g)].map((m) => m[1]);
-  assert.equal(chips.length, 26, `${label} should display twenty-six current questions`);
-  assert.ok(page.includes('Twenty-six prepared answers'), `${label} does not announce the twenty-six-answer update`);
+  assert.equal(chips.length, 29, `${label} should display twenty-nine current questions`);
+  assert.ok(page.includes('Twenty-nine prepared answers'), `${label} does not announce the twenty-nine-answer update`);
   const knowledgeAt = page.indexOf('/assets/js/oracle-knowledge.js');
   const siteAt = page.indexOf('/assets/js/site.js');
   assert.ok(knowledgeAt >= 0, `${label} does not load the knowledge asset`);
   assert.ok(siteAt < 0 || knowledgeAt < siteAt, `${label} loads the knowledge asset after the oracle client`);
 }
 
-console.log('Oracle knowledge passed: 26 exact answers, 26 paraphrases, two avatars, fallback and attachment bypass.');
+console.log('Oracle knowledge passed: 29 exact answers, 29 paraphrases, two avatars, fallback and attachment bypass.');

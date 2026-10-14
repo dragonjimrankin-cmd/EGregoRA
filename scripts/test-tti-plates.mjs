@@ -26,7 +26,10 @@ const expectedGroups = [
   ['g-inverted-toruses', 'Inverted-Torus Universe', 1],
   ['g-wormholes', 'Wormholes and Inverted Tori', 1],
   ['g-out-of-phase', 'Matter and Antimatter Out of Phase', 1],
-  ['g-little-red-dots', 'JWST’s Little Red Dots', 3]
+  ['g-little-red-dots', 'JWST’s Little Red Dots', 3],
+  ['g-riemann-programme', 'The Riemann Dossier', 1],
+  ['g-riemann-proof-audit', 'Proof and Correction Ledger', 1],
+  ['g-riemann-splice-questions', 'The Splice Questions After RH', 1]
 ];
 const expectedPlateTotal = expectedGroups.reduce((total, group) => total + group[2], 0);
 

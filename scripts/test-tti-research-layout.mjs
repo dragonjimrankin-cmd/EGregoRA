@@ -12,34 +12,34 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const builtRoot = path.join(root, "tti", "_site");
 const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
 
-assert.equal(site.revision, "r4.13", "the research-project layout must carry revision r4.13");
+assert.equal(site.revision, "r4.15", "the research-project layout must carry revision r4.15");
 assert.equal(site.edition, "Working research edition", "the edition label drifted");
-assert.equal(site.research.documentCount, 27, "research study count drifted");
+assert.equal(site.research.documentCount, 30, "research study count drifted");
 assert.equal(site.research.resourceCount, 4, "project resource count drifted");
 assert.match(site.research.status, /not a peer-reviewed physical theory/i,
   "the project status must not imply peer review");
 
 const documents = ttiAtlas.limbs.flatMap((part) => part.subs);
-assert.equal(documents.length, 31, "the research contents must retain all 31 destinations");
-assert.equal(new Set(documents.map((document) => document.code)).size, 31,
+assert.equal(documents.length, 34, "the research contents must retain all 34 destinations");
+assert.equal(new Set(documents.map((document) => document.code)).size, 34,
   "research document codes must be unique");
 assert.ok(documents.every((document) =>
-  /^TTI-(?:I|II|III|IV|V)\.\d{2}$/.test(document.code) && document.kind && document.status && document.note),
+  /^TTI-(?:I|II|III|IV|V|VI)\.\d{2}$/.test(document.code) && document.kind && document.status && document.note),
 "every project destination needs a stable code, type, status and research aim");
-assert.equal(Object.keys(site.researchByUrl).length, 31, "route-to-research metadata is incomplete");
+assert.equal(Object.keys(site.researchByUrl).length, 34, "route-to-research metadata is incomplete");
 assert.deepEqual(site.researchDocuments.map((document) => document.url), documents.map((document) => document.href),
   "research-document order drifted from the canonical Atlas");
 assert.ok(site.researchDocuments.every((document, index) =>
-  document.index === index + 1 && document.total === 31), "corpus positions are inconsistent");
+  document.index === index + 1 && document.total === 34), "corpus positions are inconsistent");
 
 const homeFile = path.join(builtRoot, "index.html");
 assert.ok(fs.existsSync(homeFile), "build tti/_site before running the research-layout regression");
 const home = cheerio.load(fs.readFileSync(homeFile, "utf8"));
-assert.equal(home("#project-contents .research-toc-part").length, 5,
-  "homepage table of contents must expose all five Parts");
-assert.equal(home("#project-contents .research-toc-part > ol > li").length, 31,
-  "homepage table of contents must expose all 31 documents");
-assert.equal(home("#project-contents .research-toc-code").length, 31,
+assert.equal(home("#project-contents .research-toc-part").length, 6,
+  "homepage table of contents must expose all six Parts");
+assert.equal(home("#project-contents .research-toc-part > ol > li").length, 34,
+  "homepage table of contents must expose all 34 documents");
+assert.equal(home("#project-contents .research-toc-code").length, 34,
   "every homepage contents entry needs its stable document code");
 for (const marker of [
   "Project Table of Contents", "Geometry, Integration and the Conditions of Return",
@@ -74,8 +74,8 @@ for (const relative of indexFiles) {
   assert.equal($(".project-record-code").text().trim(), expected.code, `${route} has the wrong document code`);
   assert.equal($(".project-record-kind").text().trim(), expected.kind, `${route} has the wrong document type`);
   assert.equal($(".project-record-status").text().trim(), expected.status, `${route} has the wrong status`);
-  assert.equal($(".project-drawer-grid > section").length, 5, `${route} contents drawer must expose five Parts`);
-  assert.equal($(".project-drawer-grid a").length, 31, `${route} contents drawer must expose 31 destinations`);
+  assert.equal($(".project-drawer-grid > section").length, 6, `${route} contents drawer must expose six Parts`);
+  assert.equal($(".project-drawer-grid a").length, 34, `${route} contents drawer must expose 34 destinations`);
   assert.equal($(".project-drawer-grid a[aria-current=\"page\"]").length, 1,
     `${route} contents drawer must identify the current document`);
   assert.equal($("[data-document-outline]").length, 1, `${route} needs a local document-outline shell`);

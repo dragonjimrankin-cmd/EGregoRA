@@ -1,7 +1,7 @@
 /* ===========================================================================
    The TTI Atlas — the whole reading room as one figure you can turn
    ---------------------------------------------------------------------------
-   One centre, five reading paths and every paper hung beneath the path it
+   One centre, six reading paths and every paper hung beneath the path it
    belongs to. The written map beside the WebGL figure remains the complete,
    keyboard-readable fallback.
 
@@ -67,7 +67,7 @@ function start(data) {
       "The map links that question to the ledger rather than treating return " +
       "itself as evidence.",
 
-      "The seam joins the five reading paths visually; it does not erase their " +
+      "The seam joins the six reading paths visually; it does not erase their " +
       "different evidential grades. Every paper still marks what is established, " +
       "what is scholarship, what is speculative and what is vision."
     ]
@@ -77,7 +77,7 @@ function start(data) {
   const nodes = [];
   const root = {
     title: "The Two Infinities", href: "/", kind: "root", depth: 0,
-    note: "Eternal Integration of the Self. Five reading paths, one speculative framework.", children: []
+    note: "Eternal Integration of the Self. Six reading paths, one speculative framework.", children: []
   };
   nodes.push(root);
 
@@ -447,7 +447,7 @@ function start(data) {
   }
   const foldAll = () => nodes.forEach((n) => { n.open = false; });
 
-  /* The whole figure begins as five paths. Opening one reveals only the
+  /* The whole figure begins as six paths. Opening one reveals only the
      papers on that path; opening another folds the first away. */
   const shown = (n) => n.depth <= 1 || (n.parent && n.parent.open);
 
@@ -658,7 +658,7 @@ function start(data) {
     e.currentTarget.textContent = spin ? "Hold Still" : "Turn It";
     e.currentTarget.setAttribute("aria-pressed", String(spin));
   });
-  on("at-fold", () => { foldAll(); clear(); say("Folded back to the five reading paths."); });
+  on("at-fold", () => { foldAll(); clear(); say("Folded back to the six reading paths."); });
   on("at-home", () => { yaw = 0.6; pitch = 0.32; dist = skin.dist; foldAll(); clear(); spin = true; say("Back to the whole figure."); });
   on("at-focus", () => focus(!focused));
 

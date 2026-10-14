@@ -12,11 +12,11 @@ const expectedItems = expectedParts.flatMap((part) => part.subs);
 
 assert.equal(site.name, expectedTitle, 'the exact project title changed');
 assert.equal(site.tagline, expectedTagline, 'the exact project tagline changed');
-assert.equal(site.navGroups.length, 5, 'the header must list all five numbered Parts');
+assert.equal(site.navGroups.length, 6, 'the header must list all six numbered Parts');
 assert.equal(site.navActions.length, 0, 'Part V must contain the reading rooms without detached duplicate actions');
 
 const headerItems = site.navGroups.flatMap((group) => group.items);
-assert.equal(headerItems.length, 31, 'the five Parts must expose all 31 page and account-room destinations');
+assert.equal(headerItems.length, 34, 'the six Parts must expose all 34 page and account-room destinations');
 assert.equal(site.nav.length, headerItems.length, 'the flat footer navigation must retain header parity');
 assert.equal(new Set(headerItems.map((item) => item.url)).size, headerItems.length,
   'header destinations must be unique');
@@ -36,7 +36,8 @@ for (const [index, group] of site.navGroups.entries()) {
 }
 for (const route of [
   '/pi-from-zero-and-one/', '/prime-plane/', '/entropy-and-self-renewal/', '/cosmic-ratio-in-time/', '/temporal-antipodes/', '/time-and-residue/', '/inverted-toruses/',
-  '/wormholes/', '/out-of-phase/', '/plates/', '/ask-shakdrah/', '/join/', '/account/'
+  '/wormholes/', '/out-of-phase/', '/riemann-programme/', '/riemann-proof-audit/', '/riemann-splice-questions/',
+  '/plates/', '/ask-shakdrah/', '/join/', '/account/'
 ]) {
   assert.ok(headerItems.some((item) => item.url === route), `header omits ${route}`);
 }
@@ -53,7 +54,7 @@ assert.match(headerSource, /class="nav-panel"/, 'header lacks page-subheading pa
 assert.match(headerSource, /site\.navGroups/, 'header does not use the canonical grouped navigation');
 assert.match(headerSource, /aria-controls="primary-nav"/, 'mobile navigation control is not connected');
 assert.match(css, /\.site-head\s*\{[\s\S]*?position:\s*sticky;/, 'redesigned header is not sticky');
-assert.match(css, /grid-template-columns:\s*repeat\(5, minmax\(0, 1fr\)\)/,
+assert.match(css, /grid-template-columns:\s*repeat\(6, minmax\(0, 1fr\)\)/,
   'desktop header does not give each Part its own column');
 assert.match(css, /\.nav-panel\s*\{[\s\S]*?position:\s*absolute;/, 'desktop navigation panels are not layered');
 assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.js-nav \.site-nav\.open/, 'mobile menu is not responsive');
@@ -88,8 +89,8 @@ if (process.argv.includes('--built')) {
     assert.equal($('.site-head').length, 1, `${relative} does not have one header`);
     assert.equal($('.brand-name').text().trim(), expectedTitle, `${relative} masthead title changed`);
     assert.equal($('.brand-tag').text().trim(), expectedTagline, `${relative} masthead tagline changed`);
-    assert.equal($('#primary-nav .nav-cluster').length, 5, `${relative} does not expose five Parts`);
-    assert.equal($('#primary-nav .nav-panel').length, 5, `${relative} does not expose five page panels`);
+    assert.equal($('#primary-nav .nav-cluster').length, 6, `${relative} does not expose six Parts`);
+    assert.equal($('#primary-nav .nav-panel').length, 6, `${relative} does not expose six page panels`);
     assert.equal($('#primary-nav .nav-actions').length, 0, `${relative} retains detached duplicate actions`);
 
     $('#primary-nav .nav-cluster').each((index, element) => {
@@ -108,7 +109,7 @@ if (process.argv.includes('--built')) {
 
     const hrefs = $('#primary-nav a').map((_, element) => $(element).attr('href')).get();
     assert.deepEqual(hrefs, headerItems.map((item) => item.url), `${relative} navigation order drifted`);
-    assert.equal(new Set(hrefs).size, 31, `${relative} duplicates a header destination`);
+    assert.equal(new Set(hrefs).size, 34, `${relative} duplicates a header destination`);
     assert.equal($('#primary-nav details[open]').length, 0, `${relative} ships with a menu forced open`);
     assert.equal($('.nav-toggle[aria-expanded="false"]').length, 1, `${relative} toggle state is incorrect`);
     const currentLinks = $('#primary-nav a[aria-current="page"]');
@@ -130,4 +131,4 @@ if (process.argv.includes('--built')) {
   }
 }
 
-console.log(`TTI header passed: five numbered Parts, ${headerItems.length} unique page subheadings, full-text hover/focus expansion, matching page labels, responsive controls and active-page state.`);
+console.log(`TTI header passed: six numbered Parts, ${headerItems.length} unique page subheadings, full-text hover/focus expansion, matching page labels, responsive controls and active-page state.`);

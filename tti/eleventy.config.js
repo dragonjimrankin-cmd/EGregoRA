@@ -13,6 +13,7 @@ export default function (eleventyConfig) {
     return v > 0 ? Math.round(Math.log10(v) * 100000) / 100000 : 0;
   });
   eleventyConfig.addFilter("round2", (n) => Math.round(Number(n) * 100) / 100);
+  eleventyConfig.addFilter("readableNumber", (n) => Number(n).toLocaleString("en-GB"));
   eleventyConfig.addPassthroughCopy({ "tti/src/static": "." });
   eleventyConfig.addWatchTarget("tti/src/assets/");
 

@@ -32,7 +32,10 @@ const pages = [
   ['inverted-toruses/index.html', '/inverted-toruses/', 'Inverted-Torus Universe', 'inverted-toruses'],
   ['wormholes/index.html', '/wormholes/', 'Wormholes and Inverted Tori', 'wormholes'],
   ['out-of-phase/index.html', '/out-of-phase/', 'Matter and Antimatter Out of Phase', 'out-of-phase'],
-  ['little-red-dots/index.html', '/little-red-dots/', 'JWST’s Little Red Dots', 'little-red-dots']
+  ['little-red-dots/index.html', '/little-red-dots/', 'JWST’s Little Red Dots', 'little-red-dots'],
+  ['riemann-programme/index.html', '/riemann-programme/', 'The Riemann Dossier', 'riemann-programme'],
+  ['riemann-proof-audit/index.html', '/riemann-proof-audit/', 'Proof and Correction Ledger', 'riemann-proof-audit'],
+  ['riemann-splice-questions/index.html', '/riemann-splice-questions/', 'The Splice Questions After RH', 'riemann-splice-questions']
 ];
 
 function safeId(value) {
@@ -160,6 +163,9 @@ ${sections}
       or <a href="/ask-shakdrah/">ask ShakDrah</a>.</p>
   </div>
 </section>
+
+{% set synthesis = longform.partV %}
+{% include "partials/longform-synthesis.njk" %}
 `;
 
 const cleanDocument = document.replace(/[ \t]+$/gm, '');

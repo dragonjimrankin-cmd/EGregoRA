@@ -493,6 +493,61 @@ The proposal must face equivalence-principle, fifth-force, lensing, structure-gr
       ]
     },
     {
+      id: "rh-dossier",
+      question: "What did the consolidated Riemann Hypothesis archive actually establish?",
+      patterns: [
+        /(?:riemann|rh).*(?:archive|dossier|consolidat).*(?:establish|prove|find|result|show)/,
+        /(?:what|which).*(?:establish|result|survive).*(?:riemann|rh dossier|rh archive)/
+      ],
+      answer: `The 52-file archive does **not** prove the Riemann Hypothesis. Four file pairs are exact duplicates, and the seven “comprehensive” versions are cumulative diaries: early claims remain above later retractions. TTI therefore rebuilt the result claim by claim rather than treating the last filename as authoritative.
+
+One argument closes internally: the Riemann xi function is strictly log-convex on the real axis. A positive Pólya-kernel integral turns the relevant logarithmic second derivative into a second moment minus a Cauchy–Schwarz-controlled square. Several balance integrals are also exact, including an integral equal to √π/2 and another equal to π/4. Under RH, the corrected formula for F(x) = (log xi)''(1/2+√x), its inverse-Laplace expression and a Mellin identity are algebraically useful.
+
+Finite matrix spectra, Laguerre checks, zero scans and cancellation patterns remain numerical evidence. The supplied documents do not close their claims of unconditional complete monotonicity, global Bernstein-density positivity, unconditional negativity of the third logarithmic derivative, or the converse from critical-line positivity to RH. Read [The Riemann Dossier](https://the-two-infinities.hatchable.site/riemann-programme/) and its full [Proof and Correction Ledger](https://the-two-infinities.hatchable.site/riemann-proof-audit/).`,
+      followups: [
+        "Which Riemann Hypothesis claims were corrected or downgraded?",
+        "Does the Riemann Hypothesis work solve the outstanding splice questions?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-proof-audit",
+      question: "Which Riemann Hypothesis claims were corrected or downgraded?",
+      patterns: [
+        /(?:riemann|rh).*(?:correct|downgrad|retract|error|audit|proof gap)/,
+        /(?:correct|downgrad|retract|error).*(?:complete monotonic|bernstein|polya|critical line|riemann)/
+      ],
+      answer: `Five headline claims require downgrade in the supplied corpus. First, the easy complete-monotonicity proof used the wrong function: F was written as 2Σ1/(x+γ²), then correctly replaced by 2Σ(γ²−x)/(x+γ²)². The old termwise proof no longer applies. Second, the Bernstein-density proof says only the first term can be negative at small t; the inequality runs the other way, and the number of negative early-zero terms grows as t approaches zero.
+
+Third, the unconditional proof of (log xi)''' < 0 begins with an RH-only all-on-line zero sum, crosses a finite interval numerically and does not supply one uniform treatment of arbitrary off-line quartets. Fourth, the Pólya-kernel log-concavity sketch replaces an infinite weighted variance with a two-point bound without proving the required tail estimate; individual log-concavity is not automatically preserved by summation. Fifth, Session 7 correctly retracts the claim that critical-line positivity implies RH because one negative zero contribution need not dominate the total background; a later file reasserts the equivalence without repairing that gap.
+
+The audit retains exact identities and finite experiments at their proper grade. “Unproved here” does not mean false; it means the archive has not supplied the missing bound. See [Proof and Correction Ledger](https://the-two-infinities.hatchable.site/riemann-proof-audit/).`,
+      followups: [
+        "What did the consolidated Riemann Hypothesis archive actually establish?",
+        "Does the Riemann Hypothesis work solve the outstanding splice questions?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-splice-bridge",
+      question: "Does the Riemann Hypothesis work solve the outstanding splice questions?",
+      patterns: [
+        /(?:riemann|rh).*(?:splice|base ten|base 10|gravity|electromagnet|dark matter).*(?:solve|answer|derive|help|fix)/,
+        /(?:riemann|rh|zeta).*(?:determine|derive|fix).*(?:splice|action|physical constant|coupling)/,
+        /(?:splice|base ten|base 10).*(?:riemann|rh|zeta).*(?:action|scale|normal|radius|help)/
+      ],
+      answer: `No—not at the level of physical derivation. The literal TTI hierarchy remains π-level geometry, the decimal splice at 10 as a proposed localised gravitational source, and the splice at 100 as a proposed circular phase that may support U(1). The RH archive supplies no unique map from the exact deposit sequence to a covariant action, no unit-bearing length or energy scale needed to determine G, no canonical gauge-field and charge normalisation needed to determine e or alpha, and no independently anchored galactic radius r₀.
+
+It does offer useful discipline. Transform the splice sequence before interpreting it; state the infinite quadratic form or stability operator first; derive a truncation budget before trusting a small finite eigenvalue; and preregister the decimal log-frequency, golden approach exponent, phase rule and radial anchor before examining galaxy data. One law must explain both dynamics and lensing if the deposit is claimed to gravitate.
+
+The RH diary’s negative Fibonacci search also does not refute TTI’s separate argument that base ten is intrinsic. It only reports no connection to the selected RH matrices. Similar spectra and cancellation language cannot supply missing couplings. Read [The Splice Questions After RH](https://the-two-infinities.hatchable.site/riemann-splice-questions/) and [When Differentials Accumulate](https://the-two-infinities.hatchable.site/accumulated-differentials/).`,
+      followups: [
+        "What did the consolidated Riemann Hypothesis archive actually establish?",
+        "Which Riemann Hypothesis claims were corrected or downgraded?",
+        "How do accumulated differentials connect to mass and gravity?"
+      ]
+    },
+    {
       id: "epistemic-grading",
       question: "How should I grade these new claims?",
       patterns: [
@@ -539,8 +594,8 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
   };
 
   window.EGOracleKnowledge = Object.freeze({
-    version: "2026-10-13.1",
-    reviewed: "2026-10-13",
+    version: "2026-10-14.1",
+    reviewed: "2026-10-14",
     entries: Object.freeze(entries.slice()),
     find
   });
@@ -572,7 +627,7 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
     return new window.Response(JSON.stringify({
       answer: entry.answer,
       followups: entry.followups,
-      note: "Prepared answer · reviewed 13 October 2026 · linked sources carry the full context.",
+      note: "Prepared answer · reviewed 14 October 2026 · linked sources carry the full context.",
       prepared: true,
       knowledge_id: entry.id,
       knowledge_version: window.EGOracleKnowledge.version
