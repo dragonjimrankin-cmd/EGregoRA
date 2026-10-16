@@ -65,7 +65,7 @@ jobs:
             "$GITHUB_REF_NAME" \
             refresh
 
-      - name: Build and validate the static site
+      - name: Install dependencies and run pre-build checks
         run: |
           npm ci
           node --check tti/hatchable/api/admin-commit.js
@@ -81,6 +81,9 @@ jobs:
           node scripts/test-oracle-knowledge.mjs
           node scripts/test-tti-relocations.mjs
           node scripts/test-neural-voice.mjs
+
+      - name: Build and validate the TTI source
+        run: |
           npm run build:tti:hatchable
           npm run lint:tti
           node scripts/test-tti-header.mjs --built
@@ -92,6 +95,9 @@ jobs:
           node scripts/test-tti-pi-from-zero-and-one.mjs
           node scripts/test-tti-plates.mjs
           node scripts/audit-tti.mjs
+
+      - name: Verify the generated TTI bundle
+        run: |
           test -s tti/hatchable/public/index.html
           test -s tti/hatchable/public/archive/index.html
           test -s tti/hatchable/public/admin-edits.snapshot.json
