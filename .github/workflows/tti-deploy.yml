@@ -673,7 +673,8 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/riemann-splice-questions/',
               markers: ['Part VI — Riemann Programme · Bridge assessment TTI-VI.03 · The Splice Questions After RH',
-                'Ten, then one hundred', 'Four gates between splice arithmetic and physics',
+                'One, ten, one hundred—and the open role of one thousand',
+                'Four gates between splice arithmetic and physics',
                 'No unique dimensionally valid map', 'No physical scale for',
                 'No unique', 'No independent', 'The decimal-spectrum test']
             },
