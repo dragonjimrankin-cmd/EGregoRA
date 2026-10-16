@@ -840,11 +840,14 @@ jobs:
                 console.log('Live essays, ShakDrah chooser and six distinct embeddings verified.');
                 process.exit(0);
               }
-              detail = checked.map((result) =>
-                `${result.page.url} HTTP ${result.response.status}; current=${result.current}; ` +
+              detail = checked.filter((result) => !result.current).map((result) =>
+                `${result.page.url} HTTP ${result.response.status}; ` +
                 `missing=${result.missingMarkers.join(',') || 'none'}; ` +
-                `forbidden=${result.forbiddenMarkers.join(',') || 'none'}`).join(' | ') +
-                ` | sixDistinctVoices=${voicesDistinct}`;
+                `forbidden=${result.forbiddenMarkers.join(',') || 'none'}`).join(' | ') || 'all pages current';
+              if (!voicesDistinct) {
+                detail += ` | sixDistinctVoices=false (${voiceChecks.length} assets, ` +
+                  `${new Set(voiceChecks.map((result) => result.voiceHash)).size} unique hashes)`;
+              }
             } catch (error) {
               detail = error && error.message || String(error);
             }
