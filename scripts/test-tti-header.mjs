@@ -43,7 +43,7 @@ const allCss = [css, r35Baseline, r35Integration].join("\n");
 const js = fs.readFileSync(JS, "utf8");
 
 /* Source contract: the supplied r3.5 reference becomes the real global
-   masthead, while canonical data still supplies all six Parts and 34 routes. */
+   masthead, while canonical data still supplies all six Parts and 35 routes. */
 assert.match(headerSource, /site-head site-head--reference/,
   "the reference-style r3.5 masthead is absent");
 assert.match(headerSource, /class="brand-name">The Two Infinities</,

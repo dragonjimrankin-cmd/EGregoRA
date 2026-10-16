@@ -155,7 +155,7 @@ jobs:
           ! grep -q 'id="atlas-box"' tti/hatchable/public/index.html
           grep -Fq 'Complete Six-Part Table of Contents' tti/hatchable/public/archive/index.html
           test "$(grep -c 'class=\"research-toc-part frame\"' tti/hatchable/public/archive/index.html)" -eq 6
-          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/archive/index.html)" -eq 34
+          test "$(grep -c 'class=\"research-toc-code\"' tti/hatchable/public/archive/index.html)" -eq 35
           grep -Fq 'A Reader&rsquo;s Contract' tti/hatchable/public/archive/index.html
           grep -q 'id="fig-chain"' tti/hatchable/public/archive/index.html
           grep -Fq 'r3.5' tti/hatchable/public/index.html
@@ -173,14 +173,14 @@ jobs:
           test "$(grep -c 'class="reference-part-row ' tti/hatchable/public/index.html)" -eq 6
           test "$(grep -c 'class="reference-part-documents"' tti/hatchable/public/index.html)" -eq 6
           test "$(grep -c 'class="site-nav reference-nav"' tti/hatchable/public/index.html)" -eq 1
-          test "$(grep -c 'data-focus-document' tti/hatchable/public/index.html)" -eq 21
+          test "$(grep -c 'data-focus-document' tti/hatchable/public/index.html)" -eq 22
           test "$(grep -c 'data-archive-document' tti/hatchable/public/index.html)" -eq 13
           test "$(grep -c 'class="focus-programme"' tti/hatchable/public/index.html)" -eq 3
           grep -Fq 'A Geometry <em>of</em> Existence' tti/hatchable/public/index.html
           grep -Fq 'Eternal Integration of the Self' tti/hatchable/public/index.html
           grep -Fq 'Research Index' tti/hatchable/public/index.html
-          test "$(grep -c 'data-research-document' tti/hatchable/public/index.html)" -eq 34
-          test "$(grep -c 'data-focus-programme-document' tti/hatchable/public/index.html)" -eq 21
+          test "$(grep -c 'data-research-document' tti/hatchable/public/index.html)" -eq 35
+          test "$(grep -c 'data-focus-programme-document' tti/hatchable/public/index.html)" -eq 22
           grep -q 'class="reference-nav-list"' tti/hatchable/public/index.html
           grep -q 'Part I' tti/hatchable/public/index.html
           grep -q 'First Principles' tti/hatchable/public/index.html
@@ -212,7 +212,7 @@ jobs:
           grep -q 'inherited boundary residue' tti/hatchable/public/time-and-residue/index.html
           grep -q 'The Channeling Circle as a Claimed Reception Archive' tti/hatchable/public/time-and-residue/index.html
           grep -q 'Open the complete 39-session date and attribution index' tti/hatchable/public/time-and-residue/index.html
-          grep -q 'Thirty prepared answers' tti/hatchable/public/ask-shakdrah/index.html
+          grep -q 'Forty-nine prepared answers' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Can an inverted torus be a traversable wormhole?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'What is in The Channeling Circle transcript archive?' tti/hatchable/public/ask-shakdrah/index.html
           grep -q 'Why does π appear between zero and one?' tti/hatchable/public/ask-shakdrah/index.html
@@ -325,7 +325,7 @@ jobs:
           ! grep -q 'href="#longform-the-two-infinities-eternal-integration-of-the-self"' tti/hatchable/public/index.html
           ! grep -q 'A Reader&rsquo;s Contract' tti/hatchable/public/index.html
           grep -q 'A Reader&rsquo;s Contract' tti/hatchable/public/archive/index.html
-          test "$(grep -R -l 'class="wrap narrow editorial-guide reveal"' tti/hatchable/public --include='index.html' | wc -l)" -eq 32
+          test "$(grep -R -l 'class="wrap narrow editorial-guide reveal"' tti/hatchable/public --include='index.html' | wc -l)" -eq 33
           grep -q 'does not manufacture i from π' tti/hatchable/public/foundations/index.html
           grep -q 'real-arithmetic formulations' tti/hatchable/public/foundations/index.html
           grep -q 'does not define a smallest conscious grain' tti/hatchable/public/dx/index.html
@@ -338,12 +338,12 @@ jobs:
           grep -q 'Part VI — Riemann Programme · Proof audit TTI-VI.02 · Proof and Correction Ledger' tti/hatchable/public/riemann-proof-audit/index.html
           grep -q 'Bernstein density: the small-' tti/hatchable/public/riemann-proof-audit/index.html
           grep -q 'Part VI — Riemann Programme · Bridge assessment TTI-VI.03 · The Splice Questions After RH' tti/hatchable/public/riemann-splice-questions/index.html
-          grep -q 'No unique splice-to-action map' tti/hatchable/public/riemann-splice-questions/index.html
+          grep -q 'No unique dimensionally valid map' tti/hatchable/public/riemann-splice-questions/index.html
           grep -q 'Part V — Reading Rooms · Figure compendium TTI-V.01 · The Plates' tti/hatchable/public/plates/index.html
           grep -q 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html
           grep -q 'name="plate-room"' tti/hatchable/public/plates/index.html
           grep -q 'Choose one source heading to inspect its plates' tti/hatchable/public/plates/index.html
-          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 26
+          test "$(grep -c 'class="plate-accordion-group"' tti/hatchable/public/plates/index.html)" -eq 27
           grep -q 'data-plate-source="/pi-from-zero-and-one/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/wormholes/"' tti/hatchable/public/plates/index.html
           grep -q 'data-plate-source="/temporal-antipodes/"' tti/hatchable/public/plates/index.html
@@ -643,7 +643,7 @@ jobs:
               url: 'https://the-two-infinities.hatchable.site/riemann-splice-questions/',
               markers: ['Part VI — Riemann Programme · Bridge assessment TTI-VI.03 · The Splice Questions After RH',
                 'Ten, then one hundred', 'Four gates between splice arithmetic and physics',
-                'No unique splice-to-action map', 'No physical scale for',
+                'No unique dimensionally valid map', 'No physical scale for',
                 'No unique', 'No independent', 'The decimal-spectrum test']
             },
             {
@@ -690,7 +690,7 @@ jobs:
             {
               url: 'https://the-two-infinities.hatchable.site/ask-shakdrah/',
               markers: ['Part V — Reading Rooms · Research assistant TTI-V.02 · Ask ShakDrah',
-                'Thirty prepared answers', 'How should I read and test a TTI claim?', 'Why does π appear between zero and one?',
+                'Forty-nine prepared answers', 'How should I read and test a TTI claim?', 'Why does π appear between zero and one?',
                 'Can an inverted torus be a traversable wormhole?',
                 'What is in The Channeling Circle transcript archive?',
                 'Why can the smaller and bigger infinities never fully synchronise?',
