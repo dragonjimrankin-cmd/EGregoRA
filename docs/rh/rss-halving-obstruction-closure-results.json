@@ -1,0 +1,338 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "Attempt to close the splice-at-one halving obstruction",
+  "question": "can the escaping-quartet and same-xi invariance obstruction be replaced by a derivable global condition?",
+  "verdict": {
+    "rhProved": false,
+    "pointwiseSameXiInvarianceEstablished": false,
+    "aggregateResidueContractionDerived": true,
+    "aggregateResidueClosureInvarianceEstablished": false,
+    "completeFiniteZeroGenealogyWouldSuffice": true,
+    "completeFiniteZeroGenealogyEstablished": false,
+    "endpointNormalizationExcludesEscapingQuartet": false,
+    "positiveKernelAloneExcludesOffLineZeros": false,
+    "realRootedConvergentKernelRouteWouldSuffice": true,
+    "realRootedConvergentKernelRouteEstablished": false,
+    "conclusion": "the strongest replacement is an aggregate fixed-point theorem for the exact positive horizontal residue, or a complete no-birth genealogy for all finite zeros. Both would prove RH without assuming pointwise same-xi halving, but neither closure invariance nor genealogy completeness follows from the current TTI arithmetic. Quaternary spectral branching exactly cancels quadratic halving and must not be conflated with carrier branching."
+  },
+  "aggregateCentralResidue": {
+    "definition": "R=sum_quartets 4 eta^2(eta^2+3 gamma^2)/[gamma^2(eta^2+gamma^2)^2]",
+    "properties": [
+      "R is nonnegative and convergent",
+      "R=0 if and only if RH",
+      "one-to-one horizontal halving strictly contracts every nonzero summand in the critical strip"
+    ],
+    "exactHalvingRatio": "R(eta/2,gamma)/R(eta,gamma)=(x+12)(x+1)^2/[(x+4)^2(x+3)], x=eta^2/gamma^2",
+    "contractionChecks": [
+      {
+        "eta": 0.01,
+        "gamma": 14.134725141734693,
+        "directRatio": 0.2500001564138724,
+        "closedRatio": 0.25000015641387235
+      },
+      {
+        "eta": 0.01,
+        "gamma": 21.022039638771556,
+        "directRatio": 0.2500000707131709,
+        "closedRatio": 0.25000007071317093
+      },
+      {
+        "eta": 0.01,
+        "gamma": 50,
+        "directRatio": 0.2500000125000001,
+        "closedRatio": 0.2500000124999999
+      },
+      {
+        "eta": 0.01,
+        "gamma": 100,
+        "directRatio": 0.250000003125,
+        "closedRatio": 0.250000003125
+      },
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "directRatio": 0.2500156413226411,
+        "closedRatio": 0.25001564132264104
+      },
+      {
+        "eta": 0.1,
+        "gamma": 21.022039638771556,
+        "directRatio": 0.25000707130388866,
+        "closedRatio": 0.2500070713038887
+      },
+      {
+        "eta": 0.1,
+        "gamma": 50,
+        "directRatio": 0.25000124999958334,
+        "closedRatio": 0.25000124999958334
+      },
+      {
+        "eta": 0.1,
+        "gamma": 100,
+        "directRatio": 0.2500003124999739,
+        "closedRatio": 0.25000031249997395
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "directRatio": 0.2500977561247706,
+        "closedRatio": 0.2500977561247706
+      },
+      {
+        "eta": 0.25,
+        "gamma": 21.022039638771556,
+        "directRatio": 0.2500441952116788,
+        "closedRatio": 0.25004419521167887
+      },
+      {
+        "eta": 0.25,
+        "gamma": 50,
+        "directRatio": 0.2500078124837234,
+        "closedRatio": 0.2500078124837234
+      },
+      {
+        "eta": 0.25,
+        "gamma": 100,
+        "directRatio": 0.25000195312398277,
+        "closedRatio": 0.2500019531239827
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "directRatio": 0.2503755120536707,
+        "closedRatio": 0.25037551205367076
+      },
+      {
+        "eta": 0.49,
+        "gamma": 21.022039638771556,
+        "directRatio": 0.25016977463409246,
+        "closedRatio": 0.2501697746340924
+      },
+      {
+        "eta": 0.49,
+        "gamma": 50,
+        "directRatio": 0.2500300122597695,
+        "closedRatio": 0.2500300122597696
+      },
+      {
+        "eta": 0.49,
+        "gamma": 100,
+        "directRatio": 0.25000750310998704,
+        "closedRatio": 0.2500075031099871
+      }
+    ],
+    "conditionalFixedPointTheorem": "if the completed splice returns the same aggregate spectral residue while halving eta one-to-one, then R=R_after<R unless R=0; hence RH",
+    "missingBridge": "derive aggregate residue invariance from the prime-side completed ledger or seam law"
+  },
+  "branchMultiplicity": {
+    "assessment": [
+      {
+        "totalDescendants": 1,
+        "exactCentralResidueRatio": 0.2500977561247706,
+        "quadraticHorizontalEnergyRatio": 0.25,
+        "strictlyContractsExactResidue": true
+      },
+      {
+        "totalDescendants": 2,
+        "exactCentralResidueRatio": 0.5001955122495412,
+        "quadraticHorizontalEnergyRatio": 0.5,
+        "strictlyContractsExactResidue": true
+      },
+      {
+        "totalDescendants": 3,
+        "exactCentralResidueRatio": 0.7502932683743118,
+        "quadraticHorizontalEnergyRatio": 0.75,
+        "strictlyContractsExactResidue": true
+      },
+      {
+        "totalDescendants": 4,
+        "exactCentralResidueRatio": 1.0003910244990823,
+        "quadraticHorizontalEnergyRatio": 1,
+        "strictlyContractsExactResidue": false
+      }
+    ],
+    "consequence": "with four spectral descendants at half displacement, sum eta^2 is exactly conserved and the exact central residue is slightly increased; therefore the four-way carrier event cannot also be assumed to multiply zero quartets in a contraction proof"
+  },
+  "finiteGenealogyRoute": {
+    "sufficientConditions": [
+      "every finite-stage zero has a parent at the preceding stage",
+      "every child has half its parent horizontal displacement",
+      "there are no unparented births at any height",
+      "the finite completions converge locally uniformly to xi"
+    ],
+    "resultingBound": "|Re rho-1/2| <= 2^(-N-1) for every stage-N zero",
+    "consequence": "Rouche-Hurwitz transfer then forces every xi zero onto the critical line",
+    "lineageBounds": [
+      {
+        "stage": 14,
+        "maximumInheritedDisplacement": 0.000030517578125,
+        "escapingQuartetDisplacement": 0.25,
+        "escapingQuartetHeight": 842.9988137587108,
+        "escapingQuartetViolatesLineageBound": true
+      },
+      {
+        "stage": 20,
+        "maximumInheritedDisplacement": 4.76837158203125e-7,
+        "escapingQuartetDisplacement": 0.25,
+        "escapingQuartetHeight": 15126.999933893048,
+        "escapingQuartetViolatesLineageBound": true
+      },
+      {
+        "stage": 30,
+        "maximumInheritedDisplacement": 4.656612873077393e-10,
+        "escapingQuartetDisplacement": 0.25,
+        "escapingQuartetHeight": 1860497.9999994645,
+        "escapingQuartetViolatesLineageBound": true
+      },
+      {
+        "stage": 40,
+        "maximumInheritedDisplacement": 4.547473508864641e-13,
+        "escapingQuartetDisplacement": 0.25,
+        "escapingQuartetHeight": 228826127.0000003,
+        "escapingQuartetViolatesLineageBound": true
+      }
+    ],
+    "currentFailure": "the observed bounded-window counts are nonmonotone and do not define complete parent maps",
+    "observedWindowCounts": {
+      "zeroth-seed": [
+        2,
+        2,
+        4,
+        3
+      ],
+      "reindexed-fibonacci": [
+        2,
+        2,
+        4,
+        3
+      ],
+      "boundary-only": [
+        4,
+        3,
+        3,
+        3
+      ]
+    }
+  },
+  "escapingDetection": {
+    "weightedResidues": [
+      {
+        "stage": 14,
+        "eta": 0.25,
+        "gamma": 842.9988137587108,
+        "centralResidue": 1.4850919559838369e-12,
+        "gammaFourthScaledResidue": 0.7499998900649826,
+        "compactifiedSupremumContribution": 0.25
+      },
+      {
+        "stage": 20,
+        "eta": 0.25,
+        "gamma": 15126.999933893048,
+        "centralResidue": 1.43235293795527e-17,
+        "gammaFourthScaledResidue": 0.7499999996585834,
+        "compactifiedSupremumContribution": 0.25
+      },
+      {
+        "stage": 30,
+        "eta": 0.25,
+        "gamma": 1860497.9999994645,
+        "centralResidue": 6.259569033422757e-26,
+        "gammaFourthScaledResidue": 0.7499999999999772,
+        "compactifiedSupremumContribution": 0.25
+      },
+      {
+        "stage": 40,
+        "eta": 0.25,
+        "gamma": 228826127.0000003,
+        "centralResidue": 2.7355132543159897e-34,
+        "gammaFourthScaledResidue": 0.75,
+        "compactifiedSupremumContribution": 0.25
+      }
+    ],
+    "consequence": "the convergent central residue weights a fixed-displacement quartet at height phi^N by O(phi^(-4N)), so residue convergence alone cannot detect escape; a supremum or compactified seam norm is required"
+  },
+  "normalizedStressFamily": {
+    "factor": "P_hat_N(z)=P_N(z)/P_N(1/2)",
+    "properties": [
+      "even and real under conjugation",
+      "equals one at z=+/-1/2, preserving Xi_N(0)=Xi_N(1)=1/2",
+      "tends locally uniformly to one",
+      "retains the off-line quartet at z=+/-1/4+/-i phi^N"
+    ],
+    "checks": [
+      {
+        "stage": 14,
+        "positiveEndpoint": [
+          1,
+          0
+        ],
+        "negativeEndpoint": [
+          1,
+          0
+        ],
+        "maximumCompactError": 0.00007150213057084318
+      },
+      {
+        "stage": 20,
+        "positiveEndpoint": [
+          1,
+          0
+        ],
+        "negativeEndpoint": [
+          1,
+          0
+        ],
+        "maximumCompactError": 2.2206249180617388e-7
+      },
+      {
+        "stage": 30,
+        "positiveEndpoint": [
+          1,
+          0
+        ],
+        "negativeEndpoint": [
+          1,
+          0
+        ],
+        "maximumCompactError": 1.4679702579479314e-11
+      },
+      {
+        "stage": 40,
+        "positiveEndpoint": [
+          1,
+          0
+        ],
+        "negativeEndpoint": [
+          1,
+          0
+        ],
+        "maximumCompactError": 9.012235858308644e-16
+      }
+    ],
+    "consequence": "endpoint normalization and the two xi symmetries do not exclude escape"
+  },
+  "canonicalKernelRoute": {
+    "observation": "the polynomial stress factor is not shown to remain inside the positive theta-carrier class, so canonical admissibility can exclude this particular perturbation",
+    "limitation": "positivity, evenness and log-concavity of a Fourier kernel do not by themselves imply that its transform has only real zeros",
+    "sufficientTarget": "construct kernels K_N whose Fourier transforms are real-rooted and which converge to the exact Riemann kernel strongly enough to give local uniform convergence of the transforms",
+    "literatureContext": "Pólya-like real-rooted approximations exist, but matching the body of the exact Riemann kernel while preserving real-rootedness remains the unresolved step",
+    "source": "https://arxiv.org/abs/1502.06844",
+    "dyadicRequirement": "each splice-at-one refinement must preserve the Laguerre-Polya or total-positivity property; positive carrier addition alone is insufficient without an interlacing theorem"
+  },
+  "logicalAssessment": {
+    "progress": [
+      "pointwise same-xi invariance can be weakened to aggregate positive-residue fixed-point invariance",
+      "the exact contraction ratio is derived and is close to one quarter in the critical strip",
+      "a complete no-birth genealogy gives the required global strip directly",
+      "normalizing the escaping factor at s=0 and s=1 does not remove it",
+      "quaternary spectral multiplication is incompatible with a quadratic contraction argument"
+    ],
+    "remainingObligations": [
+      "derive aggregate residue invariance from TTI rather than postulate it",
+      "or prove complete zero genealogy with no births at arbitrary height",
+      "or prove a convergent sequence of real-rooted canonical kernel approximations",
+      "construct a compactified seam norm that remains coercive at infinite height"
+    ],
+    "status": "the obstruction is narrowed but not overcome; no proof of RH is obtained"
+  }
+}

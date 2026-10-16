@@ -236,7 +236,8 @@ description: "The placed integers nought to one hundred, the fork at every ten w
       </svg>
     </div>
     <p class="plate-note">The same spiral and the same numbering as Plate&nbsp;I, with a single journey laid
-      over it. The gold road climbs the first decade one station at a time. At ten it splices: the faint
+      over it. The plate isolates the post-seed journey and does not draw the separate splice at one. The gold
+      road climbs the first decade one station at a time. At ten it splices: the faint
       green road is the half that carries on outward into the next density, and the rose road is the half
       sent back &mdash; which does not re-enter at one and start again, but passes <em>below</em> it. Each
       further fall is shorter than the last by the golden ratio, so the stations crowd toward the ground
@@ -250,9 +251,10 @@ description: "The placed integers nought to one hundred, the fork at every ten w
 <section class="wrap">
   <div class="page-head tight">
     <p class="kicker">10.1 &mdash; The Rule</p>
-    <h2 id="t-splice">At Every Ten, the Path Divides</h2>
-    <p class="lede muted">Index the splices n = 1, 2, 3&hellip;, one for each density threshold &mdash;
-      10, 100, 1000. Assign the n-th splice a multiplicity equal to the n-th Fibonacci number.</p>
+    <h2 id="t-splice">At One, Then Every Ten, the Path Divides</h2>
+    <p class="lede muted">The threshold sequence begins with a splice at 1, followed by 10, 100, 1000 and
+      later powers of ten. The formulas below use the existing convention n = 1, 2, 3&hellip; for the
+      post-seed thresholds 10, 100, 1000 and assign them Fibonacci multiplicities.</p>
   </div>
 
   <div class="wrap narrow">
@@ -260,12 +262,16 @@ description: "The placed integers nought to one hundred, the fork at every ten w
       <p class="formula">\[
         m_n=F_n,\qquad F_1=F_2=1,\qquad F_k=F_{k-1}+F_{k-2}
       \]</p>
-      <p>So the first splice spawns one descendant, the second one, the third two, then three, five,
-        eight. Within the framework this is not a new postulate. The microtubule lattice &mdash; the
-        proposed seat of conscious integration &mdash; was already set at 13 : 8, consecutive Fibonacci
-        numbers; the torus chapter set its geometry by the same ratio, giving \(\varphi=2\cos(\pi/5)\).
-        Putting Fibonacci on the splices requires only that the branching of beings obey the law already
-        assigned to the lattice they are built from. <span class="spec">&#9670;</span></p>
+      <p class="muted">The splice at \(1\) is real in the TTI sequence, but its population index is not yet
+        fixed. It may be a zeroth seed before this recurrence, the first Fibonacci splice with every later
+        label shifted, or a boundary splice without a new carrier. Part VI tests all three conventions rather
+        than silently omitting \(1\) or choosing one after seeing the result.</p>
+      <p>Under the displayed post-seed convention, the assumed cohort rule gives one descendant at the
+        first splice, one at the second, then two, three, five and eight. The Fibonacci appearance is
+        motivated by the framework's separate 13 : 8 microtubule motif and its torus ratio
+        \(\varphi=2\cos(\pi/5)\), but those other structures do not mathematically derive this branching
+        law. The rule \(m_n=F_n\) is therefore an explicit model assumption; the population identity below
+        is a theorem conditional on it. <span class="spec">&#9670;</span></p>
     </div>
   </div>
 
@@ -451,12 +457,12 @@ description: "The placed integers nought to one hundred, the fork at every ten w
       <p>The increment is the index. Each turn of the ascent deposits exactly as much as its own number, so
         the accumulation grows as n²/2 while the <em>deposit</em> grows only as n. That single fact is the
         pacemaker, and everything else in this section is its consequence.</p>
-      <p>The <a href="/skeletal-splice/">skeletal splice</a> shows the same law arriving from an entirely
-        different direction. Counting returners through the Fibonacci skeleton gives a deposit per decade of
-        exactly \(\varphi^2/\sqrt5=1.170820393\ldots\), so the accumulated progress is
-        \(\Pi_n\sim1.1708n-1.618\) &mdash; linear in n, just as the triangular deposit is.
-        Two different skeletons, a triangular one and a Fibonacci one, agree that
-        <strong>progress accumulates linearly</strong>. <span class="spec">&#9670;</span></p>
+      <p>The <a href="/skeletal-splice/">skeletal splice</a> has a distinct growth law. Under its assumed
+        Fibonacci cohort rule and golden return depth, the deposit per stage tends to
+        \\(\varphi^2/\sqrt5=1.170820393\\ldots\\), so cumulative progress is linear in n. Here the
+        triangular total is \\(T_n=n(n+1)/2\\), hence quadratic; only its increment is linear. The two
+        constructions therefore do not imply the same pace result under a shared inverse-progress clock.
+        <span class="spec">&#9670;</span></p>
     </div>
   </div>
 </section>

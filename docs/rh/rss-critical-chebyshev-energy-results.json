@@ -1,0 +1,173 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "The critical dyadic Chebyshev-energy theorem",
+  "question": "what is the weakest concrete positive arithmetic theorem that closes the prime-Laguerre route?",
+  "verdict": {
+    "rhProved": false,
+    "criticalEnergyEstimateProved": false,
+    "missingTheoremFoundAsExactEquivalent": true,
+    "strictlyWeakerThanPointwiseSquareRootControl": true,
+    "finiteComputationsProveAllScaleEstimate": false,
+    "conclusion": "The missing input can be stated as a positive all-scale mean-square theorem: for every delta>0, the integral from X to 2X of |psi(x)-x|^2 is O_delta(X^(2+delta)). It is weaker than a pointwise square-root bound, but Mellin continuation shows it is still equivalent to RH. It also gives the critical weighted L2 norms needed for the signed Laguerre transform. The estimate itself remains unproved."
+  },
+  "criticalDyadicEnergyTheorem": {
+    "statement": "for every delta>0, integral_X^(2X) |psi(x)-x|^2 dx = O_delta(X^(2+delta)) for all X>=2",
+    "normalizedStatement": "X^(-2) integral_X^(2X) |psi(x)-x|^2 dx = X^(o(1))",
+    "equivalentCumulativeStatement": "for every delta>0, integral_1^X |psi(x)-(x-1)|^2 x^(-2) dx = O_delta(X^delta)",
+    "equivalentWeightedStatement": "for every epsilon>0, integral_1^infinity |psi(x)-(x-1)|^2 x^(-2-2epsilon) dx is finite",
+    "status": "identified and proved equivalent to RH; its asserted bound is not proved"
+  },
+  "whyItIsWeaker": {
+    "pointwisePremise": "psi(x)-x=O_epsilon(x^(1/2+epsilon)) for every epsilon>0",
+    "energyConsequence": "the pointwise premise implies the dyadic energy theorem by integration",
+    "nonConverseAtFunctionLevel": "an L2 bound permits errors larger than square-root scale on sufficiently sparse sets, so it does not supply a pointwise estimate for a general error function",
+    "importantQualification": "for the specific Chebyshev error, the all-scale energy theorem still implies RH by Mellin analyticity; RH then separately returns the standard pointwise bound"
+  },
+  "mellinClosure": {
+    "shiftedError": "E_tilde(x)=psi(x)-(x-1)",
+    "identity": "integral_1^infinity E_tilde(x)x^(-s-1)dx = -(1/s) d/ds log((s-1)zeta(s)) for Re(s)>1",
+    "cauchySchwarz": "the epsilon-weighted L2 norm makes this Mellin integral absolutely convergent whenever Re(s)>1/2+epsilon",
+    "continuation": "having every epsilon>0 continues the logarithmic derivative holomorphically through Re(s)>1/2, so (s-1)zeta(s) has no zero there",
+    "functionalSymmetry": "zero-freeness in Re(s)>1/2 and the functional equation place every nontrivial zero on Re(s)=1/2"
+  },
+  "primePairLedger": {
+    "identity": "with Y=2X, integral_X^Y(psi(x)-x)^2dx equals sum_(m,n<=Y) Lambda(m)Lambda(n)[Y-max(X,m,n)]_+ minus sum_(m<=Y) Lambda(m)[Y^2-max(X,m)^2]_+ plus (Y^3-X^3)/3",
+    "interpretation": "the missing theorem is a finite all-X cancellation estimate for a triangularly weighted von Mangoldt pair ledger",
+    "verifiedChecks": [
+      {
+        "X": 4,
+        "stepIntegral": 14.287836146414698,
+        "primePairLedger": 14.287836146414662,
+        "absoluteDifference": 3.552713678800501e-14
+      },
+      {
+        "X": 8,
+        "stepIntegral": 31.176821082168857,
+        "primePairLedger": 31.176821082169226,
+        "absoluteDifference": 3.694822225952521e-13
+      },
+      {
+        "X": 16,
+        "stepIntegral": 70.1259713664463,
+        "primePairLedger": 70.12597136644217,
+        "absoluteDifference": 4.121147867408581e-12
+      },
+      {
+        "X": 32,
+        "stepIntegral": 175.94940899348217,
+        "primePairLedger": 175.94940899351786,
+        "absoluteDifference": 3.5697667044587433e-11
+      },
+      {
+        "X": 64,
+        "stepIntegral": 556.5723151485621,
+        "primePairLedger": 556.5723151478451,
+        "absoluteDifference": 7.170228855102323e-10
+      },
+      {
+        "X": 128,
+        "stepIntegral": 1818.7612384527406,
+        "primePairLedger": 1818.7612384585664,
+        "absoluteDifference": 5.825768312206492e-09
+      }
+    ]
+  },
+  "laguerreHilbertBridge": {
+    "kernel": "K_n(t)=2L_(n-1)^1(t)+3L_(n-2)^2(t)",
+    "vectorGeneratingFunction": "sum_(n>=1) K_n(t)z^n = z(2+z)(1-z)^(-3) exp(-tz/(1-z))",
+    "weightedNorm": "Cauchy-Schwarz uses I_epsilon=integral |E_tilde(x)|^2 x^(-2-2epsilon)dx and integral exp(-(1-2epsilon/3)t)|K_n(t)|^2dt",
+    "diskCondition": "for c=1-2epsilon/3 the Hilbert-valued generating function is square integrable when c-2r/(1+r)>0, equivalently r<c/(2-c)",
+    "coefficientBaseIdentity": "the limiting base (2-c)/c=(1+2epsilon/3)/(1-2epsilon/3) equals B_(1/2+epsilon)=(3/2+epsilon)/(3/2-epsilon)",
+    "thresholds": [
+      {
+        "epsilon": 0.25,
+        "laguerreWeightC": 0.8333333333333334,
+        "admissibleRadiusSupremum": 0.7142857142857144,
+        "limitingCoefficientBase": 1.3999999999999997,
+        "halfPlaneBaseAtThetaHalfPlusEpsilon": 1.4
+      },
+      {
+        "epsilon": 0.1,
+        "laguerreWeightC": 0.9333333333333333,
+        "admissibleRadiusSupremum": 0.875,
+        "limitingCoefficientBase": 1.1428571428571428,
+        "halfPlaneBaseAtThetaHalfPlusEpsilon": 1.142857142857143
+      },
+      {
+        "epsilon": 0.05,
+        "laguerreWeightC": 0.9666666666666667,
+        "admissibleRadiusSupremum": 0.9354838709677421,
+        "limitingCoefficientBase": 1.0689655172413792,
+        "halfPlaneBaseAtThetaHalfPlusEpsilon": 1.0689655172413794
+      },
+      {
+        "epsilon": 0.01,
+        "laguerreWeightC": 0.9933333333333333,
+        "admissibleRadiusSupremum": 0.986754966887417,
+        "limitingCoefficientBase": 1.0134228187919465,
+        "halfPlaneBaseAtThetaHalfPlusEpsilon": 1.0134228187919463
+      },
+      {
+        "epsilon": 0.001,
+        "laguerreWeightC": 0.9993333333333333,
+        "admissibleRadiusSupremum": 0.9986675549633578,
+        "limitingCoefficientBase": 1.00133422281521,
+        "halfPlaneBaseAtThetaHalfPlusEpsilon": 1.00133422281521
+      }
+    ],
+    "consequence": "because the energy theorem supplies I_epsilon for every epsilon>0 and the base tends to one, p_n=exp(o(n)) follows"
+  },
+  "finiteDiagnostics": [
+    {
+      "X": 32,
+      "dyadicEnergy": 175.94940899348217,
+      "energyOverX2": 0.17182559472019743,
+      "scope": "finite diagnostic only"
+    },
+    {
+      "X": 128,
+      "dyadicEnergy": 1818.7612384527406,
+      "energyOverX2": 0.11100837637040653,
+      "scope": "finite diagnostic only"
+    },
+    {
+      "X": 512,
+      "dyadicEnergy": 17682.725255751604,
+      "energyOverX2": 0.06745424368191377,
+      "scope": "finite diagnostic only"
+    },
+    {
+      "X": 2048,
+      "dyadicEnergy": 349103.6729166767,
+      "energyOverX2": 0.08323280165593068,
+      "scope": "finite diagnostic only"
+    },
+    {
+      "X": 8192,
+      "dyadicEnergy": 5384604.116952774,
+      "energyOverX2": 0.080236853911769,
+      "scope": "finite diagnostic only"
+    },
+    {
+      "X": 32768,
+      "dyadicEnergy": 89847509.20608956,
+      "energyOverX2": 0.08367701359660323,
+      "scope": "finite diagnostic only"
+    }
+  ],
+  "whyKnownAveragesDoNotSupplyIt": {
+    "distinction": "ordinary zero-density or averaged-in-height estimates may leave an exceptional zero; this theorem is an all-X critical energy bound on the arithmetic error itself",
+    "unconditionalScale": "pointwise PNT-sized control gives a dyadic energy on essentially the X^3 scale, while the missing theorem requires X^(2+o(1))",
+    "singleExceptionalZero": "the critical energy theorem cannot coexist with a zero of real part greater than one half because its Mellin transform would be both holomorphic and singular there"
+  },
+  "proofBoundary": {
+    "whatWasFound": [
+      "a positive all-scale theorem strictly weaker in form than pointwise square-root error",
+      "an exact finite von Mangoldt pair-ledger formulation",
+      "a Mellin proof that the theorem excludes every exceptional zero",
+      "a Hilbert-valued Laguerre generating-function bound recovering the exact exponent-to-base map"
+    ],
+    "whatRemainsUnproved": "the all-X estimate integral_X^(2X)|psi(x)-x|^2dx=O_delta(X^(2+delta)) for every delta>0",
+    "status": "the missing theorem has been isolated, not established; RH remains open"
+  }
+}

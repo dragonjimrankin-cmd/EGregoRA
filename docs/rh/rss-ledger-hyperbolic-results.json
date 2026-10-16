@@ -1,0 +1,1107 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "RSS projective ledger and intrinsic hyperbolic torus-shape completion",
+  "sourceObservables": {
+    "spliceMultiplicity": "m_n=F_n",
+    "cumulativeReturners": "R_n=sum_(k=1)^n F_k=F_(n+2)-1",
+    "deposit": "deltaPi_n=R_n phi^(-n)",
+    "torusMemory": "(p,q) in Z^2 records two independent winding counts"
+  },
+  "ledger": {
+    "definition": "L_n=(m_n,m_(n+1))=(F_n,F_(n+1))",
+    "matrix": [
+      [
+        "0",
+        "1"
+      ],
+      [
+        "1",
+        "1"
+      ]
+    ],
+    "factorization": {
+      "unitAdditionT": [
+        [
+          "1",
+          "1"
+        ],
+        [
+          "0",
+          "1"
+        ]
+      ],
+      "exchangeR": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "0"
+        ]
+      ],
+      "relation": "B=R*T for column vectors; unit addition is followed by register-role exchange"
+    },
+    "determinant": "-1",
+    "update": "(u,v)->(v,u+v)",
+    "projectiveUpdate": "x=u/v -> 1/(1+x)",
+    "cumulativeRecovery": "R_n=u+v-1",
+    "depositRecovery": "deltaPi_n=(u+v-1) phi^(-n)",
+    "primitivity": "gcd(F_n,F_(n+1))=1",
+    "rows": [
+      {
+        "n": 1,
+        "previousMultiplicity_u": "1",
+        "currentMultiplicity_v": "1",
+        "nextState": [
+          "1",
+          "2"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "1",
+        "cumulativeFromLedger": "1",
+        "depositFromCumulative": 0.6180339887498948,
+        "depositFromLedger": 0.6180339887498948,
+        "projectiveRatio": 1
+      },
+      {
+        "n": 2,
+        "previousMultiplicity_u": "1",
+        "currentMultiplicity_v": "2",
+        "nextState": [
+          "2",
+          "3"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "2",
+        "cumulativeFromLedger": "2",
+        "depositFromCumulative": 0.7639320225002102,
+        "depositFromLedger": 0.7639320225002102,
+        "projectiveRatio": 0.5
+      },
+      {
+        "n": 3,
+        "previousMultiplicity_u": "2",
+        "currentMultiplicity_v": "3",
+        "nextState": [
+          "3",
+          "5"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "4",
+        "cumulativeFromLedger": "4",
+        "depositFromCumulative": 0.9442719099991587,
+        "depositFromLedger": 0.9442719099991587,
+        "projectiveRatio": 0.6666666666666666
+      },
+      {
+        "n": 4,
+        "previousMultiplicity_u": "3",
+        "currentMultiplicity_v": "5",
+        "nextState": [
+          "5",
+          "8"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "7",
+        "cumulativeFromLedger": "7",
+        "depositFromCumulative": 1.021286236252208,
+        "depositFromLedger": 1.021286236252208,
+        "projectiveRatio": 0.6
+      },
+      {
+        "n": 5,
+        "previousMultiplicity_u": "5",
+        "currentMultiplicity_v": "8",
+        "nextState": [
+          "8",
+          "13"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "12",
+        "cumulativeFromLedger": "12",
+        "depositFromCumulative": 1.0820393249936906,
+        "depositFromLedger": 1.0820393249936906,
+        "projectiveRatio": 0.625
+      },
+      {
+        "n": 6,
+        "previousMultiplicity_u": "8",
+        "currentMultiplicity_v": "13",
+        "nextState": [
+          "13",
+          "21"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "20",
+        "cumulativeFromLedger": "20",
+        "depositFromCumulative": 1.114561800016824,
+        "depositFromLedger": 1.114561800016824,
+        "projectiveRatio": 0.6153846153846154
+      },
+      {
+        "n": 7,
+        "previousMultiplicity_u": "13",
+        "currentMultiplicity_v": "21",
+        "nextState": [
+          "21",
+          "34"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "33",
+        "cumulativeFromLedger": "33",
+        "depositFromCumulative": 1.1365811737048896,
+        "depositFromLedger": 1.1365811737048896,
+        "projectiveRatio": 0.6190476190476191
+      },
+      {
+        "n": 8,
+        "previousMultiplicity_u": "21",
+        "currentMultiplicity_v": "34",
+        "nextState": [
+          "34",
+          "55"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "54",
+        "cumulativeFromLedger": "54",
+        "depositFromCumulative": 1.1494567576192418,
+        "depositFromLedger": 1.1494567576192418,
+        "projectiveRatio": 0.6176470588235294
+      },
+      {
+        "n": 9,
+        "previousMultiplicity_u": "34",
+        "currentMultiplicity_v": "55",
+        "nextState": [
+          "55",
+          "89"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "88",
+        "cumulativeFromLedger": "88",
+        "depositFromCumulative": 1.1576943396853854,
+        "depositFromLedger": 1.1576943396853854,
+        "projectiveRatio": 0.6181818181818182
+      },
+      {
+        "n": 10,
+        "previousMultiplicity_u": "55",
+        "currentMultiplicity_v": "89",
+        "nextState": [
+          "89",
+          "144"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "143",
+        "cumulativeFromLedger": "143",
+        "depositFromCumulative": 1.1626784820770186,
+        "depositFromLedger": 1.1626784820770186,
+        "projectiveRatio": 0.6179775280898876
+      },
+      {
+        "n": 11,
+        "previousMultiplicity_u": "89",
+        "currentMultiplicity_v": "144",
+        "nextState": [
+          "144",
+          "233"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "232",
+        "cumulativeFromLedger": "232",
+        "depositFromCumulative": 1.1657997078288254,
+        "depositFromLedger": 1.1657997078288254,
+        "projectiveRatio": 0.6180555555555556
+      },
+      {
+        "n": 12,
+        "previousMultiplicity_u": "144",
+        "currentMultiplicity_v": "233",
+        "nextState": [
+          "233",
+          "377"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "376",
+        "cumulativeFromLedger": "376",
+        "depositFromCumulative": 1.1677131256933384,
+        "depositFromLedger": 1.1677131256933384,
+        "projectiveRatio": 0.6180257510729614
+      },
+      {
+        "n": 13,
+        "previousMultiplicity_u": "233",
+        "currentMultiplicity_v": "377",
+        "nextState": [
+          "377",
+          "610"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "609",
+        "cumulativeFromLedger": "609",
+        "depositFromCumulative": 1.1689016438292752,
+        "depositFromLedger": 1.1689016438292752,
+        "projectiveRatio": 0.6180371352785146
+      },
+      {
+        "n": 14,
+        "previousMultiplicity_u": "377",
+        "currentMultiplicity_v": "610",
+        "nextState": [
+          "610",
+          "987"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "986",
+        "cumulativeFromLedger": "986",
+        "depositFromCumulative": 1.169633911587235,
+        "depositFromLedger": 1.169633911587235,
+        "projectiveRatio": 0.6180327868852459
+      },
+      {
+        "n": 15,
+        "previousMultiplicity_u": "610",
+        "currentMultiplicity_v": "987",
+        "nextState": [
+          "987",
+          "1597"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "1596",
+        "cumulativeFromLedger": "1596",
+        "depositFromCumulative": 1.1700873476284175,
+        "depositFromLedger": 1.1700873476284175,
+        "projectiveRatio": 0.6180344478216818
+      },
+      {
+        "n": 16,
+        "previousMultiplicity_u": "987",
+        "currentMultiplicity_v": "1597",
+        "nextState": [
+          "1597",
+          "2584"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "2583",
+        "cumulativeFromLedger": "2583",
+        "depositFromCumulative": 1.1703672543261947,
+        "depositFromLedger": 1.1703672543261947,
+        "projectiveRatio": 0.6180338134001252
+      },
+      {
+        "n": 17,
+        "previousMultiplicity_u": "1597",
+        "currentMultiplicity_v": "2584",
+        "nextState": [
+          "2584",
+          "4181"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "4180",
+        "cumulativeFromLedger": "4180",
+        "depositFromCumulative": 1.1705403730633952,
+        "depositFromLedger": 1.1705403730633952,
+        "projectiveRatio": 0.6180340557275542
+      },
+      {
+        "n": 18,
+        "previousMultiplicity_u": "2584",
+        "currentMultiplicity_v": "4181",
+        "nextState": [
+          "4181",
+          "6765"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "6764",
+        "cumulativeFromLedger": "6764",
+        "depositFromCumulative": 1.1706473178615862,
+        "depositFromLedger": 1.1706473178615862,
+        "projectiveRatio": 0.6180339631667066
+      },
+      {
+        "n": 19,
+        "previousMultiplicity_u": "4181",
+        "currentMultiplicity_v": "6765",
+        "nextState": [
+          "6765",
+          "10946"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "10945",
+        "cumulativeFromLedger": "10945",
+        "depositFromCumulative": 1.1707134318939576,
+        "depositFromLedger": 1.1707134318939576,
+        "projectiveRatio": 0.6180339985218034
+      },
+      {
+        "n": 20,
+        "previousMultiplicity_u": "6765",
+        "currentMultiplicity_v": "10946",
+        "nextState": [
+          "10946",
+          "17711"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "17710",
+        "cumulativeFromLedger": "17710",
+        "depositFromCumulative": 1.1707542855420767,
+        "depositFromLedger": 1.1707542855420767,
+        "projectiveRatio": 0.618033985017358
+      },
+      {
+        "n": 21,
+        "previousMultiplicity_u": "10946",
+        "currentMultiplicity_v": "17711",
+        "nextState": [
+          "17711",
+          "28657"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "28656",
+        "cumulativeFromLedger": "28656",
+        "depositFromCumulative": 1.170779537186068,
+        "depositFromLedger": 1.170779537186068,
+        "projectiveRatio": 0.6180339901755971
+      },
+      {
+        "n": 22,
+        "previousMultiplicity_u": "17711",
+        "currentMultiplicity_v": "28657",
+        "nextState": [
+          "28657",
+          "46368"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "46367",
+        "cumulativeFromLedger": "46367",
+        "depositFromCumulative": 1.1707951425286787,
+        "depositFromLedger": 1.1707951425286787,
+        "projectiveRatio": 0.6180339882053251
+      },
+      {
+        "n": 23,
+        "previousMultiplicity_u": "28657",
+        "currentMultiplicity_v": "46368",
+        "nextState": [
+          "46368",
+          "75025"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "75024",
+        "cumulativeFromLedger": "75024",
+        "depositFromCumulative": 1.1708047875548724,
+        "depositFromLedger": 1.1708047875548724,
+        "projectiveRatio": 0.618033988957902
+      },
+      {
+        "n": 24,
+        "previousMultiplicity_u": "46368",
+        "currentMultiplicity_v": "75025",
+        "nextState": [
+          "75025",
+          "121393"
+        ],
+        "gcd": "1",
+        "cumulativeReturners": "121392",
+        "cumulativeFromLedger": "121392",
+        "depositFromCumulative": 1.1708107483583672,
+        "depositFromLedger": 1.1708107483583672,
+        "projectiveRatio": 0.6180339886704432
+      }
+    ],
+    "minimality": {
+      "scope": "minimal autonomous local state for the full second-order recurrence family, without an external stage label",
+      "caveat": "one fixed Fibonacci orbit can be encoded by its externally supplied index n",
+      "collision": {
+        "statesWithSameCurrentRegister": [
+          [
+            "1",
+            "3"
+          ],
+          [
+            "2",
+            "3"
+          ]
+        ],
+        "distinctNextStates": [
+          [
+            "3",
+            "4"
+          ],
+          [
+            "3",
+            "5"
+          ]
+        ]
+      }
+    },
+    "generalizedBranches": [
+      {
+        "completedUnits": 1,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "1"
+          ]
+        ],
+        "update": "(u,v)->(v,u+1v)",
+        "projectiveBranch": "x->1/(1+x)"
+      },
+      {
+        "completedUnits": 2,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "2"
+          ]
+        ],
+        "update": "(u,v)->(v,u+2v)",
+        "projectiveBranch": "x->1/(2+x)"
+      },
+      {
+        "completedUnits": 3,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "3"
+          ]
+        ],
+        "update": "(u,v)->(v,u+3v)",
+        "projectiveBranch": "x->1/(3+x)"
+      },
+      {
+        "completedUnits": 4,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "4"
+          ]
+        ],
+        "update": "(u,v)->(v,u+4v)",
+        "projectiveBranch": "x->1/(4+x)"
+      },
+      {
+        "completedUnits": 5,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "5"
+          ]
+        ],
+        "update": "(u,v)->(v,u+5v)",
+        "projectiveBranch": "x->1/(5+x)"
+      },
+      {
+        "completedUnits": 6,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "6"
+          ]
+        ],
+        "update": "(u,v)->(v,u+6v)",
+        "projectiveBranch": "x->1/(6+x)"
+      },
+      {
+        "completedUnits": 7,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "7"
+          ]
+        ],
+        "update": "(u,v)->(v,u+7v)",
+        "projectiveBranch": "x->1/(7+x)"
+      },
+      {
+        "completedUnits": 8,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "8"
+          ]
+        ],
+        "update": "(u,v)->(v,u+8v)",
+        "projectiveBranch": "x->1/(8+x)"
+      },
+      {
+        "completedUnits": 9,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "9"
+          ]
+        ],
+        "update": "(u,v)->(v,u+9v)",
+        "projectiveBranch": "x->1/(9+x)"
+      },
+      {
+        "completedUnits": 10,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "10"
+          ]
+        ],
+        "update": "(u,v)->(v,u+10v)",
+        "projectiveBranch": "x->1/(10+x)"
+      },
+      {
+        "completedUnits": 11,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "11"
+          ]
+        ],
+        "update": "(u,v)->(v,u+11v)",
+        "projectiveBranch": "x->1/(11+x)"
+      },
+      {
+        "completedUnits": 12,
+        "matrix": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "12"
+          ]
+        ],
+        "update": "(u,v)->(v,u+12v)",
+        "projectiveBranch": "x->1/(12+x)"
+      }
+    ]
+  },
+  "torusShape": {
+    "definitions": {
+      "periods": "omega_I, omega_R are oriented vectors representing the marked integration/circulation and return cycles",
+      "gram": "G_ij=omega_i dot omega_j",
+      "x": "G_12/G_11",
+      "y": "sqrt(det G)/G_11 = det(omega_I,omega_R)/|omega_I|^2 > 0",
+      "interpretation": "y is dimensionless oriented cell area, equivalently transverse return separation in units of the first-cycle length",
+      "tau": "tau=x+i y",
+      "shapeMatrix": "Q(tau)=G/sqrt(det G)=y^(-1)[[1,x],[x,x^2+y^2]]",
+      "shapeSpace": "{Q positive definite symmetric: det Q=1}=SL(2,R)/SO(2), parameterized by the upper half-plane"
+    },
+    "periodRecoveryChecks": [
+      {
+        "omegaIntegration": [
+          1,
+          0
+        ],
+        "omegaReturn": [
+          0,
+          1
+        ],
+        "gram": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "recovered": {
+          "x": 0,
+          "y": 1,
+          "orientedArea": 1
+        },
+        "unitAreaShape": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "determinant": 1
+      },
+      {
+        "omegaIntegration": [
+          2.75,
+          0
+        ],
+        "omegaReturn": [
+          1.1,
+          3.575
+        ],
+        "gram": [
+          [
+            7.5625,
+            3.0250000000000004
+          ],
+          [
+            3.0250000000000004,
+            13.990625000000001
+          ]
+        ],
+        "recovered": {
+          "x": 0.4,
+          "y": 1.3,
+          "orientedArea": 9.83125
+        },
+        "unitAreaShape": [
+          [
+            0.7692307692307692,
+            0.3076923076923077
+          ],
+          [
+            0.3076923076923077,
+            1.4230769230769231
+          ]
+        ],
+        "determinant": 1
+      },
+      {
+        "omegaIntegration": [
+          0.3,
+          0
+        ],
+        "omegaReturn": [
+          -0.36,
+          0.075
+        ],
+        "gram": [
+          [
+            0.09,
+            -0.108
+          ],
+          [
+            -0.108,
+            0.13522499999999998
+          ]
+        ],
+        "recovered": {
+          "x": -1.2,
+          "y": 0.24999999999999997,
+          "orientedArea": 0.022499999999999996
+        },
+        "unitAreaShape": [
+          [
+            4,
+            -4.800000000000001
+          ],
+          [
+            -4.800000000000001,
+            6.01
+          ]
+        ],
+        "determinant": 0.9999999999999929
+      },
+      {
+        "omegaIntegration": [
+          8,
+          0
+        ],
+        "omegaReturn": [
+          16.8,
+          36
+        ],
+        "gram": [
+          [
+            64,
+            134.4
+          ],
+          [
+            134.4,
+            1578.24
+          ]
+        ],
+        "recovered": {
+          "x": 2.1,
+          "y": 4.5,
+          "orientedArea": 288
+        },
+        "unitAreaShape": [
+          [
+            0.2222222222222222,
+            0.4666666666666667
+          ],
+          [
+            0.4666666666666667,
+            5.4799999999999995
+          ]
+        ],
+        "determinant": 0.9999999999999998
+      }
+    ],
+    "metric": {
+      "coordinateFree": "g_Q(U,V)=1/2 tr(Q^(-1) U Q^(-1) V)",
+      "pullback": "ds^2=(dx^2+dy^2)/y^2",
+      "normalization": "the displayed 1/2 convention gives curvature -1 in these coordinates",
+      "metricChecks": [
+        {
+          "x": 0,
+          "y": 1,
+          "determinantQ": 1,
+          "gxx": 1,
+          "gxy": 0,
+          "gyy": 1,
+          "expectedDiagonal": 1
+        },
+        {
+          "x": 0.4,
+          "y": 1.3,
+          "determinantQ": 1,
+          "gxx": 0.5917159763313609,
+          "gxy": 0,
+          "gyy": 0.5917159763313609,
+          "expectedDiagonal": 0.5917159763313609
+        },
+        {
+          "x": -0.7,
+          "y": 0.2,
+          "determinantQ": 0.9999999999999964,
+          "gxx": 25.000000000000124,
+          "gxy": -1.1368683772161603e-13,
+          "gyy": 25.000000000000142,
+          "expectedDiagonal": 24.999999999999996
+        },
+        {
+          "x": 2.3,
+          "y": 3.5,
+          "determinantQ": 0.9999999999999998,
+          "gxx": 0.0816326530612245,
+          "gxy": -3.469446951953614e-18,
+          "gyy": 0.0816326530612245,
+          "expectedDiagonal": 0.08163265306122448
+        }
+      ],
+      "congruenceChecks": [
+        {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "baseInnerProduct": -0.019693877551020415,
+          "transformedInnerProduct": -0.01969387755102042
+        },
+        {
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "baseInnerProduct": -0.019693877551020415,
+          "transformedInnerProduct": -0.019693877551020415
+        },
+        {
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "baseInnerProduct": -0.019693877551020415,
+          "transformedInnerProduct": -0.019693877551020457
+        }
+      ],
+      "modularInvariance": [
+        {
+          "transformation": "T",
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "point": {
+            "x": 0.31,
+            "y": 0.82
+          },
+          "transformedPoint": {
+            "x": 1.31,
+            "y": 0.82
+          },
+          "originalHyperbolicSquaredNorm": 0.10782272456870913,
+          "transformedHyperbolicSquaredNorm": 0.10782272456870913
+        },
+        {
+          "transformation": "T",
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "point": {
+            "x": -1.7,
+            "y": 2.4
+          },
+          "transformedPoint": {
+            "x": -0.7,
+            "y": 2.4
+          },
+          "originalHyperbolicSquaredNorm": 0.012586805555555558,
+          "transformedHyperbolicSquaredNorm": 0.012586805555555558
+        },
+        {
+          "transformation": "T",
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "point": {
+            "x": 3.2,
+            "y": 0.17
+          },
+          "transformedPoint": {
+            "x": 4.2,
+            "y": 0.17
+          },
+          "originalHyperbolicSquaredNorm": 2.508650519031142,
+          "transformedHyperbolicSquaredNorm": 2.508650519031142
+        },
+        {
+          "transformation": "S",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "point": {
+            "x": 0.31,
+            "y": 0.82
+          },
+          "transformedPoint": {
+            "x": -0.40338321405335076,
+            "y": 1.067013662979831
+          },
+          "originalHyperbolicSquaredNorm": 0.10782272456870913,
+          "transformedHyperbolicSquaredNorm": 0.1078227245687091
+        },
+        {
+          "transformation": "S",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "point": {
+            "x": -1.7,
+            "y": 2.4
+          },
+          "transformedPoint": {
+            "x": 0.1965317919075145,
+            "y": 0.27745664739884396
+          },
+          "originalHyperbolicSquaredNorm": 0.012586805555555558,
+          "transformedHyperbolicSquaredNorm": 0.012586805555555552
+        },
+        {
+          "transformation": "S",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "point": {
+            "x": 3.2,
+            "y": 0.17
+          },
+          "transformedPoint": {
+            "x": -0.31162052410676894,
+            "y": 0.0165548403431721
+          },
+          "originalHyperbolicSquaredNorm": 2.508650519031142,
+          "transformedHyperbolicSquaredNorm": 2.5086505190311414
+        },
+        {
+          "transformation": "gamma",
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "point": {
+            "x": 0.31,
+            "y": 0.82
+          },
+          "transformedPoint": {
+            "x": 1.4515386225664644,
+            "y": 0.34331170190496124
+          },
+          "originalHyperbolicSquaredNorm": 0.10782272456870913,
+          "transformedHyperbolicSquaredNorm": 0.10782272456870914
+        },
+        {
+          "transformation": "gamma",
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "point": {
+            "x": -1.7,
+            "y": 2.4
+          },
+          "transformedPoint": {
+            "x": 2.112,
+            "y": 0.384
+          },
+          "originalHyperbolicSquaredNorm": 0.012586805555555558,
+          "transformedHyperbolicSquaredNorm": 0.012586805555555556
+        },
+        {
+          "transformation": "gamma",
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "point": {
+            "x": 3.2,
+            "y": 0.17
+          },
+          "transformedPoint": {
+            "x": 1.7622942005444595,
+            "y": 0.009621425216057593
+          },
+          "originalHyperbolicSquaredNorm": 2.508650519031142,
+          "transformedHyperbolicSquaredNorm": 2.5086505190311423
+        }
+      ]
+    },
+    "cuspScaleSamples": [
+      {
+        "y": 1,
+        "firstCycleLength": 1,
+        "transverseReturnLength": 1
+      },
+      {
+        "y": 10,
+        "firstCycleLength": 0.31622776601683794,
+        "transverseReturnLength": 3.1622776601683795
+      },
+      {
+        "y": 100,
+        "firstCycleLength": 0.1,
+        "transverseReturnLength": 10
+      },
+      {
+        "y": 10000,
+        "firstCycleLength": 0.01,
+        "transverseReturnLength": 100
+      }
+    ]
+  },
+  "bridgeAssessment": {
+    "mathematicalLedger": "discharged by consecutive declared RSS multiplicities and their exact recurrence",
+    "seamSwap": "discharged as an involutive register-role exchange in the factorization B=R*T; not established as a separate material event",
+    "windingIdentification": "the recurrence ledger and torus winding coefficients are both primitive Z^2 vectors, but identifying their entries requires a marked physical channel map",
+    "positiveImaginaryCoordinate": "discharged as the normalized oriented area/transverse separation of the two marked torus periods",
+    "intrinsicMetric": "discharged on unit-area torus shape space after imposing affine basis invariance and homogeneous determinant-one shape comparison; SL(2,Z) invariance alone would not make the metric unique",
+    "physicalScope": "the hyperbolic geometry is the geometry of RSS two-cycle state shapes, not a derivation that physical spacetime is hyperbolic",
+    "remainingEmpiricalDebt": "identify observables carrying both recurrence registers and both period vectors, and test that seam passage implements the stated channel relabelling"
+  }
+}

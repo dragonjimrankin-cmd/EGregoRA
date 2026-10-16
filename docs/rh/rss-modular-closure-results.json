@@ -1,0 +1,866 @@
+{
+  "generatedAt": "2026-10-14T10:58:20.865Z",
+  "title": "Projective RSS closure: unit integration plus seam inversion",
+  "declaredBridgePremise": "Represent the integrated/residual ledger by a primitive two-coordinate integer vector and let seam maps act by GL(2,Z), consistent with the existing RSS winding-lattice formalism.",
+  "projectiveCoordinate": "x=u/v on P^1(R)",
+  "groupChecks": {
+    "T": [
+      [
+        "1",
+        "1"
+      ],
+      [
+        "0",
+        "1"
+      ]
+    ],
+    "R": [
+      [
+        "0",
+        "1"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "N": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "0",
+        "1"
+      ]
+    ],
+    "S": [
+      [
+        "0",
+        "-1"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "determinants": {
+      "T": "1",
+      "R": "-1",
+      "N": "-1",
+      "S": "1"
+    },
+    "R2": [
+      [
+        "1",
+        "0"
+      ],
+      [
+        "0",
+        "1"
+      ]
+    ],
+    "N2": [
+      [
+        "1",
+        "0"
+      ],
+      [
+        "0",
+        "1"
+      ]
+    ],
+    "S2": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "0",
+        "-1"
+      ]
+    ],
+    "ST3": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "0",
+        "-1"
+      ]
+    ],
+    "projectiveRelations": {
+      "S2": "identity in PSL(2,Z), because S^2=-I",
+      "ST3": "identity in PSL(2,Z), because (ST)^3=-I",
+      "TOrder": "infinite"
+    }
+  },
+  "consequence": {
+    "orientationPreservingGroup": "<S,T> = PSL(2,Z)",
+    "fullGroupWithMirror": "<S,T,N> = PGL(2,Z)",
+    "orbifoldSignature": "(2,3,infinity)",
+    "gaussReturnMap": "G(x)=1/x-floor(1/x)",
+    "digitMeaning": "a=floor(1/x) is the number of completed unit integrations before the next normalized seam return",
+    "cuspMeaning": "T has infinite order and fixes infinity; quotienting by unit integration produces the modular cusp"
+  },
+  "branches": [
+    {
+      "digit": 1,
+      "interval": "(1/2, 1/1]",
+      "inverseBranch": "g_1(x)=1/(1+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "1"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 2,
+      "interval": "(1/3, 1/2]",
+      "inverseBranch": "g_2(x)=1/(2+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "2"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 3,
+      "interval": "(1/4, 1/3]",
+      "inverseBranch": "g_3(x)=1/(3+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "3"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 4,
+      "interval": "(1/5, 1/4]",
+      "inverseBranch": "g_4(x)=1/(4+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "4"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 5,
+      "interval": "(1/6, 1/5]",
+      "inverseBranch": "g_5(x)=1/(5+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "5"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 6,
+      "interval": "(1/7, 1/6]",
+      "inverseBranch": "g_6(x)=1/(6+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "6"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 7,
+      "interval": "(1/8, 1/7]",
+      "inverseBranch": "g_7(x)=1/(7+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "7"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 8,
+      "interval": "(1/9, 1/8]",
+      "inverseBranch": "g_8(x)=1/(8+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "8"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 9,
+      "interval": "(1/10, 1/9]",
+      "inverseBranch": "g_9(x)=1/(9+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "9"
+        ]
+      ],
+      "determinant": "-1"
+    },
+    {
+      "digit": 10,
+      "interval": "(1/11, 1/10]",
+      "inverseBranch": "g_10(x)=1/(10+x)",
+      "matrix": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "10"
+        ]
+      ],
+      "determinant": "-1"
+    }
+  ],
+  "fibonacciSector": {
+    "adjacencyMatrix": [
+      [
+        "1",
+        "1"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "inverseBranchMatrix": [
+      [
+        "0",
+        "1"
+      ],
+      [
+        "1",
+        "1"
+      ]
+    ],
+    "conjugacy": "B_1 = R A R",
+    "fixedPoint": 0.6180339887498948,
+    "fixedPointFormula": "x=1/(1+x)=1/phi",
+    "powers": [
+      {
+        "n": 1,
+        "matrix": [
+          [
+            "1",
+            "1"
+          ],
+          [
+            "1",
+            "0"
+          ]
+        ]
+      },
+      {
+        "n": 2,
+        "matrix": [
+          [
+            "2",
+            "1"
+          ],
+          [
+            "1",
+            "1"
+          ]
+        ]
+      },
+      {
+        "n": 3,
+        "matrix": [
+          [
+            "3",
+            "2"
+          ],
+          [
+            "2",
+            "1"
+          ]
+        ]
+      },
+      {
+        "n": 4,
+        "matrix": [
+          [
+            "5",
+            "3"
+          ],
+          [
+            "3",
+            "2"
+          ]
+        ]
+      },
+      {
+        "n": 5,
+        "matrix": [
+          [
+            "8",
+            "5"
+          ],
+          [
+            "5",
+            "3"
+          ]
+        ]
+      },
+      {
+        "n": 6,
+        "matrix": [
+          [
+            "13",
+            "8"
+          ],
+          [
+            "8",
+            "5"
+          ]
+        ]
+      },
+      {
+        "n": 7,
+        "matrix": [
+          [
+            "21",
+            "13"
+          ],
+          [
+            "13",
+            "8"
+          ]
+        ]
+      },
+      {
+        "n": 8,
+        "matrix": [
+          [
+            "34",
+            "21"
+          ],
+          [
+            "21",
+            "13"
+          ]
+        ]
+      },
+      {
+        "n": 9,
+        "matrix": [
+          [
+            "55",
+            "34"
+          ],
+          [
+            "34",
+            "21"
+          ]
+        ]
+      },
+      {
+        "n": 10,
+        "matrix": [
+          [
+            "89",
+            "55"
+          ],
+          [
+            "55",
+            "34"
+          ]
+        ]
+      },
+      {
+        "n": 11,
+        "matrix": [
+          [
+            "144",
+            "89"
+          ],
+          [
+            "89",
+            "55"
+          ]
+        ]
+      },
+      {
+        "n": 12,
+        "matrix": [
+          [
+            "233",
+            "144"
+          ],
+          [
+            "144",
+            "89"
+          ]
+        ]
+      }
+    ]
+  },
+  "rationalGaussCoding": {
+    "maxDenominator": 32,
+    "stateCount": 323,
+    "firstDigitsObserved": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32
+    ],
+    "allReconstructionsExact": true,
+    "sample": [
+      {
+        "numerator": "1",
+        "denominator": "2",
+        "gaussDigits": [
+          2
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "3",
+        "gaussDigits": [
+          3
+        ]
+      },
+      {
+        "numerator": "2",
+        "denominator": "3",
+        "gaussDigits": [
+          1,
+          2
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "4",
+        "gaussDigits": [
+          4
+        ]
+      },
+      {
+        "numerator": "3",
+        "denominator": "4",
+        "gaussDigits": [
+          1,
+          3
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "5",
+        "gaussDigits": [
+          5
+        ]
+      },
+      {
+        "numerator": "2",
+        "denominator": "5",
+        "gaussDigits": [
+          2,
+          2
+        ]
+      },
+      {
+        "numerator": "3",
+        "denominator": "5",
+        "gaussDigits": [
+          1,
+          1,
+          2
+        ]
+      },
+      {
+        "numerator": "4",
+        "denominator": "5",
+        "gaussDigits": [
+          1,
+          4
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "6",
+        "gaussDigits": [
+          6
+        ]
+      },
+      {
+        "numerator": "5",
+        "denominator": "6",
+        "gaussDigits": [
+          1,
+          5
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "7",
+        "gaussDigits": [
+          7
+        ]
+      },
+      {
+        "numerator": "2",
+        "denominator": "7",
+        "gaussDigits": [
+          3,
+          2
+        ]
+      },
+      {
+        "numerator": "3",
+        "denominator": "7",
+        "gaussDigits": [
+          2,
+          3
+        ]
+      },
+      {
+        "numerator": "4",
+        "denominator": "7",
+        "gaussDigits": [
+          1,
+          1,
+          3
+        ]
+      },
+      {
+        "numerator": "5",
+        "denominator": "7",
+        "gaussDigits": [
+          1,
+          2,
+          2
+        ]
+      },
+      {
+        "numerator": "6",
+        "denominator": "7",
+        "gaussDigits": [
+          1,
+          6
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "8",
+        "gaussDigits": [
+          8
+        ]
+      },
+      {
+        "numerator": "3",
+        "denominator": "8",
+        "gaussDigits": [
+          2,
+          1,
+          2
+        ]
+      },
+      {
+        "numerator": "5",
+        "denominator": "8",
+        "gaussDigits": [
+          1,
+          1,
+          1,
+          2
+        ]
+      },
+      {
+        "numerator": "7",
+        "denominator": "8",
+        "gaussDigits": [
+          1,
+          7
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "9",
+        "gaussDigits": [
+          9
+        ]
+      },
+      {
+        "numerator": "2",
+        "denominator": "9",
+        "gaussDigits": [
+          4,
+          2
+        ]
+      },
+      {
+        "numerator": "4",
+        "denominator": "9",
+        "gaussDigits": [
+          2,
+          4
+        ]
+      },
+      {
+        "numerator": "5",
+        "denominator": "9",
+        "gaussDigits": [
+          1,
+          1,
+          4
+        ]
+      },
+      {
+        "numerator": "7",
+        "denominator": "9",
+        "gaussDigits": [
+          1,
+          3,
+          2
+        ]
+      },
+      {
+        "numerator": "8",
+        "denominator": "9",
+        "gaussDigits": [
+          1,
+          8
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "10",
+        "gaussDigits": [
+          10
+        ]
+      },
+      {
+        "numerator": "3",
+        "denominator": "10",
+        "gaussDigits": [
+          3,
+          3
+        ]
+      },
+      {
+        "numerator": "7",
+        "denominator": "10",
+        "gaussDigits": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "numerator": "9",
+        "denominator": "10",
+        "gaussDigits": [
+          1,
+          9
+        ]
+      },
+      {
+        "numerator": "1",
+        "denominator": "11",
+        "gaussDigits": [
+          11
+        ]
+      },
+      {
+        "numerator": "2",
+        "denominator": "11",
+        "gaussDigits": [
+          5,
+          2
+        ]
+      },
+      {
+        "numerator": "3",
+        "denominator": "11",
+        "gaussDigits": [
+          3,
+          1,
+          2
+        ]
+      },
+      {
+        "numerator": "4",
+        "denominator": "11",
+        "gaussDigits": [
+          2,
+          1,
+          3
+        ]
+      },
+      {
+        "numerator": "5",
+        "denominator": "11",
+        "gaussDigits": [
+          2,
+          5
+        ]
+      },
+      {
+        "numerator": "6",
+        "denominator": "11",
+        "gaussDigits": [
+          1,
+          1,
+          5
+        ]
+      },
+      {
+        "numerator": "7",
+        "denominator": "11",
+        "gaussDigits": [
+          1,
+          1,
+          1,
+          3
+        ]
+      },
+      {
+        "numerator": "8",
+        "denominator": "11",
+        "gaussDigits": [
+          1,
+          2,
+          1,
+          2
+        ]
+      },
+      {
+        "numerator": "9",
+        "denominator": "11",
+        "gaussDigits": [
+          1,
+          4,
+          2
+        ]
+      }
+    ]
+  },
+  "cuspArithmetic": {
+    "primitiveRationalStateCountThroughDenominator32": 323,
+    "identity": "sum_(c>=1) phi(c)/c^(2s) = zeta(2s-1)/zeta(2s)",
+    "geometricMeaning": "phi(c) counts primitive residue classes d mod c with gcd(c,d)=1",
+    "fullVsPrimitiveLatticeIdentity": "E_all(z,s) = zeta(2s) E_primitive(z,s)",
+    "scatteringCoefficient": "sqrt(pi) Gamma(s-1/2)/Gamma(s) * zeta(2s-1)/zeta(2s)",
+    "numericalCheckAtW4": {
+      "seriesLimit": 200000,
+      "primeCount": 17984,
+      "totientDirichletPartial": 1.1106265353181053,
+      "totientEulerPartial": 1.1106265353258884,
+      "absoluteDifference": 7.783107491832197e-12
+    }
+  },
+  "rivalClosures": [
+    {
+      "q": 3,
+      "translationLength": 1.0000000000000002,
+      "signature": "(2,3,infinity)",
+      "interpretation": "unit-threshold modular closure"
+    },
+    {
+      "q": 4,
+      "translationLength": 1.4142135623730951,
+      "signature": "(2,4,infinity)",
+      "interpretation": "alternative Hecke triangle closure"
+    },
+    {
+      "q": 5,
+      "translationLength": 1.618033988749895,
+      "signature": "(2,5,infinity)",
+      "interpretation": "golden-translation Hecke rival"
+    },
+    {
+      "q": 6,
+      "translationLength": 1.7320508075688774,
+      "signature": "(2,6,infinity)",
+      "interpretation": "alternative Hecke triangle closure"
+    }
+  ],
+  "status": {
+    "digits": "derived conditionally from the projective ledger; no prime input",
+    "cusp": "forced after the canonical upper-half-plane/hyperbolic completion is adopted",
+    "riemannZeta": "emerges exactly in primitive/full lattice decomposition and cusp scattering",
+    "limitation": "this derives zeta as dilation and scattering data, not as the primitive-geodesic Euler product; the projective ledger and hyperbolic completion remain explicit bridge premises to justify physically"
+  }
+}

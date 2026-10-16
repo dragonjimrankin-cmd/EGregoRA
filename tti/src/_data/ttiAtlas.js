@@ -15,6 +15,7 @@ const documentMeta = Object.freeze({
   "/gravity/": ["Theory paper", "Open physical bridge"],
   "/spiral/": ["Mathematical model", "Working model"],
   "/skeletal-splice/": ["Mathematical model", "Working model"],
+  "/decimal-splice/": ["Phase model", "Working hypothesis"],
   "/torus/": ["Topology paper", "Comparative model"],
   "/megatubule/": ["Scale hypothesis", "Speculative model"],
   "/moebius/": ["Topology paper", "Working hypothesis"],
@@ -90,7 +91,8 @@ export default {
         page("II·ii", "The Spiral", "/spiral/", "Studies triangular accumulation, harmonic timing and Fibonacci growth as candidate descriptions of becoming."),
         page("II·iii", "The Splice", "/skeletal-splice/", "Sets out the exact arithmetic of the Skeletal Splice before considering any cosmological interpretation."),
         page("II·iv", "Torus", "/torus/", "Compares the torus as a topology of return across physical systems and the framework’s larger recurrence claim."),
-        page("II·v", "Megatubule", "/megatubule/", "Assesses the proposed extension from biological microtubules to a galactic-scale integrating structure.")
+        page("II·v", "Megatubule", "/megatubule/", "Assesses the proposed extension from biological microtubules to a galactic-scale integrating structure."),
+        page("II·vi", "The Decimal Splice", "/decimal-splice/", "Formalises the decimal phase, its two-pass return and the exact golden RH barycentre—while exposing the missing same-xi bridge.")
       ]
     },
     {
@@ -136,7 +138,7 @@ export default {
       note: "Provides the figures, question interface and reader services that support inspection of the research corpus.",
       topics: [],
       subs: [
-        page("V·i", "The Plates", "/plates/", "Indexes thirty-six vector arguments beneath twenty-six exclusive source headings with links back to their papers."),
+        page("V·i", "The Plates", "/plates/", "Indexes thirty-eight vector arguments beneath twenty-seven exclusive source headings with links back to their papers."),
         page("V·ii", "Ask ShakDrah", "/ask-shakdrah/", "Queries the project corpus, creates drawings or films and can read answers in six distinct local voices."),
         page("V·iii", "Join", "/join/", "Creates or recovers the local reader identity used by the research rooms."),
         page("V·iv", "Your Account", "/account/", "Manages the reader’s local name, standing and account controls.")
@@ -152,7 +154,7 @@ export default {
       subs: [
         page("VI·i", "The Riemann Dossier", "/riemann-programme/", "Separates exact identities, internally derivable results, conditional formulae, numerical evidence and retracted claims across the 52-file archive."),
         page("VI·ii", "Proof and Correction Ledger", "/riemann-proof-audit/", "Audits the complete-monotonicity, Bernstein-density, Pólya-kernel, critical-line and third-derivative arguments at their first unsupported step."),
-        page("VI·iii", "The Splice Questions After RH", "/riemann-splice-questions/", "Tests whether the RH work fixes the action, gravitational scale, electromagnetic normalisation or halo radius, and records the diagnostics it can supply instead.")
+        page("VI·iii", "The Splice Questions After RH", "/riemann-splice-questions/", "Constructs a positive splice-action family, proves a von-Mangoldt entropy flow and the global dissipation criterion, then isolates the signed explicit-formula intertwiner and physical scales still missing.")
       ]
     }
   ]

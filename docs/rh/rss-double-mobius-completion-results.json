@@ -1,0 +1,329 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "TTI double Möbius inversion and Weil-completion test",
+  "verdict": {
+    "weilPositivityProved": false,
+    "secondInversionExistsAsExactBlockInvolution": true,
+    "inducesCanonicalWeilCompletion": false,
+    "conclusion": "the inverse second face returns the all-integer ledger; a literal second Mobius extraction is not an inverse; and the natural adjoint completion is either unbounded or, after Green regularisation, too smooth at t=0 to equal Suzuki's screw/Weil kernel"
+  },
+  "operatorAlgebra": {
+    "convention": "M a=mu*a, Z a=1*a",
+    "matrixSize": 24,
+    "maximumMZError": 0,
+    "maximumZMError": 0,
+    "maximumM2IdentityError": 4,
+    "blockInvolution": "P=[[0,Z],[M,0]]",
+    "maximumP2IdentityError": 0,
+    "transportedMetric": "G=diag(I,Z^T Z)",
+    "maximumTransportedMetricInvarianceError": 0,
+    "euclideanOrthogonalityDefect": 23,
+    "interpretation": "P is an exact two-face involution only after the primitive face receives the pullback metric; that metric transports the original norm and does not derive the Weil form"
+  },
+  "featureTest": {
+    "sigma": 0.75,
+    "maxN": 8192,
+    "points": [
+      0.2,
+      0.8,
+      1.5,
+      2.5,
+      4
+    ],
+    "maximumInverseReturnFeatureError": 2.9247437804968968e-15,
+    "rawPrimitiveNormGrowth": [
+      {
+        "n": 128,
+        "rawNormSquared": 18.73184446062378,
+        "greenNormSquared": 0.002554083260976506
+      },
+      {
+        "n": 256,
+        "rawNormSquared": 37.60598199109707,
+        "greenNormSquared": 0.0025686582484531033
+      },
+      {
+        "n": 512,
+        "rawNormSquared": 74.03823971832728,
+        "greenNormSquared": 0.002575625391703822
+      },
+      {
+        "n": 1024,
+        "rawNormSquared": 145.36446211486881,
+        "greenNormSquared": 0.002579033262115952
+      },
+      {
+        "n": 2048,
+        "rawNormSquared": 286.8289611476453,
+        "greenNormSquared": 0.0025807395636794268
+      },
+      {
+        "n": 4096,
+        "rawNormSquared": 572.5227392313387,
+        "greenNormSquared": 0.002581602374039347
+      },
+      {
+        "n": 8192,
+        "rawNormSquared": 1139.7180927459335,
+        "greenNormSquared": 0.002582029674672851
+      }
+    ],
+    "statement": "the unweighted adjoint norm grows with truncation, while kappa/n^2 Green weighting regularises it"
+  },
+  "screwComparison": {
+    "target": "G_g(t,u)=Psi(t)+Psi(u)-Psi(t-u)",
+    "targetLdlPivots": [
+      0.10899958071300553,
+      0.062237841971734875,
+      0.05519248420704531,
+      0.04791552803979805,
+      0.04941473790635977
+    ],
+    "completionComparisons": [
+      {
+        "n": 128,
+        "inverseReturnError": 6.180903364535344e-19,
+        "originalLedgerFit": {
+          "directResidual": 0.9529785339287234,
+          "bestScale": 9.656166210129735,
+          "fittedResidual": 0.7296685687268389
+        },
+        "primitiveAdjointFit": {
+          "directResidual": 0.9412744506161851,
+          "bestScale": 6.875585094683223,
+          "fittedResidual": 0.7598339495685076
+        },
+        "repeatedExtractionFit": {
+          "directResidual": 0.8538993292813245,
+          "bestScale": 2.433831690934086,
+          "fittedResidual": 0.7649636672587362
+        },
+        "originalMinimumPivot": 0.0001189885700847453,
+        "primitiveAdjointMinimumPivot": 0.000102914071817536,
+        "repeatedMinimumPivot": 0.00025602614732534264
+      },
+      {
+        "n": 256,
+        "inverseReturnError": 6.180903364535344e-19,
+        "originalLedgerFit": {
+          "directResidual": 0.9529779053046364,
+          "bestScale": 9.656168413041433,
+          "fittedResidual": 0.7296643192442406
+        },
+        "primitiveAdjointFit": {
+          "directResidual": 0.9410520695300241,
+          "bestScale": 6.8510775117558484,
+          "fittedResidual": 0.7597296698611521
+        },
+        "repeatedExtractionFit": {
+          "directResidual": 0.8500512874785418,
+          "bestScale": 2.3621536530355582,
+          "fittedResidual": 0.7644469804884454
+        },
+        "originalMinimumPivot": 0.00011903113598118481,
+        "primitiveAdjointMinimumPivot": 0.00010347146422441286,
+        "repeatedMinimumPivot": 0.0002661309038049784
+      },
+      {
+        "n": 512,
+        "inverseReturnError": 6.180903364535344e-19,
+        "originalLedgerFit": {
+          "directResidual": 0.952977704427437,
+          "bestScale": 9.656157663508443,
+          "fittedResidual": 0.7296633206159819
+        },
+        "primitiveAdjointFit": {
+          "directResidual": 0.9409416982769603,
+          "bestScale": 6.838689881170661,
+          "fittedResidual": 0.7596888754617627
+        },
+        "repeatedExtractionFit": {
+          "directResidual": 0.8477867204254942,
+          "bestScale": 2.321715585492516,
+          "fittedResidual": 0.764124635606456
+        },
+        "originalMinimumPivot": 0.00011904063911594116,
+        "primitiveAdjointMinimumPivot": 0.00010373956950458857,
+        "repeatedMinimumPivot": 0.00027226614066385156
+      },
+      {
+        "n": 1024,
+        "inverseReturnError": 6.180903364535344e-19,
+        "originalLedgerFit": {
+          "directResidual": 0.9529776733099703,
+          "bestScale": 9.656156027569505,
+          "fittedResidual": 0.7296631650031724
+        },
+        "primitiveAdjointFit": {
+          "directResidual": 0.9408873657100983,
+          "bestScale": 6.832625891921366,
+          "fittedResidual": 0.7596681496784351
+        },
+        "repeatedExtractionFit": {
+          "directResidual": 0.8464338875970836,
+          "bestScale": 2.29798169178026,
+          "fittedResidual": 0.763939492593159
+        },
+        "originalMinimumPivot": 0.00011904268891020971,
+        "primitiveAdjointMinimumPivot": 0.00010387350417462985,
+        "repeatedMinimumPivot": 0.0002759290596167525
+      },
+      {
+        "n": 2048,
+        "inverseReturnError": 6.180903364535344e-19,
+        "originalLedgerFit": {
+          "directResidual": 0.9529776697748632,
+          "bestScale": 9.656155560310202,
+          "fittedResidual": 0.7296631561526691
+        },
+        "primitiveAdjointFit": {
+          "directResidual": 0.9408602868934187,
+          "bestScale": 6.829610906159094,
+          "fittedResidual": 0.7596577036585586
+        },
+        "repeatedExtractionFit": {
+          "directResidual": 0.8456361175739292,
+          "bestScale": 2.2843274151412105,
+          "fittedResidual": 0.763815885708632
+        },
+        "originalMinimumPivot": 0.00011904311902247028,
+        "primitiveAdjointMinimumPivot": 0.00010394047306000787,
+        "repeatedMinimumPivot": 0.00027816027043118884
+      },
+      {
+        "n": 4096,
+        "inverseReturnError": 6.180903364535344e-19,
+        "originalLedgerFit": {
+          "directResidual": 0.9529776694968661,
+          "bestScale": 9.656155577433562,
+          "fittedResidual": 0.7296631537668028
+        },
+        "primitiveAdjointFit": {
+          "directResidual": 0.9408466306218888,
+          "bestScale": 6.828097588767145,
+          "fittedResidual": 0.7596522048651154
+        },
+        "repeatedExtractionFit": {
+          "directResidual": 0.8451573077755188,
+          "bestScale": 2.2763018403167763,
+          "fittedResidual": 0.7637322830919637
+        },
+        "originalMinimumPivot": 0.00011904320723562512,
+        "primitiveAdjointMinimumPivot": 0.00010397428062483635,
+        "repeatedMinimumPivot": 0.00027952170520429944
+      },
+      {
+        "n": 8192,
+        "inverseReturnError": 6.180903364535344e-19,
+        "originalLedgerFit": {
+          "directResidual": 0.9529776693290141,
+          "bestScale": 9.656155566876537,
+          "fittedResidual": 0.7296631529817549
+        },
+        "primitiveAdjointFit": {
+          "directResidual": 0.9408398273283894,
+          "bestScale": 6.827340577734379,
+          "fittedResidual": 0.7596495918280087
+        },
+        "repeatedExtractionFit": {
+          "directResidual": 0.8448800400055395,
+          "bestScale": 2.271637216203224,
+          "fittedResidual": 0.7636870950915433
+        },
+        "originalMinimumPivot": 0.00011904322497860555,
+        "primitiveAdjointMinimumPivot": 0.00010399099105025803,
+        "repeatedMinimumPivot": 0.0002803159763825751
+      }
+    ],
+    "warning": "finite matrix fits are diagnostics; non-equality is independently forced by the t=0 regularity mismatch"
+  },
+  "localRegularityNoGo": {
+    "targetAsymptotic": "G_g(t,t)=2 Psi(t)=t log(1/t)+O(t)",
+    "boundedGreenGramAsymptotic": "D(t,t)=C t^2+o(t^2) when the differentiated feature has finite norm",
+    "smallTDiscriminator": [
+      {
+        "t": 0.1,
+        "targetDiagonal": 0.10626086763554043,
+        "targetOverTLogInverseT": 0.46148508456367043,
+        "targetOverTSquared": 10.626086763554042,
+        "sourceDiagonal": 0.00002991549408777169,
+        "sourceOverTSquared": 0.0029915494087771684,
+        "greenDualDiagonal": 0.000025987374849119823,
+        "greenDualOverTSquared": 0.002598737484911982
+      },
+      {
+        "t": 0.03,
+        "targetDiagonal": 0.06431918044764154,
+        "targetOverTLogInverseT": 0.6114180185721909,
+        "targetOverTSquared": 71.46575605293505,
+        "sourceDiagonal": 0.0000026966438151261177,
+        "sourceOverTSquared": 0.0029962709056956865,
+        "greenDualDiagonal": 0.000002338558973306336,
+        "greenDualOverTSquared": 0.002598398859229262
+      },
+      {
+        "t": 0.01,
+        "targetDiagonal": 0.03207578195996059,
+        "targetOverTLogInverseT": 0.6965167553971376,
+        "targetOverTSquared": 320.75781959960585,
+        "sourceDiagonal": 2.9966866386776625e-7,
+        "sourceOverTSquared": 0.0029966866386776625,
+        "greenDualDiagonal": 2.598368550928439e-7,
+        "greenDualOverTSquared": 0.002598368550928439
+      },
+      {
+        "t": 0.003,
+        "targetDiagonal": 0.013197900968306307,
+        "targetOverTLogInverseT": 0.7573062550025049,
+        "targetOverTSquared": 1466.433440922923,
+        "sourceDiagonal": 2.6970605415308324e-8,
+        "sourceOverTSquared": 0.002996733935034258,
+        "greenDualDiagonal": 2.338528588044859e-8,
+        "greenDualOverTSquared": 0.002598365097827621
+      },
+      {
+        "t": 0.001,
+        "targetDiagonal": 0.005494412554662572,
+        "targetOverTLogInverseT": 0.7953976845966346,
+        "targetOverTSquared": 5494.412554662572,
+        "sourceDiagonal": 2.996738093021443e-9,
+        "sourceOverTSquared": 0.002996738093021443,
+        "greenDualDiagonal": 2.5983647942042635e-9,
+        "greenDualOverTSquared": 0.0025983647942042637
+      }
+    ],
+    "conclusion": "a bounded or Green-regularised adjoint completion of the TTI log-integer path cannot equal G_g near the origin"
+  },
+  "allIntegerReturnVsXiPick": {
+    "equalSumPairs": [
+      [
+        2,
+        5
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "equalSumPickValues": [
+      {
+        "s": 2,
+        "t": 5,
+        "value": 0.045120736188100884
+      },
+      {
+        "s": 3,
+        "t": 4,
+        "value": 0.04551358137375533
+      }
+    ],
+    "equalSumPickDefect": 0.000392845185654446,
+    "combinedArgumentFact": "the returned ledger has the form F(s+conj(t)) and therefore agrees on equal-sum pairs",
+    "conclusion": "K_xi is not a combined-argument all-integer Dirichlet kernel"
+  },
+  "remainingPossibleRoute": {
+    "requirement": "derive an additional nontrivial residue/cocycle channel B from TTI and prove W(f*tilde(f))=||Bf||^2 on the full admissible test space",
+    "recoveryForm": "equivalently derive C_q-J_q as a norm square at every recovery witness",
+    "warning": "choosing a pullback metric to force the target form is circular unless that metric is independently fixed by TTI"
+  }
+}

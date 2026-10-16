@@ -28,7 +28,7 @@ assert.deepEqual(
 );
 
 const destinations = ttiAtlas.limbs.flatMap((route) => route.subs);
-assert.equal(destinations.length, 34, "the six reading paths must contain all 34 page and account-room destinations");
+assert.equal(destinations.length, 35, "the six reading paths must contain all 35 page and account-room destinations");
 assert.ok(ttiAtlas.limbs.every((route) => route.note && route.subs.length >= 3), "every path needs an explanation and at least three destinations");
 assert.ok(destinations.every((item) => item.title && item.note && item.href.startsWith("/") && item.href.endsWith("/")), "every destination needs a title, note and stable absolute URL");
 

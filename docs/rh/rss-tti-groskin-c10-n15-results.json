@@ -1,0 +1,74 @@
+{
+  "package": {
+    "paper": "Groskin, arXiv:2607.02828v3",
+    "repository": "https://github.com/akivag613/connes-cvs-",
+    "commit": "7e646d78bc480bcfeb3947bdc849c4d744cf7080",
+    "manifest_entries_sha256_verified": 47,
+    "package_folder_files_matched_to_pinned_git_tree": 48,
+    "core_guards": {
+      "verify_finite_dictionary": {
+        "status": "PASS",
+        "maximum_single_source_error": 6.217e-15,
+        "maximum_pole_relative_error": 1.0884332e-61,
+        "maximum_pole_square_relative_error": 2.1768664e-61
+      },
+      "audit_exact_series_identity": {
+        "status": "PASS",
+        "exact_coefficient_equalities": 2000,
+        "even_power_zero_checks": 1875
+      }
+    },
+    "finite_arb_ldlt": {
+      "script": "arb_ldlt_certify.py",
+      "script_sha256": "b7fee730a83baedc860ca456547d2799ec10894a79edecc6d5612931b41509e3",
+      "selftest": "PASS",
+      "c": 10,
+      "N": 15,
+      "matrix_dimension": 31,
+      "precision_bits": 512,
+      "positive_pivots": 31,
+      "negative_pivots": 0,
+      "undetermined_pivot": null,
+      "result": "certified positive definite for this finite cutoff/band only",
+      "pivot_transcript_sha256": "1e5329c01b0524b93905a0aeccffd07043974e95b98174016b8ec14e3156398f"
+    }
+  },
+  "coordinates": {
+    "cosine_polynomial": "T(theta)=C0+2 sum_{k>=1} Ck cos(2 pi k theta)",
+    "package_even_coordinates": "v0=C0; vk=sqrt(2) Ck",
+    "ordinary_cosine_coefficients": "a0=C0; ak=2 Ck",
+    "map_cosine_to_even": "v=R a, R=diag(1,1/sqrt(2),...)"
+  },
+  "weil_congruence_diagnostic": {
+    "matrix": "Q_even(c=10,N=M-1) assembled with package build_Me closed-form source route",
+    "column_normalization": "unit Euclidean column norms in package even-sector v coordinates, used identically for prefix and curvature columns",
+    "arithmetic": "mpmath 1.3.0; results independently repeated at 60 and 90 decimal digits",
+    "eigenvalues_are_interval_certificates": false,
+    "basis_relation": "D=P U, U unimodular second-difference transform; H_D=U^T H_P U",
+    "dimensions": [4, 8, 12, 16],
+    "normalized_congruence_eigenvalue_extrema": [
+      {"M": 4, "prefix_min": 1.0129360521548632e-12, "prefix_max": 0.465759248164, "curvature_min": 1.7699199247722174e-12, "curvature_max": 0.476199249675},
+      {"M": 8, "prefix_min": 3.647735625183623e-21, "prefix_max": 2.30079331436, "curvature_min": 1.095583921832204e-20, "curvature_max": 3.44902311654},
+      {"M": 12, "prefix_min": 2.430277064694543e-27, "prefix_max": 5.52136691174, "curvature_min": 8.926422566337913e-27, "curvature_max": 4.55676178074},
+      {"M": 16, "prefix_min": 1.448224208647758e-31, "prefix_max": 9.60094521895, "curvature_min": 5.783495889288155e-31, "curvature_max": 5.55809498538}
+    ],
+    "interpretation": "high-precision numerical comparison only; not used as the finite positivity certificate, and not an all-window or RH result"
+  },
+  "uniform_curvature_basis_bound": {
+    "script": "scripts/certify-tti-curvature-toeplitz.py",
+    "status": "PASS",
+    "basis_norm_bound": "< 5.24",
+    "inverse_norm_bound": "< 40.1",
+    "condition_number_bound": "< 211",
+    "arithmetic": "exact rational intervals"
+  },
+  "interval_basis_comparison": {
+    "script": "scripts/certify-tti-unit-column-comparison.py",
+    "M": 4,
+    "arithmetic": "exact rational intervals with sqrt(5) enclosure and interval LDL",
+    "prefix_unit_column_condition_number": "> 8",
+    "curvature_unit_column_condition_number": "< sqrt(40) < 6.33",
+    "status": "PASS",
+    "scope": "coefficient-basis conditioning only, not Weil-form positivity"
+  }
+}

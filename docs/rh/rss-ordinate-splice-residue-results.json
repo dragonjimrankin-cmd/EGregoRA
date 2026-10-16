@@ -1,0 +1,221 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "Zero-ordinate projection as a TTI splice and horizontal residue",
+  "verdict": {
+    "rhProved": false,
+    "exactTtiTwoInversionDecomposition": true,
+    "positiveHorizontalResidueScalarDerived": true,
+    "fullWeilResiduePositive": false,
+    "conclusion": "functional inversion followed by conjugation is the reflection across the critical line; its orthogonal splice separates every upper zero pair into an ordinate channel and a horizontal residue, whose central weighted norm is nonnegative and vanishes exactly under RH, while the full time-domain correction remains signed"
+  },
+  "centeredZeroGeometry": {
+    "coordinate": "z=rho-1/2=eta+i gamma",
+    "functionalInversion": "I(z)=-z, induced by xi(s)=xi(1-s)",
+    "conjugation": "C(z)=conj(z), induced by real xi coefficients",
+    "composedReflection": "S=I C: z -> -conj(z), or (eta,gamma)->(-eta,gamma)",
+    "matrices": {
+      "I": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          -1
+        ]
+      ],
+      "C": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          -1
+        ]
+      ],
+      "S": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "ordinateProjector": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "horizontalProjector": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "identities": [
+      "I^2=C^2=S^2=1",
+      "Q_ord=(1+S)/2 and Q_hor=(1-S)/2",
+      "Q_ord^2=Q_ord, Q_hor^2=Q_hor, Q_ord Q_hor=0",
+      "z=Q_ord z+Q_hor z=i gamma+eta"
+    ],
+    "sample": {
+      "state": [
+        0.37,
+        14.134725141734693
+      ],
+      "reflectedState": [
+        -0.37,
+        14.134725141734693
+      ],
+      "ordinateState": [
+        0,
+        14.134725141734693
+      ],
+      "horizontalState": [
+        0.37,
+        0
+      ]
+    }
+  },
+  "spliceInterpretation": {
+    "upperPair": "eta+i gamma and -eta+i gamma",
+    "normalizedHadamardSplice": "q=(z+S z)/sqrt(2)=sqrt(2) i gamma; r=(z-S z)/sqrt(2)=sqrt(2) eta",
+    "conservedPairEnergy": "|z|^2+|S z|^2=2 gamma^2+2 eta^2=|q|^2+|r|^2",
+    "thirdSpliceMultiplicity": 2,
+    "warning": "F_3=2 matches the two upper members structurally, but TTI arithmetic does not derive the zeta quartet from that count"
+  },
+  "centralHorizontalResidue": {
+    "projectedLogDerivative": "H_ord(w)=sum_{rho: gamma>0} 2w/(w^2+gamma^2)",
+    "exactQuartetLogDerivative": "H_q(w)=2w/(w^2-a^2)+2w/(w^2-conj(a)^2)",
+    "quartetDefect": "H_q-H_ord=4w eta^2(w^2-eta^2-3gamma^2)/[(w^2+gamma^2)((w^2-eta^2+gamma^2)^2+4eta^2gamma^2)]",
+    "residueIdentity": "H_ord'(0)-H'(0)=sum_quartets 4eta^2(eta^2+3gamma^2)/[gamma^2(eta^2+gamma^2)^2]",
+    "normFeature": "r_(eta,gamma)=2eta sqrt(eta^2+3gamma^2)/[gamma(eta^2+gamma^2)]",
+    "zeroCountingEquivalent": "H_ord'(0)=4 integral_0^infinity N(T)/T^3 dT; equality with (log xi)''(1/2) is equivalent to RH",
+    "properties": [
+      "every summand is nonnegative",
+      "the sum converges",
+      "the sum vanishes if and only if every eta is zero",
+      "therefore the central residue vanishes if and only if RH"
+    ],
+    "hypotheticalQuartets": [
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "reflectedUpperZero": [
+          -0.1,
+          14.134725141734693
+        ],
+        "ordinateProjection": [
+          0,
+          14.134725141734693
+        ],
+        "horizontalResidue": [
+          0.1,
+          0
+        ],
+        "EuclideanPairEnergy": 399.60090966477367,
+        "ordinatePairEnergy": 399.5809096647737,
+        "horizontalPairEnergy": 0.020000000000000004,
+        "centralResidueWeight": 0.000003006045478541363,
+        "realAxisDefectCrossing": 24.48226632681624,
+        "defectBelowCrossing": -0.0000051498537439752314,
+        "defectAboveCrossing": 2.009993239202019e-7,
+        "timeDefectMinimum": -0.010358522205467314,
+        "timeDefectMaximum": 0.010870247721650211
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "reflectedUpperZero": [
+          -0.25,
+          14.134725141734693
+        ],
+        "ordinateProjection": [
+          0,
+          14.134725141734693
+        ],
+        "horizontalResidue": [
+          0.25,
+          0
+        ],
+        "EuclideanPairEnergy": 399.7059096647737,
+        "ordinatePairEnergy": 399.5809096647737,
+        "horizontalPairEnergy": 0.125,
+        "centralResidueWeight": 0.000018779559456743018,
+        "realAxisDefectCrossing": 24.48333850799683,
+        "defectBelowCrossing": -0.00003218580869003467,
+        "defectAboveCrossing": 0.000001256149092495972,
+        "timeDefectMinimum": -0.09615007585197206,
+        "timeDefectMaximum": 0.10269346103610785
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "reflectedUpperZero": [
+          -0.49,
+          14.134725141734693
+        ],
+        "ordinateProjection": [
+          0,
+          14.134725141734693
+        ],
+        "horizontalResidue": [
+          0.49,
+          0
+        ],
+        "EuclideanPairEnergy": 400.0611096647737,
+        "ordinatePairEnergy": 399.5809096647737,
+        "horizontalPairEnergy": 0.48019999999999996,
+        "centralResidueWeight": 0.00007203684181871855,
+        "realAxisDefectCrossing": 24.486965195735475,
+        "defectBelowCrossing": -0.00012363488316926118,
+        "defectAboveCrossing": 0.000004824366267056188,
+        "timeDefectMinimum": -1.1826797498259731,
+        "timeDefectMaximum": 1.3213273177609275
+      }
+    ]
+  },
+  "fullKernelDefect": {
+    "definition": "E(t,u)=G_g(t,u)-D_ord(t,u)",
+    "status": "exactly zero under RH but signed for a hypothetical off-line quartet",
+    "realAxisTransformSign": "the quartet defect changes sign at w=sqrt(eta^2+3gamma^2)",
+    "timeDomainSign": "sampled quartet potential defects take both signs",
+    "consequence": "the central residue is a norm square, but the full correction is not a positive channel term by term"
+  },
+  "arithmeticMobiusLink": {
+    "distinction": "arithmetic M=mu* acts on divisor coefficients; S=I C acts on centered zero geometry",
+    "primePipeline": "log n --M--> Lambda(n) --hinge plus archimedean completion--> Psi --Laplace--> H=xi'/xi",
+    "zeroPipeline": "zero quartet --S splice--> ordinate projection plus horizontal residue",
+    "exactBridge": "the completed explicit formula identifies the prime-side H with the zero-side logarithmic derivative",
+    "failureOfInverseReturn": "Z M returns the all-integer log ledger but does not force the horizontal residue eta to vanish",
+    "requiredTheorem": "derive from the completed primitive ledger that H_ord'(0)=H'(0), or globally that D_ord=G_g"
+  },
+  "ttiInterpretation": {
+    "ten": "real/localised displacement channel, analogous only at the level of eta",
+    "oneHundred": "phase/ordinate channel gamma",
+    "oneThousand": "two-face reflection separates the returned ordinate state from horizontal history residue",
+    "evidenceGrade": "structural mathematical analogy, not a physical derivation of zeta zeros from splice thresholds"
+  },
+  "reproducibility": {
+    "maximumQuartetDefectFormulaError": 2.871571310394065e-17,
+    "checkedAlgebraCases": 72
+  },
+  "remainingRoute": {
+    "scalarTarget": "prove the independently nonnegative central residue norm is zero from prime-side data",
+    "fullTarget": "prove E(t,u)=0 on the full domain, equivalently D_ord=G_g",
+    "warning": "defining the ordinate projection is unconditional; proving equality is still RH-equivalent"
+  }
+}

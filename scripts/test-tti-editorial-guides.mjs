@@ -15,7 +15,7 @@ const expectedRoutes = ttiAtlas.limbs
   .flatMap((part) => part.subs.map((document) => document.href))
   .filter((route) => !excludedServices.has(route));
 
-assert.equal(expectedRoutes.length, 32, "editorial guide scope must cover 30 studies and two built reading rooms");
+assert.equal(expectedRoutes.length, 33, "editorial guide scope must cover 31 studies and two built reading rooms");
 assert.deepEqual(Object.keys(editorialGuides).sort(), [...expectedRoutes].sort(),
   "editorial guides must cover every built research route exactly once");
 

@@ -1,0 +1,194 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Applying critical energy and testing spin-colour channels",
+  "question": "how does the critical energy theorem close the earlier programme, and can spin or colour supply its missing estimate?",
+  "verdict": {
+    "rhProved": false,
+    "criticalEnergyAppliedConditionally": true,
+    "criticalEnergyEstimateProved": false,
+    "spinColourClosesCriticalEnergy": false,
+    "internalDegeneracyChangesCoefficientRadius": false,
+    "sixDescendantSeamContractionUniform": false,
+    "physicalSpinColourCouplingDerived": false,
+    "conclusion": "If the critical dyadic Chebyshev-energy estimate were proved, it would close the arithmetic controller, force RH, set every seam defect and horizontal residue to zero, and identify the ordinate and exact Weil channels. Spin and colour do not presently prove that estimate. As internal SU(2)xSU(3) degeneracy they leave the scalar singlet and coefficient radius unchanged; as six spectral descendants they exceed the four-branch seam-contraction theorem and can expand the defect at small displacement."
+  },
+  "conditionalApplicationMap": [
+    {
+      "previousObject": "weighted Chebyshev error",
+      "energyConsequence": "I_epsilon is finite for every epsilon>0",
+      "status": "direct equivalent form of the unproved critical energy estimate"
+    },
+    {
+      "previousObject": "prime-Laguerre controller p_n",
+      "energyConsequence": "p_n=exp(o(n)) by the Hilbert-valued Laguerre generating function",
+      "status": "conditional closure"
+    },
+    {
+      "previousObject": "generalized Li disk",
+      "energyConsequence": "radius at least one and no mapped zeta zero inside the disk",
+      "status": "conditional closure"
+    },
+    {
+      "previousObject": "two-ended seam determinant",
+      "energyConsequence": "eta=0 for every zero, so every Poisson product is one and the total defect is zero",
+      "status": "conditional closure through RH"
+    },
+    {
+      "previousObject": "central horizontal residue",
+      "energyConsequence": "R_hor=0",
+      "status": "conditional closure through RH"
+    },
+    {
+      "previousObject": "ordinate projection and exact Weil kernel",
+      "energyConsequence": "D_ord=G_g and the RH-equivalent positivity criterion holds",
+      "status": "conditional closure through RH"
+    },
+    {
+      "previousObject": "same-xi horizontal halving",
+      "energyConsequence": "all zero displacements already vanish, so halving acts trivially on the zero set",
+      "status": "consequence, not a derivation of splice dynamics"
+    },
+    {
+      "previousObject": "finite theta completions and splice clocks",
+      "energyConsequence": "no theorem for the zeros of each finite approximant and no clock law",
+      "status": "not supplied by critical energy"
+    },
+    {
+      "previousObject": "physical action, G, charge normalization and halo scale",
+      "energyConsequence": "none",
+      "status": "outside the arithmetic theorem"
+    }
+  ],
+  "spinColourStateSpace": {
+    "spinRepresentation": "V_spin=C^2, fundamental SU(2) doublet with two spin projections",
+    "colourRepresentation": "V_colour=C^3, fundamental SU(3) triplet with three colours",
+    "combinedRepresentation": "V=C^2 tensor C^3 has dimension 6",
+    "operatorDecomposition": "End(V)=(1,1) plus (3,1) plus (1,8) plus (3,8), with dimensions 1+3+8+24=36",
+    "scalarVisibility": "a normalized colour- and spin-blind trace sees only the (1,1) singlet; Pauli and colour generators are traceless",
+    "existingTernaryRelation": "the earlier Z_3 phase model can at most represent the center/triality shadow of SU(3); Z_3 alone does not derive the full eight-generator colour gauge symmetry",
+    "existingQuaternaryRelation": "the earlier four-state alternatives do not derive spin: SU(2) has a two-dimensional fundamental representation and center Z_2, while a four-state scalar model needs an independently specified tensor product or coupling"
+  },
+  "singletBottleneck": {
+    "matrixError": "A(x)=E(x)I_d+A_0(x), Tr(A_0)=0",
+    "hilbertSchmidtIdentity": "||A||_HS^2=d|E|^2+||A_0||_HS^2",
+    "traceInequality": "|(1/d)Tr(A)|^2 <= (1/d)||A||_HS^2",
+    "candidateMatrixTheorem": "for every delta>0, integral_X^(2X)||Psi_matrix(x)-x I_6||_HS^2 dx is O_delta(X^(2+delta))",
+    "consequence": "the matrix theorem implies the scalar critical energy theorem",
+    "difficulty": "it is stronger, not weaker: nonsinglet spin-colour channels add nonnegative energy and cannot cancel the scalar singlet norm"
+  },
+  "coefficientMultiplicity": [
+    {
+      "internalDimension": 1,
+      "coefficientMap": "p_n -> 1 p_n",
+      "nthRootMultiplicityFactor": "1^(1/n) -> 1",
+      "changesRadiusOfConvergence": false
+    },
+    {
+      "internalDimension": 2,
+      "coefficientMap": "p_n -> 2 p_n",
+      "nthRootMultiplicityFactor": "2^(1/n) -> 1",
+      "changesRadiusOfConvergence": false
+    },
+    {
+      "internalDimension": 3,
+      "coefficientMap": "p_n -> 3 p_n",
+      "nthRootMultiplicityFactor": "3^(1/n) -> 1",
+      "changesRadiusOfConvergence": false
+    },
+    {
+      "internalDimension": 6,
+      "coefficientMap": "p_n -> 6 p_n",
+      "nthRootMultiplicityFactor": "6^(1/n) -> 1",
+      "changesRadiusOfConvergence": false
+    }
+  ],
+  "spinPhaseAndSupertrace": {
+    "unitaryPhase": "spin or colour phases disappear from absolute-square Hilbert energy",
+    "orthogonalChannels": "energies add by Pythagoras rather than cancel",
+    "supertrace": "a signed boson-fermion supertrace could cancel amplitudes, but it is indefinite and does not provide the positive L2 norm needed for the Mellin Cauchy-Schwarz argument"
+  },
+  "seamMultiplicityAudit": {
+    "defect": "epsilon(eta)=-2log(cos(pi eta))",
+    "internalDegeneracyReading": "if all d internal states remain attached to one spectral zero before and after halving, the common factor d cancels from the comparison and the defect contracts",
+    "spectralDescendantReading": "if one parent zero creates six distinct half-displacement zeros, compare epsilon(eta) with 6epsilon(eta/2)",
+    "etaOneQuarter": {
+      "parentDefect": 0.6931471805599452,
+      "oneHalfDisplacementDefect": 0.15834718382037496,
+      "fourDescendantTotal": 0.6333887352814999,
+      "sixDescendantTotal": 0.9500831029222498,
+      "sixDescendantsContract": false
+    },
+    "sixDescendantThreshold": 0.42414119585569166,
+    "interpretation": "six half-displacement descendants expand the defect for 0<|eta|<about 0.424141 and contract only above that threshold",
+    "table": [
+      {
+        "descendantCount": 1,
+        "uniformContractionForAllNonzeroStripDisplacements": true,
+        "contractionThresholdEtaIfNotUniform": null,
+        "balanceAtEtaOneQuarter": 0.5347999967395702,
+        "contractsAtEtaOneQuarter": true
+      },
+      {
+        "descendantCount": 2,
+        "uniformContractionForAllNonzeroStripDisplacements": true,
+        "contractionThresholdEtaIfNotUniform": null,
+        "balanceAtEtaOneQuarter": 0.37645281291919525,
+        "contractsAtEtaOneQuarter": true
+      },
+      {
+        "descendantCount": 3,
+        "uniformContractionForAllNonzeroStripDisplacements": true,
+        "contractionThresholdEtaIfNotUniform": null,
+        "balanceAtEtaOneQuarter": 0.21810562909882025,
+        "contractsAtEtaOneQuarter": true
+      },
+      {
+        "descendantCount": 4,
+        "uniformContractionForAllNonzeroStripDisplacements": true,
+        "contractionThresholdEtaIfNotUniform": null,
+        "balanceAtEtaOneQuarter": 0.059758445278445316,
+        "contractsAtEtaOneQuarter": true
+      },
+      {
+        "descendantCount": 5,
+        "uniformContractionForAllNonzeroStripDisplacements": false,
+        "contractionThresholdEtaIfNotUniform": 0.3551627601560615,
+        "balanceAtEtaOneQuarter": -0.09858873854192962,
+        "contractsAtEtaOneQuarter": false
+      },
+      {
+        "descendantCount": 6,
+        "uniformContractionForAllNonzeroStripDisplacements": false,
+        "contractionThresholdEtaIfNotUniform": 0.42414119585569166,
+        "balanceAtEtaOneQuarter": -0.25693592236230467,
+        "contractsAtEtaOneQuarter": false
+      },
+      {
+        "descendantCount": 8,
+        "uniformContractionForAllNonzeroStripDisplacements": false,
+        "contractionThresholdEtaIfNotUniform": 0.4721511964959473,
+        "balanceAtEtaOneQuarter": -0.5736302900030545,
+        "contractsAtEtaOneQuarter": false
+      },
+      {
+        "descendantCount": 12,
+        "uniformContractionForAllNonzeroStripDisplacements": false,
+        "contractionThresholdEtaIfNotUniform": 0.4944863477294408,
+        "balanceAtEtaOneQuarter": -1.2070190252845545,
+        "contractsAtEtaOneQuarter": false
+      }
+    ]
+  },
+  "twistedEulerProducts": {
+    "possibleConstruction": "prime-dependent SU(2) or SU(3) matrices would define matrix Euler products or automorphic/L-function-like sectors",
+    "singletPersistence": "if the scalar zeta ledger is recovered in the singlet, its critical energy obstruction remains unchanged",
+    "strength": "critical energy in every nontrivial channel would generally ask for zero control of additional L-functions and is stronger than RH",
+    "status": "no prime-to-spin or prime-to-colour representation is derived by TTI"
+  },
+  "proofBoundary": {
+    "validApplication": "critical energy conditionally closes every exact zeta-side object downstream of RH, but not finite splice models or physical constants",
+    "validSpinColourRole": "spin and colour can organize a future matrix-valued ledger and expose singlet versus nonsinglet channels",
+    "missingInput": "derive a non-circular prime-dependent SU(2)xSU(3) coupling and prove a critical energy estimate for its singlet component",
+    "status": "spin and colour sharpen the ontology and multiplicity audit; they do not prove the missing estimate or RH"
+  }
+}

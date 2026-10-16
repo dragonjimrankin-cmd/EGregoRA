@@ -1,0 +1,433 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Finite negative-square census and conductor-commutator gate",
+  "verdict": {
+    "rhProved": false,
+    "finiteSyntheticIndexTheoremProved": true,
+    "collapsingAmplitudeAvoided": true,
+    "multiplicityCountedByStandardWeilForm": false,
+    "independentPrimeSideIndexFound": false,
+    "globalConductorFredholmIndexFound": false,
+    "sonineReflectionPositivityFound": false,
+    "routePromoted": false,
+    "conclusion": "The reflection form gives an exact integer negative-square census for distinct off-line mirror cycles and remains indefinite arbitrarily near the line or high in the strip.  Pullback through finite interpolation preserves this inertia.  For zeta, however, the same completed form is the Weil form; proving zero index from its prime side is RH-equivalent.  Local conductor commutators do not assemble into an established independently computable global Fredholm index."
+  },
+  "finiteTheorem": {
+    "reflection": "R(z)=-conjugate(z) in centered coordinates z=s-1/2",
+    "form": "Q_Z(v)=sum_j v_j conjugate(v_(Rj))",
+    "inertiaFormula": "if f nodes are fixed by R and p mirror 2-cycles are present, inertia(Q_Z)=(f+p,p,0)",
+    "fullQuartet": "one off-line quartet has two mirror 2-cycles and inertia (2,2,0)",
+    "interpolation": "for distinct nodes, polynomial evaluation is an invertible Vandermonde map V; G=V*JV is congruent to J and has the same inertia",
+    "configurations": [
+      {
+        "name": "four simple critical-line nodes",
+        "dimension": 4,
+        "fixedCriticalNodes": 4,
+        "mirrorTwoCycles": 0,
+        "inertia": {
+          "positive": 4,
+          "negative": 0,
+          "zero": 0
+        },
+        "reflectionMatrix": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "determinantSign": 1,
+        "vandermondeAbsSquared": "4.9828633923600000000000000000000000000000E+15",
+        "vandermondeFingerprint": "b16dfc1dcdb3c1849bc18e42cf385a63cfecbdd5efea3e2698753684a0600151",
+        "proof": "J has one +1 for every fixed node and eigenvalues (+1,-1) on every mirror 2-cycle; G=V*JV has the same inertia because the distinct-node Vandermonde V is invertible"
+      },
+      {
+        "name": "one simple off-line quartet",
+        "dimension": 4,
+        "fixedCriticalNodes": 0,
+        "mirrorTwoCycles": 2,
+        "inertia": {
+          "positive": 2,
+          "negative": 2,
+          "zero": 0
+        },
+        "reflectionMatrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ],
+        "determinantSign": 1,
+        "vandermondeAbsSquared": "6.0454488087003136000000000000000000000000E+8",
+        "vandermondeFingerprint": "fb6d950fb365624be4f35a49485bc18c9c60412081dbc549e18a81719dee0a8d",
+        "proof": "J has one +1 for every fixed node and eigenvalues (+1,-1) on every mirror 2-cycle; G=V*JV has the same inertia because the distinct-node Vandermonde V is invertible"
+      },
+      {
+        "name": "two simple off-line quartets",
+        "dimension": 8,
+        "fixedCriticalNodes": 0,
+        "mirrorTwoCycles": 4,
+        "inertia": {
+          "positive": 4,
+          "negative": 4,
+          "zero": 0
+        },
+        "reflectionMatrix": [
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        ],
+        "determinantSign": 1,
+        "vandermondeAbsSquared": "6.2434404101626995684606355894150133860695E+58",
+        "vandermondeFingerprint": "eb77e3c6e7a0cd9be3a3422073c11a448334a7f24922f54bcbf6302a7451efee",
+        "proof": "J has one +1 for every fixed node and eigenvalues (+1,-1) on every mirror 2-cycle; G=V*JV has the same inertia because the distinct-node Vandermonde V is invertible"
+      },
+      {
+        "name": "one quartet at displacement 10^-6",
+        "dimension": 4,
+        "fixedCriticalNodes": 0,
+        "mirrorTwoCycles": 2,
+        "inertia": {
+          "positive": 2,
+          "negative": 2,
+          "zero": 0
+        },
+        "reflectionMatrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ],
+        "determinantSign": 1,
+        "vandermondeAbsSquared": "6.0448319733760616819589120001573519360000E-12",
+        "vandermondeFingerprint": "b739f74ae54dbd00bbd15cd31735bd113d195113b73f4466f8c372acdd469ade",
+        "proof": "J has one +1 for every fixed node and eigenvalues (+1,-1) on every mirror 2-cycle; G=V*JV has the same inertia because the distinct-node Vandermonde V is invertible"
+      },
+      {
+        "name": "one quartet at ordinate 10^6",
+        "dimension": 4,
+        "fixedCriticalNodes": 0,
+        "mirrorTwoCycles": 2,
+        "inertia": {
+          "positive": 2,
+          "negative": 2,
+          "zero": 0
+        },
+        "reflectionMatrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ],
+        "determinantSign": 1,
+        "vandermondeAbsSquared": "4.0960000000000819200000000004096000000000E+47",
+        "vandermondeFingerprint": "6c05ff82802841eade8a66cfe34aefb0620cad25f50919727ee0872121ef577b",
+        "proof": "J has one +1 for every fixed node and eigenvalues (+1,-1) on every mirror 2-cycle; G=V*JV has the same inertia because the distinct-node Vandermonde V is invertible"
+      }
+    ],
+    "nearLineVandermondeRatio": "9.9989796699239861251038884906478501500059E-21",
+    "collisionAtEtaZero": "the four-node Vandermonde becomes singular and reduces to two positive critical-line nodes; the index jump occurs exactly at collision"
+  },
+  "multiplicityAudit": [
+    {
+      "multiplicity": 1,
+      "standardQuartetInertia": {
+        "positive": 2,
+        "negative": 2,
+        "zero": 0
+      },
+      "standardBlockEigenvalues": [
+        1,
+        -1
+      ],
+      "confluentJetLiftInertia": {
+        "positive": 2,
+        "negative": 2,
+        "zero": 0
+      },
+      "warning": "the confluent lift counts multiplicity only after derivative-jet coordinates are added; those coordinates are not supplied by the ordinary multiplicity-weighted Weil zero sum"
+    },
+    {
+      "multiplicity": 2,
+      "standardQuartetInertia": {
+        "positive": 2,
+        "negative": 2,
+        "zero": 0
+      },
+      "standardBlockEigenvalues": [
+        2,
+        -2
+      ],
+      "confluentJetLiftInertia": {
+        "positive": 4,
+        "negative": 4,
+        "zero": 0
+      },
+      "warning": "the confluent lift counts multiplicity only after derivative-jet coordinates are added; those coordinates are not supplied by the ordinary multiplicity-weighted Weil zero sum"
+    },
+    {
+      "multiplicity": 3,
+      "standardQuartetInertia": {
+        "positive": 2,
+        "negative": 2,
+        "zero": 0
+      },
+      "standardBlockEigenvalues": [
+        3,
+        -3
+      ],
+      "confluentJetLiftInertia": {
+        "positive": 6,
+        "negative": 6,
+        "zero": 0
+      },
+      "warning": "the confluent lift counts multiplicity only after derivative-jet coordinates are added; those coordinates are not supplied by the ordinary multiplicity-weighted Weil zero sum"
+    },
+    {
+      "multiplicity": 5,
+      "standardQuartetInertia": {
+        "positive": 2,
+        "negative": 2,
+        "zero": 0
+      },
+      "standardBlockEigenvalues": [
+        5,
+        -5
+      ],
+      "confluentJetLiftInertia": {
+        "positive": 10,
+        "negative": 10,
+        "zero": 0
+      },
+      "warning": "the confluent lift counts multiplicity only after derivative-jet coordinates are added; those coordinates are not supplied by the ordinary multiplicity-weighted Weil zero sum"
+    }
+  ],
+  "arithmeticPromotionGates": [
+    {
+      "gate": "same completed form",
+      "outcome": "passes as an identity",
+      "detail": "the Guinand--Weil explicit formula equates the zero reflection form with pole, gamma and prime-power terms on its legitimate test domain"
+    },
+    {
+      "gate": "independent arithmetic sign",
+      "outcome": "fails",
+      "detail": "proving that this completed form has no negative square for every admissible test is Weil positivity, which is equivalent to RH"
+    },
+    {
+      "gate": "multiplicity-counting index",
+      "outcome": "fails for the standard form",
+      "detail": "multiplicity rescales a mirror block but does not add independent negative directions; a confluent derivative-jet lift has no established prime-side realization"
+    },
+    {
+      "gate": "window-stable arithmetic index",
+      "outcome": "not established",
+      "detail": "finite bandwidth restricts interpolation, while removing the window restores the complete RH-equivalent Weil test space"
+    }
+  ],
+  "conductorCommutatorGates": [
+    {
+      "gate": "local positivity",
+      "outcome": "fails to imply the completed sign",
+      "detail": "Burnol's nonnegative local time-delay symbol enters the conductor as log(p)-tau_p; the conductor contribution is signed"
+    },
+    {
+      "gate": "ordinary trace",
+      "outcome": "fails",
+      "detail": "the local explicit formula is represented by a supertrace plus an identity correction, not by an ordinary positive trace"
+    },
+    {
+      "gate": "global Fredholm pair",
+      "outcome": "not established",
+      "detail": "no canonical completed pair of projections with compact difference is supplied by the local formulae; the unsmoothed sum over places requires the same global regularisation as the explicit formula"
+    },
+    {
+      "gate": "independent index computation",
+      "outcome": "fails",
+      "detail": "an index extracted from the phase of xi is the argument-principle zero count, while no place-by-place prime calculation proving zero index is known"
+    },
+    {
+      "gate": "promotion decision",
+      "outcome": "closed at fail-fast stage",
+      "detail": "the finite negative-square census succeeds as a detector, but neither the Weil prime side nor the conductor commutators provide an independent exclusion engine"
+    }
+  ],
+  "sonineReflectionGate": {
+    "establishedInput": "Burnol's zero systems are complete and minimal with canonical biorthogonal data",
+    "syntheticQuartetBlock": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "blockInertia": {
+      "positive": 1,
+      "negative": 1,
+      "zero": 0
+    },
+    "verdict": "a positive reflection metric would have to eliminate exactly this negative block; completeness alone does not do so, and no arithmetic positivity theorem weaker than Weil positivity was found",
+    "promotionDecision": "closed as another exact detector"
+  },
+  "stopRuleApplied": "the route was stopped because the only completed prime-side sign is Weil positivity and the proposed global conductor index is not defined by the established local theory",
+  "minimalMissingObject": "a completion-native Fredholm pair or homotopy whose index is forced by an off-line mirror cycle and can be computed as zero from primes, pole and gamma terms without invoking zero locations or Weil positivity",
+  "status": "quantized detection proved; independent arithmetic exclusion not found; RH remains open"
+}

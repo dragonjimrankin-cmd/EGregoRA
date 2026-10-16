@@ -1,0 +1,617 @@
+---
+layout: layouts/base.njk
+title: The Decimal Splice
+metaTitle: "The Decimal Splice — Sign Reversal Before Return"
+permalink: /decimal-splice/
+ogType: article
+description: "The decimal splice formalised: five at quadrature, ten at sign reversal, periodic return on the two-pass cover, and an exact golden RH barycentre whose missing same-xi bridge remains open."
+keywords: "decimal splice, pi over ten, golden contraction, Riemann hypothesis, phase difference, sign reversal, periodic return, five, base ten, Z2 seam, five to four phase clock, Jim Rankin"
+---
+
+<section class="page-head">
+  <p class="kicker">{{ site.researchByUrl[page.url].kicker }}</p>
+  <h1>The Decimal Splice</h1>
+  <p class="lede muted">Five is the hinge. Ten is the inversion. Return belongs to the second passage.</p>
+</section>
+
+{% include "partials/editorial-guide.njk" %}
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">What the earlier theorem permits</p>
+    <h2 id="t-from-unit-interval">π Is Transported from the Unit Interval, Not Manufactured by Ten</h2>
+    <p>The earlier paper <a href="/pi-from-zero-and-one/">π from 0 and 1</a> proves a bounded statement. The
+      symmetric beta kernel on the unit interval has total measure \(\pi\), and the affine coordinate
+      \(u=2x-1\) reveals the upper unit semicircle. Zero and one alone do not generate a transcendental
+      number by arithmetic. The continuum, endpoint weighting, Euclidean metric and circular closure do the
+      work.</p>
+    <p>The decimal splice inherits that caution. Ten does not create another π, and five does not become a
+      new universal constant. The decimal construction starts with the already selected angular measure and
+      transports it across a larger interval. If \(u=x/10\), then the canonical phase \(\pi u\) becomes
+      \(\pi x/10\). This is an affine pullback of the unit law.</p>
+    <p>That distinction explains why the relation is simultaneously exact and limited. It is exact that the
+      midpoint of an origin-anchored interval of width ten is five and that a half-turn distributed uniformly
+      across the interval advances by \(\pi/10\) per unit. It is not established that a physical density
+      transition distributes phase uniformly, that the relevant domain is additive rather than logarithmic,
+      or that an amplitude survives coherent enough for its sign to be measured.</p>
+    <p>The new proposal therefore begins one rung above the unit-interval theorem:</p>
+    <p class="formula">\[
+      \text{Euclidean closure supplies }\pi;
+      \qquad
+      \text{decimal normalisation supplies }\frac{\pi}{10}.
+    \]</p>
+    <p>The first statement belongs to declared geometry. The second belongs to that geometry plus TTI’s
+      origin-anchored decimal hierarchy. Neither statement by itself supplies a force, field or quantum state.
+      <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--first illuminated">
+    <p class="kicker">The decision</p>
+    <h2 id="t-decision">One Splice Reverses the Sign; Two Restore It</h2>
+    <p class="lede">The decimal splice is not a choice between inversion and return. It orders them. One
+      passage produces a half-turn; the double passage produces the full return.</p>
+    <p>Write the phase action of one splice as</p>
+    <p class="formula">\[
+      S=e^{i\pi}=-1.
+    \]</p>
+    <p>Applied to a phase-bearing state \(\psi\), it gives</p>
+    <p class="formula">\[
+      S\psi=-\psi,
+      \qquad
+      S^2\psi=e^{i2\pi}\psi=\psi.
+    \]</p>
+    <p>This is the smallest exact law that fits the existing skeleton. The framework already names \(1\) as
+      the self and \(-1\) as the mirror reached by a half-turn. It already describes the splice as a fork in
+      which one branch continues and the other is sent back. It also treats two inversions as the operation
+      that restores orientation. The decimal phase now makes those statements one calculation rather than
+      three neighbouring images. <span class="spec">&#9670;</span></p>
+    <p class="lede">The splice is therefore an orientation-reversing \(\mathbb Z_2\) seam: closed after one
+      passage as a route, restored after two passages as a state.</p>
+    <p class="muted">The algebra is exact once \(S=-1\) is selected. The selection of this operator as a law
+      of nature remains a working hypothesis; no physical carrier has yet been identified.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap reveal">
+  <figure id="fig-decimal-phase" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate I</span> Five Is Quadrature; Ten Is the
+      Mirror <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art" role="img" aria-label="A phase semicircle runs from zero at positive one through five at i to ten at negative one. Beneath it a second arc returns from negative one to positive one, showing that one decimal splice reverses sign and a second passage restores it.">
+      <svg viewBox="0 0 900 430" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="decimal-splice-phase" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#76cfee"/>
+            <stop offset="0.5" stop-color="#45d6b4"/>
+            <stop offset="1" stop-color="#a07cf0"/>
+          </linearGradient>
+          <marker id="decimal-splice-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#f3dd9c"/>
+          </marker>
+        </defs>
+        <rect width="900" height="430" fill="#070b1a"/>
+        <g fill="none" stroke-linecap="round">
+          <path d="M145 245 A305 235 0 0 1 755 245" stroke="url(#decimal-splice-phase)" stroke-width="4"/>
+          <path d="M755 260 A305 112 0 0 1 145 260" stroke="#d6a34a" stroke-width="2.4" stroke-dasharray="7 8" marker-end="url(#decimal-splice-arrow)"/>
+          <line x1="145" y1="245" x2="755" y2="245" stroke="#24627f" stroke-width="1"/>
+          <line x1="450" y1="70" x2="450" y2="330" stroke="#24627f" stroke-width="1" stroke-dasharray="3 7"/>
+        </g>
+        <g fill="#070b1a" stroke-width="3">
+          <circle cx="145" cy="245" r="14" stroke="#76cfee"/>
+          <circle cx="450" cy="70" r="14" stroke="#45d6b4"/>
+          <circle cx="755" cy="245" r="14" stroke="#a07cf0"/>
+        </g>
+        <g font-family="Cinzel, serif" text-anchor="middle">
+          <text x="145" y="238" fill="#76cfee" font-size="20">+1</text>
+          <text x="450" y="63" fill="#45d6b4" font-size="20">i</text>
+          <text x="755" y="238" fill="#a07cf0" font-size="20">−1</text>
+          <text x="145" y="285" fill="#cdefff" font-size="15">0</text>
+          <text x="450" y="108" fill="#cdefff" font-size="15">5</text>
+          <text x="755" y="285" fill="#cdefff" font-size="15">10</text>
+        </g>
+        <g font-family="EB Garamond, serif" text-anchor="middle">
+          <text x="298" y="142" fill="#a9b6d8" font-size="15">π/2 reached at the hinge</text>
+          <text x="604" y="142" fill="#a9b6d8" font-size="15">π reached at the splice</text>
+          <text x="450" y="347" fill="#f3dd9c" font-size="16">second passage · 2π · orientation restored</text>
+          <text x="450" y="390" fill="#a9b6d8" font-size="13">U(x) = exp(iπx/10) on the first passage</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">The first arc is the origin-anchored decimal phase. It begins at \(+1\), reaches
+      \(i\) at five and reaches \(-1\) at ten. The dashed lower arc is not an additional claim about where a
+      second density lies; it records the two-pass cover of the same phase operation. A second half-turn returns
+      the state to \(+1\).</p>
+  </figure>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">The normalisation</p>
+    <h2 id="t-five-pi-over-ten">Why Five and π/10 Appear Together</h2>
+    <p>Take the nested decimal interval \([0,10]\) and map it to the unit interval by \(u=x/10\). If one
+      passage across the interval is assigned the canonical half-turn, its phase is</p>
+    <p class="formula">\[
+      \theta(x)=\pi u=\frac{\pi x}{10}.
+    \]</p>
+    <p>The associated half-wave can be written in two exactly equivalent ways:</p>
+    <p class="formula">\[
+      K_{10}(x)
+      =\sin\!\left(\frac{\pi x}{10}\right)
+      =\cos\!\left(\frac{\pi}{10}(x-5)\right).
+    \]</p>
+    <p>The second form exposes the decimal hinge. Five is the reflection centre and \(\pi/10\) converts
+      displacement from that centre into phase. Their product is not an approximate numerical resemblance:</p>
+    <p class="formula">\[
+      \frac{\pi}{10}\,5=\frac{\pi}{2}.
+    \]</p>
+    <p>That is why five is quadrature. Ten then completes the half-turn:</p>
+    <p class="formula">\[
+      \frac{\pi}{10}\,10=\pi.
+    \]</p>
+    <p>In geometric language, if ten is a diameter then five is its radius. The upper semicircle has arc
+      length \(5\pi\). In spectral language, the same interval carries wavenumber \(\pi/10\). The quantities
+      \(5\pi\) and \(\pi/10\) are not rival answers. One measures the scaled arc; the other measures phase
+      change per unit of the diameter. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">A boundary that matters</p>
+    <h2 id="t-nested-not-shell">This Is the Interval from Zero to Ten, Not the Shell from One to Ten</h2>
+    <p>The appearance of five depends on the geometry being origin-anchored. The midpoint of \([0,10]\) is
+      five, but the midpoint of the literal additive shell \([1,10]\) is \(11/2\). If that shell were the
+      intended domain, the corresponding half-wave would be</p>
+    <p class="formula">\[
+      K_{1,10}(x)
+      =\sin\!\left(\frac{\pi(x-1)}9\right)
+      =\cos\!\left(\frac{\pi}{9}\left(x-\frac{11}{2}\right)\right).
+    \]</p>
+    <p>A logarithmic decade supplies a third geometry. Mapping \(1\leq x\leq10\) by
+      \(u=\log_{10}x\) places its midpoint at \(\sqrt{10}\) and gives phase
+      \(\pi\log_{10}x\). Neither alternative singles out five.</p>
+    <p>TTI’s reason for using \([0,10]\) must therefore be stated: its decimal densities are nested
+      completions measured from the same ground, not disjoint additive shells. The stage at ten contains the
+      earlier interval rather than beginning only after it. That is a framework choice consistent with its
+      diagrams of nought as the common ground. It is not forced by the numeral ten alone.
+      <span class="spec">&#9670;</span></p>
+    <p class="muted">This distinction prevents a useful relation from being inflated into a false theorem.
+      Five is exact under origin-anchored decimal completion. Change the domain and the centre changes.</p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">Reflection phase</p>
+    <h2 id="t-conjugate-pairs">Decimal Partners Carry Opposite Centred Phases</h2>
+    <p>Subtract the phase at the hinge and define</p>
+    <p class="formula">\[
+      \delta(x)=\theta(x)-\frac\pi2
+      =\frac{\pi}{10}(x-5).
+    \]</p>
+    <p>Decimal reflection sends \(x\) to \(10-x\), so</p>
+    <p class="formula">\[
+      \delta(10-x)=-\delta(x).
+    \]</p>
+    <p>Symmetric positions therefore carry conjugate centred phases, \(e^{i\delta}\) and
+      \(e^{-i\delta}\). If coherent amplitudes are recombined before their magnitude is taken, the symmetric
+      and antisymmetric channels are</p>
+    <p class="formula">\[
+      e^{i\delta}+e^{-i\delta}=2\cos\delta,
+      \qquad
+      e^{i\delta}-e^{-i\delta}=2i\sin\delta.
+    \]</p>
+    <p>This is a legitimate way for decimal position to account for structured phase differences. It does
+      not mean that multiplying a state by a unit phase changes its positive norm. An isolated phase is
+      invisible to absolute-square energy; a relative phase becomes observable only when coherent paths are
+      compared. If the channels are orthogonal or an environment records which path was taken, the interference
+      term is reduced or lost.</p>
+    <p>The word <em>entanglement</em> should therefore be reserved. Five and \(\pi/10\) are coupled in a
+      deterministic kernel. That is not quantum entanglement. Quantum entanglement would require a specified
+      tensor-product state that cannot be factorised, together with a preparation and measurement rule.
+      <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <figure id="fig-decimal-holonomy" class="plate">
+    <figcaption class="plate-cap"><span class="plate-num">Plate II</span> A Closed Route Can Return with a
+      Reversed Frame <span class="spec">&#9670;</span></figcaption>
+    <div class="plate-art" role="img" aria-label="Two parallel ledgers distinguish a geometric decade from its transported phase. The route closes after one visible revolution, while an arrow transported through the splice returns reversed. A second passage restores the arrow.">
+      <svg viewBox="0 0 920 420" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="decimal-route-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#76cfee"/>
+          </marker>
+          <marker id="decimal-frame-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#ef84b6"/>
+          </marker>
+        </defs>
+        <rect width="920" height="420" fill="#070b1a"/>
+        <g font-family="Cinzel, serif" font-size="13" letter-spacing="1.4">
+          <text x="85" y="64" fill="#76cfee">ROUTE LEDGER</text>
+          <text x="85" y="235" fill="#ef84b6">FRAME LEDGER</text>
+        </g>
+        <g fill="none" stroke-linecap="round">
+          <path d="M190 125 C280 34 510 34 600 125 C510 216 280 216 190 125" stroke="#76cfee" stroke-width="3" marker-end="url(#decimal-route-arrow)"/>
+          <line x1="650" y1="125" x2="820" y2="125" stroke="#45d6b4" stroke-width="3" marker-end="url(#decimal-route-arrow)"/>
+          <line x1="190" y1="300" x2="390" y2="300" stroke="#ef84b6" stroke-width="3" marker-end="url(#decimal-frame-arrow)"/>
+          <line x1="600" y1="300" x2="400" y2="300" stroke="#a07cf0" stroke-width="3" marker-end="url(#decimal-frame-arrow)"/>
+          <path d="M650 285 C704 238 782 238 836 285 C782 350 704 350 650 285" stroke="#d6a34a" stroke-width="2" stroke-dasharray="6 7"/>
+        </g>
+        <g font-family="EB Garamond, serif" text-anchor="middle">
+          <text x="395" y="127" fill="#cdefff" font-size="16">one full geometric winding</text>
+          <text x="735" y="105" fill="#45d6b4" font-size="15">same location</text>
+          <text x="290" y="278" fill="#ef84b6" font-size="15">incoming orientation</text>
+          <text x="500" y="278" fill="#a07cf0" font-size="15">after one splice</text>
+          <text x="743" y="305" fill="#f3dd9c" font-size="15">two-pass cover</text>
+          <text x="460" y="390" fill="#a9b6d8" font-size="14">position closes after one route · orientation closes after two</text>
+        </g>
+      </svg>
+    </div>
+    <p class="plate-note">The Skeletal Splice says that the spiral makes one geometric revolution per
+      decade. The phase law says that a transported internal orientation acquires a minus sign at the splice.
+      Those claims concern different ledgers. A closed route need not restore a transported frame; Möbius
+      holonomy is the standard geometric analogy. The analogy does not establish that spacetime or matter
+      carries this decimal holonomy.</p>
+  </figure>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Do not collapse the ledgers</p>
+    <h2 id="t-three-ledgers">Route, Orientation and Clock Are Three Different Records</h2>
+    <p>The phrase “one full revolution per decade” appears in the Skeletal Splice. Taken alone, it sounds as
+      though every quantity must return after one decade. That conclusion follows only if geometric position,
+      transported orientation and local phase clock are assumed to be the same variable. The framework already
+      needs them to be separated.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ledger</th><th>One decimal passage records</th><th>Closure rule</th></tr></thead>
+        <tbody>
+          <tr><td>Route</td><td>A geometric winding reaches its identified endpoint</td><td>One visible circuit</td></tr>
+          <tr><td>Orientation</td><td>The returning branch receives the seam action \(S=-1\)</td><td>Two splice actions</td></tr>
+          <tr><td>Relative clock</td><td>Two sectors accumulate unequal local angles</td><td>The least common phase period</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The route ledger answers where the path is. The orientation ledger answers how a frame carried along
+      the path returns. The clock ledger answers how far one sector has advanced relative to another. A point
+      can return to the same location with a reversed arrow, and two arrows can share a location while retaining
+      a measurable phase difference. These are ordinary mathematical possibilities, not special pleading.</p>
+    <p>The Möbius band supplies the disciplined analogy. One circuit returns to the same place but reverses a
+      transverse frame; the two-turn cover restores that frame. The decimal splice adopts the same order-two
+      bookkeeping without claiming that its underlying space literally is a paper strip. Its proposed invariant
+      is the sign carried through the seam.</p>
+    <p>The distinction also limits the claim. If every apparent sign can be removed by changing phase convention,
+      no invariant has been found. A physical version must provide either a coherent reference path, a coupling
+      sensitive to orientation, or a closed-loop holonomy that is independent of where the phase origin is
+      drawn. Without one of those observables, the three-ledger construction is consistent bookkeeping but not
+      detected physics. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">A previous fork resolved conditionally</p>
+    <h2 id="t-five-four">π/10 Selects the Five-to-Four Clock</h2>
+    <p>The Prime Plane currently compares a five-state climbing clock with two candidate return clocks. The
+      five-to-eight model gives a relative advance of \(3\pi/20\). The five-to-four model gives</p>
+    <p class="formula">\[
+      \omega_5=\frac{2\pi}{5},
+      \qquad
+      \omega_4=\frac{2\pi}{4}=\frac\pi2,
+      \qquad
+      \Delta\theta_{5\to4}
+      =\omega_5-\omega_4
+      =-\frac\pi{10}.
+    \]</p>
+    <p>The magnitude is exactly the decimal increment derived above. The sign records the orientation
+      convention: under prime-minus-return, the four-state return clock advances farther and therefore leads
+      by eighteen degrees per shared tick.</p>
+    <p>After \(k\) common ticks,</p>
+    <p class="formula">\[
+      \Delta\theta_k=-\frac{k\pi}{10}\pmod{2\pi}.
+    \]</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Shared ticks \(k\)</th><th>Relative phase</th><th>Reading</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>\(0\)</td><td>Aligned</td></tr>
+          <tr><td>5</td><td>\(-\pi/2\)</td><td>Quadrature at the five-hinge</td></tr>
+          <tr><td>10</td><td>\(-\pi\)</td><td>Sign reversal at the decimal splice</td></tr>
+          <tr><td>15</td><td>\(-3\pi/2\)</td><td>Opposite quadrature</td></tr>
+          <tr><td>20</td><td>\(-2\pi\equiv0\)</td><td>First full rephasing</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>This does not prove that the return plane has four physical states. It establishes a conditional
+      selection rule: <strong>if</strong> the origin-anchored decimal half-turn is fundamental and
+      <strong>if</strong> the Prime Plane clocks describe the same phase, then the five-to-four model is
+      compatible and the five-to-eight model is not. A later observation could reject both.
+      <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">The RH contraction attempt</p>
+    <h2 id="t-golden-mixer">π/10 Produces an Exact Golden Mixer—but Not a New Zero</h2>
+    <p>The decimal angle does identify a genuine contraction coefficient. Let</p>
+    <p class="formula">\[
+      \alpha=\frac{\pi}{10},
+      \qquad
+      p=\cos(2\alpha)=\cos\frac{\pi}{5}=\frac{\varphi}{2}.
+    \]</p>
+    <p>Critical-line reflection sends a horizontal displacement \(\eta\) to \(-\eta\). A weighted
+      identity/reflection mixer would therefore give</p>
+    <p class="formula">\[
+      p\eta+(1-p)(-\eta)
+      =(2p-1)\eta
+      =(\varphi-1)\eta
+      =\frac{\eta}{\varphi}.
+    \]</p>
+    <p>This is the exact shrinking law sought in the RH programme: \(c=1/\varphi&lt;1\), derived from
+      \(\pi/10\) rather than inserted by hand. It also survives the splice’s two-branch count at the level of
+      the nonlinear seam defect</p>
+    <p class="formula">\[
+      \varepsilon(\eta)=-2\log\cos(\pi\eta),
+      \qquad
+      2\varepsilon(\eta/\varphi)
+      &lt;\frac{2}{\varphi^2}\varepsilon(\eta)
+      &lt;\varepsilon(\eta).
+    \]</p>
+    <p>The gain is exact but conditional. The mixer contracts a weighted barycentre. Its input support still
+      consists of the two points \(+\eta\) and \(-\eta\). At function level the reflection average is simply</p>
+    <p class="formula">\[
+      p\xi(s)+(1-p)\xi(1-s)=\xi(s),
+    \]</p>
+    <p>so it reproduces the original value at the original argument. It does not imply that
+      \(\xi(1/2+\eta/\varphi+i\gamma)=0\). A horizontal-only map that keeps \(\gamma\) fixed is also
+      nonholomorphic; a lossless two-channel mixer stores the missing information in its complementary output
+      rather than destroying it.</p>
+    <p>The prime-side decimal phase \(e^{i\pi n/10}\) is a period-twenty additive Fourier mode. Its leading
+      reduced-residue mean cancels, but that nonprincipal mode can vanish while the principal von Mangoldt
+      mode remains nonzero. Finite cancellation in the twisted channel is therefore not the all-scale
+      untwisted prime-energy theorem equivalent to RH.</p>
+    <p class="lede">The decimal splice now supplies an exact candidate contraction and a strict two-descendant
+      seam inequality. It still does not supply same-\(\xi\) zero support, a no-birth spectral genealogy or
+      principal-prime recovery. The sharpened criterion remains conditional, and RH remains open.</p>
+    <p class="muted small">The full derivation, stress polynomial and period-twenty diagnostic are recorded in
+      <a href="https://github.com/dragonjimrankin-cmd/EGregoRA/blob/main/docs/rh/rss-decimal-splice-contraction.md">the
+      Stage-28 research note</a>. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Entropy in the established κ geometry</p>
+    <h2 id="t-splice-entropy">Entropy Contracts the Branch Record, Not the Zero Support</h2>
+    <p>No new kernel is needed for the entropy test. Retain the previously derived</p>
+    <p class="formula">\[
+      \kappa_{\rm R}=\frac{1}{4\pi^2},
+      \qquad
+      K_\kappa(s,t)=\kappa_{\rm R}\zeta(s+\overline t+2).
+    \]</p>
+    <p>With \(p=\varphi/2\), \(q=1-p\), the visible identity/reflection label has the
+      binary channel</p>
+    <p class="formula">\[
+      P=\begin{pmatrix}p&q\\q&p\end{pmatrix},
+      \qquad
+      m\longmapsto(p-q)m=\frac{m}{\varphi}.
+    \]</p>
+    <p>Coarse-graining the branch record therefore increases Shannon entropy and contracts relative entropy
+      to the equal distribution by at most \(1/\varphi^2\). This supplies an exact meaning for
+      splice-generated entropy.</p>
+    <p>It still does not move a zero. The functional equation already gives equal multiplicity to the
+      \(+\eta\) and \(-\eta\) branches, so the completed \(\xi\) ledger is stationary under \(P\) even for
+      an off-line quartet. Every reflection-symmetric ledger is a fixed point. The channel contracts only the
+      antisymmetric branch imbalance that \(\xi\) has already cancelled.</p>
+    <p>The established feature geometry confirms the distinction. In general</p>
+    <p class="formula">\[
+      p v_\eta+qv_{-\eta}\ne v_{\eta/\varphi}.
+    \]</p>
+    <p>Random reflection is mixing; the right side would be actual support movement. Moreover, the exact
+      two-pass seam satisfies \(R^2=I\). An involution cannot be strictly contractive on the full state space:
+      applying a factor \(\lambda&lt;1\) twice would give
+      \(D(x,y)\le\lambda^2D(x,y)\). Entropy production therefore requires an environment or forgotten branch
+      record, where the missing information remains.</p>
+    <p class="lede">The natural entropy channel and completed-ledger invariance are both derived. Their fixed
+      points include every off-line quartet, so entropy does not yet make the golden barycentre a spectral
+      contraction. RH remains open.</p>
+    <p class="muted small">See the complete calculation in the
+      <a href="https://github.com/dragonjimrankin-cmd/EGregoRA/blob/main/docs/rh/rss-kappa-entropy-splice.md">Stage-29
+      κ-entropy audit</a>. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">A support-changing candidate</p>
+    <h2 id="t-support-flow">The κ Geometry Does Supply a Support Flow</h2>
+    <p>Normalising the established feature intensity gives the zeta probability family</p>
+    <p class="formula">\[
+      \pi_\eta(n)=
+      \frac{n^{-3-2\eta}}{\zeta(3+2\eta)}.
+    \]</p>
+    <p>Its Fisher-natural gradient toward the critical member \(\pi_0\) simplifies exactly:</p>
+    <p class="formula">\[
+      \frac{d\eta}{dt}=-\eta,
+      \qquad
+      \eta(t)=e^{-t}\eta(0).
+    \]</p>
+    <p>At \(t=\log\varphi\), this becomes the golden support map
+      \(\eta\mapsto\eta/\varphi\). Unlike branch averaging, it actually moves the horizontal support while
+      preserving \(\gamma\), the critical strip and reflection symmetry.</p>
+    <p>The only invariant finite-probability ledger is supported at \(\eta=0\). Invariance gives</p>
+    <p class="formula">\[
+      \int\eta^2\,d\mu
+      =e^{-2t}\int\eta^2\,d\mu,
+    \]</p>
+    <p>so the horizontal second moment must vanish for \(t>0\). This is the unique-fixed-point law the entropy
+      audit was missing.</p>
+    <p>The remaining boundary is decisive. The functional equation does not prove that the actual \(\xi\)
+      ledger is stationary under this flow. Contracting an off-line quartet changes its polynomial and hence
+      the completed entire function. A five-feature diagnostic also obstructs silently lifting the classical
+      parameter flow to one exact pure-state quantum channel.</p>
+    <p class="lede">A canonical support-changing candidate and its unique critical invariant have been found.
+      Same-\(\xi\) or principal-prime stationarity has not, so the candidate does not yet prove RH.</p>
+    <p class="muted small">See the
+      <a href="https://github.com/dragonjimrankin-cmd/EGregoRA/blob/main/docs/rh/rss-kappa-natural-gradient-flow.md">Stage-30
+      natural-gradient audit</a>. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">The stationarity attempt</p>
+    <h2 id="t-xi-stationarity">Stationarity Is Exactly the Remaining RH Theorem</h2>
+    <p>The actual completed \(\xi\) ledger was tested against the support flow. Even weak stationarity for the
+      single observable \(f(\eta)=\eta^2\) gives</p>
+    <p class="formula">\[
+      0=\int\mathcal Lf\,d\mu
+      =-2\int\eta^2\,d\mu,
+    \]</p>
+    <p>and therefore forces every displacement to vanish. For one off-line quartet, the first variation is</p>
+    <p class="formula">\[
+      \partial_tQ_{\eta,\gamma}(z)
+      =4\eta^2\left[z^2-(\eta^2+\gamma^2)\right],
+    \]</p>
+    <p>which is nonzero. Reflection symmetry, reality, order and central normalisation all survive, but the
+      completed function changes.</p>
+    <p>The convergent horizontal residue also has strictly negative variation off the line. No principal-prime
+      identity was found that makes this variation zero. Thus stationarity for one positive time is equivalent
+      to RH, not a weaker consequence currently supplied by the splice.</p>
+    <p class="muted small">See the
+      <a href="https://github.com/dragonjimrankin-cmd/EGregoRA/blob/main/docs/rh/rss-xi-ledger-stationarity.md">Stage-31
+      stationarity audit</a>. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">The principal-prime follow-up</p>
+    <h2 id="t-principal-prime-anchor">One Euler Anchor Is Enough—but Is Not Yet Conserved</h2>
+    <p>The all-half-plane target reduces to the single absolutely convergent value</p>
+    <p class="formula">\[
+      \frac{\xi'}{\xi}(2)
+      =\frac32-\frac{\gamma_E+\log\pi}{2}
+      -\sum_{n\ge2}\frac{\Lambda(n)}{n^2}.
+    \]</p>
+    <p>Along the support flow, every off-line quartet makes the transported value
+      \(\xi_t'/\xi_t(2)\) increase. Its increase is bounded between \(1.4269\) and \(1.5196\) times the
+      magnitude of the horizontal-residue loss. Conservation at this one point would therefore force zero
+      residue variation and RH.</p>
+    <p>The prime sum is static, but the moved canonical product has not been shown to retain that Euler product.
+      Equating the two for \(t&gt;0\) is the missing same-function compatibility, not a consequence of static
+      primes. The target is smaller; the conservation theorem remains unproved.</p>
+    <p class="muted small">See the
+      <a href="https://github.com/dragonjimrankin-cmd/EGregoRA/blob/main/docs/rh/rss-principal-prime-anchor.md">Stage-32
+      principal-prime anchor audit</a>. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">The conservation retry</p>
+    <h2 id="t-prime-phase-conservation">The Euler Law Holds Until a Zero Is Crossed</h2>
+    <p>For \(C(s)=(s-1)\zeta(s)\), Fourier transformation proves</p>
+    <p class="formula">\[
+      \frac6\pi\int_0^\infty
+      \frac{T\arg C(\sigma+iT)}{(T^2+9/4)^2}\,dT
+      =\frac1{\sigma+1/2}-\sum_{n\ge2}\frac{\Lambda(n)}{n^{\sigma+3/2}}
+      \quad(\sigma&gt;1).
+    \]</p>
+    <p>At \(\sigma=1/2\), its formal value is the required \(s=2\) prime anchor. But moving the line there
+      crosses every zero to the right of the critical line. Their positive Blaschke contribution is exactly the
+      Euler-anchor defect. Defect-free continuation is therefore equivalent to RH, not supplied by analytic
+      continuation of the convergent prime series.</p>
+    <p class="muted small">See the
+      <a href="https://github.com/dragonjimrankin-cmd/EGregoRA/blob/main/docs/rh/rss-prime-phase-conservation.md">Stage-33
+      prime-phase conservation audit</a>. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<div class="divider">✦</div>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">What has and has not been earned</p>
+    <h2 id="t-claim-ledger">The Decimal-Splice Ledger</h2>
+    <dl class="evidence-list">
+      <dt>Established mathematics <span class="sci">&#9670;</span></dt>
+      <dd>Affine normalisation sends \([0,10]\) to \([0,1]\). The half-wave has wavenumber
+        \(\pi/10\), midpoint five and endpoint phase \(\pi\). Reflection around five conjugates the centred
+        phases. The operator \(-1\) squares to \(+1\).</dd>
+
+      <dt>Selected by the framework <span class="spec">&#9670;</span></dt>
+      <dd>The decimal densities are nested from zero; a splice acts on the returning orientation by
+        \(S=-1\); and the decimal phase and Prime Plane phase are two descriptions of one clock.</dd>
+
+      <dt>Conditionally sharpened <span class="spec">&#9670;</span></dt>
+      <dd>Under those selections, one splice reverses sign, two passages restore it, five is the quadrature
+        hinge, and the five-to-four clock is preferred over five-to-eight. The same angle also yields the exact
+        weighted-reflection coefficient \(c=1/\varphi\), with strict seam-defect contraction for two
+        hypothetical descendants.</dd>
+
+      <dt>Not established</dt>
+      <dd>No Hilbert space, field, Hamiltonian, stress–energy tensor or laboratory observable has yet been
+        derived. The relation does not establish quantum entanglement, electromagnetism, a new force, a value
+        of a dimensional constant or a mechanism for matter–antimatter separation.</dd>
+
+      <dt>Riemann boundary</dt>
+      <dd>The Fisher-natural gradient supplies a golden support flow with a unique critical invariant. But
+        stationarity of the completed \(\xi\) ledger is exactly RH: every off-line quartet has nonzero divisor
+        and residue variation. No principal-prime conservation law proves that stationarity, so the decimal
+        splice does not prove RH.</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">How the proposal could lose</p>
+    <h2 id="t-test">A Phase Law Must Predict More Than Its Diagram</h2>
+    <p>To become physics, the decimal splice must name a carrier and an observable before data are inspected.
+      A clean test would prepare two coherent paths assigned known splice counts, recombine them and compare
+      the measured relative phase with</p>
+    <p class="formula">\[
+      \Delta\theta_k=-\frac{k\pi}{10}\pmod{2\pi}.
+    \]</p>
+    <p>The decisive pattern is not merely a non-zero shift. It is the complete sequence: quadrature at five,
+      sign reversal at ten and rephasing at twenty, with the same orientation convention throughout. A result
+      following \(3\pi/20\) per tick would favour the five-to-eight clock instead. A result controlled by
+      path length, wavelength, temperature or an ordinary material retardance would support conventional
+      dynamics rather than a universal decimal seam.</p>
+    <p>The test must also separate phase from intensity and final-state orientation. A sign can be globally
+      invisible for one isolated ray yet observable relative to a coherent reference. A restored orientation
+      can coexist with environmental path memory. Reporting one detector count cannot distinguish those
+      cases.</p>
+    <p class="lede">The theory earns the right to say “decimal phase” only if ten fixes a reproducible
+      phase relation that cannot be removed by relabelling the coordinate or absorbed into an ordinary
+      propagation model.</p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame frame--creed illuminated">
+    <p class="lede">Five is not a second constant competing with π. It is where the decimal interval reaches
+      π/2. Ten is not yet return. It is where the transported state reaches the mirror. The first passage
+      closes the route and reverses the sign; the second closes the phase and restores the state.</p>
+    <p class="formula">\[
+      0\longrightarrow5\longrightarrow10,
+      \qquad
+      +1\longrightarrow i\longrightarrow-1,
+      \qquad
+      S^2=1.
+    \]</p>
+    <p class="muted small">Read the underlying fork in <a href="/skeletal-splice/">The Rankin Skeletal
+      Splice</a>, compare its rival clocks in <a href="/prime-plane/">The Prime Plane</a>, and inspect the
+      topology of restored orientation in <a href="/double-inversion/">Two Inversions</a>.</p>
+  </div>
+</section>

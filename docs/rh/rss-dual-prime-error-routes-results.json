@@ -1,0 +1,168 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Attempting square-root prime error and uniform Laguerre cancellation",
+  "question": "can either remaining route prove the subexponential arithmetic seam bound?",
+  "verdict": {
+    "rhProved": false,
+    "squareRootPrimeErrorProved": false,
+    "uniformLaguerreCancellationProved": false,
+    "routesShownEquivalentAtAnalyticBoundary": true,
+    "newUnconditionalExponentObtained": false,
+    "conclusion": "both attempts reach the same boundary. The generalized Li disk is exactly the half-plane Re(s)>1/2. A prime-error exponent theta>1/2 leaves coefficient base (1+theta)/(2-theta)>1, while direct subexponential Laguerre cancellation would analytically continue the endpoint-completed prime logarithm through that same half-plane. No established TTI identity or unconditional prime estimate crosses it."
+  },
+  "routeA_squareRootPrimeError": {
+    "target": "psi(x)-x=O(x^(1/2) log^2 x), or more generally O_epsilon(x^(1/2+epsilon)) for every epsilon>0",
+    "explicitFormula": "psi(x)-x is governed by sums of x^rho/rho; a zero with Re(rho)=beta>1/2 contributes at x^beta scale and obstructs a uniform square-root bound",
+    "attemptedInputs": [
+      {
+        "input": "ordinary prime number theorem psi(x)=x+o(x)",
+        "outcome": "controls only an exponent tending down from one, not one half"
+      },
+      {
+        "input": "classical zero-free region near Re(s)=1",
+        "outcome": "improves the x-scale by a subpower factor but does not produce x^(1/2+epsilon)"
+      },
+      {
+        "input": "finite verification of critical-line zeros",
+        "outcome": "moves any first counterexample upward but gives no all-height prime-error exponent"
+      },
+      {
+        "input": "positive central horizontal residue and seam contraction",
+        "outcome": "supplies an RH-equivalent zero-side norm but no inequality for psi(x)-x"
+      }
+    ],
+    "blockingEquivalence": "the square-root Chebyshev estimate excludes every beta>1/2; functional symmetry then gives RH. Deriving it without new arithmetic input would already be a proof of RH",
+    "status": "no square-root-scale estimate derived"
+  },
+  "routeB_uniformLaguerreCancellation": {
+    "tVariableIdentity": "p_n=-integral_0^infinity E_tilde(exp(t/3))exp(-2t/3)[2L_(n-1)^1(t)+3L_(n-2)^2(t)]dt",
+    "kernelSamples": [
+      {
+        "t": 0,
+        "x": 1.0,
+        "ordinaryPntEnvelopeFactor": 1.0,
+        "squareRootEnvelopeFactor": 1.0
+      },
+      {
+        "t": 3,
+        "x": 2.718281828459045,
+        "ordinaryPntEnvelopeFactor": 0.36787944117144233,
+        "squareRootEnvelopeFactor": 0.22313016014842982
+      },
+      {
+        "t": 9,
+        "x": 20.085536923187668,
+        "ordinaryPntEnvelopeFactor": 0.049787068367863944,
+        "squareRootEnvelopeFactor": 0.011108996538242306
+      },
+      {
+        "t": 30,
+        "x": 22026.465794806718,
+        "ordinaryPntEnvelopeFactor": 4.5399929762484854e-05,
+        "squareRootEnvelopeFactor": 3.059023205018258e-07
+      },
+      {
+        "t": 90,
+        "x": 10686474581524.463,
+        "ordinaryPntEnvelopeFactor": 9.357622968840175e-14,
+        "squareRootEnvelopeFactor": 2.8625185805493937e-20
+      }
+    ],
+    "attemptedInputs": [
+      {
+        "input": "Laguerre orthogonality",
+        "outcome": "the prime-error multiplier lies at the critical weighted boundary; available unconditional error does not supply the needed critical L2 or pointwise norm"
+      },
+      {
+        "input": "Cauchy-Schwarz after taking a weighted L2 norm",
+        "outcome": "requires a critical weighted norm not supplied by unconditional estimates; the later all-scale Chebyshev-energy theorem is weaker in pointwise form but still RH-equivalent"
+      },
+      {
+        "input": "Laguerre recurrence in n",
+        "outcome": "introduces new logarithmic prime moments and does not close to a contractive recurrence for p_n"
+      },
+      {
+        "input": "signed oscillation of the Chebyshev error",
+        "outcome": "neither its phase nor its correlation with all Laguerre kernels is controlled uniformly in n"
+      }
+    ],
+    "generatingFunction": "P(z)=log(((s(z)-1)zeta(s(z)))/zeta(2)), s(z)=2+3z/(1-z)",
+    "geometricIdentity": "|z|<1 maps exactly to Re(s)>1/2",
+    "blockingEquivalence": "a subexponential coefficient bound gives radius at least one and hence zero-freeness of (s-1)zeta(s) through Re(s)>1/2; this is RH after functional symmetry",
+    "status": "no uniform signed-kernel estimate derived"
+  },
+  "quantitativeBoundary": {
+    "halfPlaneToDiskRadius": "r_theta=(2-theta)/(1+theta)",
+    "coefficientBase": "B_theta=(1+theta)/(2-theta)",
+    "table": [
+      {
+        "primeErrorExponentTheta": 0.5,
+        "guaranteedDiskRadius": 1.0,
+        "coefficientExponentialBase": 1.0,
+        "subexponential": true
+      },
+      {
+        "primeErrorExponentTheta": 0.51,
+        "guaranteedDiskRadius": 0.9867549668874173,
+        "coefficientExponentialBase": 1.0134228187919463,
+        "subexponential": false
+      },
+      {
+        "primeErrorExponentTheta": 0.55,
+        "guaranteedDiskRadius": 0.9354838709677419,
+        "coefficientExponentialBase": 1.0689655172413794,
+        "subexponential": false
+      },
+      {
+        "primeErrorExponentTheta": 0.6,
+        "guaranteedDiskRadius": 0.8749999999999999,
+        "coefficientExponentialBase": 1.142857142857143,
+        "subexponential": false
+      },
+      {
+        "primeErrorExponentTheta": 0.75,
+        "guaranteedDiskRadius": 0.7142857142857143,
+        "coefficientExponentialBase": 1.4,
+        "subexponential": false
+      },
+      {
+        "primeErrorExponentTheta": 0.9,
+        "guaranteedDiskRadius": 0.5789473684210527,
+        "coefficientExponentialBase": 1.7272727272727273,
+        "subexponential": false
+      },
+      {
+        "primeErrorExponentTheta": 0.99,
+        "guaranteedDiskRadius": 0.507537688442211,
+        "coefficientExponentialBase": 1.9702970297029705,
+        "subexponential": false
+      },
+      {
+        "primeErrorExponentTheta": 1.0,
+        "guaranteedDiskRadius": 0.5,
+        "coefficientExponentialBase": 2.0,
+        "subexponential": false
+      }
+    ],
+    "interpretation": "theta=1/2 gives B=1. Every fixed theta>1/2 gives B>1, so even an arbitrarily small fixed loss above square-root scale remains exponential in n"
+  },
+  "whyAveragingDoesNotClosePointwiseControl": {
+    "statement": "available zero-density and averaged-in-height estimates can bound most ordinates, but the seam infimum and coefficient radius are changed by one exceptional zero; the later critical all-X energy target is stronger",
+    "consequence": "an exceptional-set theorem cannot replace a uniform all-zero or all-n estimate"
+  },
+  "strongestConditionalClosure": {
+    "primeErrorPremise": "for every epsilon>0, psi(x)-x=O_epsilon(x^(1/2+epsilon))",
+    "laguerrePremise": "equivalently, p_n=O_epsilon(exp(epsilon n)) for every epsilon>0",
+    "conclusion": "either premise gives radius one, seam infimum one, and RH",
+    "status": "both premises remain unproved and equivalent in strength to the target"
+  },
+  "proofBoundary": {
+    "newExactInformation": [
+      "the two proposed routes are the same analytic-continuation problem in different coordinates",
+      "the loss from a prime-error exponent theta is exactly the coefficient base (1+theta)/(2-theta)",
+      "Laguerre orthogonality reaches a critical weighted boundary rather than supplying a free positivity theorem"
+    ],
+    "missingTheorem": "a genuinely new arithmetic inequality excluding every zero in Re(s)>1/2, expressed either as square-root Chebyshev error or uniform signed-Laguerre cancellation",
+    "status": "neither attempted route proves the missing theorem; RH remains open"
+  }
+}

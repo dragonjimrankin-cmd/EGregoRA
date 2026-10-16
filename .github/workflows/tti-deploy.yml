@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
-      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return, mathematical proof auditing and testable failure conditions across thirty studies and four project resources."
+      TTI_PROJECT_DESCRIPTION: "The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return, mathematical proof auditing and testable failure conditions across thirty-one studies and four project resources."
       TTI_DEPLOY_INTENT: "Deploy The Two Infinities research project"
       TTI_DEPLOY_SUMMARY: "Publishes The Two Infinities: Eternal Integration of the Self, the independent speculative cosmology research project founded by Jim Rankin, including its studies, research resources, Atlas, plates, and ShakDrah research assistant."
     steps:

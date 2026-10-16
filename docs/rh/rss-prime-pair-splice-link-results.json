@@ -1,0 +1,97 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "The (101,101) prime-pair event and the same-xi contraction link",
+  "question": "Does the prime-supported catch-up at 101, through its Lambda(101)^2 pair term, supply same-xi invariance or eliminate horizontal zero displacement?",
+  "verdict": {
+    "lambda101IsPrimeSupported": true,
+    "lambda101": "log(101)",
+    "101SelfPairSurvivesCenteredFisherMetric": false,
+    "allScalePrimePairEnergyHasExactMellinBridgeToRh": true,
+    "criticalEnergyEstimateProved": false,
+    "sameXiContractionInvarianceProved": false,
+    "rhProved": false,
+    "conclusion": "The (101,101) diagonal is present in the raw Chebyshev pair ledger, but its contribution is only one local term. In the centered Fisher metric that drives the prime-power natural gradient, the self-pair vanishes exactly; only log-ratio cross-pairs contribute. The complete all-scale critical Chebyshev energy would exclude every off-line zero by Mellin holomorphy, but that estimate is RH-equivalent and unproved. The event at 101 supplies neither that estimate nor invariance of the actual xi divisor under the derived contraction."
+  },
+  "fisherPairIdentity": {
+    "normalizer": "M(a)=sum_n Lambda(n)n^(-a)",
+    "identity": "d^2(log M)/da^2 = [2 M(a)^2]^-1 sum_(m,n) Lambda(m)Lambda(n)(mn)^(-a)(log(m/n))^2",
+    "naturalGradient": "deta/dt=-eta for a=2+2eta",
+    "101Diagonal": "The (101,101) summand has log(101/101)^2=0; its self-pair contributes exactly zero to the Fisher curvature.",
+    "finiteCheckAtA2": {
+      "supportSize": 2328,
+      "normalizer": 0.5699109380759154,
+      "logVariance": 1.005674024596929,
+      "pairwiseLogVariance": 1.0056740245969287,
+      "101SelfPairContribution": 0.0,
+      "101CrossPairSubtotal": 0.00825154664185801
+    }
+  },
+  "criticalChebyshevPairLedger": {
+    "identity": "integral_X^(2X)(psi(x)-x)^2 dx = sum_(m,n<=2X) Lambda(m)Lambda(n)[2X-max(X,m,n)]_+ - sum_(m<=2X) Lambda(m)[(2X)^2-max(X,m)^2]_+ + ((2X)^3-X^3)/3",
+    "101Diagonal": "Lambda(101)^2 [2X-max(X,101)]_+",
+    "forXAtLeast101": "X(log 101)^2, an O(X) local term",
+    "rows": [
+      {
+        "X": 50,
+        "Y": 100,
+        "triangularWeight": 0,
+        "lambda101Squared": 21.299337384969135,
+        "diagonalContribution": 0.0
+      },
+      {
+        "X": 51,
+        "Y": 102,
+        "triangularWeight": 1,
+        "lambda101Squared": 21.299337384969135,
+        "diagonalContribution": 21.299337384969135
+      },
+      {
+        "X": 101,
+        "Y": 202,
+        "triangularWeight": 101,
+        "lambda101Squared": 21.299337384969135,
+        "diagonalContribution": 2151.2330758818825
+      },
+      {
+        "X": 250,
+        "Y": 500,
+        "triangularWeight": 250,
+        "lambda101Squared": 21.299337384969135,
+        "diagonalContribution": 5324.8343462422845
+      },
+      {
+        "X": 1000,
+        "Y": 2000,
+        "triangularWeight": 1000,
+        "lambda101Squared": 21.299337384969135,
+        "diagonalContribution": 21299.337384969138
+      }
+    ],
+    "requiredAllScaleEstimate": "for every delta>0, integral_X^(2X)|psi(x)-x|^2 dx <= C_delta X^(2+delta) for all X>=2",
+    "status": "The exact pair expansion is positive as a whole, but its all-scale critical upper bound is not established; for this arithmetic error function that bound is equivalent to RH."
+  },
+  "actualZeroBridge": {
+    "positivePrimeAnchorDefect": "D_2=H_ord(3/2)-xi'/xi(2)=sum_quartets 6 eta^2(eta^2+3 gamma^2-9/4)/[(gamma^2+9/4)((gamma^2-eta^2+9/4)^2+4eta^2gamma^2)]",
+    "criterion": "D_2=0 iff every horizontal displacement eta is zero iff RH",
+    "certifiedUpperBound": 9.273622725125134e-37,
+    "certifiedUpperBoundIsZero": false,
+    "101InLinearEulerAnchor": "The ordinary s=2 anchor contains Lambda(101)/101^2, not a new independent copy of the prime ledger.",
+    "closureGap": "To turn the exact positive defect identity into RH, one must prove D_2=0 (or prove the critical energy bound / same-xi flow invariance); a finite 101 contribution or a tiny positive upper bound does not do this."
+  },
+  "evidenceBoundary": {
+    "provedHere": [
+      "the exact pairwise Fisher identity and cancellation of the (101,101) self-pair",
+      "the exact triangular weight of the (101,101) term in the finite Chebyshev pair ledger",
+      "the distinction between a local prime-pair term and the all-scale energy theorem",
+      "the exact existing positive prime-anchor defect is the direct prime-to-horizontal-displacement identity"
+    ],
+    "notProved": [
+      "the critical Chebyshev-energy upper bound",
+      "D_2=0",
+      "same-xi invariance under eta -> eta/phi or eta -> eta/2",
+      "any new zero-free strip",
+      "RH"
+    ]
+  },
+  "status": "The arithmetic link is explicit at the level of criteria: prime-pair energy -> Mellin holomorphy -> no off-line zero. The required global energy bound remains unproved. The local (101,101) event does not supply same-xi closure. RH remains open."
+}

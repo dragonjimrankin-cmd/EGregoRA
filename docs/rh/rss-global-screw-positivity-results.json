@@ -1,0 +1,234 @@
+{
+  "generatedAt": "deterministic-no-wall-clock",
+  "claimBoundary": {
+    "rhProved": false,
+    "infiniteTailProved": false,
+    "directedRoundingCertificate": false,
+    "finiteDiagnosticsOnly": true,
+    "exactIdentitiesChecked": [
+      "classical weighted-Chebyshev bridge",
+      "weighted-prefix workload synchronization",
+      "active reserve V = C - J",
+      "recovery-witness minimum",
+      "arrival-centroid completion criterion",
+      "delayed-hinge determinant",
+      "signed Mobius inversion for von Mangoldt weights"
+    ]
+  },
+  "constants": {
+    "alpha": 2.6860917096128327,
+    "archimedeanConstant": 4.299332288626777,
+    "classicalLevel": -3.7006677113732227,
+    "tMax": 12,
+    "xMax": 162754.79141900392,
+    "eventLimit": 163755
+  },
+  "classicalBridge": {
+    "checks": [
+      {
+        "t": 0.05,
+        "x": 1.0512710963760241,
+        "direct": 0.041704069059754545,
+        "bridge": 0.04170406905975474,
+        "absoluteError": 1.942890293094024e-16
+      },
+      {
+        "t": 0.2,
+        "x": 1.2214027581601699,
+        "direct": 0.0544997903564961,
+        "bridge": 0.05449979035649802,
+        "absoluteError": 1.915134717478395e-15
+      },
+      {
+        "t": 0.6931471805599453,
+        "x": 2,
+        "direct": 0.06355558603756917,
+        "bridge": 0.06355558603756963,
+        "absoluteError": 4.579669976578771e-16
+      },
+      {
+        "t": 1,
+        "x": 2.718281828459045,
+        "direct": 0.044007305236851646,
+        "bridge": 0.04400730523685266,
+        "absoluteError": 1.0130785099704553e-15
+      },
+      {
+        "t": 2,
+        "x": 7.38905609893065,
+        "direct": 0.05334112417185466,
+        "bridge": 0.053341124171854624,
+        "absoluteError": 3.469446951953614e-17
+      },
+      {
+        "t": 4,
+        "x": 54.598150033144236,
+        "direct": 0.035140930545196625,
+        "bridge": 0.03514093054519714,
+        "absoluteError": 5.134781488891349e-16
+      },
+      {
+        "t": 6,
+        "x": 403.4287934927351,
+        "direct": 0.04812322313580353,
+        "bridge": 0.048123223135811015,
+        "absoluteError": 7.4870665223159e-15
+      },
+      {
+        "t": 8,
+        "x": 2980.9579870417283,
+        "direct": 0.03094868956648611,
+        "bridge": 0.030948689566478612,
+        "absoluteError": 7.49747486317176e-15
+      },
+      {
+        "t": 10,
+        "x": 22026.465794806718,
+        "direct": 0.0620900824576438,
+        "bridge": 0.06209008245753915,
+        "absoluteError": 1.0465239785872882e-13
+      },
+      {
+        "t": 12,
+        "x": 162754.79141900392,
+        "direct": 0.02923189200600973,
+        "bridge": 0.02923189200590239,
+        "absoluteError": 1.0734121924649287e-13
+      }
+    ],
+    "maximumAbsoluteError": 1.0734121924649287e-13,
+    "barrierChecks": [
+      {
+        "x": 2,
+        "barrier": -0.9001514828948665
+      },
+      {
+        "x": 10,
+        "barrier": -3.5835448809215373
+      },
+      {
+        "x": 100,
+        "barrier": -7.465408583373312
+      },
+      {
+        "x": 10000,
+        "barrier": -15.230146255290453
+      },
+      {
+        "x": 162754.79141900392,
+        "barrier": -19.933768226727125
+      }
+    ],
+    "symmetricAbsoluteErrorRoute": {
+      "canProveRequiredNegativeMemoryUpperBound": false,
+      "reason": "the memory kernel is positive and an absolute-value envelope gives a nonnegative upper bound, while B(x)<0 for x>=2"
+    }
+  },
+  "workloadSynchronization": {
+    "checks": 16,
+    "maximumAbsoluteError": 3.2029934260435766e-13
+  },
+  "recoveryWitnessAudit": {
+    "witnesses": 1694,
+    "multiEventWitnesses": 313,
+    "frontLoadingClosureCount": 1675,
+    "frontLoadingMultiEventClosureCount": 294,
+    "frontLoadingMultiEventFailureCount": 19,
+    "minimumReserveWitness": {
+      "entryPrimePower": 3079,
+      "witnessPrimePower": 3089,
+      "nextPrimePower": 3109,
+      "activeEvents": 3,
+      "entryTime": 8.0323601479245,
+      "witnessTime": 8.035602692918582,
+      "recoveryTime": 8.039063759496273,
+      "entryClearance": 0.02811349910788863,
+      "witnessWorkload": 0.19252837373004184,
+      "serviceWindow": 0.3592690228710893,
+      "cost": 0.0002813079887677491,
+      "capacity": 0.02780188134208114,
+      "reserve": 0.0275205733535131,
+      "centroid": 0.40038918936206974,
+      "criticalCentroid": -58.25999002661815,
+      "centroidSlack": 58.66037921598022,
+      "normalizedReserve": 58.6603792164059,
+      "frontLoadingCloses": true
+    },
+    "minimumCentroidSlackWitness": {
+      "entryPrimePower": 149239,
+      "witnessPrimePower": 159059,
+      "nextPrimePower": 159073,
+      "activeEvents": 824,
+      "entryTime": 11.913304326696188,
+      "witnessTime": 11.977030481555616,
+      "recoveryTime": 11.977109931335843,
+      "entryClearance": 0.0484667352334327,
+      "witnessWorkload": 0.031686950852758855,
+      "serviceWindow": 0.03510260569817092,
+      "cost": 0.8080738698599338,
+      "capacity": 0.8395292155055738,
+      "reserve": 0.0314553456264548,
+      "centroid": 0.49255901290237364,
+      "criticalCentroid": 0.4728062003944188,
+      "centroidSlack": 0.019752812507954853,
+      "normalizedReserve": 0.01975281249590701,
+      "frontLoadingCloses": false
+    },
+    "maximumCriticalCentroidWitness": {
+      "entryPrimePower": 149239,
+      "witnessPrimePower": 159059,
+      "nextPrimePower": 159073,
+      "activeEvents": 824,
+      "entryTime": 11.913304326696188,
+      "witnessTime": 11.977030481555616,
+      "recoveryTime": 11.977109931335843,
+      "entryClearance": 0.0484667352334327,
+      "witnessWorkload": 0.031686950852758855,
+      "serviceWindow": 0.03510260569817092,
+      "cost": 0.8080738698599338,
+      "capacity": 0.8395292155055738,
+      "reserve": 0.0314553456264548,
+      "centroid": 0.49255901290237364,
+      "criticalCentroid": 0.4728062003944188,
+      "centroidSlack": 0.019752812507954853,
+      "normalizedReserve": 0.01975281249590701,
+      "frontLoadingCloses": false
+    },
+    "maximumReserveBalanceError": 1.9185208977035018e-11,
+    "maximumMinimumIdentityError": 4.547473508864641e-13,
+    "maximumScaledCentroidIdentityError": 2.4916286027528076e-10
+  },
+  "operatorObstructions": {
+    "delayedHinge": {
+      "delay": 1,
+      "x": 2,
+      "y": 2.5,
+      "matrix": [
+        [
+          2,
+          2.5
+        ],
+        [
+          2.5,
+          3
+        ]
+      ],
+      "determinant": -0.25,
+      "generalDeterminant": "-(x-y)^2 when delay<x<y and y-x<delay",
+      "positiveSemidefinite": false
+    },
+    "mobiusExtraction": {
+      "checkedThrough": 10000,
+      "positiveMobiusCount": 3030,
+      "negativeMobiusCount": 3053,
+      "maximumInversionError": 1.4210854715202004e-14,
+      "orderPreserving": false
+    }
+  },
+  "unresolvedTarget": {
+    "scalar": "J_q <= C_q at every recovery witness",
+    "centroid": "c_q >= 1 - C_q / ((s-a) P_q^-) at every multi-event recovery witness",
+    "operator": "G_g positive semidefinite on every finite real point set",
+    "rssRequirement": "a new signed-arithmetic inequality; positive kappa scaling and all-integer Gram positivity do not supply it"
+  }
+}

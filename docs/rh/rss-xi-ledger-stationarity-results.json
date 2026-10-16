@@ -1,0 +1,302 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Attempting stationarity of the completed xi ledger under the support flow",
+  "question": "can the actual completed xi zero ledger be proved stationary under eta(t)=exp(-t)eta?",
+  "verdict": {
+    "rhProved": false,
+    "sameXiStationarityProved": false,
+    "stationarityEquivalentToRh": true,
+    "functionalEquationSufficient": false,
+    "centralNormalizationSufficient": false,
+    "kappaGeometrySufficient": false,
+    "principalPrimeStationarityProved": false,
+    "conclusion": "For any positive flow time, stationarity of every finite-height completed xi ledger is equivalent to RH. Functional reflection, reality, order, and central normalization are all preserved by an explicit off-line quartet factor whose support flow is nonstationary. The convergent horizontal residue has a strictly negative first variation for every off-line quartet. No completed-prime identity was found that sets this variation to zero."
+  },
+  "stationarityEquivalence": {
+    "flow": "T_t(eta,gamma)=(exp(-t)eta,gamma)",
+    "statement": "RH iff the completed xi zero ledger is stationary under T_t for one, equivalently every, t>0",
+    "forward": "under RH every eta is zero and is fixed",
+    "reverseFiniteHeight": "stationarity gives M2=exp(-2t)M2 for the finite-height horizontal second moment, hence M2=0",
+    "reverseDiscrete": "an off-line zero would generate distinct support points exp(-nt)eta accumulating at eta=0 at fixed gamma"
+  },
+  "weakGeneratorAudit": {
+    "generator": "L f=-eta partial_eta f",
+    "quadraticTest": "f=eta^2 gives Lf=-2eta^2",
+    "consequence": "even weak stationarity against this one test forces the horizontal second moment to vanish",
+    "examples": [
+      {
+        "displacements": [
+          0.0,
+          0.0
+        ],
+        "secondMoment": 0.0,
+        "generatorExpectation": -0.0,
+        "weaklyStationaryForQuadraticTest": true
+      },
+      {
+        "displacements": [
+          -0.25,
+          0.25
+        ],
+        "secondMoment": 0.0625,
+        "generatorExpectation": -0.125,
+        "weaklyStationaryForQuadraticTest": false
+      },
+      {
+        "displacements": [
+          -0.4,
+          -0.1,
+          0.1,
+          0.4
+        ],
+        "secondMoment": 0.08500000000000002,
+        "generatorExpectation": -0.17000000000000004,
+        "weaklyStationaryForQuadraticTest": false
+      }
+    ]
+  },
+  "quartetFirstVariation": {
+    "factor": "Q_(eta,gamma)(z)=z^4+2(gamma^2-eta^2)z^2+(eta^2+gamma^2)^2",
+    "derivative": "partial_t Q=4eta^2[z^2-(eta^2+gamma^2)]",
+    "preservedWithoutStationarity": [
+      "evenness Q(-z)=Q(z)",
+      "reality Q(conjugate z)=conjugate Q(z)",
+      "entire order after multiplication by a completed function",
+      "central value after scalar normalization"
+    ],
+    "rows": [
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "before": {
+          "z4": 1.0,
+          "z2": 399.5609096647737,
+          "z0": 39920.22175122865
+        },
+        "afterGoldenStep": {
+          "z4": 1.0,
+          "z2": 399.5732703445487,
+          "z0": 39917.75211998417
+        },
+        "infinitesimalDerivative": {
+          "z4": 0.0,
+          "z2": 0.04000000000000001,
+          "z0": -7.992018193295475
+        },
+        "centralNormalizedVariations": [
+          {
+            "z": 0.25,
+            "timeDerivativeLogCentralNormalizedFactor": 1.8776428372305047e-07
+          },
+          {
+            "z": 1.0,
+            "timeDerivativeLogCentralNormalizedFactor": 2.980899273844032e-06
+          },
+          {
+            "z": 2.0,
+            "timeDerivativeLogCentralNormalizedFactor": 1.1633017529337155e-05
+          }
+        ]
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "before": {
+          "z4": 1.0,
+          "z2": 399.4559096647737,
+          "z0": 39941.203555236054
+        },
+        "afterGoldenStep": {
+          "z4": 1.0,
+          "z2": 399.53316391336745,
+          "z0": 39925.76555743597
+        },
+        "infinitesimalDerivative": {
+          "z4": 0.0,
+          "z2": 0.25,
+          "z0": -49.96323870809671
+        },
+        "centralNormalizedVariations": [
+          {
+            "z": 0.25,
+            "timeDerivativeLogCentralNormalizedFactor": 1.1725000602432357e-06
+          },
+          {
+            "z": 1.0,
+            "timeDerivativeLogCentralNormalizedFactor": 1.8614459586986437e-05
+          },
+          {
+            "z": 2.0,
+            "timeDerivativeLogCentralNormalizedFactor": 7.26449722085814e-05
+          }
+        ]
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "before": {
+          "z4": 1.0,
+          "z2": 399.10070966477366,
+          "z0": 40012.222866552525
+        },
+        "afterGoldenStep": {
+          "z4": 1.0,
+          "z2": 399.3974895861714,
+          "z0": 39952.879833792664
+        },
+        "infinitesimalDerivative": {
+          "z4": 0.0,
+          "z2": 0.9603999999999999,
+          "z0": -192.1093448610243
+        },
+        "centralNormalizedVariations": [
+          {
+            "z": 0.25,
+            "timeDerivativeLogCentralNormalizedFactor": 4.4909656796180905e-06
+          },
+          {
+            "z": 1.0,
+            "timeDerivativeLogCentralNormalizedFactor": 7.129978865775231e-05
+          },
+          {
+            "z": 2.0,
+            "timeDerivativeLogCentralNormalizedFactor": 0.00027827699402107123
+          }
+        ]
+      }
+    ],
+    "conclusion": "functional-equation symmetry, reality, order, and central normalization do not imply flow stationarity"
+  },
+  "centralResidueDissipation": {
+    "residue": "r=4eta^2(eta^2+3gamma^2)/(gamma^2(eta^2+gamma^2)^2)",
+    "x": "x=eta^2/gamma^2",
+    "derivative": "dr/dt=-8x(3-x)/(gamma^2(1+x)^3)",
+    "criticalStripSign": "strictly negative for every off-line nontrivial zero because 0<x<3",
+    "rows": [
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "residue": 3.006045478541363e-06,
+        "timeDerivative": -6.01158945248237e-06,
+        "goldenStepResidue": 1.148266398226765e-06,
+        "goldenStepRatio": 0.38198570395014236
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "residue": 1.8779559456743018e-05,
+        "timeDerivative": -3.753954329574015e-05,
+        "goldenStepResidue": 7.175464632334668e-06,
+        "goldenStepRatio": 0.3820890819543818
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "residue": 7.203684181871855e-05,
+        "timeDerivative": -0.00014378550640669957,
+        "goldenStepResidue": 2.754967519854867e-05,
+        "goldenStepRatio": 0.3824386869690611
+      },
+      {
+        "eta": 0.1,
+        "gamma": 50.0,
+        "residue": 1.9199872000716797e-08,
+        "timeDerivative": -3.8399488004300785e-08,
+        "goldenStepResidue": 7.333728741093642e-09,
+        "goldenStepRatio": 0.38196758503493405
+      },
+      {
+        "eta": 0.25,
+        "gamma": 50.0,
+        "residue": 1.1999500017499437e-07,
+        "timeDerivative": -2.3998000104995505e-07,
+        "goldenStepResidue": 4.5835191869596156e-08,
+        "goldenStepRatio": 0.3819758473499107
+      },
+      {
+        "eta": 0.49,
+        "gamma": 50.0,
+        "residue": 4.609182204674097e-07,
+        "timeDerivative": -9.216889017076083e-07,
+        "goldenStepResidue": 1.7607251027500993e-07,
+        "goldenStepRatio": 0.3820037968914695
+      },
+      {
+        "eta": 0.1,
+        "gamma": 1000.0,
+        "residue": 1.1999999800000003e-13,
+        "timeDerivative": -2.399999920000003e-13,
+        "goldenStepResidue": 4.583592105821654e-14,
+        "goldenStepRatio": 0.3819660151845713
+      },
+      {
+        "eta": 0.25,
+        "gamma": 1000.0,
+        "residue": 7.499999218750068e-13,
+        "timeDerivative": -1.4999996875000405e-12,
+        "goldenStepResidue": 2.864744970392953e-13,
+        "goldenStepRatio": 0.38196603584051897
+      },
+      {
+        "eta": 0.49,
+        "gamma": 1000.0,
+        "residue": 2.881198847040187e-12,
+        "timeDerivative": -5.762395388161523e-12,
+        "goldenStepResidue": 1.1005203033991982e-12,
+        "goldenStepRatio": 0.38196610571663475
+      }
+    ],
+    "syntheticLedger": {
+      "quartets": [
+        [
+          0.1,
+          14.134725141734693
+        ],
+        [
+          0.25,
+          21.022039638771556
+        ],
+        [
+          0.4,
+          25.01085758014569
+        ]
+      ],
+      "residue": 1.1749990927621224e-05,
+      "timeDerivative": -2.349349028601115e-05,
+      "goldenStepResidue": 4.488863530552817e-06
+    },
+    "stationarityConsequence": "zero first variation of the convergent total residue would force RH, but no prime-side conservation law proves it"
+  },
+  "functionLevelAudit": {
+    "centredVariable": "z=s-1/2",
+    "flowNature": "the divisor flow is nonholomorphic and nonlocal as an operation on entire functions",
+    "sameFunctionRequirement": "a stationary completed function would require the sum of quartet logarithmic variations to vanish identically",
+    "poleArgument": "an off-line moving zero creates a nonzero principal part in the logarithmic variation, which cannot disappear while that divisor point moves",
+    "status": "the natural-gradient flow defines a family of different completed divisors unless RH already holds"
+  },
+  "primeSideAudit": {
+    "requiredIdentity": "the completed logarithmic derivative in Re(s)>1 must be unchanged under the transported zero divisor",
+    "uniquenessBoundary": "if the principal von Mangoldt and archimedean logarithmic derivative were unchanged on an open half-plane, analytic uniqueness would give the same xi function and stationarity",
+    "failure": "the quartet first variation is nonzero off the line, and no Euler-product identity cancels it",
+    "equivalentTarget": "proving zero variation of the central horizontal residue or the principal completed prime functional is another RH-equivalent stationarity criterion"
+  },
+  "routeAudit": [
+    {
+      "route": "functional equation",
+      "result": "preserves reflection symmetry only; explicit even real quartet factors remain nonstationary"
+    },
+    {
+      "route": "central normalization",
+      "result": "a scalar can keep the central value fixed while normalized logarithmic variation remains nonzero"
+    },
+    {
+      "route": "kappa natural gradient",
+      "result": "derives the transport and entropy dissipation but not that xi zeros follow the transport"
+    },
+    {
+      "route": "completed prime ledger",
+      "result": "stationarity would close the proof, but the required all-scale principal identity is not derived"
+    }
+  ],
+  "status": "the stationarity target has been reduced to equivalent infinitesimal, moment, residue, divisor, and prime forms; none is proved unconditionally, so RH remains open"
+}

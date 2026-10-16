@@ -1,0 +1,366 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Order-one rigidity, consecutive carrier tests, and a two-ended seam ledger",
+  "question": "can the final-three investigation be strengthened by an exact divisor theorem, actual canonical microsteps, and endpoint harmonic data?",
+  "verdict": {
+    "rhProved": false,
+    "sameDivisorOrderOneCancellationAvailable": false,
+    "naturalSymmetricDyadicFactorHasEmptyReservoir": false,
+    "consecutiveCanonicalStagesInterlace": false,
+    "oneCarrierThetaRefinementsInterlace": false,
+    "twoEndedPoissonSeamLedgerConstructed": true,
+    "heightIndependentSeamDeterminantConstructed": true,
+    "seamLedgerControlledArithmetically": false,
+    "conclusion": "order-one Hadamard rigidity closes the appended-counterterm route more generally; the natural symmetric dyadic completion remains order one only by adding an infinite boundary divisor. Actual N=14 to N=15 and one-to-two-carrier numerical refinements fail positive-axis interlacing. The Blaschke marker admits an exact two-ended Poisson product and an unweighted seam determinant, but no prime or theta theorem yet forces its endpoint product to one."
+  },
+  "completedLedgerRigidity": {
+    "exactP2Curvature": "-(4+3 sqrt(2))(log 2)^2",
+    "p2Curvature": -3.9602015607712553,
+    "gaussianCoefficient": 1.9801007803856276,
+    "sameDivisorTheorem": "if two entire functions of order at most one have the same zeros with multiplicity, their quotient is exp(a+bs), so their logarithmic second derivatives are identical",
+    "consequence": "no order-one re-completion with the xi divisor can change the central curvature; cancelling the dyadic term must reappear in another ledger component rather than leave every reservoir empty",
+    "symmetricDyadicFactor": "D2(s)=(1-2^(-s))(1-2^(s-1))=D2(1-s)",
+    "symmetricDyadicCurvature": -7.920403121542511,
+    "symmetricFactorOrder": 1,
+    "boundaryDivisor": [
+      {
+        "k": -2,
+        "leftBoundaryZero": [
+          0.0,
+          -18.129440567308777
+        ],
+        "rightBoundaryZero": [
+          1.0,
+          -18.129440567308777
+        ]
+      },
+      {
+        "k": -1,
+        "leftBoundaryZero": [
+          0.0,
+          -9.064720283654388
+        ],
+        "rightBoundaryZero": [
+          1.0,
+          -9.064720283654388
+        ]
+      },
+      {
+        "k": 0,
+        "leftBoundaryZero": [
+          0.0,
+          0.0
+        ],
+        "rightBoundaryZero": [
+          1.0,
+          0.0
+        ]
+      },
+      {
+        "k": 1,
+        "leftBoundaryZero": [
+          0.0,
+          9.064720283654388
+        ],
+        "rightBoundaryZero": [
+          1.0,
+          9.064720283654388
+        ]
+      },
+      {
+        "k": 2,
+        "leftBoundaryZero": [
+          0.0,
+          18.129440567308777
+        ],
+        "rightBoundaryZero": [
+          1.0,
+          18.129440567308777
+        ]
+      }
+    ],
+    "boundaryDivisorDescription": "zeros lie at s=2 pi i k/log 2 and s=1+2 pi i k/log 2 on both strip boundaries; using the reciprocal replaces them by poles",
+    "gammaDuplicationCheck": "Gamma(s/4)Gamma(s/4+1/2)=2^(1-s/2)sqrt(pi)Gamma(s/2); the power of two is exp(linear in s) and has zero logarithmic curvature, so duplication does not supply the missing quadratic counterterm",
+    "maximumFunctionalSymmetryError": 0.0,
+    "status": "the curvature can be moved only by raising order or adding a zero/pole boundary reservoir"
+  },
+  "canonicalInterlacing": {
+    "comparisonDomain": "positive critical-line ordinates through height 30; using the full symmetric line would create a trivial central-pair obstruction for any two even functions",
+    "consecutiveStages": {
+      "stage14": {
+        "criticalLineRootsThroughHeight30": [
+          14.760298845724478,
+          16.80644585668857
+        ],
+        "argumentPrinciple": {
+          "winding": 2.000000000000001,
+          "zeroCount": 2,
+          "maximumBoundaryPhaseStep": 0.04251097379868166,
+          "minimumBoundaryMagnitude": 0.00013266754152241333
+        },
+        "offLineZerosDetectedInRectangle": 0
+      },
+      "stage15": {
+        "criticalLineRootsThroughHeight30": [
+          14.455302675661091,
+          17.697296714073232
+        ],
+        "argumentPrinciple": {
+          "winding": 1.9999999999999951,
+          "zeroCount": 2,
+          "maximumBoundaryPhaseStep": 0.041217264856217,
+          "minimumBoundaryMagnitude": 0.00011926396992773486
+        },
+        "offLineZerosDetectedInRectangle": 0
+      },
+      "mergedPositiveRootOrder": [
+        {
+          "root": 14.455302675661091,
+          "family": "N15"
+        },
+        {
+          "root": 14.760298845724478,
+          "family": "N14"
+        },
+        {
+          "root": 16.80644585668857,
+          "family": "N14"
+        },
+        {
+          "root": 17.697296714073232,
+          "family": "N15"
+        }
+      ],
+      "strictAlternation": false,
+      "quadratureCrossCheck": "192- and 256-node roots agree within 1e-9"
+    },
+    "literalCarrierAddition": {
+      "oneCarrier": {
+        "criticalLineRootsThroughHeight30": [
+          14.165949688148011,
+          19.56393886291245
+        ],
+        "argumentPrinciple": {
+          "winding": 1.9999999999999982,
+          "zeroCount": 2,
+          "maximumBoundaryPhaseStep": 0.04071938991201907,
+          "minimumBoundaryMagnitude": 4.438404462498643e-05
+        },
+        "offLineZerosDetectedInRectangle": 0
+      },
+      "twoCarriers": {
+        "criticalLineRootsThroughHeight30": [
+          14.134725144224937,
+          21.022039235223964,
+          25.010865244161103
+        ],
+        "argumentPrinciple": {
+          "winding": 2.999999999999991,
+          "zeroCount": 3,
+          "maximumBoundaryPhaseStep": 0.04163075812327641,
+          "minimumBoundaryMagnitude": 1.500353385974762e-08
+        },
+        "offLineZerosDetectedInRectangle": 0
+      },
+      "mergedPositiveRootOrder": [
+        {
+          "root": 14.134725144224937,
+          "family": "M2"
+        },
+        {
+          "root": 14.165949688148011,
+          "family": "M1"
+        },
+        {
+          "root": 19.56393886291245,
+          "family": "M1"
+        },
+        {
+          "root": 21.022039235223964,
+          "family": "M2"
+        },
+        {
+          "root": 25.010865244161103,
+          "family": "M2"
+        }
+      ],
+      "strictAlternation": false
+    },
+    "consequence": "failure is present both in the actual consecutive N=14 to N=15 deficit transition and when the second fully admitted theta carrier is added; it is not an artefact of comparing distant N=14 and N=20 stages",
+    "limitation": "these are robust argument-principle and quadrature diagnostics for the implemented canonical completions, not a rigorous interval-arithmetic theorem for the exact untruncated integral",
+    "remainingTarget": "a redesigned refinement with a proved Sturm, Hermite-Biehler, or total-positivity structure"
+  },
+  "twoEndedSeamLedger": {
+    "diskCoordinate": "q=exp(i pi(s-1/2)), w=(q-1)/(q+1)",
+    "poissonKernel": "P_a(zeta)=(1-|a|^2)/|zeta-a|^2 for |zeta|=1",
+    "endpointIdentities": {
+      "plusOne": "P_a(+1)=exp(-pi gamma) cos(pi eta)",
+      "minusOne": "P_a(-1)=exp(+pi gamma) cos(pi eta)",
+      "product": "P_a(+1)P_a(-1)=cos^2(pi eta)=sech^2(d_seam)"
+    },
+    "additiveDefect": "epsilon(a)=-log(P_a(+1)P_a(-1))=-2log cos(pi eta)=2log cosh(d_seam)",
+    "finiteHeightDeterminant": "Delta_T=product over zero-orbit representatives with |gamma|<=T of cos^2(pi eta)",
+    "extendedLimit": "Delta=lim_T Delta_T exists in [0,1] because every factor is at most one; Delta=1 exactly under RH, although it may collapse to zero when the unweighted defect sum diverges",
+    "coerciveInfimum": "inf_a P_a(+1)P_a(-1)=sech^2(sup_a d_seam), equal to one exactly under RH",
+    "blaschkePhaseMeaning": "P_a at a boundary point is the boundary phase derivative of the elementary Blaschke factor, so horizontal displacement is the product of its phase slopes at the two seam endpoints",
+    "samples": [
+      {
+        "eta": 0.0,
+        "gamma": 14.134725141734693,
+        "poissonAtPlusOne": 5.1869880633106494e-20,
+        "poissonAtMinusOne": 1.927901101360429e+19,
+        "floatingEndpointProduct": 1.0,
+        "endpointProduct": 1.0,
+        "hyperbolicDistance": 0.0,
+        "additiveSeamDefect": -0.0
+      },
+      {
+        "eta": 0.0,
+        "gamma": 50.0,
+        "poissonAtPlusOne": 6.042022078324064e-69,
+        "poissonAtMinusOne": 1.6550750510951132e+68,
+        "floatingEndpointProduct": 1.0000000000000002,
+        "endpointProduct": 1.0,
+        "hyperbolicDistance": 0.0,
+        "additiveSeamDefect": -0.0
+      },
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "poissonAtPlusOne": 4.9331187975567716e-20,
+        "poissonAtMinusOne": 1.8335429052214393e+19,
+        "floatingEndpointProduct": 0.9045084971874736,
+        "endpointProduct": 0.9045084971874736,
+        "hyperbolicDistance": 0.31945825948088,
+        "additiveSeamDefect": 0.10036357984323709
+      },
+      {
+        "eta": 0.1,
+        "gamma": 50.0,
+        "poissonAtPlusOne": 5.746304469189287e-69,
+        "poissonAtMinusOne": 1.5740699123015416e+68,
+        "floatingEndpointProduct": 0.9045084971874737,
+        "endpointProduct": 0.9045084971874736,
+        "hyperbolicDistance": 0.31945825948088,
+        "additiveSeamDefect": 0.10036357984323709
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "poissonAtPlusOne": 3.6677544335006376e-20,
+        "poissonAtMinusOne": 1.363231942228973e+19,
+        "floatingEndpointProduct": 0.5000000000000001,
+        "endpointProduct": 0.5000000000000001,
+        "hyperbolicDistance": 0.8813735870195429,
+        "additiveSeamDefect": 0.6931471805599451
+      },
+      {
+        "eta": 0.25,
+        "gamma": 50.0,
+        "poissonAtPlusOne": 4.2723547836617833e-69,
+        "poissonAtMinusOne": 1.1703147920020263e+68,
+        "floatingEndpointProduct": 0.5000000000000002,
+        "endpointProduct": 0.5000000000000001,
+        "hyperbolicDistance": 0.8813735870195429,
+        "additiveSeamDefect": 0.6931471805599451
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "poissonAtPlusOne": 1.6292723239777861e-21,
+        "poissonAtMinusOne": 6.055683702129083e+17,
+        "floatingEndpointProduct": 0.0009866357858642255,
+        "endpointProduct": 0.0009866357858642255,
+        "hyperbolicDistance": 4.153505229259845,
+        "additiveSeamDefect": 6.921209597914656
+      },
+      {
+        "eta": 0.49,
+        "gamma": 50.0,
+        "poissonAtPlusOne": 1.8978449984696977e-70,
+        "poissonAtMinusOne": 5.198716368616965e+66,
+        "floatingEndpointProduct": 0.0009866357858642255,
+        "endpointProduct": 0.0009866357858642255,
+        "hyperbolicDistance": 4.153505229259845,
+        "additiveSeamDefect": 6.921209597914656
+      }
+    ],
+    "quarterDisplacement": {
+      "eta": 0.25,
+      "gamma": 14.134725141734693,
+      "poissonAtPlusOne": 3.6677544335006376e-20,
+      "poissonAtMinusOne": 1.363231942228973e+19,
+      "floatingEndpointProduct": 0.5000000000000001,
+      "endpointProduct": 0.5000000000000001,
+      "hyperbolicDistance": 0.8813735870195429,
+      "additiveSeamDefect": 0.6931471805599451
+    },
+    "halfQuarterDisplacement": {
+      "eta": 0.125,
+      "gamma": 14.134725141734693,
+      "poissonAtPlusOne": 4.7921521070730676e-20,
+      "poissonAtMinusOne": 1.781148368252868e+19,
+      "floatingEndpointProduct": 0.8535533905932737,
+      "endpointProduct": 0.8535533905932737,
+      "hyperbolicDistance": 0.4031997191615115,
+      "additiveSeamDefect": 0.15834718382037496
+    },
+    "branchTableAtQuarterDisplacement": [
+      {
+        "descendantsAtHalfDisplacement": 1,
+        "beforeDefect": 0.6931471805599451,
+        "afterDefect": 0.15834718382037496,
+        "afterToBeforeRatio": 0.22844669683638816,
+        "strictContraction": true
+      },
+      {
+        "descendantsAtHalfDisplacement": 2,
+        "beforeDefect": 0.6931471805599451,
+        "afterDefect": 0.31669436764074993,
+        "afterToBeforeRatio": 0.4568933936727763,
+        "strictContraction": true
+      },
+      {
+        "descendantsAtHalfDisplacement": 3,
+        "beforeDefect": 0.6931471805599451,
+        "afterDefect": 0.4750415514611249,
+        "afterToBeforeRatio": 0.6853400905091644,
+        "strictContraction": true
+      },
+      {
+        "descendantsAtHalfDisplacement": 4,
+        "beforeDefect": 0.6931471805599451,
+        "afterDefect": 0.6333887352814999,
+        "afterToBeforeRatio": 0.9137867873455526,
+        "strictContraction": true
+      },
+      {
+        "descendantsAtHalfDisplacement": 5,
+        "beforeDefect": 0.6931471805599451,
+        "afterDefect": 0.7917359191018748,
+        "afterToBeforeRatio": 1.1422334841819406,
+        "strictContraction": false
+      }
+    ],
+    "fourBranchIdentity": "for 0<|eta|<1/2, 4 epsilon(eta/2)<epsilon(eta), because with c=cos^2(pi eta/2), c^2-(2c-1)=(c-1)^2>0",
+    "advance": "unlike the quadratic residue, the exact seam defect still contracts under as many as four half-displacement descendants",
+    "remainingFailure": "the full Blaschke phase derivative is a sum of Poisson kernels and diverges at the accumulation endpoints; recovering the per-zero two-ended product requires a renormalized endpoint factorization not supplied by current prime data",
+    "sufficientMissingTheorem": "derive from the completed prime ledger or canonical theta kernel that the two-ended endpoint product has infimum one, or that it is invariant under a globally defined halving return"
+  },
+  "combinedAssessment": {
+    "exactAdvances": [
+      "upgraded the counterterm obstruction to same-divisor order-one Hadamard rigidity",
+      "located the natural symmetric dyadic reservoir explicitly on both strip boundaries",
+      "tested a genuinely consecutive stage and a literal one-carrier refinement on the positive spectral axis",
+      "converted the seam norm into an exact product of two endpoint Poisson phase slopes",
+      "constructed an unweighted seam determinant and defect that remain sensitive to escape",
+      "proved the seam defect contracts even under four descendants at half displacement"
+    ],
+    "remainingObligations": [
+      "prove a renormalized two-ended endpoint identity from prime or theta data",
+      "or construct a different canonical refinement with rigorous interlacing",
+      "or supply an internal completed-ledger identity without shifting curvature into a boundary divisor"
+    ],
+    "status": "the seam ledger is sharper and branch-robust, but arithmetic control remains missing and RH is not proved"
+  }
+}

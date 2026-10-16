@@ -1,0 +1,231 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "An arithmetic controller for the two-ended seam",
+  "question": "can prime data control the height-independent seam marker rather than merely restate it on the zero side?",
+  "verdict": {
+    "rhProved": false,
+    "exactArithmeticControllerFound": true,
+    "controllerUsesAbsolutelyConvergentPrimeSeriesAtEachFixedIndex": true,
+    "allIndexSubexponentialBoundProved": false,
+    "seamInfimumForcedToOne": false,
+    "conclusion": "a generalized Li expansion based at s=2 turns the seam question into one exact prime-side growth bound. Its endpoint-completed von-Mangoldt/Laguerre coefficients detect every off-line zero through their radius of convergence. Proving subexponential growth of the full sequence would force the seam infimum to one and prove RH, but that cancellation estimate is not derived."
+  },
+  "analyticTestObstruction": {
+    "statement": "no single holomorphic Weil test can have real part equal to the nonlinear seam defect as a function of horizontal displacement while remaining independent of ordinate",
+    "reason": "if Re h(x+iy)=f(y) on an open strip, harmonicity gives f''(y)=0; an even such f is constant, whereas -2 log cos(pi y) has second derivative 2 pi^2 sec^2(pi y)",
+    "consequence": "arithmetic control must use a nonlinear determinant or an all-index family of analytic tests"
+  },
+  "generalizedLiMap": {
+    "parameter": -1.0,
+    "basePoint": 2.0,
+    "scale": 3.0,
+    "coordinate": "z_a(s)=(s+a-1)/(s-a), with a=-1",
+    "inverse": "s_a(z)=(1-a-a z)/(1-z)=2+3z/(1-z)",
+    "criticalLineProperty": "|z_a(1/2+i gamma)|=1",
+    "zeroRadius": "for rho=1/2+eta+i gamma and c=1/2-a, |z_a(rho)|^2=(gamma^2+(c-eta)^2)/(gamma^2+(c+eta)^2)",
+    "functionalPair": "critical reflection sends z_a to 1/conj(z_a), so every off-line quartet has one member inside the unit disk"
+  },
+  "arithmeticGeneratingFunction": {
+    "function": "P_a(z)=log(((s_a(z)-1) zeta(s_a(z)))/((-a) zeta(1-a)))",
+    "series": "P_a(z)=sum_{n>=1} p_{n,a} z^n/n",
+    "radiusStatement": "the zeta pole is removed, trivial zeros map outside the unit disk, and nontrivial zeros map to its singularities; therefore the series radius is one exactly under RH",
+    "growthCriterion": "RH iff limsup_n |p_{n,a}|^(1/n)=1 for one fixed a<0",
+    "subexponentialForm": "equivalently, for every epsilon>0, p_{n,a}=O_epsilon(exp(epsilon n))"
+  },
+  "primeCoefficientFormula": {
+    "general": "p_{n,a}=1+(-1)^(n+1)((1-a)/(-a))^n-(1-2a) sum_{m>=2} Lambda(m)m^(-(1-a)) L_(n-1)^(1)((1-2a)log m)",
+    "aEqualsMinusOne": "p_n=1+(-1)^(n+1)2^n-3 sum_{m>=2} Lambda(m)m^(-2) L_(n-1)^(1)(3 log m)",
+    "absoluteConvergence": "for every fixed n and a<0 the von Mangoldt series converges absolutely because 1-a>1 and the Laguerre factor is a fixed polynomial in log m",
+    "endpointTerm": "1+(-1)^(n+1)((1-a)/(-a))^n comes from log(s-1) and cancels the artificial exponential caused by separating the zeta pole from the endpoint completion",
+    "hardEstimate": "prove the endpoint term and oscillatory prime-power Laguerre sum cancel to subexponential size uniformly in n"
+  },
+  "coefficientDiagnosticsAtAEqualsMinusOne": {
+    "method": "1024-point Cauchy coefficient extraction at radius 0.18 using independent Euler-Maclaurin zeta and Lanczos gamma evaluators",
+    "table": [
+      {
+        "n": 1,
+        "completedPrimeCoefficient": 1.2901170207164026,
+        "archimedeanCoefficient": -1.0829183261263995,
+        "generalizedLiCoefficient": 0.20719869459000195,
+        "reconstructionError": -1.1102230246251565e-15
+      },
+      {
+        "n": 2,
+        "completedPrimeCoefficient": 1.5405705471045126,
+        "archimedeanCoefficient": -0.7147350018442867,
+        "generalizedLiCoefficient": 0.8258355452602304,
+        "reconstructionError": 4.551914400963142e-15
+      },
+      {
+        "n": 3,
+        "completedPrimeCoefficient": 1.4245268380762652,
+        "archimedeanCoefficient": 0.4226079246827113,
+        "generalizedLiCoefficient": 1.8471347627589891,
+        "reconstructionError": 1.2601031329495527e-14
+      },
+      {
+        "n": 4,
+        "completedPrimeCoefficient": 1.1928757903270952,
+        "archimedeanCoefficient": 2.063929775953665,
+        "generalizedLiCoefficient": 3.2568055662807245,
+        "reconstructionError": -3.552713678800501e-14
+      },
+      {
+        "n": 5,
+        "completedPrimeCoefficient": 0.9551399810318864,
+        "archimedeanCoefficient": 4.080391104511099,
+        "generalizedLiCoefficient": 5.0355310855431625,
+        "reconstructionError": 1.7763568394002505e-13
+      },
+      {
+        "n": 6,
+        "completedPrimeCoefficient": 0.7630027947947111,
+        "archimedeanCoefficient": 6.396621867734057,
+        "generalizedLiCoefficient": 7.159624662529459,
+        "reconstructionError": 6.910028105266974e-13
+      },
+      {
+        "n": 7,
+        "completedPrimeCoefficient": 0.6390841665237628,
+        "archimedeanCoefficient": 8.9627426865618,
+        "generalizedLiCoefficient": 9.601826853077451,
+        "reconstructionError": -8.110845328701544e-12
+      },
+      {
+        "n": 8,
+        "completedPrimeCoefficient": 0.5890886789294669,
+        "archimedeanCoefficient": 11.743122136298506,
+        "generalizedLiCoefficient": 12.332210815209281,
+        "reconstructionError": -1.8692603021008836e-11
+      },
+      {
+        "n": 9,
+        "completedPrimeCoefficient": 0.6081577170079844,
+        "archimedeanCoefficient": 14.711001830192025,
+        "generalizedLiCoefficient": 15.319159546847054,
+        "reconstructionError": -3.5295499856147217e-10
+      },
+      {
+        "n": 10,
+        "completedPrimeCoefficient": 0.6848230490069394,
+        "archimedeanCoefficient": 17.84555271725769,
+        "generalizedLiCoefficient": 18.53037576579396,
+        "reconstructionError": -4.70670613594848e-10
+      }
+    ],
+    "status": "the first ten completed-prime coefficients remain moderate and reconstruct the generalized Li coefficients with the archimedean part; this finite computation does not establish all-index growth"
+  },
+  "seamConnection": {
+    "liRadialExponent": "alpha_c(eta,gamma)=-log|z_a(rho)|=atanh(2c eta/(gamma^2+c^2+eta^2))",
+    "seamDefect": "epsilon(eta)=-2log cos(pi eta)",
+    "relationship": "both vanish exactly at eta=0, but alpha_c decays like 2c eta/gamma^2 at fixed c; the all-index coefficient growth amplifies that decaying signal until an escaping zero becomes visible",
+    "fixedControllerStressDetection": [
+      {
+        "stage": 14,
+        "height": 842.9988137587108,
+        "fixedBasePointAEqualsMinusOne": {
+          "eta": 0.25,
+          "gamma": 842.9988137587108,
+          "c": 1.5,
+          "basePoint": 2.0,
+          "mappedRadius": 0.9999989446276932,
+          "logReciprocalRadius": 1.0553728636749548e-06,
+          "growthExcess": 1.0553734205810915e-06,
+          "eFoldCoefficientIndex": 947532.4166644395
+        },
+        "scaleMatchedBasePoint": {
+          "c": 842.9988508287503,
+          "basePoint": 843.4988508287503,
+          "logReciprocalRadius": 0.0002965603180635743,
+          "eFoldCoefficientIndex": 3371.9953044615622
+        }
+      },
+      {
+        "stage": 20,
+        "height": 15126.999933893048,
+        "fixedBasePointAEqualsMinusOne": {
+          "eta": 0.25,
+          "gamma": 15126.999933893048,
+          "c": 1.5,
+          "basePoint": 2.0,
+          "mappedRadius": 0.9999999967224023,
+          "logReciprocalRadius": 3.277597721262635e-09,
+          "growthExcess": 3.2775977266339584e-09,
+          "eFoldCoefficientIndex": 305101505.75000036
+        },
+        "scaleMatchedBasePoint": {
+          "c": 15126.999935958891,
+          "basePoint": 15127.499935958891,
+          "logReciprocalRadius": 1.6526740337221646e-05,
+          "eFoldCoefficientIndex": 60507.99973832666
+        }
+      },
+      {
+        "stage": 30,
+        "height": 1860497.9999994645,
+        "fixedBasePointAEqualsMinusOne": {
+          "eta": 0.25,
+          "gamma": 1860497.9999994645,
+          "c": 1.5,
+          "basePoint": 2.0,
+          "mappedRadius": 0.9999999999997833,
+          "logReciprocalRadius": 2.1667202807609793e-13,
+          "growthExcess": 2.166720280761214e-13,
+          "eFoldCoefficientIndex": 4615270410672.427
+        },
+        "scaleMatchedBasePoint": {
+          "c": 1860497.9999994813,
+          "basePoint": 1860498.4999994813,
+          "logReciprocalRadius": 1.3437262496389204e-07,
+          "eFoldCoefficientIndex": 7441991.99999788
+        }
+      },
+      {
+        "stage": 40,
+        "height": 228826127.0000003,
+        "fixedBasePointAEqualsMinusOne": {
+          "eta": 0.25,
+          "gamma": 228826127.0000003,
+          "c": 1.5,
+          "basePoint": 2.0,
+          "mappedRadius": 1.0,
+          "logReciprocalRadius": 1.4323529386073087e-17,
+          "growthExcess": 1.4323529386073087e-17,
+          "eFoldCoefficientIndex": 6.981519519709368e+16
+        },
+        "scaleMatchedBasePoint": {
+          "c": 228826127.0000003,
+          "basePoint": 228826127.5000003,
+          "logReciprocalRadius": 1.0925325847952653e-09,
+          "eFoldCoefficientIndex": 915304508.0000013
+        }
+      }
+    ],
+    "firstZeroQuarterDisplacement": {
+      "eta": 0.25,
+      "gamma": 14.134725141734693,
+      "c": 1.5,
+      "basePoint": 2.0,
+      "mappedRadius": 0.9962958803194721,
+      "logReciprocalRadius": 0.0037109969198292313,
+      "growthExcess": 0.003717891194471377,
+      "eFoldCoefficientIndex": 269.46936944534485
+    },
+    "functionalReflectionQuarterDisplacement": {
+      "eta": -0.25,
+      "gamma": 14.134725141734693,
+      "c": 1.5,
+      "basePoint": 2.0,
+      "mappedRadius": 1.0037178911944713,
+      "logReciprocalRadius": -0.0037109969198292313,
+      "growthExcess": -0.003704119680527874,
+      "eFoldCoefficientIndex": 269.46936944534485
+    },
+    "optimizedBasePoint": "for a known target height, c=sqrt(gamma^2+eta^2) maximizes the radial exponent and gives alpha=asinh(eta/gamma), but no height-dependent choice supplies one uniform proof"
+  },
+  "completedControlStatement": {
+    "sufficientArithmeticTheorem": "for a=-1, prove 1+(-1)^(n+1)2^n-3 sum Lambda(m)m^(-2)L_(n-1)^(1)(3log m)=exp(o(n))",
+    "consequence": "the generating radius is one, so no nontrivial zero maps inside the disk; functional symmetry then places every nontrivial zero on Re(s)=1/2, making the two-ended seam infimum equal to one",
+    "currentStatus": "the controller and equivalence are exact, but the required all-index prime cancellation is another form of RH and is not proved by the present framework"
+  }
+}

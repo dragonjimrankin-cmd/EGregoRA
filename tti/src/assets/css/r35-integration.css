@@ -1197,6 +1197,7 @@ table :is(th, td) > a[href] {
   gap: 0.04rem;
 }
 .site-head--reference .reference-nav-list a {
+  box-sizing: border-box;
   min-width: 0;
   min-height: 0;
   padding: 0.34rem 0.44rem;
@@ -1217,18 +1218,16 @@ table :is(th, td) > a[href] {
   text-transform: uppercase;
   white-space: nowrap;
   transition: color 180ms ease, border-color 180ms ease, background 180ms ease,
-    padding 180ms ease, letter-spacing 180ms ease, transform 180ms ease;
+    box-shadow 180ms ease;
 }
 .site-head--reference .reference-nav-list a:hover,
 .site-head--reference .reference-nav-list a:focus-visible,
 .site-head--reference .reference-nav-list a[aria-current="page"] {
-  padding-inline: 0.62rem;
   color: var(--gold-bright);
   border-color: rgba(118,207,238,0.3);
   background: radial-gradient(120% 140% at 50% 120%, rgba(118,207,238,0.14), transparent 70%);
-  letter-spacing: 0.17em;
+  box-shadow: inset 0 -2px 0 rgba(118,207,238,0.22);
   outline: none;
-  transform: translateY(-1px);
 }
 .site-head--reference .reference-nav-list i {
   width: 17px;
@@ -1366,10 +1365,7 @@ table :is(th, td) > a[href] {
   .site-head--reference .reference-nav-list a:hover,
   .site-head--reference .reference-nav-list a:focus-visible,
   .site-head--reference .reference-nav-list a[aria-current="page"] {
-    padding-inline: 0.78rem;
     border-bottom-color: rgba(118,207,238,0.35);
-    letter-spacing: 0.13em;
-    transform: none;
   }
   .site-head--reference .reference-part-label {
     width: 100%;

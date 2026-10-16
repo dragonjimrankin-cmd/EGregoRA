@@ -23,23 +23,23 @@ assert.ok(site.focusAreas.every((focus, index) =>
   focus.part === site.integratedNavGroups[index].part &&
   focus.documents === site.integratedNavGroups[index].items),
 "each conjecture must own its complete canonical research Part");
-assert.equal(site.research.documentCount, 30, "research study count drifted");
+assert.equal(site.research.documentCount, 31, "research study count drifted");
 assert.equal(site.research.resourceCount, 4, "project resource count drifted");
 assert.match(site.research.status, /not a peer-reviewed physical theory/i,
   "the project status must not imply peer review");
 
 const documents = ttiAtlas.limbs.flatMap((part) => part.subs);
-assert.equal(documents.length, 34, "the research contents must retain all 34 destinations");
-assert.equal(new Set(documents.map((document) => document.code)).size, 34,
+assert.equal(documents.length, 35, "the research contents must retain all 35 destinations");
+assert.equal(new Set(documents.map((document) => document.code)).size, 35,
   "research document codes must be unique");
 assert.ok(documents.every((document) =>
   /^TTI-(?:I|II|III|IV|V|VI)\.\d{2}$/.test(document.code) && document.kind && document.status && document.note),
 "every project destination needs a stable code, type, status and research aim");
-assert.equal(Object.keys(site.researchByUrl).length, 34, "route-to-research metadata is incomplete");
+assert.equal(Object.keys(site.researchByUrl).length, 35, "route-to-research metadata is incomplete");
 assert.deepEqual(site.researchDocuments.map((document) => document.url), documents.map((document) => document.href),
   "research-document order drifted from the canonical Atlas");
 assert.ok(site.researchDocuments.every((document, index) =>
-  document.index === index + 1 && document.total === 34), "corpus positions are inconsistent");
+  document.index === index + 1 && document.total === 35), "corpus positions are inconsistent");
 
 const homeFile = path.join(builtRoot, "index.html");
 const archiveFile = path.join(builtRoot, "archive", "index.html");
@@ -88,9 +88,9 @@ assert.ok(home('.hero-ctas a[href="/archive/"]').length,
   "the hero must link directly to the complete archive");
 assert.equal(archive("#project-contents .research-toc-part").length, 6,
   "archive table of contents must expose all six Parts");
-assert.equal(archive("#project-contents .research-toc-part > ol > li").length, 34,
-  "archive table of contents must expose all 34 documents");
-assert.equal(archive("#project-contents .research-toc-code").length, 34,
+assert.equal(archive("#project-contents .research-toc-part > ol > li").length, 35,
+  "archive table of contents must expose all 35 documents");
+assert.equal(archive("#project-contents .research-toc-code").length, 35,
   "every archive contents entry needs its stable document code");
 
 function builtIndexFiles(directory, relative = "") {
@@ -116,7 +116,7 @@ for (const relative of indexFiles) {
   assert.equal($(".project-record-kind").text().trim(), expected.kind, `${route} has the wrong document type`);
   assert.equal($(".project-record-status").text().trim(), expected.status, `${route} has the wrong status`);
   assert.equal($(".project-drawer-grid > section").length, 6, `${route} contents drawer must expose six Parts`);
-  assert.equal($(".project-drawer-grid a").length, 34, `${route} contents drawer must expose 34 destinations`);
+  assert.equal($(".project-drawer-grid a").length, 35, `${route} contents drawer must expose 35 destinations`);
   assert.equal($(".project-drawer-grid a[aria-current=\"page\"]").length, 1,
     `${route} contents drawer must identify the current document`);
   assert.equal($("[data-document-outline]").length, 1, `${route} needs a local document-outline shell`);

@@ -325,11 +325,50 @@ In the **base-5 to base-8** version, return is expressed through an octave struc
 
 In the **base-5 to base-4** alternative, the return plane has a shorter fourfold organisation. Five and four are also coprime, so the elementary joint recurrence is 20 ticks. The cycle is tighter and the mismatch has a different symmetry.
 
-Neither numeral base is known to be a physical plane, frequency or dimension. Changing notation does not create dynamics. To become more than numerology, either version must identify a measurable state space, evolution rule, coupling and observable that changes when 8 is replaced by 4. Until then the comparison is mathematical speculation, not evidence about cosmology. Read [Prime Plane Phase Arithmetic](https://the-two-infinities.hatchable.site/prime-plane/).`,
+The later decimal-splice construction adds a conditional selector. An origin-anchored half-turn across zero to ten advances by pi over ten per unit, exactly the magnitude of the base-5 to base-4 relative shift. If those are the same clock, base four is selected: quadrature after 5 ticks, sign reversal after 10 and full rephasing after 20. The base-5 to base-8 shift of 3pi over 20 does not satisfy that decimal law.
+
+This selection is mathematical only under the shared-clock premise. Neither numeral base is known to be a physical plane, frequency or dimension. Changing notation does not create dynamics. The model still needs a measurable state space, evolution rule, coherent carrier and observable. Read [Prime Plane Phase Arithmetic](https://the-two-infinities.hatchable.site/prime-plane/) and [The Decimal Splice](https://the-two-infinities.hatchable.site/decimal-splice/).`,
       followups: [
+        "Does the decimal splice reverse sign or return periodically?",
         "How can matter be residue while antimatter is out of phase?",
-        "Why can the smaller and bigger infinities never fully synchronise?",
         "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "decimal-splice-phase",
+      question: "Does the decimal splice reverse sign or return periodically?",
+      patterns: [
+        /decimal splice.*(?:sign|reverse|return|phase|five|5|ten|10)/,
+        /(?:pi over ten|pi\/10|π\/10).*(?:five|5|ten|10|phase|splice)/,
+        /(?:five|5).*(?:phase hinge|quadrature).*(?:ten|10|splice)/,
+        /(?:one splice|single splice).*(?:sign reversal|periodic return|two passes)/,
+        /(?:zero to ten|0 to 10).*(?:half turn|phase|pi|π)/
+      ],
+      answer: `The internally consistent rule is: one decimal splice reverses sign, while periodic return belongs to the two-pass cover. Write the one-splice action as S = exp(i pi) = −1. Then S acting on a phase-bearing state psi gives −psi, while S squared gives psi. The alternatives are therefore ordered rather than mutually exclusive.
+
+On the origin-anchored interval from zero to ten, define theta(x) = pi x divided by 10. The phase begins at +1, reaches i at x = 5 and reaches −1 at x = 10. Five is the quadrature hinge because 5 times pi over 10 is pi over 2. Ten completes the half-turn because 10 times pi over 10 is pi. A second application completes 2pi and restores the state.
+
+This construction applies to the nested interval from zero to ten. A literal additive shell from one to ten has midpoint 5.5 and phase gradient pi over 9; a logarithmic decade has geometric midpoint square root of ten. Five is exact only after the framework chooses origin-anchored decimal completion.
+
+The same increment sharpens the Prime Plane comparison. A five-state clock advances by 2pi over 5 and a four-state clock by pi over 2, so prime minus return is −pi over 10. After 5 shared ticks they are at quadrature, after 10 their relative sign is reversed and after 20 they rephase. This conditionally selects the five-to-four model over five-to-eight if both constructions refer to one clock.
+
+The angle also yields one exact RH candidate. If p = cos(pi over 5) = phi over 2 weights the identity branch and 1 minus p weights critical-line reflection, their horizontal barycentre is eta over phi. Two hypothetical descendants at that displacement strictly reduce the exact seam defect. But the support points remain plus and minus eta: a barycentre is not a new xi zero. At function level, p xi(s) plus (1 minus p) xi(1 minus s) is simply xi(s), while the period-20 prime phase is nonprincipal. No same-xi map or untwisted prime-energy theorem follows.
+
+The entropy follow-up makes that boundary exact. In the previously derived kappa-R kernel geometry, the golden binary channel increases branch entropy and contracts branch relative entropy by at most one over phi squared. The completed xi ledger is invariant, but so is every reflection-symmetric off-line quartet. Feature mixing is not the feature at eta over phi, and exact two-pass return cannot be strictly contractive without an environment. Read [the kappa-entropy audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-kappa-entropy-splice).
+
+The next support-flow attempt succeeds at the level of information geometry. Normalised Rankin feature intensities give the Fisher-natural gradient d eta over dt equals minus eta. At time log phi this moves support to eta over phi, and its unique invariant probability ledger lies on eta equals zero. What remains unproved is stationarity of the zeros of the same xi function. Read [the natural-gradient audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-kappa-natural-gradient).
+
+The stationarity attempt then tests the actual completed xi ledger. Stationarity for one positive time, weak stationarity of the horizontal second moment and zero variation of the convergent horizontal residue are all equivalent to RH. Every hypothetical off-line quartet has nonzero divisor motion and strict negative residue variation. Functional symmetry and central normalisation do not stop it. Read [the stationarity audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-xi-ledger-stationarity).
+
+The principal-prime follow-up reduces the target to one Euler anchor at s equals 2. Its exact value is three halves minus one half of the sum of Euler gamma and log pi, minus the absolutely convergent sum of von Mangoldt of n over n squared. Every off-line quartet makes the transported logarithmic derivative increase, by between 1.4269 and 1.5196 times the residue-loss magnitude. Conservation at this one point would force RH. It was not proved because the moved canonical divisor has no independently derived Euler product tying it to the same static prime moment. Read [the principal-prime anchor audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-principal-prime-anchor).
+
+The retry proves an exact weighted prime-phase law for sigma greater than one. Endpoint completion turns its formal critical-boundary value into one minus the sum of von Mangoldt of n over n squared, exactly the s equals 2 endpoint-prime anchor. Moving the line to one half crosses each right-half zero and adds its positive Blaschke defect. Therefore boundary conservation is equivalent to RH and was not proved by analytic continuation of the prime series. Read [the prime-phase conservation audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-prime-phase-conservation).
+
+A geometric route can close after one revolution while a transported frame returns reversed; the Möbius band supplies the disciplined analogy. But the physical bridge remains open. The theory must identify what state acquires the sign, how coherence survives and what reference makes the phase measurable. The relation is a deterministic phase coupling, not quantum entanglement, and the golden mixer sharpens only a conditional RH criterion. Read [The Decimal Splice](https://the-two-infinities.hatchable.site/decimal-splice/) and [the RH contraction audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-decimal-splice-contraction).`,
+      followups: [
+        "How do the base-5 to base-8 and base-5 to base-4 shifts differ?",
+        "Why does π appear between zero and one?",
+        "Does residue from one inversion survive a second inversion?"
       ]
     },
     {
@@ -461,6 +500,8 @@ TTI's stronger hypothesis treats the sectors as completed, partial and ground le
 
 TTI's **integration** is a proposed order parameter for degrees of freedom acting as a coherent whole. That idea may be philosophically useful, but no established law says that increased TTI integration must lower entropy, raise entropy, generate consciousness or create mass. Local order can increase while the environment gains more entropy, and gravitational systems do not behave like simple gas boxes. Similar arrows in a diagram are not an equality.
 
+One narrow splice entropy has now been calculated. The golden binary identity-reflection channel contracts branch bias by one over phi and branch relative entropy by at most one over phi squared. That is Shannon or reduced-state entropy after coarse-graining. It is not automatically heat, and it does not contract Riemann-zero support: every reflection-symmetric off-line quartet is already stationary. A Fisher-natural-gradient follow-up moves support toward eta equals zero, but stationarity of the same xi ledger under that flow is itself equivalent to RH and remains unproved.
+
 A physical bridge would need a state space, dynamics, system boundary, independently defined integration measure I, and a derived relation such as I = F[ρ]. It would also need null models for ordinary self-organisation and a result that could show the bridge is absent. The older symbolic sequence 101, 333, 666 and 999 is retained as cultural history of the framework, not as a result of statistical mechanics.
 
 Read [Entropy and the Phases of Integration](https://the-two-infinities.hatchable.site/entropy/). Its central discipline is simple: established thermodynamics, information theory, TTI interpretation and spiritual symbolism go on separate ledgers.`,
@@ -497,7 +538,7 @@ Read [Two Inversions](https://the-two-infinities.hatchable.site/double-inversion
         /(?:accumulat|gather).*(?:differential|dx).*(?:mass|gravity|weigh)/,
         /(?:mass|gravity).*(?:accumulat|differential|dx|splice deposit)/
       ],
-      answer: `There are three levels, and the bridge between the second and third must not be skipped. In mathematics, integrals and sums accumulate differential contributions. The Skeletal Splice gives the exact count R_n = F_(n+2) − 1, defines δΠ_n = R_n φ^(−n), and yields δΠ_n tending to φ²/√5 = 1.170820… with Π_n approximately 1.1708n − 1.618. Those quantities are dimensionless until a scale and units are supplied.
+      answer: `There are three levels, and the bridge between the second and third must not be skipped. In mathematics, integrals and sums accumulate differential contributions. The Skeletal Splice gives the exact count R_n = F_(n+2) − 1, defines δΠ_n = R_n φ^(−n), and yields δΠ_n tending to φ²/√5 = 1.170820… with Π_n = 1.170820…n − 1.570820… + o(1). Those quantities are dimensionless until a scale and units are supplied.
 
 In established physics, a written dx is not a smallest grain of matter. Rest mass, energy density, momentum, pressure and stress enter the stress–energy tensor. General relativity relates a conserved total T_μν to curvature through G_μν + Λg_μν = (8πG/c⁴)T_μν. Much ordinary mass is QCD binding and kinetic energy, not a direct count of elementary deposits.
 
@@ -547,6 +588,349 @@ The audit retains exact identities and finite experiments at their proper grade.
       ]
     },
     {
+      id: "rh-golden-catchup",
+      question: "Do the finite golden catch-up completed functions force their zeros onto the critical line?",
+      patterns: [
+        /(?:golden|delayed carry|catch.?up).*(?:zero|critical line|completed function|xi|riemann|rh)/,
+        /(?:finite|theta).*(?:completion|completed function).*(?:golden|carry|shrinking strip)/,
+        /(?:escaping quartet|golden zero bound|global shrinking strip|splice at (?:one|1).*(?:golden|zero|completion|carry))/
+      ],
+      answer: `Not globally. The corrected threshold sequence begins at 1, then 10, 100 and 1000. Because TTI has not yet fixed how the splice at 1 enters the Fibonacci indexing, three coherent models were tested. A zeroth-seed model gives 1 one special carrier and preserves the existing labels at 10, 100 and 1000, making five carriers through 1000. A reindexed model assigns F₁ through F₄ to all four thresholds, making seven but shifting later labels. A boundary-only model gives 1 a delay but no theta carrier, preserving the existing total of four; without a coupling, that boundary cannot move a zero.
+
+Every carrier-bearing splice has an independent golden clock. Each of the three models gives an entire finite theta completion preserving the functional equation and conjugation, and each converges locally to xi. Chronological clocks and equal local ticks were both tested. In 0 ≤ Re(s) ≤ 1 and 0 ≤ Im(s) ≤ 30, all six model/schedule paths had argument-principle counts 2, 2, 4 and 3 at cutoffs 14, 20, 30 and 40. Every total matched its critical-line roots. Reindexing moved the finite ordinates but produced no detected off-line zero.
+
+This is bounded-window evidence, not global control. An even real factor can still add an escaping quartet at s = 1/2 ± 1/4 ± iφ^N while tending to one on every compact set. The modified stages retain the completion symmetries and local xi limit but violate every shrinking horizontal bound. TTI must select the indexing and clock law, then exclude such escape uniformly in height. Read [The splice-at-one completion test](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-golden-catchup) and [The proof audit](https://the-two-infinities.hatchable.site/riemann-proof-audit/).`,
+      followups: [
+        "What is an escaping quartet?",
+        "What did the consolidated Riemann Hypothesis archive actually establish?",
+        "Does the Riemann Hypothesis work solve the outstanding splice questions?"
+      ]
+    },
+    {
+      id: "rh-internal-splices",
+      question: "Do 333, 666 and 999 behave as additional splices?",
+      patterns: [
+        /333.*(?:splice|branch|cohort|carrier)/,
+        /(?:splice|branch).*333/,
+        /(?:internal|third density).*(?:splice|station).*(?:zero|xi|riemann|carrier)/
+      ],
+      answer: `They can be modelled as splices, but their population effect is not fixed by their arithmetic positions. TTI’s exact relations make them plausible internal gates: 333 = 999/3, 666 = 2·999/3, and complement reflection exchanges 333 with 666. Those facts do not by themselves say whether a station creates descendants or opens a new analytic carrier.
+
+Three models were tested. Adding one carrier at each station gives 8, 10 or 7 carriers through 1000, depending on how the splice at 1 is indexed. Assigning successive Fibonacci cohorts to every event in 1, 10, 100, 333, 666, 999, 1000 gives 33 carriers and makes 1000 the seventh event. Treating the stations as three delayed faces sharing the existing 1000 cohort adds no population and preserves totals 5, 7 or 4. Only the reindexed splice-at-one model gives F₄ = 3 carriers at 1000, allowing one carrier for each face without averaging.
+
+All seven compatible population scenarios were tested with chronological and equal local clocks. Every one of the fourteen paths had zero counts 2, 2, 4 and 3 through height 30 at cutoffs 14, 20, 30 and 40; every total matched its critical-line roots. This remains bounded-window evidence. An escaping off-line quartet can preserve the completed symmetries and local xi limit in every model. The internal stations therefore change finite carrier counts and root ordinates, but do not force a global golden shrinking strip. Read [The internal-splice comparison](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-internal-splices) and [The splice-at-one completion test](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-golden-catchup).`,
+      followups: [
+        "Do the finite golden catch-up completed functions force their zeros onto the critical line?",
+        "Does the Riemann Hypothesis work solve the outstanding splice questions?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-ternary-splices",
+      question: "What does it mean if 100, 666 and 999 each splice into three?",
+      patterns: [
+        /(?:100|666|999).*(?:splice|branch).*(?:three|3|ternary)/,
+        /(?:three|3|ternary).*(?:carrier|branch|state).*(?:100|666|999)/,
+        /(?:z_?3|three internal states|three total branches|three new carriers)/
+      ],
+      answer: `It has three distinct meanings. “Three new carriers” assigns a cohort of size three at each named event, giving 13, 14 or 12 carriers through 1000 under the three splice-at-one conventions. “Three total branches” counts the incoming path as one outgoing branch, so each fork adds two and the totals become 10, 11 or 9. “Three internal states” adds no scalar carrier and preserves totals 5, 7 or 4.
+
+The internal-state reading has the natural Z₃ decomposition C³ = 1 ⊕ χ ⊕ χ̄. Because 1 + ω + ω² = 0, a symmetric scalar trace retains only the invariant mean channel. The nontrivial phase states require a derived state-dependent coupling before they can affect the completed scalar function. Their linear cancellation also cannot force the positive horizontal zero residue, which depends quadratically on displacement, to vanish.
+
+All nine population scenarios were tested with chronological and equal local clocks. Every one of the eighteen paths had zero counts 2, 2, 4 and 3 through height 30 at cutoffs 14, 20, 30 and 40, all matched by critical-line roots. Once the splice-at-one convention was fixed, the first displayed roots were numerically insensitive to which meaning of three was used because the altered theta carriers enter at already suppressed indices. This is not a global theorem: every model still admits an escaping off-line quartet. Read [The ternary-splice comparison](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-ternary-splices) and [The internal-station comparison](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-internal-splices).`,
+      followups: [
+        "Do 333, 666 and 999 behave as additional splices?",
+        "Do the finite golden catch-up completed functions force their zeros onto the critical line?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-quaternary-splice",
+      question: "What if the event at 1000 splices into four?",
+      patterns: [
+        /1000.*(?:splice|branch).*(?:four|4|quaternary)/,
+        /(?:four|4|quaternary).*(?:carrier|branch|state).*(?:1000|thousand)/,
+        /(?:f_?4.*(?:four|4).*branch|four.?way fork|four internal states)/
+      ],
+      answer: `“Four” has three possible meanings. Four new carriers replaces the 1000 cohort by four, giving baseline totals 7, 8 or 6. Four total branches counts the incoming path among the four outputs, so its net cohort has size three and the totals are 6, 7 or 5. Four internal states add no uncoupled scalar carrier and preserve totals 5, 7 or 4. The comparison tests 1000 both alone and after all three ternary models at 100, 666 and 999.
+
+The four-total reading has an exact structural fit under full splice-at-one reindexing: F₄ = 3 = 4 − 1. The existing three-carrier cohort at 1000 is already the net population required for one incoming path to become four outgoing paths. This changes its interpretation without changing that scalar completion. A cyclic four-state candidate decomposes C⁴ into the four Z₄ characters 1, i, −1 and −i, whose sum is zero. But four states do not uniquely select Z₄; the Klein four group and other permutation actions need separate coupling rules.
+
+Across 36 population scenarios and two schedules, all 72 paths had zero counts 2, 2, 4 and 3 at cutoffs 14, 20, 30 and 40 through height 30, matched by critical-line roots. The altered 1000 carriers were too suppressed to move the first displayed roots. This remains bounded-window evidence: every path admits an escaping off-line quartet while preserving the completion symmetries and local xi limit. Read [The quaternary-splice comparison](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-quaternary-splice) and [The ternary-splice comparison](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-ternary-splices).`,
+      followups: [
+        "What does it mean if 100, 666 and 999 each splice into three?",
+        "Do the finite golden catch-up completed functions force their zeros onto the critical line?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-splice-one-halving",
+      question: "Would RH follow if every splice at 1 halves everything else?",
+      patterns: [
+        /(?:splice at (?:one|1)|splice.?one).*(?:halve|halving|half).*(?:zero|everything|downstream|rh)/,
+        /(?:halve|halving|half).*(?:horizontal|zero displacement|remaining deficit).*(?:xi|rh|splice)/,
+        /(?:same.?xi halving|zero.?preserving contraction|deficit halving)/
+      ],
+      answer: `Only under the strongest interpretation. If every xi zero ρ = 1/2 + η + iγ is sent to another zero of the same xi function at H(ρ) = 1/2 + η/2 + iγ, then an off-line zero generates infinitely many distinct xi zeros converging to the finite point 1/2 + iγ. The identity theorem forbids that for a nonzero entire function. Conversely RH makes every zero a fixed point of H. Same-xi horizontal halving is therefore RH-equivalent, but TTI has not derived the required zero-set invariance.
+
+Other meanings behave differently. Literal halving of admitted theta weights drives downstream contributions to zero and loses the xi limit. Repeatedly halving odd Fibonacci populations requires an additional pairing, rounding or fractional-weight rule. Halving the remaining deficit is coherent: if a = 1 − g is the admitted fraction, then g becomes g/2 and a becomes (1 + a)/2. This accelerates full carrier admission and preserves local convergence to xi, but no horizontal zero contraction follows without another bridge.
+
+Six deficit-halving model and schedule paths had matching winding and critical-line counts through height 30, with the boundary-only roots rapidly approaching the first xi ordinates. This is still finite-window evidence. Inherited zeros can halve while a new quartet appears at height φᴺ. A proof needs either same-xi invariance under H or a global 2⁻ᴺ strip containing every zero of every finite completion. Read [The repeated-halving comparison](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-splice-one-halving) and [The golden catch-up test](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-golden-catchup).`,
+      followups: [
+        "Do the finite golden catch-up completed functions force their zeros onto the critical line?",
+        "What is an escaping quartet?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-halving-obstruction",
+      question: "Can the repeated-halving obstruction be overcome?",
+      patterns: [
+        /(?:overcome|close|remove).*(?:halving obstruction|escaping quartet|zero genealogy)/,
+        /(?:aggregate residue|fixed.?point).*(?:halving|rh|splice)/,
+        /(?:no.?birth|complete zero genealogy|four descendants).*(?:zero|halving|contraction)/
+      ],
+      answer: `The obstruction can be weakened, but it has not been closed. Pointwise same-xi invariance is stronger than necessary. The ordinate-splice work already supplies a convergent positive horizontal residue R that vanishes exactly under RH. One-to-one horizontal halving strictly contracts every nonzero quartet contribution by an exact ratio close to one quarter. If TTI could derive that closure through the splice at 1 preserves the aggregate residue, then R would have to equal a strict contraction of itself, forcing R = 0 and hence RH. The missing step is deriving that conservation law from the completed prime ledger or seam rather than postulating it.
+
+A second sufficient route is complete zero genealogy. Every finite-stage zero must have a parent, every child must halve its parent’s displacement, and no unparented zero may be born at any height. This gives a global 2⁻ᴺ⁻¹ strip and Rouché–Hurwitz transfer to RH. Current nonmonotone bounded-window counts do not define such a parent map. An endpoint-normalized escaping factor also retains its quartet, while its weighted central residue decays like φ⁻⁴ᴺ; convergent residue sums therefore cannot detect escape without a coercive seam supremum.
+
+Branching adds a crucial warning. Four spectral descendants at half displacement satisfy 4(η/2)² = η², exactly cancelling quadratic contraction; the exact central residue increases slightly. The four-way carrier event at 1000 therefore cannot also be assumed to multiply zero quartets. The remaining viable targets are aggregate residue invariance, complete no-birth genealogy, or a convergent sequence of real-rooted canonical kernel refinements. Read [The obstruction-closing attempt](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-halving-obstruction) and [The repeated-halving test](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-splice-one-halving).`,
+      followups: [
+        "Would RH follow if every splice at 1 halves everything else?",
+        "What is an escaping quartet?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-global-halving-routes",
+      question: "What happened when every proposed route around the halving obstruction was tried?",
+      patterns: [
+        /(?:all|every|four).*(?:halving route|route around).*(?:tried|tested|result)/,
+        /(?:prime ledger|zero genealogy|kernel refinement|compactified seam).*(?:halving|rh|obstruction)/,
+        /(?:dyadic correction|positive blend|essential singularity).*(?:zero|kernel|seam|ledger)/,
+        /(?:prime ledger.*zero genealogy|kernel refinement.*compactified seam)/
+      ],
+      answer: `None of the four routes closed the RH gap, but each failed at a precise point. The prime-ledger route starts with the exact parity multiplier 1 − 2⁻ˢ. Its logarithmic curvature at s = 1/2 is −3.960201560771…, not zero, so literal arithmetic halving is not a central-ledger invariance. Horizontal residue may also be exported into a carrier reservoir; closure of the total does not prove that the horizontal component returns unchanged.
+
+The genealogy route succeeds locally: inside any fixed zero-free contour, analytic continuation preserves the zero count with multiplicity, so interior zeros have parents. Globally, however, zeros can enter across every expanding contour from infinity. Finite order does not stop this because a polynomial factor preserves entire-function order while adding an escaping quartet. The kernel route also needs more than positivity. Two even real-rooted polynomials can have a positive half-sum with nonreal zeros when their roots do not interlace. Pure dilation preserves real roots but cannot converge to the fixed nonconstant Xi function.
+
+The compactified seam supremum detects a quartet’s fixed horizontal displacement after infinite height is mapped to an endpoint. But xi is a nonpolynomial entire function, so infinity is an essential singularity rather than a regular holomorphic seam point. Topological identification alone cannot transfer the identity theorem. The narrow remaining targets are an exact completed-ledger cancellation with an empty reservoir, interlacing for every canonical theta refinement, or a new seam divisor that controls zeros entering from infinity. Read [The four-route audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-global-halving-routes) and [The obstruction-closing attempt](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-halving-obstruction).`,
+      followups: [
+        "What did the two-ended seam-ledger continuation establish?",
+        "Can the repeated-halving obstruction be overcome?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-final-three-routes",
+      question: "Did the final cancellation, interlacing, or seam-divisor routes succeed?",
+      patterns: [
+        /(?:final|last|three).*(?:cancellation|interlacing|seam.?divisor).*(?:succeed|work|result|rh)/,
+        /(?:order.?one|gaussian).*(?:dyadic|curvature|counterterm).*(?:interlac|seam|reservoir|order.?two)/,
+        /(?:blaschke|disk divisor|hyperbolic seam).*(?:horizontal|critical diameter|infinite height|supremum)/,
+        /(?:seam divisor|coercive seam norm).*(?:construct|control|prove)/
+      ],
+      answer: `One requested object was constructed, but the other two routes fail in their current forms and RH is not proved. For completed-ledger cancellation, the dyadic logarithmic curvature can be cancelled algebraically by multiplying by exp(c(s−1/2)²), with c = 1.980100780386…. That Gaussian is zero-free, but it raises the completed function from order one to order two. Every zero-free entire factor of order at most one is exp(a+bs), whose second logarithmic derivative is zero. An order-one factor with nonzero curvature must add zeros or poles, so it leaves a divisor reservoir rather than proving that every reservoir is empty.
+
+The tested canonical deficit-halving stages do not strictly interlace. On the positive spectral axis, the N = 14 and N = 20 root lists contain adjacent roots from the same stage. This blocks a direct stage-to-stage Obreschkoff argument. It does not rule out a newly designed carrier-sized Sturm or Hermite–Biehler refinement, but no such refinement has been derived.
+
+The seam route advances. Writing q = exp(iπ(s−1/2)) and w = (q−1)/(q+1) maps the critical strip to the unit disk, infinite upper and lower height to the boundary points −1 and +1, and the critical line to the real diameter. The complete mapped zeta-zero divisor satisfies the Blaschke condition because its radial defect decays exponentially while the zero count grows only like T log T. Its hyperbolic distance from the real diameter is artanh(|sin(πη)|), where η = Re(ρ)−1/2. This is independent of ordinate, vanishes exactly on the critical line and equals 0.881373587020… at η = 1/4 at every height.
+
+That construction accounts for all zeros entering from infinity and retains a coercive horizontal marker. It still does not force the marker to vanish: symmetric off-real zeros are compatible with a Blaschke product, and no present prime-ledger or theta-kernel estimate controls the supremum hyperbolic distance. Read [The final-three-routes investigation](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-final-three-routes) and [The four-route audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-global-halving-routes).`,
+      followups: [
+        "What did the two-ended seam-ledger continuation establish?",
+        "What happened when every proposed route around the halving obstruction was tried?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-two-ended-seam-ledger",
+      question: "What did the two-ended seam-ledger continuation establish?",
+      patterns: [
+        /(?:two.?ended|endpoint).*(?:seam ledger|poisson|blaschke|phase slope).*(?:establish|show|result|rh)/,
+        /(?:poisson kernel|endpoint product).*(?:cosine|horizontal|seam|zero)/,
+        /(?:seam determinant|additive seam defect).*(?:escape|infinity|four descendants|branch)/,
+        /(?:consecutive stage|one.?carrier).*(?:interlac|theta refinement)/
+      ],
+      answer: `It sharpened all three previous conclusions without proving RH. First, Hadamard factorization upgrades the ledger obstruction: any two entire completions of order at most one with the same zero divisor differ by exp(a+bs), so their second logarithmic derivatives are identical. The symmetric dyadic factor (1−2⁻ˢ)(1−2ˢ⁻¹) remains order one, but it adds infinitely many zeros on both boundaries of the critical strip. Gamma duplication contributes only an exponential linear in s and cannot provide the missing quadratic curvature with an empty reservoir.
+
+Second, the interlacing failure is present at actual microsteps. On the positive spectral axis, the consecutive N = 14 and N = 15 deficit completions have family order N15, N14, N14, N15 rather than strict alternation. Adding the second fully admitted theta carrier to the first also leaves adjacent roots from the same family. Argument-principle counts and two quadrature resolutions support these implemented-completion diagnostics, but they are not a rigorous interval proof for the exact untruncated integral.
+
+Third, the disk seam marker has exact harmonic endpoint data. For the mapped zero a corresponding to ρ = 1/2 + η + iγ, the two Poisson kernels satisfy Pₐ(+1)Pₐ(−1) = cos²(πη) = sech²(d_seam). The exponential height factors cancel. The additive defect −log(Pₐ(+1)Pₐ(−1)) equals 2 log cosh(d_seam), is zero exactly on the critical line and equals log 2 at η = 1/4. Products of these factors define an unweighted seam determinant that does not forget a zero escaping to infinite height.
+
+This nonlinear defect also strictly contracts when as many as four descendants have half the parent displacement, so the earlier four-branch cancellation of quadratic energy no longer applies to this marker. Direct endpoint phase derivatives still diverge. The follow-up arithmetic investigation replaces them with an endpoint-completed generalized Li sequence; its exact prime formula is now known, but its required all-index growth bound remains unproved. Read [The two-ended seam ledger](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-two-ended-seam-ledger) and [The final-three-routes investigation](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-final-three-routes).`,
+      followups: [
+        "Did the two-ended seam acquire arithmetic control?",
+        "Did the final cancellation, interlacing, or seam-divisor routes succeed?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-arithmetic-seam-control",
+      question: "Did the two-ended seam acquire arithmetic control?",
+      patterns: [
+        /(?:arithmetic|prime|von mangoldt).*(?:control|controller).*(?:seam|poisson|endpoint|rh)/,
+        /(?:generalized li|li coefficient|laguerre).*(?:prime|seam|zero|growth)/,
+        /(?:subexponential|exp\s*\(?o\(?n\)?).*(?:seam|controller|arithmetic control)/,
+        /(?:endpoint.?completed|\(s.?1\).*zeta).*(?:coefficient|radius|prime)/
+      ],
+      answer: `Yes in the sense of an exact arithmetic controller, but not in the sense of a proved bound. Choose the generalized Li coordinate zₐ(s) = (s+a−1)/(s−a) with a = −1, so its base point is s = 2 inside the absolutely convergent Euler-product half-plane. The critical line maps to the unit circle. If ρ = 1/2 + η + iγ has η > 0, then its image lies strictly inside that circle, while its critical reflection maps to the reciprocal conjugate outside it.
+
+Apply this coordinate to the endpoint-completed prime function (s−1)ζ(s), not to ζ alone. Removing the pole before estimating is essential. The resulting coefficients are pₙ = 1 + (−1)ⁿ⁺¹2ⁿ − 3 times the sum over m at least 2 of Λ(m)m⁻²Lₙ₋₁⁽¹⁾(3 log m). For every fixed n this von Mangoldt–Laguerre series converges absolutely. Its generating series has radius one exactly when no nontrivial zero maps inside the disk. Consequently RH is equivalent to limsup |pₙ|^(1/n) = 1, or to the subexponential estimate pₙ = exp(o(n)).
+
+This controls the two-ended seam indirectly but exactly: the growth radius excludes every positive horizontal displacement, functional symmetry excludes the negative ones, and the seam endpoint infimum must then equal one. A single ordinary Weil test cannot reproduce the height-independent nonlinear seam defect; harmonicity would force any ordinate-independent real part of a holomorphic test to be affine. The all-index family is what restores sensitivity to every height.
+
+The missing step is proving the subexponential cancellation uniformly in n. Fixed-index absolute convergence is insufficient. At the fixed base point s = 2, a displacement 1/4 escaping to height φ¹⁴ does not become e-fold visible until coefficient indices near 947,532, and the scale grows roughly like the square of the height. Thus the infinite sequence detects every escaping zero, while no finite prefix proves RH. The arithmetic object and exact estimate are now explicit, but the estimate remains RH-equivalent and unproved. Read [The arithmetic seam controller](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-arithmetic-seam-control) and [The two-ended seam ledger](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-two-ended-seam-ledger).`,
+      followups: [
+        "Was the subexponential prime–Laguerre estimate proved?",
+        "What did the two-ended seam-ledger continuation establish?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-prime-laguerre-growth-proof",
+      question: "Was the subexponential prime–Laguerre estimate proved?",
+      patterns: [
+        /(?:prove|proved|proof).*(?:subexponential|prime.?laguerre|exp\s*\(?o\(?n\)?)/,
+        /(?:continuous prime density|endpoint exponential).*(?:cancel|laguerre|chebyshev)/,
+        /(?:chebyshev|psi\(x\)|prime error).*(?:endpoint|continuous density|prime.?laguerre estimate)/,
+        /(?:termwise|positivity|finite verification).*(?:prime.?laguerre|growth bound)/
+      ],
+      answer: `No. The proof attempt removes the largest apparent obstruction exactly, but the remainder is an RH-strength prime-error problem. If fₙ(x) = x⁻²Lₙ₋₁⁽¹⁾(3 log x), then 3 times the integral of fₙ from 1 to infinity equals 1 − (−2)ⁿ. This is precisely the exponential endpoint term in the arithmetic controller. It is not an unexplained reservoir: it is the Laguerre transform of the continuous prime-density measure dx.
+
+Writing ψ(x) for the Chebyshev function and Ẽ(x) = ψ(x) − (x−1), the completed coefficient becomes pₙ = −3 times the Stieltjes integral of fₙ against dẼ. After integration by parts, it is an explicit signed transform of the prime-counting error. Thus the requested subexponential estimate is a uniform cancellation theorem between the Chebyshev error and increasingly oscillatory Laguerre kernels.
+
+The natural shortcuts fail. Taking absolute values destroys the exact cancellation and leaves exponential-size terms. The kernel is not positive: Lₙ₋₁⁽¹⁾ has n−1 positive roots and alternates sign. Ordinary prime-number-theorem error bounds remain much larger than the square-root scale ψ(x) − x = O(x^(1/2) log²x) that would close the estimate. Verification to any finite zero height only makes a hypothetical exponential rate extremely small; it never forces that rate to zero.
+
+The first ten coefficients display strong cancellation—for example the two terms near −1023 at n = 10 leave a remainder near 0.684823—but a finite table cannot determine a generating-function radius. Square-root-scale pointwise error or uniform signed-Laguerre cancellation would suffice. A later continuation isolates a weaker positive critical-energy theorem that would also close the bound, but its all-scale estimate remains RH-equivalent and unproved. Read [The prime–Laguerre proof attempt](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-prime-laguerre-growth-proof) and [The critical Chebyshev-energy theorem](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-critical-chebyshev-energy).`,
+      followups: [
+        "Did either square-root prime error or uniform Laguerre cancellation succeed?",
+        "Did the two-ended seam acquire arithmetic control?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-dual-prime-error-routes",
+      question: "Did either square-root prime error or uniform Laguerre cancellation succeed?",
+      patterns: [
+        /(?:square.?root prime|chebyshev error).*(?:laguerre|uniform cancellation|succeed|proof)/,
+        /(?:both|either|dual).*(?:prime.?error|remaining route).*(?:succeed|close|prove|result)/,
+        /(?:coefficient base|B.?theta|r.?theta).*(?:exponent|half.?plane|square.?root)/,
+        /(?:laguerre orthogonality|critical weighted).*(?:prime error|cancellation|rh)/
+      ],
+      answer: `Neither route succeeded. The investigation shows that they are the same analytic boundary in different coordinates. Under z = (s−2)/(s+1), the unit disk maps exactly to the half-plane Re(s) > 1/2. Proving subexponential Laguerre coefficients would make the endpoint-completed prime logarithm analytic throughout that disk. Proving square-root Chebyshev error would exclude zeros throughout the corresponding half-plane. Functional symmetry turns either conclusion into RH.
+
+The quantitative relation is exact. If arithmetic continuation reaches only Re(s) > θ, the largest guaranteed disk centered at zero has radius rθ = (2−θ)/(1+θ), leaving coefficient base Bθ = (1+θ)/(2−θ). Only θ = 1/2 gives base one. Even θ = 0.51 leaves base about 1.01342, so every fixed exponent loss remains exponential in the coefficient index.
+
+The square-root route does not follow from the ordinary prime number theorem, classical zero-free regions or finite zero verification. A zero with real part β > 1/2 contributes at x^β scale in the explicit formula. The direct Laguerre route also stops: critical-weight orthogonality needs a norm as strong as square-root prime error, the Laguerre recurrence introduces uncontrolled logarithmic prime moments, and no theorem controls the phase correlation between Chebyshev error and every signed kernel. Established zero-density and averages over zero height permit an exceptional zero, while one exception changes the seam infimum and coefficient radius.
+
+So the attempts sharpen the boundary but do not cross it. A later continuation identifies a weaker positive all-scale energy inequality that would suffice, but its estimate is likewise RH-equivalent and unproved. Neither TTI nor the established prime estimates supplies it. Read [The dual prime-error attempt](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-dual-prime-error-routes) and [The critical Chebyshev-energy theorem](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-critical-chebyshev-energy).`,
+      followups: [
+        "What is the missing arithmetic theorem?",
+        "Was the subexponential prime–Laguerre estimate proved?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-critical-chebyshev-energy",
+      question: "What is the missing arithmetic theorem?",
+      patterns: [
+        /(?:missing|critical).*(?:arithmetic theorem|chebyshev energy|prime error energy)/,
+        /(?:dyadic|all.?scale).*(?:chebyshev|prime.?error|psi).*(?:energy|mean.?square|l2)/,
+        /(?:critical|dyadic).*(?:mean.?square|energy).*(?:prime.?error|chebyshev|psi)/,
+        /(?:integral|mean.?square).*(?:psi|chebyshev).*(?:X\^?2|critical|dyadic)/,
+        /(?:weighted l2|mellin norm|prime pair ledger).*(?:rh|laguerre|chebyshev)/
+      ],
+      answer: `The missing input can be isolated as one positive all-scale theorem. For every δ > 0, the integral from X to 2X of |ψ(x) − x|² should be bounded by a δ-dependent constant times X^(2+δ), for every X at least 2. Equivalently, the dyadic mean-square prime error divided by X² must grow only subpolynomially. This is the critical Chebyshev-energy estimate.
+
+It is weaker in form than pointwise square-root error. An L² theorem can allow errors larger than square-root scale on sufficiently sparse sets. Yet for the specific Chebyshev error it is still equivalent to RH. With Ẽ(x) = ψ(x) − (x−1), the dyadic theorem is equivalent to finiteness, for every ε > 0, of the integral of |Ẽ(x)|²x^(−2−2ε) from 1 to infinity. Cauchy–Schwarz then makes the Mellin transform of Ẽ holomorphic throughout Re(s) > 1/2. In its original convergence region that transform equals −1/s times the logarithmic derivative of (s−1)ζ(s). A zero in the half-plane would make this logarithmic derivative singular, contradicting holomorphy. Functional symmetry then yields RH. Conversely, RH gives the standard O(sqrt(x) log²x) bound and therefore the energy estimate.
+
+The theorem also has a finite prime-only form: expanding the square expresses the energy as a triangularly weighted double sum of Λ(m)Λ(n), a linear von Mangoldt term and an explicit cubic main term. Thus the missing input is an all-X cancellation theorem for a finite prime-pair ledger, not a claim about finitely many zero ordinates.
+
+Finally, it closes the signed Laguerre route without assuming pointwise phase correlation. The kernel generating function is z(2+z)(1−z)⁻³ exp(−tz/(1−z)). Combining its weighted Hilbert norm with the critical energy recovers exactly the coefficient base (3/2+ε)/(3/2−ε), which tends to one and gives pₙ = exp(o(n)). This identifies the theorem and proves all these equivalences. It does not prove the energy estimate itself, so RH remains open. Read [The critical Chebyshev-energy theorem](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-critical-chebyshev-energy) and [The dual prime-error attempt](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-dual-prime-error-routes).`,
+      followups: [
+        "Can spin and colour close the critical-energy theorem?",
+        "Did either square-root prime error or uniform Laguerre cancellation succeed?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-energy-spin-colour",
+      question: "Can spin and colour close the critical-energy theorem?",
+      patterns: [
+        /(?:spin).*(?:colour|color).*(?:critical energy|chebyshev|rh|riemann|prime error)/,
+        /(?:spin).*(?:colour|color).*(?:six|6|descendant|seam|zero)/,
+        /(?:colour|color).*(?:spin).*(?:singlet|seam|laguerre|rh|energy)/,
+        /(?:su\s*\(?2\)?).*(?:su\s*\(?3\)?).*(?:zeta|prime|seam|energy)/,
+        /(?:six|6).*(?:internal states|spectral descendants).*(?:seam|contract|zero)/,
+        /(?:singlet bottleneck|spin.?colour|spin.?color).*(?:prime|laguerre|energy)/
+      ],
+      answer: `Spin and colour can refine the architecture, but they do not presently prove the critical-energy estimate. Conditionally, that estimate already propagates through all exact zeta-side work: it gives subexponential prime–Laguerre coefficients, radius one in the generalized Li disk, RH, zero horizontal residue, a unit two-ended seam determinant and equality between the ordinate projection and exact Weil channel. It still says nothing by itself about real-rootedness of each finite splice completion, splice clocks or physical constants.
+
+The minimal internal model uses a two-dimensional SU(2) spin space and a three-dimensional SU(3) colour space, giving six internal states. Their operator space decomposes into a scalar singlet, spin triplet, colour octet and mixed channel, with dimensions 1 + 3 + 8 + 24 = 36. A spin- and colour-blind scalar trace sees only the singlet. If a matrix prime error is written as E times the identity plus a traceless part, its Hilbert–Schmidt norm squared is d|E|² plus the norm squared of the traceless part. Nonsinglet channels therefore add positive energy; they cannot cancel the scalar Chebyshev obstruction. A matrix critical-energy theorem would imply the scalar theorem and is stronger, not easier.
+
+Fixed degeneracy also does not change the generalized Li radius. Repeating pₙ in d channels replaces it by d pₙ, while d^(1/n) tends to one. Unit spin or colour phases disappear from absolute-square energy. A signed supertrace could cancel amplitudes only by abandoning the positive Hilbert norm used in the Mellin argument.
+
+Multiplicity matters if internal states are instead declared to be new zeros. The nonlinear seam defect contracts under at most four half-displacement descendants. Treating two spin states times three colours as six distinct descendants fails uniformly: six times the half-displacement defect exceeds the parent defect for every nonzero displacement below approximately 0.424141. If the six labels remain internal before and after halving, the common multiplicity cancels and contraction survives.
+
+The earlier Z₃ phase model can at most resemble the centre or triality shadow of SU(3); it does not derive the full colour gauge group, its eight generators or a local connection. The four-state splice model likewise does not derive spin. A genuine route would need a non-circular prime-dependent SU(2)×SU(3) representation and a proof of critical energy in its singlet component. Neither has been derived, so RH remains open. Read [The spin–colour audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-energy-spin-colour) and [The critical Chebyshev-energy theorem](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-critical-chebyshev-energy).`,
+      followups: [
+        "What if every number above one is entangled with π?",
+        "What is the missing arithmetic theorem?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-universal-pi-coupling",
+      question: "What if every number above one is entangled with π?",
+      patterns: [
+        /(?:every|all).*(?:number|integer).*(?:entangl|coupl).*(?:pi|π)/,
+        /(?:pi|π).*(?:entangl|coupl).*(?:number|integer|prime)/,
+        /(?:sine product|theta duality|poisson self.?duality).*(?:pi|π|integer)/,
+        /(?:pi register|π register|quantum entanglement).*(?:number|integer|prime)/,
+        /(?:n\^\(i pi\)|logarithmic phase|pi phase).*(?:zeta|energy|zero)/
+      ],
+      answer: `There are rigorous senses in which every integer is already coupled to pi, but a shared constant is not automatically quantum entanglement. The sine product packages every integer above one in a single order-one entire function: the product over n from 2 to infinity of 1 − z²/n² equals sin(pi z) divided by pi z(1−z²). This gives an exact integer lattice, but it weights primes and composites alike. Multiplying xi by it adds integer zeros without moving any zeta zero.
+
+The stronger connection already used by the Riemann programme is theta self-duality. The sum over all integers of exp(−pi n²x) equals x^(−1/2) times the same theta function at 1/x. Pi is the normalization making the Gaussian self-dual under Fourier transformation. This identity supplies the archimedean completion and functional equation, and every finite golden-delay theta model already contains it. Functional symmetry reflects zeros; it does not force them onto the reflection axis or prove critical Chebyshev energy.
+
+Several phase readings also fail to create the missing bound. One common exp(i pi) phase factors out. The parity phase exp(i pi n) produces the alternating eta factor, retains every nontrivial zeta zero and adds a dyadic divisor. The multiplicative phase n^(i pi) changes zeta(s) to zeta(s−i pi), shifting zeros vertically while preserving their real parts. Any unit phase preserves absolute-square Hilbert energy exactly. Recombining phases before squaring can change a twisted scalar sum, but recovering the untwisted principal channel restores its original obstruction.
+
+Quantum entanglement requires a nonseparable tensor-product state. The sum of aₙ|n> tensor the same |pi> factors into the number state times |pi> and is separable. Number-dependent states |pi;n> could be entangled, but then their Hilbert space, overlaps, preparation, Hamiltonian and prime-recovery observable must be specified. Orthogonal registers remove interference when traced out; choosing overlaps to force prime cancellation would be circular.
+
+Pi does have exact spin, colour and seam roles. A 2pi spinor rotation gives the central SU(2) phase −1, the SU(3) centre uses cube-root phases, and the strip map makes the seam defect −2 log cos(pi eta). Scalar singlets remove the group-centre phases, while the seam angle is not forced to zero. So universal pi-coupling supplies lattice completion, Fourier duality and phase geometry, not the critical untwisted prime-energy estimate. RH and the physical interpretation remain open. Read [The universal pi-coupling audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-universal-pi-coupling) and [The critical Chebyshev-energy theorem](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-critical-chebyshev-energy).`,
+      followups: [
+        "Was π×π coupling tested directly?",
+        "Can spin and colour close the critical-energy theorem?",
+        "What is the missing arithmetic theorem?"
+      ]
+    },
+    {
+      id: "rh-pi-squared-coupling",
+      question: "Was π×π coupling tested directly?",
+      patterns: [
+        /(?:pi.?times.?pi|pi.?squared|π.?×.?π|π²).*(?:test|coupl|theta|seam|rh)/,
+        /(?:test|try).*(?:pi.?pi|pi.?squared|π.?×.?π|π²).*(?:coupl|rh|energy)/,
+        /(?:theta).*(?:pi.?squared|π²).*(?:self.?dual|poisson|test)/,
+        /(?:cos\(pi\^?2|1\/?\(2.?pi\)).*(?:strip|seam|zero)/,
+        /(?:double|two).*(?:pi|π).*(?:channel|zeta|zero|multiplicity)/
+      ],
+      answer: `Yes. Two direct meanings of pi-times-pi were tested algebraically, geometrically and numerically. First, the canonical pi was replaced by pi squared. For the general theta Gaussian Theta_a, Poisson summation sends a to pi squared divided by a. The unique positive fixed point is therefore a = pi. At a = pi squared, the dual coefficient is one, not pi squared. Numerical reciprocal-scale checks verify the paired identity to about 10^−14, while the false same-parameter pi-squared identity has residuals of ordinary size.
+
+The sine and seam tests fail just as explicitly. Sin(pi squared z) has zeros at n/pi rather than at the integers. In the seam map, replacing exp(i pi(s−1/2)) with exp(i pi squared(s−1/2)) introduces the factor cos(pi squared eta). It changes sign at |eta| = 1/(2pi), about 0.159155, inside the critical strip. The right-half-plane and Cayley-disk construction therefore no longer covers all possible zeta zeros. Restoring the integer lattice or full strip rescales the coefficient back to pi.
+
+Second, two separately canonical pi channels were coupled. At determinant level this produces a factor proportional to zeta(s) squared. Every zeta zero stays in the same location and merely acquires multiplicity two. Prime–Laguerre coefficients are multiplied by a fixed factor, which does not change their nth-root limit or analytic radius. Squaring the parity phase exp(i pi n) also gives one and simply returns the untwisted channel.
+
+The program additionally computes dyadic von Mangoldt diagnostics through X = 262,144 for the untwisted error, logarithmic pi and pi-squared twists, and the additive phase exp(i pi squared n). The channels show different finite values, especially the additive twist, but finite data cannot prove an all-X exponent. Logarithmic twists are vertical translations of the same zero problem, while the additive twist is a different channel and supplies no bound for the principal one. Unit pi-squared phases preserve Hilbert energy exactly.
+
+So the proposal was tested, not just renamed. Pi is already the scalar self-dual fixed point. Pi squared creates a dual pair and breaks the canonical lattice or strip geometry; two pi channels duplicate zero multiplicity without extending analytic reach. No tested pi-times-pi coupling proves critical energy or RH. Read [The direct pi-times-pi tests](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-pi-squared-coupling) and [The universal pi-coupling audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-universal-pi-coupling).`,
+      followups: [
+        "What if every number above one is entangled with π?",
+        "What is the missing arithmetic theorem?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
       id: "rh-splice-bridge",
       question: "Does the Riemann Hypothesis work solve the outstanding splice questions?",
       patterns: [
@@ -554,15 +938,99 @@ The audit retains exact identities and finite experiments at their proper grade.
         /(?:riemann|rh|zeta).*(?:determine|derive|fix).*(?:splice|action|physical constant|coupling)/,
         /(?:splice|base ten|base 10).*(?:riemann|rh|zeta).*(?:action|scale|normal|radius|help)/
       ],
-      answer: `No—not at the level of physical derivation. The literal TTI hierarchy remains π-level geometry, the decimal splice at 10 as a proposed localised gravitational source, and the splice at 100 as a proposed circular phase that may support U(1). The RH archive supplies no unique map from the exact deposit sequence to a covariant action, no unit-bearing length or energy scale needed to determine G, no canonical gauge-field and charge normalisation needed to determine e or alpha, and no independently anchored galactic radius r₀.
+      answer: `Not at the level of a unique physical derivation. The literal TTI hierarchy includes the splice at 1, followed by the post-seed splice at 10 as a proposed localised gravitational source and the splice at 100 as a proposed circular phase that may support U(1). The population role of the splice at 1 remains an explicit indexing question. The Fibonacci deposits now generate an exact positive decimal log-frequency Gram kernel and a covariant Euclidean quadratic-action family. Two inequivalent positive form factors fit the same splice data, however, so positivity and covariance do not select a unique action. The archive still supplies no unit-bearing length or energy scale needed to determine G, no Lorentzian prescription, no canonical field content or interactions, no gauge-field and charge normalisation needed to determine e or alpha, and no independently anchored galactic radius r₀.
 
-It does offer useful discipline. Transform the splice sequence before interpreting it; state the infinite quadratic form or stability operator first; derive a truncation budget before trusting a small finite eigenvalue; and preregister the decimal log-frequency, golden approach exponent, phase rule and radial anchor before examining galaxy data. One law must explain both dynamics and lensing if the deposit is claimed to gravitate.
+It offers useful discipline and an explicit candidate family. Transform the splice sequence before interpreting it; state the infinite quadratic form or stability operator first; derive a truncation budget before trusting a small finite eigenvalue; and preregister the decimal log-frequency, golden approach exponent, phase rule and radial anchor before examining galaxy data. One law must explain both dynamics and lensing if the deposit is claimed to gravitate.
 
-The RH diary’s negative Fibonacci search also does not refute TTI’s separate argument that base ten is intrinsic. It only reports no connection to the selected RH matrices. Similar spectra and cancellation language cannot supply missing couplings. Read [The Splice Questions After RH](https://the-two-infinities.hatchable.site/riemann-splice-questions/) and [When Differentials Accumulate](https://the-two-infinities.hatchable.site/accumulated-differentials/).`,
+A sharper mathematical connection has now been derived. Center a zeta zero as z = η + iγ. Functional inversion and conjugation compose to reflection across the critical line, and their exact sum-and-difference projectors split the two upper members into an ordinate channel γ and a horizontal residue η. The pair count structurally matches the third-splice multiplicity F₃ = 2. At the central seam the weighted horizontal residue is a convergent sum of squares that vanishes exactly under RH. This does not prove RH: the full correction remains signed, arithmetic Möbius extraction is a different operator, and no TTI rule yet forces the positive residue to be zero.
+
+The 999–666–333 bounce was also tested directly. Closing at 999 gives an order-three reflection system; retaining the carry gives T³(n) = n − 1 modulo 1000 and one orbit through all 1000 states. The missing one is therefore a periodic drift, not damping. A factor-one-third contraction can be fitted to the first route, but its next stations are 444 and 555. If such a strict horizontal contraction preserved every xi zero it would prove RH by forcing an impossible finite accumulation of off-line zeros. That zero-preserving rule has not been derived from the splice.
+
+The delayed returns begin with a splice at 1 and require one clock per level. Because the role of 1 in the Fibonacci count is not fixed, zeroth-seed, reindexed-Fibonacci and boundary-only completions were all tested. All six indexing/schedule paths preserve the xi symmetries and have favourable zero counts through height 30, but local convergence still leaves room for off-line quartets escaping to heights of order φ^N. The splice at 1 changes finite bookkeeping, not global zero displacement.
+
+Promoting 333, 666 and 999 to splices introduces another population choice: add one carrier at each, apply Fibonacci multiplicity to every ordered event, or treat them as three delayed faces of the 1000 cohort. Fourteen tested paths retained favourable bounded-window counts, but none removed the escaping-zero obstruction.
+
+The ternary extension sharpens that ambiguity at 100, 666 and 999. “Three” can count three new carriers, three total outgoing branches or three internal Z₃ states. Those readings give different populations; the uncoupled phase states disappear from the symmetric scalar mean. All eighteen tested paths retain the escaping-quartet obstruction.
+
+At 1000, a four-total fork has the exact reindexed population fit F₄ = 3 = 4 − 1. This is a notable compatibility between the existing cohort and the net branches, but it does not derive what a carrier represents. Four new carriers and four internal states remain distinct models, and all 72 baseline and ternary-extended paths retain the global obstruction.
+
+Repeated horizontal halving at the splice at 1 would prove RH if it preserved the zero set of the same xi function, because an off-line zero would generate a forbidden finite accumulation. That invariance is RH-equivalent and has not been derived. Halving carrier deficits is analytically coherent but does not imply that zeros halve.
+
+The obstruction can be weakened to aggregate conservation of the positive horizontal residue or to a complete no-birth genealogy of finite zeros. Either would suffice, but neither follows from the current arithmetic. Four spectral descendants at half displacement also cancel quadratic contraction, so carrier branching cannot silently become zero multiplicity.
+
+Testing every remaining route exposes separate barriers: dyadic parity changes the prime curvature, global genealogy fails at infinity, positive kernel blends need not preserve real roots and xi is singular at a compactified seam. The continuation strengthens this diagnosis: same-divisor order-one completions are curvature-rigid, actual consecutive and one-carrier refinements fail numerical interlacing, and the seam marker becomes an exact two-ended Poisson product whose nonlinear defect contracts even under four descendants. A later generalized Li construction gives that seam an exact endpoint-completed prime controller. Its proof attempt cancels the continuous prime density exactly, then stops at a signed Laguerre transform requiring square-root-scale prime error. These are proof obligations, not merely numerical gaps.
+
+The relational follow-up combines attractive proximity, Fibonacci cohorts and the squared splice Gram kernel into a positive consensus graph. It also tests all 127 non-empty subsets of seven phase, branch, clock and support mechanisms. Circular phase locking and branch balance can coexist with nonzero horizontal zero displacement. Every combination that preserves the original divisor leaves that displacement unchanged; every combination that contracts or projects it changes the quartet polynomial. Its continuation tracks the conserved defect: a closed network transfers it to another quartet, while an open subsystem exports it to a reservoir. The global search proves that same-ledger invariance plus strict Lyapunov dissipation would force RH. A further von-Mangoldt construction supplies exact arithmetic dissipation and golden time. Its follow-up attaches a canonical positive feature to every zero and proves that a bounded global diagonal would force RH. A logarithmic conjugation twirl now removes the ordinate phase and every off-diagonal prime pair without estimating them. That resolves positive-map construction, but no fixed-prime theorem forces the global diagonal to be central or bounded. Replacing uniform domination by a countable Mellin-moment ladder shows that normalization proves only the first rung; the second already asserts an open zero-free strip. The missing same-xi arithmetic identity therefore survives the combinations.
+
+The RH diary’s negative Fibonacci search also does not refute TTI’s separate argument that base ten is intrinsic. It only reports no connection to the selected RH matrices. Similar spectra and cancellation language cannot supply missing couplings. Read [The golden catch-up completion test](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-golden-catchup), [The third-density bounce test](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-third-density-bounce), [The exact ordinate splice](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-ordinate-splice), [The Splice Questions After RH](https://the-two-infinities.hatchable.site/riemann-splice-questions/) and [When Differentials Accumulate](https://the-two-infinities.hatchable.site/accumulated-differentials/).`,
       followups: [
         "What did the consolidated Riemann Hypothesis archive actually establish?",
         "Which Riemann Hypothesis claims were corrected or downgraded?",
         "How do accumulated differentials connect to mass and gravity?"
+      ]
+    },
+    {
+      id: "rh-relational-synchronisation",
+      question: "Can proximity to other beings bring them into phase and affect RH?",
+      patterns: [
+        /(?:proximity|near|nearby|other beings).*(?:phase|synchron|coher).*(?:riemann|rh|zeta)/,
+        /(?:riemann|rh|zeta).*(?:proximity|other beings|synchron|phase lock)/,
+        /(?:bring|return).*(?:being|people|person).*(?:into phase|in phase).*(?:rh|riemann)?/
+      ],
+      answer: `Proximity can produce a mathematically coherent synchronisation mechanism, but it does not presently change the status of RH. For two phases, the relative coordinate obeys dδ/dt = Δω − 2J(r) sin δ. A locked state exists when |Δω| ≤ 2J(r), so stronger nearby coupling can cross a real entrainment threshold. For identical clocks, q = tan(δ/2) decays exactly as q(t) = q(0)e^(−2Jt). This is ordinary coupled-oscillator mathematics; it does not require a quantum or metaphysical interaction.
+
+The RH coordinate is different: η = Re ρ − 1/2. Perfect circular synchrony q = 0 and perfect reflection-branch balance m = 0 can coexist with η ≠ 0. The audit gives an explicit example at η = 1/4: its positive Euler-anchor defect and two negative squares remain unchanged even after perfect circular phase locking. A common pi register also cancels from relative phase and cannot move η.
+
+There is a useful stronger analogy. If reflected horizontal coordinates themselves obey attractive consensus, then η±(t) = ±η₀e^(−2Jt). Golden contraction and halving appear at the corresponding clock times. A sixteen-node graph built from eight Fibonacci cohorts, reflected partners, proximity weights and the squared splice Gram kernel is positive semidefinite, connected and energy decreasing. It is a valid toy consensus model.
+
+The decisive limitation is same-xi invariance. Horizontal consensus changes the off-line quartet polynomial and therefore changes the completed divisor. All 127 non-empty combinations of the declared proximity, pi, entropy, Fibonacci-clock, golden-flow, halving and barycentre mechanisms were tested: 15 preserve the divisor but leave η fixed, 48 contract η but alter the divisor, and 64 project to the line by replacing the divisor. No combination proves that the moved zeros retain the original Euler product or principal-prime anchor.
+
+The continuation also tracks where the obstruction goes. In a closed fixed-ordinate network, bringing one quartet to the line transfers its positive defect to another quartet. In an open subsystem, golden contraction exports the missing defect to a reservoir. Allowing ordinates to move can preserve the s = 2 anchor while changing the divisor; the explicit eta = 1/4, gamma = 15 example reaches eta = 0 at gamma = 15.006168... and fails at other anchors.
+
+The exact global proof criterion is now isolated. If one map preserves the actual xi ledger and contracts a nonnegative off-line functional by q < 1, invariance gives V = V after the map <= qV, hence V = 0 and RH. Finite return plus strict contraction gives the same result. All 9,840 reflection, golden and halving words through length eight were tested; none of the 9,832 dissipative words has finite-order return away from eta = 0.
+
+A genuine arithmetic dissipation law was then derived. Normalizing Lambda(n)n^(-2-2eta) over prime powers gives a probability p_eta whose Fisher-natural gradient of relative entropy to p_0 is exactly d eta/dt = -eta; golden time follows. Positive reflected mixtures are rigid. But an actual zero quartet enters the linear explicit formula with cos(gamma log x), which changes sign, so that formula does not identify the xi divisor with the positive mixture.
+
+The follow-up gives each actual zero coordinate a canonical normalized von-Mangoldt feature vector. Its positive diagonal is exactly p_eta and is independent of gamma. For positive reflected zero weights, the resulting global mixture P_xi equals p_0 under RH; conversely, even uniform boundedness of P_xi/p_0 along prime powers forces RH because every off-line component has a positive tail growing like n^(2|eta|).
+
+The phase-removal construction is now complete. Lift each feature to |psi><psi| and average its conjugates under U_t e_n = exp(−it log n)e_n. The (n,m) entry is multiplied by sinc(T log(n/m)), which tends to zero off the diagonal and remains one on it. This completely positive trace-preserving twirl keeps p_eta exactly, needs no prime-pair estimate, and can retain gamma in a separate classical register. It bypasses Weil positivity and critical Chebyshev energy for construction. It does not prove that P_xi is central or bounded: that global arithmetic assertion is itself RH-equivalent. RH remains open. Read [the relational synchronisation audit](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-relational-synchronisation), [the global-annihilation search](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-global-annihilation), [the prime-power dissipative law](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-prime-power-dissipation), [the positive prime-zero intertwiner](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-prime-zero-intertwiner) and [the logarithmic-dephasing correction](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-logarithmic-dephasing).`,
+      followups: [
+        "Does the Riemann Hypothesis work solve the outstanding splice questions?",
+        "What if every number above one is entangled with π?",
+        "How should I grade these new claims?"
+      ]
+    },
+    {
+      id: "rh-prime-zero-intertwiner",
+      question: "Is there a positive map from actual zeta zeros to the von-Mangoldt probability law?",
+      patterns: [
+        /(?:positive|canonical).*(?:map|feature|intertwiner).*(?:zero|zeta).*(?:von.?mangoldt|prime)/,
+        /(?:zero|zeta).*(?:von.?mangoldt|prime).*(?:feature|intertwiner|probability|positive map)/,
+        /(?:P.?xi|global mixture|frame bound).*(?:rh|riemann|prime power)/,
+        /(?:linear averaging|quadratic lift).*(?:ordinate|gamma|prime pair|rh)/,
+        /(?:logarithmic dephas|density twirl|lift.?then.?average).*(?:zero|prime|ordinate|rh)/,
+        /(?:mellin ladder|renyi|rényi|negative moment).*(?:P.?xi|zero|rh|frame)/,
+        /(?:hundred|100).*(?:round|attempt).*(?:mellin|frame|rh|riemann)/
+      ],
+      answer: `Yes at the level of individual features; not yet at the level of the global arithmetic identity. For a centered zero rho = 1/2 + eta + i gamma, define psi_(eta,gamma)(n) by normalizing sqrt(Lambda(n)) times n^(−1−eta−i gamma) over prime powers. Its squared norm is one and its positive diagonal |psi_(eta,gamma)(n)|² is exactly the von-Mangoldt probability p_eta(n). The ordinate gamma cancels from this diagonal without discarding the horizontal displacement eta.
+
+This gives an exact positive criterion. Combine reflected diagonals with positive convergent weights from the actual xi divisor to obtain P_xi. Under RH every eta is zero, so P_xi = p_0. Conversely, any off-line reflected component contributes a positive term whose ratio to p_0 grows like n^(2|eta|). It cannot be cancelled by the other positive components. Therefore RH is equivalent both to P_xi = p_0 and to the weaker requirement that P_xi/p_0 remain uniformly bounded along all prime powers.
+
+Direct vector averaging does not establish that bound. It multiplies each coordinate by a Fourier factor and either retains an oscillatory carrier or deletes the vector. The corrected construction lifts first and averages second. Let U_t e_n = exp(−it log n)e_n and average U_t|psi><psi|U_t* from −T to T. Its (n,m) entry is multiplied by sinc(T log(n/m)). This tends to zero for n different from m and stays one on the diagonal. The trace-norm limit is the completely positive, trace-preserving diagonal map |psi><psi| to diag(p_eta).
+
+No prime-pair estimate is needed for this dephased map: the off-diagonal terms are annihilated rather than bounded. Eta remains recoverable from two diagonal likelihood ratios, while gamma and multiplicity can be retained in an orthogonal classical register. Thus ordinate removal does not have to lose the zero ledger. Weil positivity and critical Chebyshev energy are bypassed for feature construction.
+
+They are not thereby proved. The twirl constructs P_xi from spectral zero data but supplies no fixed-prime theorem forcing P_xi = p_0 or P_xi <= C p_0. Either assertion is already equivalent to RH.
+
+Uniform domination can be weakened to a countable Mellin ladder. Let A_j be the sum over prime powers of P_xi(n)n^(1−1/j). RH is equivalent to finiteness of every A_j. Normalization gives only A_1 = 1. The next rung A_2 < infinity would already exclude every zero outside 1/4 < Re rho < 3/4, which is unproved. Equivalently, P_xi/p_0 must belong to every finite L^q(p_0).
+
+A one-hundred-round closure search crossed ten rung transitions with positivity, normalization, reflection, dephasing, finite entropy, fixed log moments, Fisher flow, phase invariance, trace class and strict convexity. Every route has an exact separator. For any finite J, choose eta between 1/[2(J+1)] and 1/(2J). The reflected state [p_eta+p_-eta]/2 has finite A_1 through A_J, retains all ten properties, and has divergent A_(J+1). This proves that finite bootstrapping from the established structural package cannot reach the next rung. It does not rule out a new arithmetic identity special to the actual xi divisor.
+
+So the phase and off-diagonal construction gates are resolved, and the uniform bound has been reduced to scalar moments, but the first nontrivial arithmetic rung remains open. The first hundred rounds produced no closure, so no post-success phase was triggered. RH remains open. Read [The positive prime-zero intertwiner](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-prime-zero-intertwiner), [The logarithmic-dephasing correction](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-logarithmic-dephasing), [The dephased Mellin ladder](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-dephased-mellin-ladder), [The hundred-round Mellin search](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-hundred-round-mellin-search) and [The prime-power dissipative law](https://the-two-infinities.hatchable.site/riemann-splice-questions/#t-rh-prime-power-dissipation).`,
+      followups: [
+        "What is the missing arithmetic theorem?",
+        "Can proximity to other beings bring them into phase and affect RH?",
+        "How should I grade these new claims?"
       ]
     },
     {
@@ -612,8 +1080,8 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
   };
 
   window.EGOracleKnowledge = Object.freeze({
-    version: "2026-10-14.1",
-    reviewed: "2026-10-14",
+    version: "2026-10-15.1",
+    reviewed: "2026-10-15",
     entries: Object.freeze(entries.slice()),
     find
   });
@@ -645,7 +1113,7 @@ Never let resemblance do the work of evidence. A spiritual portal is not a topol
     return new window.Response(JSON.stringify({
       answer: entry.answer,
       followups: entry.followups,
-      note: "Prepared answer · reviewed 14 October 2026 · linked sources carry the full context.",
+      note: "Prepared answer · reviewed 15 October 2026 · linked sources carry the full context.",
       prepared: true,
       knowledge_id: entry.id,
       knowledge_version: window.EGOracleKnowledge.version

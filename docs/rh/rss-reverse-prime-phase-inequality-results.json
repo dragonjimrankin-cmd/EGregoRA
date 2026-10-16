@@ -1,0 +1,190 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Search for the reverse critical prime-phase inequality",
+  "target": "I_C^crit <= C'/C(2)",
+  "baseline": "I_C^crit-C'/C(2)=D_2=sum_off-line_quartets d_(eta,gamma)>=0",
+  "verdict": {
+    "rhProved": false,
+    "reverseInequalityProved": false,
+    "independentEstablishedImplicationFound": false,
+    "onlyEquivalentFactorisationsRecovered": true,
+    "rigorousNearEqualityProvedFromLiterature": true,
+    "conclusion": "No independent proof of the reverse inequality was found. Hardy factorisation, Balazard--Saias--Yor and Nyman--Beurling/Burnol all isolate the same forbidden-zero Blaschke factor. Their desired vanishing, outerness, density or cyclicity statements are RH-equivalent, not established arithmetic upper bounds for the Stage-33 defect."
+  },
+  "canonicalFactorisation": {
+    "diskMap": "s=1/(1-z), mapping |z|<1 to Re(s)>1/2",
+    "function": "f(z)=C(s(z))=(s(z)-1)zeta(s(z))",
+    "singularInnerFactor": "absent (Balazard--Saias--Yor)",
+    "factorisation": "f=B*O, where B is the Blaschke product of zeros with Re(rho)>1/2",
+    "bsyMass": "S_BSY=sum_(Re rho>1/2) log|rho/(1-rho)|=-log|B(1)|>=0",
+    "nymanDistance": "dist(1,NB)^2=1-|B(1)|^2=1-exp(-2S_BSY)",
+    "stage33Relation": "D_2 is a different positive kernel applied to the same off-line divisor; D_2=0 iff S_BSY=0 iff B=1 iff the Nyman distance is zero iff RH",
+    "logicalBarrier": "canonical factorisation proves the plus sign and identifies the defect; it cannot prove B=1 from boundary or outer-factor data alone"
+  },
+  "candidateRoutes": [
+    {
+      "route": "Hardy/Nevanlinna canonical factorisation",
+      "establishedContent": "For f(z)=C(1/(1-z)) the singular inner measure vanishes and f factors into its Blaschke zero factor and an outer factor.",
+      "whatItControls": "the boundary data determine the outer factor; the right-half-plane zeros form the inner factor",
+      "reverseSignStatus": "not supplied",
+      "circularityTest": "declaring f outer, cyclic, or zero-inner is exactly the assertion that the Blaschke factor is one",
+      "classification": "RH-equivalent detector"
+    },
+    {
+      "route": "Balazard--Saias--Yor logarithmic integral",
+      "establishedContent": "(1/(2pi)) integral_(Re s=1/2) log|zeta(s)|/|s|^2 |ds| = sum_(Re rho>1/2) log|rho/(1-rho)| >= 0",
+      "whatItControls": "a positive Green/Blaschke mass of every forbidden zero",
+      "reverseSignStatus": "the inequality <=0 is equivalent to RH",
+      "circularityTest": "assuming the integral vanishes assumes that the same inner zero divisor is absent",
+      "classification": "exact parallel equivalence"
+    },
+    {
+      "route": "Nyman--Beurling/Burnol Hardy projection",
+      "establishedContent": "the Mellin image of the Nyman space is the Blaschke product times H^2, and the squared target distance is 1-|B(1)|^2",
+      "whatItControls": "the complete off-line-zero inner factor, with no cancellation",
+      "reverseSignStatus": "distance zero/cyclicity is equivalent to RH",
+      "circularityTest": "density, cyclicity, or d_N tending to zero is the Nyman--Beurling criterion itself",
+      "classification": "exact parallel equivalence"
+    },
+    {
+      "route": "B\u00e1ez--Duarte discrete approximants",
+      "establishedContent": "integer dilations suffice in the Nyman--Beurling criterion",
+      "whatItControls": "finite Gram distances converging to the Nyman closure distance",
+      "reverseSignStatus": "the required convergence remains RH-equivalent",
+      "circularityTest": "Gram positivity is automatic; convergence to zero imports M\u00f6bius cancellation at the critical scale",
+      "classification": "equivalent approximation target"
+    },
+    {
+      "route": "de Branges--Sonine completeness and spectral synthesis",
+      "establishedContent": "unconditional complete/minimal zero systems and biorthogonal structures exist",
+      "whatItControls": "representation and completeness of the actual zero system",
+      "reverseSignStatus": "no zero-location sign follows",
+      "circularityTest": "the missing positive reflection metric or Hermite--Biehler property would encode RH",
+      "classification": "no independent sign theorem found"
+    },
+    {
+      "route": "Nevanlinna negative squares or an integer index",
+      "establishedContent": "an off-line zero can be represented by a quantised negative-index obstruction",
+      "whatItControls": "detection without a collapsing metric amplitude",
+      "reverseSignStatus": "no arithmetic computation proving index zero was found",
+      "circularityTest": "computing the index from the analytic factor is only the argument-principle zero count",
+      "classification": "promising detector, missing exclusion engine"
+    },
+    {
+      "route": "conductor-operator/commutator formulae",
+      "establishedContent": "local explicit-formula and bounded commutator structures retain phase information",
+      "whatItControls": "local completed terms, not a global zeta-sensitive vanishing index",
+      "reverseSignStatus": "no global Fredholm or trace sign implying the reverse inequality was found",
+      "circularityTest": "a proposed index must be computed arithmetically without first locating the zeros",
+      "classification": "research proposal, not an established implication"
+    },
+    {
+      "route": "critical Chebyshev energy or subexponential Laguerre growth",
+      "establishedContent": "either condition would continue the relevant Mellin transform to Re s>1/2",
+      "whatItControls": "zero-freeness of the whole right critical half-plane",
+      "reverseSignStatus": "sufficient but not established",
+      "circularityTest": "both all-scale bounds are already RH-equivalent in the programme audit",
+      "classification": "rejected circular input"
+    }
+  ],
+  "verifiedTailBound": {
+    "status": "rigorous consequence of two established cited inputs",
+    "plattTrudgianHeight": "3000175332800",
+    "plattTrudgianZerosVerified": 12363153437138,
+    "bellottiWongBound": "N(T)<=T/(2pi)log(T/(2pi e))+0.10076log T+0.24460loglog T+8.08344 for T>=e",
+    "quartetPointwiseBound": "d_(eta,gamma)<=(9/2)gamma^-4+(3/8)gamma^-6",
+    "tailMoment4": {
+      "main": "2.06080505002557468896755644617090425508877510325418042099096E-37",
+      "error": "2.23304167046656122834055118070536590418674122905160249386298E-49",
+      "upper": "2.06080505002780773063802300739924480626948046915836716222001E-37"
+    },
+    "tailMoment6": {
+      "main": "2.05008791059409392899742161539279804538249020392386766087666E-62",
+      "error": "2.47692092850229614729540834748170303716379179776503160560014E-74",
+      "upper": "2.05008791059657084992592391154009345372997190696103145267443E-62"
+    },
+    "defectUpper": "9.27362272512513478787110361017489827558406898343479891274354E-37",
+    "roundedCertifiedUpper": "9.274E-37",
+    "nearReverseInequality": "0<=I_C^crit-C'/C(2)<9.274e-37",
+    "exactCertificate": {
+      "script": "scripts/certify-rss-prime-phase-defect.py",
+      "results": "docs/rh/rss-prime-phase-defect-certificate.json",
+      "arithmetic": "exact rational intervals; no floating-point proof comparisons",
+      "strictComparison": "defect upper < 9274/10^40"
+    },
+    "doesNotImplyRh": "a forbidden zero can be arbitrarily close to the critical line or sufficiently high, so the positive defect has no known uniform positive gap"
+  },
+  "collapsingMargin": {
+    "rows": [
+      {
+        "eta": "0.1",
+        "gamma": "14.134725141734693",
+        "stage33Defect": "0.00000434374266620895700191966327268689238703262557410103868680791",
+        "bsyQuartetMass": "0.000999747872734576432187895469266594106918625185009280327207239",
+        "defectToBsyMassSquared": "4.34593384677894790862618331556617493139390069225965140211524"
+      },
+      {
+        "eta": "0.001",
+        "gamma": "14.134725141734693",
+        "stage33Defect": "4.34409030194545510516451897864555529295091736183606410505338E-10",
+        "bsyQuartetMass": "0.00000999797761754978491440104593791022081009120357931492081114312",
+        "defectToBsyMassSquared": "4.34584791751087340043907832368561072501334108266836791046031"
+      },
+      {
+        "eta": "0.1",
+        "gamma": "1000",
+        "stage33Defect": "1.79998647006426017012477304508922612619889073295615233961782E-13",
+        "bsyQuartetMass": "1.99999948000014186662631467855018306665924898624751730112806E-7",
+        "defectToBsyMassSquared": "4.49996851514333570678909356386393984635053165111792498114317"
+      },
+      {
+        "eta": "0.001",
+        "gamma": "1000000",
+        "stage33Defect": "1.79999999998649999700006378754724975816211727573235615619245E-29",
+        "bsyQuartetMass": "1.99999999999949999800000012500166666863541579167066079117016E-15",
+        "defectToBsyMassSquared": "4.49999999996850000150014287504612446253067634545862018673818"
+      }
+    ],
+    "highZeroAsymptotic": "for fixed eta and large gamma, the BSY quartet mass is asymptotic to 2eta/gamma^2 and d_(eta,gamma) is asymptotic to 18eta^2/gamma^4, so d is asymptotic to (9/2) times the square of the BSY mass",
+    "consequence": "finite verification and tail estimates can make D_2 extremely small but cannot round it to zero"
+  },
+  "evidenceAudit": {
+    "primaryEstablished": [
+      {
+        "source": "Balazard--Saias--Yor, Notes sur la fonction zeta de Riemann, 2, Advances in Mathematics 143 (1999), 284-287",
+        "use": "exact Hardy/Jensen identity and absence of a singular inner contribution"
+      },
+      {
+        "source": "Burnol, A note on Nyman's equivalent formulation of the Riemann Hypothesis, Contemp. Math. 287 (2001), 23-26, arXiv:math/9910055v3",
+        "use": "Nyman projection expressed by the forbidden-zero Blaschke product"
+      },
+      {
+        "source": "Burnol, A lower bound in an approximation problem involving the zeros of the Riemann zeta function, Advances in Mathematics 170 (2002), 56-70",
+        "use": "exact zero-evaluation obstruction and approximation lower bounds"
+      },
+      {
+        "source": "Baez-Duarte, A strengthening of the Nyman-Beurling criterion for the Riemann Hypothesis, arXiv:math/0202141v2",
+        "use": "integer-dilation closure criterion"
+      },
+      {
+        "source": "Platt--Trudgian, The Riemann hypothesis is true up to 3*10^12, Bull. Lond. Math. Soc. 53 (2021), 792-797",
+        "use": "all zeros through the exact height 3000175332800 are on the critical line"
+      },
+      {
+        "source": "Bellotti--Wong, Improved estimates for the argument and zero-counting function of the Riemann zeta-function, arXiv:2412.15470v2, Theorem 1.1",
+        "use": "explicit upper bound for the zero-counting tail"
+      }
+    ],
+    "secondaryDiagnosticOnly": [
+      "GitHub route audits were used to locate literature and compare normalisations, not as proof authorities",
+      "the post-equivalence portfolio's negative-square and commutator proposals are research suggestions, not theorems implying RH"
+    ],
+    "excludedSpeculativeClaims": [
+      "an unvalidated GitHub catalogue entry claiming a 2026 zero-free half-plane Re(s)>7/8",
+      "self-published Balazard--Saias--Yor comparisons with inferred definitions or unsupported closure claims"
+    ],
+    "excludedClaimReason": "neither was verified as a correct primary proof; moreover a zero-free region Re(s)>7/8 would not exclude zeros in 1/2<Re(s)<=7/8 and therefore would not imply the target inequality"
+  },
+  "minimalOpenInput": "supply genuinely arithmetic information proving that the right-half-plane Blaschke factor B is trivial; renaming this as outerness, cyclicity, zero Nyman distance, zero BSY mass, zero negative index, critical Chebyshev energy or defect-free phase continuation does not establish it",
+  "status": "search closed with no reverse inequality; only equivalent inner-factor formulations and the rigorous near equality 0<=I_C^crit-C'/C(2)<9.274e-37 were obtained; RH remains open"
+}

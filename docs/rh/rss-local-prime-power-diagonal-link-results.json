@@ -1,0 +1,138 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "A one-prime Hankel test for the positive zero-mixture link",
+  "question": "Can the nonlinear fixed-point gate be reduced to a local Euler-factor recurrence on one prime-power tower?",
+  "verdict": {
+    "localPositiveMomentRepresentationProved": true,
+    "oneLocalHankelEqualityWouldImplyRh": true,
+    "actualXiLocalHankelEqualityProved": false,
+    "standardExplicitFormulaSuppliesTheEquality": false,
+    "rhProved": false,
+    "conclusion": "For every prime p, the sequence P_xi(p^k)/log(p) is a positive moment sequence in rates p^(-2+/-2eta). If one 2x2 Hankel determinant vanishes exactly, the rate measure is a point mass; reflected positive weights then force every eta=0. No explicit-formula identity proves this determinant vanishes for the actual zero ledger."
+  },
+  "localIdentity": {
+    "coefficient": "a_(p,k)=P_xi(p^k)/log(p)",
+    "rateMeasure": "a_(p,k)=integral r^k dnu_p(r)",
+    "rates": [
+      "p^(-2-2eta)",
+      "p^(-2+2eta)"
+    ],
+    "weights": "w_rho/(2 M(2+2eta)) and w_rho/(2 M(2-2eta)), respectively",
+    "hankelIdentity": "a_k a_(k+2)-a_(k+1)^2 = (1/2) integral integral (rs)^k (r-s)^2 dnu_p(r)dnu_p(s) >= 0",
+    "centralSequence": "a_(p,k)=p^(-2k)/M(2), a geometric sequence with zero Hankel determinant",
+    "localGeneratingFunction": "F_p(z)=sum_k a_(p,k)z^k; one off-line feature has simple-pole terms at p^(2+2eta) and p^(2-2eta), while its positive slow-decay rate forces aggregate radius <= p^(2-2eta) < p^2; under RH the radius is p^2"
+  },
+  "finiteChecks": {
+    "primePowerCutoff": 20000,
+    "primePowers": 2328,
+    "stressEta": 0.25,
+    "primes": [
+      {
+        "centralHankelIntegral": 0.0,
+        "prime": 2,
+        "centralCoefficients": [
+          0.43866503219613345,
+          0.10966625804903336,
+          0.02741656451225834
+        ],
+        "centralHankelDeterminant": 0.0,
+        "stressCoefficients": [
+          0.42467266836283823,
+          0.09603011782393779,
+          0.024385618860909772
+        ],
+        "stressHankelDeterminant": 0.0011341223020623348,
+        "stressHankelIntegral": 0.0011341223020623363,
+        "stressToCentralFirstCoefficientRatio": 0.9681023952074689,
+        "slowDecayRateAboveCentral": true,
+        "fastDecayRateBelowCentral": true
+      },
+      {
+        "centralHankelIntegral": 0.0,
+        "prime": 3,
+        "centralCoefficients": [
+          0.19496223653161485,
+          0.021662470725734982,
+          0.0024069411917483313
+        ],
+        "centralHankelDeterminant": 0.0,
+        "stressCoefficients": [
+          0.17561953260875712,
+          0.01954565730288912,
+          0.0028472756244746463
+        ],
+        "stressHankelDeterminant": 0.00011800449497656164,
+        "stressHankelIntegral": 0.00011800449497656174,
+        "stressToCentralFirstCoefficientRatio": 0.9007874331615952,
+        "slowDecayRateAboveCentral": true,
+        "fastDecayRateBelowCentral": true
+      },
+      {
+        "centralHankelIntegral": 0.0,
+        "prime": 5,
+        "centralCoefficients": [
+          0.07018640515138135,
+          0.0028074562060552543,
+          0.00011229824824221016
+        ],
+        "centralHankelDeterminant": -1.6940658945086007e-21,
+        "stressCoefficients": [
+          0.06096934432242302,
+          0.003236740409010371,
+          0.0002498524849273709
+        ],
+        "stressHankelDeterminant": 4.75685370802926e-06,
+        "stressHankelIntegral": 4.7568537080292645e-06,
+        "stressToCentralFirstCoefficientRatio": 0.8686774054166396,
+        "slowDecayRateAboveCentral": true,
+        "fastDecayRateBelowCentral": true
+      },
+      {
+        "centralHankelIntegral": 0.0,
+        "prime": 7,
+        "centralCoefficients": [
+          0.03580939038335783,
+          0.0007308038853746497,
+          1.491436500764591e-05
+        ],
+        "centralHankelDeterminant": -2.117582368135751e-22,
+        "stressCoefficients": [
+          0.03146316924636954,
+          0.001080659389450255,
+          5.358166037274373e-05
+        ],
+        "stressHankelDeterminant": 5.180241328021305e-07,
+        "stressHankelIntegral": 5.180241328021303e-07,
+        "stressToCentralFirstCoefficientRatio": 0.8786290107019481,
+        "slowDecayRateAboveCentral": true,
+        "fastDecayRateBelowCentral": true
+      },
+      {
+        "centralHankelIntegral": 0.0,
+        "prime": 11,
+        "centralCoefficients": [
+          0.014501323378384577,
+          0.00011984564775524442,
+          9.90459898803673e-07
+        ],
+        "centralHankelDeterminant": 1.6543612251060553e-24,
+        "stressCoefficients": [
+          0.013506330520356881,
+          0.0002626877703304514,
+          6.932376427716436e-06
+        ],
+        "stressHankelDeterminant": 2.4626102643085133e-08,
+        "stressHankelIntegral": 2.462610264308514e-08,
+        "stressToCentralFirstCoefficientRatio": 0.9313860651152146,
+        "slowDecayRateAboveCentral": true,
+        "fastDecayRateBelowCentral": true
+      }
+    ]
+  },
+  "missingGate": {
+    "requiredIdentity": "P_xi(p^k)=log(p) p^(-2k)/M(2) for one fixed prime p and every k>=1",
+    "weakerSufficientIdentity": "a_(p,1)a_(p,3)=a_(p,2)^2 for one fixed prime p",
+    "whyNotDerived": "The local coefficient depends on rho and conjugate(rho) through eta=Re(rho)-1/2 and M(1+rho+conjugate(rho)). A one-variable Weil explicit formula tests holomorphic functions of rho; this diagonal statistic requires a two-variable zero/prime correlation identity. Squaring the explicit formula introduces the uncontrolled off-diagonal pair terms.",
+    "scope": "This is a new RH-equivalent local criterion, not a proof of the zero-mixture/Euler-factor identity and not the (101,101) raw-energy event."
+  }
+}

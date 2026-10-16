@@ -1,0 +1,262 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Trying to derive an RH contraction from the decimal splice",
+  "question": "does the decimal pi-over-ten phase derive eta -> c eta on the zero set of the same xi function?",
+  "verdict": {
+    "rhProved": false,
+    "sameXiZeroInvarianceDerived": false,
+    "untwistedCriticalEnergyProved": false,
+    "exactGoldenContractionCoefficientDerived": true,
+    "twoDescendantSeamDefectContracts": true,
+    "conclusion": "The decimal phase yields an exact golden barycentric contraction c=1/phi, and two hypothetical contracted descendants strictly reduce both the nonlinear seam defect and the central horizontal residue. But the contraction acts on a weighted coordinate or selected channel, not on the support of xi zeros. At function level the reflection average collapses to xi itself, horizontal-only contraction is nonholomorphic, and the period-20 prime twist is nonprincipal. The missing same-xi or untwisted-prime invariance is not derived."
+  },
+  "goldenDecimalMixer": {
+    "decimalAngle": "alpha=pi/10",
+    "reflectionWeight": 0.8090169943749475,
+    "reflectionWeightIdentity": "p=cos(pi/5)=phi/2",
+    "returnWeight": 0.19098300562505255,
+    "map": "T_p(eta)=p eta+(1-p)(-eta)=(2p-1)eta",
+    "contraction": 0.6180339887498949,
+    "contractionIdentity": "c=2cos(pi/5)-1=phi-1=1/phi",
+    "iteration": "eta_n=phi^(-n) eta_0",
+    "interpretation": "this is an exact contraction of the barycentre or a declared output coordinate; the two input support points remain +eta and -eta"
+  },
+  "sameXiAudit": {
+    "functionLevelReflectionAverage": "M_p xi(s)=p xi(s)+(1-p)xi(1-s)=xi(s) by the functional equation; it does not equal xi at a contracted horizontal argument",
+    "zeroBarycentreWarning": "a weighted average of two zero locations is not generally another zero",
+    "horizontalMap": "T_c(eta+i gamma)=c eta+i gamma=((1+c)/2)z+((c-1)/2)conjugate(z), so it is nonholomorphic when c is not 1",
+    "holomorphicAlternative": "z -> c z contracts the ordinate as well as the displacement and would create a forbidden finite accumulation if it preserved the known nonempty xi zero set under indefinite iteration",
+    "quartetStressTest": {
+      "eta": 0.25,
+      "gamma": 14.134725141734693,
+      "beforeCoefficients": {
+        "z4": 1.0,
+        "z2": 399.4559096647737,
+        "z0": 39941.203555236054
+      },
+      "afterCoefficients": {
+        "z4": 1.0,
+        "z2": 399.53316391336745,
+        "z0": 39925.76555743597
+      },
+      "differences": {
+        "z4": 0.0,
+        "z2": 0.07725424859376062,
+        "z0": -15.437997800087032
+      },
+      "conclusion": "contracting the quartet changes the entire function unless eta=0 or c^2=1"
+    }
+  },
+  "seamDefectTest": {
+    "defect": "epsilon(eta)=-2log(cos(pi eta))",
+    "positiveSeriesBound": "epsilon(c eta)<c^2 epsilon(eta) for 0<c<1 and eta nonzero in the strip",
+    "cSquared": 0.3819660112501052,
+    "twoDescendantUpperFactor": 0.7639320225002104,
+    "threeDescendantSmallEtaFactor": 1.1458980337503157,
+    "twoDescendantsContractUniformly": true,
+    "threeDescendantsContractUniformly": false,
+    "rows": [
+      {
+        "eta": 1e-06,
+        "oneDescendantRatio": 0.3819658484999462,
+        "twoDescendantRatio": 0.7639316969998924,
+        "threeDescendantRatio": 1.1458975454998386
+      },
+      {
+        "eta": 0.01,
+        "oneDescendantRatio": 0.38192717188628533,
+        "twoDescendantRatio": 0.7638543437725707,
+        "threeDescendantRatio": 1.145781515658856
+      },
+      {
+        "eta": 0.1,
+        "oneDescendantRatio": 0.37800371732780974,
+        "twoDescendantRatio": 0.7560074346556195,
+        "threeDescendantRatio": 1.1340111519834293
+      },
+      {
+        "eta": 0.25,
+        "oneDescendantRatio": 0.3541739620173571,
+        "twoDescendantRatio": 0.7083479240347142,
+        "threeDescendantRatio": 1.0625218860520713
+      },
+      {
+        "eta": 0.4,
+        "oneDescendantRatio": 0.2877280504088893,
+        "twoDescendantRatio": 0.5754561008177786,
+        "threeDescendantRatio": 0.863184151226668
+      },
+      {
+        "eta": 0.49,
+        "oneDescendantRatio": 0.1571330194279742,
+        "twoDescendantRatio": 0.3142660388559484,
+        "threeDescendantRatio": 0.47139905828392253
+      }
+    ]
+  },
+  "centralResidueTest": {
+    "residue": "r(eta,gamma)=4eta^2(eta^2+3gamma^2)/(gamma^2(eta^2+gamma^2)^2)",
+    "ratioFormula": "r(c eta,gamma)/r(eta,gamma)=c^2(c^2 x+3)(x+1)^2/((c^2 x+1)^2(x+3)), x=eta^2/gamma^2",
+    "uniformCriticalStripBound": {
+      "domain": "abs(eta)<1/2 and abs(gamma)>=14.134725141734693",
+      "xUpperBound": 0.0012513110308985291,
+      "inequality": "2r(c eta,gamma)/r(eta,gamma) <= 2c^2(1+x)^2",
+      "upperFactor": 0.765845051782377,
+      "twoDescendantsContract": true
+    },
+    "twoDescendantsContractAtTestedCriticalStripScales": true,
+    "rows": [
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "oneDescendantRatio": 0.3819857039501425,
+        "twoDescendantRatio": 0.763971407900285
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "oneDescendantRatio": 0.38208908195438185,
+        "twoDescendantRatio": 0.7641781639087637
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "oneDescendantRatio": 0.38243868696906114,
+        "twoDescendantRatio": 0.7648773739381223
+      },
+      {
+        "eta": 0.1,
+        "gamma": 50.0,
+        "oneDescendantRatio": 0.3819675850349342,
+        "twoDescendantRatio": 0.7639351700698684
+      },
+      {
+        "eta": 0.25,
+        "gamma": 50.0,
+        "oneDescendantRatio": 0.3819758473499108,
+        "twoDescendantRatio": 0.7639516946998216
+      },
+      {
+        "eta": 0.49,
+        "gamma": 50.0,
+        "oneDescendantRatio": 0.3820037968914696,
+        "twoDescendantRatio": 0.7640075937829393
+      },
+      {
+        "eta": 0.1,
+        "gamma": 1000.0,
+        "oneDescendantRatio": 0.3819660151845715,
+        "twoDescendantRatio": 0.763932030369143
+      },
+      {
+        "eta": 0.25,
+        "gamma": 1000.0,
+        "oneDescendantRatio": 0.38196603584051914,
+        "twoDescendantRatio": 0.7639320716810383
+      },
+      {
+        "eta": 0.49,
+        "gamma": 1000.0,
+        "oneDescendantRatio": 0.38196610571663486,
+        "twoDescendantRatio": 0.7639322114332697
+      }
+    ]
+  },
+  "branchAndProjectionAudit": {
+    "equalHalfBarycentre": "(eta+(-eta))/2=0, but the branch support remains the two points +eta and -eta",
+    "goldenWeightedBarycentre": "p=phi/2 and 1-p produce expectation eta/phi without moving either support point",
+    "unitaryBoundary": "a lossless two-channel mixer preserves total norm and stores the missing horizontal information in the complementary output",
+    "projectionBoundary": "discarding the complementary output is nonunitary postselection, not an invariance of the completed xi determinant"
+  },
+  "finitePrimeDiagnostic": {
+    "phase": "exp(i pi n/10)=exp(2pi i n/20)",
+    "period": 20,
+    "reducedResiduePhaseSumReal": -5.551115123125783e-16,
+    "reducedResiduePhaseSumImag": 1.6653345369377348e-16,
+    "rows": [
+      {
+        "X": 256,
+        "untwistedNormalizedEnergy": 0.05579827897701932,
+        "decimalAdditiveNormalizedEnergy": 1.2373043890502757,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 512,
+        "untwistedNormalizedEnergy": 0.06745424368191377,
+        "decimalAdditiveNormalizedEnergy": 1.0307173254819948,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 1024,
+        "untwistedNormalizedEnergy": 0.0807929322352311,
+        "decimalAdditiveNormalizedEnergy": 1.1548557785922529,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 2048,
+        "untwistedNormalizedEnergy": 0.08323280165593068,
+        "decimalAdditiveNormalizedEnergy": 0.8406351493920521,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 4096,
+        "untwistedNormalizedEnergy": 0.05373199459509132,
+        "decimalAdditiveNormalizedEnergy": 0.4125324922527434,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 8192,
+        "untwistedNormalizedEnergy": 0.080236853911769,
+        "decimalAdditiveNormalizedEnergy": 0.32694445365741803,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 16384,
+        "untwistedNormalizedEnergy": 0.0763541639042743,
+        "decimalAdditiveNormalizedEnergy": 0.5936056078644087,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 32768,
+        "untwistedNormalizedEnergy": 0.08367701359660323,
+        "decimalAdditiveNormalizedEnergy": 1.0720576292556088,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 65536,
+        "untwistedNormalizedEnergy": 0.04827660583011016,
+        "decimalAdditiveNormalizedEnergy": 0.9006024888970902,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 131072,
+        "untwistedNormalizedEnergy": 0.055223787113852216,
+        "decimalAdditiveNormalizedEnergy": 0.48536641600616887,
+        "scope": "finite diagnostic only"
+      },
+      {
+        "X": 262144,
+        "untwistedNormalizedEnergy": 0.08258896111612202,
+        "decimalAdditiveNormalizedEnergy": 0.9432049295686232,
+        "scope": "finite diagnostic only"
+      }
+    ],
+    "fourierCounterexample": {
+      "input": "constant vector on all 20 residue classes",
+      "modeOne": 9.036560719766055e-16,
+      "principalMode": 20,
+      "conclusion": "the decimal mode can vanish while the principal mode is nonzero"
+    },
+    "interpretation": "the decimal additive twist cancels its own leading reduced-residue mean, but it is a nonprincipal residue-class channel and does not bound the untwisted Chebyshev error"
+  },
+  "conditionalTheorem": {
+    "statement": "If the completed decimal splice preserves the same xi zero ledger while sending every upper zero quartet to at most two descendants with displacement eta/phi, and if no zeros are born at infinity, repeated contraction forces RH.",
+    "newGain": "the factor c=1/phi is derived from the decimal phase, and two descendants still contract the exact seam defect; c is no longer an arbitrary assumed constant",
+    "missingPremises": [
+      "prove that the barycentric mixer acts on zero support rather than only on an expectation or projected channel",
+      "prove same-xi closure or a globally complete no-birth genealogy",
+      "prove exact recovery of the untwisted principal von Mangoldt channel"
+    ],
+    "status": "conditional RH criterion sharpened; RH remains open"
+  }
+}

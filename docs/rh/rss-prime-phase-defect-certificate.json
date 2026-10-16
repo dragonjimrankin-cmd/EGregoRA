@@ -1,0 +1,79 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Exact rational interval certificate for the critical prime-phase defect",
+  "claim": "0<=I_C^crit-C'/C(2)<9.274e-37",
+  "arithmetic": {
+    "proofComparisonsUseFloatingPoint": false,
+    "type": "Python Fraction exact rational arithmetic",
+    "piMethod": "Machin identity with alternating arctangent enclosures",
+    "logMethod": "positive atanh series with an explicit geometric tail",
+    "stieltjesEndpointTerm": "discarded because -N(H)H^(-p)<=0"
+  },
+  "inputs": {
+    "verifiedHeight": "3000175332800",
+    "zeroCountBound": "N(T)<=T/(2pi)log(T/(2pi e))+0.10076logT+0.24460loglogT+8.08344 for T>=e",
+    "quartetBound": "d_(eta,gamma)<=(9/2)gamma^-4+(3/8)gamma^-6",
+    "targetRational": "9274/10^40"
+  },
+  "intervals": {
+    "piLower": "3.141592653589793238462639367307808390809481232519039652995454E+0",
+    "piUpper": "3.141592653589793238462643534626598073565986160114936864427101E+0",
+    "logHeightLower": "2.872969184715552495358217196415697126531363504717899246644014E+1",
+    "logHeightUpper": "2.872969184715552495358217196415697126587946986018254073819595E+1",
+    "logTwoPiELower": "2.837877066409345483560658194487742288207597565473352472743436E+0",
+    "logTwoPiEUpper": "2.837877066409345483560659520986511923698115682486070519269904E+0"
+  },
+  "bounds": {
+    "tailMoment4Upper": "2.060805050027807730638025742227019039471903698815092485609040E-37",
+    "tailMoment6Upper": "2.050087910596570849925926632656155885433531684194168027381492E-62",
+    "defectUpper": "9.273622725125134787871115916899882324994973516890164909846526E-37",
+    "target": "9.274000000000000000000000000000000000000000000000000000000000E-37",
+    "strictlyBelowTarget": true
+  },
+  "exactFingerprints": {
+    "piLower": {
+      "numeratorDigits": 55,
+      "denominatorDigits": 55,
+      "sha256": "34a7383e98f1b5afa12f405cc3f8f1d545eea2a8ebc7fb1e8734dd7f67009496"
+    },
+    "piUpper": {
+      "numeratorDigits": 61,
+      "denominatorDigits": 61,
+      "sha256": "9c95980dba8346ddcc9466209735b1cf0778121c5167e1a1f620894b60d71e65"
+    },
+    "logHeightUpper": {
+      "numeratorDigits": 543,
+      "denominatorDigits": 542,
+      "sha256": "a937e3d1b5069c95dc2508d1868339d28da4d4a3d7bca7acb1a0ea36d3ee3a3d"
+    },
+    "logTwoPiELower": {
+      "numeratorDigits": 22299,
+      "denominatorDigits": 22298,
+      "sha256": "a69ce4aa6b193a1b64e6365c61ae3f3f3ca24715756643d7ffd653a1de259029"
+    },
+    "tailMoment4Upper": {
+      "numeratorDigits": 22866,
+      "denominatorDigits": 22903,
+      "sha256": "db504ce74132f879ceb07d7903b8c0da8b1d58ae366a00f1b3d58bde9e0e38f1"
+    },
+    "tailMoment6Upper": {
+      "numeratorDigits": 22866,
+      "denominatorDigits": 22927,
+      "sha256": "0288c08b2e5641f96390a95533ba6457c62d0c32fed6dc53904bdae4c78b41c2"
+    },
+    "defectUpper": {
+      "numeratorDigits": 22891,
+      "denominatorDigits": 22927,
+      "sha256": "58a0cc3dcf24be6ced95fec1d7cd307e803a0044afef8e4b52d726922dba3bb2"
+    }
+  },
+  "proofChain": [
+    "Platt--Trudgian places every contributing off-line quartet above H",
+    "the quartet formula is bounded by (9/2)gamma^-4+(3/8)gamma^-6",
+    "Stieltjes integration bounds each zero tail by p integral_H^infinity N(T)T^(-p-1)dT",
+    "Bellotti--Wong bounds N(T), with loglogT<=logT",
+    "all constants and logarithms are enclosed by exact rational series bounds",
+    "integer cross multiplication proves the final upper bound is strictly less than 9274/10^40"
+  ],
+  "status": "exact executable certificate passed; no RH claim is made"
+}

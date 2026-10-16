@@ -35,9 +35,9 @@ vm.runInNewContext(source, { window, URL, console }, { filename: 'oracle-knowled
 
 const kb = window.EGOracleKnowledge;
 assert.ok(kb, 'knowledge API was not exposed');
-assert.equal(kb.entries.length, 30, 'expected thirty substantial prepared answers');
-assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 30, 'knowledge IDs must be unique');
-assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 30, 'prepared questions must be unique');
+assert.equal(kb.entries.length, 49, 'expected forty-nine substantial prepared answers');
+assert.equal(new Set(kb.entries.map((entry) => entry.id)).size, 49, 'knowledge IDs must be unique');
+assert.equal(new Set(kb.entries.map((entry) => entry.question)).size, 49, 'prepared questions must be unique');
 
 for (const entry of kb.entries) {
   assert.ok(entry.answer.length >= 700, `${entry.id} is too slight for a high-degree answer`);
@@ -99,6 +99,7 @@ const paraphrases = new Map([
   ['Compare permanent orthogonality and quasiperiodic separation.', 'matter-phase'],
   ['Can phase separation generate net baryon number?', 'baryogenesis-boundary'],
   ['Compare base 5, base 8 and base 4 phase shifts.', 'base-shifts'],
+  ['Does one decimal splice flip the sign before two passes return?', 'decimal-splice-phase'],
   ['How can pi result from the unit interval?', 'pi-zero-one'],
   ['Could JWST little red dots be inherited from a prior universe?', 'little-red-dots-residue'],
   ['Explain the Zero-Seam research proposal.', 'zero-seam-test'],
@@ -110,7 +111,28 @@ const paraphrases = new Map([
   ['Can accumulated dx produce mass and gravity?', 'differentials-mass-gravity'],
   ['What survived the RH archive consolidation?', 'rh-dossier'],
   ['Audit the corrected complete monotonicity and Bernstein claims.', 'rh-proof-audit'],
+  ['Does golden catch-up prove a global shrinking strip for xi zeros?', 'rh-golden-catchup'],
+  ['What if 333, 666 and 999 are all splice events?', 'rh-internal-splices'],
+  ['Do 100, 666 and 999 have three branches or three internal states?', 'rh-ternary-splices'],
+  ['Could 1000 have a four-way fork with four total branches?', 'rh-quaternary-splice'],
+  ['Does same xi halving at the splice at one prove RH?', 'rh-splice-one-halving'],
+  ['Could aggregate residue conservation close the halving obstruction?', 'rh-halving-obstruction'],
+  ['Test the prime ledger, zero genealogy, kernel refinement and compactified seam routes.', 'rh-global-halving-routes'],
+  ['Did the Blaschke seam divisor prove RH?', 'rh-final-three-routes'],
+  ['Can endpoint Poisson kernels retain the horizontal zero displacement?', 'rh-two-ended-seam-ledger'],
+  ['Can a prime-power Laguerre sequence control the seam?', 'rh-arithmetic-seam-control'],
+  ['Prove the subexponential bound for the prime Laguerre coefficients.', 'rh-prime-laguerre-growth-proof'],
+  ['Try square root Chebyshev error and direct Laguerre cancellation.', 'rh-dual-prime-error-routes'],
+  ['Find the critical dyadic mean square theorem for the prime error.', 'rh-critical-chebyshev-energy'],
+  ['Could spin and colour create six zero descendants at the seam?', 'rh-energy-spin-colour'],
+  ['Suppose all integers are entangled with pi through theta phases.', 'rh-universal-pi-coupling'],
+  ['Test pi squared in the theta and seam coupling.', 'rh-pi-squared-coupling'],
   ['Can zeta or RH determine the splice action and physical constants?', 'rh-splice-bridge'],
+  ['Could nearby beings synchronize their phases and move zeta zeros?', 'rh-relational-synchronisation'],
+  ['Can a positive map send actual zeta zeros to von Mangoldt prime weights?', 'rh-prime-zero-intertwiner'],
+  ['Does logarithmic dephasing remove the prime-pair terms?', 'rh-prime-zero-intertwiner'],
+  ['Can the Mellin ladder overcome the P xi frame bound?', 'rh-prime-zero-intertwiner'],
+  ['Did the hundred-round Mellin attempt prove RH?', 'rh-prime-zero-intertwiner'],
   ['How should we grade the new residue and seam claims?', 'epistemic-grading']
 ]);
 for (const [question, id] of paraphrases) {
@@ -138,12 +160,12 @@ for (const [label, page] of [['ShakDrah', ttiPage], ['Gink', egPage]]) {
   const group = page.match(/<div class="oracle-chips" id="oracle-chips">([\s\S]*?)<\/div>/);
   assert.ok(group, `${label} has no opening question group`);
   const chips = [...group[1].matchAll(/<button class="chip" type="button">([^<]+)<\/button>/g)].map((m) => m[1]);
-  assert.equal(chips.length, 30, `${label} should display thirty current questions`);
-  assert.ok(page.includes('Thirty prepared answers'), `${label} does not announce the thirty-answer update`);
+  assert.equal(chips.length, 49, `${label} should display forty-nine current questions`);
+  assert.ok(page.includes('Forty-nine prepared answers'), `${label} does not announce the forty-nine-answer update`);
   const knowledgeAt = page.indexOf('/assets/js/oracle-knowledge.js');
   const siteAt = page.indexOf('/assets/js/site.js');
   assert.ok(knowledgeAt >= 0, `${label} does not load the knowledge asset`);
   assert.ok(siteAt < 0 || knowledgeAt < siteAt, `${label} loads the knowledge asset after the oracle client`);
 }
 
-console.log('Oracle knowledge passed: 30 exact answers, 30 paraphrases, two avatars, fallback and attachment bypass.');
+console.log('Oracle knowledge passed: 49 exact answers, 52 paraphrases, two avatars, fallback and attachment bypass.');

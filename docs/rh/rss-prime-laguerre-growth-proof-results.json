@@ -1,0 +1,303 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Attempting the subexponential prime-Laguerre bound",
+  "question": "can the explicit endpoint-completed von Mangoldt-Laguerre sequence be proved subexponential from established prime estimates?",
+  "verdict": {
+    "rhProved": false,
+    "subexponentialGrowthProved": false,
+    "continuousMainTermCancelledExactly": true,
+    "remainderReducedToChebyshevPrimeError": true,
+    "positivityRouteAvailable": false,
+    "finiteVerificationSufficient": false,
+    "knownPntScaleSufficient": false,
+    "conclusion": "the endpoint exponential is exactly the Laplace transform of the continuous prime-density main term. After subtracting it, p_n is a signed Laguerre transform of psi(x)-x. Subexponential growth would follow from square-root-scale prime error or from the later, weaker-in-form critical Chebyshev-energy theorem, while established unconditional PNT error remains near the x scale. The kernel changes sign increasingly often, so positivity and termwise bounds do not close the gap."
+  },
+  "exactMainTermCancellation": {
+    "laguerreIntegral": "3 integral_1^infinity x^(-2)L_(n-1)^1(3log x)dx=integral_0^infinity exp(-t/3)L_(n-1)^1(t)dt=1-(-2)^n",
+    "endpointTerm": "1+(-1)^(n+1)2^n=1-(-2)^n",
+    "interpretation": "the large endpoint term is not an added reservoir; it is exactly the transform of d x, the continuous main term of d psi(x)",
+    "checks": [
+      {
+        "n": 1,
+        "laplaceIntegral": 3,
+        "endpointTerm": 3,
+        "exactMatch": true
+      },
+      {
+        "n": 2,
+        "laplaceIntegral": -3,
+        "endpointTerm": -3,
+        "exactMatch": true
+      },
+      {
+        "n": 3,
+        "laplaceIntegral": 9,
+        "endpointTerm": 9,
+        "exactMatch": true
+      },
+      {
+        "n": 4,
+        "laplaceIntegral": -15,
+        "endpointTerm": -15,
+        "exactMatch": true
+      },
+      {
+        "n": 5,
+        "laplaceIntegral": 33,
+        "endpointTerm": 33,
+        "exactMatch": true
+      },
+      {
+        "n": 6,
+        "laplaceIntegral": -63,
+        "endpointTerm": -63,
+        "exactMatch": true
+      },
+      {
+        "n": 7,
+        "laplaceIntegral": 129,
+        "endpointTerm": 129,
+        "exactMatch": true
+      },
+      {
+        "n": 8,
+        "laplaceIntegral": -255,
+        "endpointTerm": -255,
+        "exactMatch": true
+      },
+      {
+        "n": 9,
+        "laplaceIntegral": 513,
+        "endpointTerm": 513,
+        "exactMatch": true
+      },
+      {
+        "n": 10,
+        "laplaceIntegral": -1023,
+        "endpointTerm": -1023,
+        "exactMatch": true
+      },
+      {
+        "n": 11,
+        "laplaceIntegral": 2049,
+        "endpointTerm": 2049,
+        "exactMatch": true
+      },
+      {
+        "n": 12,
+        "laplaceIntegral": -4095,
+        "endpointTerm": -4095,
+        "exactMatch": true
+      },
+      {
+        "n": 13,
+        "laplaceIntegral": 8193,
+        "endpointTerm": 8193,
+        "exactMatch": true
+      },
+      {
+        "n": 14,
+        "laplaceIntegral": -16383,
+        "endpointTerm": -16383,
+        "exactMatch": true
+      },
+      {
+        "n": 15,
+        "laplaceIntegral": 32769,
+        "endpointTerm": 32769,
+        "exactMatch": true
+      },
+      {
+        "n": 16,
+        "laplaceIntegral": -65535,
+        "endpointTerm": -65535,
+        "exactMatch": true
+      },
+      {
+        "n": 17,
+        "laplaceIntegral": 131073,
+        "endpointTerm": 131073,
+        "exactMatch": true
+      },
+      {
+        "n": 18,
+        "laplaceIntegral": -262143,
+        "endpointTerm": -262143,
+        "exactMatch": true
+      },
+      {
+        "n": 19,
+        "laplaceIntegral": 524289,
+        "endpointTerm": 524289,
+        "exactMatch": true
+      },
+      {
+        "n": 20,
+        "laplaceIntegral": -1048575,
+        "endpointTerm": -1048575,
+        "exactMatch": true
+      }
+    ]
+  },
+  "primeErrorIdentity": {
+    "definitions": "psi(x)=sum_(m<=x)Lambda(m), E_tilde(x)=psi(x)-(x-1), f_n(x)=x^(-2)L_(n-1)^1(3log x)",
+    "stieltjesForm": "p_n=-3 integral_1^infinity f_n(x)dE_tilde(x)",
+    "integratedForm": "p_n=-3 integral_1^infinity E_tilde(x)x^(-3)[2L_(n-1)^1(3log x)+3L_(n-2)^2(3log x)]dx",
+    "boundaryCondition": "E_tilde(1)=0 and the boundary at infinity vanishes under the standard prime number theorem",
+    "meaning": "the desired coefficient bound is now entirely a uniform oscillatory estimate for psi(x)-x"
+  },
+  "finiteCancellationDiagnostics": {
+    "table": [
+      {
+        "n": 1,
+        "endpointMainTerm": 3,
+        "threeTimesPrimeLaguerreSum": 1.7098829792835974,
+        "completedPrimeRemainder": 1.2901170207164026,
+        "relativeRemainder": 0.43003900690546754
+      },
+      {
+        "n": 2,
+        "endpointMainTerm": -3,
+        "threeTimesPrimeLaguerreSum": -4.540570547104513,
+        "completedPrimeRemainder": 1.5405705471045126,
+        "relativeRemainder": 0.3392900806456851
+      },
+      {
+        "n": 3,
+        "endpointMainTerm": 9,
+        "threeTimesPrimeLaguerreSum": 7.5754731619237345,
+        "completedPrimeRemainder": 1.4245268380762652,
+        "relativeRemainder": 0.1582807597862517
+      },
+      {
+        "n": 4,
+        "endpointMainTerm": -15,
+        "threeTimesPrimeLaguerreSum": -16.192875790327093,
+        "completedPrimeRemainder": 1.1928757903270952,
+        "relativeRemainder": 0.073666704158854
+      },
+      {
+        "n": 5,
+        "endpointMainTerm": 33,
+        "threeTimesPrimeLaguerreSum": 32.044860018968116,
+        "completedPrimeRemainder": 0.9551399810318864,
+        "relativeRemainder": 0.02894363578884504
+      },
+      {
+        "n": 6,
+        "endpointMainTerm": -63,
+        "threeTimesPrimeLaguerreSum": -63.76300279479471,
+        "completedPrimeRemainder": 0.7630027947947111,
+        "relativeRemainder": 0.011966230593785631
+      },
+      {
+        "n": 7,
+        "endpointMainTerm": 129,
+        "threeTimesPrimeLaguerreSum": 128.36091583347624,
+        "completedPrimeRemainder": 0.6390841665237628,
+        "relativeRemainder": 0.004954140825765603
+      },
+      {
+        "n": 8,
+        "endpointMainTerm": -255,
+        "threeTimesPrimeLaguerreSum": -255.58908867892947,
+        "completedPrimeRemainder": 0.5890886789294669,
+        "relativeRemainder": 0.0023048271816856745
+      },
+      {
+        "n": 9,
+        "endpointMainTerm": 513,
+        "threeTimesPrimeLaguerreSum": 512.391842282992,
+        "completedPrimeRemainder": 0.6081577170079844,
+        "relativeRemainder": 0.0011854926257465583
+      },
+      {
+        "n": 10,
+        "endpointMainTerm": -1023,
+        "threeTimesPrimeLaguerreSum": -1023.6848230490069,
+        "completedPrimeRemainder": 0.6848230490069394,
+        "relativeRemainder": 0.0006689784136558941
+      }
+    ],
+    "status": "the first ten coefficients show strong endpoint/main-prime cancellation, but a finite table cannot bound the radius of convergence"
+  },
+  "failedProofRoutes": {
+    "termwiseAbsoluteValues": {
+      "status": "fails",
+      "reason": "absolute values destroy the cancellation between 1-(-2)^n and the transformed continuous prime density, leaving an exponential scale"
+    },
+    "kernelPositivity": {
+      "status": "fails",
+      "reason": "L_(n-1)^1 has n-1 positive roots and alternates sign; the differentiated kernel also changes sign",
+      "samplePositiveRoots": {
+        "5": [
+          0.7432919279814312,
+          2.571635007646279,
+          5.7311787516891,
+          10.95389431268319
+        ],
+        "10": [
+          0.3681784529417418,
+          1.2433579621404816,
+          2.646033841384207,
+          4.61688251463506,
+          7.22178653939657,
+          10.567320807741865,
+          14.835914515260928,
+          20.38218198544925,
+          28.11834338104989
+        ],
+        "20": [
+          0.18366517309610852,
+          0.616816382126627,
+          1.3007994029666055,
+          2.23994939900882,
+          3.440471942881211,
+          4.910645879674716,
+          6.661160612058037,
+          8.70559717712798,
+          11.061108683576084,
+          13.749394120091662,
+          16.79812300594522,
+          20.24308496330245,
+          24.131567267602648,
+          28.527947971314134,
+          33.52361761728889,
+          39.25629429078258,
+          45.95295064863832,
+          54.047093024701866,
+          64.64971243781605
+        ]
+      }
+    },
+    "ordinaryPntError": {
+      "status": "insufficient",
+      "reason": "a classical error of x times a decaying subpower factor remains much larger than the square-root scale required to exclude zeros with real part above one half"
+    },
+    "finiteZeroVerification": {
+      "status": "insufficient",
+      "reason": "verification to any finite height only makes a possible exponential rate extremely small; it does not make it zero",
+      "coarseStripAndFirstHeightEnvelope": {
+        "logGrowthRate": 0.007415216372216038,
+        "growthBase": 1.0074427771701162,
+        "description": "using only |eta|<1/2 and gamma>=the first-zero ordinate gives a base above one, not a subexponential bound"
+      }
+    }
+  },
+  "equivalentPrimeErrorTarget": {
+    "sufficientBound": "psi(x)-x=O(x^(1/2) log^2 x)",
+    "status": "this square-root-scale estimate follows from RH and, in standard explicit-formula form, is equivalent to RH",
+    "consequenceForSequence": "it yields subexponential p_n; conversely subexponential p_n excludes every zero with Re(rho)>1/2 and hence implies RH",
+    "whyCurrentInputStops": "the established framework supplies no square-root prime-error estimate, no positive Laguerre kernel, and no uniform cancellation theorem in n"
+  },
+  "proofBoundary": {
+    "provedHere": [
+      "the continuous prime-density transform cancels the endpoint exponential exactly",
+      "the remainder is an exact signed transform of psi(x)-x",
+      "the Laguerre kernels have increasing sign variation",
+      "finite verification and fixed-index convergence cannot imply the required radius bound"
+    ],
+    "notProved": "p_n=exp(o(n))",
+    "status": "completing the requested proof now requires a new square-root-scale theorem for the prime error or an equivalent uniform cancellation theorem; neither is available in the conversation or derived by TTI"
+  }
+}

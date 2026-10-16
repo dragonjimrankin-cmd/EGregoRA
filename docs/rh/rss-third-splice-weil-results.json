@@ -1,0 +1,234 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "Third decimal splice as a possible Weil residue channel",
+  "verdict": {
+    "positiveWeilIdentityDerived": false,
+    "canonicalExistingWeightMatchesWeil": false,
+    "conditionalBoundaryWeightHasCorrectCuspOrder": true,
+    "exactArithmeticDeformationFromDecimalSplices": false,
+    "conclusion": "the existing splice and Rankin Green laws force a smooth log-frequency kernel; a new codimension-one boundary action conditionally produces the required t log(1/t) order, but with the wrong fixed coefficient, persistent decimal log-periodicity, and no derivation of prime-power event support"
+  },
+  "spliceArithmetic": {
+    "base": 10,
+    "thirdLevel": {
+      "n": 3,
+      "threshold": 1000,
+      "logThreshold": 6.907755278982138,
+      "fibonacciMultiplicity": 2,
+      "returners": 4,
+      "depth": 0.23606797749978967,
+      "deposit": 0.9442719099991587,
+      "closedDeposit": 0.9442719099991587,
+      "cumulative": 2.326237921249264,
+      "closedCumulative": 2.326237921249264
+    },
+    "depositLimit": 1.1708203932499368,
+    "cumulativeAsymptotic": "Pi_N=1.1708203932499368 N + (-1.570820393249937) + o(1)",
+    "cumulativeConstant": -1.570820393249937,
+    "maximumDepositIdentityError": 1.3322676295501878e-15,
+    "maximumCumulativeIdentityError": 3.552713678800501e-14,
+    "note": "the exact constant corrects the earlier rounded website statement Pi_N approximately 1.1708 N - 1.618"
+  },
+  "independentlyInheritedWeights": {
+    "existingConvention": "frequency log(10^n)=n log 10; weight kappa_R times splice deposit divided by 10^(2n)",
+    "generationSecondMoment": 0.0000011636439011324091,
+    "cumulativeSecondMoment": 0.000002885140807169975,
+    "regularity": "both inherited kernels are Hilbert-differentiable and have D(t,t)=C t^2+o(t^2)",
+    "interpretation": "restricting the established all-integer kappa/m^2 Green ledger to m=10^n cannot produce the Weil cusp"
+  },
+  "conditionalBoundaryModel": {
+    "addedAssumption": "the 1000 splice is a codimension-one boundary trace of a two-dimensional harmonic bulk",
+    "derivation": "Dirichlet-to-Neumann symbol |lambda| gives covariance kappa_R/|lambda|",
+    "frequency": "lambda_n=10^n",
+    "weight": "w_n=kappa_R Pi_n/10^n",
+    "weightInterpretationAssumption": "Pi_n is treated linearly as channel multiplicity/intensity; treating it as a field amplitude would square Pi_n and produce t log(1/t)^2",
+    "asymptoticOrder": "D(t,t)=Theta(t log(1/t))",
+    "limitingBoundaryRatios": [
+      {
+        "phase": 1,
+        "ratio": 0.018061546371512784
+      },
+      {
+        "phase": 1.2,
+        "ratio": 0.015779845084017922
+      },
+      {
+        "phase": 1.5,
+        "ratio": 0.02119690438538523
+      },
+      {
+        "phase": 2,
+        "ratio": 0.021939856808806956
+      },
+      {
+        "phase": 3,
+        "ratio": 0.022184254039342564
+      },
+      {
+        "phase": 5,
+        "ratio": 0.010833008693724453
+      },
+      {
+        "phase": 8,
+        "ratio": 0.015006626395333782
+      },
+      {
+        "phase": 9.9,
+        "ratio": 0.018379235277925763
+      }
+    ],
+    "boundaryRatioMinimum": 0.010833008693724453,
+    "boundaryRatioMaximum": 0.022184254039342564,
+    "phaseOneNormalizationNeededToForceCoefficientOne": 55.3662449178344,
+    "normalizedBoundaryRatios": [
+      {
+        "phase": 1,
+        "ratio": 1
+      },
+      {
+        "phase": 1.2,
+        "ratio": 0.8736707676872214
+      },
+      {
+        "phase": 1.5,
+        "ratio": 1.1735929997011567
+      },
+      {
+        "phase": 2,
+        "ratio": 1.2147274855386225
+      },
+      {
+        "phase": 3,
+        "ratio": 1.2282588424616976
+      },
+      {
+        "phase": 5,
+        "ratio": 0.5997830125337774
+      },
+      {
+        "phase": 8,
+        "ratio": 0.8308605523944885
+      },
+      {
+        "phase": 9.9,
+        "ratio": 1.01758924180014
+      }
+    ],
+    "maximumNormalizedPhaseDefect": 0.4002169874662226,
+    "continuumFill": {
+      "addedAssumption": "replace the discrete decimal tower by a uniform continuum in log(lambda)",
+      "spectralDensity": "rho(lambda)=C log(lambda)/lambda^2",
+      "spectralDensityCoefficient": 0.005593699916743916,
+      "resultingCuspCoefficient": 0.017573126564828522,
+      "normalizationNeededForUnitCusp": 56.905070154188465,
+      "interpretation": "continuum filling removes log-periodicity but the independently inherited kappa and splice deposit give the wrong coefficient"
+    },
+    "status": "conditional new model, not a consequence of the existing splice or inverse-square Green ledger"
+  },
+  "regularityComparison": [
+    {
+      "t": 0.001,
+      "target": 0.005494412554662577,
+      "targetOverTLog": 0.7953976845966354,
+      "generationLedger": 1.163639203493756e-12,
+      "generationLedgerOverTSquared": 0.000001163639203493756,
+      "cumulativeLedger": 2.885129101340311e-12,
+      "cumulativeLedgerOverTSquared": 0.0000028851291013403113,
+      "boundaryTower": 0.00008586910208008218,
+      "boundaryTowerOverTLog": 0.012430825733122245
+    },
+    {
+      "t": 0.0001,
+      "target": 0.0007795422640734788,
+      "targetOverTLog": 0.8463772592436984,
+      "generationLedger": 1.1636438541559466e-14,
+      "generationLedgerOverTSquared": 0.0000011636438541559466,
+      "cumulativeLedger": 2.8851406901114876e-14,
+      "cumulativeLedgerOverTSquared": 0.0000028851406901114875,
+      "boundaryTower": 0.00001257375938925942,
+      "boundaryTowerOverTLog": 0.013651785798836417
+    },
+    {
+      "t": 0.00001,
+      "target": 0.00010097850233660045,
+      "targetOverTLog": 0.8770881271128038,
+      "generationLedger": 1.1636439006626447e-16,
+      "generationLedgerOverTSquared": 0.0000011636439006626444,
+      "cumulativeLedger": 2.88514080599939e-16,
+      "cumulativeLedgerOverTSquared": 0.0000028851408059993894,
+      "boundaryTower": 0.0000016461236266244614,
+      "boundaryTowerOverTLog": 0.014298048151471447
+    },
+    {
+      "t": 0.000001,
+      "target": 0.000012400419576653403,
+      "targetOverTLog": 0.8975722992376053,
+      "generationLedger": 1.1636439011277113e-18,
+      "generationLedgerOverTSquared": 0.0000011636439011277113,
+      "cumulativeLedger": 2.8851408071582688e-18,
+      "cumulativeLedgerOverTSquared": 0.000002885140807158269,
+      "boundaryTower": 2.0433295731681024e-7,
+      "boundaryTowerOverTLog": 0.014790112638943897
+    },
+    {
+      "t": 1e-7,
+      "target": 0.0000014703003094647442,
+      "targetOverTLog": 0.9122047302016885,
+      "generationLedger": 1.1636439011323617e-20,
+      "generationLedgerOverTSquared": 0.0000011636439011323619,
+      "cumulativeLedger": 2.885140807169857e-20,
+      "cumulativeLedgerOverTSquared": 0.0000028851408071698572,
+      "boundaryTower": 2.4475756731947307e-8,
+      "boundaryTowerOverTLog": 0.015185265841558692
+    },
+    {
+      "t": 1e-8,
+      "target": 1.7005588030141483e-7,
+      "targetOverTLog": 0.9231791303763045,
+      "generationLedger": 1.1636439011324085e-22,
+      "generationLedgerOverTSquared": 0.0000011636439011324085,
+      "cumulativeLedger": 2.8851408071699743e-22,
+      "cumulativeLedgerOverTSquared": 0.000002885140807169974,
+      "boundaryTower": 2.8562200623507035e-9,
+      "boundaryTowerOverTLog": 0.015505507652253404
+    },
+    {
+      "t": 1e-9,
+      "target": 1.9308173107385532e-8,
+      "targetOverTLog": 0.9317147817967,
+      "generationLedger": 1.163643901132409e-24,
+      "generationLedgerOverTSquared": 0.000001163643901132409,
+      "cumulativeLedger": 2.885140807169975e-24,
+      "cumulativeLedgerOverTSquared": 0.000002885140807169975,
+      "boundaryTower": 3.2676386632289503e-10,
+      "boundaryTowerOverTLog": 0.015767971558822792
+    },
+    {
+      "t": 1e-10,
+      "target": 2.161075819880458e-9,
+      "targetOverTLog": 0.9385433035486287,
+      "generationLedger": 1.1636439011324091e-26,
+      "generationLedgerOverTSquared": 0.0000011636439011324091,
+      "cumulativeLedger": 2.885140807169975e-26,
+      "cumulativeLedgerOverTSquared": 0.0000028851408071699746,
+      "boundaryTower": 3.6807578580484365e-11,
+      "boundaryTowerOverTLog": 0.015985328269724687
+    }
+  ],
+  "arithmeticDeformation": {
+    "decimalEventGrid": "{n log 10}",
+    "targetEventGrid": "{log(p^k)}",
+    "firstPrimeEvent": 0.6931471805599453,
+    "distanceFromFirstPrimeEventToDecimalGrid": 1.6094379124341005,
+    "exactAvailableMap": "full all-integer ledger --Mobius extraction--> Lambda(q) --delayed-hinge transform plus archimedean completion--> Psi",
+    "obstruction": "coefficient transforms on decimal levels preserve decimal event support; moving to all prime powers imports a new all-integer carrier not contained in the third-splice sequence",
+    "positivity": "the exact delayed-hinge deformation is not positivity preserving"
+  },
+  "exactWeilIdentity": {
+    "unconditionalStatement": "a Hilbert-space B with G_g(t,u)=<B_t,B_u> for all real t,u exists exactly when G_g is globally PSD",
+    "suzukiEquivalence": "for this arithmetic kernel, global PSD is equivalent to RH",
+    "conditionalFactor": "under RH, b_t(gamma)=sqrt(2)*(exp(i gamma t)-1)/gamma over positive zero ordinates",
+    "circularityWarning": "constructing B from real zero ordinates or choosing a metric as the pullback of G_g assumes the target positivity",
+    "remainingRequirement": "derive a non-lacunary prime-power/archimedean residue carrier independently and prove its full-domain norm identity"
+  }
+}

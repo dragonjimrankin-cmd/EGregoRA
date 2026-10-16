@@ -1,0 +1,2084 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "Repeated halving at every splice at 1",
+  "question": "what changes if every time there is a splice at 1, everything else halves?",
+  "verdict": {
+    "rhProved": false,
+    "allThreeMeaningsTested": true,
+    "sameXiAndFiniteStageScopesCompared": true,
+    "sameXiHorizontalContractionWouldProveRh": true,
+    "sameXiHorizontalContractionDerivedByTti": false,
+    "literalWeightHalvingRetainsXiLimit": false,
+    "remainingIntervalHalvingRetainsXiLimit": true,
+    "finiteInheritedHalvingExcludesNewEscapingZeros": false,
+    "offLineZerosDetectedThroughHeight30InDeficitModel": false,
+    "conclusion": "halving the horizontal displacement of every zero within the same xi zero set is RH-equivalent, but has not been derived. At finite stages, halving only inherited states cannot exclude new zeros escaping at growing heights. Literal admitted-weight halving destroys the xi limit, while halving the remaining deficit preserves and accelerates that limit without itself controlling zeros."
+  },
+  "sameXiZeroContraction": {
+    "map": "H(beta+i gamma)=1/2+(beta-1/2)/2+i gamma",
+    "iteration": "H^n(beta+i gamma)=1/2+2^(-n)(beta-1/2)+i gamma",
+    "identityTheoremArgument": "an off-line xi zero would generate infinitely many distinct xi zeros at the same ordinate, accumulating at the finite point 1/2+i gamma; since xi is entire and nonzero, this is impossible",
+    "converse": "if RH holds, every zero is fixed by H",
+    "status": "the zero-set invariance H(Z(xi)) subset Z(xi) is equivalent to RH, not an independent proof",
+    "sampleIterations": [
+      {
+        "iteration": 0,
+        "horizontalDisplacement": 0.25
+      },
+      {
+        "iteration": 1,
+        "horizontalDisplacement": 0.125
+      },
+      {
+        "iteration": 2,
+        "horizontalDisplacement": 0.0625
+      },
+      {
+        "iteration": 3,
+        "horizontalDisplacement": 0.03125
+      },
+      {
+        "iteration": 4,
+        "horizontalDisplacement": 0.015625
+      },
+      {
+        "iteration": 5,
+        "horizontalDisplacement": 0.0078125
+      },
+      {
+        "iteration": 6,
+        "horizontalDisplacement": 0.00390625
+      },
+      {
+        "iteration": 7,
+        "horizontalDisplacement": 0.001953125
+      },
+      {
+        "iteration": 8,
+        "horizontalDisplacement": 0.0009765625
+      },
+      {
+        "iteration": 9,
+        "horizontalDisplacement": 0.00048828125
+      },
+      {
+        "iteration": 10,
+        "horizontalDisplacement": 0.000244140625
+      },
+      {
+        "iteration": 11,
+        "horizontalDisplacement": 0.0001220703125
+      },
+      {
+        "iteration": 12,
+        "horizontalDisplacement": 6.103515625e-05
+      }
+    ]
+  },
+  "finiteStageZeroContraction": {
+    "conditionalTheorem": "if every zero of every finite completion obeys |Re(s)-1/2| <= C 2^(-N) and the completions converge locally uniformly to xi, Rouche-Hurwitz transfer forces every xi zero onto the line",
+    "trackedOnlyLimitation": "the observed finite counts 2,2,4,3 do not define one-to-one trajectories, and halving inherited zeros does not prohibit newly created zeros or quartets at heights growing with N",
+    "escapingQuartet": [
+      {
+        "stage": 14,
+        "height": 842.9988137587108,
+        "horizontalDisplacement": 0.25,
+        "candidateInheritedBound": 1.52587890625e-05,
+        "violatesInheritedHalvingBound": true,
+        "maximumCompactFactorError": 7.080745754160317e-05
+      },
+      {
+        "stage": 20,
+        "height": 15126.999933893048,
+        "horizontalDisplacement": 0.25,
+        "candidateInheritedBound": 2.384185791015625e-07,
+        "violatesInheritedHalvingBound": true,
+        "maximumCompactFactorError": 2.1990494659502153e-07
+      },
+      {
+        "stage": 30,
+        "height": 1860497.9999994645,
+        "horizontalDisplacement": 0.25,
+        "candidateInheritedBound": 2.3283064365386963e-10,
+        "violatesInheritedHalvingBound": true,
+        "maximumCompactFactorError": 1.453719133031961e-11
+      },
+      {
+        "stage": 40,
+        "height": 228826127.0000003,
+        "horizontalDisplacement": 0.25,
+        "candidateInheritedBound": 2.2737367544323206e-13,
+        "violatesInheritedHalvingBound": true,
+        "maximumCompactFactorError": 9.012235858308644e-16
+      }
+    ]
+  },
+  "downstreamWeightHalving": {
+    "literalAdmittedWeights": "multiplying downstream admitted theta coefficients by 2^(-n) drives them to zero, so the completion does not tend to xi",
+    "integerPopulation": "literal repeated halving is undefined for odd Fibonacci cohorts without a rounding, pairing or fractional-weight rule",
+    "remainingDeficits": "halving g=1-a gives g_n=2^(-n)g and a_n=1-2^(-n)g, which tends to full admission and preserves the xi limit",
+    "sampleIterations": [
+      {
+        "iteration": 0,
+        "literalAdmittedWeightMultiplier": 1.0,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.2,
+        "admittedFractionAfterDeficitHalving": 0.8
+      },
+      {
+        "iteration": 1,
+        "literalAdmittedWeightMultiplier": 0.5,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.1,
+        "admittedFractionAfterDeficitHalving": 0.9
+      },
+      {
+        "iteration": 2,
+        "literalAdmittedWeightMultiplier": 0.25,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.05,
+        "admittedFractionAfterDeficitHalving": 0.95
+      },
+      {
+        "iteration": 3,
+        "literalAdmittedWeightMultiplier": 0.125,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.025,
+        "admittedFractionAfterDeficitHalving": 0.975
+      },
+      {
+        "iteration": 4,
+        "literalAdmittedWeightMultiplier": 0.0625,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.0125,
+        "admittedFractionAfterDeficitHalving": 0.9875
+      },
+      {
+        "iteration": 5,
+        "literalAdmittedWeightMultiplier": 0.03125,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.00625,
+        "admittedFractionAfterDeficitHalving": 0.99375
+      },
+      {
+        "iteration": 6,
+        "literalAdmittedWeightMultiplier": 0.015625,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.003125,
+        "admittedFractionAfterDeficitHalving": 0.996875
+      },
+      {
+        "iteration": 7,
+        "literalAdmittedWeightMultiplier": 0.0078125,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.0015625,
+        "admittedFractionAfterDeficitHalving": 0.9984375
+      },
+      {
+        "iteration": 8,
+        "literalAdmittedWeightMultiplier": 0.00390625,
+        "literalAdmittedWeightLimitDirection": "toward zero",
+        "initialRemainingGap": 0.2,
+        "halvedRemainingGap": 0.00078125,
+        "admittedFractionAfterDeficitHalving": 0.99921875
+      }
+    ]
+  },
+  "remainingIntervalHalving": {
+    "map": "a maps to 1-(1-a)/2=(1+a)/2",
+    "iteration": "a_n=1-2^(-n)(1-a_0)",
+    "equivalence": "when a is the admitted fraction and g=1-a, remaining-interval halving is exactly remaining-deficit halving",
+    "zeroConsequence": "no horizontal zero contraction follows unless TTI derives a map from a to Re(s)-1/2"
+  },
+  "finiteDeficitHalvingDiagnostics": {
+    "zeroth-seed": {
+      "chronological": [
+        {
+          "stage": 14,
+          "originModel": "zeroth-seed",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 14,
+          "downstreamRemainingFactor": 6.103515625e-05,
+          "maximumCarrierGap": 0.0011862412896422262,
+          "argumentPrinciple": {
+            "winding": 2.000000000000001,
+            "zeroCount": 2,
+            "maximumBoundaryPhaseStep": 0.04251097379868166,
+            "minimumBoundaryMagnitude": 0.00013266754152241333
+          },
+          "criticalLineRoots": [
+            14.760298845724478,
+            16.80644585668857
+          ],
+          "criticalLineRootCount": 2,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 0.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 0.0011862412896422262,
+              "admittedFraction": 0.9988137587103578,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 13,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 7.240242246351478e-08,
+              "admittedFraction": 0.9999999275975775,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 12,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 7.240242246351478e-08,
+              "admittedFraction": 0.9999999275975775,
+              "carrierStart": 3,
+              "carrierEnd": 3
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 11,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 7.240242246351478e-08,
+              "admittedFraction": 0.9999999275975775,
+              "carrierStart": 4,
+              "carrierEnd": 5
+            }
+          ]
+        },
+        {
+          "stage": 20,
+          "originModel": "zeroth-seed",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 20,
+          "downstreamRemainingFactor": 9.5367431640625e-07,
+          "maximumCarrierGap": 6.610696135189592e-05,
+          "argumentPrinciple": {
+            "winding": 2.000000000000006,
+            "zeroCount": 2,
+            "maximumBoundaryPhaseStep": 0.04068461837113153,
+            "minimumBoundaryMagnitude": 2.7016649764155123e-05
+          },
+          "criticalLineRoots": [
+            14.158968149450832,
+            20.063173926874647
+          ],
+          "criticalLineRootCount": 2,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 0.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 6.610696135189592e-05,
+              "admittedFraction": 0.9999338930386481,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 19,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 6.304451117696373e-11,
+              "admittedFraction": 0.9999999999369555,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 18,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 6.304451117696373e-11,
+              "admittedFraction": 0.9999999999369555,
+              "carrierStart": 3,
+              "carrierEnd": 3
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 17,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 6.304451117696373e-11,
+              "admittedFraction": 0.9999999999369555,
+              "carrierStart": 4,
+              "carrierEnd": 5
+            }
+          ]
+        },
+        {
+          "stage": 30,
+          "originModel": "zeroth-seed",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 30,
+          "downstreamRemainingFactor": 9.313225746154785e-10,
+          "maximumCarrierGap": 5.374904998555698e-07,
+          "argumentPrinciple": {
+            "winding": 4.0000000000000036,
+            "zeroCount": 4,
+            "maximumBoundaryPhaseStep": 0.04215974249944969,
+            "minimumBoundaryMagnitude": 1.200524237174343e-07
+          },
+          "criticalLineRoots": [
+            14.134919507292054,
+            21.007071001404306,
+            25.257467220082958,
+            28.13576128542249
+          ],
+          "criticalLineRootCount": 4,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 0.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 5.374904998555698e-07,
+              "admittedFraction": 0.9999994625095001,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 29,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 5.005770361568497e-16,
+              "admittedFraction": 0.9999999999999994,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 28,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 5.005770361568497e-16,
+              "admittedFraction": 0.9999999999999994,
+              "carrierStart": 3,
+              "carrierEnd": 3
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 27,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 5.005770361568497e-16,
+              "admittedFraction": 0.9999999999999994,
+              "carrierStart": 4,
+              "carrierEnd": 5
+            }
+          ]
+        },
+        {
+          "stage": 40,
+          "originModel": "zeroth-seed",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 40,
+          "downstreamRemainingFactor": 9.094947017729282e-13,
+          "maximumCarrierGap": 4.370130339181061e-09,
+          "argumentPrinciple": {
+            "winding": 3.000000000000006,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163245342705842,
+            "minimumBoundaryMagnitude": 1.2831999796070193e-08
+          },
+          "criticalLineRoots": [
+            14.134726721873545,
+            21.021916563923106,
+            25.012586078541922
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 0.0,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 0.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 4.370130339181061e-09,
+              "admittedFraction": 0.9999999956298696,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 39,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 3.974610389542305e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 38,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 3.974610389542305e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 3,
+              "carrierEnd": 3
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 37,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 3.974610389542305e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 4,
+              "carrierEnd": 5
+            }
+          ]
+        }
+      ],
+      "equal-local-ticks": [
+        {
+          "stage": 14,
+          "originModel": "zeroth-seed",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 14,
+          "downstreamRemainingFactor": 6.103515625e-05,
+          "maximumCarrierGap": 0.0011862412896422262,
+          "argumentPrinciple": {
+            "winding": 1.9999999999999978,
+            "zeroCount": 2,
+            "maximumBoundaryPhaseStep": 0.04251097377924196,
+            "minimumBoundaryMagnitude": 0.00013266754152683173
+          },
+          "criticalLineRoots": [
+            14.760298843560406,
+            16.806445862599354
+          ],
+          "criticalLineRootCount": 2,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 6.938893903907228e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 0.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 0.0011862412896422262,
+              "admittedFraction": 0.9988137587103578,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0007331374358574044,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 4.474715795028103e-08,
+              "admittedFraction": 0.999999955252842,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0004531038537848218,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 2.7655264513233753e-08,
+              "admittedFraction": 0.9999999723447355,
+              "carrierStart": 3,
+              "carrierEnd": 3
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0002800335820725826,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 1.7091893437047276e-08,
+              "admittedFraction": 0.9999999829081065,
+              "carrierStart": 4,
+              "carrierEnd": 5
+            }
+          ]
+        },
+        {
+          "stage": 20,
+          "originModel": "zeroth-seed",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 20,
+          "downstreamRemainingFactor": 9.5367431640625e-07,
+          "maximumCarrierGap": 6.610696135189592e-05,
+          "argumentPrinciple": {
+            "winding": 2.0000000000000027,
+            "zeroCount": 2,
+            "maximumBoundaryPhaseStep": 0.040684618371131936,
+            "minimumBoundaryMagnitude": 2.7016649763496202e-05
+          },
+          "criticalLineRoots": [
+            14.158968149450033,
+            20.06317392690746
+          ],
+          "criticalLineRootCount": 2,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 0.0,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 0.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 6.610696135189592e-05,
+              "admittedFraction": 0.9999338930386481,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 4.0856349008447376e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 3.896365071148622e-11,
+              "admittedFraction": 0.9999999999610364,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 2.5250612343448544e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 2.408086046547751e-11,
+              "admittedFraction": 0.9999999999759192,
+              "carrierStart": 3,
+              "carrierEnd": 3
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 1.5605736664998832e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 1.4882790246008713e-11,
+              "admittedFraction": 0.9999999999851172,
+              "carrierStart": 4,
+              "carrierEnd": 5
+            }
+          ]
+        },
+        {
+          "stage": 30,
+          "originModel": "zeroth-seed",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 30,
+          "downstreamRemainingFactor": 9.313225746154785e-10,
+          "maximumCarrierGap": 5.374904998555698e-07,
+          "argumentPrinciple": {
+            "winding": 4.0000000000000036,
+            "zeroCount": 4,
+            "maximumBoundaryPhaseStep": 0.04215974249944969,
+            "minimumBoundaryMagnitude": 1.200524237174343e-07
+          },
+          "criticalLineRoots": [
+            14.134919507292054,
+            21.007071001404306,
+            25.257467220082958,
+            28.13576128542249
+          ],
+          "criticalLineRootCount": 4,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 0.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 5.374904998555698e-07,
+              "admittedFraction": 0.9999994625095001,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 3.321873975409126e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 3.093736223326182e-16,
+              "admittedFraction": 0.9999999999999997,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 2.053031023146572e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 1.9120341382423155e-16,
+              "admittedFraction": 0.9999999999999998,
+              "carrierStart": 3,
+              "carrierEnd": 3
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 1.2688429522625536e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 1.1817020850838661e-16,
+              "admittedFraction": 0.9999999999999999,
+              "carrierStart": 4,
+              "carrierEnd": 5
+            }
+          ]
+        },
+        {
+          "stage": 40,
+          "originModel": "zeroth-seed",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 40,
+          "downstreamRemainingFactor": 9.094947017729282e-13,
+          "maximumCarrierGap": 4.370130339181061e-09,
+          "argumentPrinciple": {
+            "winding": 3.000000000000006,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163245342705842,
+            "minimumBoundaryMagnitude": 1.2831999796070193e-08
+          },
+          "criticalLineRoots": [
+            14.134726721873545,
+            21.021916563923106,
+            25.012586078541922
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 0.0,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 0.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 4.370130339181061e-09,
+              "admittedFraction": 0.9999999956298696,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 2.7008890848810023e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 2.4564443127756043e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 1.669241254300059e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 1.5181660767667008e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 3,
+              "carrierEnd": 3
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 1.0316478305809431e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 9.382782360089033e-22,
+              "admittedFraction": 1.0,
+              "carrierStart": 4,
+              "carrierEnd": 5
+            }
+          ]
+        }
+      ]
+    },
+    "reindexed-fibonacci": {
+      "chronological": [
+        {
+          "stage": 14,
+          "originModel": "reindexed-fibonacci",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 14,
+          "downstreamRemainingFactor": 6.103515625e-05,
+          "maximumCarrierGap": 0.0007331374358574044,
+          "argumentPrinciple": {
+            "winding": 2.0000000000000036,
+            "zeroCount": 2,
+            "maximumBoundaryPhaseStep": 0.04121726485771721,
+            "minimumBoundaryMagnitude": 0.00011926397019148432
+          },
+          "criticalLineRoots": [
+            14.455302676721992,
+            17.697296708458268
+          ],
+          "criticalLineRootCount": 2,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 6.938893903907228e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0007331374358574044,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 0.0007331374358574044,
+              "admittedFraction": 0.9992668625641425,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 13,
+              "baseRemainingGap": 0.0007331374358574044,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 4.474715795028103e-08,
+              "admittedFraction": 0.999999955252842,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 12,
+              "baseRemainingGap": 0.0007331374358574044,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 4.474715795028103e-08,
+              "admittedFraction": 0.999999955252842,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 3,
+              "boundaryOnly": false,
+              "depthIndex": 4.0,
+              "localClockTicks": 11,
+              "baseRemainingGap": 0.0007331374358574044,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 4.474715795028103e-08,
+              "admittedFraction": 0.999999955252842,
+              "carrierStart": 5,
+              "carrierEnd": 7
+            }
+          ]
+        },
+        {
+          "stage": 20,
+          "originModel": "reindexed-fibonacci",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 20,
+          "downstreamRemainingFactor": 9.5367431640625e-07,
+          "maximumCarrierGap": 4.0856349008447376e-05,
+          "argumentPrinciple": {
+            "winding": 1.9999999999999982,
+            "zeroCount": 2,
+            "maximumBoundaryPhaseStep": 0.04068733869435387,
+            "minimumBoundaryMagnitude": 1.9682501297052743e-05
+          },
+          "criticalLineRoots": [
+            14.149626677100983,
+            20.321481820532796
+          ],
+          "criticalLineRootCount": 2,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 4.0856349008447376e-05,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 4.0856349008447376e-05,
+              "admittedFraction": 0.9999591436509916,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 19,
+              "baseRemainingGap": 4.0856349008447376e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 3.896365071148622e-11,
+              "admittedFraction": 0.9999999999610364,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 18,
+              "baseRemainingGap": 4.0856349008447376e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 3.896365071148622e-11,
+              "admittedFraction": 0.9999999999610364,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 3,
+              "boundaryOnly": false,
+              "depthIndex": 4.0,
+              "localClockTicks": 17,
+              "baseRemainingGap": 4.0856349008447376e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 3.896365071148622e-11,
+              "admittedFraction": 0.9999999999610364,
+              "carrierStart": 5,
+              "carrierEnd": 7
+            }
+          ]
+        },
+        {
+          "stage": 30,
+          "originModel": "reindexed-fibonacci",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 30,
+          "downstreamRemainingFactor": 9.313225746154785e-10,
+          "maximumCarrierGap": 3.321873975409126e-07,
+          "argumentPrinciple": {
+            "winding": 4.0000000000000036,
+            "zeroCount": 4,
+            "maximumBoundaryPhaseStep": 0.04188656999250567,
+            "minimumBoundaryMagnitude": 9.177544372856134e-08
+          },
+          "criticalLineRoots": [
+            14.134845261062754,
+            21.012748860478304,
+            25.15381794142217,
+            28.622051255702956
+          ],
+          "criticalLineRootCount": 4,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 3.321873975409126e-07,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 3.321873975409126e-07,
+              "admittedFraction": 0.9999996678126024,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 29,
+              "baseRemainingGap": 3.321873975409126e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 3.093736223326182e-16,
+              "admittedFraction": 0.9999999999999997,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 28,
+              "baseRemainingGap": 3.321873975409126e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 3.093736223326182e-16,
+              "admittedFraction": 0.9999999999999997,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 3,
+              "boundaryOnly": false,
+              "depthIndex": 4.0,
+              "localClockTicks": 27,
+              "baseRemainingGap": 3.321873975409126e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 3.093736223326182e-16,
+              "admittedFraction": 0.9999999999999997,
+              "carrierStart": 5,
+              "carrierEnd": 7
+            }
+          ]
+        },
+        {
+          "stage": 40,
+          "originModel": "reindexed-fibonacci",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 40,
+          "downstreamRemainingFactor": 9.094947017729282e-13,
+          "maximumCarrierGap": 2.7008890848810023e-09,
+          "argumentPrinciple": {
+            "winding": 3.0000000000000018,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163191317691985,
+            "minimumBoundaryMagnitude": 1.3666440756843201e-08
+          },
+          "criticalLineRoots": [
+            14.134726118315598,
+            21.021963571349637,
+            25.011925443522806
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 2.7008890848810023e-09,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 2.7008890848810023e-09,
+              "admittedFraction": 0.9999999972991109,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 39,
+              "baseRemainingGap": 2.7008890848810023e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 2.4564443127756043e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 38,
+              "baseRemainingGap": 2.7008890848810023e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 2.4564443127756043e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 3,
+              "boundaryOnly": false,
+              "depthIndex": 4.0,
+              "localClockTicks": 37,
+              "baseRemainingGap": 2.7008890848810023e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 2.4564443127756043e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 5,
+              "carrierEnd": 7
+            }
+          ]
+        }
+      ],
+      "equal-local-ticks": [
+        {
+          "stage": 14,
+          "originModel": "reindexed-fibonacci",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 14,
+          "downstreamRemainingFactor": 6.103515625e-05,
+          "maximumCarrierGap": 0.0007331374358574044,
+          "argumentPrinciple": {
+            "winding": 1.9999999999999971,
+            "zeroCount": 2,
+            "maximumBoundaryPhaseStep": 0.04121726485590216,
+            "minimumBoundaryMagnitude": 0.00011926396998989036
+          },
+          "criticalLineRoots": [
+            14.455302675911458,
+            17.697296712748944
+          ],
+          "criticalLineRootCount": 2,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0007331374358574044,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 0.0007331374358574044,
+              "admittedFraction": 0.9992668625641425,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0004531038537848218,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 2.7655264513233753e-08,
+              "admittedFraction": 0.9999999723447355,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0002800335820725826,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 1.7091893437047276e-08,
+              "admittedFraction": 0.9999999829081065,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 3,
+              "boundaryOnly": false,
+              "depthIndex": 4.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.00017307027171223924,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 1.0563371076186477e-08,
+              "admittedFraction": 0.9999999894366289,
+              "carrierStart": 5,
+              "carrierEnd": 7
+            }
+          ]
+        },
+        {
+          "stage": 20,
+          "originModel": "reindexed-fibonacci",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 20,
+          "downstreamRemainingFactor": 9.5367431640625e-07,
+          "maximumCarrierGap": 4.0856349008447376e-05,
+          "argumentPrinciple": {
+            "winding": 1.9999999999999971,
+            "zeroCount": 2,
+            "maximumBoundaryPhaseStep": 0.04068733869465603,
+            "minimumBoundaryMagnitude": 1.968250129599806e-05
+          },
+          "criticalLineRoots": [
+            14.149626677100489,
+            20.321481820552698
+          ],
+          "criticalLineRootCount": 2,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 4.0856349008447376e-05,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 4.0856349008447376e-05,
+              "admittedFraction": 0.9999591436509916,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 2.5250612343448544e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 2.408086046547751e-11,
+              "admittedFraction": 0.9999999999759192,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 1.5605736664998832e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 1.4882790246008713e-11,
+              "admittedFraction": 0.9999999999851172,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 3,
+              "boundaryOnly": false,
+              "depthIndex": 4.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 9.644875678449709e-06,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 9.198070219468793e-12,
+              "admittedFraction": 0.9999999999908019,
+              "carrierStart": 5,
+              "carrierEnd": 7
+            }
+          ]
+        },
+        {
+          "stage": 30,
+          "originModel": "reindexed-fibonacci",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 30,
+          "downstreamRemainingFactor": 9.313225746154785e-10,
+          "maximumCarrierGap": 3.321873975409126e-07,
+          "argumentPrinciple": {
+            "winding": 4.0000000000000036,
+            "zeroCount": 4,
+            "maximumBoundaryPhaseStep": 0.04188656999250567,
+            "minimumBoundaryMagnitude": 9.177544372856134e-08
+          },
+          "criticalLineRoots": [
+            14.134845261062754,
+            21.012748860478304,
+            25.15381794142217,
+            28.622051255702956
+          ],
+          "criticalLineRootCount": 4,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 3.321873975409126e-07,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 3.321873975409126e-07,
+              "admittedFraction": 0.9999996678126024,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 2.053031023146572e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 1.9120341382423155e-16,
+              "admittedFraction": 0.9999999999999998,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 1.2688429522625536e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 1.1817020850838661e-16,
+              "admittedFraction": 0.9999999999999999,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 3,
+              "boundaryOnly": false,
+              "depthIndex": 4.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 7.841880708840183e-08,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 7.303320531584493e-17,
+              "admittedFraction": 0.9999999999999999,
+              "carrierStart": 5,
+              "carrierEnd": 7
+            }
+          ]
+        },
+        {
+          "stage": 40,
+          "originModel": "reindexed-fibonacci",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 40,
+          "downstreamRemainingFactor": 9.094947017729282e-13,
+          "maximumCarrierGap": 2.7008890848810023e-09,
+          "argumentPrinciple": {
+            "winding": 3.0000000000000018,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163191317691985,
+            "minimumBoundaryMagnitude": 1.3666440756843201e-08
+          },
+          "criticalLineRoots": [
+            14.134726118315598,
+            21.021963571349637,
+            25.011925443522806
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 2.7008890848810023e-09,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 2.7008890848810023e-09,
+              "admittedFraction": 0.9999999972991109,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 1.669241254300059e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 1.5181660767667008e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 1.0316478305809431e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 9.382782360089033e-22,
+              "admittedFraction": 1.0,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 3,
+              "boundaryOnly": false,
+              "depthIndex": 4.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 6.37593423719116e-10,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 5.798878407577977e-22,
+              "admittedFraction": 1.0,
+              "carrierStart": 5,
+              "carrierEnd": 7
+            }
+          ]
+        }
+      ]
+    },
+    "boundary-only": {
+      "chronological": [
+        {
+          "stage": 14,
+          "originModel": "boundary-only",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 14,
+          "downstreamRemainingFactor": 6.103515625e-05,
+          "maximumCarrierGap": 7.240242246351478e-08,
+          "argumentPrinciple": {
+            "winding": 4.000000000000005,
+            "zeroCount": 4,
+            "maximumBoundaryPhaseStep": 0.04165874394057875,
+            "minimumBoundaryMagnitude": 2.1184616116887156e-08
+          },
+          "criticalLineRoots": [
+            14.134751323313353,
+            21.020003239987453,
+            25.03996467049229,
+            29.65146355737238
+          ],
+          "criticalLineRootCount": 4,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 0,
+              "boundaryOnly": true,
+              "depthIndex": 0.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 0.0011862412896422262,
+              "admittedFraction": 0.9988137587103578,
+              "carrierStart": 0,
+              "carrierEnd": 0
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 13,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 7.240242246351478e-08,
+              "admittedFraction": 0.9999999275975775,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 12,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 7.240242246351478e-08,
+              "admittedFraction": 0.9999999275975775,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 11,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 7.240242246351478e-08,
+              "admittedFraction": 0.9999999275975775,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            }
+          ]
+        },
+        {
+          "stage": 20,
+          "originModel": "boundary-only",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 20,
+          "downstreamRemainingFactor": 9.5367431640625e-07,
+          "maximumCarrierGap": 6.304451117696373e-11,
+          "argumentPrinciple": {
+            "winding": 3.000000000000002,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163077909579685,
+            "minimumBoundaryMagnitude": 1.4985073515383363e-08
+          },
+          "criticalLineRoots": [
+            14.134725164535848,
+            21.022037862053686,
+            25.01088251127163
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 6.938893903907228e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 0,
+              "boundaryOnly": true,
+              "depthIndex": 0.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 6.610696135189592e-05,
+              "admittedFraction": 0.9999338930386481,
+              "carrierStart": 0,
+              "carrierEnd": 0
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 19,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 6.304451117696373e-11,
+              "admittedFraction": 0.9999999999369555,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 18,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 6.304451117696373e-11,
+              "admittedFraction": 0.9999999999369555,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 17,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 6.304451117696373e-11,
+              "admittedFraction": 0.9999999999369555,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            }
+          ]
+        },
+        {
+          "stage": 30,
+          "originModel": "boundary-only",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 30,
+          "downstreamRemainingFactor": 9.313225746154785e-10,
+          "maximumCarrierGap": 5.005770361568497e-16,
+          "argumentPrinciple": {
+            "winding": 3.0000000000000044,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163074663411883,
+            "minimumBoundaryMagnitude": 1.5016595189543125e-08
+          },
+          "criticalLineRoots": [
+            14.134725141738599,
+            21.022039637951508,
+            25.010857596244158
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 6.938893903907228e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 0,
+              "boundaryOnly": true,
+              "depthIndex": 0.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 5.374904998555698e-07,
+              "admittedFraction": 0.9999994625095001,
+              "carrierStart": 0,
+              "carrierEnd": 0
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 29,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 5.005770361568497e-16,
+              "admittedFraction": 0.9999999999999994,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 28,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 5.005770361568497e-16,
+              "admittedFraction": 0.9999999999999994,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 27,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 5.005770361568497e-16,
+              "admittedFraction": 0.9999999999999994,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            }
+          ]
+        },
+        {
+          "stage": 40,
+          "originModel": "boundary-only",
+          "schedule": "chronological",
+          "repeatedSpliceCount": 40,
+          "downstreamRemainingFactor": 9.094947017729282e-13,
+          "maximumCarrierGap": 3.974610389542305e-21,
+          "argumentPrinciple": {
+            "winding": 3.000000000000005,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163074676800065,
+            "minimumBoundaryMagnitude": 1.5016595633632335e-08
+          },
+          "criticalLineRoots": [
+            14.134725141738418,
+            21.022039637969776,
+            25.010857596000925
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 0,
+              "boundaryOnly": true,
+              "depthIndex": 0.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 4.370130339181061e-09,
+              "admittedFraction": 0.9999999956298696,
+              "carrierStart": 0,
+              "carrierEnd": 0
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 39,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 3.974610389542305e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 38,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 3.974610389542305e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 37,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 3.974610389542305e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            }
+          ]
+        }
+      ],
+      "equal-local-ticks": [
+        {
+          "stage": 14,
+          "originModel": "boundary-only",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 14,
+          "downstreamRemainingFactor": 6.103515625e-05,
+          "maximumCarrierGap": 4.474715795028103e-08,
+          "argumentPrinciple": {
+            "winding": 3.9999999999999987,
+            "zeroCount": 4,
+            "maximumBoundaryPhaseStep": 0.041656249732992916,
+            "minimumBoundaryMagnitude": 7.355147435550435e-09
+          },
+          "criticalLineRoots": [
+            14.134741322225459,
+            21.020780407941032,
+            25.0287266963659,
+            29.860909942779948
+          ],
+          "criticalLineRootCount": 4,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 0,
+              "boundaryOnly": true,
+              "depthIndex": 0.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0011862412896422262,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 0.0011862412896422262,
+              "admittedFraction": 0.9988137587103578,
+              "carrierStart": 0,
+              "carrierEnd": 0
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0007331374358574044,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 4.474715795028103e-08,
+              "admittedFraction": 0.999999955252842,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0004531038537848218,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 2.7655264513233753e-08,
+              "admittedFraction": 0.9999999723447355,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 14,
+              "baseRemainingGap": 0.0002800335820725826,
+              "spliceAtOneHalvingFactor": 6.103515625e-05,
+              "remainingGap": 1.7091893437047276e-08,
+              "admittedFraction": 0.9999999829081065,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            }
+          ]
+        },
+        {
+          "stage": 20,
+          "originModel": "boundary-only",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 20,
+          "downstreamRemainingFactor": 9.5367431640625e-07,
+          "maximumCarrierGap": 3.896365071148622e-11,
+          "argumentPrinciple": {
+            "winding": 3.0000000000000004,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163076746181268,
+            "minimumBoundaryMagnitude": 1.4997114994308447e-08
+          },
+          "criticalLineRoots": [
+            14.13472515582762,
+            21.022038540474306,
+            25.01087299348208
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 0,
+              "boundaryOnly": true,
+              "depthIndex": 0.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 6.610696135189592e-05,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 6.610696135189592e-05,
+              "admittedFraction": 0.9999338930386481,
+              "carrierStart": 0,
+              "carrierEnd": 0
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 4.0856349008447376e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 3.896365071148622e-11,
+              "admittedFraction": 0.9999999999610364,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 2.5250612343448544e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 2.408086046547751e-11,
+              "admittedFraction": 0.9999999999759192,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 20,
+              "baseRemainingGap": 1.5605736664998832e-05,
+              "spliceAtOneHalvingFactor": 9.5367431640625e-07,
+              "remainingGap": 1.4882790246008713e-11,
+              "admittedFraction": 0.9999999999851172,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            }
+          ]
+        },
+        {
+          "stage": 30,
+          "originModel": "boundary-only",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 30,
+          "downstreamRemainingFactor": 9.313225746154785e-10,
+          "maximumCarrierGap": 3.093736223326182e-16,
+          "argumentPrinciple": {
+            "winding": 2.999999999999995,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163074710169695,
+            "minimumBoundaryMagnitude": 1.5016595078520822e-08
+          },
+          "criticalLineRoots": [
+            14.134725141738596,
+            21.022039637950904,
+            25.010857596144703
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 6.938893903907228e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 0,
+              "boundaryOnly": true,
+              "depthIndex": 0.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 5.374904998555698e-07,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 5.374904998555698e-07,
+              "admittedFraction": 0.9999994625095001,
+              "carrierStart": 0,
+              "carrierEnd": 0
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 3.321873975409126e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 3.093736223326182e-16,
+              "admittedFraction": 0.9999999999999997,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 2.053031023146572e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 1.9120341382423155e-16,
+              "admittedFraction": 0.9999999999999998,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 30,
+              "baseRemainingGap": 1.2688429522625536e-07,
+              "spliceAtOneHalvingFactor": 9.313225746154785e-10,
+              "remainingGap": 1.1817020850838661e-16,
+              "admittedFraction": 0.9999999999999999,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            }
+          ]
+        },
+        {
+          "stage": 40,
+          "originModel": "boundary-only",
+          "schedule": "equal-local-ticks",
+          "repeatedSpliceCount": 40,
+          "downstreamRemainingFactor": 9.094947017729282e-13,
+          "maximumCarrierGap": 2.4564443127756043e-21,
+          "argumentPrinciple": {
+            "winding": 3.000000000000005,
+            "zeroCount": 3,
+            "maximumBoundaryPhaseStep": 0.04163074676800065,
+            "minimumBoundaryMagnitude": 1.5016595633632335e-08
+          },
+          "criticalLineRoots": [
+            14.134725141738418,
+            21.022039637969776,
+            25.010857596000925
+          ],
+          "criticalLineRootCount": 3,
+          "offLineZerosDetectedInRectangle": 0,
+          "maximumFunctionalSymmetryError": 3.469446951953614e-18,
+          "maximumConjugationError": 0.0,
+          "cohortsThrough1000": [
+            {
+              "threshold": 1,
+              "cohortSize": 0,
+              "boundaryOnly": true,
+              "depthIndex": 0.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 4.370130339181061e-09,
+              "spliceAtOneHalvingFactor": 1.0,
+              "remainingGap": 4.370130339181061e-09,
+              "admittedFraction": 0.9999999956298696,
+              "carrierStart": 0,
+              "carrierEnd": 0
+            },
+            {
+              "threshold": 10,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 1.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 2.7008890848810023e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 2.4564443127756043e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 1,
+              "carrierEnd": 1
+            },
+            {
+              "threshold": 100,
+              "cohortSize": 1,
+              "boundaryOnly": false,
+              "depthIndex": 2.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 1.669241254300059e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 1.5181660767667008e-21,
+              "admittedFraction": 1.0,
+              "carrierStart": 2,
+              "carrierEnd": 2
+            },
+            {
+              "threshold": 1000,
+              "cohortSize": 2,
+              "boundaryOnly": false,
+              "depthIndex": 3.0,
+              "localClockTicks": 40,
+              "baseRemainingGap": 1.0316478305809431e-09,
+              "spliceAtOneHalvingFactor": 9.094947017729282e-13,
+              "remainingGap": 9.382782360089033e-22,
+              "admittedFraction": 1.0,
+              "carrierStart": 3,
+              "carrierEnd": 4
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "finiteCompletion": {
+    "entire": true,
+    "functionalEquation": "Xi_N(s)=Xi_N(1-s)",
+    "conjugation": "Xi_N(conj(s))=conj(Xi_N(s))",
+    "limit": "halved downstream deficits tend to zero, so fixed carrier coefficients tend to one and the scalar families tend locally uniformly to xi"
+  },
+  "logicalAssessment": {
+    "strongConditionalResult": "same-xi horizontal halving would prove RH immediately by finite accumulation",
+    "missingConditions": [
+      "a TTI derivation that the splice at 1 acts on horizontal zero displacement",
+      "proof that the halving image of every xi zero is another zero of the same xi function",
+      "or a global all-zero shrinking strip for every finite completion, not merely tracked zeros",
+      "a rule preventing newly created zeros and escaping quartets",
+      "an integer or fractional interpretation if carrier populations themselves halve"
+    ],
+    "status": "the proposed rule identifies an RH-equivalent contraction, but does not yet derive it"
+  }
+}

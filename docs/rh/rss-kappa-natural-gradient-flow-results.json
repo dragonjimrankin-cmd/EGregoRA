@@ -1,0 +1,219 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "A support-changing natural-gradient flow in the established kappa geometry",
+  "question": "can the kappa entropy geometry produce a law with the critical-line ledger as unique invariant state?",
+  "verdict": {
+    "rhProved": false,
+    "supportChangingLawFound": true,
+    "criticalLineUniqueInvariantForFiniteProbabilityLedgers": true,
+    "goldenContractionRecovered": true,
+    "sameXiLedgerInvarianceProved": false,
+    "primeSideStationarityProved": false,
+    "exactGlobalPureStateChannelLiftFound": false,
+    "conclusion": "The normalized Rankin feature family has a canonical Fisher-natural gradient of relative entropy. It gives d eta/dt=-eta, hence eta(t)=exp(-t)eta(0), and at t=log(phi) gives the exact golden support contraction. Delta at eta=0 is its unique invariant finite-probability ledger. However, proving that the actual completed xi zero ledger is invariant under this support-changing flow is RH-equivalent and is not supplied by the functional equation or the prime ledger."
+  },
+  "establishedGeometry": {
+    "kappaR": 0.025330295910584444,
+    "kernel": "K_kappa(s,t)=kappa_R zeta(s+conjugate(t)+2)",
+    "normalizedFeatureDistribution": "pi_eta(n)=n^(-3-2eta)/zeta(3+2eta)",
+    "centreDistribution": "pi_0(n)=n^(-3)/zeta(3)",
+    "note": "kappa_R is retained as derived; its global scalar cancels when feature intensities are normalized to probabilities"
+  },
+  "informationGeometry": {
+    "logPartition": "L(a)=log zeta(a), a=3+2eta",
+    "relativeEntropy": "D(pi_eta||pi_0)=2eta L'(3+2eta)-L(3+2eta)+L(3)",
+    "relativeEntropyDerivative": "dD/deta=4eta L''(3+2eta)",
+    "fisherMetric": "I(eta)=4L''(3+2eta)=4 Var_pi_eta(log n)",
+    "naturalGradient": "deta/dt=-I(eta)^(-1)dD/deta=-eta",
+    "dissipation": "dD/dt=-4eta^2 L''(3+2eta)<0 for eta nonzero",
+    "rows": [
+      {
+        "eta": -0.49,
+        "zetaExponent": 2.02,
+        "featureRelativeEntropy": 0.23915926776317128,
+        "fisherMetric": 3.3865667217932343,
+        "relativeEntropyDerivative": -1.6594176936786849,
+        "naturalGradientVelocity": 0.49000000000000005,
+        "etaAtGoldenTime": -0.30283665448744845,
+        "relativeEntropyAtGoldenTime": 0.05701124897048196,
+        "relativeEntropyRatio": 0.23838193478221237,
+        "dissipationRate": -0.8131146699025554
+      },
+      {
+        "eta": -0.4,
+        "zetaExponent": 2.2,
+        "featureRelativeEntropy": 0.12524601272527178,
+        "fisherMetric": 2.353233848673142,
+        "relativeEntropyDerivative": -0.9412935394692568,
+        "naturalGradientVelocity": 0.4,
+        "etaAtGoldenTime": -0.24721359549995792,
+        "relativeEntropyAtGoldenTime": 0.03365882976716014,
+        "relativeEntropyRatio": 0.26874172705993504,
+        "dissipationRate": -0.37651741578770276
+      },
+      {
+        "eta": -0.25,
+        "zetaExponent": 2.5,
+        "featureRelativeEntropy": 0.0346256262131506,
+        "fisherMetric": 1.4018099590747586,
+        "relativeEntropyDerivative": -0.35045248976868965,
+        "naturalGradientVelocity": 0.25,
+        "etaAtGoldenTime": -0.1545084971874737,
+        "relativeEntropyAtGoldenTime": 0.01089845373327697,
+        "relativeEntropyRatio": 0.3147510940650599,
+        "dissipationRate": -0.08761312244217241
+      },
+      {
+        "eta": -0.1,
+        "zetaExponent": 2.8,
+        "featureRelativeEntropy": 0.004117244349983257,
+        "fisherMetric": 0.899691968703209,
+        "relativeEntropyDerivative": -0.0899691968703209,
+        "naturalGradientVelocity": 0.1,
+        "etaAtGoldenTime": -0.06180339887498948,
+        "relativeEntropyAtGoldenTime": 0.0014668330640736083,
+        "relativeEntropyRatio": 0.3562657300336263,
+        "dissipationRate": -0.008996919687032092
+      },
+      {
+        "eta": 0.1,
+        "zetaExponent": 3.2,
+        "featureRelativeEntropy": 0.0029199235502268273,
+        "fisherMetric": 0.5372683315648293,
+        "relativeEntropyDerivative": 0.05372683315648294,
+        "naturalGradientVelocity": -0.1,
+        "etaAtGoldenTime": 0.06180339887498948,
+        "relativeEntropyAtGoldenTime": 0.0011865224965617316,
+        "relativeEntropyRatio": 0.4063539596677315,
+        "dissipationRate": -0.0053726833156482945
+      },
+      {
+        "eta": 0.25,
+        "zetaExponent": 3.5,
+        "featureRelativeEntropy": 0.014513289957286069,
+        "fisherMetric": 0.3796808898763141,
+        "relativeEntropyDerivative": 0.09492022246907852,
+        "naturalGradientVelocity": -0.25,
+        "etaAtGoldenTime": 0.1545084971874737,
+        "relativeEntropyAtGoldenTime": 0.0063982153379860685,
+        "relativeEntropyRatio": 0.4408521676902065,
+        "dissipationRate": -0.02373005561726963
+      },
+      {
+        "eta": 0.4,
+        "zetaExponent": 3.8,
+        "featureRelativeEntropy": 0.03011031204117992,
+        "fisherMetric": 0.2750038678075069,
+        "relativeEntropyDerivative": 0.11000154712300277,
+        "naturalGradientVelocity": -0.4,
+        "etaAtGoldenTime": 0.24721359549995792,
+        "relativeEntropyAtGoldenTime": 0.014249461855268403,
+        "relativeEntropyRatio": 0.47324191910666147,
+        "dissipationRate": -0.04400061884920111
+      },
+      {
+        "eta": 0.49,
+        "zetaExponent": 3.98,
+        "featureRelativeEntropy": 0.04013346252492658,
+        "fisherMetric": 0.22876921471996306,
+        "relativeEntropyDerivative": 0.1120969152127819,
+        "naturalGradientVelocity": -0.49,
+        "etaAtGoldenTime": 0.30283665448744845,
+        "relativeEntropyAtGoldenTime": 0.019737799344838963,
+        "relativeEntropyRatio": 0.4918040483693618,
+        "dissipationRate": -0.054927488454263124
+      }
+    ]
+  },
+  "supportSemigroup": {
+    "map": "T_t(eta,gamma)=(exp(-t)eta,gamma)",
+    "markovKernel": "K_t((eta,gamma),deta' dgamma')=delta_(exp(-t)eta,gamma)",
+    "generator": "L f(eta,gamma)=-eta partial_eta f(eta,gamma)",
+    "fokkerPlanck": "partial_t mu=partial_eta(eta mu)",
+    "semigroupLaw": "T_(t+u)=T_t composed with T_u",
+    "preservesCriticalStrip": true,
+    "commutesWithReflection": true,
+    "rows": [
+      {
+        "time": 0.0,
+        "horizontalFactor": 1.0,
+        "etaFromQuarter": 0.25,
+        "secondMomentFactor": 1.0
+      },
+      {
+        "time": 0.48121182505960347,
+        "horizontalFactor": 0.6180339887498948,
+        "etaFromQuarter": 0.1545084971874737,
+        "secondMomentFactor": 0.3819660112501051
+      },
+      {
+        "time": 1.0,
+        "horizontalFactor": 0.36787944117144233,
+        "etaFromQuarter": 0.09196986029286058,
+        "secondMomentFactor": 0.1353352832366127
+      },
+      {
+        "time": 2.0,
+        "horizontalFactor": 0.1353352832366127,
+        "etaFromQuarter": 0.033833820809153176,
+        "secondMomentFactor": 0.018315638888734182
+      },
+      {
+        "time": 5.0,
+        "horizontalFactor": 0.006737946999085467,
+        "etaFromQuarter": 0.0016844867497713668,
+        "secondMomentFactor": 4.539992976248485e-05
+      }
+    ]
+  },
+  "goldenTime": {
+    "time": 0.48121182505960347,
+    "identity": "t_phi=log(phi)",
+    "factor": 0.6180339887498948,
+    "factorIdentity": "exp(-t_phi)=1/phi",
+    "map": "eta -> eta/phi"
+  },
+  "uniqueInvariantAudit": {
+    "statement": "if a finite probability ledger mu with finite second moment satisfies T_t push(mu)=mu for one t>0, then mu is supported at eta=0",
+    "proof": "invariance gives integral eta^2 dmu=exp(-2t) integral eta^2 dmu; because exp(-2t)<1, the second moment is zero",
+    "applicationToXi": "for each finite-height normalized zero ledger, invariance would force every represented zero onto the critical line",
+    "status": "the invariant-measure statement is a conditional RH proof, not a derived invariance law for xi"
+  },
+  "xiBridgeAudit": {
+    "functionalEquation": "proves reflection symmetry eta <-> -eta, not invariance under eta -> exp(-t)eta",
+    "quartetEffect": "contracting eta changes the quartet polynomial coefficients and therefore changes the completed entire function",
+    "holomorphicBoundary": "the horizontal flow keeps gamma fixed and is nonholomorphic as a map of s",
+    "primeBoundary": "no principal von Mangoldt identity has been shown stationary under this flow",
+    "noBirthBoundary": "the constructed transport has no births by definition, but identifying its transported ledger with the same xi ledger is unproved"
+  },
+  "pureStateLiftDiagnostic": {
+    "necessaryCondition": "for one CPTP map sending every normalized pure v_eta to pure v_(c eta), the environment overlap quotient Q_ij=C(eta_i,eta_j)/C(c eta_i,c eta_j) must be positive semidefinite",
+    "points": [
+      -0.4,
+      -0.2,
+      0.0,
+      0.2,
+      0.4
+    ],
+    "ldlPivots": [
+      1.0,
+      0.01222135234029309,
+      0.00026294171928498145,
+      5.066949202991999e-06,
+      -3.9373763249805904e-07
+    ],
+    "minimumPivot": -3.9373763249805904e-07,
+    "interpretation": "the negative five-point pivot is a finite numerical obstruction to an exact global pure-state channel lift; it is not a directed-rounding impossibility proof"
+  },
+  "openSystemBoundary": {
+    "deterministicNature": "the support semigroup compresses spectral-coordinate distributions; their differential entropy decreases, so an environment must receive the missing information",
+    "additiveNoise": "adding ordinary diffusion produces a nonzero-width stationary law rather than delta at the critical line and can leak toward the strip boundary",
+    "neededCompletion": [
+      "derive this natural-gradient transport from the physical splice rather than select it from information geometry alone",
+      "prove the completed xi zero ledger or an equivalent prime-side functional is stationary under it",
+      "lift the law consistently to the completed entire function or supply a controlled open-system replacement",
+      "retain the no-birth property at unbounded height"
+    ]
+  },
+  "status": "a canonical support-changing candidate with unique critical invariant has been found; its same-xi or principal-prime invariance remains unproved, so RH remains open"
+}

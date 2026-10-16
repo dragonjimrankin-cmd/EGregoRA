@@ -12,6 +12,7 @@ const expectedGroups = [
   ['g-gravity', 'Gravity', 1],
   ['g-spiral', 'The Spiral', 4],
   ['g-skeletal-splice', 'The Splice', 3],
+  ['g-decimal-splice', 'The Decimal Splice', 2],
   ['g-torus', 'Torus', 1],
   ['g-megatubule', 'The Megatubule', 3],
   ['g-moebius', 'Möbius', 1],

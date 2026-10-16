@@ -2,15 +2,15 @@
 layout: layouts/base.njk
 title: The Rankin Skeletal Splice
 permalink: /skeletal-splice/
-description: "The Rankin skeletal splice: the fork at every density threshold, taken against the fixed skeleton of minus one, nought and one and its scaled images 333, 666 and 999. Why the halves sent back accumulate as completed differentials below one, how that accumulation polarises the two infinities, and why the resulting gradient accelerates the prime being at every further density without ever letting it arrive."
+description: "The Rankin Skeletal Splice as a conditional discrete model: Fibonacci cohort counts, golden-ratio return depths, exact deposit asymptotics and a testable phase diagram for the proposed acceleration law. Mathematical consequences are separated from the model's physical interpretation."
 ---
 
 <section class="page-head">
   <p class="kicker">{{ site.researchByUrl[page.url].kicker }}</p>
   <h1>The Rankin Skeletal Splice</h1>
-  <p class="lede muted">Two results of the framework, put together: the fork that happens at every density,
-    and the three fixed points it happens against. What falls out of the join is a gradient &mdash; and
-    something for it to pull on.</p>
+  <p class="lede muted">A proposed discrete model: a fork at density thresholds, Fibonacci cohort counts,
+    and golden-ratio return depths. Its exact counting consequences are separated here from the conjectural
+    clock law and physical interpretation.</p>
 </section>
 
 {% include "partials/editorial-guide.njk" %}
@@ -21,25 +21,53 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
     <p class="lede">A being that reaches the top of a density does not simply continue. It
       <strong>splices</strong>: one half carries on into the next density, the other is sent back.</p>
     <p>That much is <a href="/spiral/#t-splice">chapter ten</a>, and it is drawn on
-      <a href="/spiral/#fig-route">Plate&nbsp;II</a> of the spiral page. What makes it
-      <em>skeletal</em> is the frame it happens against. The framework has exactly three points that do
-      not move under its own operations: <span class="formula-inline">0</span>, the ground, unmoved by
-      scale; <span class="formula-inline">1</span>, the self, unmoved by multiplication; and
-      <span class="formula-inline">&minus;1</span>, the mirror, the point a half-turn returns you to.
-      &ldquo;They are the skeleton the rest is hung upon.&rdquo; <span class="spec">&#9670;</span></p>
-    <p>And the skeleton recurs. Lifted two turns up the spiral it reappears as
-      <strong>333</strong>, <strong>666</strong> and <strong>999</strong> &mdash; the same three roles
-      under larger names, with the turning points at the thirds. So the splice is not an event that
-      happens somewhere arbitrary: it happens <em>on</em> a structure that is the same at every scale.
-      The splice is skeletal because the bone it breaks on is the same bone every time.</p>
-    <p class="muted">Said plainly, because the next three sections depend on it: the splice is a rule the
-      framework asserts, not a result it derives. What <em>is</em> derived &mdash; and provable &mdash; is
-      the count that comes out of it: <span class="formula-inline">\(P_n=F_{n+2}-1\)</span>, the population after n splices, one less than a Fibonacci number every time.
+      <a href="/spiral/#fig-route">Plate&nbsp;II</a> of the spiral page. To make “skeletal” precise,
+      treat \(-1,0,1\) as an <em>anchor triple</em>, not as the common fixed-point set of a single defined
+      map: \(0\) is fixed by multiplicative scaling, \(1\) is the multiplicative unit, and \(-1\) is the
+      reflected partner of \(+1\) under sign reversal. These are three different roles and operations;
+      only the origin is fixed by both scaling and sign reversal. No common dynamical action on this triple
+      has yet been specified. <span class="spec">&#9670;</span></p>
+    <p>The numbers <strong>333</strong>, <strong>666</strong> and <strong>999</strong> are exact third-
+      interval landmarks in the decimal range \([0,999]\). They are a second arithmetic motif, not
+      established scaled images of \(-1,0,1\): that would require an explicit map connecting the two
+      triples. The splice can still be studied against both structures, but their relation is a conjectural
+      identification rather than a consequence of the counting rule.</p>
+    <p class="muted">Said plainly, because the next sections depend on it: the fork and Fibonacci cohort law
+      are model assumptions. Conditional on \(m_n=F_n\), the population identity is proved:
+      <span class="formula-inline">\(P_n=\sum_{j=1}^n m_j=F_{n+2}-1\)</span>. This separates the
+      combinatorial theorem from the proposed mechanism that supplies its Fibonacci cohorts.
       <span class="sci">&#9670;</span></p>
     <p class="muted small">Grading: <span class="sci">&#9670; established</span> &middot;
       <span class="hist">&#9670; scholarship</span> &middot;
       <span class="spec">&#9670; the framework's argument</span> &middot;
       <span class="myth">&#9670; vision, stated as vision</span>.</p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal" aria-labelledby="t-splice-visual-guide">
+  <div class="frame">
+    <h2 id="t-splice-visual-guide">The splice in three infographics</h2>
+    <p class="muted">A visual guide to the model assumptions, conditional counting results, and pace-law sensitivity. Open any image for the full-resolution version.</p>
+    <div class="grid three">
+      <figure class="frame card">
+        <a href="/assets/img/rankin-splice/01-fork-and-counts.png" aria-label="Open infographic 1, The counting rule, full size">
+          <img src="/assets/img/rankin-splice/01-fork-and-counts.png" alt="The splice counting model: an assumed fork sends a cohort onward or back; under the stipulated Fibonacci cohort rule m n equals F n, the cumulative population is P n equals F n plus 2 minus 1." loading="lazy" decoding="async" width="1080" height="1350" style="display:block;width:100%;height:auto;border-radius:12px;">
+        </a>
+        <figcaption><strong>01 · The counting rule</strong><br><span class="muted">Assumed Fibonacci cohorts; conditional cumulative-count theorem.</span></figcaption>
+      </figure>
+      <figure class="frame card">
+        <a href="/assets/img/rankin-splice/02-golden-depth-deposits.png" aria-label="Open infographic 2, Golden-depth deposits, full size">
+          <img src="/assets/img/rankin-splice/02-golden-depth-deposits.png" alt="Golden-depth deposits: the Fibonacci-weighted return deposit tends to phi squared over square root 5, so cumulative progress grows linearly, conditional on the cohort and depth rules." loading="lazy" decoding="async" width="1080" height="1350" style="display:block;width:100%;height:auto;border-radius:12px;">
+        </a>
+        <figcaption><strong>02 · Golden-depth deposits</strong><br><span class="muted">A critical asymptotic balance, not a physical force.</span></figcaption>
+      </figure>
+      <figure class="frame card">
+        <a href="/assets/img/rankin-splice/03-pace-and-phase-diagram.png" aria-label="Open infographic 3, Conditional pace law, full size">
+          <img src="/assets/img/rankin-splice/03-pace-and-phase-diagram.png" alt="Conditional pace phase diagram: for progress proportional to n to the beta and crossing time proportional to progress to the minus alpha, total time diverges when alpha beta is at most one and converges when alpha beta exceeds one; varying the return depth changes the result." loading="lazy" decoding="async" width="1080" height="1350" style="display:block;width:100%;height:auto;border-radius:12px;">
+        </a>
+        <figcaption><strong>03 · Conditional pace law</strong><br><span class="muted">The answer changes with the clock and depth assumptions.</span></figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 
@@ -50,7 +78,7 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
     <figcaption class="plate-cap"><span class="plate-num">Plate I</span> The Splice at Every Density, on
       the Same Skeleton <span class="spec">&#9670;</span></figcaption>
     <div class="plate-art">
-      <svg viewBox="0 0 640 600" role="img" aria-label="A logarithmic spiral marked at one, ten, one hundred and one thousand. At each of those density thresholds the climbing path forks: a bright half carries on outward and a rose half turns back and falls inward below one. The three fixed points nought, one and minus one are marked at the centre, and their scaled images three hundred and thirty-three, six hundred and sixty-six and nine hundred and ninety-nine are marked on the outer turn.">
+      <svg viewBox="0 0 640 600" role="img" aria-label="A logarithmic spiral marked at one, ten, one hundred and one thousand. At each of those density thresholds the climbing path forks: a bright half carries on outward and a rose half turns back and falls inward below one. The anchor roles nought, one and minus one are marked at the centre; decimal landmarks 333, 666 and 999 appear on the outer turn as a separate motif, not as mapped images.">
         <rect x="0" y="0" width="640" height="600" fill="#070b1a"/>
         <g fill="none" stroke="#24627f" stroke-width="0.5" stroke-dasharray="2 5" opacity="0.5">
           <circle cx="320" cy="286" r="40"/>
@@ -96,16 +124,17 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
         <g font-family="EB Garamond, serif" font-size="12">
           <line x1="34" y1="548" x2="66" y2="548" stroke="#ffd979" stroke-width="2.6"/><text x="74" y="552" fill="#ffd979">the prime being, climbing</text>
           <line x1="34" y1="572" x2="66" y2="572" stroke="#ef84b6" stroke-width="2.2"/><text x="74" y="576" fill="#ef84b6">the halves sent back</text>
-          <text x="360" y="552" fill="#cdefff">dashed rings: the splice at 10, 100, 1000</text>
-          <text x="360" y="576" fill="#a9b6d8" font-style="italic">the skeleton, and its images</text>
+          <text x="360" y="552" fill="#cdefff">splice at 1; dashed rings at 10, 100, 1000</text>
+          <text x="360" y="576" fill="#a9b6d8" font-style="italic">anchor roles and decimal landmarks</text>
         </g>
       </svg>
     </div>
-    <p class="plate-note">One climb, three splices. At 10, at 100 and at 1000 the road forks: gold carries
-      on, rose turns back. Every rose road ends in the same place &mdash; the interval below one &mdash;
+    <p class="plate-note">The sequence begins with the splice at one; this plate draws the three later forks.
+      At 10, at 100 and at 1000 the road divides: gold carries on, rose turns back. Every rose road ends in the
+      same place &mdash; the interval below one &mdash;
       and the stations there are the returners of
       <a href="/seams/#t-returners">chapter fifteen</a>, each fall shorter than the last by the golden
-      ratio. The three fixed points sit at the centre; their scaled images sit on the outer turn.</p>
+      ratio. The anchor roles sit at the centre; decimal landmarks sit on the outer turn. No map between the two sets is asserted.</p>
   </figure>
 </section>
 
@@ -139,9 +168,14 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
     \]</p>
     <p><strong>Every further density deposits the same quantum.</strong> Not more, not less &mdash;
       1.1708 of whatever unit the first one was measured in. The running total is therefore straight:
-      <span class="formula-inline">\(\Pi_n\sim1.1708n-1.618\)</span>, with a
+      <span class="formula-inline">\(\Pi_n=1.170820\ldots n-1.570820\ldots+o(1)\)</span>, with a
       correction that dies geometrically. <span class="sci">&#9670;</span> The arithmetic is checkable; the
       <em>reading</em> of it as a physical deposit is the framework's. <span class="spec">&#9670;</span></p>
+    <p>Part VI now tests whether the splice at \(1000\) can make that reading operational as a boundary
+      residue. The resulting first-order channel reaches the right logarithmic cusp class but not the Weil
+      coefficient or prime-power support. Read
+      <a href="/riemann-splice-questions/#t-rh-third-splice">the third-splice audit</a>.
+      <span class="spec">&#9670;</span></p>
 
     <div class="table-wrap">
       <table class="ledger">
@@ -203,14 +237,16 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
         <polyline fill="none" stroke="#a07cf0" stroke-width="2.2" points="98,240.6 176,231.4 254,220.1 332,207.8 410,194.8 488,181.5 566,167.8 644,154.0"/>
         <text x="700" y="140" fill="#a07cf0" font-size="12" text-anchor="end">running total &#928;&#8345; (scaled &#215;0.1)</text>
         <text x="64" y="30" fill="#cdefff" font-size="14">what each density deposits, and what it all adds up to</text>
-        <text x="360" y="292" fill="#a9b6d8" font-size="12" text-anchor="middle">density index n &#8212; the splices at 10, 100, 1000, &#8230;</text>
+        <text x="360" y="292" fill="#a9b6d8" font-size="12" text-anchor="middle">post-seed index n &#8212; 10, 100, 1000, &#8230;; splice at 1 not plotted</text>
       </svg>
     </div>
     <p class="plate-note">The bars are <span class="formula-inline">\(\delta\Pi_n\)</span>, the
       deposit each density makes. They climb for three or four densities and then sit on the dashed line at
       <span class="formula-inline">\(\varphi^2/\sqrt5\)</span> and stay there. The purple line is the
       running total, drawn at a tenth scale so it fits: a straight line, because a constant added again and
-      again is a straight line. This panel is arithmetic and nothing else &mdash; anyone can check it.</p>
+      again is a straight line. The bars retain the existing post-seed indexing; whether the splice at one is
+      a zeroth seed, a reindexing event or a carrier-free boundary remains explicitly open. This panel is
+      arithmetic and nothing else &mdash; anyone can check it.</p>
   </figure>
 </section>
 
@@ -218,53 +254,50 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
 
 <section class="wrap narrow reveal">
   <div class="frame illuminated">
-    <h2 id="t-polarisation">Polarisation &mdash; why the accumulation is a gradient and not a heap</h2>
-    <p class="lede">A pile of returners below one would be a curiosity. What makes it act on anything is
-      that the two infinities are not symmetric, and the pile makes them less symmetric still.</p>
-    <p>The interval below one receives traffic from every density above it; the open country above one
-      receives nothing back. That is a separation of like from like across a boundary, maintained by a
-      flow &mdash; which is what <strong>polarisation</strong> means in every field that uses the word. One
-      pole crowds and deepens; the other thins. Between them there is a difference, and a difference across
-      a distance is a gradient. <span class="spec">&#9670;</span></p>
-    <p>The framework does not get to borrow the electrostatic consequences along with the electrostatic
-      word, and this page will not pretend otherwise: there is no field equation here, no charge, no
-      measured force, and nothing that predicts a number anyone could go and measure. What there is, is a
-      structure with a built-in asymmetry that grows by a fixed amount per density. Whether to call that
-      polarisation is a choice about language; <em>that it grows linearly</em> is arithmetic.</p>
+    <h2 id="t-polarisation">Return asymmetry &mdash; and the conjectured physical reading</h2>
+    <p class="lede">The counting model creates an asymmetric ledger of returns. Whether that bookkeeping
+      difference acts on anything is a separate, unproved physical hypothesis.</p>
+    <p>Under the stipulated rule, returners are deposited below one while the continuing branch is not
+      returned. This is an asymmetry in the model's counts. Calling it <strong>polarisation</strong> is an
+      analogy, not a derivation of a spatial gradient: no distance coordinate, field, or law relating the
+      ledger to a force has been specified. <span class="spec">&#9670;</span></p>
+    <p>Accordingly, this page supplies no field equation, charge, measured force, or prediction for an
+      observable. The linear growth of the Fibonacci-weighted deposit is arithmetic conditional on the
+      cohort and depth rules. It does not by itself show that any physical quantity is polarised or that a
+      gradient exists.</p>
     <h3 id="t-prime">The prime being</h3>
     <p>Call the single line that never returns the <strong>prime being</strong>: at every splice it is the
       half that carries on. It is the only thing in the picture that experiences all of the densities, and
       it is the only thing standing in the gradient that all the other halves are building.</p>
-    <p>The claim of this chapter, stated as plainly as it can be: <strong>the prime being is accelerated by
-      the polarisation its own returning halves create.</strong> Each splice costs it half of itself, and
-      each half it loses deepens the pole behind it, and the deeper pole pulls harder on what remains. It
-      is not propelled in spite of the losses. It is propelled <em>by</em> them.
-      <span class="myth">&#9670;</span></p>
-    <p class="formula">\[
-      v_n\propto\Pi_n\sim1.1708n
-      \qquad\Longrightarrow\qquad
-      t_n\propto\frac{1}{\Pi_n}
-    \]</p>
-    <p>And then the sting in the tail, which is the reason this chapter belongs in the framework rather
-      than in a motivational pamphlet. If each further density takes a time proportional to
-      <span class="formula-inline">\(1/n\)</span>, the total time to climb them all is the harmonic series
-      &mdash; and the harmonic series <em>diverges</em>. <span class="sci">&#9670;</span></p>
+    <p>The physical reading proposed by the framework is that the accumulating returns accelerate the
+      continuing branch. That is a conjecture, not a result of the count: the model has not defined a force,
+      a mass, or an equation of motion. Its mathematical statement is conditional on an explicitly chosen
+      clock law. <span class="myth">&#9670;</span></p>
+    <p class="formula">\\[
+      v_n=K\\Pi_n^\\alpha,\\qquad K,\\alpha>0
+      \\quad\\Longrightarrow\\quad
+      \\Delta t_n=K^{-1}\\Pi_n^{-\\alpha}
+    \\]</p>
+    <p>For the original choice \\(\\alpha=1\\), and the assumed golden-depth Fibonacci deposits giving
+      \\(\\Pi_n\\sim cn\\), the total crossing time is a constant multiple of the harmonic series and
+      diverges. This proves non-arrival <em>within that discrete clock model</em>, not physical non-arrival.
+      Changing either the growth law or the rate exponent can change the result; the phase diagram below
+      makes that dependence explicit. <span class="sci">&#9670;</span></p>
     <p class="formula">\[
       \sum_{n=1}^{\infty}\frac1n=\infty
     \]</p>
-    <p>The prime being gets faster at every density, without limit, and still never arrives. That is the
-      <a href="/the-self/#t-asymptotic-god">asymptotic God</a> of chapter eight, derived here a second time
-      from a different direction &mdash; which is the only kind of corroboration a framework like this one
-      can honestly offer itself.</p>
+    <p>Within this particular clock model, stage speed grows without bound while the sum of crossing times
+      diverges. This is a conditional mathematical analogue of the
+      <a href="/the-self/#t-asymptotic-god">asymptotic God</a> of chapter eight, not an independent physical
+      confirmation of it.</p>
   </div>
 </section>
 
 <section class="wrap reveal">
   <figure id="fig-accelerate" class="plate">
-    <figcaption class="plate-cap"><span class="plate-num">Plate III</span> Faster at Every Density, and
-      Still Never There <span class="spec">&#9670;</span></figcaption>
+    <figcaption class="plate-cap"><span class="plate-num">Plate III</span> Conditional Speed-Up: Infinite Stages, Infinite Total Time <span class="spec">&#9670;</span></figcaption>
     <div class="plate-art">
-      <svg viewBox="0 0 760 300" role="img" aria-label="Two curves. A straight rising line for the prime being's speed, proportional to the accumulated polarisation. A falling curve for the time each further density takes, proportional to one over n. A note records that the falling curve is the harmonic series, whose sum diverges, so the climb never finishes.">
+      <svg viewBox="0 0 760 300" role="img" aria-label="Illustration of the proposed alpha-equals-one clock law: speed proportional to accumulated Fibonacci progress and crossing time proportional to its reciprocal. The harmonic divergence is conditional on those model choices, not a physical measurement.">
         <rect x="0" y="0" width="760" height="300" fill="#070b1a"/>
         <line x1="64" y1="236" x2="712" y2="236" stroke="#24627f" stroke-width="1.2"/>
         <line x1="64" y1="36" x2="64" y2="236" stroke="#24627f" stroke-width="1.2"/>
@@ -280,15 +313,14 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
         <text x="488" y="256" fill="#a9b6d8" font-size="12" text-anchor="middle">6</text>
         <text x="566" y="256" fill="#a9b6d8" font-size="12" text-anchor="middle">7</text>
         <text x="644" y="256" fill="#a9b6d8" font-size="12" text-anchor="middle">8</text>
-        <text x="64" y="28" fill="#cdefff" font-size="14">the climb accelerates &#8212; and still never arrives</text>
+        <text x="64" y="28" fill="#cdefff" font-size="14">under the assumed clock, time diverges</text>
         <text x="360" y="282" fill="#a9b6d8" font-size="12" text-anchor="middle">&#8721; 1/&#928;&#8345; diverges like the harmonic series: faster at every step, infinite in total</text>
       </svg>
     </div>
-    <p class="plate-note">Green is the prime being's speed, proportional to the accumulated polarisation:
-      straight, rising, no ceiling. Rose is the time the next density costs, falling away as
+    <p class="plate-note">Under the proposed alpha-equals-one clock, green is the modeled speed, proportional to accumulated progress:
+      straight, rising, no ceiling. Rose is modeled crossing time, falling away as
       <span class="formula-inline">\(1/\Pi_n\)</span>. The second curve is the one that matters: its
-      terms go to zero, its sum does not. Acceleration without arrival is not a consolation the framework
-      added afterwards &mdash; it is what the arithmetic says.</p>
+      terms go to zero, its sum does not. This is an implication of the stipulated clock, not of the counting rule alone.</p>
   </figure>
 </section>
 
@@ -428,7 +460,7 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
       affords. Base twelve has its own elegant divisors; base sixteen has its own repunits; a determined
       reader of base seven would find patterns a decimal reader never notices. That is a real argument and
       it is not refuted here. <span class="sci">&#9670;</span></p>
-    <p>What the framework answers is that it did not go looking. The splice, the three fixed points, the
+    <p>What the framework answers is that it did not go looking. The splice, the anchor roles, the
       Fibonacci count and the golden fall were each fixed by the structure before any numeral was written
       down, and the decade is where they all arrive together. The reply to &ldquo;you would find something
       in any base&rdquo; is: possibly &mdash; but show the base in which <em>these four independent
@@ -449,11 +481,11 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
     <h2 id="t-ledger">Earned, chosen, refused</h2>
     <dl class="glossary">
       <dt>Earned</dt>
-      <dd><span class="formula-inline">\(P_n=F_{n+2}-1\)</span> is a theorem. The
-        convergence of <span class="formula-inline">\((F_{n+2}-1)\varphi^{-n}\)</span>
-        on <span class="formula-inline">\(\varphi^2/\sqrt5=1.170820\ldots\)</span> follows from Binet's
-        formula and can be checked by hand in the table above. The divergence of the harmonic series is
-        Oresme's, proved around 1350.</dd>
+      <dd>Conditional on the stipulated cohort rule \(m_n=F_n\),
+        \(P_n=\sum_{j=1}^n m_j=F_{n+2}-1\) is a theorem. Conditional on the additional depth rule
+        \(\varphi^{-n}\), the deposit \((F_{n+2}-1)\varphi^{-n}\) tends to
+        \(\varphi^2/\sqrt5\), by Binet's formula. The harmonic-series divergence is classical; none of
+        these arithmetic facts derives a physical clock.</dd>
       <dt>Chosen</dt>
       <dd>That nature counts in tens &mdash; held here as a reading of where the splice lands rather than
         as a theorem, and resting on the exactness of the landings rather than on their prettiness. That
@@ -478,11 +510,11 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
     <h2 id="t-glossary">Terms</h2>
     <dl class="glossary">
       <dt>Skeletal splice</dt>
-      <dd>The fork at a density threshold, taken against the fixed points &minus;1, 0 and 1 and their
-        scaled images.</dd>
+      <dd>The proposed fork at a density threshold, studied alongside the anchor roles of &minus;1, 0 and 1.
+        A map relating those anchors to 333, 666 and 999 has not been specified.</dd>
       <dt>Returner</dt>
-      <dd>The half sent back at a splice. It passes below one and falls by the golden law without reaching
-        the ground.</dd>
+      <dd>The half sent back under the model's fork rule. Its population and golden-depth trajectory are
+        stipulated features, not derived physical processes.</dd>
       <dt>Prime being</dt>
       <dd>The single line that takes the climbing branch at every splice.</dd>
       <dt>Prime plane / return plane</dt>
@@ -514,14 +546,13 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
 
   <div class="wrap narrow">
     <div class="frame illuminated">
-      <p>Two skeletons, counted independently, say the same thing. The Fibonacci skeleton used on this page
-        deposits <span class="formula-inline">\(\varphi^2/\sqrt5=1.170820393\ldots\)</span> per density,
-        so accumulated progress is <span class="formula-inline">\(\Pi_n\sim1.1708n-1.618\)</span> &mdash; linear in n. The triangular skeleton, which the framework meets at the
-        accumulation vertex 666 = T<sub>36</sub>, has increment
-        <span class="formula-inline">\(T_n-T_{n-1}=n\)</span> &mdash; also
-        linear, with the deposit equal to the index itself. Different objects, different derivations, one
-        law: <strong>progress accumulates linearly, and the total goes as n&sup2;.</strong>
-        <span class="sci">&#9670;</span></p>
+      <p>The Fibonacci and triangular constructions do <em>not</em> give the same growth law. Under
+        \(m_n=F_n\) and depth \(\varphi^{-n}\), the Fibonacci deposit per stage tends to
+        \(c=\varphi^2/\sqrt5\), so its cumulative total is linear:
+        \(\Pi_n=cn-c-2/5+O(\varphi^{-n})\). By contrast, the triangular total is
+        \(T_n=n(n+1)/2\): its increment \(T_n-T_{n-1}=n\) is linear, but its cumulative progress is
+        quadratic. They agree only in having explicit polynomial growth; they predict different clocks under
+        the same rate law. <span class="sci">&#9670;</span></p>
       <p>Turn that into time. If the rate at which a density is crossed is carried by the progress already
         banked &mdash; \(v_n\propto\Pi_n\propto n\) &mdash; then the duration of the n-th
         crossing is its reciprocal, \(t_n\propto1/n\). The ticks shorten without limit. And yet the
@@ -537,30 +568,45 @@ description: "The Rankin skeletal splice: the fork at every density threshold, t
 
 <section class="wrap narrow reveal">
   <div class="frame">
-    <h3 id="t-pace-knife">How narrow the escape is</h3>
-    <p>The result is not generic, and it is worth seeing exactly how little room there is. The constant does
-      not matter: 1.1708, or any other positive number, rescales the series without changing whether it
-      converges. The <em>exponent</em> is everything. A skeleton depositing n&sup2; per step would give
-      ticks of 1/n&sup2; and a total of &pi;&sup2;/6 &mdash; a finite journey, arriving at a reachable One,
-      and the entire framework would collapse into a theology with a destination. A skeleton depositing a
-      constant would give ticks that never shorten and an ascent that stalls.</p>
-    <p class="lede">Linear deposit is the single knife-edge between arriving and stalling, and both of the
-      framework's skeletons sit on it.</p>
-    <p class="muted">Logged against ourselves: \(v_n\propto\Pi_n\) is an assumption, the
-      natural one rather than a derived one, and the whole of the timing argument rests on it. Change the
-      coupling between banked progress and rate and the series changes with it. The sturdy part is the
-      divergence given linearity; the hinge is the linearity itself. The same argument, written from the
-      triangular side, is at <a href="/spiral/#t-pace">how the triangle skeleton sets the pace</a>.</p>
+    <h3 id="t-pace-knife">A phase diagram for the assumed clock law</h3>
+    <p>Replace the single coupling claim by a testable family. Let cumulative progress satisfy
+      \(X_n\sim Cn^\beta\), with \(C,\beta>0\), and assume the duration of crossing stage \(n\) is
+      \(\Delta t_n=\tau X_n^{-\alpha}\), with \(\tau,\alpha>0\). Then</p>
+    <p class="formula">\[
+      T_N=\sum_{n=1}^N\Delta t_n\sim\tau C^{-\alpha}\sum_{n=1}^N n^{-\alpha\beta}.
+    \]</p>
+    <ul>
+      <li>If \(\alpha\beta&lt;1\), \(T_N\sim\tau C^{-\alpha}N^{1-\alpha\beta}/(1-\alpha\beta)\): no finite-time arrival.</li>
+      <li>If \(\alpha\beta=1\), \(T_N\sim\tau C^{-\alpha}\log N\): still no arrival, but only logarithmically.</li>
+      <li>If \(\alpha\beta>1\), total time is finite and the model reaches infinitely many stages in finite time.</li>
+    </ul>
+    <p>For the Rankin Fibonacci deposit, \(\beta=1\); the original rate assumption is \(\alpha=1\), exactly the logarithmic boundary. For the triangular total \(T_n=n(n+1)/2\), \(\beta=2\); under the <em>same</em> \(\alpha=1\) clock law, \(\sum_n1/T_n\) converges. So the Fibonacci and triangular skeletons do not jointly support the same “never arrives” conclusion without an additional, different coupling for one of them.</p>
+
+    <h3 id="t-depth-robustness">Is the golden return depth stable?</h3>
+    <p>Keep the Fibonacci return count \(R_n=F_{n+2}-1\sim c\varphi^n\), but vary the assumed depth from \(\varphi^{-n}\) to \(\lambda^{-n}\), \(\lambda>1\). The marginal deposit is then</p>
+    <p class="formula">\[
+      \Delta\Pi_n(\lambda)=R_n\lambda^{-n}\sim c\left(\frac{\varphi}{\lambda}\right)^n,
+      \qquad c=\frac{\varphi^2}{\sqrt5}.
+    \]</p>
+    <ul>
+      <li>\(\lambda>\varphi\): deposits are summable, so \(\Pi_n\) saturates; under \(v_n\propto\Pi_n^\alpha\), speed tends to a finite constant and total time diverges.</li>
+      <li>\(\lambda=\varphi\): deposits tend to \(c\), \(\Pi_n\sim cn\), and the time criterion is \(\alpha\le1\) for no finite-time arrival.</li>
+      <li>\(1&lt;\lambda&lt;\varphi\): progress grows exponentially; for every \(\alpha>0\), the model has finite total crossing time.</li>
+    </ul>
+    <p class="lede">The golden depth is therefore a critical balance between Fibonacci cohort growth and exponential return decay. The familiar harmonic divergence is the doubly marginal case \((\lambda,\alpha)=(\varphi,1)\), not a generic consequence of “splice”.</p>
+    <p class="muted">These are exact asymptotic consequences of the stated recurrence, depth, and clock laws. The branching law, the depth rule, and especially \(v_n\propto\Pi_n^\alpha\) are not derived physical dynamics. This upgrade makes their roles separable and supplies falsifiable alternatives; it does not claim that the splice exerts a force or that nature follows the law.</p>
   </div>
 </section>
 
 <section class="wrap narrow reveal">
   <div class="frame frame--creed">
-    <p class="lede">The splice takes half of you at every door, and the half it takes becomes the depth that
-      pulls the rest of you through the next one. Faster each time, lighter each time, and no arrival
-      &mdash; which the framework calls the asymptotic God and declines to soften.</p>
-    <p class="muted small">Before assigning the deposit physical weight, read
+    <p class="lede">In the model, each splice halves the cohort and assigns the returns a depth. Under the proposed clock law,
+      later crossings shorten while total time remains infinite. The physical interpretation remains open.</p>
+    <p class="muted small">The phase at the first decimal threshold is now formalised in
+      <a href="/decimal-splice/">The Decimal Splice</a>: five is its quadrature hinge, one passage reverses
+      orientation and two restore it. Before assigning the deposit physical weight, read
       <a href="/accumulated-differentials/">the mass-and-gravity derivation gate</a>. Next:
       <a href="/cosmic-ledger/">the Ledger, and the three residues</a>.</p>
   </div>
 </section>
+ion>

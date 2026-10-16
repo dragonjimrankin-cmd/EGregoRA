@@ -1,0 +1,58 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "No parameter-independent positive prime-index channel realizes strict eta contraction",
+  "question": "Can the Fisher-natural flow eta -> c eta be realized by one fixed stochastic channel on prime powers, thereby linking the prime feature law to an arithmetic splice operation?",
+  "verdict": {
+    "goldenContractionFactor": 0.6180339887498948,
+    "fixedMarkovKernelExistsForOpenParameterInterval": false,
+    "proofIsExact": true,
+    "actualXiZeroLedgerInvarianceProved": false,
+    "rhProved": false,
+    "conclusion": "No parameter-independent Markov kernel on prime powers can map every p_a in an open parameter interval to p_(2+c(a-2)) for any 0<c<1. Analyticity extends such an identity to all real a>1; concentration at the first support point forces the kernel to fix n=2, while the contracted target requires more n=3 mass than the input has outside n=2. This blocks a natural positive-channel bridge for the feature-family flow, but does not rule out a nonlinear same-xi identity or an operator specified only on actual zeros."
+  },
+  "family": {
+    "support": "prime powers n with Lambda(n)>0, ordered 2<3<4<...",
+    "normalizer": "M(a)=sum_n Lambda(n)n^(-a), a>1",
+    "probability": "p_a(n)=Lambda(n)n^(-a)/M(a)",
+    "parameterRelation": "a=2+2eta; eta -> c eta is a -> a_c=2+c(a-2)",
+    "targetAnalyticDomain": "Re(a)>1 implies Re(a_c)>2-c>1"
+  },
+  "proof": {
+    "assumption": "A fixed column-stochastic kernel K(r|n)>=0 satisfies sum_n K(r|n)p_a(n)=p_(a_c)(r) for every a in a nonempty open subinterval of (1,3).",
+    "analyticContinuation": "For each output r, F_r(z)=sum_n K(r|n)Lambda(n)n^(-z) is holomorphic on Re(z)>1. After cross multiplication by M(z)M(a_c), the assumed identity is holomorphic on Re(z)>1 and hence holds throughout that half-plane.",
+    "firstSupportPoint": "As real a->infinity, p_a converges in total variation to delta_2 and p_(a_c) also converges to delta_2. Therefore K delta_2=delta_2, so K(3|2)=0.",
+    "availableMassAtThree": "Then (K p_a)(3)<=sum_(n>=3)p_a(n)~[Lambda(3)/Lambda(2)](2/3)^a.",
+    "requiredTargetMassAtThree": "p_(a_c)(3)~[Lambda(3)/Lambda(2)](2/3)^(a_c), where a_c=2+c(a-2).",
+    "contradiction": "The ratio of required target mass to available non-2 input mass is asymptotic to (2/3)^(a_c-a)=(3/2)^((1-c)(a-2)), which tends to infinity for 0<c<1. This contradicts stochasticity.",
+    "scope": "The identity on an open interval is essential for analytic continuation. The theorem does not forbid an eta-dependent resampling rule, a signed/non-Markov operator, or a rule defined only on a discrete unknown set of actual zero displacements."
+  },
+  "goldenAsymptoticDiagnostics": [
+    {
+      "a": 4.0,
+      "aTarget": 3.23606797749979,
+      "targetOverAvailableTailLeadingFactor": 1.363081274536477
+    },
+    {
+      "a": 10.0,
+      "aTarget": 6.944271909999158,
+      "targetOverAvailableTailLeadingFactor": 3.452128924735318
+    },
+    {
+      "a": 20.0,
+      "aTarget": 13.124611797498106,
+      "targetOverAvailableTailLeadingFactor": 16.24410414043877
+    },
+    {
+      "a": 50.0,
+      "aTarget": 31.665631459994948,
+      "targetOverAvailableTailLeadingFactor": 1692.4741343660858
+    }
+  ],
+  "relationToOtherExactBridges": {
+    "primePairSpliceAudit": "The (101,101) self-pair vanishes in centered Fisher curvature; the current no-go rules out a single stochastic channel as the missing same-xi coupling.",
+    "criticalEnergy": "The all-scale critical Chebyshev-energy bound still implies RH by Mellin holomorphy, but remains RH-equivalent and unproved.",
+    "primeAnchor": "The positive defect D_2 is an exact prime-to-horizontal-zero identity; proving D_2=0 remains RH-equivalent.",
+    "remainingTarget": "Find a nonlinear, same-xi arithmetic identity/conservation law that couples the actual completed zero divisor to the fixed prime ledger; this channel route cannot supply it."
+  },
+  "status": "A candidate positive-channel bridge is ruled out exactly. No new same-xi identity, zero-free strip or RH proof is obtained."
+}

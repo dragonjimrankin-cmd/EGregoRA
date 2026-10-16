@@ -1,0 +1,374 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Order-one cancellation, interlacing, and a Blaschke seam divisor",
+  "question": "can the final three proof targets be constructed rather than left as abstract obligations?",
+  "verdict": {
+    "rhProved": false,
+    "orderOneZeroPreservingCancellationFound": false,
+    "canonicalStageInterlacingFound": false,
+    "blaschkeSeamDivisorConstructed": true,
+    "coerciveSeamHorizontalNormConstructed": true,
+    "seamNormControlledByPrimeOrKernelData": false,
+    "conclusion": "the ledger cancellation and interlacing routes fail in their current forms. A genuine Blaschke divisor can encode every zeta zero in a compact disk while preserving a height-independent hyperbolic marker of horizontal displacement. This solves seam accounting and coercive detection, but no current prime or theta estimate controls the supremum of that marker, so RH does not follow."
+  },
+  "completedLedgerCancellation": {
+    "p2Curvature": -3.9602015607712526,
+    "symmetricDyadicCurvature": -7.920403121542505,
+    "gaussianCoefficientForSingleCorrection": 1.9801007803856263,
+    "gaussianCoefficientForSymmetricCorrection": 3.9602015607712526,
+    "formalCounterterm": "exp(c(s-1/2)^2) supplies log-curvature 2c and can cancel the dyadic correction algebraically",
+    "orderObstruction": "the Gaussian counterterm has order two; multiplying xi by it leaves the order-one completed class even though it adds no zeros",
+    "zeroFreeOrderOneTheorem": "a zero-free entire function of order at most one has exponential form exp(a+bs), whose logarithmic second derivative is zero",
+    "divisorAlternative": "an order-one factor with nonzero central curvature must introduce zeros or poles and therefore creates a nonempty residue reservoir",
+    "consequence": "within the order-one class and with the xi zero divisor fixed, no zero-free counterterm can cancel the nonzero p=2 curvature",
+    "status": "exact cancellation can be manufactured only by raising order or changing the divisor; the requested empty-reservoir identity was not found"
+  },
+  "interlacingRoute": {
+    "familyA": {
+      "stage": 14,
+      "positiveRoots": [
+        14.760298845724478,
+        16.80644585668857
+      ],
+      "fullRoots": [
+        -16.80644585668857,
+        -14.760298845724478,
+        14.760298845724478,
+        16.80644585668857
+      ]
+    },
+    "familyB": {
+      "stage": 20,
+      "positiveRoots": [
+        14.158968149450832,
+        20.063173926874647
+      ],
+      "fullRoots": [
+        -20.063173926874647,
+        -14.158968149450832,
+        14.158968149450832,
+        20.063173926874647
+      ]
+    },
+    "comparisonDomain": "positive critical-line ordinates; the full symmetric line has an additional trivial central-pair obstruction for even functions",
+    "mergedOrder": [
+      {
+        "root": 14.158968149450832,
+        "family": "N20"
+      },
+      {
+        "root": 14.760298845724478,
+        "family": "N14"
+      },
+      {
+        "root": 16.80644585668857,
+        "family": "N14"
+      },
+      {
+        "root": 20.063173926874647,
+        "family": "N20"
+      }
+    ],
+    "symmetricMergedOrder": [
+      {
+        "root": -20.063173926874647,
+        "family": "N20"
+      },
+      {
+        "root": -16.80644585668857,
+        "family": "N14"
+      },
+      {
+        "root": -14.760298845724478,
+        "family": "N14"
+      },
+      {
+        "root": -14.158968149450832,
+        "family": "N20"
+      },
+      {
+        "root": 14.158968149450832,
+        "family": "N20"
+      },
+      {
+        "root": 14.760298845724478,
+        "family": "N14"
+      },
+      {
+        "root": 16.80644585668857,
+        "family": "N14"
+      },
+      {
+        "root": 20.063173926874647,
+        "family": "N20"
+      }
+    ],
+    "strictAlternation": false,
+    "consequence": "the tested canonical deficit-halving stages already contain adjacent roots from the same family, so they do not form a strict interlacing chain",
+    "limitation": "this rules out the naive stage-to-stage Obreschkoff route; a different micro-refinement might interlace but must be constructed and proved",
+    "remainingTarget": "find carrier-sized updates represented by a common Sturm or Hermite-Biehler structure rather than positive kernel addition alone",
+    "status": "no interlacing theorem holds for the current stage refinement"
+  },
+  "blaschkeSeamDivisor": {
+    "stripCoordinate": "z=s-1/2=eta+i gamma with |eta|<1/2",
+    "exponentialMap": "q=exp(i pi z)=exp(-pi gamma) exp(i pi eta), mapping the strip to the right half-plane",
+    "diskMap": "w=(q-1)/(q+1), sending gamma=+infinity to w=-1 and gamma=-infinity to w=+1",
+    "inverse": "q=(1+w)/(1-w), eta=arg(q)/pi, gamma=-log|q|/pi",
+    "blaschkeIdentity": "1-|w|^2=4 Re(q)/|1+q|^2",
+    "condition": "the zero count is O(T log T) while 1-|w|=O(exp(-pi |gamma|)), so the mapped zero divisor satisfies the Blaschke summability condition",
+    "product": "B(w)=product_a (|a|/a)(a-w)/(1-conj(a)w), with conjugate pairing for the xi symmetries",
+    "coerciveNorm": "d_hyp(w,real diameter)=atanh(|sin(pi eta)|), independent of gamma and zero exactly on the critical line",
+    "quarterDisplacementValue": 0.881373587019543,
+    "halfQuarterDisplacementValue": 0.4031997191615115,
+    "samples": [
+      {
+        "eta": 0,
+        "gamma": 14.134725141734693,
+        "q": [
+          5.1869880633106494e-20,
+          0
+        ],
+        "w": [
+          -1,
+          0
+        ],
+        "exactOneMinusModulusSquared": 2.0747952253242598e-19,
+        "logAsymptoticRadialDefect": -43.01925430466477,
+        "hyperbolicDistanceToCriticalDiameter": 0,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0,
+        "gamma": 21.022039638771556,
+        "q": [
+          2.079822189390544e-29,
+          0
+        ],
+        "w": [
+          -1,
+          0
+        ],
+        "exactOneMinusModulusSquared": 8.319288757562176e-29,
+        "logAsymptoticRadialDefect": -64.65639093151826,
+        "hyperbolicDistanceToCriticalDiameter": 0,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0,
+        "gamma": 50,
+        "q": [
+          6.042022078324063e-69,
+          0
+        ],
+        "w": [
+          -1,
+          0
+        ],
+        "exactOneMinusModulusSquared": 2.416808831329625e-68,
+        "logAsymptoticRadialDefect": -155.69333831836977,
+        "hyperbolicDistanceToCriticalDiameter": 0,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "q": [
+          4.9331187975567716e-20,
+          1.6028674611829862e-20
+        ],
+        "w": [
+          -1,
+          3.2057349223659724e-20
+        ],
+        "exactOneMinusModulusSquared": 1.9732475190227086e-19,
+        "logAsymptoticRadialDefect": -43.069436094586386,
+        "hyperbolicDistanceToCriticalDiameter": 0.31945825948088,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.1,
+        "gamma": 21.022039638771556,
+        "q": [
+          1.97802844595513e-29,
+          6.427004017997886e-30
+        ],
+        "w": [
+          -1,
+          1.2854008035995772e-29
+        ],
+        "exactOneMinusModulusSquared": 7.91211378382052e-29,
+        "logAsymptoticRadialDefect": -64.70657272143988,
+        "hyperbolicDistanceToCriticalDiameter": 0.31945825948088,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.1,
+        "gamma": 50,
+        "q": [
+          5.746304469189286e-69,
+          1.8670875025907748e-69
+        ],
+        "w": [
+          -1,
+          3.7341750051815496e-69
+        ],
+        "exactOneMinusModulusSquared": 2.2985217876757143e-68,
+        "logAsymptoticRadialDefect": -155.7435201082914,
+        "hyperbolicDistanceToCriticalDiameter": 0.31945825948088,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "q": [
+          3.6677544335006376e-20,
+          3.667754433500637e-20
+        ],
+        "w": [
+          -1,
+          7.335508867001274e-20
+        ],
+        "exactOneMinusModulusSquared": 1.467101773400255e-19,
+        "logAsymptoticRadialDefect": -43.365827894944736,
+        "hyperbolicDistanceToCriticalDiameter": 0.8813735870195429,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.25,
+        "gamma": 21.022039638771556,
+        "q": [
+          1.4706563737803058e-29,
+          1.4706563737803055e-29
+        ],
+        "w": [
+          -1,
+          2.941312747560611e-29
+        ],
+        "exactOneMinusModulusSquared": 5.882625495121223e-29,
+        "logAsymptoticRadialDefect": -65.00296452179823,
+        "hyperbolicDistanceToCriticalDiameter": 0.8813735870195429,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.25,
+        "gamma": 50,
+        "q": [
+          4.2723547836617823e-69,
+          4.272354783661782e-69
+        ],
+        "w": [
+          -1,
+          8.544709567323564e-69
+        ],
+        "exactOneMinusModulusSquared": 1.708941913464713e-68,
+        "logAsymptoticRadialDefect": -156.03991190864974,
+        "hyperbolicDistanceToCriticalDiameter": 0.8813735870195429,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "q": [
+          1.6292723239777861e-21,
+          5.184428597817735e-20
+        ],
+        "w": [
+          -1,
+          1.036885719563547e-19
+        ],
+        "exactOneMinusModulusSquared": 6.5170892959111444e-21,
+        "logAsymptoticRadialDefect": -46.4798591036221,
+        "hyperbolicDistanceToCriticalDiameter": 4.153505229259845,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.49,
+        "gamma": 21.022039638771556,
+        "q": [
+          6.532879371629191e-31,
+          2.078795922690068e-29
+        ],
+        "w": [
+          -1,
+          4.157591845380136e-29
+        ],
+        "exactOneMinusModulusSquared": 2.6131517486516764e-30,
+        "logAsymptoticRadialDefect": -68.1169957304756,
+        "hyperbolicDistanceToCriticalDiameter": 4.153505229259845,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      },
+      {
+        "eta": 0.49,
+        "gamma": 50,
+        "q": [
+          1.8978449984696974e-70,
+          6.039040705159493e-69
+        ],
+        "w": [
+          -1,
+          1.2078081410318986e-68
+        ],
+        "exactOneMinusModulusSquared": 7.59137999387879e-70,
+        "logAsymptoticRadialDefect": -159.1539431173271,
+        "hyperbolicDistanceToCriticalDiameter": 4.153505229259845,
+        "inverseFormulaEta": "arg((1+w)/(1-w))/pi",
+        "inverseFormulaGamma": "-log|(1+w)/(1-w)|/pi"
+      }
+    ],
+    "blaschkeConditionSamples": [
+      {
+        "stage": 14,
+        "gamma": 842.9988137587108,
+        "logAsymptoticOneMinusModulus": -2648.012306698996,
+        "horizontalMarker": 0.25
+      },
+      {
+        "stage": 20,
+        "gamma": 15126.999933893048,
+        "logAsymptoticOneMinusModulus": -47522.525289581405,
+        "horizontalMarker": 0.25
+      },
+      {
+        "stage": 30,
+        "gamma": 1860497.9999994645,
+        "logAsymptoticOneMinusModulus": -5844926.50224323,
+        "horizontalMarker": 0.25
+      },
+      {
+        "stage": 40,
+        "gamma": 228826127.0000003,
+        "logAsymptoticOneMinusModulus": -718878479.1860323,
+        "horizontalMarker": 0.25
+      }
+    ],
+    "achievement": "all zeros entering from infinite height are accounted for as a convergent disk divisor, and fixed horizontal displacement remains a fixed positive hyperbolic distance at the seam",
+    "remainingFailure": "Blaschke convergence controls radial mass, not the supremum of hyperbolic distance from the real diameter; symmetric off-real Blaschke zeros are allowed",
+    "sufficientMissingTheorem": "derive from the prime ledger or canonical kernel that sup over divisor zeros of d_hyp tends to zero under the splice refinements",
+    "status": "the requested seam divisor and coercive marker are constructed, but their global norm is uncontrolled"
+  },
+  "combinedAssessment": {
+    "exactAdvances": [
+      "proved an order-one zero-free counterterm cannot cancel the dyadic curvature",
+      "disproved strict interlacing for the current N=14 to N=20 canonical refinement",
+      "constructed a convergent Blaschke divisor for the compactified zero set",
+      "constructed a height-independent hyperbolic norm equal to zero exactly on the critical line"
+    ],
+    "remainingObligations": [
+      "control the supremum hyperbolic seam norm from arithmetic or kernel data",
+      "or redesign the canonical refinements as an interlacing Sturm chain",
+      "or derive a completed-ledger cancellation that changes neither order nor divisor"
+    ],
+    "status": "one requested object is now constructed, but no proof of RH is obtained"
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Attempting to continue the principal-prime phase law to the critical boundary",
+  "question": "can the exact s=2 principal-prime anchor identity be conserved under the zero-support flow by transporting an Euler-product phase formula from sigma>1 to sigma=1/2?",
+  "verdict": {
+    "rhProved": false,
+    "scalarConservationProved": false,
+    "primePhaseLawProvedInEulerHalfPlane": true,
+    "endpointCompletedPhaseLawProvedInEulerHalfPlane": true,
+    "criticalBoundaryContinuationProved": false,
+    "continuationEquivalentToRh": true,
+    "conclusion": "An exact weighted argument transform converts the Euler-product phase at every sigma>1 into the absolutely convergent moment -sum Lambda(n)n^(-(sigma+3/2)). Including the endpoint factor s-1 gives 1/(sigma+1/2) minus that moment. At sigma=1/2 its formal endpoint is exactly 1-sum Lambda(n)/n^2, the endpoint-completed prime anchor at s=2. Moving the contour from sigma>1 to the critical boundary crosses every zero with beta>1/2; their Blaschke residues sum to the nonnegative Euler-anchor defect. Proving defect-free continuation is therefore equivalent to RH, not a consequence of dominated convergence or analytic continuation of the prime series."
+  },
+  "weightedPrimePhaseLaw": {
+    "a": 1.5,
+    "phase": "S_sigma(T)=arg zeta(sigma+iT)/pi with the Euler-product branch",
+    "transform": "I(sigma)=(6/pi) integral_0^infinity T arg zeta(sigma+iT)/(T^2+9/4)^2 dT",
+    "law": "I_zeta(sigma)=-sum_(n>=2) Lambda(n)n^(-(sigma+3/2)) for sigma>1",
+    "endpointCompletedTransform": "I_C(sigma)=(6/pi) integral T arg((sigma-1+iT)zeta(sigma+iT))/(T^2+9/4)^2 dT",
+    "endpointCompletedLaw": "I_C(sigma)=1/(sigma+1/2)-sum Lambda(n)n^(-(sigma+3/2)) for sigma>1",
+    "derivation": [
+      "log zeta(sigma+iT)=sum Lambda(n)/(log n)n^(-sigma-iT)",
+      "the imaginary part contributes -sin(T log n)",
+      "integral T sin(bT)/(T^2+a^2)^2 dT=pi b exp(-ab)/(4a)",
+      "at a=3/2 the prefactor 6/(4a) equals one",
+      "the phase of sigma-1+iT contributes 1/(sigma+1/2)"
+    ],
+    "fourierChecks": [
+      {
+        "frequency": 0.6931471805599453,
+        "closed": 0.12831549092259822,
+        "numeric": 0.1283154750248485,
+        "absoluteError": 1.5897749727766808e-08
+      },
+      {
+        "frequency": 1.0986122886681098,
+        "closed": 0.11070345948478426,
+        "numeric": 0.11070344630365801,
+        "absoluteError": 1.3181126246042396e-08
+      },
+      {
+        "frequency": 1.6094379124341003,
+        "closed": 0.07537335437308336,
+        "numeric": 0.07537336376464655,
+        "absoluteError": 9.391563193794639e-09
+      },
+      {
+        "frequency": 2.3978952727983707,
+        "closed": 0.034414368610281604,
+        "numeric": 0.034414372297894485,
+        "absoluteError": 3.687612881719815e-09
+      }
+    ],
+    "primePhaseRows": [
+      {
+        "sigma": 2.0,
+        "exponent": 3.5,
+        "partialPrimeMoment": 0.10039564167661424,
+        "zetaPhaseTransformPartial": -0.10039564167661424,
+        "endpointCompletedPhaseTransformPartial": 0.2996043583233858,
+        "termsThroughOneMillion": 78734,
+        "provedByEulerProduct": true
+      },
+      {
+        "sigma": 1.5,
+        "exponent": 3.0,
+        "partialPrimeMoment": 0.1648226821578754,
+        "zetaPhaseTransformPartial": -0.1648226821578754,
+        "endpointCompletedPhaseTransformPartial": 0.33517731784212457,
+        "termsThroughOneMillion": 78734,
+        "provedByEulerProduct": true
+      },
+      {
+        "sigma": 1.1,
+        "exponent": 2.6,
+        "partialPrimeMoment": 0.25629099432094343,
+        "zetaPhaseTransformPartial": -0.25629099432094343,
+        "endpointCompletedPhaseTransformPartial": 0.36870900567905657,
+        "termsThroughOneMillion": 78734,
+        "provedByEulerProduct": true
+      },
+      {
+        "sigma": 0.5,
+        "exponent": 2.0,
+        "partialPrimeMoment": 0.5699599927023038,
+        "zetaPhaseTransformPartial": -0.5699599927023038,
+        "endpointCompletedPhaseTransformPartial": 0.4300400072976962,
+        "termsThroughOneMillion": 78734,
+        "provedByEulerProduct": false
+      }
+    ]
+  },
+  "criticalBoundaryTarget": {
+    "formalZetaEndpoint": "I_zeta(1/2)=-sum Lambda(n)/n^2",
+    "formalEndpointCompletedValue": "I_C(1/2)=1-sum Lambda(n)/n^2=C'/C(2)",
+    "ordinateIdentity": "H_ord(3/2)=6 integral_0^infinity T N(T)/(T^2+9/4)^2 dT",
+    "countingFormula": "N(T)=1+theta(T)/pi+arg zeta(1/2+iT)/pi",
+    "gammaIdentity": "(6/pi) integral T theta(T)/(T^2+9/4)^2 dT=-(EulerGamma+log pi)/2",
+    "boundaryEndpointPhaseTransform": 0.8333333333333333,
+    "analyticEndpointValue": 1.0,
+    "poleCorrection": -0.16666666666666674,
+    "zetaPoleCorrection": "the boundary endpoint phase is 5/6 rather than the formal value 1, producing the -1/6 correction",
+    "defectIdentityZetaPhase": "D_2=I_zeta,crit+sum Lambda(n)/n^2-1/6",
+    "defectIdentityEndpointCompleted": "D_2=I_C,crit-[1-sum Lambda(n)/n^2]",
+    "equivalence": "D_2=0 iff the endpoint-completed prime phase law reaches sigma=1/2 without a zero-crossing defect iff RH"
+  },
+  "zeroCrossingAudit": {
+    "mechanism": "log zeta has no single holomorphic branch across a zero; shifting the vertical line from sigma>1 to sigma=1/2 acquires argument/Blaschke contributions from beta>1/2",
+    "quartetDefect": "6eta^2(eta^2+3gamma^2-9/4)/[(gamma^2+9/4)((gamma^2-eta^2+9/4)^2+4eta^2gamma^2)]",
+    "sign": "strictly positive for every off-line nontrivial quartet",
+    "rows": [
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "anchorDefect": 4.343742666208958e-06
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "anchorDefect": 2.7136988442063712e-05
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "anchorDefect": 0.00010410148861942365
+      },
+      {
+        "eta": 0.1,
+        "gamma": 50.0,
+        "anchorDefect": 2.8713572251157346e-08
+      },
+      {
+        "eta": 0.25,
+        "gamma": 50.0,
+        "anchorDefect": 1.794535663844632e-07
+      },
+      {
+        "eta": 0.49,
+        "gamma": 50.0,
+        "anchorDefect": 6.893074762936987e-07
+      },
+      {
+        "eta": 0.1,
+        "gamma": 1000.0,
+        "anchorDefect": 1.7999864700642604e-13
+      },
+      {
+        "eta": 0.25,
+        "gamma": 1000.0,
+        "anchorDefect": 1.124991445354223e-12
+      },
+      {
+        "eta": 0.49,
+        "gamma": 1000.0,
+        "anchorDefect": 4.321765857240673e-12
+      }
+    ],
+    "consequence": "the desired scalar conservation is exactly the assertion that no zero-crossing contribution exists"
+  },
+  "failedClosureRoutes": [
+    {
+      "route": "dominated convergence in sigma",
+      "failure": "growth in T is integrable, but branches of arg zeta are not uniform through zeros; the missing finite jump is the positive defect"
+    },
+    {
+      "route": "analytic continuation of the prime moment",
+      "failure": "-sum Lambda(n)n^(-(sigma+3/2)) continues as a scalar function, but identity theorem cannot continue an equality whose left side uses a logarithm crossing zeros"
+    },
+    {
+      "route": "functional equation cancellation",
+      "failure": "reflection sends beta>1/2 to beta<1/2; only the right member is crossed before the critical line, so the defects do not cancel"
+    },
+    {
+      "route": "natural-gradient/Noether conservation",
+      "failure": "the support law is dissipative rather than Hamiltonian; the s=2 anchor is a strict Lyapunov quantity off the line, not a conserved observable"
+    },
+    {
+      "route": "critical Chebyshev energy",
+      "failure": "it would justify the zero-free continuation, but its required all-scale estimate is itself RH-equivalent"
+    }
+  ],
+  "minimalRemainingStatement": "prove that the weighted Euler-product phase identity has no Blaschke jump as sigma decreases from greater than one to one half",
+  "status": "the conservation law is proved only in the Euler half-plane; its critical-boundary extension and RH remain open"
+}

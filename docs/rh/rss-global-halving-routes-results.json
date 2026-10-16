@@ -1,0 +1,193 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "All proposed routes around the global repeated-halving obstruction",
+  "question": "do prime-ledger invariance, zero genealogy, real-rooted kernel refinement, or compactified seam control close the RH gap?",
+  "verdict": {
+    "rhProved": false,
+    "primeLedgerRouteClosed": false,
+    "completeGenealogyRouteClosed": false,
+    "realRootedKernelRouteClosed": false,
+    "compactifiedSeamRouteClosed": false,
+    "localGenealogyEstablished": true,
+    "escapingBirthsAtInfinityExcluded": false,
+    "conclusion": "all four routes were tested. Each yields a precise sufficient theorem, but the missing step reappears as a nonzero dyadic prime correction, uncontrolled entry from infinity, failure of positive blends to preserve real-rootedness, or the essential singularity at the compactified infinity seam. No route currently supplies the required global coercivity."
+  },
+  "primeLedgerRoute": {
+    "target": "derive invariance of the positive central horizontal residue from an exact dyadic identity on the completed prime ledger",
+    "parityIdentity": "(1-2^(-s)) zeta(s) removes the even Euler contributions",
+    "p2LogCurvatureFormula": "-(log 2)^2 2^(-s)/(1-2^(-s))^2",
+    "p2LogCurvatureAtCenter": -3.9602015607712526,
+    "consequence": "the elementary dyadic/parity operation has a nonzero central curvature correction, so literal halving is not an invariance of the prime ledger",
+    "residueAccounting": {
+      "residueBefore": 0.000018779559456743018,
+      "residueAfter": 0.000004696725681143145,
+      "residueExport": 0.000014082833775599874,
+      "identity": "R_before=R_after+R_export"
+    },
+    "reservoirProblem": "closure may conserve residue plus a carrier or branch reservoir rather than the horizontal residue alone; proving the reservoir returns empty is an additional theorem",
+    "quaternaryProblem": "four spectral copies at half displacement conserve quadratic horizontal energy, so the 1000 fork can return the exported norm instead of forcing it to vanish",
+    "status": "no prime-side identity deriving R_after=R_before was found"
+  },
+  "genealogyRoute": {
+    "localTheorem": "for a holomorphic family F(lambda,s), zeros inside any compact zero-free contour continue with multiplicity and cannot be born spontaneously in its interior",
+    "localGenealogyExample": {
+      "compactHeight": 30,
+      "counts": {
+        "zeroth-seed": [
+          2,
+          2,
+          4,
+          3
+        ],
+        "reindexed-fibonacci": [
+          2,
+          2,
+          4,
+          3
+        ],
+        "boundary-only": [
+          4,
+          3,
+          3,
+          3
+        ]
+      },
+      "consequence": "inside a compact contour whose boundary remains zero-free, zeros continue locally under analytic coefficient changes; count changes indicate boundary crossing, not spontaneous interior birth"
+    },
+    "globalFailure": "on a noncompact plane, zeros may cross every expanding contour from infinity; the escaping quartet is precisely such a boundary-at-infinity entry",
+    "orderFailure": "uniform finite order or exponential type is insufficient because multiplication by a stage-dependent polynomial preserves order while adding escaping zeros",
+    "sufficientMissingTheorem": "a uniform nonvanishing estimate on an exhaustion of contours, or a regular seam divisor accounting for every incoming zero",
+    "status": "local parentage is automatic, but global no-birth is not established"
+  },
+  "kernelRoute": {
+    "target": "construct canonical K_N with real-rooted Fourier transforms and strong convergence to the exact Riemann kernel",
+    "positiveBlendCounterexample": {
+      "first": "(z^2-1)(z^2-2)",
+      "second": "(z^2-10)(z^2-20)",
+      "halfSumAsPolynomialInY": [
+        1,
+        -16.5,
+        101
+      ],
+      "discriminant": -131.75,
+      "consequence": "both inputs have only real zeros, but their positive half-sum has nonreal zeros because the roots do not interlace"
+    },
+    "halvingDilation": {
+      "checks": [
+        {
+          "iteration": 1,
+          "rootAfterFof2z": 0.5,
+          "rootAfterFofZover2": 2
+        },
+        {
+          "iteration": 2,
+          "rootAfterFof2z": 0.25,
+          "rootAfterFofZover2": 4
+        },
+        {
+          "iteration": 3,
+          "rootAfterFof2z": 0.125,
+          "rootAfterFofZover2": 8
+        },
+        {
+          "iteration": 4,
+          "rootAfterFof2z": 0.0625,
+          "rootAfterFofZover2": 16
+        }
+      ],
+      "consequence": "composition with 2z preserves real-rootedness and contracts roots, but repeated dilation cannot converge to the fixed xi function; coefficient or kernel averaging needs an interlacing-preservation theorem"
+    },
+    "polyaRoute": "real-rooted Pólya-like transforms are available, but preserving real-rootedness while converging through the body of the exact Riemann kernel remains open",
+    "source": "https://arxiv.org/abs/1502.06844",
+    "status": "positivity and halving do not establish Laguerre-Polya membership"
+  },
+  "compactifiedSeamRoute": {
+    "coordinate": "tau=gamma/sqrt(1+gamma^2)",
+    "samples": [
+      {
+        "ordinate": -1000000,
+        "compactCoordinate": -0.9999999999995
+      },
+      {
+        "ordinate": -100,
+        "compactCoordinate": -0.9999500037496876
+      },
+      {
+        "ordinate": -1,
+        "compactCoordinate": -0.7071067811865475
+      },
+      {
+        "ordinate": 0,
+        "compactCoordinate": 0
+      },
+      {
+        "ordinate": 1,
+        "compactCoordinate": 0.7071067811865475
+      },
+      {
+        "ordinate": 100,
+        "compactCoordinate": 0.9999500037496876
+      },
+      {
+        "ordinate": 1000000,
+        "compactCoordinate": 0.9999999999995
+      }
+    ],
+    "seamSupremum": [
+      {
+        "stage": 14,
+        "escapingHeight": 842.9988137587108,
+        "compactCoordinate": 0.999999296416544,
+        "horizontalSupremumContribution": 0.25,
+        "inheritedHalvingBound": 0.000030517578125
+      },
+      {
+        "stage": 20,
+        "escapingHeight": 15126.999933893048,
+        "compactCoordinate": 0.9999999978149349,
+        "horizontalSupremumContribution": 0.25,
+        "inheritedHalvingBound": 4.76837158203125e-7
+      },
+      {
+        "stage": 30,
+        "escapingHeight": 1860497.9999994645,
+        "compactCoordinate": 0.9999999999998556,
+        "horizontalSupremumContribution": 0.25,
+        "inheritedHalvingBound": 4.656612873077393e-10
+      },
+      {
+        "stage": 40,
+        "escapingHeight": 228826127.0000003,
+        "compactCoordinate": 1,
+        "horizontalSupremumContribution": 0.25,
+        "inheritedHalvingBound": 4.547473508864641e-13
+      }
+    ],
+    "positiveResult": "the supremum of horizontal displacement remains 1/4 for an escaping quartet and therefore detects what convergent residue sums miss",
+    "analyticFailure": "xi is a nonpolynomial entire function with infinitely many zeros, so infinity is an essential singularity; it cannot extend holomorphically as a regular point of the Riemann sphere",
+    "consequence": "topological endpoint identification does not provide analytic seam regularity, and nonholomorphic compactification does not transfer the identity theorem",
+    "sufficientMissingTheorem": "a new normalized section or divisor on the compactified seam whose norm is coercive in horizontal displacement and whose convergence is uniform at the seam",
+    "status": "the seam norm detects escape set-theoretically but is not controlled by the current analytic completion"
+  },
+  "combinedAssessment": {
+    "exactProgress": [
+      "aggregate residue contraction is algebraically exact",
+      "local zero genealogy holds on every fixed zero-free contour",
+      "a seam supremum detects fixed-displacement escape",
+      "real-rootedness-preserving dilation is explicit"
+    ],
+    "blockingFacts": [
+      "the p=2 dyadic correction is nonzero at the central ledger point",
+      "zeros can enter from infinity in a noncompact analytic family",
+      "positive sums of real-rooted components need not remain real-rooted",
+      "xi has an essential singularity at compactified infinity",
+      "four spectral branches at half scale can conserve the residue being contracted"
+    ],
+    "narrowestNextTargets": [
+      "derive an exact completed-ledger identity cancelling the p=2 correction and every reservoir term",
+      "prove interlacing for every canonical theta-carrier refinement",
+      "construct a seam divisor that accounts for zeros entering from infinity without requiring xi to be regular there"
+    ],
+    "status": "all suggested routes remain conditional; no proof of RH is obtained"
+  }
+}

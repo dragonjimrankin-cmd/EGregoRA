@@ -3,12 +3,12 @@ layout: layouts/base.njk
 title: Proof and Correction Ledger
 metaTitle: "Riemann Proof Audit · The Two Infinities"
 permalink: /riemann-proof-audit/
-description: "Part VI — Riemann Programme: a line-by-line evidence audit of the archive’s complete-monotonicity, Bernstein-density, Pólya-kernel, critical-line and third-derivative claims."
+description: "Part VI — Riemann Programme: a source-forensic and line-by-line audit of the archive’s Gram-kernel, screw-positivity, complete-monotonicity, Bernstein-density and critical-line claims."
 ogType: article
 schemaType: ScholarlyArticle
 section: Mathematical proof audit
 published: "2026-10-14"
-keywords: "Riemann Hypothesis proof audit, complete monotonicity, Bernstein density, Pólya kernel log concavity, critical line positivity, correction ledger"
+keywords: "Riemann Hypothesis proof audit, screw kernel positivity, Gram kernel, complete monotonicity, Bernstein density, Pólya kernel log concavity, critical line positivity, correction ledger"
 ---
 
 <section class="page-head">
@@ -40,6 +40,261 @@ keywords: "Riemann Hypothesis proof audit, complete monotonicity, Bernstein dens
       inverse-Laplace formula may be exact while the proposed positivity proof fails. The Cauchy&ndash;Schwarz
       proof on the real axis may be valid while its hoped-for continuation to the critical line is unavailable.
       Keeping the surviving half is the purpose of a ledger.</p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Source-forensic finding</p>
+    <h2 id="t-rh-which-positivity">Which earlier positivity result was actually proved?</h2>
+    <p>The project did prove a universal finite-set Gram statement. For fixed \(\sigma\), the Rankin
+      increment kernel has the form</p>
+    <p class="formula">\[
+      D_{\kappa,\sigma}(x,y)=\kappa_{\rm R}\sum_{n\ge1}n^{-2\sigma-2}
+      (e^{-ix\log n}-1)(e^{iy\log n}-1),
+    \]</p>
+    <p>and every finite quadratic form is a sum of squares:</p>
+    <p class="formula">\[
+      \sum_{i,j}c_i\overline{c_j}D_{\kappa,\sigma}(x_i,x_j)
+      =\kappa_{\rm R}\sum_{n\ge1}n^{-2\sigma-2}
+      \left|\sum_i c_i(e^{-ix_i\log n}-1)\right|^2\ge0.
+    \]</p>
+    <p>This is unconditional and genuinely quantifies over every finite real point set. It is also a
+      different kernel. Its spectrum consists of the frequencies \(\log n\) with positive Dirichlet weights.
+      Suzuki’s arithmetic screw kernel is</p>
+    <p class="formula">\[
+      G_g(x,y)=\Psi(x)+\Psi(y)-\Psi(x-y).
+    \]</p>
+    <p>Changing the first kernel into the second requires the completed prime-power explicit formula. Möbius
+      extraction is signed, and individual delayed prime-power hinges are not positive kernels. The exact
+      Laplace conversion found by the project begins with the conditional clause “if \(G_g\) is positive”; it
+      does not prove that clause.</p>
+    <p>The older archive contains two other easy sources of confusion. Its real-axis theorem proves
+      \((\log\xi)''(\sigma)>0\) using a positive \(\cosh\)-weighted measure, but the corresponding critical-line
+      weight \(\cos(tu)\) is signed. Its heading “Global PSD” describes selected finite Galerkin matrices; the
+      same master document says that extending their positivity to every cutoff, dimension and test function
+      is open and equivalent to RH.</p>
+    <p><strong>Verdict:</strong> an earlier universal positivity lemma exists, but restoring its exact object is
+      decisive. No earlier lemma in the 52-file archive or the current programme proves
+      \(\Psi(t)\ge0\) for every real \(t\), or \(G_g\succeq0\) for every finite real point set.
+      <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">Seventh-stage operator audit</p>
+    <h2 id="t-rh-double-mobius">Does the second inversion complete the Weil form?</h2>
+    <p>Arithmetic primitive extraction and TTI’s geometric second turn are not the same operation. If
+      \(M a=\mu*a\) extracts primitive divisor data and \(Z a=\mathbf1*a\) restores repetitions, then
+      \(ZM=MZ=I\), while \(M^2\ne I\). The exact two-face model is instead</p>
+    <p class="formula">\[
+      P=\begin{pmatrix}0&Z\\M&0\end{pmatrix},
+      \qquad P^2=I.
+    \]</p>
+    <p>This is a genuine TTI-style involution: the first turn crosses from repetitions to primitives and the
+      second returns. It does not create a new Weil metric. Its inverse face returns the all-integer ledger,
+      and the positive metric making \(P\) isometric is only the original ledger norm transported to the
+      primitive face.</p>
+    <p>The adjoint candidate \(M^*GM\) is positive whenever \(G\) is positive, but that fact inherits its
+      content from the chosen metric. With the ordinary feature norm it is unbounded. With the independently
+      derived \(\kappa_{\rm R}/n^2\) Green metric it converges, yet its diagonal is smooth:</p>
+    <p class="formula">\[
+      D_{M,\kappa}(t,t)=C t^2+o(t^2).
+    \]</p>
+    <p>Suzuki’s target has a different local signature,</p>
+    <p class="formula">\[
+      G_g(t,t)=2\Psi(t)=t\log(1/t)+O(t).
+    \]</p>
+    <p>The kernels therefore cannot be equal near the origin. Choosing a pullback metric designed to force
+      equality would be circular unless TTI derived that metric before seeing the target. A successful route
+      still needs an independent residue or history-bearing cocycle \(B\) with
+      \(W(f*\widetilde f)=\lVert Bf\rVert^2\) on the full Weil test space. The exact operator, numerical
+      diagnostics and convergence argument are retained in
+      <code>docs/rh/rss-double-mobius-weil-completion.md</code>. The subsequent
+      <a href="/riemann-splice-questions/#t-rh-third-splice">splice-at-1000 test</a> derives the correct cusp
+      order from a new harmonic-boundary postulate, but not its coefficient or arithmetic event support. The
+      <a href="/riemann-splice-questions/#t-rh-alternative-channels">gamma and ordinate channels</a> recover
+      the exact local coefficient and sharpen the remaining problem to the fluctuating horizontal/arithmetic
+      correction. The subsequent <a href="/riemann-splice-questions/#t-rh-ordinate-splice">two-inversion
+      ordinate splice</a> resolves that correction into exact ordinate and horizontal projectors and gives its
+      central value a nonnegative norm-square formula. The norm vanishes exactly under RH, but no splice or
+      Möbius argument yet proves that it vanishes. The
+      <a href="/riemann-splice-questions/#t-rh-third-density-bounce">999&ndash;666&ndash;333 bounce test</a>
+      finds an exact missing-one drift rather than damping: the carry-aware motion is a 1000-state permutation.
+      A strict horizontal contraction would prove RH by zero isolation, but deriving that contraction remains
+      precisely the unproved step. The follow-up
+      <a href="/riemann-splice-questions/#t-rh-golden-catchup">splice-at-one golden-delay completion</a>
+      compares zeroth-seed, reindexed-Fibonacci and boundary-only readings, each with independent clocks and
+      exact xi symmetries. All six tested model/schedule paths have favourable low-window zero counts, but an
+      escaping-quartet stress family shows why local convergence still cannot supply the global shrinking strip.
+      A further <a href="/riemann-splice-questions/#t-rh-internal-splices">internal-splice comparison</a>
+      tests 333, 666 and 999 as extra carriers, successive Fibonacci events and three faces of one cohort.
+      The <a href="/riemann-splice-questions/#t-rh-ternary-splices">ternary-splice test</a> separately compares
+      three new carriers, three total branches and three internal states at 100, 666 and 999. The subsequent
+      <a href="/riemann-splice-questions/#t-rh-quaternary-splice">quaternary-splice test</a> finds that
+      \(F_4=3=4-1\) exactly fits the net cohort for four total branches at 1000 under full reindexing. The
+      <a href="/riemann-splice-questions/#t-rh-splice-one-halving">splice-at-one halving test</a> proves that
+      same-xi horizontal halving would be RH-equivalent, while remaining-deficit halving only accelerates the
+      finite carrier limit. The <a href="/riemann-splice-questions/#t-rh-halving-obstruction">obstruction-closing
+      attempt</a> weakens pointwise invariance to aggregate residue conservation or complete no-birth genealogy.
+      The <a href="/riemann-splice-questions/#t-rh-global-halving-routes">four-route audit</a> then tests the prime
+      ledger, global genealogy, real-rooted kernel and compactified seam routes; each retains a distinct missing
+      theorem. The <a href="/riemann-splice-questions/#t-rh-final-three-routes">final-three-routes investigation</a>
+      proves the order-one counterterm obstruction, finds that the tested canonical stages do not interlace and
+      constructs a complete Blaschke seam divisor with a height-independent hyperbolic marker. The
+      <a href="/riemann-splice-questions/#t-rh-two-ended-seam-ledger">two-ended seam continuation</a> then
+      identifies that marker with a product of endpoint Poisson phase slopes, tests genuinely consecutive and
+      one-carrier refinements, and proves that its nonlinear defect contracts even under four descendants. The
+      <a href="/riemann-splice-questions/#t-rh-arithmetic-seam-control">arithmetic-control attempt</a> then
+      derives an endpoint-completed von Mangoldt&ndash;Laguerre sequence whose subexponential growth is equivalent
+      to forcing the seam infimum to one. The
+      <a href="/riemann-splice-questions/#t-rh-prime-laguerre-growth-proof">growth-proof attempt</a> cancels
+      the continuous prime density exactly and reduces the remainder to a signed transform of the Chebyshev
+      prime error. The <a href="/riemann-splice-questions/#t-rh-dual-prime-error-routes">dual-route attempt</a>
+      then shows quantitatively that square-root prime error and uniform Laguerre cancellation meet at the same
+      half-plane boundary. The <a href="/riemann-splice-questions/#t-rh-critical-chebyshev-energy">critical-energy
+      continuation</a> isolates a weaker positive all-scale theorem, proves that it is equivalent to RH and
+      connects it to the Laguerre coefficients through a Hilbert-space generating function. The
+      <a href="/riemann-splice-questions/#t-rh-energy-spin-colour">spin–colour application</a> then propagates
+      that theorem through every earlier zeta-side object and distinguishes six internal states from six spectral
+      descendants. The <a href="/riemann-splice-questions/#t-rh-universal-pi-coupling">universal-π audit</a>
+      proves that sine and theta already couple every integer mode to \(\pi\), while unit phases preserve positive
+      energy. The <a href="/riemann-splice-questions/#t-rh-pi-squared-coupling">direct π×π tests</a> then show
+      that \(\pi^2\) breaks scalar theta and full-strip seam geometry, while two canonical channels only double
+      zero multiplicity. Finally, the <a href="/riemann-splice-questions/#t-rh-decimal-splice-contraction">decimal
+      contraction attempt</a> derives the exact barycentric coefficient \(c=1/\varphi\) and proves that two
+      hypothetical descendants contract the seam defect, but it does not move zero support; its period-twenty
+      prime twist is nonprincipal. The <a href="/riemann-splice-questions/#t-rh-kappa-entropy-splice">κ-entropy
+      follow-up</a> then derives a strict binary data-processing law and proves completed-ledger invariance.
+      Its fixed points include every reflection-symmetric off-line quartet. The subsequent
+      <a href="/riemann-splice-questions/#t-rh-kappa-natural-gradient">natural-gradient attempt</a> does find
+      a support-changing semigroup with golden time \(\log\varphi\) and the critical line as unique invariant.
+      The <a href="/riemann-splice-questions/#t-rh-xi-ledger-stationarity">completed-ledger stationarity
+      attempt</a> then proves that even weak quadratic stationarity is RH-equivalent, while every off-line
+      quartet has strict negative residue variation. The <a href="/riemann-splice-questions/#t-rh-principal-prime-anchor">principal-prime
+      follow-up</a> reduces the missing law to conservation of one absolutely convergent Euler anchor at
+      \(s=2\). The <a href="/riemann-splice-questions/#t-rh-prime-phase-conservation">prime-phase retry</a>
+      proves the corresponding weighted identity in the Euler half-plane; crossing an off-line zero adds
+      exactly the positive anchor defect, so boundary conservation remains RH-equivalent. The reverse-sign
+      review certifies the resulting defect below \(9.274\times10^{-37}\) by exact rational interval arithmetic
+      but cannot round a positive quantity to zero. The negative-index follow-up replaces that collapsing
+      magnitude by two stable negative squares per off-line quartet; computing zero index on the arithmetic side
+      is Weil positivity. Finally, the
+      <a href="/riemann-splice-questions/#t-rh-relational-synchronisation">relational synchronisation audit</a>
+      combines proximity, Fibonacci cohorts and splice-kernel consensus across all 127 mechanism subsets.
+      Every same-divisor combination leaves horizontal support fixed, while every support-changing combination
+      still lacks same-\(\xi\) prime invariance. The subsequent
+      <a href="/riemann-splice-questions/#t-rh-relational-defect-transport">defect-transport audit</a> shows
+      that closed anchor conservation merely moves positive defect between quartets, while open subsystem
+      coherence exports it to a reservoir. Moving ordinates can preserve finitely many anchors without
+      preserving the divisor; open-set conservation fixes the divisor and forbids the motion. The
+      <a href="/riemann-splice-questions/#t-rh-global-annihilation">global-annihilation search</a> then proves
+      the exact Lyapunov theorem: same-ledger invariance plus strict dissipation would force RH. The
+      <a href="/riemann-splice-questions/#t-rh-prime-power-dissipation">prime-power follow-up</a> then derives
+      \(\dot\eta=-\eta\) as the Fisher-natural gradient of von-Mangoldt relative entropy. This supplies genuine
+      arithmetic dissipation, but the signed ordinate cosine in the explicit formula prevents linear
+      identification with a positive same-\(\xi\) mixture. The
+      <a href="/riemann-splice-questions/#t-rh-prime-zero-intertwiner">positive-intertwiner follow-up</a>
+      constructs normalized von-Mangoldt feature vectors for actual zero coordinates and proves that boundedness
+      of their global positive diagonal relative to the central law is RH-equivalent. The subsequent
+      <a href="/riemann-splice-questions/#t-rh-logarithmic-dephasing">logarithmic-dephasing correction</a>
+      eliminates every coherent off-diagonal prime pair without estimating it. The
+      <a href="/riemann-splice-questions/#t-rh-dephased-mellin-ladder">Mellin-ladder attempt</a> then weakens
+      uniform domination to countably many scalar moments, but only the normalization rung is established. The
+      <a href="/riemann-splice-questions/#t-rh-hundred-round-mellin-search">hundred-round search</a> proves an
+      exact separator theorem: no finite bootstrap from the current structural package reaches the next rung.
+      <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">Prime–zero intertwiner audit</p>
+    <h2 id="t-rh-audit-prime-zero-intertwiner">A canonical positive feature map does not prove its global frame bound</h2>
+    <p>For \(\rho=1/2+\eta+i\gamma\), Stage 40 defines</p>
+    <p class="formula">\[
+      \psi_{\eta,\gamma}(n)=
+      \frac{\sqrt{\Lambda(n)}n^{-1-\eta-i\gamma}}
+      {\sqrt{-\zeta'(2+2\eta)/\zeta(2+2\eta)}}.
+    \]</p>
+    <p>Its norm is one and its diagonal is exactly \(p_\eta\), independent of \(\gamma\). With positive
+      convergent reflected-zero weights, the global diagonal \(P_\xi\) therefore satisfies</p>
+    <p class="formula">\[
+      \mathrm{RH}\iff P_\xi=p_0
+      \iff \sup_{p^k}\frac{P_\xi(p^k)}{p_0(p^k)}&lt;\infty.
+    \]</p>
+    <p>This is an equivalence, not a proof of the required bound. Any off-line component has a positive tail
+      growing as \(n^{2|\eta|}\), so it cannot cancel. Direct averaging of the feature vector retains or deletes
+      the ordinate mode. The original audit then overstated the role of the coherent quadratic off-diagonals:
+      they exist, but they need not be estimated merely to extract the diagonal.</p>
+    <p><strong>Verdict:</strong> exact feature construction and RH-equivalent boundedness criterion proved;
+      arithmetic frame identity unproved. RH remains open. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Logarithmic-dephasing correction</p>
+    <h2 id="t-rh-audit-logarithmic-dephasing">Lift first, then average the density operator</h2>
+    <p>Put \(U_te_n=e^{-it\log n}e_n\) and define</p>
+    <p class="formula">\[
+      \mathcal D_T(A)=\frac1{2T}\int_{-T}^{T}U_tAU_t^*dt.
+    \]</p>
+    <p>The \((n,m)\) entry acquires the multiplier \(\operatorname{sinc}(T\log(n/m))\). It converges to zero
+      for \(n\ne m\) and remains one for \(n=m\). The trace-norm limit is therefore the completely positive,
+      trace-preserving diagonal pinching map, and</p>
+    <p class="formula">\[
+      \mathcal D(|\psi_{\eta,\gamma}\rangle\langle\psi_{\eta,\gamma}|)
+      =\operatorname{diag}(p_\eta).
+    \]</p>
+    <p>This resolves phase removal and off-diagonal elimination without Weil positivity or critical Chebyshev
+      energy. The diagonal retains \(\eta\), recoverable from two likelihood ratios; \(\gamma\) and multiplicity
+      can remain in a classical register.</p>
+    <p>The correction does not prove centrality. The twirl is spectral postprocessing, not a fixed-prime
+      identity. Showing \(P_\xi=p_0\), or only \(P_\xi\le Cp_0\), is still equivalent to RH.</p>
+    <p><strong>Verdict:</strong> pair control is unnecessary for constructing the dephased positive map. The
+      global arithmetic frame bound remains unproved, and RH remains open. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">Mellin-ladder audit</p>
+    <h2 id="t-rh-audit-dephased-mellin-ladder">A weaker countable target still begins with an open zero-free strip</h2>
+    <p>Uniform domination can be replaced by</p>
+    <p class="formula">\[
+      A_j=\sum_{n=p^k}P_\xi(n)n^{1-1/j}&lt;\infty
+      \qquad(j=1,2,\ldots).
+    \]</p>
+    <p>An off-line component at displacement \(\eta\) makes the \(j\)-th sum diverge once
+      \(2|\eta|\ge1/j\). Thus all rungs are finite exactly under RH. The trace-one identity proves only
+      \(A_1=1\). The next rung \(A_2&lt;\infty\) already excludes every zero outside
+      \(1/4&lt;\Re\rho&lt;3/4\), a theorem not supplied by the framework.</p>
+    <p>The same boundary appears through relative moments: \(P_\xi/p_0\in L^q(p_0)\) for every finite
+      \(q&gt;1\) is RH-equivalent. A reflected \(\eta=0.1\) state satisfies normalization, positivity,
+      dephasing, finite entropy and componentwise dissipation while its fifth Mellin rung diverges.</p>
+    <p><strong>Verdict:</strong> the \(L^\infty\) condition has been weakened to scalar positive sums, but no
+      nontrivial rung has been proved for the actual divisor. RH remains open. <span class="spec">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
+  <div class="frame">
+    <p class="kicker">Hundred-round separator audit</p>
+    <h2 id="t-rh-audit-hundred-round-mellin-search">Finite structural bootstrapping cannot cross a Mellin boundary</h2>
+    <p>For every finite \(J\), a displacement satisfying</p>
+    <p class="formula">\[
+      \frac1{2(J+1)}&lt;\eta_J&lt;\frac1{2J}
+    \]</p>
+    <p>produces a reflected state with finite \(A_1,\ldots,A_J\) and divergent \(A_{J+1}\). It also retains all
+      ten mechanisms tested across the one hundred routes: positivity, normalization, reflection, dephasing,
+      finite entropy, fixed log moments, Fisher flow, unit phases, trace class and strict convexity.</p>
+    <p>The countermodel is abstract and does not replace the actual zeta divisor. Its role is precise: it proves
+      that finite recombinations of the established structural facts cannot imply the next moment. A successful
+      continuation must add a new arithmetic identity special to \(\xi\).</p>
+    <p><strong>Verdict:</strong> one hundred routes completed; zero closures. A general finite-bootstrap no-go
+      is proved for the tested class, but no new zero-free strip or RH proof follows. <span class="spec">&#9670;</span></p>
   </div>
 </section>
 

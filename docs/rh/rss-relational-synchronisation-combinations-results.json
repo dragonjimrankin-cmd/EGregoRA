@@ -1,0 +1,2673 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Relational synchronisation and prior-analogy combination audit",
+  "question": "Can proximity to other beings, combined with the earlier pi, Fibonacci, entropy, halving, kappa-flow, phase-defect and negative-index analogies, affect RH?",
+  "verdict": {
+    "relationalSynchronisationModelIsMathematicallyCoherent": true,
+    "positiveFibonacciSpliceProximityGraphConstructed": true,
+    "allNonemptyMechanismCombinationsTested": 127,
+    "combinationProvesRh": false,
+    "rhRemainsOpen": true,
+    "conclusion": "Proximity, Fibonacci cohorts and the squared positive splice kernel produce a valid attractive consensus graph.  Circular phase locking, a common pi register and reflection entropy leave horizontal zero support unchanged.  Horizontal consensus, golden contraction, halving and barycentric projection can move support, but then they change the off-line quartet polynomial.  Across all 127 non-empty combinations, every same-xi combination is support-inert and every support-changing combination lacks same-xi/principal-prime invariance.  The detectors remain detectors; no combination proves RH."
+  },
+  "sectorSeparation": {
+    "state": "(q,m,eta), with q=tan(relative phase/2), m=reflection-branch bias and eta=Re(rho)-1/2",
+    "counterexample": {
+      "label": "perfect circular-phase lock with off-line support",
+      "eta": "0.25",
+      "gamma": "15",
+      "phaseHalfAngleQ": "0",
+      "branchBias": "0",
+      "phaseDefect": "0.0000214871847699223575224155692518061589",
+      "horizontalResidue": "0.0000148079587705764549942410685064400388",
+      "quartetFactorZ2Coefficient": "449.8750",
+      "quartetFactorConstant": "50653.12890625",
+      "negativeSquaresForOneFullQuartet": 2,
+      "onCriticalLine": false
+    },
+    "meaning": "q=0 and m=0 give perfect circular synchrony and maximal branch balance while eta=1/4 retains a positive RH defect and two negative squares",
+    "blockDiagonalUntilNewLawDerived": true
+  },
+  "mechanisms": [
+    {
+      "id": "proximity_phase_lock",
+      "sector": "circular phase",
+      "map": "q=tan(delta/2) -> q/2 for the audited finite coupling step",
+      "changesHorizontalSupport": false,
+      "interpretation": "attractive two-being Kuramoto coupling"
+    },
+    {
+      "id": "common_pi_register",
+      "sector": "common phase gauge",
+      "map": "theta_i -> theta_i+pi for every participant; delta and q unchanged",
+      "changesHorizontalSupport": false,
+      "interpretation": "universal pi phase or common clock register"
+    },
+    {
+      "id": "golden_branch_entropy",
+      "sector": "reflection branch label",
+      "map": "m -> m/phi",
+      "changesHorizontalSupport": false,
+      "interpretation": "golden random-reflection channel"
+    },
+    {
+      "id": "fibonacci_catchup_clock",
+      "sector": "schedule",
+      "map": "selects coupling times by Fibonacci cohorts but has no state map alone",
+      "changesHorizontalSupport": false,
+      "interpretation": "independent golden depths and catch-up clocks"
+    },
+    {
+      "id": "golden_support_flow",
+      "sector": "horizontal zero support",
+      "map": "eta -> eta/phi",
+      "changesHorizontalSupport": true,
+      "interpretation": "kappa Fisher-natural gradient at t=log(phi)"
+    },
+    {
+      "id": "halving_support_flow",
+      "sector": "horizontal zero support",
+      "map": "eta -> eta/2",
+      "changesHorizontalSupport": true,
+      "interpretation": "repeated splice halving interpreted as coordinate movement"
+    },
+    {
+      "id": "mirror_barycentre_projection",
+      "sector": "horizontal zero support",
+      "map": "(+eta,-eta) -> (0,0)",
+      "changesHorizontalSupport": true,
+      "interpretation": "replace a reflected pair by its central barycentre"
+    }
+  ],
+  "twoBeingPhaseLock": {
+    "equation": "dot(delta)=Delta omega-2J(r) sin(delta)",
+    "lockingCriterion": "abs(Delta omega)<=2J(r)",
+    "auditedParameters": {
+      "DeltaOmega": "0.5",
+      "JOfR": "exp(-r)",
+      "criticalDistance": "1.38629436111989061883446424291635314"
+    },
+    "distanceRows": [
+      {
+        "distance": "0.5",
+        "couplingJ": "0.606530659712633423603799534991180453",
+        "phaseLocked": true,
+        "thresholdMargin2JMinusAbsDeltaOmega": "0.713061319425266847207599069982360907"
+      },
+      {
+        "distance": "1",
+        "couplingJ": "0.367879441171442321595523770161460867",
+        "phaseLocked": true,
+        "thresholdMargin2JMinusAbsDeltaOmega": "0.235758882342884643191047540322921735"
+      },
+      {
+        "distance": "1.5",
+        "couplingJ": "0.223130160148429828933280470764012521",
+        "phaseLocked": false,
+        "thresholdMargin2JMinusAbsDeltaOmega": "-0.0537396797031403421334390584719749573"
+      },
+      {
+        "distance": "2",
+        "couplingJ": "0.135335283236612691893999494972484403",
+        "phaseLocked": false,
+        "thresholdMargin2JMinusAbsDeltaOmega": "-0.229329433526774616212001010055031193"
+      }
+    ],
+    "commonPiShiftChangesRelativePhase": false,
+    "clockAlignments": [
+      {
+        "clock": "golden",
+        "time": "0.481211825059603447497758913424368423",
+        "couplingJ": "0.5",
+        "phaseHalfAngleScale": "0.618033988749894848204586834365638118",
+        "horizontalSupportScale": "0.618033988749894848204586834365638118",
+        "scalesMatch": true,
+        "identifiesPhaseWithHorizontalSupport": false
+      },
+      {
+        "clock": "halving",
+        "time": "0.693147180559945309417232121458176568",
+        "couplingJ": "0.5",
+        "phaseHalfAngleScale": "0.500000000000000000000000000000000000",
+        "horizontalSupportScale": "0.500000000000000000000000000000000000",
+        "scalesMatch": true,
+        "identifiesPhaseWithHorizontalSupport": false
+      }
+    ]
+  },
+  "relationalHorizontalConsensus": {
+    "flow": "dot(eta_+)=-J(eta_+-eta_-), dot(eta_-)=-J(eta_--eta_+)",
+    "reflectionSolution": "eta_+(t)=eta_0 exp(-2Jt), eta_-(t)=-eta_0 exp(-2Jt)",
+    "goldenAlignment": "at t=log(phi)/(2J), eta_+-eta_- is divided by phi",
+    "halvingAlignment": "at t=log(2)/(2J), eta_+-eta_- is divided by 2",
+    "finiteTimeCollision": false,
+    "changesQuartetPolynomialWhenEtaNonzero": true,
+    "sameXiInvarianceProved": false
+  },
+  "fibonacciSpliceProximityGraph": {
+    "nodes": 16,
+    "cohorts": [
+      1,
+      1,
+      2,
+      3,
+      5,
+      8,
+      13,
+      21
+    ],
+    "edgeLaw": "J_ab=exp(-distance)*sqrt(F_a F_b)/21*(K(u_a,u_b)/54)^2, with direct reflected-pair edges F_n/21",
+    "whySquared": "the Gram kernel is PSD but can be pointwise negative; squaring makes each synchronising edge nonnegative",
+    "laplacianRowSumError": 1.1102230246251565e-16,
+    "eigenvalues": [
+      -2.5113296313124758e-17,
+      0.01718630060867415,
+      0.025702259634742944,
+      0.035609416825767834,
+      0.04925580905466681,
+      0.07662829816186635,
+      0.11238388927989472,
+      0.12064842562777767,
+      0.1361179993476362,
+      0.22626679884278122,
+      0.28025966069690766,
+      0.33518516742549737,
+      0.5473885916685831,
+      0.8737374531579446,
+      1.4203829880924217,
+      2.127623573092504
+    ],
+    "connected": true,
+    "positiveSemidefinite": true,
+    "initialMeanEta": 0.0,
+    "meanEtaAtT10": 0.0,
+    "initialCoherenceEnergy": 0.24438752834467126,
+    "energyAtT1": 0.1787806396003035,
+    "energyAtT10": 0.02068997465093,
+    "initialEnergyDerivative": -0.09505068121741392,
+    "energyDecreases": true,
+    "finiteTimeStateIsNonzero": true,
+    "sameXiInvarianceProved": false
+  },
+  "combinationCensus": {
+    "nonemptyCombinations": 127,
+    "categoryCounts": {
+      "same-divisor but horizontal-support-inert": 15,
+      "finite support contraction of a different divisor": 48,
+      "critical projection of a different divisor": 64
+    },
+    "validRhProofs": 0,
+    "pairwiseSectorMapsCommute": true,
+    "reason": "the audited maps act independently on q, m, eta or the schedule; introducing an eta-phase cross-law simply creates another support-changing flow whose arithmetic invariance must still be proved",
+    "rows": [
+      {
+        "mechanisms": [
+          "proximity_phase_lock"
+        ],
+        "mechanismCount": 1,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register"
+        ],
+        "mechanismCount": 1,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy"
+        ],
+        "mechanismCount": 1,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "fibonacci_catchup_clock"
+        ],
+        "mechanismCount": 1,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "golden_support_flow"
+        ],
+        "mechanismCount": 1,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "halving_support_flow"
+        ],
+        "mechanismCount": 1,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 1,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "fibonacci_catchup_clock"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "fibonacci_catchup_clock"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "fibonacci_catchup_clock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "fibonacci_catchup_clock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "fibonacci_catchup_clock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 2,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "fibonacci_catchup_clock"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "fibonacci_catchup_clock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "fibonacci_catchup_clock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "fibonacci_catchup_clock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "fibonacci_catchup_clock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 3,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.25",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.0000214871847699223575224155692518061589",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": true,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "same-divisor but horizontal-support-inert",
+        "missingPremise": "none of the selected maps changes eta"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "fibonacci_catchup_clock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 4,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0.154508497187473712051146708591409529",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000820963774155424811060413665474607336",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0.125",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000537359407960276747924544803083966421",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 5,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow"
+        ],
+        "mechanismCount": 6,
+        "finalEta": "0.0772542485937368560255733542957047647",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0.00000205267181849335098775443547182833460",
+        "negativeSquares": 2,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": false,
+        "provesRhForOriginalXi": false,
+        "classification": "finite support contraction of a different divisor",
+        "missingPremise": "same-xi or principal-prime invariance under the support flow"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 6,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 6,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 6,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 6,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 6,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 6,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.75",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      },
+      {
+        "mechanisms": [
+          "proximity_phase_lock",
+          "common_pi_register",
+          "golden_branch_entropy",
+          "fibonacci_catchup_clock",
+          "golden_support_flow",
+          "halving_support_flow",
+          "mirror_barycentre_projection"
+        ],
+        "mechanismCount": 7,
+        "finalEta": "0",
+        "finalPhaseHalfAngleQ": "0.375",
+        "finalBranchBias": "0",
+        "phaseDefect": "0",
+        "negativeSquares": 0,
+        "preservesOriginalXiForOffLineQuartet": false,
+        "forcesCriticalSupportInTransformedState": true,
+        "provesRhForOriginalXi": false,
+        "classification": "critical projection of a different divisor",
+        "missingPremise": "an arithmetic theorem identifying the projected polynomial with the original xi"
+      }
+    ]
+  },
+  "diagnosticStress": [
+    {
+      "label": "off-line control quartet",
+      "eta": "0.25",
+      "gamma": "15",
+      "phaseHalfAngleQ": "0.75",
+      "branchBias": "0",
+      "phaseDefect": "0.0000214871847699223575224155692518061589",
+      "horizontalResidue": "0.0000148079587705764549942410685064400388",
+      "quartetFactorZ2Coefficient": "449.8750",
+      "quartetFactorConstant": "50653.12890625",
+      "negativeSquaresForOneFullQuartet": 2,
+      "onCriticalLine": false
+    },
+    {
+      "label": "perfect circular-phase lock with off-line support",
+      "eta": "0.25",
+      "gamma": "15",
+      "phaseHalfAngleQ": "0",
+      "branchBias": "0",
+      "phaseDefect": "0.0000214871847699223575224155692518061589",
+      "horizontalResidue": "0.0000148079587705764549942410685064400388",
+      "quartetFactorZ2Coefficient": "449.8750",
+      "quartetFactorConstant": "50653.12890625",
+      "negativeSquaresForOneFullQuartet": 2,
+      "onCriticalLine": false
+    },
+    {
+      "label": "golden support contraction",
+      "eta": "0.154508497187473712051146708591409529",
+      "gamma": "15",
+      "phaseHalfAngleQ": "0.463525491562421136153440125774228588",
+      "branchBias": "0",
+      "phaseDefect": "0.00000820963774155424811060413665474607336",
+      "horizontalResidue": "0.00000565775519846060201912422049094191301",
+      "quartetFactorZ2Coefficient": "449.952254248593736856025573354295705",
+      "quartetFactorConstant": "50635.7433639806035445639935977815012",
+      "negativeSquaresForOneFullQuartet": 2,
+      "onCriticalLine": false
+    },
+    {
+      "label": "halving support contraction",
+      "eta": "0.125",
+      "gamma": "15",
+      "phaseHalfAngleQ": "0.375",
+      "branchBias": "0",
+      "phaseDefect": "0.00000537359407960276747924544803083966421",
+      "horizontalResidue": "0.00000370327507596602469280767854855276287",
+      "quartetFactorZ2Coefficient": "449.968750",
+      "quartetFactorConstant": "50632.031494140625",
+      "negativeSquaresForOneFullQuartet": 2,
+      "onCriticalLine": false
+    },
+    {
+      "label": "golden plus halving support contraction",
+      "eta": "0.0772542485937368560255733542957047647",
+      "gamma": "15",
+      "phaseHalfAngleQ": "0.231762745781210568076720062887114294",
+      "branchBias": "0",
+      "phaseDefect": "0.00000205267181849335098775443547182833460",
+      "horizontalResidue": "0.00000141462639085433049372970918150446911",
+      "quartetFactorZ2Coefficient": "449.988063562148434214006393338573926",
+      "quartetFactorConstant": "50627.6857341362394479216707239769938",
+      "negativeSquaresForOneFullQuartet": 2,
+      "onCriticalLine": false
+    },
+    {
+      "label": "mirror barycentre projection",
+      "eta": "0",
+      "gamma": "15",
+      "phaseHalfAngleQ": "0",
+      "branchBias": "0",
+      "phaseDefect": "0",
+      "horizontalResidue": "0",
+      "quartetFactorZ2Coefficient": "450",
+      "quartetFactorConstant": "50625",
+      "negativeSquaresForOneFullQuartet": 0,
+      "onCriticalLine": true
+    },
+    {
+      "label": "same off-line displacement at high ordinate",
+      "eta": "0.25",
+      "gamma": "1000000",
+      "phaseHalfAngleQ": "0",
+      "branchBias": "0",
+      "phaseDefect": "1.12499999999144531250004172314453108e-24",
+      "horizontalResidue": "7.49999999999921875000000006835937500e-25",
+      "quartetFactorZ2Coefficient": "1999999999999.8750",
+      "quartetFactorConstant": "1000000000000125000000000.00390625",
+      "negativeSquaresForOneFullQuartet": 2,
+      "onCriticalLine": false
+    }
+  ],
+  "conditionalClosure": {
+    "secondMoment": "M2(t)=c^2 M2(0); imposing M2(t)=M2(0) for 0<c<1 forces M2=0",
+    "primeAnchor": "conservation of xi_t'/xi_t(2) under any strict horizontal contraction forces RH",
+    "negativeIndex": "one full off-line quartet keeps two negative squares at every nonzero finite displacement and loses them only at exact collision",
+    "status": "each closure requires same-xi or principal-prime invariance, which is RH-equivalent and remains unproved"
+  },
+  "evidenceBoundary": {
+    "provedHere": [
+      "the two-oscillator phase-lock threshold and golden/halving clock alignment",
+      "an exhaustive 127-combination sector census for the declared mechanisms",
+      "positive-semidefinite connected Fibonacci/splice/proximity graph Laplacian",
+      "strict decay of its toy consensus energy",
+      "phase synchrony and branch balance do not imply eta=0"
+    ],
+    "notProved": [
+      "that people or biological systems couple through the splice kernel",
+      "that zeta zeros undergo any physical or auxiliary proximity dynamics",
+      "that a moved divisor retains the Euler product or the original xi function",
+      "RH"
+    ]
+  },
+  "status": "the analogies combine into a coherent relational consensus model, but their sector separation and same-xi obstruction survive every tested combination; RH remains open"
+}

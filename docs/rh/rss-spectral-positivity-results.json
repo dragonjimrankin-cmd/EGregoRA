@@ -1,0 +1,553 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "RSS spectral-confinement and positivity attempt",
+  "verdict": {
+    "rhProof": false,
+    "achieved": "an exact RH-equivalent Pick/Gram target, unconditional RSS ledger Gram kernels, an inverse-cusp Green-operator interpretation of kappa_R=1/(4*pi^2), and no-go counterfactors for confinement from scattering or xi symmetries alone",
+    "missing": "a zero-independent construction proving the xi Pick kernel is positive semidefinite for every finite set of points in Re(s)>1/2 (equivalently, Weil positivity on the full admissible test space)"
+  },
+  "exactCriteria": {
+    "xiLogDerivative": "H(s)=xi'(s)/xi(s)",
+    "pickKernel": "K_xi(s,t)=(H(s)+conj(H(t)))/(s+conj(t)-1)",
+    "pickCriterion": "RH iff K_xi is positive semidefinite on Re(s)>1/2",
+    "weilCriterion": "RH iff W(g*tilde(g))>=0 for every admissible test function g",
+    "liCriterion": "RH iff lambda_n>=0 for every n>=1",
+    "liGeneratingFunction": "log xi(1/(1-z))=-log(2)+sum_(n>=1) lambda_n z^n/n"
+  },
+  "scatteringBridge": {
+    "modularCoefficient": "Phi(u)=Lambda(2u-1)/Lambda(2u)",
+    "normalizedCoefficient": "Psi(s)=((s-1)/(s+1)) Phi((s+1)/2)=xi(s)/xi(s+1)",
+    "derivativeIdentity": "Psi'(s)/Psi(s)=H(s)-H(s+1)",
+    "xiFunctionalEquationChecks": [
+      {
+        "s": {
+          "re": 0.37,
+          "im": 0.9
+        },
+        "absoluteError": 6.667118051786499e-16
+      },
+      {
+        "s": {
+          "re": 0.72,
+          "im": 3.4
+        },
+        "absoluteError": 5.468975410105057e-16
+      },
+      {
+        "s": {
+          "re": 1.31,
+          "im": 7.2
+        },
+        "absoluteError": 2.0615989788322953e-15
+      },
+      {
+        "s": {
+          "re": 0.58,
+          "im": 13
+        },
+        "absoluteError": 1.617106712681025e-17
+      }
+    ],
+    "scatteringBridgeChecks": [
+      {
+        "s": {
+          "re": 0.67,
+          "im": 0.4
+        },
+        "normalizedScattering": {
+          "re": 0.9693594634269251,
+          "im": -0.017878398506886772
+        },
+        "xiRatio": {
+          "re": 0.9693594634269249,
+          "im": -0.017878398506886998
+        },
+        "ratioAbsoluteError": 3.164812698569833e-16,
+        "logDerivativeAbsoluteError": 2.4558423574660774e-11
+      },
+      {
+        "s": {
+          "re": 0.82,
+          "im": 2.3
+        },
+        "normalizedScattering": {
+          "re": 0.9564384255440637,
+          "im": -0.10253203582197701
+        },
+        "xiRatio": {
+          "re": 0.956438425544064,
+          "im": -0.10253203582197702
+        },
+        "ratioAbsoluteError": 3.3335590258932494e-16,
+        "logDerivativeAbsoluteError": 2.6342347895677178e-12
+      },
+      {
+        "s": {
+          "re": 1.2,
+          "im": 5.7
+        },
+        "normalizedScattering": {
+          "re": 0.9006830136714207,
+          "im": -0.25527375682699266
+        },
+        "xiRatio": {
+          "re": 0.9006830136714205,
+          "im": -0.2552737568269926
+        },
+        "ratioAbsoluteError": 2.2887833992611187e-16,
+        "logDerivativeAbsoluteError": 1.3754946567549584e-11
+      },
+      {
+        "s": {
+          "re": 0.61,
+          "im": 9
+        },
+        "normalizedScattering": {
+          "re": 0.8372569015020027,
+          "im": -0.45079235601388346
+        },
+        "xiRatio": {
+          "re": 0.8372569015020019,
+          "im": -0.45079235601388307
+        },
+        "ratioAbsoluteError": 8.688869536365456e-16,
+        "logDerivativeAbsoluteError": 1.2454385868474116e-11
+      }
+    ]
+  },
+  "unconditionalLedgerPositivity": {
+    "statement": "integer repetitions give Gram features n^(-s), while prime powers give sqrt(Lambda(n)) n^(-s)",
+    "repetitionKernel": "K_rep(s,t)=sum_(n>=1)n^(-s-conj(t))=zeta(s+conj(t))",
+    "primePowerKernel": "K_Lambda(s,t)=sum_(n>=2)vonMangoldt(n)n^(-s-conj(t))=-zeta'/zeta(s+conj(t))",
+    "domain": "Re(s),Re(t)>1/2, so both defining series are evaluated in Re(s+conj(t))>1",
+    "truncationLimit": 50000,
+    "points": [
+      {
+        "re": 0.62,
+        "im": 0.3
+      },
+      {
+        "re": 0.73,
+        "im": 2
+      },
+      {
+        "re": 0.9,
+        "im": 5
+      },
+      {
+        "re": 1.15,
+        "im": 9
+      },
+      {
+        "re": 0.68,
+        "im": 14
+      }
+    ],
+    "repetitionMaximumHermitianResidual": 0,
+    "primePowerMaximumHermitianResidual": 0,
+    "repetitionLdlPivots": [
+      4.450593717318129,
+      2.6076513853063643,
+      1.573068275838432,
+      0.7344908232546796,
+      2.2280515945916424
+    ],
+    "primePowerLdlPivots": [
+      3.321172755111125,
+      1.5960504245376725,
+      0.7593561691141424,
+      0.33875355556123465,
+      1.9463570483259447
+    ],
+    "limitation": "these are genuine positive kernels but are not the RH-equivalent K_xi kernel"
+  },
+  "existingRankinKappa": {
+    "value": 0.025330295910584444,
+    "formula": "kappa_R=1/(4*pi^2)",
+    "exactCuspInterpretation": "on the unit-period modular cusp circle, kappa_R is the reciprocal of the first non-zero eigenvalue (2*pi)^2 of -d^2/dx^2",
+    "firstCuspCircleEigenvalue": 39.47841760435743,
+    "eigenvalueProduct": 1,
+    "meanZeroGreenTrace": 0.08333333333333333,
+    "meanZeroGreenTraceFormula": "2*kappa_R*zeta(2)=1/12",
+    "inducedFeature": "sqrt(kappa_R) n^(-s-1)",
+    "inducedKernel": "K_kappa(s,t)=kappa_R*zeta(s+conj(t)+2)",
+    "truncationLimit": 50000,
+    "maximumHermitianResidual": 0,
+    "ldlPivots": [
+      0.029399410133844076,
+      0.005925616230702313,
+      0.003710454035363734,
+      0.0009359290401770943,
+      0.0009366646861977704
+    ],
+    "status": "exact positive Green-operator normalisation",
+    "limitation": "positive scalar normalisation and inverse-cusp weighting do not turn the combined-argument ledger kernel into the RH-equivalent K_xi kernel"
+  },
+  "targetPickPositivityDiagnostics": {
+    "hGridPointCount": 66,
+    "minimumSampledRealPart": {
+      "sigma": 0.51,
+      "t": 0,
+      "value": {
+        "re": 0.00046209980304123317,
+        "im": 0
+      }
+    },
+    "pickChecks": [
+      {
+        "points": [
+          {
+            "re": 0.65,
+            "im": 0.2
+          },
+          {
+            "re": 0.75,
+            "im": 3
+          },
+          {
+            "re": 0.8,
+            "im": 8
+          },
+          {
+            "re": 0.7,
+            "im": 13
+          },
+          {
+            "re": 1.1,
+            "im": 17
+          }
+        ],
+        "maximumHermitianResidual": 0,
+        "ldlPivots": [
+          0.04621723491188652,
+          0.0006434429734336819,
+          0.0007138607925913001,
+          0.01604985311760926,
+          0.0038870938453292175
+        ],
+        "minimumPivot": 0.0006434429734336819
+      },
+      {
+        "points": [
+          {
+            "re": 0.56,
+            "im": 1
+          },
+          {
+            "re": 0.92,
+            "im": 4.5
+          },
+          {
+            "re": 0.63,
+            "im": 10
+          },
+          {
+            "re": 1.2,
+            "im": 19
+          }
+        ],
+        "maximumHermitianResidual": 0,
+        "ldlPivots": [
+          0.04643419490141056,
+          0.001192590160314845,
+          0.002742307698905967,
+          0.1464138549674156
+        ],
+        "minimumPivot": 0.001192590160314845
+      },
+      {
+        "points": [
+          {
+            "re": 0.54,
+            "im": 0.1
+          },
+          {
+            "re": 0.7,
+            "im": 6
+          },
+          {
+            "re": 1,
+            "im": 11
+          },
+          {
+            "re": 0.82,
+            "im": 14
+          },
+          {
+            "re": 1.35,
+            "im": 28
+          }
+        ],
+        "maximumHermitianResidual": 0,
+        "ldlPivots": [
+          0.046212097327268775,
+          0.0038835484840359508,
+          0.006202107913961398,
+          0.09134251070754829,
+          0.26865330465283205
+        ],
+        "minimumPivot": 0.0038835484840359508
+      }
+    ],
+    "limitation": "finite floating-point samples cannot establish positivity on the full half-plane"
+  },
+  "liDiagnostics": {
+    "method": "Cauchy coefficient extraction from log xi(1/(1-z)) at two independent radii/sample counts",
+    "maxN": 30,
+    "lambdaOneExact": 0.02309570896612101,
+    "allDisplayedPositive": true,
+    "maximumIndependentDifference": 0.0000012202380332837492,
+    "coefficients": [
+      {
+        "n": 1,
+        "lambda": 0.023095708966120877,
+        "independentLambda": 0.023095708966120253,
+        "absoluteDifference": 6.245004513516506e-16,
+        "imaginaryResidual": -2.5102976436809264e-17
+      },
+      {
+        "n": 2,
+        "lambda": 0.09234573522804705,
+        "independentLambda": 0.09234573522804657,
+        "absoluteDifference": 4.85722573273506e-16,
+        "imaginaryResidual": 1.0662814754196283e-17
+      },
+      {
+        "n": 3,
+        "lambda": 0.20763892055432426,
+        "independentLambda": 0.20763892055432653,
+        "absoluteDifference": 2.275957200481571e-15,
+        "imaginaryResidual": 5.045083512613802e-16
+      },
+      {
+        "n": 4,
+        "lambda": 0.3687904794922471,
+        "independentLambda": 0.3687904794922415,
+        "absoluteDifference": 5.6066262743570405e-15,
+        "imaginaryResidual": -4.768978888605044e-16
+      },
+      {
+        "n": 5,
+        "lambda": 0.5755427144611814,
+        "independentLambda": 0.5755427144611848,
+        "absoluteDifference": 3.3306690738754696e-15,
+        "imaginaryResidual": -3.3458251095944485e-15
+      },
+      {
+        "n": 6,
+        "lambda": 0.8275660122823849,
+        "independentLambda": 0.8275660122823836,
+        "absoluteDifference": 1.3322676295501878e-15,
+        "imaginaryResidual": -4.130291658977687e-15
+      },
+      {
+        "n": 7,
+        "lambda": 1.1244601175709505,
+        "independentLambda": 1.1244601175709643,
+        "absoluteDifference": 1.3766765505351941e-14,
+        "imaginaryResidual": 9.502750864172333e-15
+      },
+      {
+        "n": 8,
+        "lambda": 1.46575567714708,
+        "independentLambda": 1.4657556771471256,
+        "absoluteDifference": 4.551914400963142e-14,
+        "imaginaryResidual": -7.250981285329709e-15
+      },
+      {
+        "n": 9,
+        "lambda": 1.850916048382576,
+        "independentLambda": 1.8509160483826925,
+        "absoluteDifference": 1.1657341758564144e-13,
+        "imaginaryResidual": -7.564091840832582e-14
+      },
+      {
+        "n": 10,
+        "lambda": 2.2793393631933716,
+        "independentLambda": 2.279339363193105,
+        "absoluteDifference": 2.6645352591003757e-13,
+        "imaginaryResidual": -7.405075338618886e-14
+      },
+      {
+        "n": 11,
+        "lambda": 2.750360838220418,
+        "independentLambda": 2.7503608382220106,
+        "absoluteDifference": 1.5925039065223245e-12,
+        "imaginaryResidual": 1.5131179954923563e-13
+      },
+      {
+        "n": 12,
+        "lambda": 3.2632553206240633,
+        "independentLambda": 3.263255320626733,
+        "absoluteDifference": 2.6698643296185764e-12,
+        "imaginaryResidual": -2.99698076094106e-13
+      },
+      {
+        "n": 13,
+        "lambda": 3.817240057844427,
+        "independentLambda": 3.817240057844126,
+        "absoluteDifference": 3.0109248427834245e-13,
+        "imaginaryResidual": -1.9147591478499296e-13
+      },
+      {
+        "n": 14,
+        "lambda": 4.411477678683101,
+        "independentLambda": 4.411477678679754,
+        "absoluteDifference": 3.347544463849772e-12,
+        "imaginaryResidual": -5.959393298588111e-13
+      },
+      {
+        "n": 15,
+        "lambda": 5.045079372031326,
+        "independentLambda": 5.045079372070162,
+        "absoluteDifference": 3.8835601401387976e-11,
+        "imaginaryResidual": 3.246750951528487e-12
+      },
+      {
+        "n": 16,
+        "lambda": 5.717108248865919,
+        "independentLambda": 5.717108248900179,
+        "absoluteDifference": 3.426059436151263e-11,
+        "imaginaryResidual": -6.0740550039192225e-12
+      },
+      {
+        "n": 17,
+        "lambda": 6.42658287211034,
+        "independentLambda": 6.426582872219058,
+        "absoluteDifference": 1.0871747946339383e-10,
+        "imaginaryResidual": -2.6765878373130434e-12
+      },
+      {
+        "n": 18,
+        "lambda": 7.172480938303101,
+        "independentLambda": 7.17248093819012,
+        "absoluteDifference": 1.1298162405637413e-10,
+        "imaginaryResidual": -3.703567395212566e-11
+      },
+      {
+        "n": 19,
+        "lambda": 7.953743094371266,
+        "independentLambda": 7.953743094438247,
+        "absoluteDifference": 6.698108734326524e-11,
+        "imaginaryResidual": -7.028389897132174e-11
+      },
+      {
+        "n": 20,
+        "lambda": 8.769276872349081,
+        "independentLambda": 8.769276873602696,
+        "absoluteDifference": 1.2536141014152236e-9,
+        "imaginaryResidual": -2.1123530021916314e-11
+      },
+      {
+        "n": 21,
+        "lambda": 9.617960722559948,
+        "independentLambda": 9.617960715127992,
+        "absoluteDifference": 7.4319554954627165e-9,
+        "imaginaryResidual": 1.6614616522692722e-10
+      },
+      {
+        "n": 22,
+        "lambda": 10.498648133843576,
+        "independentLambda": 10.498648140260531,
+        "absoluteDifference": 6.41695585557045e-9,
+        "imaginaryResidual": 8.295786335879861e-10
+      },
+      {
+        "n": 23,
+        "lambda": 11.410171814044627,
+        "independentLambda": 11.41017184219648,
+        "absoluteDifference": 2.815185240478968e-8,
+        "imaginaryResidual": -2.812695625505786e-9
+      },
+      {
+        "n": 24,
+        "lambda": 12.351347889669029,
+        "independentLambda": 12.351347889110912,
+        "absoluteDifference": 5.581171080848435e-10,
+        "imaginaryResidual": -2.2160878432937266e-11
+      },
+      {
+        "n": 25,
+        "lambda": 13.320980237601715,
+        "independentLambda": 13.320980230491841,
+        "absoluteDifference": 7.109873578770021e-9,
+        "imaginaryResidual": -9.796115580014315e-9
+      },
+      {
+        "n": 26,
+        "lambda": 14.317864555060007,
+        "independentLambda": 14.31786462802362,
+        "absoluteDifference": 7.296361381747829e-8,
+        "imaginaryResidual": 3.666618067995074e-9
+      },
+      {
+        "n": 27,
+        "lambda": 15.340792815719078,
+        "independentLambda": 15.34079288667999,
+        "absoluteDifference": 7.096091181324482e-8,
+        "imaginaryResidual": 5.3720566689610864e-8
+      },
+      {
+        "n": 28,
+        "lambda": 16.388557520362863,
+        "independentLambda": 16.388557888722666,
+        "absoluteDifference": 3.683598031045676e-7,
+        "imaginaryResidual": -5.933381835743053e-10
+      },
+      {
+        "n": 29,
+        "lambda": 17.459955487907752,
+        "independentLambda": 17.459956090043608,
+        "absoluteDifference": 6.021358558427892e-7,
+        "imaginaryResidual": 1.8090026252450993e-9
+      },
+      {
+        "n": 30,
+        "lambda": 18.55379221474695,
+        "independentLambda": 18.553793434984982,
+        "absoluteDifference": 0.0000012202380332837492,
+        "imaginaryResidual": -9.687154017539679e-8
+      }
+    ],
+    "limitation": "positivity of any finite prefix is compatible with an off-critical zero and cannot prove RH"
+  },
+  "unitarityNoGo": {
+    "factor": "C_a(w)=((w-a)(w-conj(a)))/((w+conj(a))(w+a))",
+    "resonanceParameter": {
+      "re": 0.22,
+      "im": 1.7
+    },
+    "properties": [
+      "C_a(w)C_a(-w)=1",
+      "|C_a(it)|=1 for real t",
+      "C_a(conj(w))=conj(C_a(w))",
+      "zeros occur at a and conj(a), with poles at -a and -conj(a)"
+    ],
+    "maximumUnitarityError": 2.220446049250313e-16,
+    "maximumReflectionError": 2.220446049250313e-16,
+    "maximumRealityError": 0,
+    "syntheticZeroError": 0,
+    "conclusion": "self-adjoint boundary unitarity and the scattering functional equation permit arbitrary off-axis resonance pairs; an additional arithmetic positivity theorem is indispensable"
+  },
+  "xiSymmetryNoGo": {
+    "factor": "P_a(s)=((s-1/2)^2-a^2)((s-1/2)^2-conj(a)^2)",
+    "offset": {
+      "re": 0.18,
+      "im": 2.1
+    },
+    "properties": [
+      "P_a(1-s)=P_a(s)",
+      "P_a(conj(s))=conj(P_a(s))",
+      "zeros occur at 1/2 plus or minus a and 1/2 plus or minus conj(a)"
+    ],
+    "maximumFunctionalEquationError": 8.881784197001252e-16,
+    "maximumRealityError": 0,
+    "syntheticZeroError": 3.357314426466473e-16,
+    "limitation": "this factor need not preserve the Euler product or xi asymptotics; it proves only that the functional and conjugation symmetries do not themselves confine zeros"
+  },
+  "requiredNewRSSTheorem": {
+    "statement": "construct, without assuming zero locations, a Hilbert space H_RSS and vectors V_s from primitive return data such that <V_t,V_s>=K_xi(s,t) for every Re(s),Re(t)>1/2",
+    "consequence": "Gram positivity would imply H is holomorphic with positive real part in the right critical half-plane; xi would have no zero there, and xi(s)=xi(1-s) would then force all nontrivial zeros onto Re(s)=1/2",
+    "currentStatus": "not derived; the known positive torus-strain metric and positive Dirichlet kernels do not equal this arithmetic kernel"
+  }
+}

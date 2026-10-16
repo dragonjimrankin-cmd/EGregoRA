@@ -1,0 +1,284 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "A von-Mangoldt prime-power dissipative law and its missing xi intertwiner",
+  "question": "Can strict global dissipation be derived directly from arithmetic rather than postulated on the zero support?",
+  "verdict": {
+    "arithmeticDissipativeLawDerived": true,
+    "usesVonMangoldtPrimePowers": true,
+    "naturalGradientIsEtaDotMinusEta": true,
+    "goldenTimeRecovered": true,
+    "positiveMixtureRigidityProvedForFiniteLedgers": true,
+    "actualXiZeroLedgerFollowsLaw": false,
+    "sameXiIntertwinerDerived": false,
+    "rhProved": false,
+    "conclusion": "Normalizing Lambda(n)n^(-2-2eta) gives a genuine prime-power exponential family.  Its Fisher-natural gradient of relative entropy to the eta=0 prime ledger is exactly d eta/dt=-eta, with strict dissipation and golden time log(phi).  A finite positive reflection-symmetric mixture equals the central prime ledger only when all displacements vanish.  However, the actual explicit formula is signed and oscillatory through cos(gamma log x); it does not identify the xi divisor with that positive mixture.  Squaring returns the previously unresolved prime-pair energy theorem.  The arithmetic law is proved, but its same-xi intertwiner is not, so RH remains open."
+  },
+  "primePowerFamily": {
+    "support": "prime powers n>=2",
+    "vonMangoldtMoment": "M(a)=sum Lambda(n)n^(-a)=-zeta'/zeta(a), a>1",
+    "parameter": "a=2+2eta, -1/2<eta<1/2",
+    "probability": "p_eta(n)=Lambda(n)n^(-2-2eta)/M(2+2eta)",
+    "centralLedger": "p_0(n)=Lambda(n)n^(-2)/M(2)",
+    "logPartition": "A(a)=log M(a)",
+    "relativeEntropy": "D(p_eta||p_0)=A(2)-A(a)+(a-2)A'(a)",
+    "fisherMetric": "I_eta=4A''(a)=4 Var_eta(log n)",
+    "entropyDerivative": "dD/deta=4eta A''(a)",
+    "naturalGradient": "deta/dt=-I_eta^(-1)dD/deta=-eta",
+    "dissipation": "dD/dt=-4eta^2 A''(a)<0 for eta!=0",
+    "goldenTime": "eta(log phi)=eta(0)/phi"
+  },
+  "finiteComputation": {
+    "cutoff": 200000,
+    "primePowers": 18120,
+    "rows": [
+      {
+        "eta": -0.4,
+        "exponentA": 1.2,
+        "truncatedPrimeMoment": 4.023073377920591,
+        "relativeEntropyToCentral": 1.494316307944951,
+        "varianceLogN": 8.802273559396433,
+        "fisherMetricEta": 35.20909423758573,
+        "relativeEntropyDerivative": -14.083637695034293,
+        "naturalGradientVelocity": 0.4,
+        "dissipationRate": -5.633455078013718,
+        "goldenEta": -0.24721359549995794,
+        "relativeEntropyAtGoldenTime": 0.28505693366325924,
+        "goldenStepStrictlyDissipates": true
+      },
+      {
+        "eta": -0.25,
+        "exponentA": 1.5,
+        "truncatedPrimeMoment": 1.5007635059963056,
+        "relativeEntropyToCentral": 0.2949985821902361,
+        "varianceLogN": 3.6190790082542335,
+        "fisherMetricEta": 14.476316033016934,
+        "relativeEntropyDerivative": -3.6190790082542335,
+        "naturalGradientVelocity": 0.25,
+        "dissipationRate": -0.9047697520635584,
+        "goldenEta": -0.1545084971874737,
+        "relativeEntropyAtGoldenTime": 0.0775566564673578,
+        "goldenStepStrictlyDissipates": true
+      },
+      {
+        "eta": -0.1,
+        "exponentA": 1.8,
+        "truncatedPrimeMoment": 0.7957446431218737,
+        "relativeEntropyToCentral": 0.027044327024031548,
+        "varianceLogN": 1.5674093358527859,
+        "fisherMetricEta": 6.269637343411143,
+        "relativeEntropyDerivative": -0.6269637343411144,
+        "naturalGradientVelocity": 0.1,
+        "dissipationRate": -0.06269637343411144,
+        "goldenEta": -0.061803398874989486,
+        "relativeEntropyAtGoldenTime": 0.009188258636245117,
+        "goldenStepStrictlyDissipates": true
+      },
+      {
+        "eta": 0.1,
+        "exponentA": 2.2,
+        "truncatedPrimeMoment": 0.4254402529746283,
+        "relativeEntropyToCentral": 0.015872304304132164,
+        "varianceLogN": 0.7044691429861509,
+        "fisherMetricEta": 2.8178765719446037,
+        "relativeEntropyDerivative": 0.28178765719446036,
+        "naturalGradientVelocity": -0.09999999999999999,
+        "dissipationRate": -0.028178765719446035,
+        "goldenEta": 0.061803398874989486,
+        "relativeEntropyAtGoldenTime": 0.006622664109362693,
+        "goldenStepStrictlyDissipates": true
+      },
+      {
+        "eta": 0.25,
+        "exponentA": 2.5,
+        "truncatedPrimeMoment": 0.2887406781059518,
+        "relativeEntropyToCentral": 0.07316661564202236,
+        "varianceLogN": 0.45063972895642085,
+        "fisherMetricEta": 1.8025589158256834,
+        "relativeEntropyDerivative": 0.45063972895642085,
+        "naturalGradientVelocity": -0.25,
+        "dissipationRate": -0.11265993223910521,
+        "goldenEta": 0.1545084971874737,
+        "relativeEntropyAtGoldenTime": 0.0336822908543861,
+        "goldenStepStrictlyDissipates": true
+      },
+      {
+        "eta": 0.4,
+        "exponentA": 2.8,
+        "truncatedPrimeMoment": 0.20424466818386341,
+        "relativeEntropyToCentral": 0.14524620942667335,
+        "varianceLogN": 0.311717719997301,
+        "fisherMetricEta": 1.246870879989204,
+        "relativeEntropyDerivative": 0.4987483519956817,
+        "naturalGradientVelocity": -0.4,
+        "dissipationRate": -0.1994993407982727,
+        "goldenEta": 0.24721359549995794,
+        "relativeEntropyAtGoldenTime": 0.0719132753219461,
+        "goldenStepStrictlyDissipates": true
+      }
+    ],
+    "scope": "the identities are analytic for the infinite convergent family; the finite rows are deterministic numerical checks on the truncated family"
+  },
+  "positiveMixtureRigidity": {
+    "statement": "for a finite positive mixture of reflected states p_eta and p_-eta, equality with p_0 at every prime power forces every eta=0",
+    "tailProof": "if eta_max>0, the p_-eta_max/p_0 ratio grows like n^(2eta_max) along prime powers and cannot equal a constant central tail with positive coefficients",
+    "rows": [
+      {
+        "absoluteEta": 0.1,
+        "totalVariationFromCentral": 0.011011400918103155,
+        "relativeEntropyFromCentral": 0.0015448225703030803,
+        "tailRatioAtLargestPrimePower": 4.172113211156852,
+        "equalsCentralLedger": false
+      },
+      {
+        "absoluteEta": 0.25,
+        "totalVariationFromCentral": 0.07355495503571148,
+        "relativeEntropyFromCentral": 0.0638527397126504,
+        "tailRatioAtLargestPrimePower": 84.9227926809908,
+        "equalsCentralLedger": false
+      },
+      {
+        "absoluteEta": 0.4,
+        "totalVariationFromCentral": 0.20639170399118065,
+        "relativeEntropyFromCentral": 0.5133205064087377,
+        "tailRatioAtLargestPrimePower": 1233.3196844913944,
+        "equalsCentralLedger": false
+      }
+    ],
+    "tailWitness": [
+      {
+        "primePower": 2,
+        "symmetricMixtureToCentralRatio": 0.9664353667682243
+      },
+      {
+        "primePower": 42533,
+        "symmetricMixtureToCentralRatio": 39.166534416225204
+      },
+      {
+        "primePower": 92707,
+        "symmetricMixtureToCentralRatio": 57.82021214575493
+      },
+      {
+        "primePower": 145547,
+        "symmetricMixtureToCentralRatio": 72.44629948893112
+      },
+      {
+        "primePower": 199999,
+        "symmetricMixtureToCentralRatio": 84.9227926809908
+      }
+    ],
+    "conditionalRhClosure": "if the actual completed zero ledger were proved to induce such a positive mixture equal to p_0, rigidity would force RH"
+  },
+  "signedExplicitFormulaGate": {
+    "rawQuartetCarrier": "sum over quartet x^rho =4 x^(1/2) cosh(eta log x) cos(gamma log x)",
+    "stressEta": 0.25,
+    "stressGamma": 15.0,
+    "positivePrimePowersThroughCutoff": 9616,
+    "negativePrimePowersThroughCutoff": 8504,
+    "sampleRows": [
+      {
+        "primePower": 2,
+        "quartetCarrierWithoutCommonXHalf": -2.287088653300969,
+        "sign": "negative"
+      },
+      {
+        "primePower": 3,
+        "quartetCarrierWithoutCommonXHalf": -2.977104074846131,
+        "sign": "negative"
+      },
+      {
+        "primePower": 4,
+        "quartetCarrierWithoutCommonXHalf": -1.5502636206637312,
+        "sign": "negative"
+      },
+      {
+        "primePower": 5,
+        "quartetCarrierWithoutCommonXHalf": 2.3705830383478093,
+        "sign": "positive"
+      },
+      {
+        "primePower": 7,
+        "quartetCarrierWithoutCommonXHalf": -2.73594730630743,
+        "sign": "negative"
+      },
+      {
+        "primePower": 8,
+        "quartetCarrierWithoutCommonXHalf": 4.438742057442793,
+        "sign": "positive"
+      },
+      {
+        "primePower": 9,
+        "quartetCarrierWithoutCommonXHalf": 0.13094490485117527,
+        "sign": "positive"
+      },
+      {
+        "primePower": 11,
+        "quartetCarrierWithoutCommonXHalf": -0.7547198553639921,
+        "sign": "negative"
+      },
+      {
+        "primePower": 13,
+        "quartetCarrierWithoutCommonXHalf": 3.465176327458219,
+        "sign": "positive"
+      },
+      {
+        "primePower": 16,
+        "quartetCarrierWithoutCommonXHalf": -3.6648237258036547,
+        "sign": "negative"
+      }
+    ],
+    "conclusion": "ordinate oscillation destroys positive-mixture structure; replacing the signed carrier by a Gibbs mixture is not an identity"
+  },
+  "bridgeGates": [
+    {
+      "bridge": "identify each zero displacement eta with the prime Gibbs state p_eta",
+      "status": "defined but auxiliary",
+      "failure": "the explicit formula does not identify the actual xi zero ledger with a positive mixture of these states"
+    },
+    {
+      "bridge": "use functional-equation pairing to average p_eta and p_-eta",
+      "status": "strictly separated from p_0 when eta is nonzero",
+      "failure": "reflection balance gives an equal mixture, not equality with the central prime ledger"
+    },
+    {
+      "bridge": "replace the signed explicit formula by the positive mixture",
+      "status": "invalid",
+      "failure": "the true quartet carrier contains cos(gamma log x) and changes sign"
+    },
+    {
+      "bridge": "square the signed carrier to restore positivity",
+      "status": "conditional route already audited",
+      "failure": "squaring introduces prime-pair correlations and the missing critical Chebyshev-energy estimate"
+    },
+    {
+      "bridge": "declare the actual zero ledger stationary under eta(t)=exp(-t)eta",
+      "status": "RH-equivalent",
+      "failure": "stationarity of the horizontal second moment already forces eta=0"
+    }
+  ],
+  "heatBathAlternative": {
+    "law": "mu_t=exp(-t)mu_0+[1-exp(-t)]p_0",
+    "property": "a genuine Markov relaxation with unique stationary prime ledger p_0 and relative-entropy contraction",
+    "gate": "it evolves an auxiliary distribution on prime powers, not the zeros of the fixed xi function"
+  },
+  "nextNarrowTarget": {
+    "statement": "derive a positive, convergent explicit-formula identity equating the actual completed zero ledger's prime-power feature mixture to p_0, without squaring into an unproved prime-pair estimate",
+    "whySufficient": "positive-mixture rigidity plus the arithmetic natural-gradient law would then force every horizontal displacement to vanish",
+    "knownObstruction": "the unsquared explicit formula is signed; the squared form is the critical Chebyshev-energy route already known to be RH-equivalent"
+  },
+  "evidenceBoundary": {
+    "provedHere": [
+      "the von-Mangoldt prime-power exponential family",
+      "its exact Fisher-natural gradient deta/dt=-eta",
+      "strict relative-entropy dissipation and golden-time contraction",
+      "finite positive-mixture tail rigidity",
+      "signed oscillation of the actual quartet carrier"
+    ],
+    "notProved": [
+      "a positive explicit-formula mixture identity for the actual xi divisor",
+      "stationarity of the xi zero ledger under the prime-family flow",
+      "the critical prime-pair energy estimate",
+      "RH"
+    ]
+  },
+  "status": "a genuine arithmetic dissipative law has been found on normalized von-Mangoldt prime powers, but the map intertwining it with the actual xi divisor remains unproved; RH remains open"
+}

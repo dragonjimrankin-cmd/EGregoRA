@@ -1,0 +1,233 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "Alternative positive channels for the Weil/screw kernel",
+  "verdict": {
+    "exactPositiveWeilChannelDerived": false,
+    "strongestIndependentLocalChannel": "archimedean-weyl",
+    "strongestArithmeticProxy": "ordinate-projection",
+    "sharpestRemainingExactTarget": "recovery-witness",
+    "conclusion": "the gamma-factor Weyl channel independently fixes the non-lacunary spectral density and unit cusp coefficient; the zero-ordinate projection adds exact arithmetic spectral locations without assuming their horizontal confinement; neither equals the screw kernel unconditionally"
+  },
+  "archimedeanWeylChannel": {
+    "derivation": "Riemann-von Mangoldt mean density (1/(2*pi)) log(lambda/(2*pi)) multiplied by screw weight 2/lambda^2",
+    "spectralDensity": "rho_Gamma(lambda)=log(lambda/(2*pi))/(pi*lambda^2), lambda>=2*pi",
+    "nonnegative": true,
+    "cuspCoefficient": 1,
+    "comparison": [
+      {
+        "t": 0.01,
+        "target": 0.032075781959960664,
+        "channel": 0.032100769847573526,
+        "relativeError": 0.000779026607801924,
+        "targetOverTLog": 0.6965167553971393,
+        "channelOverTLog": 0.6970593604823736,
+        "differenceOverTSquared": -0.24987887612862303
+      },
+      {
+        "t": 0.003,
+        "target": 0.013197900968306302,
+        "channel": 0.013200151589618703,
+        "relativeError": 0.00017052873163740472,
+        "targetOverTLog": 0.7573062550025047,
+        "channelOverTLog": 0.7574353974776313,
+        "differenceOverTSquared": -0.250069034711261
+      },
+      {
+        "t": 0.001,
+        "target": 0.005494412554662577,
+        "channel": 0.005494662864449959,
+        "relativeError": 0.00004555715190504714,
+        "targetOverTLog": 0.7953976845966354,
+        "channelOverTLog": 0.7954339206497775,
+        "differenceOverTSquared": -0.25030978738176113
+      },
+      {
+        "t": 0.0003,
+        "target": 0.0020091481057870376,
+        "channel": 0.0020091707096906945,
+        "relativeError": 0.000011250491485274315,
+        "targetOverTLog": 0.8256145033269245,
+        "channelOverTLog": 0.8256237918958643,
+        "differenceOverTSquared": -0.2511544850756899
+      },
+      {
+        "t": 0.0001,
+        "target": 0.0007795422640734788,
+        "channel": 0.000779544801455744,
+        "relativeError": 0.0000032549643323631353,
+        "targetOverTLog": 0.8463772592436984,
+        "channelOverTLog": 0.846380014171489,
+        "differenceOverTSquared": -0.25373822651287775
+      },
+      {
+        "t": 0.00003,
+        "target": 0.0002699781883499248,
+        "channel": 0.000269978425450971,
+        "relativeError": 8.782229692580477e-7,
+        "targetOverTLog": 0.8641254389656183,
+        "channelOverTLog": 0.8641261978604271,
+        "differenceOverTSquared": -0.26344560689731045
+      },
+      {
+        "t": 0.00001,
+        "target": 0.00010097850233660045,
+        "channel": 0.00010097853163935566,
+        "relativeError": 2.9018805519212964e-7,
+        "targetOverTLog": 0.8770881271128038,
+        "channelOverTLog": 0.8770883816333017,
+        "differenceOverTSquared": -0.29302755209271997
+      }
+    ],
+    "interpretation": "the local cusp and its normalization are archimedean zero-density effects, not consequences of decimal scaling",
+    "limitation": "continuous mean density omits the fluctuating zero/prime measure and is not the exact global screw kernel"
+  },
+  "ordinateProjectionChannel": {
+    "measure": "nu_ord=2 sum_{rho: Im(rho)>0} multiplicity(rho)/Im(rho)^2 delta_{Im(rho)}",
+    "feature": "b_t(rho)=sqrt(2 multiplicity(rho)) (exp(i Im(rho)t)-1)/Im(rho)",
+    "unconditionalPsd": true,
+    "convergence": "follows from the unconditional Riemann-von Mangoldt zero count",
+    "exactUnderRH": true,
+    "equalityImpliesRH": true,
+    "horizontalDisplacementTests": [
+      {
+        "eta": 0.1,
+        "gamma": 14.134725141734693,
+        "minimum": -0.005179261102733658,
+        "maximum": 0.005435123860825106,
+        "changesSign": true
+      },
+      {
+        "eta": 0.25,
+        "gamma": 14.134725141734693,
+        "minimum": -0.04807503792598603,
+        "maximum": 0.051346730518053926,
+        "changesSign": true
+      },
+      {
+        "eta": 0.49,
+        "gamma": 14.134725141734693,
+        "minimum": -0.5913398749129866,
+        "maximum": 0.6606636588804637,
+        "changesSign": true
+      }
+    ],
+    "horizontalCorrection": "the one-zero correction 2 Re[(cosh((eta+i gamma)t)-1)/(eta+i gamma)^2] minus its eta=0 projection changes sign",
+    "missingData": "the channel deliberately discards beta-1/2, so equality is precisely the horizontal-confinement problem"
+  },
+  "primeWeylSamplingChannel": {
+    "measure": "(1/pi) sum_{q=p^k, log q>2*pi} [Lambda(q)/q] [log(log(q)/(2*pi))/(log q)^2] delta_{log q}",
+    "unconditionalPsd": true,
+    "asymptoticJustification": "the prime number theorem turns (Lambda(q)/q) sampling into d lambda at frequency lambda=log q",
+    "cuspCoefficient": 1,
+    "limitation": "the exact explicit formula uses Lambda(q)/sqrt(q) delayed hinges, not these positive spectral weights"
+  },
+  "polyaChannel": {
+    "feature": "b_t(u)=sqrt(Phi(u)) (exp(i t u)-1)",
+    "unconditionalPsd": true,
+    "regularity": "super-exponential decay of Phi gives finite moments and a t^2 diagonal",
+    "logConcavityImpact": "even a completed proof of log-concavity would not change this moment regularity"
+  },
+  "channelScorecard": [
+    {
+      "id": "existing-rankin-green",
+      "name": "Existing inverse-square Rankin splice channel",
+      "unconditionalPsd": true,
+      "cusp": "t^2",
+      "arithmeticSupport": "decimal subsequence of the all-integer log spectrum",
+      "exactWeilIdentity": false,
+      "circular": false,
+      "verdict": "excluded by local regularity"
+    },
+    {
+      "id": "third-splice-boundary",
+      "name": "Third-splice harmonic boundary channel",
+      "unconditionalPsd": true,
+      "cusp": "t log(1/t), with decimal modulation",
+      "arithmeticSupport": "literal decimal frequencies",
+      "exactWeilIdentity": false,
+      "circular": false,
+      "verdict": "right order; wrong coefficient, modulation and arithmetic support"
+    },
+    {
+      "id": "archimedean-weyl",
+      "name": "Archimedean Weyl-density channel",
+      "unconditionalPsd": true,
+      "cusp": "t log(1/t) with exact unit leading coefficient",
+      "arithmeticSupport": "continuous mean zero density from the gamma factor",
+      "exactWeilIdentity": false,
+      "circular": false,
+      "verdict": "best independent local channel; misses discrete prime/zero fluctuations"
+    },
+    {
+      "id": "ordinate-projection",
+      "name": "Unconditional zero-ordinate projection channel",
+      "unconditionalPsd": true,
+      "cusp": "t log(1/t) with exact unit leading coefficient",
+      "arithmeticSupport": "actual imaginary ordinates of all nontrivial zeros, horizontal displacement discarded",
+      "exactWeilIdentity": "if and only if RH",
+      "circular": false,
+      "verdict": "exact under RH; equality with the arithmetic screw kernel is itself RH-equivalent"
+    },
+    {
+      "id": "prime-weyl-sampling",
+      "name": "Positive prime-power sampling of the Weyl density",
+      "unconditionalPsd": true,
+      "cusp": "t log(1/t) asymptotically under the prime number theorem",
+      "arithmeticSupport": "prime-power log frequencies",
+      "exactWeilIdentity": false,
+      "circular": false,
+      "verdict": "right support type and mean cusp; wrong weights and turns events into frequencies"
+    },
+    {
+      "id": "polya-fourier",
+      "name": "Direct Pólya-kernel Fourier feature channel",
+      "unconditionalPsd": true,
+      "cusp": "t^2 because every moment is finite",
+      "arithmeticSupport": "continuous Pólya kernel",
+      "exactWeilIdentity": false,
+      "circular": false,
+      "verdict": "log-concavity cannot repair the regularity mismatch"
+    },
+    {
+      "id": "explicit-formula-krein",
+      "name": "Signed explicit-formula/Krein channel",
+      "unconditionalPsd": false,
+      "cusp": "exact",
+      "arithmeticSupport": "exact prime-power hinges plus archimedean completion",
+      "exactWeilIdentity": true,
+      "circular": false,
+      "verdict": "exact but indefinite; the missing theorem is conversion to a Hilbert norm"
+    },
+    {
+      "id": "recovery-witness",
+      "name": "Recovery-witness reserve channel",
+      "unconditionalPsd": "unknown",
+      "cusp": "not a local spectral construction",
+      "arithmeticSupport": "exact recovery-conditioned prime history",
+      "exactWeilIdentity": "would follow from C_q-J_q=||R_q||^2 at every witness",
+      "circular": "if positivity of C_q-J_q is assumed",
+      "verdict": "sharpest arithmetic target, still open"
+    },
+    {
+      "id": "zero-spectrum-hilbert",
+      "name": "Real zero-spectrum Hilbert channel",
+      "unconditionalPsd": "conditional on RH",
+      "cusp": "exact",
+      "arithmeticSupport": "real zero ordinates with weights 2/gamma^2",
+      "exactWeilIdentity": "under RH",
+      "circular": true,
+      "verdict": "the desired factorisation after the theorem has been assumed"
+    }
+  ],
+  "comparisonWithThirdSplice": {
+    "decimalContinuumCuspCoefficient": 0.017573126564828522,
+    "archimedeanCuspCoefficient": 1,
+    "coefficientRatio": 56.905070154188465,
+    "conclusion": "the gamma normalization supplies the factor missing from the fixed decimal boundary channel, but replacing one measure by the other is a new arithmetic construction, not a splice identity"
+  },
+  "remainingRoute": {
+    "requirement": "identify an independently positive correction carrying the fluctuating difference between the continuous gamma density and the exact prime/zero distribution",
+    "equivalentArithmeticForm": "prove C_q-J_q is a norm square at every recovery witness",
+    "warning": "the ordinate channel or real-zero Hilbert factor cannot prove equality without resolving horizontal zero displacement"
+  }
+}

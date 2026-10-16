@@ -203,6 +203,14 @@ export default Object.freeze({
     "Which coefficient follows before observational input, with units and uncertainty fixed, and could therefore be wrong?",
     ["rh", "gravity"]
   ),
+  "/decimal-splice/": guide(
+    "Does the decimal splice require sign reversal at ten, and can its phase move Riemann zeros?",
+    "The page separates a single splice from its double cover. On the origin-anchored interval from zero to ten, a canonical half-turn gives phase pi x over ten: five is the quadrature hinge, ten carries a minus sign, and a second passage restores the original orientation. It also tests the exact golden weighted-reflection coefficient against the RH seam defect.",
+    "Affine normalisation, complex phases and order-two sign reversal are exact mathematics. The pi-over-ten angle gives a barycentric contraction by one over phi, and two hypothetical descendants strictly contract the nonlinear seam defect.",
+    "The prime follow-up reduces conservation to one Euler anchor at s equals two. The retry proves its weighted endpoint-prime phase law for sigma greater than one, then shows that shifting to the critical boundary adds exactly the positive off-line Blaschke defect.",
+    "What independent estimate removes the Blaschke jump when the Euler-product phase line moves to one half, without assuming zero-freeness of the crossed strip?",
+    ["rh", "topology"]
+  ),
   "/torus/": guide(
     "What does toroidal return explain, and what remains only an analogy?",
     "A torus provides a precise way for motion to continue without meeting an edge: one or more directions wrap around. TTI uses that geometry to imagine recurrence that preserves continuity while allowing many local paths.",
@@ -246,8 +254,8 @@ export default Object.freeze({
   "/entropy/": guide(
     "Can integration and entropy be related without treating order and disorder as simple opposites?",
     "TTI proposes phases in which local organisation is assembled, maintained and released. The useful version of the claim is compatible with the second law: a subsystem can become more organised while producing greater entropy in its surroundings.",
-    "Thermodynamic entropy, Boltzmann or Gibbs entropy and Shannon information answer related but non-identical questions. Landauer's result concerns logically irreversible erasure under specified physical conditions; it is not a licence to equate every loss of meaning with heat.",
-    "No scalar 'integration' measure on this page has yet been shown to enter a thermodynamic state equation. The arrow of time cannot be derived from a verbal contrast between integration and disintegration.",
+    "Thermodynamic entropy, Boltzmann or Gibbs entropy and Shannon information answer related but non-identical questions. The decimal fork now gives an exact Shannon contraction after coarse-graining, while its full two-pass state remains reversible.",
+    "The branch calculation does not establish heat production. A later natural-gradient law moves an auxiliary Riemann-zero coordinate, but stationarity of the same xi spectrum remains unproved. The cosmological arrow still requires a physical boundary condition.",
     "What state variables make integration measurable, and how do they enter an entropy balance for a clearly bounded system?",
     ["entropy", "consciousness"]
   ),
@@ -356,11 +364,11 @@ export default Object.freeze({
     ["rh"]
   ),
   "/riemann-splice-questions/": guide(
-    "Does the RH work determine any of the physical constants or splice coefficients TTI still lacks?",
-    "The answer is presently no. The archive contributes disciplined transforms, spectral analogies and proof-audit habits, but it does not supply a dimensionful action, gravitational coupling, electromagnetic normalisation or halo scale.",
-    "The zeta function encodes prime-number structure, and RH constrains fluctuations around the average distribution of primes. Moving from that arithmetic fact to physical constants requires an independently justified map with units and dynamics.",
-    "A shared appearance of spectra, oscillation or criticality is not a coefficient derivation. The splice remains open until a physical bridge predicts a number before calibration and survives comparison with data.",
-    "What explicit map carries a dimensionless zeta quantity into a physical observable without importing the observable as its own scale?",
+    "How far do the explicit splice-action and relational-synchronisation constructions reach toward physics or RH?",
+    "The Fibonacci deposits now generate an exact positive decimal log-frequency kernel and a covariant Euclidean quadratic-action family. A squared-kernel proximity graph also gives positive consensus dynamics across reflected cohorts. These are explicit mathematical bridges, not merely visual analogies.",
+    "Two inequivalent positive form factors fit the same splice data, so positivity and covariance do not select a unique action. Circular phase locking and reflection balance can also coexist with nonzero horizontal zeta displacement. Closed anchor conservation transfers its defect elsewhere, while an open subsystem exports it to a reservoir; moving support still changes the divisor unless same-xi arithmetic invariance is proved.",
+    "No physical length, Lorentzian prescription, field content, interaction normalisation, gravitational coupling, electromagnetic charge or halo scale follows from the constructions. Invariance plus strict dissipation is sufficient for RH, and normalized von-Mangoldt weights now supply exact dissipation; the signed explicit formula still supplies no same-xi intertwiner.",
+    "Which independent physical or arithmetic principle selects one action and proves that its relational flow preserves the required observable rather than replacing it?",
     ["rh", "gravity"]
   ),
   "/plates/": guide(

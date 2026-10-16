@@ -23,7 +23,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - Added a three-node cycle diagram, representative equations, direct principal-study links and a concise research boundary that continues to distinguish established mathematics from speculative physical promotion.
 - Replaced the six equal-weight masthead menus with three primary focus links and one keyboard-, touch- and hover-readable **Research Archive** disclosure. The archive panel still lists all six Parts, all thirty-four coded destinations and the current document.
 - Added the canonical `/archive/` route containing the complete six-Part table of contents, the unchanged interactive **Atlas of Becoming**, its written fallback, the clarity-edition Reader&rsquo;s Contract and the introductory chain plate removed from the concise homepage.
-- Preserved the full corpus rather than deleting or demoting source material: thirty studies, four project resources, six 6,000–8,000-word Part syntheses, the 10,825-word retained final-synthesis source, thirty-six Plates beneath twenty-six source headings and all three Riemann studies remain independently audited.
+- Preserved the full corpus rather than deleting or demoting source material: thirty-one studies, four project resources, six 6,000–8,000-word Part syntheses, the 10,825-word retained final-synthesis source, thirty-eight Plates beneath twenty-seven source headings and all three Riemann studies remain independently audited.
 - Updated the Plates gatherer so the preserved introductory chain is sourced honestly from the archive, and updated both ShakDrah and Gink with the Reader&rsquo;s Contract&rsquo;s new canonical fragment without breaking Oracle synchronisation.
 - Added local and live deployment checks that require the three conjectures on the homepage, forbid the table and Atlas there, and require the complete contents, Reader&rsquo;s Contract, chain plate and Atlas in the archive.
 
@@ -258,7 +258,7 @@ The command performs two Eleventy builds around deterministic plate gathering, v
 - JSON-LD parsed on every HTML page.
 - Nested breadcrumbs verified for the Zero-Seam research proposal.
 - `sitemap.xml`, Atom `feed.xml`, `robots.txt` and the SVG favicon verified.
-- 36 source plates reconciled with 36 gathered plates; SVG IDs and marker references are namespaced in the compendium.
+- 38 source plates reconciled with 38 gathered plates; SVG IDs and marker references are namespaced in the compendium.
 - The research proposal is discoverable from the homepage, parent conjecture, Essays, Stress Tests, Time and Residue, and Inverted Tori.
 - Temporal Antipodes is discoverable from the homepage, Foundations, Seams, Essays, Stress Tests, Prime Plane, Time and Residue, Inverted Tori, and the matter–antimatter essay.
 - 29 prepared answers and 29 paraphrase routes verified for both ShakDrah and Gink, including π on the unit interval, wormholes, entropy, self-renewal, the time-varying cosmic ratio, double inversion, accumulated differentials, the RH correction ledger, the negative splice verdict, fallback and attachment bypass.

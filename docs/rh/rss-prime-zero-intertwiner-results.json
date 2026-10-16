@@ -1,0 +1,260 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "A positive prime--zero feature intertwiner candidate and its pair-correlation gate",
+  "question": "Can the actual xi divisor be intertwined with the von-Mangoldt dissipative law by a positive identity?",
+  "verdict": {
+    "canonicalPrimeZeroFeatureMapConstructed": true,
+    "featureDiagonalEqualsPrimePowerLaw": true,
+    "positiveGlobalMixtureCriterionEquivalentToRh": true,
+    "linearPhaseAveragingProducesPositiveIntertwiner": false,
+    "quadraticLiftRemovesOrdinatePhase": true,
+    "coherentQuadraticLiftHasPrimePairEntries": true,
+    "quadraticLiftRequiresPrimePairControl": false,
+    "logarithmicDephasingRemovesOffDiagonals": true,
+    "sameXiIntertwiningIdentityProved": false,
+    "rhProved": false,
+    "conclusion": "A zero rho=1/2+eta+i gamma canonically defines a normalized von-Mangoldt feature vector psi_rho(n) proportional to sqrt(Lambda(n)) n^(-1-eta-i gamma).  Its squared diagonal is exactly p_eta and loses gamma.  A convergently weighted positive mixture of reflected diagonals equals the central p_0 ledger, or is even uniformly bounded relative to it along prime powers, if and only if every eta is zero.  This gives a sharp RH-equivalent positive intertwiner criterion.  Linear averaging of feature vectors does not create the diagonal.  The coherent quadratic lift has two-prime off-diagonal entries, but the Stage-41 logarithmic twirl removes those entries exactly and therefore needs no pair estimate for diagonal construction.  The dephased candidate is constructed, but the same-xi arithmetic frame bound is not proved."
+  },
+  "featureMap": {
+    "formula": "psi_(eta,gamma)(n)=sqrt(Lambda(n)) n^(-1-eta-i gamma)/sqrt(M(2+2eta))",
+    "normalization": "sum_n |psi_(eta,gamma)(n)|^2=1",
+    "diagonal": "|psi_(eta,gamma)(n)|^2=p_eta(n)",
+    "reflectionPairDiagonal": "[p_eta(n)+p_-eta(n)]/2",
+    "checks": [
+      {
+        "eta": 0.0,
+        "gamma": 14.134725,
+        "featureNorm": 0.9999999999999998,
+        "maximumDiagonalProbabilityError": 1.1102230246251565e-16,
+        "ordinateCancelsFromDiagonal": true
+      },
+      {
+        "eta": 0.1,
+        "gamma": 20.0,
+        "featureNorm": 1.0,
+        "maximumDiagonalProbabilityError": 5.551115123125783e-17,
+        "ordinateCancelsFromDiagonal": true
+      },
+      {
+        "eta": -0.1,
+        "gamma": 20.0,
+        "featureNorm": 1.0,
+        "maximumDiagonalProbabilityError": 1.1102230246251565e-16,
+        "ordinateCancelsFromDiagonal": true
+      },
+      {
+        "eta": 0.25,
+        "gamma": 30.0,
+        "featureNorm": 1.0000000000000002,
+        "maximumDiagonalProbabilityError": 5.551115123125783e-17,
+        "ordinateCancelsFromDiagonal": true
+      },
+      {
+        "eta": -0.25,
+        "gamma": 30.0,
+        "featureNorm": 0.9999999999999999,
+        "maximumDiagonalProbabilityError": 2.7755575615628914e-17,
+        "ordinateCancelsFromDiagonal": true
+      }
+    ]
+  },
+  "globalMixtureCriterion": {
+    "ordinateWeight": "w_rho proportional to multiplicity/(gamma_rho^2+9/4), normalized over upper reflected pairs",
+    "mixture": "P_xi(n)=sum_rho w_rho[p_eta_rho(n)+p_-eta_rho(n)]/2",
+    "theorem": "RH iff P_xi=p_0 on all prime powers; equivalently RH iff P_xi(n)/p_0(n) remains bounded along prime powers",
+    "proof": "under RH every eta is zero; if any eta>0 has positive weight, its p_-eta/p_0 term grows like n^(2eta) and makes the positive ratio unbounded",
+    "toyComponents": [
+      {
+        "eta": 0.0,
+        "gamma": 14.134725
+      },
+      {
+        "eta": 0.1,
+        "gamma": 20.0
+      },
+      {
+        "eta": 0.25,
+        "gamma": 30.0
+      }
+    ],
+    "normalizedWeights": [
+      0.5793053393070459,
+      0.290971067543287,
+      0.1297235931496672
+    ],
+    "mixtureMass": 1.0,
+    "totalVariationFromCentral": 0.012745812141482286,
+    "relativeEntropyFromCentral": 0.003107148431521777,
+    "ratioRows": [
+      {
+        "primePower": 2,
+        "mixtureToCentralRatio": 0.9940490969489819
+      },
+      {
+        "primePower": 42533,
+        "mixtureToCentralRatio": 6.561532919470911
+      },
+      {
+        "primePower": 92707,
+        "mixtureToCentralRatio": 9.12612303853518
+      },
+      {
+        "primePower": 145547,
+        "mixtureToCentralRatio": 11.11866069654954
+      },
+      {
+        "primePower": 199999,
+        "mixtureToCentralRatio": 12.809759381151192
+      }
+    ],
+    "rhControlMaximumError": 2.7755575615628914e-17
+  },
+  "linearPhaseAverageNoGo": {
+    "statement": "translation-invariant averaging sends exp(i gamma u) to characteristic_mu(gamma) exp(i gamma u); a nonzero multiplier retains oscillation",
+    "gaussianSigma": 0.02,
+    "characteristicMultiplier": 0.9559974818331,
+    "positivePrimePowers": 9616,
+    "negativePrimePowers": 8504,
+    "sampleRows": [
+      {
+        "primePower": 2,
+        "originalCarrier": -2.287088653300969,
+        "gaussianPhaseAveragedCarrier": -2.186450993284782,
+        "signPreserved": true
+      },
+      {
+        "primePower": 3,
+        "originalCarrier": -2.977104074846131,
+        "gaussianPhaseAveragedCarrier": -2.846103998707962,
+        "signPreserved": true
+      },
+      {
+        "primePower": 5,
+        "originalCarrier": 2.3705830383478093,
+        "gaussianPhaseAveragedCarrier": 2.2662714151367647,
+        "signPreserved": true
+      },
+      {
+        "primePower": 8,
+        "originalCarrier": 4.438742057442793,
+        "gaussianPhaseAveragedCarrier": 4.243426229421983,
+        "signPreserved": true
+      },
+      {
+        "primePower": 11,
+        "originalCarrier": -0.7547198553639921,
+        "gaussianPhaseAveragedCarrier": -0.7215102812174179,
+        "signPreserved": true
+      },
+      {
+        "primePower": 13,
+        "originalCarrier": 3.465176327458219,
+        "gaussianPhaseAveragedCarrier": 3.3126998431577266,
+        "signPreserved": true
+      },
+      {
+        "primePower": 16,
+        "originalCarrier": -3.6648237258036547,
+        "gaussianPhaseAveragedCarrier": -3.503562253230493,
+        "signPreserved": true
+      }
+    ],
+    "consequence": "a linear positive phase average cannot turn every unknown ordinate mode into the gamma-independent Gibbs diagonal"
+  },
+  "quadraticLift": {
+    "densityOperator": "|psi_rho><psi_rho|",
+    "diagonalBenefit": "gamma cancels and p_eta is positive",
+    "offDiagonalForm": "sqrt(Lambda(n)Lambda(m)) n^(-1-eta) m^(-1-eta) exp[-i gamma log(n/m)]/M(2+2eta)",
+    "sampleRows": [
+      {
+        "leftPrimePower": 2,
+        "rightPrimePower": 3,
+        "realPart": 0.3153455907418177,
+        "imaginaryPart": -0.06432062912159983,
+        "dependsOnLogRatio": true
+      },
+      {
+        "leftPrimePower": 3,
+        "rightPrimePower": 7,
+        "realPart": 0.11149099229837327,
+        "imaginaryPart": 0.016063854623613087,
+        "dependsOnLogRatio": true
+      },
+      {
+        "leftPrimePower": 7,
+        "rightPrimePower": 17,
+        "realPart": 0.015234470952370547,
+        "imaginaryPart": 0.013999455706358714,
+        "dependsOnLogRatio": true
+      },
+      {
+        "leftPrimePower": 17,
+        "rightPrimePower": 61,
+        "realPart": 0.0019094706640401039,
+        "imaginaryPart": 0.0006229432854566167,
+        "dependsOnLogRatio": true
+      }
+    ],
+    "gate": "full coherent reconstruction is a two-prime correlation problem, but logarithmic dephasing removes every off-diagonal entry and needs no pair estimate for the positive diagonal",
+    "dephasedDiagonalRequiresPrimePairControl": false
+  },
+  "bridgeAttempts": [
+    {
+      "attempt": "linear positive averaging over log-scale translations",
+      "outcome": "fails",
+      "reason": "it multiplies each gamma Fourier mode by a characteristic function but retains its oscillatory sign unless the mode is annihilated"
+    },
+    {
+      "attempt": "annihilate every nonzero ordinate Fourier mode",
+      "outcome": "fails",
+      "reason": "it also deletes the zero information and cannot yield the eta-dependent positive mixture"
+    },
+    {
+      "attempt": "coherent quadratic feature density |psi_rho><psi_rho|",
+      "outcome": "constructive but coherent off-diagonals contain prime pairs",
+      "reason": "its diagonal is p_eta and removes gamma, while its off-diagonal entries are two-prime correlations not fixed by the one-point Euler moment"
+    },
+    {
+      "attempt": "logarithmic conjugation twirl of the quadratic density",
+      "outcome": "resolves diagonal construction",
+      "reason": "sinc(T log(n/m)) tends to zero for n!=m and leaves p_eta exactly, so no pair estimate is needed for the dephased map"
+    },
+    {
+      "attempt": "Weil autocorrelation test function",
+      "outcome": "RH-equivalent",
+      "reason": "positivity over the full admissible autocorrelation class is the Weil criterion"
+    },
+    {
+      "attempt": "critical Chebyshev energy",
+      "outcome": "RH-equivalent and unproved",
+      "reason": "it supplies the required quadratic prime-pair control only at the unresolved square-root boundary"
+    }
+  ],
+  "nextNarrowTarget": {
+    "statement": "prove from fixed prime arithmetic a positive frame or diagonal identity P_xi=p_0 for the dephased ordinate-weighted von-Mangoldt features",
+    "weakerSufficientForm": "a uniform bound P_xi(n)<=C p_0(n) along all prime powers already excludes every eta>0",
+    "failFast": "logarithmic twirling resolves phase removal; any claimed prime-side proof must establish the RH-equivalent global bound rather than assume Weil positivity, critical energy or another equivalent condition"
+  },
+  "finiteComputation": {
+    "cutoff": 200000,
+    "primePowers": 18120,
+    "scope": "feature normalization, mixture separation, phase-average signs and pair-kernel samples are deterministic truncated checks; the rigidity theorem is analytic"
+  },
+  "evidenceBoundary": {
+    "provedHere": [
+      "the normalized von-Mangoldt feature map for each zero coordinate",
+      "exact cancellation of ordinate phase on its probability diagonal",
+      "the positive global-mixture boundedness criterion equivalent to RH",
+      "the linear translation-average no-go for feature vectors",
+      "the coherent quadratic lift's two-prime off-diagonal form",
+      "the Stage-41 logarithmic twirl's exact removal of those off-diagonal entries"
+    ],
+    "notProved": [
+      "the positive frame identity P_xi=p_0",
+      "a uniform arithmetic bound for P_xi/p_0",
+      "a same-xi prime-side theorem forcing the dephased state to be central",
+      "RH"
+    ]
+  },
+  "status": "a canonical dephased positive intertwiner and an RH-equivalent boundedness criterion are established; the same-xi arithmetic frame bound remains unproved"
+}

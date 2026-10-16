@@ -1,0 +1,170 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "An explicit splice-to-kernel-to-action family and its nonuniqueness audit",
+  "verdict": {
+    "candidateMapConstructed": true,
+    "finiteKernelPositiveSemidefinite": true,
+    "euclideanCovariantActionFamilyConstructed": true,
+    "uniqueActionDerived": false,
+    "lorentzianCausalityProved": false,
+    "physicalScaleDerived": false,
+    "gravityOrGaugeNormalisationDerived": false,
+    "conclusion": "Fibonacci splice deposits canonically supply nonnegative weights for a decimal log-frequency Gram kernel.  They also admit positive Euclidean nonlocal actions through spectral functions of the Laplace--Beltrami operator.  Two explicit inequivalent positive form factors fit the same splice data, proving that the sequence alone does not select a unique action or physical scale."
+  },
+  "spliceData": {
+    "deposits": [
+      1,
+      1,
+      2,
+      3,
+      5,
+      8,
+      13,
+      21
+    ],
+    "cumulativeCarriers": [
+      1,
+      2,
+      4,
+      7,
+      12,
+      20,
+      33,
+      54
+    ],
+    "decimalScales": [
+      1.0,
+      0.1,
+      0.01,
+      0.001,
+      0.0001,
+      1e-05,
+      1e-06,
+      1e-07
+    ],
+    "frequencies": [
+      2.7287527076836824,
+      5.457505415367365,
+      8.186258123051047,
+      10.91501083073473,
+      13.643763538418412,
+      16.372516246102094,
+      19.101268953785777,
+      21.83002166146946
+    ],
+    "frequencyLaw": "omega_n=2pi(n+1)/log(10)"
+  },
+  "positiveKernel": {
+    "formula": "K(u,v)=sum_n deltaPi_n cos(omega_n(u-v))",
+    "featureMap": "Phi_n(u)=sqrt(deltaPi_n)(cos(omega_n u),sin(omega_n u)); K(u,v)=sum_n <Phi_n(u),Phi_n(v)>",
+    "proof": "for every real coefficient vector c, c^T K c=sum_n deltaPi_n[(sum_j c_j cos)^2+(sum_j c_j sin)^2]>=0",
+    "checks": [
+      {
+        "points": [
+          0.0,
+          0.25,
+          0.5
+        ],
+        "coefficients": [
+          1.0,
+          -2.0,
+          1.0
+        ],
+        "directQuadratic": 275.2292243820344,
+        "featureSumOfSquares": 275.2292243820344
+      },
+      {
+        "points": [
+          0.0,
+          1.0,
+          2.0,
+          3.0
+        ],
+        "coefficients": [
+          1.0,
+          1.0,
+          -1.0,
+          -1.0
+        ],
+        "directQuadratic": 102.57779738943367,
+        "featureSumOfSquares": 102.57779738943368
+      },
+      {
+        "points": [
+          0.1,
+          0.7,
+          1.9,
+          2.6,
+          4.1
+        ],
+        "coefficients": [
+          2.0,
+          -1.0,
+          0.5,
+          -3.0,
+          1.5
+        ],
+        "directQuadratic": 1252.6794753701631,
+        "featureSumOfSquares": 1252.6794753701606
+      }
+    ]
+  },
+  "actionFamily": {
+    "euclideanAction": "S_E[chi;g]=(1/2) integral sqrt(g) chi F(ell_*^2(-Delta_g)) chi",
+    "covariance": "Delta_g is the scalar Laplace--Beltrami operator, so spectral functional calculus gives a diffeomorphism-covariant Euclidean quadratic form",
+    "heatFormFactor": "F_A(z)=z+sum_n deltaPi_n[1-exp(-10^(-n)z)]",
+    "resolventFormFactor": "F_B(z)=z+sum_n deltaPi_n[10^(-n)z/(1+10^(-n)z)]",
+    "positivity": "F_A(z)>=0 and F_B(z)>=0 for z>=0 because every deposit is nonnegative",
+    "sampleRows": [
+      {
+        "z": 0.0,
+        "heatFamily": 0.0,
+        "resolventFamily": 0.0,
+        "difference": 0.0
+      },
+      {
+        "z": 1e-06,
+        "heatFamily": 2.1235945951426627e-06,
+        "resolventFamily": 2.1235940897979503e-06,
+        "difference": 5.053447123718022e-13
+      },
+      {
+        "z": 0.01,
+        "heatFamily": 0.021185607265248867,
+        "resolventFamily": 0.021135921794932386,
+        "difference": 4.9685470316480906e-05
+      },
+      {
+        "z": 1.0,
+        "heatFamily": 1.7507770483883653,
+        "resolventFamily": 1.6143031232959113,
+        "difference": 0.13647392509245404
+      },
+      {
+        "z": 10.0,
+        "heatFamily": 11.858199281753333,
+        "resolventFamily": 11.626557984888137,
+        "difference": 0.2316412968651953
+      },
+      {
+        "z": 1000.0,
+        "heatFamily": 1006.4667785136227,
+        "resolventFamily": 1005.8561220054294,
+        "difference": 0.6106565081933013
+      }
+    ]
+  },
+  "nonuniquenessTheorem": {
+    "statement": "the same splice deposits and decimal scales generate the distinct positive form factors F_A and F_B; therefore positivity, covariance and the splice sequence do not determine a unique quadratic action",
+    "witness": "the recorded sample rows contain nonzero F_A-F_B"
+  },
+  "independentInputsStillRequired": [
+    "a physical length ell_* converting dimensionless decimal scales into dimensions",
+    "a Lorentzian prescription and proof of causality/unitarity or a declared nonlocal alternative",
+    "a field-content principle selecting scalar, tensor, spinor or gauge sectors",
+    "interaction terms and a conservation law beyond the quadratic kernel",
+    "normalisations for G, electric charge and alpha_EM",
+    "an independently anchored galactic reference radius r_0"
+  ],
+  "status": "a precise positive candidate family and a nonuniqueness theorem are established; no unique physical action or measured constant is derived"
+}

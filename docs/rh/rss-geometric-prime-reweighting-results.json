@@ -1,0 +1,93 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "A nonlinear geometric-mean map exactly contracts prime-family eta",
+  "question": "After ruling out a fixed Markov channel, can a positive nonlinear arithmetic operation realize the derived horizontal contraction?",
+  "verdict": {
+    "nonlinearPrimeMapConstructed": true,
+    "mapsEveryFeatureStateEtaToCEta": true,
+    "p0IsUniqueFullSupportFixedPoint": true,
+    "allFixedPointsAreP0ConditionedOnSupport": true,
+    "actualXiMixtureHasFullSupport": true,
+    "actualXiMixtureInvarianceProved": false,
+    "actualXiMixtureInvarianceEquivalentToRh": true,
+    "rhProved": false,
+    "conclusion": "The normalized geometric interpolation G_c(q) proportional to q^c p_0^(1-c) is a positive nonlinear map on prime-power laws. Its fixed points are p_0 conditioned on support; since the actual zero mixture has full support, its only possible fixed point is p_0. Thus G_c(P_xi)=P_xi would prove RH; no arithmetic theorem establishes that fixed-point relation."
+  },
+  "map": {
+    "definition": "G_c(q)(n)=q(n)^c p_0(n)^(1-c)/Z_c(q)",
+    "normalizer": "Z_c(q)=sum_n q(n)^c p_0(n)^(1-c)<=1 by Holder",
+    "goldenFactor": 0.6180339887498948,
+    "parameterMap": "a=2+2eta -> a_c=2+c(a-2), equivalently eta -> c eta",
+    "featureFamilyIdentity": "G_c(p_eta)=p_(c eta)",
+    "normalizerOnFeature": "Z_c(p_eta)=M(2+2c eta)/(M(2+2eta)^c M(2)^(1-c))",
+    "fixedPointProof": "G_c(q)=q iff q is p_0 conditioned on its support S; full support S gives q=p_0",
+    "klIdentity": "D(G_t(q)||p_0)=t L'(t)-L(t), L(t)=log E_(p_0)[(q/p_0)^t]",
+    "klDerivative": "d/dt D(G_t(q)||p_0)=t Var_(G_t(q))(log(q/p_0))>=0; moving from t=1 down to c<1 strictly lowers KL unless q/p_0 is constant on q's support, i.e. q is p_0 conditioned on its support; in particular it is strict for full-support q != p_0"
+  },
+  "finiteFeatureChecks": {
+    "primePowerCutoff": 20000,
+    "primePowers": 2328,
+    "rows": [
+      {
+        "eta": -0.4,
+        "contractedEta": -0.24721359549995792,
+        "maximumProbabilityError": 2.7755575615628914e-17,
+        "klBefore": 1.1997071572584828,
+        "klAfter": 0.2656424162142081,
+        "strictKLDissipation": true
+      },
+      {
+        "eta": -0.25,
+        "contractedEta": -0.1545084971874737,
+        "maximumProbabilityError": 2.7755575615628914e-17,
+        "klBefore": 0.27441561799586095,
+        "klAfter": 0.07532752893740174,
+        "strictKLDissipation": true
+      },
+      {
+        "eta": -0.1,
+        "contractedEta": -0.06180339887498948,
+        "maximumProbabilityError": 5.551115123125783e-17,
+        "klBefore": 0.026589472249218954,
+        "klAfter": 0.009082068879664191,
+        "strictKLDissipation": true
+      },
+      {
+        "eta": 0.1,
+        "contractedEta": 0.06180339887498948,
+        "maximumProbabilityError": 5.551115123125783e-17,
+        "klBefore": 0.015829251294682684,
+        "klAfter": 0.006598142763889445,
+        "strictKLDissipation": true
+      },
+      {
+        "eta": 0.25,
+        "contractedEta": 0.1545084971874737,
+        "maximumProbabilityError": 5.551115123125783e-17,
+        "klBefore": 0.07309202755559337,
+        "klAfter": 0.033621123934364165,
+        "strictKLDissipation": true
+      },
+      {
+        "eta": 0.4,
+        "contractedEta": 0.24721359549995792,
+        "maximumProbabilityError": 5.551115123125783e-17,
+        "klBefore": 0.1451675661960346,
+        "klAfter": 0.07183888072031265,
+        "strictKLDissipation": true
+      }
+    ],
+    "reflectedStressEta": 0.25,
+    "reflectedStressFixedPointError": 0.009999266977026022,
+    "reflectedStressKlBefore": 0.05544650262072388,
+    "reflectedStressKlAfter": 0.013876052260424541
+  },
+  "actualXiGate": {
+    "candidateCondition": "G_c(P_xi)=P_xi",
+    "equivalentCondition": "P_xi=p_0",
+    "equivalenceToRH": true,
+    "whyNotDerived": "Every zero-feature p_eta is strictly positive on every prime power, so their positive mixture P_xi has full support. The completed explicit formula is linear and signed; no same-xi prime-side identity proves invariance of this aggregate under G_c."
+  },
+  "scope": "This constructs a nonlinear positive map on probability ledgers; it is not a Markov kernel on prime indices, not a holomorphic deformation of xi, and not evidence that the actual zero ledger is invariant.",
+  "status": "The contraction is realized exactly on the prime feature family. The fixed-point link to the actual xi zero mixture remains RH-equivalent and unproved."
+}

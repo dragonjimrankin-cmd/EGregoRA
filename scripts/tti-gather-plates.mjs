@@ -16,6 +16,7 @@ const pages = [
   ['gravity/index.html', '/gravity/', 'Gravity', 'gravity'],
   ['spiral/index.html', '/spiral/', 'The Spiral', 'spiral'],
   ['skeletal-splice/index.html', '/skeletal-splice/', 'The Splice', 'skeletal-splice'],
+  ['decimal-splice/index.html', '/decimal-splice/', 'The Decimal Splice', 'decimal-splice'],
   ['torus/index.html', '/torus/', 'Torus', 'torus'],
   ['megatubule/index.html', '/megatubule/', 'The Megatubule', 'megatubule'],
   ['moebius/index.html', '/moebius/', 'Möbius', 'moebius'],

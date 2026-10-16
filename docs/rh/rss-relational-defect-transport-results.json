@@ -1,0 +1,378 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Relational defect transport, reservoirs and prime-anchor rigidity",
+  "question": "When proximity synchronises one being or one zero-sector, is the RH obstruction destroyed, transferred to another participant, or exported to an environment?",
+  "verdict": {
+    "closedAnchorConservingNetworkCanEliminatePositiveDefect": false,
+    "defectCanBeTransferredBetweenQuartets": true,
+    "subsystemDefectCanBeExportedToReservoir": true,
+    "oneAnchorCanBeCounterfeitedByOrdinateMotion": true,
+    "finiteAnchorsDetermineFullDivisor": false,
+    "openSetLogDerivativeDeterminesDivisor": true,
+    "rhProved": false,
+    "conclusion": "In a closed fixed-ordinate network, conserving the principal anchor conserves the positive total defect, so proximity can redistribute mismatch but cannot place every quartet on the line.  An open subsystem can synchronise only by exporting defect to a reservoir, the analogue of births or escaping high zeros.  Allowing ordinate motion can preserve one scalar anchor while changing the divisor, and finitely many anchors retain null directions.  Conservation on an open set restores analytic uniqueness but then forbids nontrivial zero motion.  No route proves RH."
+  },
+  "closedDefectTransfer": {
+    "anchor": "w=3/2 (s=2)",
+    "initialEtaPerQuartet": "0.2",
+    "conservedTotalDefect": "0.0000275080143559897742724576208846768419",
+    "rows": [
+      {
+        "firstQuartetScale": "1",
+        "eta1": "0.2",
+        "eta2": "0.200000000000000000000000000000000000",
+        "defect1": "0.0000137540071779948871362288104423384210",
+        "defect2": "0.0000137540071779948871362288104423384210",
+        "totalDefect": "0.0000275080143559897742724576208846768419",
+        "totalConservedError": "1e-81",
+        "negativeSquares": 4,
+        "bothCritical": false
+      },
+      {
+        "firstQuartetScale": "0.75",
+        "eta1": "0.150",
+        "eta2": "0.239800696080296105091652056176093239",
+        "defect1": "0.00000773759567103981184229237743456293260",
+        "defect2": "0.0000197704186849499624301652434501139093",
+        "totalDefect": "0.0000275080143559897742724576208846768419",
+        "totalConservedError": "1e-81",
+        "negativeSquares": 4,
+        "bothCritical": false
+      },
+      {
+        "firstQuartetScale": "0.5",
+        "eta1": "0.10",
+        "eta2": "0.264599425605553973479013341937859295",
+        "defect1": "0.00000343923833155206287076371790394345327",
+        "defect2": "0.0000240687760244377114016939029807333887",
+        "totalDefect": "0.0000275080143559897742724576208846768419",
+        "totalConservedError": "0",
+        "negativeSquares": 4,
+        "bothCritical": false
+      },
+      {
+        "firstQuartetScale": "0.25",
+        "eta1": "0.050",
+        "eta2": "0.278424297970669619166775806603274303",
+        "defect1": "8.59855626664202830428038967615717849e-7",
+        "defect2": "0.0000266481587293255714420295819170611241",
+        "totalDefect": "0.0000275080143559897742724576208846768419",
+        "totalConservedError": "1e-81",
+        "negativeSquares": 4,
+        "bothCritical": false
+      },
+      {
+        "firstQuartetScale": "0",
+        "eta1": "0",
+        "eta2": "0.282883117967767690117899820067992744",
+        "defect1": "0",
+        "defect2": "0.0000275080143559897742724576208846768419",
+        "totalDefect": "0.0000275080143559897742724576208846768419",
+        "totalConservedError": "0",
+        "negativeSquares": 2,
+        "bothCritical": false
+      }
+    ],
+    "result": "bringing the first quartet exactly to the line forces the second farther off line when total defect is conserved"
+  },
+  "openSystemReservoir": {
+    "initialEta": "0.25",
+    "goldenMap": "eta_n=eta_0/phi^n",
+    "rows": [
+      {
+        "goldenStep": 0,
+        "etaSystem": "0.25",
+        "systemDefect": "0.0000214871847699223575224155692518061589",
+        "exportedDefect": "0",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 1,
+        "etaSystem": "0.154508497187473712051146708591409529",
+        "systemDefect": "0.00000820963774155424811060413665474607336",
+        "exportedDefect": "0.0000132775470283681094118114325970600855",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 2,
+        "etaSystem": "0.0954915028125262879488532914085904706",
+        "systemDefect": "0.00000313613292378845723841111491849618485",
+        "exportedDefect": "0.0000183510518461339002840044543333099740",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 3,
+        "etaSystem": "0.0590169943749474241022934171828190589",
+        "systemDefect": "0.00000119794438568673871308315025877012264",
+        "exportedDefect": "0.0000202892403842356188093324189930360362",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 4,
+        "etaSystem": "0.0364745084375788638465598742257714117",
+        "systemDefect": "4.57581071606614777196292844546436806e-7",
+        "exportedDefect": "0.0000210296036983157427452192764072597221",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 5,
+        "etaSystem": "0.0225424859373685602557335429570476472",
+        "systemDefect": "1.74781442850395906126986910400981461e-7",
+        "exportedDefect": "0.0000213124033270719616162885823414051774",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 6,
+        "etaSystem": "0.0139320225002103035908263312687237646",
+        "systemDefect": "6.67607202738511706393146329405850003e-8",
+        "exportedDefect": "0.0000214204240496485063517762546188655739",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 7,
+        "etaSystem": "0.00861046343715825666490721168832388259",
+        "systemDefect": "2.55003478733089890917164994668398364e-8",
+        "exportedDefect": "0.0000214616844220490485333238527523393190",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 8,
+        "etaSystem": "0.00532155906305204692591911958039988197",
+        "systemDefect": "9.74026934938371810339923709448372437e-9",
+        "exportedDefect": "0.0000214774445005729738043121700147116751",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 9,
+        "etaSystem": "0.00328890437410620973898809210792400062",
+        "systemDefect": "3.72045229682295545635981593248228400e-9",
+        "exportedDefect": "0.0000214834643176255345669592094358736766",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 10,
+        "etaSystem": "0.00203265468894583718693102747247588135",
+        "systemDefect": "1.42108639169718952772361920342137965e-9",
+        "exportedDefect": "0.0000214857636835306603328878456326027375",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 11,
+        "etaSystem": "0.00125624968516037255205706463544811928",
+        "systemDefect": "5.42806710575145065526426564824870843e-10",
+        "exportedDefect": "0.0000214866419632117823773500428252413340",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      },
+      {
+        "goldenStep": 12,
+        "etaSystem": "0.000776405003785464634873962837027762069",
+        "systemDefect": "2.07333715562097020256616742188354992e-10",
+        "exportedDefect": "0.0000214869774362067954253953126350639705",
+        "closedTotal": "0.0000214871847699223575224155692518061589",
+        "conservationError": "0"
+      }
+    ],
+    "capacityRows": [
+      {
+        "reservoirOrdinate": "15",
+        "maximumOneQuartetDefectNearStripEdge": "0.0000858338336052228803291817513561032554",
+        "quartetsRequiredToHoldExportedToyDefect": 1
+      },
+      {
+        "reservoirOrdinate": "100",
+        "maximumOneQuartetDefectNearStripEdge": "4.49643939567266347364970912025147116e-8",
+        "quartetsRequiredToHoldExportedToyDefect": 478
+      },
+      {
+        "reservoirOrdinate": "1000",
+        "maximumOneQuartetDefectNearStripEdge": "4.49996437517165552777632549856814569e-12",
+        "quartetsRequiredToHoldExportedToyDefect": 4774922
+      },
+      {
+        "reservoirOrdinate": "1000000",
+        "maximumOneQuartetDefectNearStripEdge": "4.49999999994637500000035765624999807e-24",
+        "quartetsRequiredToHoldExportedToyDefect": 4774883874769521906
+      }
+    ],
+    "interpretation": "subsystem coherence does not destroy a conserved obstruction; the environment stores it, and a high-ordinate reservoir needs increasing multiplicity because one-quartet capacity decays rapidly"
+  },
+  "counterfeitSingleAnchor": {
+    "originalEta": "0.25",
+    "originalGamma": "15",
+    "projectedEta": "0",
+    "shiftedGamma": "15.0061684932336323595284845901321872",
+    "ordinateShift": "0.00616849323363235952848459013218722288",
+    "preservedAnchorW": "1.5",
+    "rows": [
+      {
+        "w": "1",
+        "originalQuartetAnchor": "0.0176845243213804569037177172012497492",
+        "criticalProjectedShiftedOrdinateAnchor": "0.0176846314213117900710190289948441363",
+        "difference": "1.07099931333167301311793594387131325e-7",
+        "preserved": false
+      },
+      {
+        "w": "1.5",
+        "originalQuartetAnchor": "0.0263811530792564802827416108333884579",
+        "criticalProjectedShiftedOrdinateAnchor": "0.0263811530792564802827416108333884579",
+        "difference": "1e-81",
+        "preserved": true
+      },
+      {
+        "w": "2",
+        "originalQuartetAnchor": "0.0349065725211247881825814219791603152",
+        "criticalProjectedShiftedOrdinateAnchor": "0.0349062842640012813775258535546035251",
+        "difference": "-2.88257123506805055568424556790151569e-7",
+        "preserved": false
+      },
+      {
+        "w": "3",
+        "originalQuartetAnchor": "0.0512430827050674147697353386218595825",
+        "criticalProjectedShiftedOrdinateAnchor": "0.0512415194925480196516865935571454321",
+        "difference": "-0.00000156321251939511804874506471415040595",
+        "preserved": false
+      }
+    ],
+    "sameDivisor": false,
+    "zeroCountingMeasurePreserved": false,
+    "result": "one scalar anchor is sufficient only along the fixed-ordinate monotone support flow; it is not a fingerprint of xi under arbitrary relational motion"
+  },
+  "finiteAnchorJacobian": {
+    "quartets": [
+      [
+        0.1,
+        15.0
+      ],
+      [
+        0.2,
+        20.0
+      ],
+      [
+        0.3,
+        30.0
+      ]
+    ],
+    "variables": [
+      "eta1",
+      "gamma1",
+      "eta2",
+      "gamma2",
+      "eta3",
+      "gamma3"
+    ],
+    "anchorsW": [
+      1.0,
+      1.5,
+      2.0
+    ],
+    "jacobian": [
+      [
+        -4.6704771994310335e-05,
+        -0.002348821892076784,
+        -2.974148358148021e-05,
+        -0.0009944262821179328,
+        -8.853105748496404e-06,
+        -0.00029546220666846573
+      ],
+      [
+        -6.877985334052816e-05,
+        -0.003484595120321436,
+        -4.4151703126882325e-05,
+        -0.0014823914543798946,
+        -1.3218436761830432e-05,
+        -0.000441967236304112
+      ],
+      [
+        -8.938729617602448e-05,
+        -0.004575414673524403,
+        -5.802264918530753e-05,
+        -0.0019594507270209727,
+        -1.7511103678202744e-05,
+        -0.0005870123459076708
+      ]
+    ],
+    "rank": 3,
+    "nullity": 3,
+    "pivotColumns": [
+      0,
+      1,
+      2
+    ],
+    "firstOrderNullDirection": [
+      0.33878373654091176,
+      -0.027302534396227613,
+      0.9402455616658896,
+      0.02045568963678792,
+      0.0,
+      0.0
+    ],
+    "nullResidual": [
+      0.0,
+      -1.3552527156068805e-20,
+      -6.776263578034403e-21
+    ],
+    "finiteStep": 0.001,
+    "finiteAnchorDrift": [
+      -9.227889979923631e-11,
+      -1.366745328024166e-10,
+      -1.790353837405334e-10
+    ],
+    "result": "three scalar anchors leave a three-dimensional local deformation space for three movable quartets"
+  },
+  "rigidityHierarchy": [
+    {
+      "level": "phase or branch synchrony",
+      "effect": "can align q or m while eta and the RH defect remain nonzero"
+    },
+    {
+      "level": "one fixed-ordinate prime anchor plus strict inward flow",
+      "effect": "conservation forces the initial defect to be zero and is therefore an RH criterion"
+    },
+    {
+      "level": "one anchor with moving ordinates",
+      "effect": "admits counterfeit critical projections with a changed zero-counting measure"
+    },
+    {
+      "level": "finitely many anchors with enough movable quartets",
+      "effect": "admits local Jacobian null directions and does not determine the divisor"
+    },
+    {
+      "level": "logarithmic derivative on an open set plus normalization",
+      "effect": "analytic uniqueness fixes xi and its divisor; a nontrivial support contraction is impossible unless every eta was already zero"
+    }
+  ],
+  "conditionalClosure": {
+    "closedFixedOrdinateIdentity": "D_total=H_ord-H_prime; if ordinates and H_prime are fixed then D_total is fixed",
+    "positivity": "D_total>=0 and D_total=0 iff every quartet is critical",
+    "sameXiFlow": "same-xi plus strict horizontal contraction is stationary only under RH",
+    "missingTheorem": "no proximity, entropy, splice or cohort law proves that the actual xi divisor undergoes the auxiliary flow while retaining its principal-prime data"
+  },
+  "evidenceBoundary": {
+    "provedHere": [
+      "exact two-quartet defect-transfer examples at the s=2 anchor",
+      "exact defect bookkeeping for a golden-contracting subsystem and reservoir",
+      "an explicit shifted-ordinate critical projection preserving exactly one anchor",
+      "failure of that counterfeit projection at three other anchors",
+      "a rank-three finite-anchor Jacobian with a three-dimensional local nullspace"
+    ],
+    "notProved": [
+      "that zeta zeros physically exchange defect",
+      "that a biological or cosmological environment represents an arithmetic reservoir",
+      "that any moved divisor retains the Euler product",
+      "RH"
+    ]
+  },
+  "status": "relational synchronisation can redistribute or export a toy RH defect but cannot annihilate it in a closed anchor-conserving same-xi system; RH remains open"
+}

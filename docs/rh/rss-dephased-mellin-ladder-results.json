@@ -1,0 +1,363 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "The Mellin--Renyi ladder behind the dephased frame bound",
+  "question": "Can the uniform bound P_xi<=C p_0 be replaced by weaker positive arithmetic statements that are easier to prove?",
+  "verdict": {
+    "uniformFrameBoundProved": false,
+    "countableMellinCriterionEquivalentToRh": true,
+    "allFiniteRenyiCriterionEquivalentToRh": true,
+    "probabilityNormalizationClosesFirstMellinRung": true,
+    "firstNontrivialMellinRungProved": false,
+    "dephasingAloneSuppliesHigherRungs": false,
+    "rhProved": false,
+    "conclusion": "Uniform domination is not necessary.  RH is equivalent to finiteness of A_j=sum P_xi(n)n^(1-1/j) for every positive integer j, and also to finiteness of every finite-order relative moment sum p_0(P_xi/p_0)^q.  A single off-line component with displacement eta makes A_j diverge once 2eta>=1/j and makes the q-th relative moment diverge once qeta>=1/2.  Normalization proves only A_1=1.  The first nontrivial rung A_2 is already the unproved zero-free strip |Re rho-1/2|<1/4.  Thus the L-infinity target is replaced by a countable ladder, but no new arithmetic estimate closes even its first nontrivial rung."
+  },
+  "mellinLadder": {
+    "definition": "A_j=sum_(prime powers n) P_xi(n)n^(1-1/j)",
+    "componentFormula": "p_-eta contribution is M(1+1/j-2eta)/M(2-2eta) when the numerator series converges",
+    "divergenceCondition": "2eta>=1/j",
+    "equivalence": "RH iff A_j<infinity for every integer j>=1",
+    "rungs": [
+      {
+        "j": 1,
+        "moment": "A_1=sum_n P_xi(n)n^(1-1/1)",
+        "etaExclusionThreshold": 0.5,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.5",
+        "automaticFromProbabilityNormalization": true
+      },
+      {
+        "j": 2,
+        "moment": "A_2=sum_n P_xi(n)n^(1-1/2)",
+        "etaExclusionThreshold": 0.25,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.25",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 3,
+        "moment": "A_3=sum_n P_xi(n)n^(1-1/3)",
+        "etaExclusionThreshold": 0.16666666666666666,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.166666666667",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 4,
+        "moment": "A_4=sum_n P_xi(n)n^(1-1/4)",
+        "etaExclusionThreshold": 0.125,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.125",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 5,
+        "moment": "A_5=sum_n P_xi(n)n^(1-1/5)",
+        "etaExclusionThreshold": 0.1,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.1",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 6,
+        "moment": "A_6=sum_n P_xi(n)n^(1-1/6)",
+        "etaExclusionThreshold": 0.08333333333333333,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.0833333333333",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 7,
+        "moment": "A_7=sum_n P_xi(n)n^(1-1/7)",
+        "etaExclusionThreshold": 0.07142857142857142,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.0714285714286",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 8,
+        "moment": "A_8=sum_n P_xi(n)n^(1-1/8)",
+        "etaExclusionThreshold": 0.0625,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.0625",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 9,
+        "moment": "A_9=sum_n P_xi(n)n^(1-1/9)",
+        "etaExclusionThreshold": 0.05555555555555555,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.0555555555556",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 10,
+        "moment": "A_10=sum_n P_xi(n)n^(1-1/10)",
+        "etaExclusionThreshold": 0.05,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.05",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 11,
+        "moment": "A_11=sum_n P_xi(n)n^(1-1/11)",
+        "etaExclusionThreshold": 0.045454545454545456,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.0454545454545",
+        "automaticFromProbabilityNormalization": false
+      },
+      {
+        "j": 12,
+        "moment": "A_12=sum_n P_xi(n)n^(1-1/12)",
+        "etaExclusionThreshold": 0.041666666666666664,
+        "impliedZeroStrip": "|Re(rho)-1/2|<0.0416666666667",
+        "automaticFromProbabilityNormalization": false
+      }
+    ]
+  },
+  "renyiLadder": {
+    "definition": "R_q=sum_n p_0(n)[P_xi(n)/p_0(n)]^q",
+    "offLineLowerBound": "R_q dominates a positive multiple of sum Lambda(n)n^(-2+2qeta)",
+    "divergenceCondition": "qeta>=1/2",
+    "equivalence": "RH iff P_xi/p_0 belongs to L^q(p_0) for every finite q>1",
+    "rungs": [
+      {
+        "q": 2,
+        "relativeMoment": "R_2=sum_n p_0(n)(P_xi(n)/p_0(n))^2",
+        "etaExclusionThreshold": 0.25,
+        "implication": "R_2<infinity implies |eta|<0.25 for every zero"
+      },
+      {
+        "q": 3,
+        "relativeMoment": "R_3=sum_n p_0(n)(P_xi(n)/p_0(n))^3",
+        "etaExclusionThreshold": 0.16666666666666666,
+        "implication": "R_3<infinity implies |eta|<0.166666666667 for every zero"
+      },
+      {
+        "q": 4,
+        "relativeMoment": "R_4=sum_n p_0(n)(P_xi(n)/p_0(n))^4",
+        "etaExclusionThreshold": 0.125,
+        "implication": "R_4<infinity implies |eta|<0.125 for every zero"
+      },
+      {
+        "q": 5,
+        "relativeMoment": "R_5=sum_n p_0(n)(P_xi(n)/p_0(n))^5",
+        "etaExclusionThreshold": 0.1,
+        "implication": "R_5<infinity implies |eta|<0.1 for every zero"
+      },
+      {
+        "q": 8,
+        "relativeMoment": "R_8=sum_n p_0(n)(P_xi(n)/p_0(n))^8",
+        "etaExclusionThreshold": 0.0625,
+        "implication": "R_8<infinity implies |eta|<0.0625 for every zero"
+      },
+      {
+        "q": 10,
+        "relativeMoment": "R_10=sum_n p_0(n)(P_xi(n)/p_0(n))^10",
+        "etaExclusionThreshold": 0.05,
+        "implication": "R_10<infinity implies |eta|<0.05 for every zero"
+      },
+      {
+        "q": 20,
+        "relativeMoment": "R_20=sum_n p_0(n)(P_xi(n)/p_0(n))^20",
+        "etaExclusionThreshold": 0.025,
+        "implication": "R_20<infinity implies |eta|<0.025 for every zero"
+      },
+      {
+        "q": 50,
+        "relativeMoment": "R_50=sum_n p_0(n)(P_xi(n)/p_0(n))^50",
+        "etaExclusionThreshold": 0.01,
+        "implication": "R_50<infinity implies |eta|<0.01 for every zero"
+      }
+    ]
+  },
+  "firstRungs": {
+    "j1": "A_1=sum P_xi=1 follows from trace preservation and probability normalization",
+    "j2": "A_2=sum P_xi(n)sqrt(n)<infinity would exclude every zero with |Re rho-1/2|>=1/4",
+    "j2Status": "unproved; it is already a nontrivial global zero-free strip",
+    "limit": "letting j tend to infinity shrinks the permitted strip to the critical line"
+  },
+  "structuralCounterexample": {
+    "state": "one positive reflected pair [p_0.1+p_-0.1]/2",
+    "propertiesRetained": [
+      "probability mass one",
+      "reflection symmetry",
+      "positive CPTP dephased construction",
+      "finite relative entropy to p_0",
+      "finite logarithmic moments of every fixed order",
+      "the Stage-39 componentwise dissipative flow"
+    ],
+    "failure": "A_5 diverges and P/p_0 grows at least as a positive multiple of n^0.2",
+    "consequence": "normalization, dephasing, reflection, entropy finiteness and componentwise dissipation cannot imply the global frame bound"
+  },
+  "toyDiagnostics": [
+    {
+      "eta": 0.1,
+      "j": 4,
+      "dirichletExponent": 1.05,
+      "predictedStatus": "converges",
+      "partialRows": [
+        {
+          "cutoff": 1000,
+          "partialMoment": 6.625042201437761
+        },
+        {
+          "cutoff": 10000,
+          "partialMoment": 8.562850484494057
+        },
+        {
+          "cutoff": 100000,
+          "partialMoment": 10.286615035095368
+        },
+        {
+          "cutoff": 200000,
+          "partialMoment": 10.767760854036776
+        }
+      ]
+    },
+    {
+      "eta": 0.1,
+      "j": 5,
+      "dirichletExponent": 1.0,
+      "predictedStatus": "diverges",
+      "partialRows": [
+        {
+          "cutoff": 1000,
+          "partialMoment": 7.953244164905644
+        },
+        {
+          "cutoff": 10000,
+          "partialMoment": 10.85101782658557
+        },
+        {
+          "cutoff": 100000,
+          "partialMoment": 13.743431701957341
+        },
+        {
+          "cutoff": 200000,
+          "partialMoment": 14.613972350405614
+        }
+      ]
+    },
+    {
+      "eta": 0.1,
+      "j": 6,
+      "dirichletExponent": 0.9666666666666668,
+      "predictedStatus": "diverges",
+      "partialRows": [
+        {
+          "cutoff": 1000,
+          "partialMoment": 9.025506915849322
+        },
+        {
+          "cutoff": 10000,
+          "partialMoment": 12.817210055030706
+        },
+        {
+          "cutoff": 100000,
+          "partialMoment": 16.903994128975587
+        },
+        {
+          "cutoff": 200000,
+          "partialMoment": 18.196665312886502
+        }
+      ]
+    },
+    {
+      "eta": 0.25,
+      "j": 1,
+      "dirichletExponent": 1.5,
+      "predictedStatus": "converges",
+      "partialRows": [
+        {
+          "cutoff": 1000,
+          "partialMoment": 0.9607965988777796
+        },
+        {
+          "cutoff": 10000,
+          "partialMoment": 0.9896631815182422
+        },
+        {
+          "cutoff": 100000,
+          "partialMoment": 0.9987666715352678
+        },
+        {
+          "cutoff": 200000,
+          "partialMoment": 1.0
+        }
+      ]
+    },
+    {
+      "eta": 0.25,
+      "j": 2,
+      "dirichletExponent": 1.0,
+      "predictedStatus": "diverges",
+      "partialRows": [
+        {
+          "cutoff": 1000,
+          "partialMoment": 4.217021145821722
+        },
+        {
+          "cutoff": 10000,
+          "partialMoment": 5.753497651978939
+        },
+        {
+          "cutoff": 100000,
+          "partialMoment": 7.287132257179774
+        },
+        {
+          "cutoff": 200000,
+          "partialMoment": 7.748716014283913
+        }
+      ]
+    },
+    {
+      "eta": 0.25,
+      "j": 3,
+      "dirichletExponent": 0.8333333333333333,
+      "predictedStatus": "diverges",
+      "partialRows": [
+        {
+          "cutoff": 1000,
+          "partialMoment": 8.234602576609841
+        },
+        {
+          "cutoff": 10000,
+          "partialMoment": 14.157190642711363
+        },
+        {
+          "cutoff": 100000,
+          "partialMoment": 22.835901146249437
+        },
+        {
+          "cutoff": 200000,
+          "partialMoment": 26.16969334317402
+        }
+      ]
+    }
+  ],
+  "arithmeticBoundary": {
+    "weakestDisplayedNewTarget": "A_2=sum P_xi(n)sqrt(n)<infinity",
+    "meaning": "a zero-free strip 1/4<Re rho<3/4 for every nontrivial zero",
+    "whyOpen": "one exceptional zero outside that strip contributes a positive divergent von-Mangoldt series, so averaging and zero-density estimates cannot cancel it",
+    "fullClosure": "prove A_j finite for every j, equivalently establish strips shrinking to Re rho=1/2"
+  },
+  "finiteComputation": {
+    "primePowerCutoff": 200000,
+    "primePowers": 18120,
+    "cutoffs": [
+      1000,
+      10000,
+      100000,
+      200000
+    ],
+    "scope": "partial sums illustrate the threshold exponents; convergence and divergence follow analytically from the abscissa one of sum Lambda(n)n^-s"
+  },
+  "evidenceBoundary": {
+    "provedHere": [
+      "the countable Mellin negative-moment criterion equivalent to RH",
+      "the all-finite-order Renyi criterion equivalent to RH",
+      "the exact horizontal strip excluded by each finite rung",
+      "normalization closes only the first Mellin rung",
+      "an explicit off-line positive state satisfying the previously established structural properties while failing a higher rung"
+    ],
+    "notProved": [
+      "A_2<infinity for the actual xi zero mixture",
+      "any shrinking family of new zero-free strips",
+      "the all-rung Mellin criterion",
+      "the all-order Renyi criterion",
+      "the uniform frame bound",
+      "RH"
+    ]
+  },
+  "status": "the uniform bound has been reduced to weaker countable positive moment ladders, but their first nontrivial arithmetic rung is already unproved and RH remains open"
+}

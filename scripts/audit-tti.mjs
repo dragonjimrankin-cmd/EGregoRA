@@ -9,7 +9,7 @@ const siteRoot = path.join(projectRoot, 'tti', '_site');
 const expectedTitle = 'The Two Infinities: Eternal Integration of the Self';
 const retiredTitle = 'The Shape of Becoming: Infinity, Gravity and Existence';
 const expectedTagline = 'A speculative cosmology by Jim Rankin, UK, 2026';
-const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return, mathematical proof auditing and testable failure conditions across thirty studies and four project resources.';
+const expectedProjectDescription = 'The Two Infinities: Eternal Integration of the Self is an independent speculative cosmology research project founded by Jim Rankin, UK, in 2026. It investigates infinity, geometry, integration, consciousness, gravity, time, topology, cosmic return, mathematical proof auditing and testable failure conditions across thirty-one studies and four project resources.';
 const expectedOrigin = 'https://the-two-infinities.hatchable.site';
 const runtimeRoutes = new Set(['/join/', '/account/']);
 const expectedResearchRoutes = site.navGroups.flatMap((group) => group.items.map((item) => item.url));
@@ -253,8 +253,8 @@ if (!archive) {
   if (archive.$('#project-contents .research-toc-part').length !== 6) {
     fail('research archive does not expose all six Parts');
   }
-  if (archive.$('#project-contents .research-toc-part > ol > li').length !== 34) {
-    fail('research archive does not expose all 34 destinations');
+  if (archive.$('#project-contents .research-toc-part > ol > li').length !== 35) {
+    fail('research archive does not expose all 35 destinations');
   }
   if (!archive.$('#atlas-box #atlas-data').length || !archive.$('script[src="/assets/js/atlas.js"]').length) {
     fail('research archive does not preserve the interactive Atlas');
@@ -345,14 +345,14 @@ if (!plates) {
   let sourcePlateCount = 0;
   for (const [pathname, document] of documents) {
     /* The restored r3.5 homepage carries its historical orientation plate,
-       while the Plate Room remains the 36-figure research-document register. */
+       while the Plate Room remains the complete research-document figure register. */
     if (pathname === '/plates/' || pathname === '/') continue;
     sourcePlateCount += document.$('figure.plate').length;
   }
   const gathered = plates.$('figure.plate[data-plate-source]').length;
   if (gathered !== sourcePlateCount) fail(`plate room gathers ${gathered} of ${sourcePlateCount} source plates`);
   const plateGroups = plates.$('.plate-accordion > .plate-accordion-group');
-  if (plateGroups.length !== 26) fail(`plate room exposes ${plateGroups.length} of 26 source headings`);
+  if (plateGroups.length !== 27) fail(`plate room exposes ${plateGroups.length} of 27 source headings`);
   if (plates.$('.plate-accordion-group[name="plate-room"]').length !== plateGroups.length) {
     fail('plate room headings do not form one native exclusive disclosure group');
   }
@@ -473,8 +473,8 @@ for (const [pathname, label, ids, equationMarkers] of firstPrincipleAdditions) {
 
 /* Parts I-IV are the project's long-form essays. Part V contains functional
    resources, while Part VI contains concise mathematical dossier studies. */
-if (essayDocuments.length !== 27) {
-  fail(`expected 27 Part I-IV research essays, found ${essayDocuments.length}`);
+if (essayDocuments.length !== 28) {
+  fail(`expected 28 Part I-IV research essays, found ${essayDocuments.length}`);
 }
 const essayLengths = [];
 for (const essayRecord of essayDocuments) {

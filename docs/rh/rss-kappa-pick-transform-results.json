@@ -1,0 +1,284 @@
+{
+  "analysisDate": "2026-10-14",
+  "title": "Transforming the RSS kappa kernel toward the xi Pick kernel",
+  "verdict": {
+    "exactTransformFound": true,
+    "rhProof": false,
+    "statement": "the arithmetic screw kernel maps exactly to K_xi by a double Laplace congruence",
+    "unconditionalDomain": "Re(s)>1 and Re(t)>1",
+    "missingExtension": "prove the arithmetic screw kernel positive semidefinite on every real window; this is equivalent to RH"
+  },
+  "sourceKernel": {
+    "formula": "K_kappa(s,t)=kappa_R*zeta(s+conj(t)+2)",
+    "feature": "v_s(n)=sqrt(kappa_R)*n^(-s-1)",
+    "verticalScrewFeature": "X_sigma(t;n)=sqrt(kappa_R)*n^(-sigma-1)*exp(-i*t*log(n))",
+    "interpretation": "K_kappa already generates a stationary-increment screw line, but with log-integer frequencies and smoothed positive weights"
+  },
+  "exactArithmeticDeformation": {
+    "potential": "Psi(t), defined from prime-power hinges plus elementary, digamma and Hurwitz-Lerch archimedean terms",
+    "signConvention": "g(t)=-Psi(t)",
+    "screwKernel": "G_g(x,y)=Psi(x)+Psi(y)-Psi(x-y)",
+    "oneSidedTransform": "H(1/2+w)=w^2*integral_0^infinity Psi(x)exp(-w*x)dx",
+    "doubleTransform": "K_xi(s,t)=(s-1/2)(conj(t)-1/2)*double_integral G_g(x,y)exp(-(s-1/2)x-(conj(t)-1/2)y)dxdy",
+    "unconditionalConvergence": "Re(s),Re(t)>1",
+    "targetConvergence": "Re(s),Re(t)>1/2 follows from global screw positivity/RH, not from analytic continuation alone"
+  },
+  "kappaRole": {
+    "value": 0.025330295910584444,
+    "identity": "kappa_R=(2*pi)^(-2)",
+    "firstCuspEigenvalue": 39.47841760435743,
+    "normalisedZeroFrequency": "q_gamma=gamma/(2*pi)",
+    "conditionalPotential": "Psi(t)=kappa_R*sum_gamma (1-cos(2*pi*q_gamma*t))/q_gamma^2",
+    "conditionalFeature": "sqrt(kappa_R)*(exp(2*pi*i*q_gamma*t)-1)/q_gamma",
+    "firstZeroOrdinate": 14.134725141734693,
+    "firstNormalisedZeroFrequency": 2.2496113755523672,
+    "firstInverseSquareWeight": 0.0050052441235941166
+  },
+  "finiteDiagnostics": {
+    "primeLimit": 162755,
+    "tMax": 12,
+    "psiCheckpoints": [
+      {
+        "t": 0,
+        "psi": 0
+      },
+      {
+        "t": 0.01,
+        "psi": 0.01603789098016122
+      },
+      {
+        "t": 0.05,
+        "psi": 0.041704069059785076
+      },
+      {
+        "t": 0.1,
+        "psi": 0.05313043381778759
+      },
+      {
+        "t": 0.2,
+        "psi": 0.054499790356502764
+      },
+      {
+        "t": 0.5,
+        "psi": 0.04016258038208664
+      },
+      {
+        "t": 1,
+        "psi": 0.044007305236852146
+      },
+      {
+        "t": 2,
+        "psi": 0.05334112417185555
+      },
+      {
+        "t": 4,
+        "psi": 0.03514093054519751
+      },
+      {
+        "t": 6,
+        "psi": 0.04812322313580797
+      },
+      {
+        "t": 8,
+        "psi": 0.03094868956649144
+      },
+      {
+        "t": 10,
+        "psi": 0.06209008245758074
+      },
+      {
+        "t": 12,
+        "psi": 0.02923189200592713
+      }
+    ],
+    "psiGridCount": 600,
+    "minimumPsiGridPoint": {
+      "t": 0.02,
+      "psi": 0.025319334268945816
+    },
+    "allSampledPsiPositive": true,
+    "intervalConvexity": {
+      "plasticConstant": 1.324717957244746,
+      "convexityThreshold": 0.2811995743229619,
+      "firstPrimePowerEvent": 2,
+      "archimedeanSecondDerivativeAtLog2": 1.178511301977579,
+      "formula": "A''(log x)=(x^3-x-1)/(sqrt(x)*(x^2-1))"
+    },
+    "primePowerIntervalsChecked": 15040,
+    "minimizerTypeCounts": {
+      "left": 6448,
+      "right": 6898,
+      "interior": 1694
+    },
+    "minimumPrimePowerInterval": {
+      "leftPrimePower": 3089,
+      "rightPrimePower": 3109,
+      "minimizer": 8.039063759496273,
+      "minimizerExp": 3099.709757559462,
+      "type": "interior",
+      "psi": 0.027520573353497113
+    },
+    "allCheckedIntervalMinimaPositive": true,
+    "screwMatrixChecks": [
+      {
+        "points": [
+          0.1,
+          0.3,
+          0.6,
+          0.9
+        ],
+        "ldlPivots": [
+          0.10626086763557518,
+          0.0748211709531554,
+          0.05451674479037928,
+          0.04753521997903566
+        ],
+        "minimumPivot": 0.04753521997903566
+      },
+      {
+        "points": [
+          0.2,
+          0.8,
+          1.5,
+          2.5,
+          4
+        ],
+        "ldlPivots": [
+          0.10899958071300553,
+          0.062237841971734875,
+          0.05519248420704531,
+          0.04791552803979805,
+          0.04941473790635977
+        ],
+        "minimumPivot": 0.04791552803979805
+      },
+      {
+        "points": [
+          0.3,
+          1,
+          3,
+          6,
+          9
+        ],
+        "ldlPivots": [
+          0.0947311577095662,
+          0.07876157489011003,
+          0.04466306804416338,
+          0.046248929360147344,
+          0.04174019922573504
+        ],
+        "minimumPivot": 0.04174019922573504
+      },
+      {
+        "points": [
+          -4,
+          -2,
+          -0.5,
+          0.7,
+          2,
+          5
+        ],
+        "ldlPivots": [
+          0.07028186109039503,
+          0.08911178307111234,
+          0.04780730277878164,
+          0.05079917651396503,
+          0.04823531688862769,
+          0.05123889924475691
+        ],
+        "minimumPivot": 0.04780730277878164
+      }
+    ],
+    "primeSeriesChecks": [
+      {
+        "s": 1.5,
+        "finitePrimeSeries": -1.500278596781669,
+        "continuedValue": -1.5052353557882676,
+        "truncationDifference": 0.004956759006598643
+      },
+      {
+        "s": 2,
+        "finitePrimeSeries": -0.569954850856828,
+        "continuedValue": -0.5699609930945329,
+        "truncationDifference": 0.000006142237704898079
+      },
+      {
+        "s": 2.5,
+        "finitePrimeSeries": -0.28874067541007825,
+        "continuedValue": -0.2887406855581931,
+        "truncationDifference": 1.0148114848451684e-8
+      },
+      {
+        "s": 3,
+        "finitePrimeSeries": -0.1648226821394155,
+        "continuedValue": -0.16482268215827722,
+        "truncationDifference": 1.8861717743234863e-11
+      },
+      {
+        "s": 4.5,
+        "finitePrimeSeries": -0.04148784259631406,
+        "continuedValue": -0.04148784259631504,
+        "truncationDifference": 9.853229343548264e-16
+      }
+    ],
+    "laplaceChecks": [
+      {
+        "w": 1.5,
+        "transformed": 0.06906376706719307,
+        "target": 0.06906623153338376,
+        "absoluteDifference": 0.0000024644661906908505
+      },
+      {
+        "w": 2,
+        "transformed": 0.09182997205163497,
+        "target": 0.09183427149813361,
+        "absoluteDifference": 0.000004299446498642889
+      },
+      {
+        "w": 3,
+        "transformed": 0.1366807640486093,
+        "target": 0.13668992788776235,
+        "absoluteDifference": 0.000009163839153059072
+      }
+    ],
+    "maximumLaplaceDifference": 0.000009163839153059072,
+    "doubleLaplaceChecks": [
+      {
+        "w": 1.5,
+        "v": 2,
+        "transformedKernel": 0.04596963974823658,
+        "targetKernel": 0.04597157229471925,
+        "absoluteDifference": 0.000001932546482667774
+      },
+      {
+        "w": 1.5,
+        "v": 3,
+        "transformedKernel": 0.045721006914622754,
+        "targetKernel": 0.045723590982476914,
+        "absoluteDifference": 0.0000025840678541597106
+      },
+      {
+        "w": 2,
+        "v": 3,
+        "transformedKernel": 0.045702147220048846,
+        "targetKernel": 0.045704839877179194,
+        "absoluteDifference": 0.000002692657130348719
+      }
+    ],
+    "maximumDoubleLaplaceDifference": 0.000002692657130348719,
+    "limitation": "finite samples and truncated quadrature cannot establish global screw positivity"
+  },
+  "boundedTransformNoGo": {
+    "sourceDiagonal": "K_kappa(s,s)=kappa_R*zeta(2*Re(s)+2)<=kappa_R*zeta(3) for Re(s)>=1/2",
+    "sourceDiagonalBound": 0.03044845705839327,
+    "targetBoundaryBehaviour": "at a critical-line zero rho of multiplicity m, K_xi(rho+epsilon,rho+epsilon) is asymptotic to m/epsilon^2",
+    "conclusion": "no single bounded feature operator T can satisfy K_xi(s,t)=<T v_t,T v_s> on the full half-plane; the necessary inverse-Green/arithmetic transform is unbounded or changes the feature space"
+  },
+  "exactRemainingTheorem": {
+    "name": "RSS arithmetic screw-line theorem",
+    "statement": "construct from primitive return data a Hilbert-space path X(t) with <X(x)-X(0),X(y)-X(0)>=Psi(x)+Psi(y)-Psi(x-y) for all real x,y",
+    "equivalentScalarTarget": "Psi(t)>=0 for every real t",
+    "consequence": "the double Laplace congruence makes K_xi positive semidefinite throughout Re(s)>1/2 and proves RH",
+    "currentStatus": "not proved"
+  }
+}

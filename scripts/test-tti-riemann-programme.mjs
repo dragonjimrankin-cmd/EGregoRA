@@ -37,12 +37,12 @@ const expected = [
     title: 'The Splice Questions After RH',
     status: 'No coefficient derivation',
     figure: 'fig-rh-splice-gates',
-    markers: ['10:\\text{ localised gravitational source}', 'G=C_{10}', 'No independent \\(r_0\\)']
+    markers: ['10:\\text{ localised gravitational source}', 'G=C_{10}', 'No independent \\(r_0\\)', 'id="t-rh-third-splice"', '0.0175731', 'id="t-rh-alternative-channels"', '\\rho_\\Gamma', 'id="t-rh-ordinate-splice"', 'id="t-rh-third-density-bounce"', 'T^3(n)=n-1', 'id="t-rh-golden-catchup"', 'splice at \\(1\\)', 'Zeroth seed', 'Boundary only', 'id="t-rh-internal-splices"', 'Thirty-three carriers', 'id="t-rh-ternary-splices"', 'Three total branches', '\\mathbb Z_3', 'id="t-rh-quaternary-splice"', 'F_4=3', '\\mathbb Z_4', 'id="t-rh-splice-one-halving"', 'Same-xi halving', 'remaining deficit', 'id="t-rh-halving-obstruction"', 'aggregate fixed-point', 'complete zero genealogy', 'id="t-rh-global-halving-routes"', 'nonzero dyadic correction', 'positive blend', 'id="t-rh-relational-synchronisation"', 'All \\(127\\) non-empty subsets', 'id="t-rh-relational-defect-transport"', 'reservoir ledger', 'id="t-rh-global-annihilation"', 'All 9,840 reflection/golden/halving words', 'id="t-rh-prime-power-dissipation"', 'arithmetic dissipation has been proved', 'precise positive candidate family', 'id="t-rh-prime-pair-splice-link"', 'self-pair', 'id="t-rh-prime-channel-no-go"', 'channel to leave 2 fixed', 'id="t-rh-geometric-prime-reweighting"', 'unique full-support', 'id="t-rh-local-prime-power-diagonal"', 'Hankel']
   }
 ];
 
 assert.equal(site.revision, 'r3.5', 'Riemann programme must remain integrated in restored revision r3.5');
-assert.equal(site.research.documentCount, 30, 'Riemann programme must add three research studies');
+assert.equal(site.research.documentCount, 31, 'Riemann programme must retain its three research studies');
 assert.equal(site.research.resourceCount, 4, 'reading-room resources must remain unchanged');
 
 const part = site.navGroups.find((group) => group.part === 'VI');
@@ -59,7 +59,13 @@ for (const marker of [
   'Four pairs are byte-for-byte identical',
   'Strict real-axis log-convexity',
   'no unique splice-to-action map',
-  'No source document derives a spacetime action',
+  'now supplies a declared candidate family',
+  'a precise positive candidate family with a proved nonuniqueness obstruction',
+  'Ternary splicing changes multiplicity, not the global obstruction',
+  'A four-way fork fits the reindexed 1000 cohort',
+  'Same-xi halving is RH-equivalent, not yet derived',
+  'Aggregate contraction narrows the halving obstruction',
+  'All four global-halving routes retain a missing theorem',
   'The archive does **not** answer TTI’s open splice questions'
 ]) {
   assert.ok(master.includes(marker), `consolidated RH audit is missing: ${marker}`);
@@ -89,6 +95,16 @@ for (const item of expected) {
   assert.equal($(`#${item.figure}`).length, 1, `${item.route} did not build its infographic`);
   assert.equal($(`#${item.figure} [role="img"][aria-label]`).length, 1,
     `${item.route} built infographic is not screen-reader labelled`);
+  if (item.route === '/riemann-splice-questions/') {
+    assert.equal($('#t-rh-prime-pair-splice-link').length, 1,
+      'the 101 prime-pair link audit did not build');
+    assert.equal($('#t-rh-prime-channel-no-go').length, 1,
+      'the fixed prime-channel contraction no-go did not build');
+    assert.equal($('#t-rh-geometric-prime-reweighting').length, 1,
+      'the nonlinear geometric prime map did not build');
+    assert.equal($('#t-rh-local-prime-power-diagonal').length, 1,
+      'the local prime-power Hankel test did not build');
+  }
   assert.ok($('.sci, .hist, .spec, .myth').length > 0, `${item.route} lacks evidence grading`);
 }
 

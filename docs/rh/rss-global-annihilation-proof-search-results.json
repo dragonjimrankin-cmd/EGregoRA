@@ -1,0 +1,406 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Global annihilation proof search: recurrence, dissipation and arithmetic invariance",
+  "question": "Can the relational proximity analogy be promoted to a valid global law that annihilates every RH defect with no reservoir?",
+  "verdict": {
+    "conditionalGlobalAnnihilationTheoremProved": true,
+    "unconditionalSameXiArithmeticDissipationLawFound": false,
+    "rhProved": false,
+    "reflectionSuppliesInvariance": true,
+    "reflectionSuppliesStrictDissipation": false,
+    "supportContractionSuppliesStrictDissipation": true,
+    "supportContractionSuppliesSameXiInvariance": false,
+    "tinyDefectPlusIntegerIndexForcesZero": false,
+    "finiteReturnStrictContractionExistsOffCriticalLine": false,
+    "conclusion": "The exact proof is a Lyapunov recurrence argument: an invariant xi ledger under a strict defect contraction must have zero defect.  Exhaustive reflection/golden/halving words confirm that exact return and strict contraction coexist only at eta=0.  But known xi symmetry supplies return without contraction, while every strict contraction changes the divisor.  Heat, inner-factor and prime-damping candidates also change the function or restate RH.  The implication is proved; its arithmetic-invariance premise is not.  RH remains open."
+  },
+  "globalAnnihilationTheorem": {
+    "lyapunovFunctional": "V(mu)=total positive off-line defect (or horizontal second moment)",
+    "nonnegativity": "V(mu)>=0, with V(mu)=0 iff RH",
+    "arithmeticInvarianceNeeded": "T_# mu_xi=mu_xi",
+    "strictDissipationNeeded": "V(T_# nu)<=q V(nu) for the xi ledger, with 0<=q<1",
+    "proof": "V(mu_xi)=V(T_#mu_xi)<=q V(mu_xi), hence (1-q)V(mu_xi)<=0; nonnegativity gives V(mu_xi)=0",
+    "status": "the implication is proved; no derived T simultaneously satisfies arithmetic invariance and strict dissipation"
+  },
+  "finiteReturnTheorem": {
+    "assumptions": [
+      "T^m_# mu_xi=mu_xi for some m>=1",
+      "V(T_#nu)<=q V(nu) with q<1 along the orbit"
+    ],
+    "proof": "V(mu_xi)=V(T^m_#mu_xi)<=q^m V(mu_xi), so V(mu_xi)=0",
+    "ttiTwoPassTest": "for T=RC with C eta=c eta and R eta=-eta, T^2 eta=c^2 eta; exact two-pass return forces (1-c^2)eta=0",
+    "missingPremise": "the physical two-pass carrier return has not been proved to act as RC on the actual xi divisor"
+  },
+  "wordCensus": {
+    "alphabet": {
+      "R": "eta->-eta",
+      "G": "eta->eta/phi",
+      "H": "eta->eta/2"
+    },
+    "exactMultiplier": "(-1)^r phi^(-g) 2^(-h)",
+    "lengthsTested": 8,
+    "totalWords": 9840,
+    "strictlyDissipativeWords": 9832,
+    "dissipativeFiniteReturnWords": 0,
+    "identityWordsWithoutContraction": 4,
+    "lengthRows": [
+      {
+        "length": 1,
+        "words": 3,
+        "strictlyDissipativeWords": 2,
+        "dissipativeFiniteReturnWords": 0,
+        "identityWordsWithoutContraction": 0
+      },
+      {
+        "length": 2,
+        "words": 9,
+        "strictlyDissipativeWords": 8,
+        "dissipativeFiniteReturnWords": 0,
+        "identityWordsWithoutContraction": 1
+      },
+      {
+        "length": 3,
+        "words": 27,
+        "strictlyDissipativeWords": 26,
+        "dissipativeFiniteReturnWords": 0,
+        "identityWordsWithoutContraction": 0
+      },
+      {
+        "length": 4,
+        "words": 81,
+        "strictlyDissipativeWords": 80,
+        "dissipativeFiniteReturnWords": 0,
+        "identityWordsWithoutContraction": 1
+      },
+      {
+        "length": 5,
+        "words": 243,
+        "strictlyDissipativeWords": 242,
+        "dissipativeFiniteReturnWords": 0,
+        "identityWordsWithoutContraction": 0
+      },
+      {
+        "length": 6,
+        "words": 729,
+        "strictlyDissipativeWords": 728,
+        "dissipativeFiniteReturnWords": 0,
+        "identityWordsWithoutContraction": 1
+      },
+      {
+        "length": 7,
+        "words": 2187,
+        "strictlyDissipativeWords": 2186,
+        "dissipativeFiniteReturnWords": 0,
+        "identityWordsWithoutContraction": 0
+      },
+      {
+        "length": 8,
+        "words": 6561,
+        "strictlyDissipativeWords": 6560,
+        "dissipativeFiniteReturnWords": 0,
+        "identityWordsWithoutContraction": 1
+      }
+    ],
+    "representativeWords": [
+      {
+        "word": "R",
+        "reflectionCount": 1,
+        "goldenCount": 0,
+        "halvingCount": 0,
+        "multiplierSign": -1,
+        "multiplierMagnitude": "1",
+        "strictlyDissipative": false,
+        "finiteOrderReturn": true
+      },
+      {
+        "word": "G",
+        "reflectionCount": 0,
+        "goldenCount": 1,
+        "halvingCount": 0,
+        "multiplierSign": 1,
+        "multiplierMagnitude": "0.6180339887498948482045868343656381177203",
+        "strictlyDissipative": true,
+        "finiteOrderReturn": false
+      },
+      {
+        "word": "H",
+        "reflectionCount": 0,
+        "goldenCount": 0,
+        "halvingCount": 1,
+        "multiplierSign": 1,
+        "multiplierMagnitude": "0.5",
+        "strictlyDissipative": true,
+        "finiteOrderReturn": false
+      },
+      {
+        "word": "RR",
+        "reflectionCount": 2,
+        "goldenCount": 0,
+        "halvingCount": 0,
+        "multiplierSign": 1,
+        "multiplierMagnitude": "1",
+        "strictlyDissipative": false,
+        "finiteOrderReturn": true
+      },
+      {
+        "word": "RG",
+        "reflectionCount": 1,
+        "goldenCount": 1,
+        "halvingCount": 0,
+        "multiplierSign": -1,
+        "multiplierMagnitude": "0.6180339887498948482045868343656381177203",
+        "strictlyDissipative": true,
+        "finiteOrderReturn": false
+      },
+      {
+        "word": "GH",
+        "reflectionCount": 0,
+        "goldenCount": 1,
+        "halvingCount": 1,
+        "multiplierSign": 1,
+        "multiplierMagnitude": "0.3090169943749474241022934171828190588602",
+        "strictlyDissipative": true,
+        "finiteOrderReturn": false
+      },
+      {
+        "word": "RGRG",
+        "reflectionCount": 2,
+        "goldenCount": 2,
+        "halvingCount": 0,
+        "multiplierSign": 1,
+        "multiplierMagnitude": "0.3819660112501051517954131656343618822797",
+        "strictlyDissipative": true,
+        "finiteOrderReturn": false
+      },
+      {
+        "word": "RHRH",
+        "reflectionCount": 2,
+        "goldenCount": 0,
+        "halvingCount": 2,
+        "multiplierSign": 1,
+        "multiplierMagnitude": "0.25",
+        "strictlyDissipative": true,
+        "finiteOrderReturn": false
+      }
+    ],
+    "theorem": "a word containing G or H has multiplier magnitude below one, so no positive power is the identity away from eta=0"
+  },
+  "indexDefectGapStress": {
+    "rows": [
+      {
+        "k": 10,
+        "eta": "0.1",
+        "gamma": "10",
+        "phaseDefect": "0.00001670884577802834695041664680128159391004",
+        "negativeSquares": 2,
+        "weightedReflectionEigenvalues": [
+          "0.00001670884577802834695041664680128159391004",
+          "-0.00001670884577802834695041664680128159391004"
+        ],
+        "unweightedReflectionEigenvalues": [
+          "1",
+          "-1"
+        ]
+      },
+      {
+        "k": 100,
+        "eta": "0.01",
+        "gamma": "100",
+        "phaseDefect": "1.798650607676259217321402551927903425027e-11",
+        "negativeSquares": 2,
+        "weightedReflectionEigenvalues": [
+          "1.798650607676259217321402551927903425027e-11",
+          "-1.798650607676259217321402551927903425027e-11"
+        ],
+        "unweightedReflectionEigenvalues": [
+          "1",
+          "-1"
+        ]
+      },
+      {
+        "k": 1000,
+        "eta": "0.001",
+        "gamma": "1000",
+        "phaseDefect": "1.799986500060787301212967228349468499030e-17",
+        "negativeSquares": 2,
+        "weightedReflectionEigenvalues": [
+          "1.799986500060787301212967228349468499030e-17",
+          "-1.799986500060787301212967228349468499030e-17"
+        ],
+        "unweightedReflectionEigenvalues": [
+          "1",
+          "-1"
+        ]
+      },
+      {
+        "k": 1000000,
+        "eta": "0.000001",
+        "gamma": "1000000",
+        "phaseDefect": "1.799999999986500000000060787499999801213e-35",
+        "negativeSquares": 2,
+        "weightedReflectionEigenvalues": [
+          "1.799999999986500000000060787499999801213e-35",
+          "-1.799999999986500000000060787499999801213e-35"
+        ],
+        "unweightedReflectionEigenvalues": [
+          "1",
+          "-1"
+        ]
+      },
+      {
+        "k": 10000000,
+        "eta": "1e-7",
+        "gamma": "10000000",
+        "phaseDefect": "1.799999999999865000000000006078750000000e-41",
+        "negativeSquares": 2,
+        "weightedReflectionEigenvalues": [
+          "1.799999999999865000000000006078750000000e-41",
+          "-1.799999999999865000000000006078750000000e-41"
+        ],
+        "unweightedReflectionEigenvalues": [
+          "1",
+          "-1"
+        ]
+      }
+    ],
+    "result": "two negative squares coexist with arbitrarily small scalar defect; quantized index and the certified tiny defect do not force zero",
+    "weightedOperator": "weighting the reflection block by the defect makes its negative eigenvalue tend to zero",
+    "unweightedOperator": "normalizing every block to eigenvalues plus/minus one destroys a uniform trace-class bound as the number of blocks grows",
+    "normalizedTraceRows": [
+      {
+        "quartets": 1,
+        "negativeIndex": 2,
+        "unweightedTraceNorm": 4,
+        "traceClassUniformlyBoundedAsQuartetsGrow": false
+      },
+      {
+        "quartets": 10,
+        "negativeIndex": 20,
+        "unweightedTraceNorm": 40,
+        "traceClassUniformlyBoundedAsQuartetsGrow": false
+      },
+      {
+        "quartets": 100,
+        "negativeIndex": 200,
+        "unweightedTraceNorm": 400,
+        "traceClassUniformlyBoundedAsQuartetsGrow": false
+      },
+      {
+        "quartets": 1000,
+        "negativeIndex": 2000,
+        "unweightedTraceNorm": 4000,
+        "traceClassUniformlyBoundedAsQuartetsGrow": false
+      },
+      {
+        "quartets": 10000,
+        "negativeIndex": 20000,
+        "unweightedTraceNorm": 40000,
+        "traceClassUniformlyBoundedAsQuartetsGrow": false
+      }
+    ]
+  },
+  "candidateLawGates": [
+    {
+      "candidate": "functional-equation reflection",
+      "sameXiDivisorInvariant": true,
+      "strictHorizontalDefectDissipation": false,
+      "finiteReturn": true,
+      "gate": "reflection sends eta to -eta and preserves every even defect"
+    },
+    {
+      "candidate": "golden or halving support flow",
+      "sameXiDivisorInvariant": false,
+      "strictHorizontalDefectDissipation": true,
+      "finiteReturn": false,
+      "gate": "the off-line quartet polynomial changes"
+    },
+    {
+      "candidate": "reflection followed by strict contraction",
+      "sameXiDivisorInvariant": false,
+      "strictHorizontalDefectDissipation": true,
+      "finiteReturn": false,
+      "gate": "(RC)^2=C^2, not the identity away from eta=0"
+    },
+    {
+      "candidate": "golden random-reflection entropy",
+      "sameXiDivisorInvariant": true,
+      "strictHorizontalDefectDissipation": false,
+      "finiteReturn": false,
+      "gate": "it contracts branch imbalance already zero for a completed quartet"
+    },
+    {
+      "candidate": "proximity phase locking",
+      "sameXiDivisorInvariant": true,
+      "strictHorizontalDefectDissipation": false,
+      "finiteReturn": false,
+      "gate": "it acts on circular relative phase q, not horizontal support eta"
+    },
+    {
+      "candidate": "prime exponent damping n^(-t)",
+      "sameXiDivisorInvariant": false,
+      "strictHorizontalDefectDissipation": false,
+      "finiteReturn": false,
+      "gate": "it translates zeta from s to s+t and moves the critical center"
+    },
+    {
+      "candidate": "log-frequency coefficient heat damping",
+      "sameXiDivisorInvariant": false,
+      "strictHorizontalDefectDissipation": "not established",
+      "finiteReturn": false,
+      "gate": "it breaks the original Euler product and supplies no same-xi divisor law"
+    },
+    {
+      "candidate": "de Bruijn-Newman heat flow",
+      "sameXiDivisorInvariant": false,
+      "strictHorizontalDefectDissipation": "eventual real-zero property, not a proved t=0 RH dissipation law",
+      "finiteReturn": false,
+      "gate": "the heat parameter changes the entire function; proving the threshold is at zero is RH"
+    },
+    {
+      "candidate": "Hardy inner-factor radial damping",
+      "sameXiDivisorInvariant": false,
+      "strictHorizontalDefectDissipation": true,
+      "finiteReturn": false,
+      "gate": "removing the Blaschke factor changes the function; proving it absent is RH"
+    }
+  ],
+  "stripMapNoGo": {
+    "statement": "after conformally mapping the strip to the disk, a holomorphic self-map fixing the center is contractive by Schwarz; if a positive iterate is the identity, it is an automorphism and its derivative has modulus one",
+    "consequence": "a strict holomorphic contraction cannot also be an exact finite-order return, except on the central fixed state",
+    "effectOnTti": "the exact double inversion can represent reflection or rotation, but not horizontal shrinkage without an additional non-invertible/open-system step"
+  },
+  "deBruijnNewmanGate": {
+    "family": "H(lambda,z)=integral exp(lambda u^2) Phi(u) cos(zu) du",
+    "heatEquation": "partial_lambda H=-partial_z^2 H",
+    "knownThresholdStatement": "all zeros are real exactly for lambda>=Lambda",
+    "knownLowerBound": "Lambda>=0",
+    "rhCriterion": "RH iff Lambda<=0; together with the lower bound this is RH iff Lambda=0",
+    "gate": "the heat flow changes H_lambda; proving that real-zero global annihilation has already occurred at lambda=0 is exactly RH",
+    "sourceLedger": [
+      "de Bruijn (1950), roots of trigonometric integrals",
+      "Newman (1976), Fourier transforms with only real zeros",
+      "Rodgers--Tao (2020), Lambda>=0",
+      "D.H.J. Polymath (2019), effective heat-flow approximation"
+    ]
+  },
+  "nextNarrowTarget": {
+    "statement": "derive from the fixed von Mangoldt ledger, without assuming zero-freeness, an operator T on the completed zero measure that is both xi-invariant and strictly decreases one established positive off-line functional",
+    "failFast": "if T is merely reflection, a synthetic support flow, a changed heat family, a removed Blaschke factor or a finite numerical approximation, the route does not meet both premises"
+  },
+  "evidenceBoundary": {
+    "provedHere": [
+      "the global Lyapunov invariance-plus-dissipation theorem",
+      "the finite-return version and two-pass RC calculation",
+      "the exact 9,840-word reflection/golden/halving census",
+      "a fixed-index family with scalar defect tending to zero",
+      "the trace-class normalization obstruction for unweighted index blocks"
+    ],
+    "notProved": [
+      "same-xi invariance of any strict support contraction",
+      "a new prime-side dissipative inequality",
+      "Lambda<=0 in the de Bruijn-Newman flow",
+      "RH"
+    ]
+  },
+  "status": "the proof implication has been isolated and proved, but the required arithmetic dissipation premise remains exactly the unresolved RH-strength step"
+}

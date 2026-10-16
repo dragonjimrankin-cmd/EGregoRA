@@ -278,6 +278,22 @@ Note what this costs. If residue is what passes through, then nothing personal d
 
 The present construction chooses one global orientation-reversing identification and represents it with one throat. That is a clean minimal model, but topology alone does not force a unique point of maximum pinch: a one-sided or twisted space can still carry geometry with several local extrema. Nor does adding a second local throat necessarily mean applying a second global twist.
 
+## The Decimal Splice
+
+A later refinement fixes the phase rule at the first decimal threshold. It does not choose between sign reversal and periodic return as rival models. It orders them: one splice reverses orientation, while two applications restore it. In operator form, \(S=e^{i\pi}=-1\) and \(S^2=1\).
+
+The exact normalisation begins on the nested interval \([0,10]\), not the additive shell \([1,10]\). Setting \(u=x/10\) transports the canonical unit half-turn into \(\theta(x)=\pi x/10\). The corresponding kernel is
+
+\[
+K_{10}(x)=\sin(\pi x/10)=\cos\!\left(\frac{\pi}{10}(x-5)\right).
+\]
+
+Five is therefore the reflection centre and quadrature point: \((\pi/10)5=\pi/2\). Ten completes the half-turn and produces the minus sign. A second passage completes \(2\pi\). This is exact phase arithmetic after the origin-anchored domain and half-turn law are chosen. It does not follow from decimal notation alone. The shell \([1,10]\) would instead have centre \(11/2\) and gradient \(\pi/9\); a logarithmic decade would have centre \(\sqrt{10}\).
+
+The same increment conditionally resolves the Prime Plane’s rival clocks. A five-state clock advances by \(2\pi/5\), while a four-state clock advances by \(\pi/2\); prime minus return is \(-\pi/10\). The pair reaches quadrature after five shared ticks, sign reversal after ten and full rephasing after twenty. The five-to-eight shift, \(3\pi/20\), does not satisfy this decimal law. Base four is selected only if the decimal and Prime Plane phases are one clock.
+
+The construction separates three ledgers. A route may close after one geometric revolution. A transported orientation can return reversed and require the two-pass cover. Two local clocks can accumulate a relative phase even when their carriers meet at one location. This is consistent with Möbius holonomy, but it is not evidence that matter or spacetime carries a decimal seam. A physical promotion still needs a state, preparation, coherent reference, evolution law and observable.
+
 ## What Part II leaves us with
 
 Part II offers a memorable architecture: local differences accumulate, spiral, close through toroidal geometry and may be organised by a skeletal sequence. Its pictures are strongest when they clarify relationships and weakest when they are treated as measurements before a physical map exists.

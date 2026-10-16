@@ -84,7 +84,7 @@ assert.match(headerSource, /aria-controls="primary-nav"/, "mobile toggle is not 
 
 /* The desktop index mirrors the reference while assigning every Part and its
    papers to one deliberate, left-aligned row. The two overview destinations
-   sit at the right. Links expand on hover without truncating or splitting. */
+   sit at the right. Hover feedback must not resize a link or reflow its row. */
 assert.match(r35Integration,
   /\.site-head--reference \.reference-nav-list\s*\{[^}]*display:\s*grid;/s,
   "reference masthead does not establish one-dimensional Part rows");
@@ -100,9 +100,10 @@ assert.match(r35Integration,
 const linkRule = r35Integration.match(/\.site-head--reference \.reference-nav-list a\s*\{([^}]*)\}/)?.[1] || "";
 assert.match(linkRule, /text-overflow:\s*clip;/, "masthead labels may still be truncated");
 assert.match(linkRule, /white-space:\s*nowrap;/, "desktop masthead labels are not kept whole");
-assert.match(r35Integration,
-  /\.site-head--reference \.reference-nav-list a:hover,[\s\S]*?padding-inline:\s*0\.62rem;/,
-  "masthead links do not expand on hover");
+const hoverRule = r35Integration.match(/\.site-head--reference \.reference-nav-list a:hover,[\s\S]*?\{([^}]*)\}/)?.[1] || "";
+assert.match(hoverRule, /background:/, "masthead links lack visible hover feedback");
+assert.doesNotMatch(hoverRule, /(?:padding|letter-spacing|font-size|width|margin)\s*:/,
+  "masthead hover feedback changes link geometry and can displace neighboring links");
 assert.match(r35Integration,
   /\.site-head--reference \.reference-nav-list i\s*\{[^}]*width:\s*17px;[^}]*height:\s*17px;/s,
   "reference masthead lacks compact glyph-led destinations");

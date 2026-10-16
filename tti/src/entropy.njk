@@ -225,6 +225,39 @@ published: "2026-10-13"
 </section>
 
 <section class="wrap narrow reveal">
+  <div class="frame illuminated">
+    <p class="kicker">A splice calculation</p>
+    <h2 id="t-splice-entropy">The Decimal Fork Has an Exact Informational Entropy</h2>
+    <p>The later <a href="/decimal-splice/#t-splice-entropy">decimal-splice audit</a> now supplies one precise
+      informational example. With \(p=\varphi/2\) and \(q=1-p\), random continuation or reflection gives</p>
+    <p class="formula">\[
+      P=\begin{pmatrix}p&q\\q&p\end{pmatrix},
+      \qquad
+      p-q=\frac1\varphi.
+    \]</p>
+    <p>A branch bias \(m\) becomes \(m/\varphi\). Shannon entropy rises, while relative entropy to the equal
+      branch distribution contracts by at most</p>
+    <p class="formula">\[
+      D(P\mu\Vert u)
+      \le\frac1{\varphi^2}D(\mu\Vert u).
+    \]</p>
+    <p>Starting with a known branch, the first coarse-grained splice creates
+      \(0.487645\ldots\) nats, or \(0.703523\ldots\) bits, of branch uncertainty. This is exact once the
+      golden weights are interpreted as probabilities.</p>
+    <p>It is not automatically thermodynamic entropy. A coherent two-branch state remains globally pure; the
+      entropy appears after the branch record is discarded, decohered or assigned to an environment. The full
+      two-pass action is reversible, so it cannot be strictly contractive on its complete state space.</p>
+    <p>The Riemann application supplies a second caution. The completed \(\xi\) ledger already contains equal
+      reflected branches. It is stationary under this channel even when a quartet lies off the critical line.
+      Entropy contracts knowledge of which branch was selected, not the horizontal location of either branch.</p>
+    <p>A subsequent information-geometric calculation does produce a support flow:
+      \(d\eta/dt=-\eta\), with the golden step at \(t=\log\varphi\). Its unique invariant probability ledger
+      lies on \(\eta=0\). What remains unproved is that the zeros of the same Riemann \(\xi\) function are
+      stationary under that flow. <span class="sci">&#9670;</span></p>
+  </div>
+</section>
+
+<section class="wrap narrow reveal">
   <div class="frame">
     <p class="kicker">Three possible relationships</p>
     <h2 id="t-integration-relations">Integration and Entropy Need Not Move in Opposite Directions</h2>

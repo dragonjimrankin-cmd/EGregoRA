@@ -1,0 +1,384 @@
+{
+  "analysisDate": "2026-10-15",
+  "title": "Directly testing pi-times-pi coupling",
+  "question": "does replacing pi by pi^2, or coupling two pi channels, prove critical energy or RH?",
+  "verdict": {
+    "rhProved": false,
+    "criticalEnergyEstimateProved": false,
+    "piSquaredThetaSelfDual": false,
+    "piSquaredStripMapValidOnFullCriticalStrip": false,
+    "doublePiChannelChangesZetaZeroLocations": false,
+    "finiteDiagnosticsProveAsymptotic": false,
+    "conclusion": "The direct pi^2 substitutions fail in the two places where canonical pi is rigid. A Gaussian with coefficient pi^2 is dual to coefficient one rather than itself, and exp(i pi^2(s-1/2)) leaves the right half-plane inside the critical strip. Tensoring two canonical pi channels only squares the zeta factor, doubling zero multiplicities without moving zeros or changing the coefficient radius. Finite prime-energy diagnostics do not supply an all-X theorem."
+  },
+  "twoInterpretations": {
+    "piSquaredSubstitution": "replace the canonical lattice, Gaussian, phase or strip coefficient pi by pi^2",
+    "twoPiChannels": "tensor or pair two separately pi-normalized channels"
+  },
+  "thetaPiSquaredTest": {
+    "generalPoissonIdentity": "Theta_a(x)=sqrt(pi/(a x)) Theta_(pi^2/a)(1/x)",
+    "selfDualFixedPoint": "a=pi is the unique positive fixed point of a -> pi^2/a",
+    "piSquaredOutcome": "a=pi^2 is paired with a=1, not with itself",
+    "tests": [
+      {
+        "parameter": "pi",
+        "a": 3.141592653589793,
+        "rows": [
+          {
+            "x": 0.1,
+            "theta": 3.1622776601685225,
+            "sameParameterSelfDualResidual": 8.881784197001252e-16,
+            "dualParameter": 3.141592653589793,
+            "pairedDualResidual": 8.881784197001252e-16
+          },
+          {
+            "x": 0.2,
+            "theta": 2.236068651458404,
+            "sameParameterSelfDualResidual": 0.0,
+            "dualParameter": 3.141592653589793,
+            "pairedDualResidual": 0.0
+          },
+          {
+            "x": 0.5,
+            "theta": 1.4194954880837662,
+            "sameParameterSelfDualResidual": 2.220446049250313e-16,
+            "dualParameter": 3.141592653589793,
+            "pairedDualResidual": 0.0
+          },
+          {
+            "x": 2.0,
+            "theta": 1.003734885487739,
+            "sameParameterSelfDualResidual": 0.0,
+            "dualParameter": 3.141592653589793,
+            "pairedDualResidual": 2.220446049250313e-16
+          },
+          {
+            "x": 5.0,
+            "theta": 1.000000301403455,
+            "sameParameterSelfDualResidual": 0.0,
+            "dualParameter": 3.141592653589793,
+            "pairedDualResidual": 0.0
+          },
+          {
+            "x": 10.0,
+            "theta": 1.0000000000000455,
+            "sameParameterSelfDualResidual": 2.220446049250313e-16,
+            "dualParameter": 3.141592653589793,
+            "pairedDualResidual": 2.220446049250313e-16
+          }
+        ]
+      },
+      {
+        "parameter": "piSquared",
+        "a": 9.869604401089358,
+        "rows": [
+          {
+            "x": 0.1,
+            "theta": 1.784286114371893,
+            "sameParameterSelfDualResidual": 1.377991545796486,
+            "dualParameter": 1.0,
+            "pairedDualResidual": 2.220446049250313e-16
+          },
+          {
+            "x": 0.2,
+            "theta": 1.2785669994156845,
+            "sameParameterSelfDualResidual": 0.9575009780841053,
+            "dualParameter": 1.0,
+            "pairedDualResidual": 2.220446049250313e-16
+          },
+          {
+            "x": 0.5,
+            "theta": 1.0143837720622286,
+            "sameParameterSelfDualResidual": 0.39982979787772344,
+            "dualParameter": 1.0,
+            "pairedDualResidual": 2.220446049250313e-16
+          },
+          {
+            "x": 2.0,
+            "theta": 1.000000005350576,
+            "sameParameterSelfDualResidual": 0.282722361399785,
+            "dualParameter": 1.0,
+            "pairedDualResidual": 0.0
+          },
+          {
+            "x": 5.0,
+            "theta": 1.0,
+            "sameParameterSelfDualResidual": 0.42820745510371916,
+            "dualParameter": 1.0,
+            "pairedDualResidual": 2.220446049250313e-16
+          },
+          {
+            "x": 10.0,
+            "theta": 1.0,
+            "sameParameterSelfDualResidual": 0.43575918811731207,
+            "dualParameter": 1.0,
+            "pairedDualResidual": 2.220446049250313e-16
+          }
+        ]
+      },
+      {
+        "parameter": "one",
+        "a": 1.0,
+        "rows": [
+          {
+            "x": 0.1,
+            "theta": 5.604991216397928,
+            "sameParameterSelfDualResidual": 2.4424264218622267,
+            "dualParameter": 9.869604401089358,
+            "pairedDualResidual": 8.881784197001252e-16
+          },
+          {
+            "x": 0.2,
+            "theta": 3.96332729760601,
+            "sameParameterSelfDualResidual": 1.6971262958509694,
+            "dualParameter": 9.869604401089358,
+            "pairedDualResidual": 8.881784197001252e-16
+          },
+          {
+            "x": 0.5,
+            "theta": 2.506628288042905,
+            "sameParameterSelfDualResidual": 0.7086798649551449,
+            "dualParameter": 9.869604401089358,
+            "pairedDualResidual": 0.0
+          },
+          {
+            "x": 2.0,
+            "theta": 1.2713415221890152,
+            "sameParameterSelfDualResidual": 0.5011123382001494,
+            "dualParameter": 9.869604401089358,
+            "pairedDualResidual": 2.220446049250313e-16
+          },
+          {
+            "x": 5.0,
+            "theta": 1.0134758981204781,
+            "sameParameterSelfDualResidual": 0.7589779527850373,
+            "dualParameter": 9.869604401089358,
+            "pairedDualResidual": 0.0
+          },
+          {
+            "x": 10.0,
+            "theta": 1.000090799859525,
+            "sameParameterSelfDualResidual": 0.7723630510459907,
+            "dualParameter": 9.869604401089358,
+            "pairedDualResidual": 2.220446049250313e-16
+          }
+        ]
+      }
+    ],
+    "mellinConsequence": "the a=pi^2 and a=1 theta Mellin channels differ by zero-free exponential scale factors and carry the same zeta zero set"
+  },
+  "sinePiSquaredTest": {
+    "ordinaryIntegerLattice": "sin(pi z)/(pi z) has zeros at every nonzero integer",
+    "piSquaredLattice": "sin(pi^2 z)/(pi^2 z) has zeros at z=n/pi, not at the integers",
+    "consequence": "pi^2 does not preserve the integer divisor; restoring integer zeros reduces the scale back to pi"
+  },
+  "stripPiSquaredTest": {
+    "ordinaryMap": "q=exp(i pi(s-1/2)) has Re(q)>0 throughout |Re(s)-1/2|<1/2",
+    "piSquaredMap": "q=exp(i pi^2(s-1/2)) changes the sign of Re(q) inside the strip",
+    "firstFailureDisplacement": 0.15915494309189535,
+    "samples": [
+      {
+        "eta": 0.0,
+        "ordinaryPiRealFactor": 1.0,
+        "piSquaredRealFactor": 1.0,
+        "piSquaredRemainsInRightHalfPlane": true
+      },
+      {
+        "eta": 0.1,
+        "ordinaryPiRealFactor": 0.9510565162951535,
+        "piSquaredRealFactor": 0.551228473051014,
+        "piSquaredRemainsInRightHalfPlane": true
+      },
+      {
+        "eta": 0.15915494309189535,
+        "ordinaryPiRealFactor": 0.8775825618903728,
+        "piSquaredRealFactor": 6.123233995736766e-17,
+        "piSquaredRemainsInRightHalfPlane": true
+      },
+      {
+        "eta": 0.2,
+        "ordinaryPiRealFactor": 0.8090169943749475,
+        "piSquaredRealFactor": -0.39229434099569505,
+        "piSquaredRemainsInRightHalfPlane": false
+      },
+      {
+        "eta": 0.25,
+        "ordinaryPiRealFactor": 0.7071067811865476,
+        "piSquaredRealFactor": -0.7812118921104881,
+        "piSquaredRemainsInRightHalfPlane": false
+      },
+      {
+        "eta": 0.4,
+        "ordinaryPiRealFactor": 0.30901699437494745,
+        "piSquaredRealFactor": -0.6922103000455067,
+        "piSquaredRemainsInRightHalfPlane": false
+      },
+      {
+        "eta": 0.49,
+        "ordinaryPiRealFactor": 0.031410759078128396,
+        "piSquaredRealFactor": 0.12340181631732725,
+        "piSquaredRemainsInRightHalfPlane": true
+      }
+    ],
+    "consequence": "the Cayley disk and height-independent seam construction no longer cover the full critical strip"
+  },
+  "doubleChannelTest": {
+    "thetaPair": "the pi^2/one dual pair is a two-channel swap under x->1/x, not a new scalar self-duality",
+    "mellinProduct": "two identical completed channels produce a factor proportional to zeta(s)^2",
+    "zeroEffect": "all zeta zeros keep the same locations and acquire multiplicity two",
+    "coefficientEffect": "fixed multiplicity leaves limsup |p_n|^(1/n) and the analytic radius unchanged",
+    "integerPhaseEffect": "for integer n, exp(i pi n) squared equals exp(2pi i n)=1, so the doubled parity phase collapses"
+  },
+  "finitePrimeEnergyDiagnostics": {
+    "channels": {
+      "untwisted": "psi(x)-x, integrated exactly between jumps",
+      "logPi": "sum Lambda(n)n^(i pi) minus its PNT main integral",
+      "logPiSquared": "sum Lambda(n)n^(i pi^2) minus its PNT main integral",
+      "additivePiSquared": "sum Lambda(n)exp(i pi^2 n) minus its oscillatory integral"
+    },
+    "rows": [
+      {
+        "X": 256,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.05579827897701932,
+          "logPi": 0.0541976136460031,
+          "logPiSquared": 0.11839548622687214,
+          "additivePiSquared": 10.409798263670986
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 512,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.06745424368191377,
+          "logPi": 0.05689201069134677,
+          "logPiSquared": 0.12086060152034284,
+          "additivePiSquared": 13.30561024121307
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 1024,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.0807929322352311,
+          "logPi": 0.0835229561296609,
+          "logPiSquared": 0.17911330650193205,
+          "additivePiSquared": 3.595685056967398
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 2048,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.08323280165593068,
+          "logPi": 0.08648051571911389,
+          "logPiSquared": 0.18166213005863444,
+          "additivePiSquared": 8.678469022178716
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 4096,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.05373199459509132,
+          "logPi": 0.05498834760078968,
+          "logPiSquared": 0.11027083554133107,
+          "additivePiSquared": 4.812740309891513
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 8192,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.080236853911769,
+          "logPi": 0.08452007592396825,
+          "logPiSquared": 0.1643075136964861,
+          "additivePiSquared": 1.6322135512798854
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 16384,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.0763541639042743,
+          "logPi": 0.07893257563703533,
+          "logPiSquared": 0.16704214011069116,
+          "additivePiSquared": 4.581823190517389
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 32768,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.08367701359660323,
+          "logPi": 0.08953738852339148,
+          "logPiSquared": 0.1915270279039063,
+          "additivePiSquared": 10.409656741815471
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 65536,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.04827660583011016,
+          "logPi": 0.05040963145794943,
+          "logPiSquared": 0.11965111079495028,
+          "additivePiSquared": 9.29320280415214
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 131072,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.055223787113852216,
+          "logPi": 0.0578056140846458,
+          "logPiSquared": 0.11852600973632797,
+          "additivePiSquared": 28.878313008591935
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      },
+      {
+        "X": 262144,
+        "normalizedDyadicEnergies": {
+          "untwisted": 0.08258896111612202,
+          "logPi": 0.08638977674245742,
+          "logPiSquared": 0.1732871378883731,
+          "additivePiSquared": 57.50394972025589
+        },
+        "scope": "finite diagnostic; not an all-X exponent proof"
+      }
+    ],
+    "interpretation": "logarithmic twists reorganize the same horizontal zero problem; the additive twist is a different channel. No finite range certifies the required subpower all-X energy bound or transfers a twisted estimate to the principal channel."
+  },
+  "positiveNormTest": {
+    "identity": "|exp(i pi^2 f(n))E_n|^2=|E_n|^2",
+    "result": "pi^2 unit phases preserve the critical Hilbert energy exactly"
+  },
+  "applicationToPreviousWork": [
+    {
+      "object": "theta completion",
+      "result": "pi is the unique self-dual positive Gaussian coefficient; pi^2 creates a paired one/pi^2 doublet"
+    },
+    {
+      "object": "integer sine divisor",
+      "result": "pi^2 moves lattice zeros from integers to n/pi"
+    },
+    {
+      "object": "two-ended seam",
+      "result": "pi^2 fails the full-strip right-half-plane map beyond |eta|=1/(2pi)"
+    },
+    {
+      "object": "prime-Laguerre controller",
+      "result": "doubling channels changes multiplicity, not radius"
+    },
+    {
+      "object": "critical energy",
+      "result": "unit pi^2 phases preserve the norm; twisted finite diagnostics do not prove the principal estimate"
+    }
+  ],
+  "proofBoundary": {
+    "testedConclusion": "both direct meanings of pi*pi have been tested: pi^2 substitution breaks canonical self-duality or strip geometry, while two pi channels only duplicate the existing zeta obstruction",
+    "remainingPossibility": "a different number-dependent pi-register interaction could be proposed, but it must specify its kernel and prove recovery of the untwisted prime ledger",
+    "status": "no tested pi*pi coupling proves critical energy or RH"
+  }
+}

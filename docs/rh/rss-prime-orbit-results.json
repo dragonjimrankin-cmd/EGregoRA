@@ -1,0 +1,1490 @@
+{
+  "generatedAt": "2026-10-14T10:49:17.558Z",
+  "question": "Can primitive RSS return cycles generate the Euler product and Riemann explicit formula without presupposing either?",
+  "constants": {
+    "phi": 1.618033988749895,
+    "calibration": 1.2598289137944103,
+    "maxPrimeSieve": 2343909,
+    "fibonacciShiftAdjacency": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fibonacciShiftZeta": "1/(1-z-z^2)"
+  },
+  "directPopulationAsFixedPoints": {
+    "explanation": "Dold/Mobius orbit integrality test for Fix(T^n)=F_(n+2)-1.",
+    "firstFailure": {
+      "n": 2,
+      "fixedCandidate": "2",
+      "primitiveNumerator": "1",
+      "primitiveDenominator": "2",
+      "integral": false,
+      "impliedPrimitiveOrbits": "1/2"
+    },
+    "rows": [
+      {
+        "n": 1,
+        "fixedCandidate": "1",
+        "primitiveNumerator": "1",
+        "primitiveDenominator": "1",
+        "integral": true,
+        "impliedPrimitiveOrbits": "1"
+      },
+      {
+        "n": 2,
+        "fixedCandidate": "2",
+        "primitiveNumerator": "1",
+        "primitiveDenominator": "2",
+        "integral": false,
+        "impliedPrimitiveOrbits": "1/2"
+      },
+      {
+        "n": 3,
+        "fixedCandidate": "4",
+        "primitiveNumerator": "3",
+        "primitiveDenominator": "3",
+        "integral": true,
+        "impliedPrimitiveOrbits": "1"
+      },
+      {
+        "n": 4,
+        "fixedCandidate": "7",
+        "primitiveNumerator": "5",
+        "primitiveDenominator": "4",
+        "integral": false,
+        "impliedPrimitiveOrbits": "5/4"
+      },
+      {
+        "n": 5,
+        "fixedCandidate": "12",
+        "primitiveNumerator": "11",
+        "primitiveDenominator": "5",
+        "integral": false,
+        "impliedPrimitiveOrbits": "11/5"
+      },
+      {
+        "n": 6,
+        "fixedCandidate": "20",
+        "primitiveNumerator": "15",
+        "primitiveDenominator": "6",
+        "integral": false,
+        "impliedPrimitiveOrbits": "15/6"
+      },
+      {
+        "n": 7,
+        "fixedCandidate": "33",
+        "primitiveNumerator": "32",
+        "primitiveDenominator": "7",
+        "integral": false,
+        "impliedPrimitiveOrbits": "32/7"
+      },
+      {
+        "n": 8,
+        "fixedCandidate": "54",
+        "primitiveNumerator": "47",
+        "primitiveDenominator": "8",
+        "integral": false,
+        "impliedPrimitiveOrbits": "47/8"
+      },
+      {
+        "n": 9,
+        "fixedCandidate": "88",
+        "primitiveNumerator": "84",
+        "primitiveDenominator": "9",
+        "integral": false,
+        "impliedPrimitiveOrbits": "84/9"
+      },
+      {
+        "n": 10,
+        "fixedCandidate": "143",
+        "primitiveNumerator": "130",
+        "primitiveDenominator": "10",
+        "integral": true,
+        "impliedPrimitiveOrbits": "13"
+      },
+      {
+        "n": 11,
+        "fixedCandidate": "232",
+        "primitiveNumerator": "231",
+        "primitiveDenominator": "11",
+        "integral": true,
+        "impliedPrimitiveOrbits": "21"
+      },
+      {
+        "n": 12,
+        "fixedCandidate": "376",
+        "primitiveNumerator": "351",
+        "primitiveDenominator": "12",
+        "integral": false,
+        "impliedPrimitiveOrbits": "351/12"
+      },
+      {
+        "n": 13,
+        "fixedCandidate": "609",
+        "primitiveNumerator": "608",
+        "primitiveDenominator": "13",
+        "integral": false,
+        "impliedPrimitiveOrbits": "608/13"
+      },
+      {
+        "n": 14,
+        "fixedCandidate": "986",
+        "primitiveNumerator": "952",
+        "primitiveDenominator": "14",
+        "integral": true,
+        "impliedPrimitiveOrbits": "68"
+      },
+      {
+        "n": 15,
+        "fixedCandidate": "1596",
+        "primitiveNumerator": "1581",
+        "primitiveDenominator": "15",
+        "integral": false,
+        "impliedPrimitiveOrbits": "1581/15"
+      },
+      {
+        "n": 16,
+        "fixedCandidate": "2583",
+        "primitiveNumerator": "2529",
+        "primitiveDenominator": "16",
+        "integral": false,
+        "impliedPrimitiveOrbits": "2529/16"
+      },
+      {
+        "n": 17,
+        "fixedCandidate": "4180",
+        "primitiveNumerator": "4179",
+        "primitiveDenominator": "17",
+        "integral": false,
+        "impliedPrimitiveOrbits": "4179/17"
+      },
+      {
+        "n": 18,
+        "fixedCandidate": "6764",
+        "primitiveNumerator": "6660",
+        "primitiveDenominator": "18",
+        "integral": true,
+        "impliedPrimitiveOrbits": "370"
+      },
+      {
+        "n": 19,
+        "fixedCandidate": "10945",
+        "primitiveNumerator": "10944",
+        "primitiveDenominator": "19",
+        "integral": true,
+        "impliedPrimitiveOrbits": "576"
+      },
+      {
+        "n": 20,
+        "fixedCandidate": "17710",
+        "primitiveNumerator": "17562",
+        "primitiveDenominator": "20",
+        "integral": false,
+        "impliedPrimitiveOrbits": "17562/20"
+      },
+      {
+        "n": 21,
+        "fixedCandidate": "28656",
+        "primitiveNumerator": "28620",
+        "primitiveDenominator": "21",
+        "integral": false,
+        "impliedPrimitiveOrbits": "28620/21"
+      },
+      {
+        "n": 22,
+        "fixedCandidate": "46367",
+        "primitiveNumerator": "46134",
+        "primitiveDenominator": "22",
+        "integral": true,
+        "impliedPrimitiveOrbits": "2097"
+      },
+      {
+        "n": 23,
+        "fixedCandidate": "75024",
+        "primitiveNumerator": "75023",
+        "primitiveDenominator": "23",
+        "integral": false,
+        "impliedPrimitiveOrbits": "75023/23"
+      },
+      {
+        "n": 24,
+        "fixedCandidate": "121392",
+        "primitiveNumerator": "120969",
+        "primitiveDenominator": "24",
+        "integral": false,
+        "impliedPrimitiveOrbits": "120969/24"
+      },
+      {
+        "n": 25,
+        "fixedCandidate": "196417",
+        "primitiveNumerator": "196405",
+        "primitiveDenominator": "25",
+        "integral": false,
+        "impliedPrimitiveOrbits": "196405/25"
+      },
+      {
+        "n": 26,
+        "fixedCandidate": "317810",
+        "primitiveNumerator": "317200",
+        "primitiveDenominator": "26",
+        "integral": true,
+        "impliedPrimitiveOrbits": "12200"
+      },
+      {
+        "n": 27,
+        "fixedCandidate": "514228",
+        "primitiveNumerator": "514140",
+        "primitiveDenominator": "27",
+        "integral": false,
+        "impliedPrimitiveOrbits": "514140/27"
+      },
+      {
+        "n": 28,
+        "fixedCandidate": "832039",
+        "primitiveNumerator": "831048",
+        "primitiveDenominator": "28",
+        "integral": false,
+        "impliedPrimitiveOrbits": "831048/28"
+      },
+      {
+        "n": 29,
+        "fixedCandidate": "1346268",
+        "primitiveNumerator": "1346267",
+        "primitiveDenominator": "29",
+        "integral": true,
+        "impliedPrimitiveOrbits": "46423"
+      },
+      {
+        "n": 30,
+        "fixedCandidate": "2178308",
+        "primitiveNumerator": "2176566",
+        "primitiveDenominator": "30",
+        "integral": false,
+        "impliedPrimitiveOrbits": "2176566/30"
+      }
+    ]
+  },
+  "fibonacciShift": {
+    "explanation": "Natural closed-orbit completion of Fibonacci growth; Fix(sigma^n)=Lucas(n).",
+    "rows": [
+      {
+        "n": 1,
+        "periodicPoints": "1",
+        "primitiveCycles": "1",
+        "cumulativePrimitiveCycles": "1"
+      },
+      {
+        "n": 2,
+        "periodicPoints": "3",
+        "primitiveCycles": "1",
+        "cumulativePrimitiveCycles": "2"
+      },
+      {
+        "n": 3,
+        "periodicPoints": "4",
+        "primitiveCycles": "1",
+        "cumulativePrimitiveCycles": "3"
+      },
+      {
+        "n": 4,
+        "periodicPoints": "7",
+        "primitiveCycles": "1",
+        "cumulativePrimitiveCycles": "4"
+      },
+      {
+        "n": 5,
+        "periodicPoints": "11",
+        "primitiveCycles": "2",
+        "cumulativePrimitiveCycles": "6"
+      },
+      {
+        "n": 6,
+        "periodicPoints": "18",
+        "primitiveCycles": "2",
+        "cumulativePrimitiveCycles": "8"
+      },
+      {
+        "n": 7,
+        "periodicPoints": "29",
+        "primitiveCycles": "4",
+        "cumulativePrimitiveCycles": "12"
+      },
+      {
+        "n": 8,
+        "periodicPoints": "47",
+        "primitiveCycles": "5",
+        "cumulativePrimitiveCycles": "17"
+      },
+      {
+        "n": 9,
+        "periodicPoints": "76",
+        "primitiveCycles": "8",
+        "cumulativePrimitiveCycles": "25"
+      },
+      {
+        "n": 10,
+        "periodicPoints": "123",
+        "primitiveCycles": "11",
+        "cumulativePrimitiveCycles": "36"
+      },
+      {
+        "n": 11,
+        "periodicPoints": "199",
+        "primitiveCycles": "18",
+        "cumulativePrimitiveCycles": "54"
+      },
+      {
+        "n": 12,
+        "periodicPoints": "322",
+        "primitiveCycles": "25",
+        "cumulativePrimitiveCycles": "79"
+      },
+      {
+        "n": 13,
+        "periodicPoints": "521",
+        "primitiveCycles": "40",
+        "cumulativePrimitiveCycles": "119"
+      },
+      {
+        "n": 14,
+        "periodicPoints": "843",
+        "primitiveCycles": "58",
+        "cumulativePrimitiveCycles": "177"
+      },
+      {
+        "n": 15,
+        "periodicPoints": "1364",
+        "primitiveCycles": "90",
+        "cumulativePrimitiveCycles": "267"
+      },
+      {
+        "n": 16,
+        "periodicPoints": "2207",
+        "primitiveCycles": "135",
+        "cumulativePrimitiveCycles": "402"
+      },
+      {
+        "n": 17,
+        "periodicPoints": "3571",
+        "primitiveCycles": "210",
+        "cumulativePrimitiveCycles": "612"
+      },
+      {
+        "n": 18,
+        "periodicPoints": "5778",
+        "primitiveCycles": "316",
+        "cumulativePrimitiveCycles": "928"
+      },
+      {
+        "n": 19,
+        "periodicPoints": "9349",
+        "primitiveCycles": "492",
+        "cumulativePrimitiveCycles": "1420"
+      },
+      {
+        "n": 20,
+        "periodicPoints": "15127",
+        "primitiveCycles": "750",
+        "cumulativePrimitiveCycles": "2170"
+      },
+      {
+        "n": 21,
+        "periodicPoints": "24476",
+        "primitiveCycles": "1164",
+        "cumulativePrimitiveCycles": "3334"
+      },
+      {
+        "n": 22,
+        "periodicPoints": "39603",
+        "primitiveCycles": "1791",
+        "cumulativePrimitiveCycles": "5125"
+      },
+      {
+        "n": 23,
+        "periodicPoints": "64079",
+        "primitiveCycles": "2786",
+        "cumulativePrimitiveCycles": "7911"
+      },
+      {
+        "n": 24,
+        "periodicPoints": "103682",
+        "primitiveCycles": "4305",
+        "cumulativePrimitiveCycles": "12216"
+      },
+      {
+        "n": 25,
+        "periodicPoints": "167761",
+        "primitiveCycles": "6710",
+        "cumulativePrimitiveCycles": "18926"
+      },
+      {
+        "n": 26,
+        "periodicPoints": "271443",
+        "primitiveCycles": "10420",
+        "cumulativePrimitiveCycles": "29346"
+      },
+      {
+        "n": 27,
+        "periodicPoints": "439204",
+        "primitiveCycles": "16264",
+        "cumulativePrimitiveCycles": "45610"
+      },
+      {
+        "n": 28,
+        "periodicPoints": "710647",
+        "primitiveCycles": "25350",
+        "cumulativePrimitiveCycles": "70960"
+      },
+      {
+        "n": 29,
+        "periodicPoints": "1149851",
+        "primitiveCycles": "39650",
+        "cumulativePrimitiveCycles": "110610"
+      },
+      {
+        "n": 30,
+        "periodicPoints": "1860498",
+        "primitiveCycles": "61967",
+        "cumulativePrimitiveCycles": "172577"
+      }
+    ]
+  },
+  "primeNumberTheoremEnvelope": {
+    "explanation": "Compares cumulative primitive Fibonacci-shift cycles with pi(c phi^n); c=phi^2 log(phi) is derived from the main asymptotic, not fitted to the table.",
+    "rmsRelativeErrorN12To30": 0.0027092951433226944,
+    "exactMatchIndices": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      10,
+      12,
+      13,
+      15,
+      18
+    ],
+    "rows": [
+      {
+        "n": 1,
+        "rawX": 2,
+        "calibratedX": 2,
+        "cumulativePrimitiveCycles": "1",
+        "piRawX": 1,
+        "piCalibratedX": 1,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 2,
+        "rawX": 2,
+        "calibratedX": 3,
+        "cumulativePrimitiveCycles": "2",
+        "piRawX": 1,
+        "piCalibratedX": 2,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 3,
+        "rawX": 4,
+        "calibratedX": 5,
+        "cumulativePrimitiveCycles": "3",
+        "piRawX": 2,
+        "piCalibratedX": 3,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 4,
+        "rawX": 6,
+        "calibratedX": 8,
+        "cumulativePrimitiveCycles": "4",
+        "piRawX": 3,
+        "piCalibratedX": 4,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 5,
+        "rawX": 11,
+        "calibratedX": 13,
+        "cumulativePrimitiveCycles": "6",
+        "piRawX": 5,
+        "piCalibratedX": 6,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 6,
+        "rawX": 17,
+        "calibratedX": 22,
+        "cumulativePrimitiveCycles": "8",
+        "piRawX": 7,
+        "piCalibratedX": 8,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 7,
+        "rawX": 29,
+        "calibratedX": 36,
+        "cumulativePrimitiveCycles": "12",
+        "piRawX": 10,
+        "piCalibratedX": 11,
+        "calibratedRelativeError": 0.09090909090909091
+      },
+      {
+        "n": 8,
+        "rawX": 46,
+        "calibratedX": 59,
+        "cumulativePrimitiveCycles": "17",
+        "piRawX": 14,
+        "piCalibratedX": 17,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 9,
+        "rawX": 76,
+        "calibratedX": 95,
+        "cumulativePrimitiveCycles": "25",
+        "piRawX": 21,
+        "piCalibratedX": 24,
+        "calibratedRelativeError": 0.041666666666666664
+      },
+      {
+        "n": 10,
+        "rawX": 122,
+        "calibratedX": 154,
+        "cumulativePrimitiveCycles": "36",
+        "piRawX": 30,
+        "piCalibratedX": 36,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 11,
+        "rawX": 199,
+        "calibratedX": 250,
+        "cumulativePrimitiveCycles": "54",
+        "piRawX": 46,
+        "piCalibratedX": 53,
+        "calibratedRelativeError": 0.018867924528301886
+      },
+      {
+        "n": 12,
+        "rawX": 321,
+        "calibratedX": 405,
+        "cumulativePrimitiveCycles": "79",
+        "piRawX": 66,
+        "piCalibratedX": 79,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 13,
+        "rawX": 521,
+        "calibratedX": 656,
+        "cumulativePrimitiveCycles": "119",
+        "piRawX": 98,
+        "piCalibratedX": 119,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 14,
+        "rawX": 842,
+        "calibratedX": 1062,
+        "cumulativePrimitiveCycles": "177",
+        "piRawX": 146,
+        "piCalibratedX": 178,
+        "calibratedRelativeError": -0.0056179775280898875
+      },
+      {
+        "n": 15,
+        "rawX": 1364,
+        "calibratedX": 1718,
+        "cumulativePrimitiveCycles": "267",
+        "piRawX": 218,
+        "piCalibratedX": 267,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 16,
+        "rawX": 2206,
+        "calibratedX": 2780,
+        "cumulativePrimitiveCycles": "402",
+        "piRawX": 328,
+        "piCalibratedX": 404,
+        "calibratedRelativeError": -0.0049504950495049506
+      },
+      {
+        "n": 17,
+        "rawX": 3571,
+        "calibratedX": 4498,
+        "cumulativePrimitiveCycles": "612",
+        "piRawX": 500,
+        "piCalibratedX": 610,
+        "calibratedRelativeError": 0.003278688524590164
+      },
+      {
+        "n": 18,
+        "rawX": 5777,
+        "calibratedX": 7279,
+        "cumulativePrimitiveCycles": "928",
+        "piRawX": 757,
+        "piCalibratedX": 928,
+        "calibratedRelativeError": 0
+      },
+      {
+        "n": 19,
+        "rawX": 9349,
+        "calibratedX": 11778,
+        "cumulativePrimitiveCycles": "1420",
+        "piRawX": 1158,
+        "piCalibratedX": 1410,
+        "calibratedRelativeError": 0.0070921985815602835
+      },
+      {
+        "n": 20,
+        "rawX": 15126,
+        "calibratedX": 19057,
+        "cumulativePrimitiveCycles": "2170",
+        "piRawX": 1766,
+        "piCalibratedX": 2164,
+        "calibratedRelativeError": 0.0027726432532347504
+      },
+      {
+        "n": 21,
+        "rawX": 24476,
+        "calibratedX": 30835,
+        "cumulativePrimitiveCycles": "3334",
+        "piRawX": 2716,
+        "piCalibratedX": 3323,
+        "calibratedRelativeError": 0.0033102618116160097
+      },
+      {
+        "n": 22,
+        "rawX": 39602,
+        "calibratedX": 49893,
+        "cumulativePrimitiveCycles": "5125",
+        "piRawX": 4164,
+        "piCalibratedX": 5123,
+        "calibratedRelativeError": 0.00039039625219597894
+      },
+      {
+        "n": 23,
+        "rawX": 64079,
+        "calibratedX": 80728,
+        "cumulativePrimitiveCycles": "7911",
+        "piRawX": 6420,
+        "piCalibratedX": 7900,
+        "calibratedRelativeError": 0.0013924050632911392
+      },
+      {
+        "n": 24,
+        "rawX": 103681,
+        "calibratedX": 130621,
+        "cumulativePrimitiveCycles": "12216",
+        "piRawX": 9907,
+        "piCalibratedX": 12215,
+        "calibratedRelativeError": 0.00008186655751125665
+      },
+      {
+        "n": 25,
+        "rawX": 167761,
+        "calibratedX": 211350,
+        "cumulativePrimitiveCycles": "18926",
+        "piRawX": 15320,
+        "piCalibratedX": 18924,
+        "calibratedRelativeError": 0.0001056859015007398
+      },
+      {
+        "n": 26,
+        "rawX": 271442,
+        "calibratedX": 341971,
+        "cumulativePrimitiveCycles": "29346",
+        "piRawX": 23760,
+        "piCalibratedX": 29341,
+        "calibratedRelativeError": 0.00017041000647558023
+      },
+      {
+        "n": 27,
+        "rawX": 439204,
+        "calibratedX": 553321,
+        "cumulativePrimitiveCycles": "45610",
+        "piRawX": 36878,
+        "piCalibratedX": 45573,
+        "calibratedRelativeError": 0.0008118842296974086
+      },
+      {
+        "n": 28,
+        "rawX": 710646,
+        "calibratedX": 895293,
+        "cumulativePrimitiveCycles": "70960",
+        "piRawX": 57356,
+        "piCalibratedX": 70942,
+        "calibratedRelativeError": 0.00025372839784612783
+      },
+      {
+        "n": 29,
+        "rawX": 1149851,
+        "calibratedX": 1448615,
+        "cumulativePrimitiveCycles": "110610",
+        "piRawX": 89288,
+        "piCalibratedX": 110530,
+        "calibratedRelativeError": 0.0007237853976296029
+      },
+      {
+        "n": 30,
+        "rawX": 1860497,
+        "calibratedX": 2343909,
+        "cumulativePrimitiveCycles": "172577",
+        "piRawX": 139283,
+        "piCalibratedX": 172480,
+        "calibratedRelativeError": 0.0005623840445269017
+      }
+    ]
+  },
+  "finitePhaseDecorations": [
+    {
+      "model": "Fibonacci shift tensor a 40-state cyclic clock",
+      "period": 40,
+      "lucasCoefficient": "228826127",
+      "determinantForm": "1 - L_40 z^40 + z^80",
+      "determinantPower": 1,
+      "poleFamiliesIncludingMultiplicity": 80,
+      "zeroOrPoleCountingOrder": "O(T), because this is a rational function of exp(-a s)"
+    },
+    {
+      "model": "Fibonacci shift tensor a 60-state cyclic clock",
+      "period": 60,
+      "lucasCoefficient": "3461452808002",
+      "determinantForm": "1 - L_60 z^60 + z^120",
+      "determinantPower": 1,
+      "poleFamiliesIncludingMultiplicity": 120,
+      "zeroOrPoleCountingOrder": "O(T), because this is a rational function of exp(-a s)"
+    },
+    {
+      "model": "Fibonacci shift tensor simultaneous 40- and 60-state clocks",
+      "period": 120,
+      "lucasCoefficient": "11981655542024930675232002",
+      "determinantForm": "(1 - L_120 z^120 + z^240)^20",
+      "determinantPower": 20,
+      "poleFamiliesIncludingMultiplicity": 4800,
+      "explanation": "The 2,400 clock pairs split into 20 copies of the 120-step joint phase orbit.",
+      "zeroOrPoleCountingOrder": "O(T), because this is a rational function of exp(-a s)"
+    }
+  ],
+  "continuedFractionCompletion": {
+    "explanation": "Primitive cyclic words over digits 1..3 under matrices [[a,1],[1,0]]. Trace can be prime accidentally, but is not multiplicative under cycle repetition; spectral radius is multiplicative under repetition but quadratic irrational.",
+    "sampleCount": 32,
+    "primeTraceCount": 8,
+    "multiplicativeTraceCount": 0,
+    "samples": [
+      {
+        "word": "1",
+        "length": 1,
+        "matrix": [
+          [
+            "1",
+            "1"
+          ],
+          [
+            "1",
+            "0"
+          ]
+        ],
+        "trace": "1",
+        "traceIsPrime": false,
+        "determinant": "-1",
+        "spectralRadius": 1.618033988749895,
+        "spectralRadiusSquared": 2.618033988749895,
+        "repeatedTrace": "3",
+        "traceSquared": "1",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "2",
+        "length": 1,
+        "matrix": [
+          [
+            "2",
+            "1"
+          ],
+          [
+            "1",
+            "0"
+          ]
+        ],
+        "trace": "2",
+        "traceIsPrime": true,
+        "determinant": "-1",
+        "spectralRadius": 2.414213562373095,
+        "spectralRadiusSquared": 5.82842712474619,
+        "repeatedTrace": "6",
+        "traceSquared": "4",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "3",
+        "length": 1,
+        "matrix": [
+          [
+            "3",
+            "1"
+          ],
+          [
+            "1",
+            "0"
+          ]
+        ],
+        "trace": "3",
+        "traceIsPrime": true,
+        "determinant": "-1",
+        "spectralRadius": 3.302775637731995,
+        "spectralRadiusSquared": 10.908326913195985,
+        "repeatedTrace": "11",
+        "traceSquared": "9",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "12",
+        "length": 2,
+        "matrix": [
+          [
+            "3",
+            "1"
+          ],
+          [
+            "2",
+            "1"
+          ]
+        ],
+        "trace": "4",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 3.732050807568877,
+        "spectralRadiusSquared": 13.928203230275509,
+        "repeatedTrace": "14",
+        "traceSquared": "16",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "13",
+        "length": 2,
+        "matrix": [
+          [
+            "4",
+            "1"
+          ],
+          [
+            "3",
+            "1"
+          ]
+        ],
+        "trace": "5",
+        "traceIsPrime": true,
+        "determinant": "1",
+        "spectralRadius": 4.7912878474779195,
+        "spectralRadiusSquared": 22.956439237389596,
+        "repeatedTrace": "23",
+        "traceSquared": "25",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "23",
+        "length": 2,
+        "matrix": [
+          [
+            "7",
+            "2"
+          ],
+          [
+            "3",
+            "1"
+          ]
+        ],
+        "trace": "8",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 7.872983346207417,
+        "spectralRadiusSquared": 61.983866769659336,
+        "repeatedTrace": "62",
+        "traceSquared": "64",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "112",
+        "length": 3,
+        "matrix": [
+          [
+            "5",
+            "2"
+          ],
+          [
+            "3",
+            "1"
+          ]
+        ],
+        "trace": "6",
+        "traceIsPrime": false,
+        "determinant": "-1",
+        "spectralRadius": 6.16227766016838,
+        "spectralRadiusSquared": 37.97366596101028,
+        "repeatedTrace": "38",
+        "traceSquared": "36",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "113",
+        "length": 3,
+        "matrix": [
+          [
+            "7",
+            "2"
+          ],
+          [
+            "4",
+            "1"
+          ]
+        ],
+        "trace": "8",
+        "traceIsPrime": false,
+        "determinant": "-1",
+        "spectralRadius": 8.123105625617661,
+        "spectralRadiusSquared": 65.9848450049413,
+        "repeatedTrace": "66",
+        "traceSquared": "64",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "122",
+        "length": 3,
+        "matrix": [
+          [
+            "7",
+            "3"
+          ],
+          [
+            "5",
+            "2"
+          ]
+        ],
+        "trace": "9",
+        "traceIsPrime": false,
+        "determinant": "-1",
+        "spectralRadius": 9.109772228646444,
+        "spectralRadiusSquared": 82.987950057818,
+        "repeatedTrace": "83",
+        "traceSquared": "81",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "123",
+        "length": 3,
+        "matrix": [
+          [
+            "10",
+            "3"
+          ],
+          [
+            "7",
+            "2"
+          ]
+        ],
+        "trace": "12",
+        "traceIsPrime": false,
+        "determinant": "-1",
+        "spectralRadius": 12.082762530298218,
+        "spectralRadiusSquared": 145.9931503635786,
+        "repeatedTrace": "146",
+        "traceSquared": "144",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "132",
+        "length": 3,
+        "matrix": [
+          [
+            "9",
+            "4"
+          ],
+          [
+            "7",
+            "3"
+          ]
+        ],
+        "trace": "12",
+        "traceIsPrime": false,
+        "determinant": "-1",
+        "spectralRadius": 12.082762530298218,
+        "spectralRadiusSquared": 145.9931503635786,
+        "repeatedTrace": "146",
+        "traceSquared": "144",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "133",
+        "length": 3,
+        "matrix": [
+          [
+            "13",
+            "4"
+          ],
+          [
+            "10",
+            "3"
+          ]
+        ],
+        "trace": "16",
+        "traceIsPrime": false,
+        "determinant": "-1",
+        "spectralRadius": 16.06225774829855,
+        "spectralRadiusSquared": 257.9961239727768,
+        "repeatedTrace": "258",
+        "traceSquared": "256",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "223",
+        "length": 3,
+        "matrix": [
+          [
+            "17",
+            "5"
+          ],
+          [
+            "7",
+            "2"
+          ]
+        ],
+        "trace": "19",
+        "traceIsPrime": true,
+        "determinant": "-1",
+        "spectralRadius": 19.0524865872714,
+        "spectralRadiusSquared": 362.9972451581566,
+        "repeatedTrace": "363",
+        "traceSquared": "361",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "233",
+        "length": 3,
+        "matrix": [
+          [
+            "23",
+            "7"
+          ],
+          [
+            "10",
+            "3"
+          ]
+        ],
+        "trace": "26",
+        "traceIsPrime": false,
+        "determinant": "-1",
+        "spectralRadius": 26.038404810405297,
+        "spectralRadiusSquared": 677.9985250705377,
+        "repeatedTrace": "678",
+        "traceSquared": "676",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1112",
+        "length": 4,
+        "matrix": [
+          [
+            "8",
+            "3"
+          ],
+          [
+            "5",
+            "2"
+          ]
+        ],
+        "trace": "10",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 9.898979485566356,
+        "spectralRadiusSquared": 97.98979485566355,
+        "repeatedTrace": "98",
+        "traceSquared": "100",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1113",
+        "length": 4,
+        "matrix": [
+          [
+            "11",
+            "3"
+          ],
+          [
+            "7",
+            "2"
+          ]
+        ],
+        "trace": "13",
+        "traceIsPrime": true,
+        "determinant": "1",
+        "spectralRadius": 12.922616289332565,
+        "spectralRadiusSquared": 166.99401176132335,
+        "repeatedTrace": "167",
+        "traceSquared": "169",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1122",
+        "length": 4,
+        "matrix": [
+          [
+            "12",
+            "5"
+          ],
+          [
+            "7",
+            "3"
+          ]
+        ],
+        "trace": "15",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 14.933034373659254,
+        "spectralRadiusSquared": 222.99551560488882,
+        "repeatedTrace": "223",
+        "traceSquared": "225",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1123",
+        "length": 4,
+        "matrix": [
+          [
+            "17",
+            "5"
+          ],
+          [
+            "10",
+            "3"
+          ]
+        ],
+        "trace": "20",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 19.9498743710662,
+        "spectralRadiusSquared": 397.9974874213241,
+        "repeatedTrace": "398",
+        "traceSquared": "400",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1132",
+        "length": 4,
+        "matrix": [
+          [
+            "16",
+            "7"
+          ],
+          [
+            "9",
+            "4"
+          ]
+        ],
+        "trace": "20",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 19.9498743710662,
+        "spectralRadiusSquared": 397.9974874213241,
+        "repeatedTrace": "398",
+        "traceSquared": "400",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1133",
+        "length": 4,
+        "matrix": [
+          [
+            "23",
+            "7"
+          ],
+          [
+            "13",
+            "4"
+          ]
+        ],
+        "trace": "27",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 26.96291201783626,
+        "spectralRadiusSquared": 726.998624481579,
+        "repeatedTrace": "727",
+        "traceSquared": "729",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1213",
+        "length": 4,
+        "matrix": [
+          [
+            "15",
+            "4"
+          ],
+          [
+            "11",
+            "3"
+          ]
+        ],
+        "trace": "18",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 17.94427190999916,
+        "spectralRadiusSquared": 321.9968943799849,
+        "repeatedTrace": "322",
+        "traceSquared": "324",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1222",
+        "length": 4,
+        "matrix": [
+          [
+            "17",
+            "7"
+          ],
+          [
+            "12",
+            "5"
+          ]
+        ],
+        "trace": "22",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 21.954451150103324,
+        "spectralRadiusSquared": 481.9979253022732,
+        "repeatedTrace": "482",
+        "traceSquared": "484",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1223",
+        "length": 4,
+        "matrix": [
+          [
+            "24",
+            "7"
+          ],
+          [
+            "17",
+            "5"
+          ]
+        ],
+        "trace": "29",
+        "traceIsPrime": true,
+        "determinant": "1",
+        "spectralRadius": 28.965476141489432,
+        "spectralRadiusSquared": 838.9988081031935,
+        "repeatedTrace": "839",
+        "traceSquared": "841",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1232",
+        "length": 4,
+        "matrix": [
+          [
+            "23",
+            "10"
+          ],
+          [
+            "16",
+            "7"
+          ]
+        ],
+        "trace": "30",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 29.966629547095764,
+        "spectralRadiusSquared": 897.9988864128728,
+        "repeatedTrace": "898",
+        "traceSquared": "900",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1233",
+        "length": 4,
+        "matrix": [
+          [
+            "33",
+            "10"
+          ],
+          [
+            "23",
+            "7"
+          ]
+        ],
+        "trace": "40",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 39.97498435543818,
+        "spectralRadiusSquared": 1597.9993742175272,
+        "repeatedTrace": "1598",
+        "traceSquared": "1600",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1322",
+        "length": 4,
+        "matrix": [
+          [
+            "22",
+            "9"
+          ],
+          [
+            "17",
+            "7"
+          ]
+        ],
+        "trace": "29",
+        "traceIsPrime": true,
+        "determinant": "1",
+        "spectralRadius": 28.965476141489432,
+        "spectralRadiusSquared": 838.9988081031935,
+        "repeatedTrace": "839",
+        "traceSquared": "841",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1323",
+        "length": 4,
+        "matrix": [
+          [
+            "31",
+            "9"
+          ],
+          [
+            "24",
+            "7"
+          ]
+        ],
+        "trace": "38",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 37.973665961010276,
+        "spectralRadiusSquared": 1441.9993065183905,
+        "repeatedTrace": "1442",
+        "traceSquared": "1444",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1332",
+        "length": 4,
+        "matrix": [
+          [
+            "30",
+            "13"
+          ],
+          [
+            "23",
+            "10"
+          ]
+        ],
+        "trace": "40",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 39.97498435543818,
+        "spectralRadiusSquared": 1597.9993742175272,
+        "repeatedTrace": "1598",
+        "traceSquared": "1600",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "1333",
+        "length": 4,
+        "matrix": [
+          [
+            "43",
+            "13"
+          ],
+          [
+            "33",
+            "10"
+          ]
+        ],
+        "trace": "53",
+        "traceIsPrime": true,
+        "determinant": "1",
+        "spectralRadius": 52.98112535373072,
+        "spectralRadiusSquared": 2806.999643747728,
+        "repeatedTrace": "2807",
+        "traceSquared": "2809",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "2223",
+        "length": 4,
+        "matrix": [
+          [
+            "41",
+            "12"
+          ],
+          [
+            "17",
+            "5"
+          ]
+        ],
+        "trace": "46",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 45.978250586152114,
+        "spectralRadiusSquared": 2113.999526962997,
+        "repeatedTrace": "2114",
+        "traceSquared": "2116",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "2233",
+        "length": 4,
+        "matrix": [
+          [
+            "56",
+            "17"
+          ],
+          [
+            "23",
+            "7"
+          ]
+        ],
+        "trace": "63",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 62.98412298286233,
+        "spectralRadiusSquared": 3966.999747920327,
+        "repeatedTrace": "3967",
+        "traceSquared": "3969",
+        "traceIsMultiplicativeUnderRepetition": false
+      },
+      {
+        "word": "2333",
+        "length": 4,
+        "matrix": [
+          [
+            "76",
+            "23"
+          ],
+          [
+            "33",
+            "10"
+          ]
+        ],
+        "trace": "86",
+        "traceIsPrime": false,
+        "determinant": "1",
+        "spectralRadius": 85.98837052040935,
+        "spectralRadiusSquared": 7393.999864755203,
+        "repeatedTrace": "7394",
+        "traceSquared": "7396",
+        "traceIsMultiplicativeUnderRepetition": false
+      }
+    ]
+  }
+}
