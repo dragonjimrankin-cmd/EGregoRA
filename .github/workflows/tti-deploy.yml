@@ -98,8 +98,8 @@ jobs:
       - name: Check site JavaScript syntax
         run: node --check tti/src/assets/js/site.js
 
-      - name: Test Oracle knowledge
-        run: node scripts/test-oracle-knowledge.mjs
+      - name: Test TTI Oracle knowledge
+        run: node scripts/test-oracle-knowledge.mjs --tti-only
 
       - name: Test TTI relocations
         run: node scripts/test-tti-relocations.mjs

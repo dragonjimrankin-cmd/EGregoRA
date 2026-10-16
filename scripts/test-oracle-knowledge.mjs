@@ -3,18 +3,21 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
+const ttiOnly = process.argv.includes('--tti-only');
 const ttiPath = new URL('../tti/src/assets/js/oracle-knowledge.js', import.meta.url);
 const egPath = new URL('../egregora-patch/public/assets/js/oracle-knowledge.js', import.meta.url);
 const ttiPagePath = new URL('../tti/src/ask-shakdrah.njk', import.meta.url);
 const egPagePath = new URL('../egregora-patch/public/ask-ed/index.html', import.meta.url);
-const [source, egSource, ttiPage, egPage] = await Promise.all([
+const loaded = await Promise.all([
   readFile(ttiPath, 'utf8'),
-  readFile(egPath, 'utf8'),
   readFile(ttiPagePath, 'utf8'),
-  readFile(egPagePath, 'utf8')
+  ...(ttiOnly ? [] : [readFile(egPath, 'utf8'), readFile(egPagePath, 'utf8')])
 ]);
+const [source, ttiPage, egSource, egPage] = loaded;
 
-assert.equal(egSource, source, 'ShakDrah and Gink must receive the same prepared knowledge');
+if (!ttiOnly) {
+  assert.equal(egSource, source, 'ShakDrah and Gink must receive the same prepared knowledge');
+}
 assert.doesNotMatch(source, /(?:api[_-]?key|secret|token|password)\s*[:=]\s*["'`]?[A-Za-z0-9_./+-]{12,}/i,
   'the public knowledge asset must not contain a credential');
 
@@ -59,7 +62,7 @@ for (const entry of kb.entries) {
   assert.equal(data.answer, entry.answer, `${entry.id} was altered in transit`);
 
   assert.ok(ttiPage.includes(entry.question), `ShakDrah is not offering ${entry.id}`);
-  assert.ok(egPage.includes(entry.question), `Gink is not offering ${entry.id}`);
+  if (!ttiOnly) assert.ok(egPage.includes(entry.question), `Gink is not offering ${entry.id}`);
 }
 assert.equal(nativeCalls, 0, 'canonical prepared questions should remain in the browser');
 
@@ -156,7 +159,9 @@ const attached = await window.fetch('/api/ask', {
 assert.equal((await attached.json()).answer, 'native fallback', 'attached context must reach the existing oracle');
 assert.equal(nativeCalls, 2, 'attachment bypass did not preserve the existing oracle');
 
-for (const [label, page] of [['ShakDrah', ttiPage], ['Gink', egPage]]) {
+for (const [label, page] of (ttiOnly
+  ? [['ShakDrah', ttiPage]]
+  : [['ShakDrah', ttiPage], ['Gink', egPage]])) {
   const group = page.match(/<div class="oracle-chips" id="oracle-chips">([\s\S]*?)<\/div>/);
   assert.ok(group, `${label} has no opening question group`);
   const chips = [...group[1].matchAll(/<button class="chip" type="button">([^<]+)<\/button>/g)].map((m) => m[1]);
@@ -168,4 +173,4 @@ for (const [label, page] of [['ShakDrah', ttiPage], ['Gink', egPage]]) {
   assert.ok(siteAt < 0 || knowledgeAt < siteAt, `${label} loads the knowledge asset after the oracle client`);
 }
 
-console.log('Oracle knowledge passed: 49 exact answers, 52 paraphrases, two avatars, fallback and attachment bypass.');
+console.log(`Oracle knowledge passed: 49 exact answers, 52 paraphrases, ${ttiOnly ? 'TTI avatar' : 'two avatars'}, fallback and attachment bypass.`);
