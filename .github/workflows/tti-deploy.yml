@@ -65,22 +65,47 @@ jobs:
             "$GITHUB_REF_NAME" \
             refresh
 
-      - name: Install dependencies and run pre-build checks
-        run: |
-          npm ci
-          node --check tti/hatchable/api/admin-commit.js
-          node --check tti/src/assets/js/admin-edit.js
-          node --check scripts/sync-admin-edit-snapshot.mjs
-          node scripts/test-admin-edit-commit.mjs
-          node --check tti/src/assets/js/oracle-knowledge.js
-          node --check tti/src/assets/js/neural-voice.js
-          node --check tti/src/assets/js/dragon.js
-          node --check tti/src/assets/js/fox.js
-          node --check tti/src/assets/js/atlas.js
-          node --check tti/src/assets/js/site.js
-          node scripts/test-oracle-knowledge.mjs
-          node scripts/test-tti-relocations.mjs
-          node scripts/test-neural-voice.mjs
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Admin Edit endpoint syntax
+        run: node --check tti/hatchable/api/admin-commit.js
+
+      - name: Check Admin Edit client syntax
+        run: node --check tti/src/assets/js/admin-edit.js
+
+      - name: Check Admin Edit snapshot sync syntax
+        run: node --check scripts/sync-admin-edit-snapshot.mjs
+
+      - name: Test Admin Edit snapshot commit flow
+        run: node scripts/test-admin-edit-commit.mjs
+
+      - name: Check Oracle knowledge syntax
+        run: node --check tti/src/assets/js/oracle-knowledge.js
+
+      - name: Check neural voice syntax
+        run: node --check tti/src/assets/js/neural-voice.js
+
+      - name: Check Dragon assistant syntax
+        run: node --check tti/src/assets/js/dragon.js
+
+      - name: Check Fox assistant syntax
+        run: node --check tti/src/assets/js/fox.js
+
+      - name: Check Atlas syntax
+        run: node --check tti/src/assets/js/atlas.js
+
+      - name: Check site JavaScript syntax
+        run: node --check tti/src/assets/js/site.js
+
+      - name: Test Oracle knowledge
+        run: node scripts/test-oracle-knowledge.mjs
+
+      - name: Test TTI relocations
+        run: node scripts/test-tti-relocations.mjs
+
+      - name: Test neural voice
+        run: node scripts/test-neural-voice.mjs
 
       - name: Build and validate the TTI source
         run: |
