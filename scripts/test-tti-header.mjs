@@ -79,7 +79,7 @@ assert.match(headerSource, /data-archive-document/,
   "supporting Parts IV–VI documents are not explicitly identified");
 assert.match(headerSource, /data-research-document/,
   "masthead research destinations lack a shared identity");
-assert.match(headerSource, /href="\/archive\/"/, "complete Research Index is absent from the masthead");
+assert.match(headerSource, /href="\/archive\/#project-contents"/, "full Table of Contents is absent from the masthead");
 assert.match(headerSource, /aria-controls="primary-nav"/, "mobile toggle is not linked to the primary navigation");
 
 /* The desktop index mirrors the reference while assigning every Part and its
@@ -198,7 +198,7 @@ for (const [relative, route] of fixtures) {
 
   assert.equal($(".nav-toggle").attr("aria-controls"), "primary-nav", `${relative} toggle target drifted`);
   assert.equal($(".nav-toggle").attr("aria-expanded"), "false", `${relative} toggle does not begin collapsed`);
-  const expectedCurrent = route === "/" ? "/" : route === "/archive/" ? "/archive/" :
+  const expectedCurrent = route === "/" ? "/" : route === "/archive/" ? "/archive/#project-contents" :
     (expectedResearchRoutes.includes(route) ? route : null);
   const current = $("#primary-nav [aria-current='page']").map((_, element) => $(element).attr("href")).get();
   assert.deepEqual(current, expectedCurrent ? [expectedCurrent] : [], `${relative} current destination is wrong`);

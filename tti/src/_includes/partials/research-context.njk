@@ -7,7 +7,6 @@
       <span class="project-record-kind">{{ researchPage.kind }}</span>
       <span class="project-record-status">{{ researchPage.status }}</span>
     </div>
-    <a class="project-contents-link" href="/archive/#project-contents">Project table of contents</a>
   </div>
 
   <div class="project-context-nav">
@@ -34,33 +33,5 @@
     <span class="project-context-step is-empty" aria-hidden="true"></span>
     {% endif %}
   </div>
-
-  <details class="project-drawer">
-    <summary>Browse all {{ site.navGroups | length }} Parts and {{ site.nav | length }} project documents</summary>
-    <div class="project-drawer-grid">
-      {% for group in site.navGroups %}
-      <section aria-labelledby="drawer-part-{{ group.part }}">
-        <h2 id="drawer-part-{{ group.part }}">Part {{ group.part }} · {{ group.shortLabel }}</h2>
-        <ol>
-          {% for item in group.items %}
-          <li>
-            <a href="{{ item.url }}" {% if item.url == page.url %}aria-current="page"{% endif %}>
-              <span>{{ item.code }}</span>
-              <strong>{{ item.label }}</strong>
-            </a>
-          </li>
-          {% endfor %}
-        </ol>
-      </section>
-      {% endfor %}
-    </div>
-  </details>
 </section>
-
-<nav class="document-outline wrap" data-document-outline aria-label="Table of contents for this document" hidden>
-  <details open>
-    <summary>In this document</summary>
-    <ol data-document-outline-list></ol>
-  </details>
-</nav>
 {% endif %}

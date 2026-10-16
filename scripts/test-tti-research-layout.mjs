@@ -115,11 +115,10 @@ for (const relative of indexFiles) {
   assert.equal($(".project-record-code").text().trim(), expected.code, `${route} has the wrong document code`);
   assert.equal($(".project-record-kind").text().trim(), expected.kind, `${route} has the wrong document type`);
   assert.equal($(".project-record-status").text().trim(), expected.status, `${route} has the wrong status`);
-  assert.equal($(".project-drawer-grid > section").length, 6, `${route} contents drawer must expose six Parts`);
-  assert.equal($(".project-drawer-grid a").length, 35, `${route} contents drawer must expose 35 destinations`);
-  assert.equal($(".project-drawer-grid a[aria-current=\"page\"]").length, 1,
-    `${route} contents drawer must identify the current document`);
-  assert.equal($("[data-document-outline]").length, 1, `${route} needs a local document-outline shell`);
+  assert.equal($(".project-drawer, [data-document-outline]").length, 0,
+    `${route} must not repeat document or corpus contents tables`);
+  assert.equal($("header a[href=\"/archive/#project-contents\"]").text().trim(), "Table of Contents",
+    `${route} header must link directly to the full table of contents`);
   assert.ok($("main > .page-head > .kicker").first().text().includes(expected.code),
     `${route} page heading must display its document code`);
   assert.ok($(".foot-citation").text().includes(expected.code), `${route} footer citation must include its code`);
@@ -134,9 +133,11 @@ const [base, context, header, footer, js, css] = [
   "tti/src/assets/css/main.css"
 ].map(read);
 assert.match(base, /partials\/research-context\.njk/, "base layout does not include research context");
-assert.match(context, /data-document-outline/, "research context lacks the local outline shell");
-assert.match(context, /site\.navGroups/, "document contents drawer is not generated from canonical navigation");
-assert.match(header, /Research Index/, "masthead does not expose the complete research index");
+assert.doesNotMatch(context, /project-drawer|document-outline|site\.navGroups/,
+  "research context must not repeat corpus or local contents tables");
+assert.match(header, /Table of Contents/, "masthead does not link to the complete table of contents");
+assert.match(header, /href=\"\/archive\/#project-contents\"/,
+  "masthead table-of-contents link must target all six Parts and 35 documents");
 assert.match(header, /item\.code/, "masthead destinations do not retain research codes for assistive technology");
 assert.match(header, /site\.navGroups/, "masthead is not generated from the canonical six-Part index");
 assert.match(footer, /Every page marks what is <em>earned<\/em> by argument, what is <em>chosen<\/em> as interpretation/,
@@ -144,17 +145,13 @@ assert.match(footer, /Every page marks what is <em>earned<\/em> by argument, wha
 assert.match(footer, /Test everything; keep what survives\./,
   "restored r3.5 footer closing rule drifted");
 assert.match(footer, /Suggested document citation/, "footer lacks a per-document citation");
-assert.match(js, /Research-document outline/, "document-outline enhancement is absent");
-assert.match(js, /while \(usedIds\.has\(candidate\)\)/, "generated heading IDs are not collision-safe");
-for (const selector of [".focus-hero", ".focus-pillar", ".research-toc", ".project-context", ".project-drawer", ".document-outline"]) {
+assert.doesNotMatch(js, /Research-document outline|data-document-outline/,
+  "site script must not generate repeated local contents tables");
+assert.doesNotMatch(css, /\.project-drawer|\.document-outline/,
+  "obsolete repeated contents-table styling remains");
+for (const selector of [".focus-hero", ".focus-pillar", ".research-toc", ".project-context"]) {
   assert.ok(css.includes(selector), `research layout styling is missing ${selector}`);
 }
-const outlineRules = [...css.matchAll(/\.document-outline ol\s*\{([^}]*)\}/g)].map((match) => match[1]);
-assert.ok(outlineRules.length > 0, "document outline has no list layout rule");
-assert.ok(outlineRules.every((rule) => !/grid-template-columns:\s*repeat\(/.test(rule)),
-  "document outline links return to multiple horizontal columns at a breakpoint");
-assert.ok(outlineRules.some((rule) => /grid-template-columns:\s*1fr;/.test(rule)),
-  "document outline links are not listed vertically");
 assert.match(css, /table :is\(th, td\) > a\[href\]\s*\{[^}]*display:\s*block;/s,
   "links inside tables are not forced onto separate vertical rows");
 

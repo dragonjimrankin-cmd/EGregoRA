@@ -4646,14 +4646,6 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   border-left: 1px solid rgba(118, 207, 238, 0.25);
   color: var(--amethyst);
 }
-.project-contents-link {
-  flex: 0 0 auto;
-  font-family: var(--title);
-  font-size: 0.6rem;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  color: var(--vellum-dim);
-}
 .project-context-nav {
   display: grid;
   grid-template-columns: 1fr minmax(180px, auto) 1fr;
@@ -4706,123 +4698,6 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
 }
 .project-context-position strong { color: var(--vellum); font-weight: 400; }
 
-.project-drawer {
-  margin: 0;
-  border: 1px solid rgba(118, 207, 238, 0.2);
-  border-top: 0;
-  background: rgba(3, 6, 17, 0.82);
-}
-.project-drawer > summary,
-.document-outline summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 0.55rem 0.75rem;
-  font-family: var(--title);
-  font-size: 0.59rem;
-  line-height: 1.3;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--verdant);
-}
-.project-drawer > summary::-webkit-details-marker,
-.document-outline summary::-webkit-details-marker { display: none; }
-.project-drawer > summary::after,
-.document-outline summary::after {
-  content: "+";
-  margin-left: 0.55rem;
-  color: var(--gold-bright);
-}
-.project-drawer[open] > summary::after,
-.document-outline details[open] > summary::after { content: "−"; }
-.project-drawer-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.8rem;
-  padding: 0.8rem;
-  border-top: 1px solid rgba(118, 207, 238, 0.13);
-}
-.project-drawer-grid section { min-width: 0; }
-.project-drawer-grid h2 {
-  margin: 0 0 0.45rem;
-  font-size: 0.67rem;
-  line-height: 1.3;
-  letter-spacing: 0.08em;
-  color: var(--verdant);
-}
-.project-drawer-grid ol { list-style: none; margin: 0; padding: 0; }
-.project-drawer-grid li { margin: 0; }
-.project-drawer-grid a {
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr);
-  gap: 0.35rem;
-  padding: 0.31rem 0.25rem;
-  text-decoration: none;
-  border-left: 2px solid transparent;
-}
-.project-drawer-grid a span {
-  font-family: var(--title);
-  font-size: 0.48rem;
-  letter-spacing: 0.06em;
-  color: #8190b7;
-}
-.project-drawer-grid a strong {
-  font-family: var(--title);
-  font-size: 0.56rem;
-  line-height: 1.25;
-  font-weight: 400;
-  color: var(--vellum-dim);
-}
-.project-drawer-grid a:hover,
-.project-drawer-grid a:focus-visible,
-.project-drawer-grid a[aria-current="page"] {
-  border-left-color: var(--verdant);
-  background: rgba(118, 207, 238, 0.06);
-  outline: none;
-}
-.project-drawer-grid a[aria-current="page"] strong { color: var(--gold-bright); }
-
-.document-outline {
-  margin-top: 0.75rem;
-}
-.document-outline[hidden] { display: none; }
-.document-outline details {
-  border: 1px solid rgba(118, 207, 238, 0.2);
-  background: linear-gradient(90deg, rgba(118, 207, 238, 0.055), rgba(69, 214, 180, 0.025));
-}
-.document-outline ol {
-  list-style: none;
-  margin: 0;
-  padding: 0.65rem 0.8rem 0.85rem;
-  display: grid;
-  /* A document is read in one sequence. Keep that sequence visibly vertical
-     instead of distributing it across newspaper-style columns. */
-  grid-template-columns: 1fr;
-  gap: 0.24rem;
-  border-top: 1px solid rgba(118, 207, 238, 0.12);
-  counter-reset: outline;
-}
-.document-outline li { counter-increment: outline; min-width: 0; }
-.document-outline a {
-  display: grid;
-  grid-template-columns: 1.8rem minmax(0, 1fr);
-  gap: 0.35rem;
-  padding: 0.25rem;
-  text-decoration: none;
-  font-size: 0.79rem;
-  line-height: 1.25;
-  color: var(--vellum-dim);
-}
-.document-outline a::before {
-  content: counter(outline, decimal-leading-zero);
-  font-family: var(--title);
-  font-size: 0.52rem;
-  letter-spacing: 0.06em;
-  color: var(--verdant);
-}
-.document-outline a:hover,
-.document-outline a:focus-visible { color: var(--gold-bright); background: rgba(118, 207, 238, 0.06); outline: none; }
-
 .foot-nav a span {
   margin-right: 0.2rem;
   font-family: var(--title);
@@ -4843,7 +4718,6 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   .research-toc-part > ol > li { grid-template-columns: 1fr; gap: 0.28rem; }
   .research-toc-part > ol > li > a { grid-template-columns: 5.4rem minmax(0, 1fr) minmax(7rem, auto); }
   .research-toc-status { grid-column: 2 / -1; }
-  .project-drawer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 700px) {
@@ -4859,7 +4733,6 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   .project-context-nav { grid-template-columns: 1fr 1fr; }
   .project-context-position { grid-column: 1 / -1; grid-row: 1; border: 0; border-bottom: 1px solid rgba(118, 207, 238, 0.14); }
   .project-context-step { grid-row: 2; }
-  .project-drawer-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 520px) {
@@ -4874,11 +4747,8 @@ table.ledger.ledger--prose td { text-align: left; vertical-align: top; }
   .research-toc-status { grid-column: auto; }
   .project-context { padding-inline: 0.58rem; }
   .project-context-line { display: block; }
-  .project-contents-link { display: inline-block; margin-top: 0.55rem; }
   .project-record-status { width: 100%; padding: 0; border: 0; }
   .project-context-step strong { font-size: 0.68rem; }
-  .document-outline { padding-inline: 0.58rem; }
-  .document-outline ol { grid-template-columns: 1fr; }
 }
 
 /* ---------- Site-wide editorial clarity guides ---------------------------

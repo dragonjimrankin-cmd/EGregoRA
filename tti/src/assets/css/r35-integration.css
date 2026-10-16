@@ -745,21 +745,13 @@ body * {
 }
 .project-context { padding-top: 1rem; }
 .project-context-line,
-.project-context-nav,
-.project-drawer,
-.document-outline details {
+.project-context-nav {
   border-color: rgba(118,207,238,0.22);
   background: rgba(13,13,26,0.56);
 }
 .project-context-line { min-height: 0; }
 .project-context-nav {
   grid-template-columns: 1fr minmax(180px, auto) 1fr;
-}
-.project-drawer-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.document-outline ol {
-  grid-template-columns: 1fr;
 }
 table :is(th, td) > a[href] {
   display: block;
@@ -923,7 +915,6 @@ table :is(th, td) > a[href] {
   .focus-synthesis-grid { grid-template-columns: 1fr; }
   .archive-orientation-frame,
   .project-abstract { grid-template-columns: 1fr; }
-  .project-drawer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 620px) {
@@ -943,7 +934,6 @@ table :is(th, td) > a[href] {
     grid-column: 1 / -1;
     grid-row: 1;
   }
-  .project-drawer-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 400px) {
