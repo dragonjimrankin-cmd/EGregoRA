@@ -125,7 +125,7 @@ for (const file of htmlFiles) {
   if (!$('.nav-toggle[aria-controls="primary-nav"][aria-expanded="false"]').length) {
     fail(`${relative}: mobile navigation toggle is not wired to the primary navigation`);
   }
-  const expectedCurrentUrl = urlPath === '/' ? '/' : urlPath === '/archive/' ? '/archive/' :
+  const expectedCurrentUrl = urlPath === '/' ? '/' : urlPath === '/archive/' ? '/archive/#project-contents' :
     (expectedResearchRoutes.includes(urlPath) ? urlPath : null);
   const currentLinks = $('#primary-nav a[aria-current="page"]');
   if (currentLinks.length !== (expectedCurrentUrl ? 1 : 0) ||
