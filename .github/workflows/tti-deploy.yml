@@ -23,8 +23,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ'
-        }}
+      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4

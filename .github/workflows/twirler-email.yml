@@ -21,7 +21,7 @@ jobs:
   twirler:
     runs-on: ubuntu-latest
     env:
-      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN || 'hb_1jMSZIvpa2hRRNsQtmCQ72azX2AvWmWhtubjaaTZ' }}
+      HATCHABLE_TOKEN: ${{ secrets.HATCHABLE_TOKEN }}
       TWIRLER_PROJECT_ID: proj_uT6hbTUn8qxc
     steps:
       - uses: actions/checkout@v4

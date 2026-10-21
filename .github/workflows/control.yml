@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       EG_SITE: https://egregora.hatchable.site
-      EG_TOKEN: ${{ secrets.EG_CONTROL_TOKEN || 'jim1_c6bd62438879ec7d7cdad176bf105a352cf01866574ebb4e' }}
+      EG_TOKEN: ${{ secrets.EG_CONTROL_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
