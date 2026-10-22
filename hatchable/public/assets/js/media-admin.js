@@ -585,6 +585,7 @@ function setup(root) {
 
     const r = (n) => root.querySelector('[data-am="rec-' + n + '"]');
     let stream = null, rec = null, bits = [], started = 0, tick = null, cancel = null, meter = null;
+    let unlockedCtx = null;
     /* Pausing is a held state, not a stopped one: the recorder keeps the take
        open and simply stops taking, so the clock has to hold still with it or
        the length it reports would be a lie. */
@@ -632,7 +633,9 @@ function setup(root) {
     function watchLevel(src) {
       const canvas = r("meter");
       if (!canvas) return;
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = unlockedCtx || new (window.AudioContext || window.webkitAudioContext)();
+      unlockedCtx = null;
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
       const node = ctx.createMediaStreamSource(src);
       const an = ctx.createAnalyser();
       an.fftSize = 1024;
@@ -660,6 +663,15 @@ function setup(root) {
         state("Sign in first — recording for the site needs a signed-in account. The sign-in is at /join/.");
         return;
       }
+      /* iPhone Safari only lets an audio context start from a tap. Made here,
+         before the microphone is asked for, so the level meter can run. */
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC && KIND === "audio") {
+          unlockedCtx = new AC();
+          if (unlockedCtx.state === "suspended") unlockedCtx.resume().catch(() => {});
+        }
+      } catch (e) { unlockedCtx = null; }
       try {
         const kind = KIND;
         const how = r("source") ? r("source").value : "mic";
