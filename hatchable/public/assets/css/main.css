@@ -2656,6 +2656,10 @@ details.ep > summary:hover .ep-title { color: #f3ddaa; }
   cursor: pointer;
   transition: background 0.16s ease, box-shadow 0.16s ease, color 0.16s ease;
 }
+/* The author rules above set display, which would override the hidden
+   attribute and leave the pause hand showing before any take exists. */
+.am-rec-pause[hidden],
+.am-rec-savepub[hidden] { display: none; }
 .am-rec-pause {
   color: #1b1409;
   background: #d7b05a;
