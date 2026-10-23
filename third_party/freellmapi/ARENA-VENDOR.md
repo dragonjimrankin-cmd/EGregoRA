@@ -9,13 +9,20 @@
 
 Vendored only. Not built, not deployed, and no site calls it yet.
 
-## Open decisions (not yet made)
+## Decisions so far
 
-1. Where it runs: hosting for the gateway, since the sandbox cannot reach Hatchable.
-2. Which sites call it: EGregoRA, TTI, or both, and through what base URL setting.
-3. Public or private: upstream says "personal experimentation only". Exposing one pooled gateway to visitors needs a decision.
-4. Provider terms: routing across free-tier provider keys can breach each provider's terms.
-5. Keys: provider keys live only in the gateway's encrypted store or the host's secrets. Never in this repo or in chat.
+- Host: the owner's own server.
+- Callers: EGregoRA and TTI, server-side only.
+- Access: private (sites and owner only).
+
+See `arena/README.md` for the setup and the open conflict with upstream's no-internet-exposure advice.
+
+## Still open
+
+1. Upstream says it must not be exposed to the internet; the setup needs a TLS proxy and token check. Confirm.
+2. Provider terms for free-tier pooling.
+3. TTI's Hatchable project is frozen; its gateway settings need the owner to unfreeze it.
+4. Provider keys stay in the gateway's encrypted store or server secrets, never in the repo or chat.
 
 ## Updating
 
